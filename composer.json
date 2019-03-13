@@ -1,0 +1,28 @@
+{
+    "name": "kidunot89/wp-graphql-woocommerce",
+    "description": "WooCommerce bindings for wp-graphql",
+    "type": "wordpress-plugin",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "kidunot89",
+            "email": "kidunot89@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "lucatume/wp-browser": "^2.2",
+        "squizlabs/php_codesniffer": "^3.4",
+        "phpcompatibility/phpcompatibility-wp": "^2.0"
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "WPGraphQL\\Extensions\\WooCommerce": "src/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    }
+}
