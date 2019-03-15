@@ -1,13 +1,15 @@
-# WPGraphQL WooCommerce
+# WPGraphQL WooCommerce (WIP - DO NOT USE)
+[![Build Status](https://travis-ci.org/kidunot89/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/kidunot89/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/kidunot89/wp-graphql-woocommerce/badge.svg?branch=master)](https://coveralls.io/github/kidunot89/wp-graphql-woocommerce?branch=master)
 
 ## Quick Install
-Coming soon...
+1. Install & activate [WooCommerce](https://woocommerce.com/)
+2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
+3. Clone this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
 
 ## Documentation
 Coming soon...
 
 ## Unit Testing and Code Coverage 
-
 Before anything is merged into the WPGraphQL code base it must pass all tests and have 100% code coverage. 
 Travis-CI and Coveralls will check this when you create a pull request to the WPGraphQL repo. 
 However, before that happens, you should ensure all of these requirements are met locally. 

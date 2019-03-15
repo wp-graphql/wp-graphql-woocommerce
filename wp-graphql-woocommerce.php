@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:     WP-GraphQL-WooCommerce
+ * Plugin Name:     WP GraphQL WooCommerce
  * Plugin URI:      https://developer.axistaylor.com/wp-graphql-woocommerce
  * Description:     Adds Woocommerce types to WPGraphQL schema.
  * Author:          kidunot89
