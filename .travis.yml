@@ -61,6 +61,11 @@ before_script:
       composer require lucatume/wp-browser:^2.2
       composer install --no-interaction
       mkdir -p build/logs
+      cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
+      cp tests/functional.suite.dist.yml tests/functional.suite.yml
+      cp tests/unit.suite.dist.yml tests/unit.suite.yml
+      cp tests/wpunit.suite.dist.yml tests/wpunit.suite.yml
+      cp .env.dist .env
       ls -al
     fi
   - |
