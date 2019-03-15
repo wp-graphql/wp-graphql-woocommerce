@@ -20,7 +20,7 @@
             "WPGraphQL\\Extensions\\WooCommerce\\": "src/"
         },
         "classmap": [
-            "src/"
+            "src"
         ]
     }
 }
