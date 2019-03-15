@@ -25,10 +25,13 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
         $query = "
             query {
                 product(id: \" \") {
+                    productId
                     name
                     slug
+                    permalink
                     dateCreated
                     dateModified
+                    type
                     status
                     featured
                     catalogVisibility
@@ -40,27 +43,52 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                     salePrice
                     dateOnSaleFrom
                     dateOnSaleTo
+                    onSale
+                    purchasable
                     totalSales
+                    virtual
+                    downloadable
+                    downloads
+                    downloadLimit
+                    downloadExpiry
+                    externalUrl
+                    buttonText
                     taxStatus
                     taxClass
                     manageStock
                     stockQuantity
                     stockStatus
                     backorders
-                    lowStockAmount
+                    backordersAllowed
+                    backordered
                     soldIndividually
                     weight
-                    length
-                    width
-                    height
+                    dimensions {
+                        length
+                        width
+                        height
+                    }
+                    shippingRequired
+                    shippingTaxable
+                    shippingClass
+                    shippingClassId
+                    reviewsAllowed
+                    averageRating
+                    ratingCount
+                    related {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
                     upsell {
-                        node {
+                        nodes {
                             id
                             name
                         }
                     }
                     crossSell {
-                        node {
+                        nodes {
                             id
                             name
                         }
@@ -69,13 +97,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                         id
                         name
                     }
-                    reviewsAllowed
                     purchaseNote
-                    attributes
-                    defaultAttributes
-                    menuOrder
-                    virtual
-                    downloadable
                     categories {
                         nodes {
                             id
@@ -88,23 +110,172 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                             name
                         }
                     }
-                    shippingClass
-                    downloads
-                    image {
-                        id
-                        url
-                    }
-                    galleryImages {
+                    images {
                         nodes {
                             id
-                            url
+                            src
                         }
                     }
+                    attributes {
+                        id
+                        name
+                        position
+                        visible
+                        variation
+                        options
+                    }
+                    defaultAttributes {
+                        id
+                        name
+                        option
+                    }
+                    variations {
+                        nodes {
+                            id
+                        }
+                    }
+                    groupedProducts {
+                        nodes {
+                            id
+                        }
+                    }
+                    menuOrder
+                }
+            }
+        ";
+
+        $actual = do_graphql_request( $query );
+
+        /**
+         * use --debug flag to view
+         */
+        \Codeception\Util\Debug::debug( $actual );
+
+        $expected = [];
+
+        $this->assertEquals( $expected, $actual );
+    }
+
+    public function testProductByQuery()
+    {
+        $query = "
+            query {
+                productBy(productId: \" \") {
+                    productId
+                    name
+                    slug
+                    permalink
+                    dateCreated
+                    dateModified
+                    type
+                    status
+                    featured
+                    catalogVisibility
+                    description
+                    shortDescription
+                    sku
+                    price
+                    regularPrice
+                    salePrice
+                    dateOnSaleFrom
+                    dateOnSaleTo
+                    onSale
+                    purchasable
+                    totalSales
+                    virtual
+                    downloadable
+                    downloads
                     downloadLimit
                     downloadExpiry
-                    ratingCounts
+                    externalUrl
+                    buttonText
+                    taxStatus
+                    taxClass
+                    manageStock
+                    stockQuantity
+                    stockStatus
+                    backorders
+                    backordersAllowed
+                    backordered
+                    soldIndividually
+                    weight
+                    dimensions {
+                        length
+                        width
+                        height
+                    }
+                    shippingRequired
+                    shippingTaxable
+                    shippingClass
+                    shippingClassId
+                    reviewsAllowed
                     averageRating
-                    reviewCount
+                    ratingCount
+                    related {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
+                    upsell {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
+                    crossSell {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
+                    parent {
+                        id
+                        name
+                    }
+                    purchaseNote
+                    categories {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
+                    tags {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
+                    images {
+                        nodes {
+                            id
+                            src
+                        }
+                    }
+                    attributes {
+                        id
+                        name
+                        position
+                        visible
+                        variation
+                        options
+                    }
+                    defaultAttributes {
+                        id
+                        name
+                        option
+                    }
+                    variations {
+                        nodes {
+                            id
+                        }
+                    }
+                    groupedProducts {
+                        nodes {
+                            id
+                        }
+                    }
+                    menuOrder
                 }
             }
         ";
@@ -127,10 +298,13 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
             query {
                 products {
                     nodes {
+                        productId
                         name
                         slug
+                        permalink
                         dateCreated
                         dateModified
+                        type
                         status
                         featured
                         catalogVisibility
@@ -142,27 +316,52 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                         salePrice
                         dateOnSaleFrom
                         dateOnSaleTo
+                        onSale
+                        purchasable
                         totalSales
+                        virtual
+                        downloadable
+                        downloads
+                        downloadLimit
+                        downloadExpiry
+                        externalUrl
+                        buttonText
                         taxStatus
                         taxClass
                         manageStock
                         stockQuantity
                         stockStatus
                         backorders
-                        lowStockAmount
+                        backordersAllowed
+                        backordered
                         soldIndividually
                         weight
-                        length
-                        width
-                        height
+                        dimensions {
+                            length
+                            width
+                            height
+                        }
+                        shippingRequired
+                        shippingTaxable
+                        shippingClass
+                        shippingClassId
+                        reviewsAllowed
+                        averageRating
+                        ratingCount
+                        related {
+                            nodes {
+                                id
+                                name
+                            }
+                        }
                         upsell {
-                            node {
+                            nodes {
                                 id
                                 name
                             }
                         }
                         crossSell {
-                            node {
+                            nodes {
                                 id
                                 name
                             }
@@ -171,13 +370,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                             id
                             name
                         }
-                        reviewsAllowed
                         purchaseNote
-                        attributes
-                        defaultAttributes
-                        menuOrder
-                        virtual
-                        downloadable
                         categories {
                             nodes {
                                 id
@@ -190,23 +383,36 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                                 name
                             }
                         }
-                        shippingClass
-                        downloads
-                        image {
-                            id
-                            url
-                        }
-                        galleryImages {
+                        images {
                             nodes {
                                 id
-                                url
+                                src
                             }
                         }
-                        downloadLimit
-                        downloadExpiry
-                        ratingCounts
-                        averageRating
-                        reviewCount
+                        attributes {
+                            id
+                            name
+                            position
+                            visible
+                            variation
+                            options
+                        }
+                        defaultAttributes {
+                            id
+                            name
+                            option
+                        }
+                        variations {
+                            nodes {
+                                id
+                            }
+                        }
+                        groupedProducts {
+                            nodes {
+                                id
+                            }
+                        }
+                        menuOrder
                     }
                 }
             }

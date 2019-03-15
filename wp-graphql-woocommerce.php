@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     WP-GraphQL-WooCommerce
  * Plugin URI:      https://developer.axistaylor.com/wp-graphql-woocommerce
- * Description:     Add Woocommerce types to WPGraphQL core schema.
+ * Description:     Adds Woocommerce types to WPGraphQL schema.
  * Author:          kidunot89
  * Author URI:      https://axistaylor.com
  * Text Domain:     wp-graphql-woocommerce
