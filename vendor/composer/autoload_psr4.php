@@ -12,6 +12,7 @@ return array(
     'WP_CLI\\Embeds\\' => array($vendorDir . '/wp-cli/embed-command/src'),
     'WP_CLI\\AutoloadSplitter\\' => array($vendorDir . '/wp-cli/autoload-splitter/src'),
     'WP_CLI\\' => array($vendorDir . '/wp-cli/entity-command/src/WP_CLI', $vendorDir . '/wp-cli/shell-command/src/WP_CLI'),
+    'WPGraphQL\\Extensions\\WooCommerce\\' => array($baseDir . '/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),

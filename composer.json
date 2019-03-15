@@ -10,16 +10,14 @@
         }
     ],
     "require-dev": {
-        "lucatume/wp-browser": "^2.2",
-        "squizlabs/php_codesniffer": "^3.4",
-        "phpcompatibility/phpcompatibility-wp": "^2.0"
+        "lucatume/wp-browser": "^2.2"
     },
     "config": {
         "optimize-autoloader": true
     },
     "autoload": {
         "psr-4": {
-            "WPGraphQL\\Extensions\\WooCommerce": "src/"
+            "WPGraphQL\\Extensions\\WooCommerce\\": "src/"
         },
         "classmap": [
             "src/"
