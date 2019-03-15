@@ -18,5 +18,5 @@ modules:
             domain: "%TEST_SITE_WP_DOMAIN%"
             adminEmail: "%TEST_SITE_ADMIN_EMAIL%"
             title: "Test"        
-            plugins: ['wp-graphql-woocommerce/wp-graphql-woocommerce.php']
-            activatePlugins: ['wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']

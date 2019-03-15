@@ -6,15 +6,25 @@ language: php
 notifications:
   email:
     on_success: never
-    on_failure: change
+    on_failure: never
 
 branches:
   only:
     - master
+    - develop
 
 cache:
+  apt: true
   directories:
+    - vendor
     - $HOME/.composer/cache
+
+# Set the global environment variables
+env:
+  global:
+    - WP_CORE_DIR: /tmp/wordpress
+    - WP_VERSION: latest
+    - COVERAGE: false
 
 matrix:
   include:
@@ -36,18 +46,27 @@ matrix:
       env: WP_VERSION=latest
       dist: precise
 
-before_script:
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+install:
   - |
-    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
-      phpenv config-rm xdebug.ini
-    else
-      echo "xdebug.ini does not exist"
-    fi
+    cd $TRAVIS_BUILD_DIR
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    chmod +x wp-cli.phar
+    sudo mv wp-cli.phar /usr/local/bin/wp
+
+before_script:
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
-      bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-      composer global require "phpunit/phpunit=4.8.*|5.7.*"
+      bash bin/install-wp-tests.sh wpgraphql_woocommerce_test root '' 127.0.0.1 $WP_VERSION
+      composer self-update
+      composer require lucatume/wp-browser:^2.2
+      composer install --no-interaction
+      mkdir -p build/logs
+      cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
+      cp tests/functional.suite.dist.yml tests/functional.suite.yml
+      cp tests/unit.suite.dist.yml tests/unit.suite.yml
+      cp tests/wpunit.suite.dist.yml tests/wpunit.suite.yml
+      cp .env.dist .env
+      ls -al
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
@@ -56,12 +75,10 @@ before_script:
     fi
 
 script:
-  - |
-    if [[ ! -z "$WP_VERSION" ]] ; then
-      phpunit
-      WP_MULTISITE=1 phpunit
-    fi
-  - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      phpcs
+ # Execute unit tests with coverage if specified, otherwise without coverage
+ - |
+    if [ $COVERAGE == true ]; then
+      vendor/bin/codecept run wpunit --coverage --coverage-xml
+    else
+      vendor/bin/codecept run wpunit
     fi
