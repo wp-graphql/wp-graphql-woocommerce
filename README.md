@@ -48,9 +48,12 @@ If this is the case, please remove it and then run the install script again. Wit
 
 You may have different local environment configuration than what Travis CI has to run the tests, such as database username/password.
 
+
 In the `/tests` directory you will find `*.suite.dist.yml` config files for each of the codeception test suites. 
 
 You can copy those files and remove the `.dist` from the filename, and that file will be loaded locally _before_ the `.dist` file.
+
+Do the same for the `.env.dist` in the root directory and copy the file as `.env`.
 
 For example, if you wanted to update the `dbName` or `dbPassword` for your local tests, you could copy `wpunit.suite.dist.yml` to `wpunit.suite.yml` and update the `dbName` or `dbPassword` value to reflect your local database and password.
 
