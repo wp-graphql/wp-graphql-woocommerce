@@ -41,7 +41,7 @@ To install the test suite/test databases, from the root of the plugin directory,
 
 For example: 
 
-`bin/install-wp-tests.sh wpgraphql_test root password 127.0.0.1 latest`
+`bin/install-wp-tests.sh wpgraphql_woocommerce_test root '' 127.0.0.1 latest`
 
 *DEBUGGING*: If you have run this command before in another branch you may already have a local copy of WordPress downloaded in your `/private/tmp` directory. 
 If this is the case, please remove it and then run the install script again. Without removing this you may receive an error when running phpunit.

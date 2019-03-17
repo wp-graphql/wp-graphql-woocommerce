@@ -45,8 +45,6 @@ if ( ! class_exists( '\WPGraphQL\Extensions\WPGraphQLWooCommerce' ) ) :
 			 */
 			private static $instance;
 
-			private $inflector;
-
 			public static function instance() {
 				if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
 					self::$instance = new WPGraphQLWooCommerce;
@@ -138,16 +136,16 @@ if ( ! class_exists( '\WPGraphQL\Extensions\WPGraphQLWooCommerce' ) ) :
 				if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true == WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
 					require_once( WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php' );
 				}
-
-				// Require non-autoloaded classes
-				require_once( WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'inflect.php' );
 			}
 
 			/**
 			 * Sets up actions to run at certain spots throughout WordPress and the WPGraphQL execution cycle
 			 */
 			private function actions() {
-				
+				/**
+				 * Setup actions
+				 */
+				\WPGraphQL\Extensions\WooCommerce\Actions::load();
 			}
 
 			/**
@@ -155,47 +153,14 @@ if ( ! class_exists( '\WPGraphQL\Extensions\WPGraphQLWooCommerce' ) ) :
 			 */
 			private function filters() {
 				/**
-				 * Registers WooCommerce post-types to be shown in GraphQL
-				 */
-				add_action( 'register_post_type_args', [ $this, 'post_types' ], 10, 2 );
-
-				/**
 				 * Registers WooCommerce taxonomies to be shown in GraphQL
 				 */
-				add_action( 'register_taxonomy_args', [ $this, 'taxonomies' ], 10, 2 );
-			}
+				add_filter( 'register_taxonomy_args', [ $this, 'taxonomies' ], 10, 2 );
 
-			/**
-			 * Determine the post_types that should show in GraphQL
-			 */
-			public function post_types( $args, $post_type ) {
-
-				if ( 'product' === $post_type ) {
-					$args['show_in_graphql']     = true;
-					$args['graphql_single_name'] = 'product';
-					$args['graphql_plural_name'] = 'products';
-				}
-
-				if ( 'shop_coupon' === $post_type ) {
-					$args['show_in_graphql']     = true;
-					$args['graphql_single_name'] = 'coupon';
-					$args['graphql_plural_name'] = 'coupons';
-				}
-
-				if ( 'shop_order' === $post_type ) {
-					$args['show_in_graphql']     = true;
-					$args['graphql_single_name'] = 'order';
-					$args['graphql_plural_name'] = 'orders';
-				}
-
-				if ( 'shop_order_refund' === $post_type ) {
-					$args['show_in_graphql']     = true;
-					$args['graphql_single_name'] = 'refund';
-					$args['graphql_plural_name'] = 'refunds';
-				}
-
-				return $args;
-
+				/**
+				 * Setup filters
+				 */
+				\WPGraphQL\Extensions\WooCommerce\Filters::load();
 			}
 
 			/**

@@ -42,11 +42,11 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     couponId
                     code
                     amount
-                    dateCreated
-                    dateModified
+                    date
+                    modified
                     discountType
                     description
-                    dateExpires
+                    dateExpiry
                     usageCount
                     individualUse
                     usageLimit
@@ -98,7 +98,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     'modified'                  => $wc_coupon->get_date_modified(),
                     'discountType'              => $wc_coupon->get_discount_type(),
                     'description'               => $wc_coupon->get_description(),
-                    'dateExpires'               => $wc_coupon->get_date_expires(),
+                    'dateExpiry'               => $wc_coupon->get_date_expires(),
                     'usageCount'                => $wc_coupon->get_usage_count(),
                     'individualUse'             => $wc_coupon->get_individual_use(),
                     'usageLimit'                => $wc_coupon->get_usage_limit(),
@@ -160,11 +160,11 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     couponId
                     code
                     amount
-                    dateCreated
-                    dateModified
+                    date
+                    modified
                     discountType
                     description
-                    dateExpires
+                    dateExpiry
                     usageCount
                     individualUse
                     usageLimit
@@ -216,7 +216,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     'modified'                  => $wc_coupon->get_date_modified(),
                     'discountType'              => $wc_coupon->get_discount_type(),
                     'description'               => $wc_coupon->get_description(),
-                    'dateExpires'               => $wc_coupon->get_date_expires(),
+                    'dateExpiry'               => $wc_coupon->get_date_expires(),
                     'usageCount'                => $wc_coupon->get_usage_count(),
                     'individualUse'             => $wc_coupon->get_individual_use(),
                     'usageLimit'                => $wc_coupon->get_usage_limit(),
@@ -279,11 +279,11 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                         couponId
                         code
                         amount
-                        dateCreated
-                        dateModified
+                        date
+                        modified
                         discountType
                         description
-                        dateExpires
+                        dateExpiry
                         usageCount
                         individualUse
                         usageLimit
@@ -337,7 +337,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                         'modified'                  => $wc_coupon->get_date_modified(),
                         'discountType'              => $wc_coupon->get_discount_type(),
                         'description'               => $wc_coupon->get_description(),
-                        'dateExpires'               => $wc_coupon->get_date_expires(),
+                        'dateExpiry'               => $wc_coupon->get_date_expires(),
                         'usageCount'                => $wc_coupon->get_usage_count(),
                         'individualUse'             => $wc_coupon->get_individual_use(),
                         'usageLimit'                => $wc_coupon->get_usage_limit(),
