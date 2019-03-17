@@ -77,8 +77,15 @@ before_script:
 script:
  # Execute unit tests with coverage if specified, otherwise without coverage
  - |
-    if [ $COVERAGE == true ]; then
-      vendor/bin/codecept run wpunit --coverage --coverage-xml
-    else
-      vendor/bin/codecept run wpunit
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      if [ $COVERAGE == true ]; then
+        vendor/bin/codecept run wpunit --coverage --coverage-xml
+      else
+        vendor/bin/codecept run wpunit
+      fi
     fi
+ - |
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      phpcs
+    fi
+  

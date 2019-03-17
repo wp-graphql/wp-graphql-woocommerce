@@ -1,5 +1,7 @@
-# WPGraphQL WooCommerce (WIP - DO NOT USE)
+# WPGraphQL WooCommerce
 [![Build Status](https://travis-ci.org/kidunot89/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/kidunot89/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/kidunot89/wp-graphql-woocommerce/badge.svg?branch=master)](https://coveralls.io/github/kidunot89/wp-graphql-woocommerce?branch=master)
+
+## Note: This plugin is in early stages and is not quite ready for use.
 
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
@@ -39,7 +41,7 @@ To install the test suite/test databases, from the root of the plugin directory,
 
 For example: 
 
-`bin/install-wp-tests.sh wpgraphql_test root password 127.0.0.1 latest`
+`bin/install-wp-tests.sh wpgraphql_woocommerce_test root '' 127.0.0.1 latest`
 
 *DEBUGGING*: If you have run this command before in another branch you may already have a local copy of WordPress downloaded in your `/private/tmp` directory. 
 If this is the case, please remove it and then run the install script again. Without removing this you may receive an error when running phpunit.
@@ -48,9 +50,12 @@ If this is the case, please remove it and then run the install script again. Wit
 
 You may have different local environment configuration than what Travis CI has to run the tests, such as database username/password.
 
+
 In the `/tests` directory you will find `*.suite.dist.yml` config files for each of the codeception test suites. 
 
 You can copy those files and remove the `.dist` from the filename, and that file will be loaded locally _before_ the `.dist` file.
+
+Do the same for the `.env.dist` in the root directory and copy the file as `.env`.
 
 For example, if you wanted to update the `dbName` or `dbPassword` for your local tests, you could copy `wpunit.suite.dist.yml` to `wpunit.suite.yml` and update the `dbName` or `dbPassword` value to reflect your local database and password.
 

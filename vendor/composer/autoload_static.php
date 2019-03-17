@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit243c4e092eb886b317fac9426efa6ad4
+class ComposerStaticInit0a3f482bc68257ba96253efcd136df03
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -20,11 +20,21 @@ class ComposerStaticInit243c4e092eb886b317fac9426efa6ad4
         ),
     );
 
+    public static $classMap = array (
+        'WPGraphQL\\Extensions\\WooCommerce\\Actions' => __DIR__ . '/../..' . '/src/Actions.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Coupons' => __DIR__ . '/../..' . '/src/Connection/Coupons.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Data\\CouponConnectionResolver' => __DIR__ . '/../..' . '/src/Data/CouponConnectionResolver.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/src/Data/Factory.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Filters' => __DIR__ . '/../..' . '/src/Filters.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\Object\\Coupon' => __DIR__ . '/../..' . '/src/Type/Object/Coupon.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit243c4e092eb886b317fac9426efa6ad4::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit243c4e092eb886b317fac9426efa6ad4::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0a3f482bc68257ba96253efcd136df03::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0a3f482bc68257ba96253efcd136df03::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit0a3f482bc68257ba96253efcd136df03::$classMap;
 
         }, null, ClassLoader::class);
     }
