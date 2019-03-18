@@ -192,8 +192,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
     public function testProductByQuery()
     {
         $product = new WC_Product();
-        $product->set_name( 'Test Product' );
-        $product->set_slug( 'test-product' );
+        $product->set_name( 'Test Product 2' );
+        $product->set_slug( 'test-product-2' );
         $product->set_description( 'lorem ipsum dolor' );
         $product->set_sku( 'wp-pennant' );
         $product->set_price( 11.05 );
@@ -206,43 +206,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                     productId
                     name
                     slug
-                    date
-                    modified
-                    status
-                    featured
-                    catalogVisibility
-                    description
-                    shortDescription
-                    sku
-                    price
-                    regularPrice
-                    salePrice
-                    dateOnSaleFrom
-                    dateOnSaleTo
-                    totalSales
-                    taxStatus
-                    taxClass
-                    manageStock
-                    stockQuantity
-                    stockStatus
-                    backorders
-                    soldIndividually
-                    weight
-                    length
-                    width
-                    height
-                    reviewsAllowed
-                    purchaseNote
-                    menuOrder
-                    virtual
-                    downloadable
-                    shippingClassId
-                    downloads
-                    downloadLimit
-                    downloadExpiry
-                    ratingCount
-                    averageRating
-                    reviewCount
                 }
             }
         ";
@@ -255,43 +218,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                     'productId'         => $product->get_id(),
                     'name'              => $product->get_name(),
                     'slug'              => $product->get_slug(),
-                    'date'              => $product->get_date_created(),
-                    'modified'          => $product->get_date_modified(),
-                    'status'            => $product->get_status(),
-                    'featured'          => $product->get_featured(),
-                    'catalogVisibility' => $product->get_catalog_visibility(),
-                    'description'       => $product->get_description(),
-                    'shortDescription'  => $product->get_short_description(),
-                    'sku'               => $product->get_sku(),
-                    'price'             => $product->get_price(),
-                    'regularPrice'      => $product->get_regular_price(),
-                    'salePrice'         => $product->get_sale_price(),
-                    'dateOnSaleFrom'    => $product->get_date_on_sale_from(),
-                    'dateOnSaleTo'      => $product->get_date_on_sale_to(),
-                    'totalSales'        => $product->get_total_sales(),
-                    'taxStatus'         => $product->get_tax_status(),
-                    'taxClass'          => $product->get_tax_class(),
-                    'manageStock'       => $product->get_manage_stock(),
-                    'stockQuantity'     => $product->get_stock_quantity(),
-                    'stockStatus'       => $product->get_stock_status(),
-                    'backorders'        => $product->get_backorders(),
-                    'soldIndividually'  => $product->get_sold_individually(),
-                    'weight'            => $product->get_weight(),
-                    'length'            => $product->get_length(),
-                    'width'             => $product->get_width(),
-                    'height'            => $product->get_height(),
-                    'reviewsAllowed'    => $product->get_reviews_allowed(),
-                    'purchaseNote'      => $product->get_purchase_note(),
-                    'menuOrder'         => $product->get_menu_order(),
-                    'virtual'           => $product->get_virtual(),
-                    'downloadable'      => $product->get_downloadable(),
-                    'shippingClassId'   => $product->get_shipping_class_id(),
-                    'downloads'         => $product->get_downloads(),
-                    'downloadLimit'     => $product->get_download_limit(),
-                    'downloadExpiry'    => $product->get_download_expiry(),
-                    'ratingCount'       => $product->get_rating_count(),
-                    'averageRating'     => $product->get_average_rating(),
-                    'reviewCount'       => $product->get_review_count(),
                 ]
             ]
         ];
@@ -310,8 +236,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
     public function testProductsQuery()
     {
         $product = new WC_Product();
-        $product->set_name( 'Test Product' );
-        $product->set_slug( 'test-product' );
+        $product->set_name( 'Test Product-3' );
+        $product->set_slug( 'test-product-3' );
         $product->set_description( 'lorem ipsum dolor' );
         $product->set_sku( 'wp-pennant' );
         $product->set_price( 11.05 );

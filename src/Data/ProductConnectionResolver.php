@@ -32,7 +32,7 @@ class ProductConnectionResolver extends ConnectionResolver {
 		 * Prepare for later use
 		 */
 		$last  = ! empty( $args['last'] ) ? $args['last'] : null;
-    $first = ! empty( $args['first'] ) ? $args['first'] : null;
+		$first = ! empty( $args['first'] ) ? $args['first'] : null;
     
 		/**
 		 * Set the post_type for the query based on the type of post being queried
@@ -71,7 +71,43 @@ class ProductConnectionResolver extends ConnectionResolver {
 		$input_fields = [];
 		if ( ! empty( $args['where'] ) ) {
 			$input_fields = self::sanitize_input_fields( $args['where'], $source, $args, $context, $info );
-    }
+		}
+		
+		/**
+		 * Determine where we're at in the Graph and adjust the query context appropriately.
+		 */
+		if ( true === is_object( $source ) ) {
+			switch ( true ) {
+				case $source instanceof \WC_Product:
+					if ( 'upsell' === $info->fieldName ) {
+						$query_args['post__in'] = $source->get_upsell_ids();
+					} elseif ( 'crossSell' === $info->fieldName ) {
+						$query_args['post__in'] = $source->get_cross_sell_ids();
+					} else {
+						$query_args['post_parent'] = $source->get_id();
+						$query_args['post_type'] = 'product_variation';
+					}
+					break;
+				case $source instanceof \WC_Coupon:
+					if ( 'excludedProducts' === $info->fieldName ) {
+						$query_args['post__in'] = $source->get_excluded_product_ids();
+					} else {
+						$query_args['post__in'] = $source->get_product_ids();
+					}
+					break;
+				case $source instanceof \WP_Term:
+					$query_args['tax_query'] = [
+						[
+							'taxonomy' => $source->taxonomy,
+							'terms'    => [ $source->term_id ],
+							'field'    => 'term_id',
+						],
+					];
+					break;
+				default:
+					break;
+			}
+		}
     
     /**
 		 * Merge the input_fields with the default query_args
@@ -139,7 +175,12 @@ class ProductConnectionResolver extends ConnectionResolver {
         foreach ( $query_info['items'] as &$item ) {
           $item = new \WC_Product( $item->ID );
         }
-      }
+			}
+			if ( 'product_variation' === $query->query['post_type'] ) {
+        foreach ( $query_info['items'] as &$item ) {
+          $item = new \WC_Product_Variation( $item->ID );
+        }
+			}
     }
 
     return $query_info;
@@ -164,7 +205,7 @@ class ProductConnectionResolver extends ConnectionResolver {
 	 */
 	public static function sanitize_input_fields( array $args, $source, array $all_args, AppContext $context, ResolveInfo $info ) {
 		$arg_mapping = [
-			'slug' => 'title',
+			'slug' 			=> 'title',
     ];
     
 		/**

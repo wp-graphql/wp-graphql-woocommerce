@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit2374843cc27350155eeabb05e876aaa9
+class ComposerStaticInit8cb2d942d9bd309635d36332efd7535e
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -23,10 +23,13 @@ class ComposerStaticInit2374843cc27350155eeabb05e876aaa9
     public static $classMap = array (
         'WPGraphQL\\Extensions\\WooCommerce\\Actions' => __DIR__ . '/../..' . '/src/Actions.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Coupons' => __DIR__ . '/../..' . '/src/Connection/Coupons.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Connection\\ProductCategories' => __DIR__ . '/../..' . '/src/Connection/ProductCategories.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Connection\\ProductTags' => __DIR__ . '/../..' . '/src/Connection/ProductTags.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Products' => __DIR__ . '/../..' . '/src/Connection/Products.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\CouponConnectionResolver' => __DIR__ . '/../..' . '/src/Data/CouponConnectionResolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/src/Data/Factory.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\ProductConnectionResolver' => __DIR__ . '/../..' . '/src/Data/ProductConnectionResolver.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Data\\WCTermConnectionResolver' => __DIR__ . '/../..' . '/src/Data/WCTermConnectionResolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Filters' => __DIR__ . '/../..' . '/src/Filters.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\Object\\Coupon' => __DIR__ . '/../..' . '/src/Type/Object/Coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\Object\\Product' => __DIR__ . '/../..' . '/src/Type/Object/Product.php',
@@ -35,9 +38,9 @@ class ComposerStaticInit2374843cc27350155eeabb05e876aaa9
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit2374843cc27350155eeabb05e876aaa9::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit2374843cc27350155eeabb05e876aaa9::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit2374843cc27350155eeabb05e876aaa9::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8cb2d942d9bd309635d36332efd7535e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8cb2d942d9bd309635d36332efd7535e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit8cb2d942d9bd309635d36332efd7535e::$classMap;
 
         }, null, ClassLoader::class);
     }

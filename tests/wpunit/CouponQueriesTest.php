@@ -69,12 +69,12 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     }
                     productCategories {
                         nodes {
-                            categoryId
+                            productCategoryId
                         }
                     }
                     excludedProductCategories {
                         nodes {
-                            categoryId
+                            productCategoryId
                         }
                     }
                     usedBy {
@@ -160,46 +160,6 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     couponId
                     code
                     amount
-                    date
-                    modified
-                    discountType
-                    description
-                    dateExpiry
-                    usageCount
-                    individualUse
-                    usageLimit
-                    usageLimitPerUser
-                    limitUsageToXItems
-                    freeShipping
-                    excludeSaleItems
-                    minimumAmount
-                    maximumAmount
-                    emailRestrictions
-                    products {
-                        nodes {
-                            productId
-                        }
-                    }
-                    excludedProducts {
-                        nodes {
-                            productId
-                        }
-                    }
-                    productCategories {
-                        nodes {
-                            categoryId
-                        }
-                    }
-                    excludedProductCategories {
-                        nodes {
-                            categoryId
-                        }
-                    }
-                    usedBy {
-                        nodes {
-                            userId
-                        }
-                    }
                 }
             }
         ";
@@ -212,36 +172,6 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                     'couponId'                  => $wc_coupon->get_id(),
                     'code'                      => $wc_coupon->get_code(), 
                     'amount'                    => $wc_coupon->get_amount(),
-                    'date'                      => $wc_coupon->get_date_created(),
-                    'modified'                  => $wc_coupon->get_date_modified(),
-                    'discountType'              => $wc_coupon->get_discount_type(),
-                    'description'               => $wc_coupon->get_description(),
-                    'dateExpiry'               => $wc_coupon->get_date_expires(),
-                    'usageCount'                => $wc_coupon->get_usage_count(),
-                    'individualUse'             => $wc_coupon->get_individual_use(),
-                    'usageLimit'                => $wc_coupon->get_usage_limit(),
-                    'usageLimitPerUser'         => $wc_coupon->get_usage_limit_per_user(),
-                    'limitUsageToXItems'        => $wc_coupon->get_limit_usage_to_x_items(),
-                    'freeShipping'              => $wc_coupon->get_free_shipping(),
-                    'excludeSaleItems'          => $wc_coupon->get_exclude_sale_items(),
-                    'minimumAmount'             => $wc_coupon->get_minimum_amount(),
-                    'maximumAmount'             => $wc_coupon->get_maximum_amount(),
-                    'emailRestrictions'         => $wc_coupon->get_email_restrictions(),
-                    'products'                  => [
-                        'nodes' => $wc_coupon->get_product_ids(),
-                    ],
-                    'excludedProducts'          => [
-                        'nodes' => $wc_coupon->get_excluded_product_ids(),
-                    ],
-                    'productCategories'         => [
-                        'nodes' => $wc_coupon->get_product_categories(),
-                    ],
-                    'excludedProductCategories' => [
-                        'nodes' => $wc_coupon->get_excluded_product_categories(),
-                    ],
-                    'usedBy'                    => [
-                        'nodes' => $wc_coupon->get_used_by(),
-                    ],
                 ]
             ]
         ];
@@ -279,46 +209,6 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
                         couponId
                         code
                         amount
-                        date
-                        modified
-                        discountType
-                        description
-                        dateExpiry
-                        usageCount
-                        individualUse
-                        usageLimit
-                        usageLimitPerUser
-                        limitUsageToXItems
-                        freeShipping
-                        excludeSaleItems
-                        minimumAmount
-                        maximumAmount
-                        emailRestrictions
-                        products {
-                            nodes {
-                                productId
-                            }
-                        }
-                        excludedProducts {
-                            nodes {
-                                productId
-                            }
-                        }
-                        productCategories {
-                            nodes {
-                                categoryId
-                            }
-                        }
-                        excludedProductCategories {
-                            nodes {
-                                categoryId
-                            }
-                        }
-                        usedBy {
-                            nodes {
-                                userId
-                            }
-                        }
                     }
                 }
             }
@@ -330,39 +220,11 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
             'data' => [
                 'coupons' => [
                     'nodes' => [
-                        'couponId'                  => $wc_coupon->get_id(),
-                        'code'                      => $wc_coupon->get_code(), 
-                        'amount'                    => $wc_coupon->get_amount(),
-                        'date'                      => $wc_coupon->get_date_created(),
-                        'modified'                  => $wc_coupon->get_date_modified(),
-                        'discountType'              => $wc_coupon->get_discount_type(),
-                        'description'               => $wc_coupon->get_description(),
-                        'dateExpiry'               => $wc_coupon->get_date_expires(),
-                        'usageCount'                => $wc_coupon->get_usage_count(),
-                        'individualUse'             => $wc_coupon->get_individual_use(),
-                        'usageLimit'                => $wc_coupon->get_usage_limit(),
-                        'usageLimitPerUser'         => $wc_coupon->get_usage_limit_per_user(),
-                        'limitUsageToXItems'        => $wc_coupon->get_limit_usage_to_x_items(),
-                        'freeShipping'              => $wc_coupon->get_free_shipping(),
-                        'excludeSaleItems'          => $wc_coupon->get_exclude_sale_items(),
-                        'minimumAmount'             => $wc_coupon->get_minimum_amount(),
-                        'maximumAmount'             => $wc_coupon->get_maximum_amount(),
-                        'emailRestrictions'         => $wc_coupon->get_email_restrictions(),
-                        'products'                  => [
-                            'nodes' => $wc_coupon->get_product_ids(),
-                        ],
-                        'excludedProducts'          => [
-                            'nodes' => $wc_coupon->get_excluded_product_ids(),
-                        ],
-                        'productCategories'         => [
-                            'nodes' => $wc_coupon->get_product_categories(),
-                        ],
-                        'excludedProductCategories' => [
-                            'nodes' => $wc_coupon->get_excluded_product_categories(),
-                        ],
-                        'usedBy'                    => [
-                            'nodes' => $wc_coupon->get_used_by(),
-                        ],
+                        [
+                            'couponId'                  => $wc_coupon->get_id(),
+                            'code'                      => $wc_coupon->get_code(), 
+                            'amount'                    => $wc_coupon->get_amount(),
+                        ]
                     ]
                 ]
             ]

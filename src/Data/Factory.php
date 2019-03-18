@@ -62,4 +62,14 @@ class Factory {
 		return $resolver->resolve( $source, $args, $context, $info );
 	}
 
+	public static function resolve_product_category_connection ( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new WCTermConnectionResolver( 'product_cat' );
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
+	public static function resolve_product_tag_connection ( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new WCTermConnectionResolver( 'product_tag' );
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
 }

@@ -17,9 +17,43 @@ class Products {
    */
   public static function register_connections() {
     /**
-     * Register Connections to Coupons
+     * Root connections
      */
     register_graphql_connection( self::get_connection_config() );
+
+    /**
+     * Taxonomy connections
+     */
+    register_graphql_connection( self::get_connection_config( [
+      'fromType' => 'productTag'
+    ] ) );
+    register_graphql_connection( self::get_connection_config( [
+      'fromType' => 'productCategory'
+    ] ) );
+
+    /**
+     * Type connections
+     */
+    register_graphql_connection( self::get_connection_config( [
+      'fromType'       => 'Product',
+      'fromFieldName'  => 'upsell'
+    ] ) );
+    register_graphql_connection( self::get_connection_config( [
+      'fromType'       => 'Product',
+      'fromFieldName'  => 'crossSell'
+    ] ) );
+    register_graphql_connection( self::get_connection_config( [
+      'fromType'       => 'Product',
+      'fromFieldName'  => 'variations'
+    ] ) );
+    register_graphql_connection( self::get_connection_config( [
+      'fromType'       => 'Coupon',
+      'fromFieldName'  => 'products'
+    ] ) );
+    register_graphql_connection( self::get_connection_config( [
+      'fromType'       => 'Coupon',
+      'fromFieldName'  => 'excludedProducts'
+    ] ) );
   }
 
   /**
