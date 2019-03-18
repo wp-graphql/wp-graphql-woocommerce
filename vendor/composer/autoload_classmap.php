@@ -8,8 +8,11 @@ $baseDir = dirname($vendorDir);
 return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Actions' => $baseDir . '/src/Actions.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Coupons' => $baseDir . '/src/Connection/Coupons.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Products' => $baseDir . '/src/Connection/Products.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\CouponConnectionResolver' => $baseDir . '/src/Data/CouponConnectionResolver.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Factory' => $baseDir . '/src/Data/Factory.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Data\\ProductConnectionResolver' => $baseDir . '/src/Data/ProductConnectionResolver.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Filters' => $baseDir . '/src/Filters.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\Object\\Coupon' => $baseDir . '/src/Type/Object/Coupon.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\Object\\Product' => $baseDir . '/src/Type/Object/Product.php',
 );

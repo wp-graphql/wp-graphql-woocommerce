@@ -131,11 +131,11 @@ class ProductConnectionResolver extends ConnectionResolver {
   }
 
   /**
-   * Maps queried items to \WC_Coupon
+   * Maps queried items to \WC_Product
    */
   public static function query_info_filter( $query_info, $query ) {
     if ( ! empty($query->query ) ) {
-      if ( 'shop_coupon' === $query->query['post_type'] ) {
+      if ( 'product' === $query->query['post_type'] ) {
         foreach ( $query_info['items'] as &$item ) {
           $item = new \WC_Product( $item->ID );
         }
@@ -164,7 +164,7 @@ class ProductConnectionResolver extends ConnectionResolver {
 	 */
 	public static function sanitize_input_fields( array $args, $source, array $all_args, AppContext $context, ResolveInfo $info ) {
 		$arg_mapping = [
-			'code' => 'title',
+			'slug' => 'title',
     ];
     
 		/**

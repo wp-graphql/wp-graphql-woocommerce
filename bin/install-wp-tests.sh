@@ -150,19 +150,14 @@ install_db() {
 
 	# create database
 	RESULT=`mysql -u $DB_USER --password="$DB_PASS" --skip-column-names -e "SHOW DATABASES LIKE '$DB_NAME'"$EXTRA`
-    if [ "$RESULT" != $DB_NAME ]; then
-        mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
-    fi
-
-    RESULT_2=`mysql -u $DB_USER --password="$DB_PASS" --skip-column-names -e "SHOW DATABASES LIKE '$DB_SERVE_NAME'"$EXTRA`
-    if [ "$RESULT_2" != $DB_SERVE_NAME ]; then
-        mysqladmin create $DB_SERVE_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
-    fi
+	if [ "$RESULT" != $DB_NAME ]; then
+			mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	fi
 }
 
 configure_wordpress() {
     cd $WP_CORE_DIR
-    wp config create --dbname="$DB_SERVE_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
+    wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
     wp core install --url=wp.test --title="WPGraphQL WooCommerce Tests" --admin_user=admin --admin_password=password --admin_email=admin@wp.test
     wp rewrite structure '/%year%/%monthnum%/%postname%/'
 }
@@ -172,17 +167,21 @@ setup_woocommerce() {
 	wp plugin install wordpress-importer --activate
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
-	wp import $WP_CORE_DIR/wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip
+	wp import $WP_CORE_DIR/wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=$PLUGIN_DIR/bin/usermap.csv --path=$WP_CORE_DIR
 }
 
 setup_wpgraphql() {
-	echo "Cloning WPGraphQL"
-	git clone https://github.com/wp-graphql/wp-graphql.git $WP_CORE_DIR/wp-content/plugins/wp-graphql
+	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql ]; then
+		echo "Cloning WPGraphQL"
+		git clone https://github.com/wp-graphql/wp-graphql.git $WP_CORE_DIR/wp-content/plugins/wp-graphql
+	fi
 	echo "Activating WPGraphQL"
 	wp plugin activate wp-graphql
 
-	echo "Cloning WPGraphQL-JWT-Authentication"
-	git clone https://github.com/wp-graphql/wp-graphql-jwt-authentication.git $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication
+	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication ]; then
+		echo "Cloning WPGraphQL-JWT-Authentication"
+		git clone https://github.com/wp-graphql/wp-graphql-jwt-authentication.git $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication
+	fi
 	echo "Activating WPGraphQL-JWT-Authentication"
 	wp plugin activate wp-graphql-jwt-authentication
 }
