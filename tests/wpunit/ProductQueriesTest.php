@@ -76,54 +76,51 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
                     reviewCount
                     upsell {
                         nodes {
-                            id
-                            name
+                            productId
                         }
                     }
                     crossSell {
                         nodes {
-                            id
-                            name
+                            productId
                         }
                     }
                     parent {
-                        id
-                        name
+                        productId
                     }
                     categories {
                         nodes {
                             id
-                            name
+                            productCategoryId
                         }
                     }
                     tags {
                         nodes {
-                            id
-                            name
+                            productTagId
                         }
                     }
                     image {
-                        id
-                        src
+                        mediaItemId
                     }
                     galleryImages {
                         nodes {
-                            id
-                            src
+                            mediaItemId
                         }
                     }
                     attributes {
-                        id
-                        name
-                        position
-                        visible
-                        variation
-                        options
+                        nodes {
+                            id
+                            name
+                            position
+                            visible
+                            variation
+                            options
+                        }
                     }
                     defaultAttributes {
-                        id
-                        name
-                        option
+                        nodes {
+                            id
+                            name
+                        }
                     }
                 }
             }

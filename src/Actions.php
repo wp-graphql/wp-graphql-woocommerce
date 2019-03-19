@@ -25,6 +25,7 @@ class Actions
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Object\ProductAttribute', 'register' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Connection\Products', 'register_connections' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Connection\ProductAttributes', 'register_connections' ], 10 );
+    add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Connection\ProductGallery', 'register_connections' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Connection\ProductCategories', 'register_connections' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Connection\ProductTags', 'register_connections' ], 10 );
   }
