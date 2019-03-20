@@ -256,7 +256,7 @@ class Product {
             return $product->get_virtual();
           }
         ],
-        'download' => [
+        'downloads' => [
           'type'        => [
             'list_of' => 'String',
           ],
@@ -363,7 +363,13 @@ class Product {
             return Factory::resolve_product( $args['productId'] );
           }
           if ( ! empty( $args['slug'] ) ) {
-            return Factory::resolve_product( $args['slug'] );
+            $posts = get_posts( array(
+              'name' => $args['slug'],
+              'posts_per_page' => 1,
+              'post_type' => 'product',
+              'post_status' => 'publish'
+            ) );
+            return isset( $posts[0] ) ? Factory::resolve_product( $posts[0]->ID ) : null;
           }
           return null;
       },
