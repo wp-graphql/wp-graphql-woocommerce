@@ -36,7 +36,45 @@ class Factory {
   public static function resolve_coupon_connection( $source, array $args, $context, ResolveInfo $info ) {
     $resolver = new CouponConnectionResolver();
 		return $resolver->resolve( $source, $args, $context, $info );
+	}
+	
+	/**
+	 * Returns the product for the ID
+	 *
+	 * @param int $id ID of the product being retrieved
+	 *
+	 * @throws UserError
+	 * @since  0.0.1
+	 * @return \WP_Product
+	 * @access public
+	 */
+  public static function resolve_product( $id ) {
+    $product = new \WC_Product( $id );
+		if ( empty( $product ) ) {
+			throw new UserError( sprintf( __( 'No product was found with the ID: %1$s', 'wp-graphql-woocommerce' ), $id ) );
+    }
+    
+    return $product;
+	}
+	
+	public static function resolve_product_connection( $source, array $args, $context, ResolveInfo $info ) {
+    $resolver = new ProductConnectionResolver();
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
 
-  }
+	public static function resolve_product_category_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new WCTermConnectionResolver( 'product_cat' );
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
+	public static function resolve_product_tag_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new WCTermConnectionResolver( 'product_tag' );
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
+	public static function resolve_product_attribute_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new ProductAttributeConnectionResolver();
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
 
 }

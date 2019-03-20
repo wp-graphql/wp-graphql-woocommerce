@@ -68,7 +68,7 @@ class Coupon
           }
         ],
         'discountType' => [
-          'type'        => 'String',
+          'type'        => 'DiscountTypeEnum',
           'description' => __('Type of discount', 'wp-graphql-woocommerce'),
           'resolve'     => function ($coupon) {
             return $coupon->get_discount_type();
