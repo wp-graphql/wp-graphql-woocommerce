@@ -19,6 +19,11 @@ class Actions
     /**
      * Register WooCommerce post-type fields
      */
+    add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Enum\Backorders', 'register' ], 10 );
+    add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Enum\CatalogVisibility', 'register' ], 10 );
+    add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Enum\DiscountType', 'register' ], 10 );
+    add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Enum\StockStatus', 'register' ], 10 );
+    add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Enum\TaxStatus', 'register' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Object\Coupon', 'register' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Connection\Coupons', 'register_connections' ], 10 );
     add_action( 'graphql_register_types', [ '\WPGraphQL\Extensions\WooCommerce\Type\Object\Product', 'register' ], 10 );

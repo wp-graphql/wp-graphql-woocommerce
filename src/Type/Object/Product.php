@@ -82,7 +82,7 @@ class Product {
           }
         ],
         'catalogVisibility' => [
-          'type'        => 'String',
+          'type'        => 'CatalogVisibilityEnum',
           'description' => __( 'Catalog visibility', 'wp-graphql-woocommerce' ),
           'resolve'     => function ( $product ) {
             return $product->get_catalog_visibility();
@@ -152,7 +152,7 @@ class Product {
           }
         ],
         'taxStatus' => [
-          'type'        => 'String',
+          'type'        => 'TaxStatusEnum',
           'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
           'resolve'     => function ( $product ) {
             return $product->get_tax_status();
@@ -180,15 +180,15 @@ class Product {
           }
         ],
         'stockStatus' => [
-          'type'        => 'String',
-          'description' => __( 'Stock status', 'wp-graphql-woocommerce' ),
+          'type'        => 'StockStatusEnum',
+          'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
           'resolve'     => function ( $product ) {
             return $product->get_stock_status();
           }
         ],
         'backorders' => [
-          'type'        => 'String',
-          'description' => __( 'Backorders', 'wp-graphql-woocommerce' ),
+          'type'        => 'BackorderEnum',
+          'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
           'resolve'     => function ( $product ) {
             return $product->get_backorders();
           }
