@@ -1,47 +1,41 @@
 <?php
 
-class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase
-{
+class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
-    public function setUp()
-    {
-        // before
-        parent::setUp();
+	public function setUp() {
+		// before
+		parent::setUp();
 
-        // your set up methods here
-    }
+		// your set up methods here
+	}
 
-    public function tearDown()
-    {
-        // your tear down methods here
+	public function tearDown() {
+		// your tear down methods here
+		// then
+		parent::tearDown();
+	}
 
-        // then
-        parent::tearDown();
-    }
+	// tests
+	public function testCustomerQuery() {
+		$query = '
+			query {
+				user(id: " ") {
+					billing
+					shipping
+					isPayingCustomer
+				}
+			}
+		';
 
-    // tests
-    public function testCustomerQuery()
-    {
-        $query = "
-            query {
-                user(id: \" \") {
-                    billing
-                    shipping
-                    isPayingCustomer
-                }
-            }
-        ";
+		$actual = do_graphql_request( $query );
 
-        $actual = do_graphql_request( $query );
+		/**
+		 * use --debug flag to view
+		 */
+		\Codeception\Util\Debug::debug( $actual );
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+		$expected = [];
 
-        $expected = [];
-
-        $this->assertEquals( $expected, $actual );
-    }
-
+		$this->assertEquals( $expected, $actual );
+	}
 }

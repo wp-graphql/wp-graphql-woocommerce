@@ -1,34 +1,32 @@
 <?php
 
-class ProductMutationsTest extends \Codeception\TestCase\WPTestCase
-{
-    public $shopManager;
-    public $customer;
+class ProductMutationsTest extends \Codeception\TestCase\WPTestCase {
 
-    public function setUp()
-    {
-        // before
-        parent::setUp();
+	public $shopManager;
+	public $customer;
 
-        $this->shopManager = $this->factory->user->create( [
-			'role' => 'shop_manager',
-		] );
-		$this->customer = $this->factory->user->create( [
-			'role' => 'customer',
-		] );
-    }
+	public function setUp() {
+		// before
+		parent::setUp();
 
-    public function tearDown()
-    {
-        // your tear down methods here
+		$this->shopManager = $this->factory->user->create(
+			[
+				'role' => 'shop_manager',
+			]
+		);
+		$this->customer    = $this->factory->user->create(
+			[
+				'role' => 'customer',
+			]
+		);
+	}
 
-        // then
-        parent::tearDown();
-    }
+	public function tearDown() {
+		// your tear down methods here
+		// then
+		parent::tearDown();
+	}
 
-    // tests
-    public function testMe()
-    {
-    }
-
+	// tests
+	public function testMe() {  }
 }
