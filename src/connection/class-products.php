@@ -1,4 +1,11 @@
 <?php
+/**
+ * Connection type - Products
+ *
+ * Registers connections to Products
+ *
+ * @package WPGraphQL\Connection
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
@@ -6,18 +13,13 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class Products
- *
- * This class organizes the registration of connections to Coupons
- *
- * @package WPGraphQL\Connection
  */
 class Products {
-
 	/**
-	 * Registers the various connections from other Types to Coupons
+	 * Registers the various connections from other Types to Product
 	 */
 	public static function register_connections() {
-		 /**
+		/**
 		 * Root connections
 		 */
 		register_graphql_connection( self::get_connection_config() );
@@ -90,7 +92,7 @@ class Products {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ) {
+	public static function get_connection_config( $args = array() ) {
 		$defaults = [
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Product',
@@ -111,11 +113,11 @@ class Products {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return [
-			'slug' => [
+		return array(
+			'slug' => array(
 				'type'        => 'String',
 				'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 }

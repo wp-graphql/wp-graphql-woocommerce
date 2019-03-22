@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection resolver - ProductAttributes
+ * 
+ * Resolves connections to ProductAttributes
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Data;
 
@@ -7,13 +15,12 @@ use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 
 /**
- * Class Product_Attribute_Connection_Resolver - Connects the product attributes to products
- *
- * @package WPGraphQL\Extensions\WooCommerce\Data
- * @since 0.0.1
+ * Class Product_Attribute_Connection_Resolver
  */
 class Product_Attribute_Connection_Resolver {
-
+	/**
+	 * Creates connection
+	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		if ( 'defaultAttributes' === $info->fieldName ) {
 			$attributes = $source->get_default_attributes();

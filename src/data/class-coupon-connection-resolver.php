@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection resolver - Coupons
+ * 
+ * Resolves connections to Coupons
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Data;
 
@@ -10,13 +18,9 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Types;
 
 /**
- * Class Coupon_Connection_Resolver - Connects the coupons to other objects
- *
- * @package WPGraphQL\Extensions\WooCommerce\Data
- * @since 0.0.1
+ * Class Coupon_Connection_Resolver
  */
 class Coupon_Connection_Resolver extends ConnectionResolver {
-
 	/**
 	 * This prepares the $query_args for use in the connection query. This is where default $args are set, where dynamic
 	 * $args from the $source get set, and where mapping the input $args to the actual $query_args occurs.

@@ -1,26 +1,20 @@
 <?php
 /**
- * @package     WPGraphQL\Extensions\WooCommerce
- * @author      kidunot89
- * @license     GPL-3
+ * WP_GraphQL_WooCommerce
  * 
- * @wordpress-plugin
- * Plugin Name: WP GraphQL WooCommerce
- * Plugin URI: https://developer.axistaylor.com/wp-graphql-woocommerce
- * Description: Adds Woocommerce types to WPGraphQL schema.
- * Version: 0.0.1
- * Author: kidunot89
- * Author URI: https://axistaylor.com
- * Text Domain: wp-graphql-woocommerce
- * Domain Path: /languages
- * License: GPL-3
- * License URI: https://www.gnu.org/licenses/gpl-3.0.html
+ * Initializes a singleton instance of WP_GraphQL_WooCommerce
+ * 
+ * @package WPGraphQL\Extensions\WooCommerce
+ * @since 0.0.1
  */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
+	/**
+	 * Class WP_GraphQL_WooCommerce
+	 */
 	final class WP_GraphQL_WooCommerce {
 
 		/**
@@ -31,6 +25,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private static $instance;
 
+		/**
+		 * Singleton provider
+		 */
 		public static function instance() {
 			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
 				self::$instance = new WP_GraphQL_WooCommerce();

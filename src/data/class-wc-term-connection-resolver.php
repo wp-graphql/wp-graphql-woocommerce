@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection resolver - WCTerms
+ * 
+ * Resolvers connections to WooCommerce Terms (ProductCategory & ProductTags)
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Data;
 
@@ -10,13 +18,9 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Types;
 
 /**
- * Class WC_Term_Connection_Resolver - Connects the WooCommerce terms to other objects
- *
- * @package WPGraphQL\Extensions\WooCommerce\Data
- * @since 0.0.1
+ * Class WC_Term_Connection_Resolver
  */
 class WC_Term_Connection_Resolver extends TermObjectConnectionResolver {
-
 	/**
 	 * TermObjectConnectionResolver constructor.
 	 *

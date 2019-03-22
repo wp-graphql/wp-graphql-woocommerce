@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection type - ProductTags
+ *
+ * Registers connections to ProductTags
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
@@ -6,21 +14,12 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class Product_Tags
- *
- * This class organizes the registration of connections to ProductTags
- *
- * @package WPGraphQL\Connection
  */
 class Product_Tags {
-
-
 	/**
-	 * Registers the various connections from other Types to Coupons
+	 * Registers the various connections from other Types to ProductTag
 	 */
 	public static function register_connections() {
-		 /**
-		 * Type connections
-		 */
 		register_graphql_connection( self::get_connection_config() );
 	}
 

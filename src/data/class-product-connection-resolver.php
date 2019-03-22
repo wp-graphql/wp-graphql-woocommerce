@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection resolver - Products
+ * 
+ * Resolves connections to products
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Data;
 
@@ -10,13 +18,9 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Types;
 
 /**
- * Class Product_Connection_Resolver - Connects the products to other objects
- *
- * @package WPGraphQL\Extensions\WooCommerce\Data
- * @since 0.0.1
+ * Class Product_Connection_Resolver
  */
 class Product_Connection_Resolver extends ConnectionResolver {
-
 	/**
 	 * This prepares the $query_args for use in the connection query. This is where default $args are set, where dynamic
 	 * $args from the $source get set, and where mapping the input $args to the actual $query_args occurs.
@@ -41,8 +45,8 @@ class Product_Connection_Resolver extends ConnectionResolver {
 		$query_args['post_type'] = 'product';
 
 		/**
-			 * Don't calculate the total rows, it's not needed and can be expensive
-			 */
+		 * Don't calculate the total rows, it's not needed and can be expensive
+		 */
 		$query_args['no_found_rows'] = true;
 		/**
 		 * Set the post_status to "publish" by default
@@ -50,14 +54,14 @@ class Product_Connection_Resolver extends ConnectionResolver {
 		$query_args['post_status'] = 'publish';
 
 		/**
-			 * Set posts_per_page the highest value of $first and $last, with a (filterable) max of 100
-			 */
+		 * Set posts_per_page the highest value of $first and $last, with a (filterable) max of 100
+		 */
 		$query_args['posts_per_page'] = min( max( absint( $first ), absint( $last ), 10 ), self::get_query_amount( $source, $args, $context, $info ) ) + 1;
 
 		/**
-			 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
-			 * to filter the WP_Query to support cursor pagination
-			 */
+		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
+		 * to filter the WP_Query to support cursor pagination
+		 */
 		$query_args['graphql_cursor_offset']  = self::get_offset( $args );
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
@@ -111,15 +115,15 @@ class Product_Connection_Resolver extends ConnectionResolver {
 		}
 
 		/**
-			 * Merge the input_fields with the default query_args
-			 */
+		 * Merge the input_fields with the default query_args
+		 */
 		if ( ! empty( $input_fields ) ) {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
 
 		/**
-			 * Map the orderby inputArgs to the WP_Query
-			 */
+		 * Map the orderby inputArgs to the WP_Query
+		 */
 		if ( ! empty( $args['where']['orderby'] ) && is_array( $args['where']['orderby'] ) ) {
 			$query_args['orderby'] = array();
 			foreach ( $args['where']['orderby'] as $orderby_input ) {
@@ -137,8 +141,8 @@ class Product_Connection_Resolver extends ConnectionResolver {
 		}
 
 		/**
-			 * If there's no orderby params in the inputArgs, set order based on the first/last argument
-			 */
+		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
+		 */
 		if ( empty( $query_args['orderby'] ) ) {
 			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
 		}

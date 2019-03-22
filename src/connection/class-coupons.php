@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection type - Coupons
+ *
+ * Registers connections to Coupons
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
@@ -6,21 +14,12 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class Coupons
- *
- * This class organizes the registration of connections to Coupons
- *
- * @package WPGraphQL\Connection
  */
 class Coupons {
-
-
 	/**
 	 * Registers the various connections from other Types to Coupon
 	 */
 	public static function register_connections() {
-		 /**
-		 * Register Connections to Coupons
-		 */
 		register_graphql_connection( self::get_connection_config() );
 	}
 

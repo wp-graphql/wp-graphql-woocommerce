@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection type - ProductGallery
+ *
+ * Registers a connection from Product to MediaItems
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
@@ -7,21 +15,12 @@ use WPGraphQL\Connection\PostObjects;
 
 /**
  * Class Product_Gallery
- *
- * This class organizes the registration of connections from Products to MediaItems
- *
- * @package WPGraphQL\Connection
  */
 class Product_Gallery {
-
-
 	/**
-	 * Registers the various connections from other Types to Coupons
+	 * Registers a connection from Product to MediaItem
 	 */
 	public static function register_connections() {
-		 /**
-		 * Type connections
-		 */
 		register_graphql_connection( self::get_connection_config() );
 	}
 

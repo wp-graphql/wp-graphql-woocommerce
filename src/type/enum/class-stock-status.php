@@ -1,11 +1,21 @@
 <?php
+/**
+ * WPEnum Type - StockStatusEnum
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @since   0.0.1
+ */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\Enum;
+namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
 
-class Stock_Status
-{
-	public static function register()
-	{
+/**
+ * Class Stock_Status
+ */
+class Stock_Status {
+	/**
+	 * Registers type
+	 */
+	public static function register() {
 		$values = [
 			'IN_STOCK'     => array( 'value' => 'instock' ),
 			'OUT_OF_STOCK' => array( 'value' => 'outofstock' ),
@@ -15,8 +25,8 @@ class Stock_Status
 		register_graphql_enum_type(
 			'StockStatusEnum',
 			array(
-				'description' => __('Product stock status enumeration', 'wp-graphql'),
-				'values'      => $values
+				'description' => __( 'Product stock status enumeration', 'wp-graphql' ),
+				'values'      => $values,
 			)
 		);
 	}

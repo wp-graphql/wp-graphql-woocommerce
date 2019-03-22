@@ -1,18 +1,19 @@
 <?php
+/**
+ * Filters
+ *
+ * Filter callbacks for executing filters on the GraphQL Schema
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce
+ * @since   0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
 /**
  * Class Filters
- *
- * static functions for executing actions on the GraphQL Schema
- *
- * @package \WPGraphQL\Extensions\WooCommerce
- * @since   0.0.1
  */
 class Filters {
-
-
 	/**
 	 * Register filters
 	 */

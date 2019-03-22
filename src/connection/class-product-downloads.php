@@ -1,4 +1,12 @@
 <?php
+/**
+ * Connection type - ProductDownloads
+ *
+ * Registers a connection from Product to ProductDownload
+ *
+ * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
@@ -6,21 +14,12 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class Product_Downloads
- *
- * This class organizes the registration of connections from Product to ProductDownload
- *
- * @package WPGraphQL\Connection
  */
 class Product_Downloads {
-
-
 	/**
-	 * Registers the various connections from other Types to Coupons
+	 * Registers a connection from Product to ProductDownload
 	 */
 	public static function register_connections() {
-		 /**
-		 * Type connections
-		 */
 		register_graphql_connection( self::get_connection_config() );
 	}
 
@@ -38,7 +37,7 @@ class Product_Downloads {
 			'fromType'       => 'Product',
 			'toType'         => 'ProductDownload',
 			'fromFieldName'  => 'downloads',
-			'connectionArgs' => [],
+			'connectionArgs' => array(),
 			'resolve'        => function ( $root, $args, $context, $info ) {
 				return Factory::resolve_product_download_connection( $root, $args, $context, $info );
 			},

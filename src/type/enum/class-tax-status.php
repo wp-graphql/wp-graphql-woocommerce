@@ -1,11 +1,21 @@
 <?php
+/**
+ * WPEnum Type - TaxStatusEnum
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @since   0.0.1
+ */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\Enum;
+namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
 
-class Tax_Status
-{
-	public static function register()
-	{
+/**
+ * Class Tax_Status
+ */
+class Tax_Status {
+	/**
+	 * Registers type
+	 */
+	public static function register() {
 		$values = [
 			'TAXABLE'  => array( 'value' => 'taxable' ),
 			'SHIPPING' => array( 'value' => 'shipping' ),
@@ -15,8 +25,8 @@ class Tax_Status
 		register_graphql_enum_type(
 			'TaxStatusEnum',
 			array(
-				'description' => __('Product tax status enumeration', 'wp-graphql'),
-				'values'      => $values
+				'description' => __( 'Product tax status enumeration', 'wp-graphql' ),
+				'values'      => $values,
 			)
 		);
 	}

@@ -1,6 +1,12 @@
 <?php
+/**
+ * WPObject Type - ProductAttribute
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @since   0.0.1
+ */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\Object;
+namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Data\DataSource;
@@ -8,31 +14,25 @@ use GraphQLRelay\Relay;
 
 /**
  * Class Product_Attribute
- *
- * Registers proper ProductAttribute type and query
- *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\Object
- * @since   0.0.1
  */
 class Product_Attribute {
-
+	/**
+	 * Registers type
+	 */
 	public static function register() {
-		 /**
-		 * Register Product Type
-		 */
 		register_graphql_object_type(
 			'ProductAttribute',
 			array(
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'id'          => array(
-						'type'    => array(	'non_null' => 'ID' ),
+						'type'    => array( 'non_null' => 'ID' ),
 						'resolve' => function ( $attribute ) {
 							return ! empty( $attribute ) ? Relay::toGlobalId( 'productAttribute', $attribute->get_id() ) : null;
 						},
 					),
 					'attributeId' => array(
-						'type'        => array(	'non_null' => 'Int' ),
+						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Attribute ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
 							return ! empty( $attribute ) ? $attribute->get_id() : null;

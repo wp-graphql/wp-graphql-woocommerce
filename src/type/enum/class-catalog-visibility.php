@@ -1,18 +1,19 @@
 <?php
+/**
+ * WPEnum Type - CatalogVisibilityEnum
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @since   0.0.1
+ */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\Enum;
+namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
 
 /**
  * Class Catalog_Visibility
- *
- * This class registers GraphQL Enumeration for catalog visibility
- *
- * @package WPGraphQL\Extensions\WooCommerce\Type\Enum
  */
 class Catalog_Visibility {
-
 	/**
-	 * Registers enumeration with register_graphql_enum_type
+	 * Registers type
 	 */
 	public static function register() {
 		$values = array(
@@ -26,7 +27,7 @@ class Catalog_Visibility {
 			'CatalogVisibilityEnum',
 			array(
 				'description' => __( 'Product catalog visibility enumeration', 'wp-graphql-woocommerce' ),
-				'values'      => $values
+				'values'      => $values,
 			)
 		);
 	}

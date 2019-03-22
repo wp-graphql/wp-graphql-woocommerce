@@ -1,24 +1,24 @@
 <?php
+/**
+ * WPObject Type - Coupon
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @since   0.0.1
+ */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\Object;
+namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use GraphQLRelay\Relay;
 
 /**
  * Class Coupon
- *
- * Registers proper Coupon type and query
- *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\Object
- * @since   0.0.1
  */
 class Coupon {
-
+	/**
+	 * Registers type and queries
+	 */
 	public static function register() {
-		 /**
-		 * Register Coupon Type
-		 */
 		register_graphql_object_type(
 			'Coupon',
 			array(
@@ -155,7 +155,7 @@ class Coupon {
 						'resolve'     => function ( $coupon ) {
 							return $coupon->get_email_restrictions();
 						},
-					)
+					),
 				),
 			)
 		);

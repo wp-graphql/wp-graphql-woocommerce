@@ -1,16 +1,24 @@
 <?php
+/**
+ * Actions
+ *
+ * Action callbacks for executing actions on the GraphQL Schema
+ *
+ * @package \WPGraphQL\Extensions\WooCommerce
+ * @since   0.0.1
+ */
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Type\Enum\Backorders;
-use WPGraphQL\Extensions\WooCommerce\Type\Enum\Catalog_Visibility;
-use WPGraphQL\Extensions\WooCommerce\Type\Enum\Discount_Type;
-use WPGraphQL\Extensions\WooCommerce\Type\Enum\Stock_Status;
-use WPGraphQL\Extensions\WooCommerce\Type\Enum\Tax_Status;
-use WPGraphQL\Extensions\WooCommerce\Type\Object\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Type\Object\Product;
-use WPGraphQL\Extensions\WooCommerce\Type\Object\Product_Attribute;
-use WPGraphQL\Extensions\WooCommerce\Type\Object\Product_Download;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
 use WPGraphQL\Extensions\WooCommerce\Connection\Products;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
@@ -21,11 +29,6 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Product_Tags;
 
 /**
  * Class Actions
- *
- * static functions for executing actions on the GraphQL Schema
- *
- * @package \WPGraphQL\Extensions\WooCommerce
- * @since   0.0.1
  */
 class Actions {
 	/**

@@ -29,7 +29,7 @@
         ]
     },
     "require": {},
-    "scripts"    : {
+    "scripts": {
         "test": [
 			"vendor/bin/codecept run"
         ],
@@ -44,15 +44,6 @@
         ],
         "wpunit-test": [
 			"vendor/bin/codecept run wpunit"
-		],
-		"phpcs-i": [
-			"vendor/squizlabs/php_codesniffer/bin/phpcs -i"
-		],
-		"check-cs": [
-			"vendor/squizlabs/php_codesniffer/bin/phpcs"
-		],
-		"fix-cs": [
-			"vendor/squizlabs/php_codesniffer/bin/phpcbf"
 		]
     },
     "support"    : {
