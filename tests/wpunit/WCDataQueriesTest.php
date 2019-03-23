@@ -1,27 +1,20 @@
 <?php
 
-class WCDataQueriesTest extends \Codeception\TestCase\WPTestCase
-{
+class WCDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
-    public function setUp()
-    {
-        // before
-        parent::setUp();
+	public function setUp() {
+		// before
+		parent::setUp();
 
-        // your set up methods here
-    }
+		// your set up methods here
+	}
 
-    public function tearDown()
-    {
-        // your tear down methods here
+	public function tearDown() {
+		// your tear down methods here
+		// then
+		parent::tearDown();
+	}
 
-        // then
-        parent::tearDown();
-    }
-
-    // tests
-    public function testMe()
-    {
-    }
-
+	// tests
+	public function testMe() {  }
 }

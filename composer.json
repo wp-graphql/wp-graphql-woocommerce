@@ -6,11 +6,16 @@
     "authors": [
         {
             "name": "kidunot89",
-            "email": "kidunot89@gmail.com"
+            "email": "kidunot89@gmail.com",
+            "role": "Lead developer"
         }
     ],
     "require-dev": {
-        "lucatume/wp-browser": "^2.2"
+        "lucatume/wp-browser": "^2.2",
+        "wp-coding-standards/wpcs": "1.2.1",
+        "squizlabs/php_codesniffer": "^3.4",
+        "phpcompatibility/phpcompatibility-wp": "^2.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
     },
     "config": {
         "optimize-autoloader": true
@@ -23,6 +28,26 @@
             "src/"
         ]
     },
-    "require": {
-    }
+    "require": {},
+    "scripts": {
+        "test": [
+			"vendor/bin/codecept run"
+        ],
+        "functional-test": [
+			"vendor/bin/codecept run functional"
+        ],
+        "acceptance-test": [
+			"vendor/bin/codecept run acceptance"
+        ],
+        "unit-test": [
+			"vendor/bin/codecept run unit"
+        ],
+        "wpunit-test": [
+			"vendor/bin/codecept run wpunit"
+		]
+    },
+    "support"    : {
+		"issues": "https://github.com/kidunot89/wp-graphql-woocommerce/issues",
+		"source": "https://github.com/kidunot89/wp-graphql-woocommerce"
+	}
 }

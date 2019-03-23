@@ -70,7 +70,7 @@ before_script:
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      composer global require wp-coding-standards/wpcs
+      composer global require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs:1.2.1 automattic/vipwpcs
       phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
     fi
 
