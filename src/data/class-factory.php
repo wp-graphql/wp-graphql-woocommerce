@@ -12,6 +12,8 @@ namespace WPGraphQL\Extensions\WooCommerce\Data;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 
 /**
  * Class Factory
@@ -36,7 +38,23 @@ class Factory {
         return new Deferred( function () use ( $post_id, $context ) {
             return $context->WC_Loader->load( $post_id );
         });
-    }
+	}
+	
+	/**
+	 * Resolves Coupon connection
+	 */
+	public static function resolve_wc_posts_connection( $source, array $args, $context, ResolveInfo $info, $post_type ) {
+		$resolver = new WC_Posts_Connection_Resolver( $source, $args, $context, $info, $post_type );
+		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves Coupon connection
+	 */
+	public static function resolve_wc_terms_connection( $source, array $args, $context, ResolveInfo $info, $taxonomy_name ) {
+		$resolver = new WC_Terms_Connection_Resolver( $source, $args, $context, $info, $taxonomy_name );
+		return $resolver->get_connection();
+	}
 
 	/**
 	 * Resolves Coupon connection
@@ -69,7 +87,7 @@ class Factory {
 	 * Resolves Product connection
 	 */
 	public static function resolve_product_connection( $source, array $args, $context, ResolveInfo $info ) {
-		$resolver = new Product_Connection_Resolver();
+		$resolver = new WC_Post_Connection_Resolver( $source, $args, $context, $info, 'product' );
 		return $resolver->resolve( $source, $args, $context, $info );
 	}
 

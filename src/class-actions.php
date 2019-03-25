@@ -16,17 +16,13 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\WC_Post_Object;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download;
-use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
-use WPGraphQL\Extensions\WooCommerce\Connection\Products;
+use WPGraphQL\Extensions\WooCommerce\Connection\WC_Posts;
+use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Categories;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Downloads;
-use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
-use WPGraphQL\Extensions\WooCommerce\Connection\Product_Tags;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
 
 /**
@@ -97,13 +93,11 @@ class Actions {
 		/**
 		 * Connections
 		 */
-		// Coupons::register_connections();
-		// Products::register_connections();
+		WC_Posts::register_connections();
+		WC_Terms::register_connections();
 		// Product_Attributes::register_connections();
 		// Product_Categories::register_connections();
 		// Product_Downloads::register_connections();
-		// Product_Gallery::register_connections();
-		// Product_Tags::register_connections();
 	}
 
 	public static function graphql_app_context_additional_loaders( $load ) {

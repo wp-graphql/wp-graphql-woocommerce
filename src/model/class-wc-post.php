@@ -18,7 +18,7 @@ use WPGraphQL\Model\Post;
  * Class WC_Post
  *
  * @property int     $ID
- * @property int     $this->wc_postId
+ * @property int     $id
  * @property string  $code
  * @property string  $date
  * @property string  $modified
@@ -135,6 +135,24 @@ class WC_Post extends Post {
 						},
 						'emailRestrictions'  => function() {
 							return ! empty( $this->wc_post ) ? $this->wc_post->get_email_restrictions() : null;
+						},
+						/**
+						 * Connection resolvers fields
+						 * 
+						 * These field resolvers are used in connection resolvers to define WP_Query argument
+						 * Note: underscore naming style is used as a quick identifier
+						 */
+						'product_ids'        => function() {
+							return ! empty( $this->wc_post ) ? $this->wc_post->get_product_ids() : null;
+						},
+						'excluded_product_ids'        => function() {
+							return ! empty( $this->wc_post ) ? $this->wc_post->get_excluded_product_ids() : null;
+						},
+						'product_category_ids'        => function() {
+							return ! empty( $this->wc_post ) ? $this->wc_post->get_product_categories() : null;
+						},
+						'excluded_product_category_ids'        => function() {
+							return ! empty( $this->wc_post ) ? $this->wc_post->get_excluded_product_categories() : null;
 						},
 					)
 				);

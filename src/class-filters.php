@@ -10,9 +10,7 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Gallery_Connection_Query_Arg;
-use WPGraphQL\Extensions\WooCommerce\Data\Coupon_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Product_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
 
@@ -25,33 +23,7 @@ class Filters {
 	 */
 	public static function load() {
 		/**
-		 * Filter connections query info
-		 */
-		add_filter(
-			'graphql_connection_query_info',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'graphql_connection_query_info',
-			),
-			10,
-			2
-		);
-
-		/**
-		 * Filter connection query arguments
-		 */
-		add_filter(
-			'graphql_post_object_connection_query_args',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'graphql_post_object_connection_query_args',
-			),
-			10,
-			5
-		);
-
-		/**
-		 * Filter WooCommerce taxonomies
+		 * GraphQL post type filter 
 		 */
 		add_filter(
 			'register_post_type_args',
@@ -64,7 +36,7 @@ class Filters {
 		);
 
 		/**
-		 * Filter WooCommerce taxonomies
+		 * GraphQL taxonomies filter 
 		 */
 		add_filter(
 			'register_taxonomy_args',
@@ -76,6 +48,9 @@ class Filters {
 			2
 		);
 
+		/**
+		 * GraphQL data-Loaders filter
+		 */
 		add_filter(
 			'resolve_post_object_loader',
 			array(
@@ -85,21 +60,19 @@ class Filters {
 			10,
 			4
 		);
-	}
 
-	/**
-	 * Filter - graphql_connection_query_info
-	 */
-	public static function graphql_connection_query_info( $query_info, $query ) {
-		$query_info = Product_Connection_Resolver::query_info_filter( $query_info, $query );
-		return $query_info;
-	}
-
-	/**
-	 * Filter - graphql_post_object_connection_query_args
-	 */
-	public static function graphql_post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return Gallery_Connection_Query_Arg::fromProduct( $query_args, $source, $args, $context, $info );
+		/**
+		 * TermObjectConnectionResolver query args filter
+		 */
+		add_filter(
+			'graphql_term_object_connection_query_args',
+			array(
+				'\WPGraphQL\Extensions\WooCommerce\Filters',
+				'graphql_term_object_connection_query_args',
+			),
+			10,
+			5
+		);
 	}
 
 	/**
@@ -188,5 +161,9 @@ class Filters {
 			$loader = 'WCLoader';
 		}
 		return $loader;
+	}
+
+	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
+		return WC_Terms_Connection_Resolver::wc_query_args( $query_args, $source, $args, $context, $info );
 	}
 }
