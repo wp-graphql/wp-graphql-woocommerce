@@ -1,16 +1,44 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 3 ]; then
-	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
-	exit 1
-fi
+export $(cat .env | xargs)
 
-DB_NAME=$1
-DB_USER=$2
-DB_PASS=$3
-DB_HOST=${4-localhost}
-WP_VERSION=${5-latest}
-SKIP_DB_CREATE=${6-false}
+print_usage_instruction() {
+	echo "Ensure that .env file exist in project root directory exists."
+	echo "And run the following 'composer install-wp-tests' in the project root directory"
+	exit 1
+}
+
+if [[ -z "$TEST_DB_NAME" ]]; then
+	echo "TEST_DB_NAME not found"
+	print_usage_instruction
+else
+	DB_NAME=$TEST_DB_NAME
+fi
+if [[ -z "$TEST_DB_USER" ]]; then 
+	echo "TEST_DB_USER not found"
+	print_usage_instruction
+else
+	DB_USER=$TEST_DB_USER
+fi
+if [[ -z "$TEST_DB_PASSWORD" ]]; then 
+	DB_PASS=""
+else
+	DB_PASS=$TEST_DB_PASSWORD
+fi
+if [[ -z "$TEST_DB_HOST" ]]; then 
+	DB_HOST=localhost
+else
+	DB_HOST=$TEST_DB_HOST
+fi
+if [ -z "$WP_VERSION" ]; then 
+	WP_VERSION=latest
+fi
+if [ -z "$SKIP_DB_CREATE" ]; then 
+	SKIP_DB_CREATE=false
+fi
+if [ -z "$WP_GRAPHQL_BRANCH" ]; then 
+	WP_GRAPHQL_BRANCH=develop
+fi
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
@@ -167,7 +195,6 @@ setup_woocommerce() {
 	wp plugin install wordpress-importer --activate
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
-	wp import $WP_CORE_DIR/wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=$PLUGIN_DIR/bin/usermap.csv --path=$WP_CORE_DIR
 }
 
 setup_wpgraphql() {
@@ -175,6 +202,23 @@ setup_wpgraphql() {
 		echo "Cloning WPGraphQL"
 		git clone https://github.com/wp-graphql/wp-graphql.git $WP_CORE_DIR/wp-content/plugins/wp-graphql
 	fi
+
+	cd $WP_CORE_DIR/wp-content/plugins/wp-graphql
+	
+	if git remote -v | grep -q "jason"; then
+		echo "WPGraphQL upstream already exists"
+	else
+		echo "Adding WPGraphQL upstream"
+		git remote add jason https://github.com/jasonbahl/wp-graphql.git
+	fi
+
+	echo "Fetching WPGraphQL upstream"
+	git fetch jason
+
+	echo "Checking out WPGraphQL branch - $WP_GRAPHQL_BRANCH"
+	git checkout $WP_GRAPHQL_BRANCH
+	
+	cd $WP_CORE_DIR
 	echo "Activating WPGraphQL"
 	wp plugin activate wp-graphql
 

@@ -30,6 +30,7 @@
     },
     "require": {},
     "scripts": {
+        "install-wp-tests": "bash bin/install-wp-tests.sh",
         "test": [
 			"vendor/bin/codecept run"
         ],

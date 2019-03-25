@@ -11,6 +11,7 @@
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Data\DataSource;
 
 /**
  * Class Coupons
@@ -28,7 +29,7 @@ class Coupons {
 	 * with the defaults
 	 *
 	 * @access public
-	 * @param array $args
+	 * @param array $args Connection configuration
 	 *
 	 * @return array
 	 */
@@ -36,6 +37,19 @@ class Coupons {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Coupon',
+			'queryClass'       => 'WP_Query',
+			'connectionFields' => [
+				'postTypeInfo' => [
+					'type'        => 'PostType',
+					'description' => __( 'Information about the type of content being queried', 'wp-graphql' ),
+					'resolve'     => function ( $source, array $args, $context, $info ) {
+						return DataSource::resolve_post_type( 'shop_coupon' );
+					},
+				],
+			],
+			'resolveNode'      => function( $id, $args, $context, $info ) {
+				return Factory::resolve_coupon( $id, $context );
+			},
 			'fromFieldName'  => 'coupons',
 			'connectionArgs' => self::get_connection_args(),
 			'resolve'        => function ( $root, $args, $context, $info ) {

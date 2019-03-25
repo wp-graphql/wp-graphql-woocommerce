@@ -25,7 +25,7 @@ class Product_Categories {
 			self::get_connection_config(
 				array(
 					'fromType'      => 'Coupon',
-					'fromFieldName' => 'productCategories'
+					'fromFieldName' => 'productCategories',
 				)
 			)
 		);
@@ -33,7 +33,7 @@ class Product_Categories {
 			self::get_connection_config(
 				array(
 					'fromType'      => 'Coupon',
-					'fromFieldName' => 'excludedProductCategories'
+					'fromFieldName' => 'excludedProductCategories',
 				)
 			)
 		);
@@ -44,7 +44,7 @@ class Product_Categories {
 	 * with the defaults
 	 *
 	 * @access public
-	 * @param array $args
+	 * @param array $args Connection configuration
 	 *
 	 * @return array
 	 */

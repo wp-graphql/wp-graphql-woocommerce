@@ -27,21 +27,23 @@ class Factory {
 	 * @return \WP_Coupon
 	 * @access public
 	 */
-	public static function resolve_coupon( $id ) {
-		$coupon = new \WC_Coupon( $id );
-		if ( empty( $coupon ) ) {
-			throw new UserError( sprintf( __( 'No coupon was found with the ID: %1$s', 'wp-graphql-woocommerce' ), $id ) );
-		}
-
-		return $coupon;
-	}
+	public static function resolve_coupon( $id, $context ) {
+        if ( empty( $id ) || ! absint( $id ) ) {
+            return null;
+        }
+        $post_id = absint( $id );
+        $context->WC_Loader->buffer( [ $post_id ] );
+        return new Deferred( function () use ( $post_id, $context ) {
+            return $context->WC_Loader->load( $post_id );
+        });
+    }
 
 	/**
 	 * Resolves Coupon connection
 	 */
 	public static function resolve_coupon_connection( $source, array $args, $context, ResolveInfo $info ) {
-		$resolver = new Coupon_Connection_Resolver();
-		return $resolver->resolve( $source, $args, $context, $info );
+		$resolver = new Coupon_Connection_Resolver( $source, $args, $context, $info, 'shop_coupon' );
+		return $resolver->get_connection();
 	}
 
 	/**

@@ -5,8 +5,9 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function setUp() {
 		// before
 		parent::setUp();
-
-		// your set up methods here
+		$this->user = $this->factory->user->create( array(
+			'role' => 'administrator',
+		) );
 	}
 
 	public function tearDown() {
@@ -17,7 +18,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	// tests
 	public function testCouponQuery() {
-		 /**
+		/**
 		 * Create a coupon
 		 */
 		$wc_coupon = new WC_Coupon();

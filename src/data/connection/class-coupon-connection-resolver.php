@@ -4,13 +4,13 @@
  * 
  * Resolves connections to Coupons
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Data;
 
-use WPGraphQL\Data\ConnectionResolver;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Connection\ArrayConnection;
@@ -20,19 +20,14 @@ use WPGraphQL\Types;
 /**
  * Class Coupon_Connection_Resolver
  */
-class Coupon_Connection_Resolver extends ConnectionResolver {
+class Coupon_Connection_Resolver extends PostObjectConnectionResolver {
 	/**
 	 * This prepares the $query_args for use in the connection query. This is where default $args are set, where dynamic
 	 * $args from the $source get set, and where mapping the input $args to the actual $query_args occurs.
 	 *
-	 * @param mixed       $source
-	 * @param array       $args
-	 * @param AppContext  $context
-	 * @param ResolveInfo $info
-	 *
 	 * @return mixed
 	 */
-	public static function get_query_args( $source, array $args, AppContext $context, ResolveInfo $info ) {
+	public function get_query_args() {
 		/**
 			 * Prepare for later use
 			 */
@@ -56,26 +51,26 @@ class Coupon_Connection_Resolver extends ConnectionResolver {
 		/**
 			 * Set posts_per_page the highest value of $first and $last, with a (filterable) max of 100
 			 */
-		$query_args['posts_per_page'] = min( max( absint( $first ), absint( $last ), 10 ), self::get_query_amount( $source, $args, $context, $info ) ) + 1;
+		$query_args['posts_per_page'] = min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1;
 
 		/**
 			 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
 			 * to filter the WP_Query to support cursor pagination
 			 */
-		$query_args['graphql_cursor_offset']  = self::get_offset( $args );
+		$query_args['graphql_cursor_offset']  = $this->get_offset();
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
 		/**
 		 * Pass the graphql $args to the WP_Query
 		 */
-		$query_args['graphql_args'] = $args;
+		$query_args['graphql_args'] = $this->args;
 
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
 		$input_fields = array();
-		if ( ! empty( $args['where'] ) ) {
-			$input_fields = self::sanitize_input_fields( $args['where'], $source, $args, $context, $info );
+		if ( ! empty( $this->args['where'] ) ) {
+			$input_fields = $this->sanitize_input_fields( $this->args['where']  );
 		}
 
 		/**
@@ -120,7 +115,14 @@ class Coupon_Connection_Resolver extends ConnectionResolver {
 		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
 		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
-		$query_args = apply_filters( 'graphql_coupon_connection_query_args', $query_args, $source, $args, $context, $info );
+		$query_args = apply_filters(
+			'graphql_coupon_connection_query_args',
+			$query_args,
+			$this->source,
+			$this->args,
+			$this->context,
+			$this->info
+		);
 		return $query_args;
 	}
 
@@ -130,24 +132,8 @@ class Coupon_Connection_Resolver extends ConnectionResolver {
 	 *
 	 * @return \WP_Query
 	 */
-	public static function get_query( $query_args ) {
-		$query = new \WP_Query( $query_args );
-		return $query;
-	}
-
-	/**
-	 * Maps queried items to \WC_Coupon
-	 */
-	public static function query_info_filter( $query_info, $query ) {
-		if ( ! empty( $query->query ) ) {
-			if ( 'shop_coupon' === $query->query['post_type'] ) {
-				foreach ( $query_info['items'] as &$item ) {
-					$item = new \WC_Coupon( $item->ID );
-				}
-			}
-		}
-
-		return $query_info;
+	public function get_query() {
+		return new \WP_Query( $this->get_query_args() );
 	}
 
 	/**
@@ -167,7 +153,7 @@ class Coupon_Connection_Resolver extends ConnectionResolver {
 	 * @access private
 	 * @return array
 	 */
-	public static function sanitize_input_fields( array $args, $source, array $all_args, AppContext $context, ResolveInfo $info ) {
+	public function sanitize_input_fields( $where_args ) {
 		$arg_mapping = array( 'code' => 'title' );
 
 		/**
@@ -175,13 +161,25 @@ class Coupon_Connection_Resolver extends ConnectionResolver {
 		 */
 		$query_args = Types::map_input( $args, $arg_mapping );
 
+		if ( ! empty( $query_args['post_status'] ) ) {
+			$query_args['post_status'] = $this->sanitize_post_stati( $query_args['post_status'] );
+		}
+
 		/**
 		 * Filter the input fields
 		 *
 		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 		 * from a GraphQL Query to the get_terms query
 		 */
-		$query_args = apply_filters( 'graphql_map_input_fields_to_coupon_wp_query', $query_args, $args, $source, $all_args, $context, $info );
+		$query_args = apply_filters(
+			'graphql_map_input_fields_to_coupon_wp_query',
+			$query_args,
+			$args,
+			$this->source,
+			$this->args,
+			$this->context,
+			$this->info
+		);
 		return ! empty( $query_args ) && is_array( $query_args ) ? $query_args : array();
 	}
 }

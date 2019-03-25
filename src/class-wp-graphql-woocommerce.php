@@ -11,6 +11,8 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG', true );
+
 if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 	/**
 	 * Class WP_GraphQL_WooCommerce
@@ -105,51 +107,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private function filters() {
 			/**
-			 * Registers WooCommerce taxonomies to be shown in GraphQL
-			 */
-			add_filter( 'register_taxonomy_args', [ $this, 'taxonomies' ], 10, 2 );
-
-			/**
 			 * Setup filters
 			 */
 			\WPGraphQL\Extensions\WooCommerce\Filters::load();
-		}
-
-		/**
-		 * Determine the taxonomies that should show in GraphQL
-		 */
-		public function taxonomies( $args, $taxonomy ) {
-			if ( 'product_type' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'productType';
-				$args['graphql_plural_name'] = 'productTypes';
-			}
-
-			if ( 'product_visibility' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'visibleProduct';
-				$args['graphql_plural_name'] = 'visibleProducts';
-			}
-
-			if ( 'product_cat' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'productCategory';
-				$args['graphql_plural_name'] = 'productCategories';
-			}
-
-			if ( 'product_tag' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'productTag';
-				$args['graphql_plural_name'] = 'productTags';
-			}
-
-			if ( 'product_shipping_class' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'shippingClass';
-				$args['graphql_plural_name'] = 'shippingClasses';
-			}
-
-			return $args;
 		}
 	}
 endif;
