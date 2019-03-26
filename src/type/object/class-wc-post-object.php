@@ -18,6 +18,8 @@ class WC_Post_Object {
 	/**
 	 * Deregister unnecessary or colliding fields, and
 	 * registers the necessary fields
+	 *
+	 * @param object $post_type_object - WP post-type object.
 	 */
 	public static function register( $post_type_object ) {
 		switch ( $post_type_object->graphql_single_name ) {
@@ -251,18 +253,14 @@ class WC_Post_Object {
 			case 'order':
 				register_graphql_fields(
 					$post_type_object->graphql_single_name,
-					array(
-
-					) 
+					array()
 				);
 				break;
 
 			case 'order_refund':
 				register_graphql_fields(
 					$post_type_object->graphql_single_name,
-					array(
-
-					)
+					array()
 				);
 				break;
 		}

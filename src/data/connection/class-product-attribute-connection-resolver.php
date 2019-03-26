@@ -4,11 +4,11 @@
  * 
  * Resolves connections to ProductAttributes
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data;
+namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
@@ -23,9 +23,9 @@ class Product_Attribute_Connection_Resolver {
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		if ( 'defaultAttributes' === $info->fieldName ) {
-			$attributes = $source->get_default_attributes();
+			$attributes = $source->default_attributes;
 		} else {
-			$attributes = $source->get_attributes();
+			$attributes = $source->attributes;
 		}
 
 		$connection = Relay::connectionFromArray( $attributes, $args );

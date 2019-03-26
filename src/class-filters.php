@@ -22,9 +22,6 @@ class Filters {
 	 * Register filters
 	 */
 	public static function load() {
-		/**
-		 * GraphQL post type filter 
-		 */
 		add_filter(
 			'register_post_type_args',
 			array(
@@ -34,10 +31,6 @@ class Filters {
 			10,
 			2
 		);
-
-		/**
-		 * GraphQL taxonomies filter 
-		 */
 		add_filter(
 			'register_taxonomy_args',
 			array(
@@ -48,22 +41,16 @@ class Filters {
 			2
 		);
 
-		/**
-		 * GraphQL data-Loaders filter
-		 */
 		add_filter(
-			'resolve_post_object_loader',
+			'graphql_data_loaders',
 			array(
 				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'resolve_post_object_loader',
+				'graphql_data_loaders',
 			),
 			10,
-			4
+			2
 		);
 
-		/**
-		 * TermObjectConnectionResolver query args filter
-		 */
 		add_filter(
 			'graphql_term_object_connection_query_args',
 			array(
@@ -76,7 +63,12 @@ class Filters {
 	}
 
 	/**
-	 * Filter - register_post_types
+	 * Registers WooCommerce post-types to be used in GraphQL schema
+	 *
+	 * @param array  $args      - allowed post-types.
+	 * @param string $post_type - name of post-type being checked.
+	 *
+	 * @return array
 	 */
 	public static function register_post_type_args( $args, $post_type ) {
 		if ( 'product' === $post_type ) {
@@ -109,11 +101,16 @@ class Filters {
 	}
 
 	/**
-	 * Filter - register_taxonomy_args
+	 * Registers WooCommerce taxonomies to be used in GraphQL schema
+	 *
+	 * @param array  $args     - allowed post-types.
+	 * @param string $taxonomy - name of taxonomy being checked.
+	 *
+	 * @return array
 	 */
 	public static function register_taxonomy_args( $args, $taxonomy ) {
 		if ( 'product_type' === $taxonomy ) {
-			$args['show_in_graphql'] 		 = true;
+			$args['show_in_graphql']     = true;
 			$args['graphql_single_name'] = 'productType';
 			$args['graphql_plural_name'] = 'productTypes';
 		}
@@ -125,7 +122,7 @@ class Filters {
 		}
 
 		if ( 'product_cat' === $taxonomy ) {
-			$args['show_in_graphql'] = true;
+			$args['show_in_graphql']     = true;
 			$args['graphql_single_name'] = 'productCategory';
 			$args['graphql_plural_name'] = 'productCategories';
 		}
@@ -146,9 +143,14 @@ class Filters {
 	}
 
 	/**
-	 * Filter - resolve_post_object_loader
+	 * Registers data-loaders to be used when resolving WooCommerce post-types
+	 *
+	 * @param array      $loaders - assigned loaders.
+	 * @param AppContext $context - AppContext instance.
+	 *
+	 * @return array
 	 */
-	public static function resolve_post_object_loader( $loader, $post_id, $context, $post_type ) {
+	public static function graphql_data_loaders( $loaders, $context ) {
 		$wc_post_types = array(
 			'shop_coupon',
 			'product',
@@ -157,12 +159,24 @@ class Filters {
 			'shop_order_refund',
 		);
 
-		if ( in_array( $post_type, $wc_post_types ) ) {
-			$loader = 'WCLoader';
+		foreach ( $wc_post_types as $post_type ) {
+			$loaders[ $post_type ] = new WC_Loader( $context );
 		}
-		return $loader;
+
+		return $loaders;
 	}
 
+	/**
+	 * Filter TermObjectConnectionResolver's query_args and adds args to used when querying WooCommerce taxonomies
+	 *
+	 * @param array       $query_args - WP_Query args.
+	 * @param mixed       $source     - Connection parent resolver.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return mixed
+	 */
 	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
 		return WC_Terms_Connection_Resolver::wc_query_args( $query_args, $source, $args, $context, $info );
 	}

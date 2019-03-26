@@ -1,9 +1,9 @@
 <?php
 /**
  * WP_GraphQL_WooCommerce
- * 
+ *
  * Initializes a singleton instance of WP_GraphQL_WooCommerce
- * 
+ *
  * @package WPGraphQL\Extensions\WooCommerce
  * @since 0.0.1
  */
@@ -86,8 +86,10 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 * @return void
 		 */
 		private function includes() {
-			// Autoload Required Classes
-			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true == WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
+			/**
+			 * Autoload Required Classes
+			 */
+			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true === WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
 				require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
 			}
 		}

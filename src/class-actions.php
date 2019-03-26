@@ -21,9 +21,8 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
-use WPGraphQL\Extensions\WooCommerce\Connection\Product_Categories;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Downloads;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
+use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
 
 /**
  * Class Actions
@@ -37,16 +36,7 @@ class Actions {
 			'graphql_register_types',
 			array(
 				'\WPGraphQL\Extensions\WooCommerce\Actions',
-				'graphql_register_types'
-			),
-			10
-		);
-
-		add_action(
-			'graphql_app_context_additional_loaders',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Actions',
-				'graphql_app_context_additional_loaders',
+				'graphql_register_types',
 			),
 			10
 		);
@@ -75,32 +65,28 @@ class Actions {
 			'shop_order',
 			'shop_order_refund',
 		);
+
 		$allowed_post_types = \WPGraphQL::$allowed_post_types;
 		if ( ! empty( $allowed_post_types ) && is_array( $allowed_post_types ) ) {
 			foreach ( $allowed_post_types as $post_type ) {
-				if (in_array( $post_type, $wc_post_types ) ) {
+				if ( in_array( $post_type, $wc_post_types ) ) {
 					WC_Post_Object::register( \get_post_type_object( $post_type ) );
 				}
 			}
 		}
 
 		/**
-		 * Objects
+		 * Register WooCommerce data objects
 		 */
-		// Product_Attribute::register();
-		// Product_Download::register();
+		Product_Attribute::register();
+		Product_Download::register();
 
 		/**
-		 * Connections
+		 * Register WooCommerce Connections
 		 */
 		WC_Posts::register_connections();
 		WC_Terms::register_connections();
-		// Product_Attributes::register_connections();
-		// Product_Categories::register_connections();
-		// Product_Downloads::register_connections();
-	}
-
-	public static function graphql_app_context_additional_loaders( $load ) {
-		$load( 'WCLoader', WC_Loader::class );
+		Product_Attributes::register_connections();
+		Product_Downloads::register_connections();
 	}
 }

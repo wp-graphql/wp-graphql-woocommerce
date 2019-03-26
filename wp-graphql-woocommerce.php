@@ -1,10 +1,5 @@
 <?php
 /**
- * @package     WPGraphQL\Extensions\WooCommerce
- * @author      kidunot89
- * @license     GPL-3
- * 
- * @wordpress-plugin
  * Plugin Name: WP GraphQL WooCommerce
  * Plugin URI: https://developer.axistaylor.com/wp-graphql-woocommerce
  * Description: Adds Woocommerce types to WPGraphQL schema.
@@ -15,6 +10,10 @@
  * Domain Path: /languages
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * @package     WPGraphQL\Extensions\WooCommerce
+ * @author      kidunot89
+ * @license     GPL-3
  */
 
 // Exit if accessed directly.
@@ -33,8 +32,7 @@ if ( file_exists( __DIR__ . '/c3.php' ) ) {
 /**
  * Setups WPGraphQL WooCommerce constants
  */
-function wp_graphql_woocommerce_constants()
-{
+function wp_graphql_woocommerce_constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
 		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.0.1' );
@@ -51,7 +49,7 @@ function wp_graphql_woocommerce_constants()
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_FILE' ) ) {
 		define( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_FILE', __FILE__ );
 	}
-	// Whether to autoload the files or not
+	// Whether to autoload the files or not.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) ) {
 		define( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD', true );
 	}
@@ -60,9 +58,8 @@ function wp_graphql_woocommerce_constants()
 /**
  * Checks if WPGraphQL WooCommerce required plugins are installed and activated
  */
-function wp_graphql_woocommerce_dependencies_not_ready()
-{
-	 $deps = [];
+function wp_graphql_woocommerce_dependencies_not_ready() {
+	$deps = [];
 	if ( ! class_exists( '\WPGraphQL' ) ) {
 		$deps[] = 'WPGraphQL';
 	}
@@ -76,8 +73,7 @@ function wp_graphql_woocommerce_dependencies_not_ready()
 /**
  * Initializes WPGraphQL WooCommerce
  */
-function wp_graphql_woocommerce_init()
-{
+function wp_graphql_woocommerce_init() {
 	wp_graphql_woocommerce_constants();
 
 	$not_ready = wp_graphql_woocommerce_dependencies_not_ready();
@@ -89,10 +85,18 @@ function wp_graphql_woocommerce_init()
 	foreach ( $not_ready as $dep ) {
 		add_action(
 			'admin_notices',
-			function () {
+			function() use ( $dep ) {
 				?>
 				<div class="error notice">
-					<p><?php _e( "$dep must be active for wp-graphql-woocommerce to work", 'wp-graphql-woocommerce' ); ?></p>
+					<p>
+						<?php
+							printf(
+								/* translators: dependency not ready error message */
+								esc_html__( '%1$s must be active for wp-graphql-woocommerce to work', 'wp-graphql-woocommerce' ),
+								esc_html( $dep )
+							);
+						?>
+					</p>
 				</div>
 				<?php
 			}

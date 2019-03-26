@@ -1,9 +1,9 @@
 <?php
 /**
  * Loader - WooCommerce Data Model Loader
- * 
+ *
  * Loads WooCommerce data store objects
- * 
+ *
  * @package WPGraphQL\Extensions\WooCommerce\Data\Loader
  * @since 0.0.1
  */
@@ -21,11 +21,13 @@ use WPGraphQL\Extensions\WooCommerce\Model\WC_Post;
  */
 class WC_Loader extends AbstractDataLoader {
 	/**
+	 * Stores loaded posts.
+	 *
 	 * @var array
 	 */
-    protected $loaded_posts;
+	protected $loaded_posts;
 
-    /**
+	/**
 	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
 	 * posts as the values
 	 *
@@ -35,10 +37,10 @@ class WC_Loader extends AbstractDataLoader {
 	 * For example:
 	 * loadKeys(['a', 'b', 'c']) -> ['a' => 'value1, 'b' => null, 'c' => 'value3']
 	 *
-	 * @param array $keys
+	 * @param array $keys - array of keys.
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws UserError - throws if a post_id assigned to a key is not found.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {
@@ -62,15 +64,21 @@ class WC_Loader extends AbstractDataLoader {
 			'split_the_query'     => false,
 			'ignore_sticky_posts' => true,
 		];
+
 		/**
 		 * Ensure that WP_Query doesn't first ask for IDs since we already have them.
 		 */
-		add_filter( 'split_the_query', function ( $split, \WP_Query $query ) {
-			if ( false === $query->get( 'split_the_query' ) ) {
-				return false;
-			}
-			return $split;
-		}, 10, 2 );
+		add_filter(
+			'split_the_query',
+			function ( $split, \WP_Query $query ) {
+				if ( false === $query->get( 'split_the_query' ) ) {
+					return false;
+				}
+				return $split;
+			},
+			10,
+			2
+		);
 		new \WP_Query( $args );
 		/**
 		 * Loop over the posts and return an array of all_posts,
@@ -92,30 +100,36 @@ class WC_Loader extends AbstractDataLoader {
 			 * Return the instance through the Model to ensure we only
 			 * return fields the consumer has access to.
 			 */
-			$this->loaded_posts[ $key ] = new Deferred(function() use ( $post_object ) {
-				if ( ! $post_object instanceof \WP_Post ) {
-					return null;
-				}
-				/**
-				 * If there's a Post Author connected to the post, we need to resolve the
-				 * user as it gets set in the globals via `setup_post_data()` and doing it this way
-				 * will batch the loading so when `setup_post_data()` is called the user
-				 * is already in the cache.
-				 */
-				if ( ! empty( $post_object->post_author ) && absint( $post_object->post_author ) ) {
-					$author = DataSource::resolve_user( $post_object->post_author, $this->context );
-					return $author->then(function() use ( $post_object ) {
+			$this->loaded_posts[ $key ] = new Deferred(
+				function() use ( $post_object ) {
+					if ( ! $post_object instanceof \WP_Post ) {
+						return null;
+					}
+					/**
+					 * If there's a Post Author connected to the post, we need to resolve the
+					 * user as it gets set in the globals via `setup_post_data()` and doing it this way
+					 * will batch the loading so when `setup_post_data()` is called the user
+					 * is already in the cache.
+					 */
+					if ( ! empty( $post_object->post_author ) && absint( $post_object->post_author ) ) {
+						$author = DataSource::resolve_user( $post_object->post_author, $this->context );
+						return $author->then(
+							function() use ( $post_object ) {
+								return new WC_Post( $post_object );
+							}
+						);
+					} elseif ( ! empty( $post_object->post_parent ) && absint( $post_object->post_parent ) ) {
+						$parent = Factory::resolve_post_object( $post_object->post_parent, $this->context, $post_object->post_type );
+						return $parent->then(
+							function() use ( $post_object ) {
+								return new WC_Post( $post_object );
+							}
+						);
+					} else {
 						return new WC_Post( $post_object );
-					});
-				} elseif( ! empty( $post_object->post_parent ) && absint( $post_object->post_parent ) ) {
-					$parent = Factory::resolve_post_object( $post_object->post_parent, $this->context, $post_object->post_type );
-					return $parent->then(function() use ( $post_object ) {
-						return new WC_Post( $post_object );
-					});
-				} else {
-					return new WC_Post( $post_object );
+					}
 				}
-			});
+			);
 		}
 		return ! empty( $this->loaded_posts ) ? $this->loaded_posts : array();
 	}

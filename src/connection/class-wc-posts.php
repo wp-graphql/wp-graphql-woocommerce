@@ -13,6 +13,9 @@ use WPGraphQL\Data\DataSource;
 use WPGraphQL\Connection\PostObjects;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
+/**
+ * Class - WC_Posts
+ */
 class WC_Posts {
 	/**
 	 * Registers the various connections from other Types to Product
@@ -81,6 +84,20 @@ class WC_Posts {
 		);
 
 		/**
+		 * To attachment connections
+		 */
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'toType'        => 'MediaItem',
+					'fromFieldName' => 'galleryImages',
+				),
+				'attachment'
+			)
+		);
+
+		/**
 		 * To order connections
 		 */
 
@@ -94,7 +111,8 @@ class WC_Posts {
 	 * with the defaults
 	 *
 	 * @access public
-	 * @param array $args Connection configuration
+	 * @param array  $args      - Connection configuration.
+	 * @param string $post_type - Connection target post-type.
 	 *
 	 * @return array
 	 */
@@ -110,16 +128,16 @@ class WC_Posts {
 				'postTypeInfo' => array(
 					'type'        => 'PostType',
 					'description' => __( 'Information about the type of content being queried', 'wp-graphql-woocommerce' ),
-					'resolve'     => function ( $source, array $args, $context, $info ) use( $post_type ) {
+					'resolve'     => function ( $source, array $args, $context, $info ) use ( $post_type ) {
 						return DataSource::resolve_post_type( $post_type );
 					},
 				),
 			),
-			'resolveNode'      => function( $id, $args, $context, $info ) use( $post_type ) {
+			'resolveNode'      => function( $id, $args, $context, $info ) use ( $post_type ) {
 				return DataSource::resolve_post_object( $id, $context, $post_type );
 			},
 			'connectionArgs'   => $connection_args,
-			'resolve'          => function ( $root, $args, $context, $info ) use( $post_type ) {
+			'resolve'          => function ( $root, $args, $context, $info ) use ( $post_type ) {
 				return Factory::resolve_wc_posts_connection( $root, $args, $context, $info, $post_type );
 			},
 		);
@@ -127,32 +145,28 @@ class WC_Posts {
 		return array_merge( $defaults, $args );
 	}
 
+	/**
+	 * Retrieve connection_args for specified post-type
+	 *
+	 * @param string $post_type - Connection target post-type.
+	 *
+	 * @return array
+	 */
 	public static function get_connection_args( $post_type ) {
-		switch( $post_type ) {
+		switch ( $post_type ) {
 			case 'shop_coupon':
-				return array(
-
-				);
-				break;
+				return array();
 
 			case 'product':
 			case 'product_variation':
-				return array(
-
-				);
-				break;
+				return array();
 
 			case 'shop_order':
-				return array(
+				return array();
 
-				);
-				break;
-				
 			case 'shop_order_refund':
-				return array(
+				return array();
 
-				);
-				break;
 			default:
 				return array();
 		}
