@@ -40,7 +40,9 @@ class WC_Posts_Connection_Resolver extends PostObjectConnectionResolver {
 		 */
 		if ( true === is_object( $source ) ) {
 			if ( is_a( $source, WC_Post::class ) ) {
+				// @codingStandardsIgnoreStart
 				switch ( $info->fieldName ) {
+				// @codingStandardsIgnoreEnd
 					case 'upsell':
 						$query_args['post__in'] = $source->upsell_ids;
 						break;
