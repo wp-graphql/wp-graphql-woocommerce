@@ -47,14 +47,6 @@ class WC_Post extends Post {
 	protected $wc_post;
 
 	/**
-	 * The ID used to identify the fields' origin.
-	 *
-	 * @var array $fields
-	 * @access public
-	 */
-	protected $fields_id_name = 'wc_post';
-
-	/**
 	 * Coupon constructor
 	 *
 	 * @param \WP_Post $post - Model WP_Post instance.
