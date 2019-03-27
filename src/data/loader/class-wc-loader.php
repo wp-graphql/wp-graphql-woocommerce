@@ -94,6 +94,7 @@ class WC_Loader extends AbstractDataLoader {
 			 */
 			$post_object = get_post( (int) $key );
 			if ( empty( $post_object ) ) {
+				/* translators: invalid id error message */
 				throw new UserError( sprintf( __( 'No item was found with ID %s', 'wp-graphql-woocommerce' ), $key ) );
 			}
 			/**
@@ -114,13 +115,6 @@ class WC_Loader extends AbstractDataLoader {
 					if ( ! empty( $post_object->post_author ) && absint( $post_object->post_author ) ) {
 						$author = DataSource::resolve_user( $post_object->post_author, $this->context );
 						return $author->then(
-							function() use ( $post_object ) {
-								return new WC_Post( $post_object );
-							}
-						);
-					} elseif ( ! empty( $post_object->post_parent ) && absint( $post_object->post_parent ) ) {
-						$parent = Factory::resolve_post_object( $post_object->post_parent, $this->context, $post_object->post_type );
-						return $parent->then(
 							function() use ( $post_object ) {
 								return new WC_Post( $post_object );
 							}

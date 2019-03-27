@@ -41,9 +41,18 @@ class WC_Post extends Post {
 	/**
 	 * Stores the instance of WC_Coupon
 	 *
-	 * @var \WC_Coupon $this->wc_post
+	 * @var mixed $wc_post
+	 * @access protected
 	 */
 	protected $wc_post;
+
+	/**
+	 * The ID used to identify the fields' origin.
+	 *
+	 * @var array $fields
+	 * @access public
+	 */
+	protected $fields_id_name = 'wc_post';
 
 	/**
 	 * Coupon constructor
@@ -55,6 +64,7 @@ class WC_Post extends Post {
 	 */
 	public function __construct( \WP_Post $post ) {
 		$this->wc_post = $this->get_wc_post( $post );
+		add_filter( 'graphql_wc_posts_fields', [ &$this, 'get_fields' ], 10, 2 );
 		parent::__construct( $post );
 	}
 
@@ -76,6 +86,16 @@ class WC_Post extends Post {
 				return \wc_get_product( $post->ID );
 		}
 	}
+	/**
+	 * Binds field resolver to $wc_post
+	 *
+	 * @param Closure $resolver - field resolver.
+	 *
+	 * @return Closure
+	 */
+	private function bindStore( $resolver ) {
+		return $resolver->bindTo( $this->wc_post );
+	}
 
 	/**
 	 * Initializes model resolvers
@@ -87,7 +107,6 @@ class WC_Post extends Post {
 
 		if ( empty( $this->fields ) ) {
 			parent::init();
-
 			if ( 'shop_coupon' === $this->post->post_type ) {
 				$this->fields = array_merge(
 					$this->fields,
@@ -290,7 +309,7 @@ class WC_Post extends Post {
 								case empty( $this->wc_post ):
 								case is_a( $this->wc_post, \WC_Product_External::class ):
 								case is_a( $this->wc_post, \WC_Product_Grouped::class ):
-									return [ 0 ];
+									return null;
 								default:
 									return $this->wc_post->get_upsell_ids();
 							}
@@ -300,7 +319,7 @@ class WC_Post extends Post {
 								case empty( $this->wc_post ):
 								case is_a( $this->wc_post, \WC_Product_External::class ):
 								case is_a( $this->wc_post, \WC_Product_Grouped::class ):
-									return [ 0 ];
+									return null;
 								default:
 									return $this->wc_post->get_cross_sell_ids();
 							}
@@ -314,7 +333,7 @@ class WC_Post extends Post {
 						'downloads'          => function() {
 							return ! empty( $this->wc_post ) ? $this->wc_post->get_downloads() : null;
 						},
-						'gallery_images_ids' => function() {
+						'gallery_image_ids'  => function() {
 							return ! empty( $this->wc_post ) ? $this->wc_post->get_gallery_image_ids() : null;
 						},
 					)

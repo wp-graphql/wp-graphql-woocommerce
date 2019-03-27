@@ -1,7 +1,7 @@
 <?php
 /**
  * Connection resolver - ProductDownloads
- * 
+ *
  * Resolves connections to ProductDownloads
  *
  * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
@@ -20,9 +20,14 @@ use WPGraphQL\AppContext;
 class Product_Download_Connection_Resolver {
 	/**
 	 * Creates connection
+	 *
+	 * @param mixed       $source     - Connection source Model instance.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
-        $downloads = $source->downloads;
+		$downloads = $source->downloads;
 
 		$connection = Relay::connectionFromArray( $downloads, $args );
 		$nodes      = array();

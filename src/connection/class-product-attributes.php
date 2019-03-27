@@ -29,7 +29,7 @@ class Product_Attributes {
 	 * with the defaults
 	 *
 	 * @access public
-	 * @param array $args Connection configuration
+	 * @param array $args - Connection configuration.
 	 *
 	 * @return array
 	 */

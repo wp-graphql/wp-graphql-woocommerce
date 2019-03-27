@@ -16,9 +16,9 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - WC_Posts
  */
-class WC_Posts {
+class WC_Posts extends PostObjects {
 	/**
-	 * Registers the various connections from other Types to Product
+	 * Registers the various connections from other Types to WooCommerce post-types
 	 */
 	public static function register_connections() {
 		/**
@@ -28,72 +28,75 @@ class WC_Posts {
 		/**
 		 * To product connections
 		 */
+		$post_type_object = get_post_type_object( 'product' );
 		register_graphql_connection(
 			self::get_connection_config(
+				$post_type_object,
 				array(
 					'fromType'      => 'Product',
 					'toType'        => 'Product',
 					'fromFieldName' => 'upsell',
-				),
-				'product'
+				)
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
+				$post_type_object,
 				array(
 					'fromType'      => 'Product',
 					'toType'        => 'Product',
 					'fromFieldName' => 'crossSell',
-				),
-				'product'
+				)
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
+				$post_type_object,
 				array(
 					'fromType'      => 'Coupon',
 					'toType'        => 'Product',
 					'fromFieldName' => 'products',
-				),
-				'product'
+				)
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
+				$post_type_object,
 				array(
 					'fromType'      => 'Coupon',
 					'toType'        => 'Product',
 					'fromFieldName' => 'excludedProducts',
-				),
-				'product'
+				)
 			)
 		);
 
 		/**
 		 * To product variation connections
 		 */
+		$post_type_object = get_post_type_object( 'product_variation' );
 		register_graphql_connection(
 			self::get_connection_config(
+				$post_type_object,
 				array(
 					'fromType'      => 'Product',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
-				),
-				'product_variation'
+				)
 			)
 		);
 
 		/**
 		 * To attachment connections
 		 */
+		$post_type_object = get_post_type_object( 'attachment' );
 		register_graphql_connection(
 			self::get_connection_config(
+				$post_type_object,
 				array(
 					'fromType'      => 'Product',
 					'toType'        => 'MediaItem',
 					'fromFieldName' => 'galleryImages',
-				),
-				'attachment'
+				)
 			)
 		);
 
@@ -107,68 +110,38 @@ class WC_Posts {
 	}
 
 	/**
-	 * Given an array of $args, this returns the connection config, merging the provided args
-	 * with the defaults
-	 *
-	 * @access public
-	 * @param array  $args      - Connection configuration.
-	 * @param string $post_type - Connection target post-type.
-	 *
-	 * @return array
-	 */
-	public static function get_connection_config( $args = array(), $post_type ) {
-		$connection_args = array_merge(
-			PostObjects::get_connection_args(),
-			self::get_connection_args( $post_type )
-		);
-
-		$defaults = array(
-			'queryClass'       => 'WP_Query',
-			'connectionFields' => array(
-				'postTypeInfo' => array(
-					'type'        => 'PostType',
-					'description' => __( 'Information about the type of content being queried', 'wp-graphql-woocommerce' ),
-					'resolve'     => function ( $source, array $args, $context, $info ) use ( $post_type ) {
-						return DataSource::resolve_post_type( $post_type );
-					},
-				),
-			),
-			'resolveNode'      => function( $id, $args, $context, $info ) use ( $post_type ) {
-				return DataSource::resolve_post_object( $id, $context, $post_type );
-			},
-			'connectionArgs'   => $connection_args,
-			'resolve'          => function ( $root, $args, $context, $info ) use ( $post_type ) {
-				return Factory::resolve_wc_posts_connection( $root, $args, $context, $info, $post_type );
-			},
-		);
-
-		return array_merge( $defaults, $args );
-	}
-
-	/**
 	 * Retrieve connection_args for specified post-type
 	 *
 	 * @param string $post_type - Connection target post-type.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_args( $post_type ) {
+	public static function get_connection_args( $post_type = '' ) {
 		switch ( $post_type ) {
 			case 'shop_coupon':
-				return array();
+				$args = array();
+				break;
 
 			case 'product':
 			case 'product_variation':
-				return array();
+				$args = array();
+				break;
 
 			case 'shop_order':
-				return array();
+				$args = array();
+				break;
 
 			case 'shop_order_refund':
-				return array();
+				$args = array();
+				break;
 
 			default:
-				return array();
+				$args = array();
 		}
+
+		return array_merge(
+			parent::get_connection_args(),
+			$args
+		);
 	}
 }

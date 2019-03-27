@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
@@ -18,6 +19,13 @@ use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
  * Class Filters
  */
 class Filters {
+	/**
+	 * Stores instance WC_Loader
+	 *
+	 * @var WC_Loader
+	 */
+	private static $wc_loader;
+
 	/**
 	 * Register filters
 	 */
@@ -52,6 +60,16 @@ class Filters {
 		);
 
 		add_filter(
+			'graphql_post_object_connection_query_args',
+			array(
+				'\WPGraphQL\Extensions\WooCommerce\Filters',
+				'graphql_post_object_connection_query_args',
+			),
+			10,
+			5
+		);
+
+		add_filter(
 			'graphql_term_object_connection_query_args',
 			array(
 				'\WPGraphQL\Extensions\WooCommerce\Filters',
@@ -60,6 +78,20 @@ class Filters {
 			10,
 			5
 		);
+	}
+
+	/**
+	 * Initializes WC_Loader instance
+	 *
+	 * @param AppContext $context - AppContext.
+	 *
+	 * @return WC_Loader
+	 */
+	public static function wc_loader( $context ) {
+		if ( empty( self::$wc_loader ) ) {
+			self::$wc_loader = new WC_Loader( $context );
+		}
+		return self::$wc_loader;
 	}
 
 	/**
@@ -159,15 +191,16 @@ class Filters {
 			'shop_order_refund',
 		);
 
+		$loader = self::wc_loader( $context );
 		foreach ( $wc_post_types as $post_type ) {
-			$loaders[ $post_type ] = new WC_Loader( $context );
+			$loaders[ $post_type ] = &$loader;
 		}
 
 		return $loaders;
 	}
 
 	/**
-	 * Filter TermObjectConnectionResolver's query_args and adds args to used when querying WooCommerce taxonomies
+	 * Filter PostObjectConnectionResolver's query_args and adds args to used when querying WooCommerce post-types
 	 *
 	 * @param array       $query_args - WP_Query args.
 	 * @param mixed       $source     - Connection parent resolver.
@@ -177,7 +210,22 @@ class Filters {
 	 *
 	 * @return mixed
 	 */
+	public static function graphql_post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
+		return WC_Posts_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
+	}
+
+	/**
+	 * Filter TermObjectConnectionResolver's query_args and adds args to used when querying WooCommerce taxonomies
+	 *
+	 * @param array       $query_args - WP_Term_Query args.
+	 * @param mixed       $source     - Connection parent resolver.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return mixed
+	 */
 	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return WC_Terms_Connection_Resolver::wc_query_args( $query_args, $source, $args, $context, $info );
+		return WC_Terms_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
 	}
 }

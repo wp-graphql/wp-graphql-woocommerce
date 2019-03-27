@@ -19,7 +19,7 @@ use WPGraphQL\Extensions\WooCommerce\Model\WC_Post;
 /**
  * Class WC_Posts_Connection_Resolver
  */
-class WC_Posts_Connection_Resolver extends PostObjectConnectionResolver {
+class WC_Posts_Connection_Resolver {
 	/**
 	 * This prepares the $query_args for use in the connection query. This is where default $args are set, where dynamic
 	 * $args from the $this->source get set, and where mapping the input $args to the actual $query_args occurs.
@@ -32,23 +32,24 @@ class WC_Posts_Connection_Resolver extends PostObjectConnectionResolver {
 	 *
 	 * @return mixed
 	 */
-	public static function wc_query_args( $query_args, $source, $args, $context, $info ) {
-		$query_args['post_parent'] = 0;
-
+	public static function get_query_args( $query_args, $source, $args, $context, $info ) {
 		/**
 		 * Determine where we're at in the Graph and adjust the query context appropriately.
 		 */
 		if ( true === is_object( $source ) ) {
 			if ( is_a( $source, WC_Post::class ) ) {
+				$query_args['post_parent'] = 0;
+				unset( $query_args['post__in'] );
+
 				// @codingStandardsIgnoreStart
 				switch ( $info->fieldName ) {
 				// @codingStandardsIgnoreEnd
 					case 'upsell':
-						$query_args['post__in'] = $source->upsell_ids;
+						$query_args['post__in'] = ! empty( $source->upsell_ids ) ? $source->upsell_ids : [ '0' ];
 						break;
 
 					case 'crossSell':
-						$query_args['post__in'] = $source->cross_sell_ids;
+						$query_args['post__in'] = ! empty( $source->cross_sell_ids ) ? $source->cross_sell_ids : [ '0' ];
 						break;
 
 					case 'variations':
@@ -58,15 +59,15 @@ class WC_Posts_Connection_Resolver extends PostObjectConnectionResolver {
 
 					case 'galleryImages':
 						unset( $query_args['post_parent'] );
-						$query_args['post__in'] = $source->gallery_image_ids;
+						$query_args['post__in'] = ! empty( $source->gallery_image_ids ) ? $source->gallery_image_ids : [ '0' ];
 						break;
 
 					case 'products':
-						$query_args['post__in'] = $source->product_ids;
+						$query_args['post__in'] = ! empty( $source->product_ids ) ? $source->product_ids : [ '0' ];
 						break;
 
 					case 'excludedProducts':
-						$query_args['post__in'] = $source->excluded_product_ids;
+						$query_args['post__in'] = ! empty( $source->excluded_product_ids ) ? $source->excluded_product_ids : [ '0' ];
 						break;
 					default:
 						break;
@@ -93,18 +94,5 @@ class WC_Posts_Connection_Resolver extends PostObjectConnectionResolver {
 		);
 
 		return $query_args;
-	}
-
-	/**
-	 * Wrapper function for wc_query_args function
-	 */
-	public function get_query_args() {
-		return self::wc_query_args(
-			parent::get_query_args(),
-			$this->source,
-			$this->args,
-			$this->context,
-			$this->info
-		);
 	}
 }
