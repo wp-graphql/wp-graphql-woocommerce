@@ -64,7 +64,6 @@ class WC_Post extends Post {
 	 */
 	public function __construct( \WP_Post $post ) {
 		$this->wc_post = $this->get_wc_post( $post );
-		add_filter( 'graphql_wc_posts_fields', [ &$this, 'get_fields' ], 10, 2 );
 		parent::__construct( $post );
 	}
 
@@ -85,16 +84,6 @@ class WC_Post extends Post {
 			case 'product_variation':
 				return \wc_get_product( $post->ID );
 		}
-	}
-	/**
-	 * Binds field resolver to $wc_post
-	 *
-	 * @param Closure $resolver - field resolver.
-	 *
-	 * @return Closure
-	 */
-	private function bindStore( $resolver ) {
-		return $resolver->bindTo( $this->wc_post );
 	}
 
 	/**
