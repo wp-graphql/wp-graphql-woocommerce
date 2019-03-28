@@ -13,6 +13,7 @@ namespace WPGraphQL\Extensions\WooCommerce;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Data\Loader\Customer_Loader;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
 
 /**
@@ -25,6 +26,13 @@ class Filters {
 	 * @var WC_Loader
 	 */
 	private static $wc_loader;
+
+	/**
+	 * Stores instance WC_Loader
+	 *
+	 * @var WC_Loader
+	 */
+	private static $customer_loader;
 
 	/**
 	 * Register filters
@@ -92,6 +100,20 @@ class Filters {
 			self::$wc_loader = new WC_Loader( $context );
 		}
 		return self::$wc_loader;
+	}
+
+	/**
+	 * Initializes Customer_Loader instance
+	 *
+	 * @param AppContext $context - AppContext.
+	 *
+	 * @return Customer_Loader
+	 */
+	public static function customer_loader( $context ) {
+		if ( empty( self::$customer_loader ) ) {
+			self::$customer_loader = new Customer_Loader( $context );
+		}
+		return self::$customer_loader;
 	}
 
 	/**
@@ -175,7 +197,7 @@ class Filters {
 	}
 
 	/**
-	 * Registers data-loaders to be used when resolving WooCommerce post-types
+	 * Registers data-loaders to be used when resolving WooCommerce-related GraphQL types
 	 *
 	 * @param array      $loaders - assigned loaders.
 	 * @param AppContext $context - AppContext instance.
@@ -183,6 +205,11 @@ class Filters {
 	 * @return array
 	 */
 	public static function graphql_data_loaders( $loaders, $context ) {
+		// WooCommerce customer loader.
+		$customer_loader     = self::customer_loader( $context );
+		$loaders['customer'] = &$customer_loader;
+
+		// WooCommerce post-type loader.
 		$wc_post_types = array(
 			'shop_coupon',
 			'product',
@@ -190,10 +217,9 @@ class Filters {
 			'shop_order',
 			'shop_order_refund',
 		);
-
-		$loader = self::wc_loader( $context );
+		$wc_loader     = self::wc_loader( $context );
 		foreach ( $wc_post_types as $post_type ) {
-			$loaders[ $post_type ] = &$loader;
+			$loaders[ $post_type ] = &$wc_loader;
 		}
 
 		return $loaders;

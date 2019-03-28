@@ -18,12 +18,14 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\WC_Post_Object;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Downloads;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
-
+use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
 /**
  * Class Actions
  */
@@ -80,6 +82,8 @@ class Actions {
 		 */
 		Product_Attribute::register();
 		Product_Download::register();
+		Customer::register();
+		Customer_Address::register();
 
 		/**
 		 * Register WooCommerce Connections
@@ -88,5 +92,6 @@ class Actions {
 		WC_Terms::register_connections();
 		Product_Attributes::register_connections();
 		Product_Downloads::register_connections();
+		Customers::register_connections();
 	}
 }

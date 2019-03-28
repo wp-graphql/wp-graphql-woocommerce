@@ -1,8 +1,8 @@
 <?php
 /**
- * Loader - WooCommerce Data Model Loader
+ * Loader - WC_Loader
  *
- * Loads WooCommerce data store objects
+ * Loads WC_Post Model
  *
  * @package WPGraphQL\Extensions\WooCommerce\Data\Loader
  * @since 0.0.1

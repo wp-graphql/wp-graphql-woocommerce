@@ -16,30 +16,10 @@ use WPGraphQL\Model\Post;
 
 /**
  * Class WC_Post
- *
- * @property int     $ID
- * @property int     $id
- * @property string  $code
- * @property string  $date
- * @property string  $modified
- * @property string  $description
- * @property string  $discountType
- * @property string  $amount
- * @property string  $dateExpiry
- * @property string  $usageCount
- * @property boolean $individualUse
- * @property int     $usageLimit
- * @property int     $usageLimitPerUser
- * @property int     $limitUsageToXItems
- * @property boolean $freeShipping
- * @property boolean $excludeSaleItems
- * @property float   $minimumAmount
- * @property float   $maximumAmount
- * @property array   $emailRestrictions
  */
 class WC_Post extends Post {
 	/**
-	 * Stores the instance of WC_Coupon
+	 * Stores the instance of the WC data-store
 	 *
 	 * @var mixed $wc_post
 	 * @access protected
@@ -47,7 +27,7 @@ class WC_Post extends Post {
 	protected $wc_post;
 
 	/**
-	 * Coupon constructor
+	 * WC_Post constructor
 	 *
 	 * @param \WP_Post $post - Model WP_Post instance.
 	 *
@@ -158,6 +138,9 @@ class WC_Post extends Post {
 				},
 				'excluded_product_category_ids' => function() {
 					return ! empty( $this->wc_post ) ? $this->wc_post->get_excluded_product_categories() : null;
+				},
+				'used_by_ids'                   => function() {
+					return ! empty( $this->wc_post ) ? $this->wc_post->get_used_by() : null;
 				},
 			);
 		}
