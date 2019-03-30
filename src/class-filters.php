@@ -96,7 +96,7 @@ class Filters {
 	 * @return WC_Loader
 	 */
 	public static function wc_loader( $context ) {
-		if ( empty( self::$wc_loader ) ) {
+		if ( is_null( self::$wc_loader ) ) {
 			self::$wc_loader = new WC_Loader( $context );
 		}
 		return self::$wc_loader;
@@ -110,7 +110,7 @@ class Filters {
 	 * @return Customer_Loader
 	 */
 	public static function customer_loader( $context ) {
-		if ( empty( self::$customer_loader ) ) {
+		if ( is_null( self::$customer_loader ) ) {
 			self::$customer_loader = new Customer_Loader( $context );
 		}
 		return self::$customer_loader;
@@ -210,17 +210,8 @@ class Filters {
 		$loaders['customer'] = &$customer_loader;
 
 		// WooCommerce post-type loader.
-		$wc_post_types = array(
-			'shop_coupon',
-			'product',
-			'product_variation',
-			'shop_order',
-			'shop_order_refund',
-		);
-		$wc_loader     = self::wc_loader( $context );
-		foreach ( $wc_post_types as $post_type ) {
-			$loaders[ $post_type ] = &$wc_loader;
-		}
+		$wc_loader              = self::wc_loader( $context );
+		$loaders['post_object'] = &$wc_loader;
 
 		return $loaders;
 	}

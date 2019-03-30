@@ -22,17 +22,35 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Stores the instance of the WPGraphQL\Extensions\WPGraphQLWooCommerce class
 		 *
-		 * @var WPGraphQLWooCommerce The one true WPGraphQL\Extensions\WPGraphQLWooCommerce
+		 * @var WP_GraphQL_WooCommerce The one true WPGraphQL\Extensions\WP_GraphQL_WooCommerce
 		 * @access private
 		 */
 		private static $instance;
+
+		/**
+		 * Stores the allowed WooCommerce post-types
+		 *
+		 * @var array
+		 * @access public
+		 */
+		public static $allowed_post_types;
 
 		/**
 		 * Singleton provider
 		 */
 		public static function instance() {
 			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
-				self::$instance = new WP_GraphQL_WooCommerce();
+				self::$instance   = new WP_GraphQL_WooCommerce();
+				self::$allowed_post_types = apply_filters(
+					'graphql_woocommerce_post_types',
+					array(
+						'shop_coupon',
+						'product',
+						'product_variation',
+						'shop_order',
+						'shop_order_refund',
+					)
+				);
 				self::$instance->includes();
 				self::$instance->actions();
 				self::$instance->filters();

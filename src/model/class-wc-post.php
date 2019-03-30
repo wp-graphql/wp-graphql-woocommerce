@@ -59,6 +59,51 @@ class WC_Post extends Post {
 		}
 	}
 
+
+	/**
+	 * Callback for the graphql_data_is_private filter to determine if the post should be
+	 * considered private
+	 *
+	 * @param bool   $private    True or False value if the data should be private.
+	 * @param string $model_name Name of the model for the data currently being modeled.
+	 * @param mixed  $data       The Data currently being modeled.
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	public function is_private( $private, $model_name, $data ) {
+		if ( 'PostObject' !== $model_name ) {
+			return $private;
+		}
+		if ( ( true === $this->owner_matches_current_user() || 'publish' === $data->post_status ) && 'revision' !== $data->post_type ) {
+			return false;
+		}
+
+		/**
+		 * If the post_type isn't (not registered) or is not allowed in WPGraphQL,
+		 * mark the post as private
+		 */
+		if ( empty( $this->post_type_object ) || empty( $this->post_type_object->name ) || ! in_array( $this->post_type_object->name, \WPGraphQL::$allowed_post_types, true ) ) {
+			return true;
+		}
+		if ( 'private' === $data->post_status && ! current_user_can( $this->post_type_object->cap->read_private_posts ) ) {
+			return true;
+		}
+		if ( 'revision' === $data->post_type || 'auto-draft' === $data->post_status ) {
+			$parent               = get_post( (int) $data->post_parent );
+			$parent_post_type_obj = get_post_type_object( $parent->post_type );
+			if ( 'private' === $parent->post_status ) {
+				$cap = $parent_post_type_obj->cap->read_private_posts;
+			} else {
+				$cap = $parent_post_type_obj->cap->edit_post;
+			}
+			if ( ! current_user_can( $cap, $parent->ID ) ) {
+				return true;
+			}
+		}
+		return $private;
+	}
+
 	/**
 	 * Adds WC post-type field resolvers to $fields
 	 *
@@ -143,8 +188,7 @@ class WC_Post extends Post {
 					return ! empty( $this->wc_post ) ? $this->wc_post->get_used_by() : null;
 				},
 			);
-		}
-		if ( 'product' === $this->post->post_type || 'product_variation' === $this->post->post_type ) {
+		} elseif ( 'product' === $this->post->post_type || 'product_variation' === $this->post->post_type ) {
 			$more_fields = array(
 				'slug'               => function() {
 					return ! empty( $this->wc_post ) ? $this->wc_post->get_slug() : null;
@@ -294,6 +338,96 @@ class WC_Post extends Post {
 				},
 				'gallery_image_ids'  => function() {
 					return ! empty( $this->wc_post ) ? $this->wc_post->get_gallery_image_ids() : null;
+				},
+			);
+		} elseif ( 'shop_order' === $this->post->post_type ) {
+			$more_fields = array(
+				'orderKey'            => function() {
+					return get_post_meta( $this->post->ID, '_order_key', true );
+				},
+				'currency'            => function() {
+					return get_post_meta( $this->post->ID, '_order_currency', true );
+				},
+				'paymentMethod'       => function() {
+					return get_post_meta( $this->post->ID, '_payment_method', true );
+				},
+				'paymentMethodTitle'  => function() {
+					return get_post_meta( $this->post->ID, '_payment_method_title', true );
+				},
+				'transactionId'       => function() {
+					return get_post_meta( $this->post->ID, '_transaction_id', true );
+				},
+				'customerIpAddress'   => function() {
+					return get_post_meta( $this->post->ID, '_customer_ip_address', true );
+				},
+				'customerUserAgent'   => function() {
+					return get_post_meta( $this->post->ID, '_customer_user_agent', true );
+				},
+				'createdVia'          => function() {
+					return get_post_meta( $this->post->ID, '_created_via', true );
+				},
+				'dateCompleted'       => function() {
+					return get_post_meta( $this->post->ID, '_completed_date', true );
+				},
+				'datePaid'            => function() {
+					return get_post_meta( $this->post->ID, '_paid_date', true );
+				},
+				'discountTotal'       => function() {
+					return get_post_meta( $this->post->ID, '_cart_discount', true );
+				},
+				'discountTax'         => function() {
+					return get_post_meta( $this->post->ID, '_cart_discount_tax', true );
+				},
+				'shippingTotal'       => function() {
+					return get_post_meta( $this->post->ID, '_order_shipping', true );
+				},
+				'shippingTax'         => function() {
+					return get_post_meta( $this->post->ID, '_order_shipping_tax', true );
+				},
+				'cartTax'             => function() {
+					return get_post_meta( $this->post->ID, '_order_tax', true );
+				},
+				'total'               => function() {
+					return get_post_meta( $this->post->ID, '_order_total', true );
+				},
+				'totalTax'            => function() {
+					return get_post_meta( $this->post->ID, '_order_tax', true );
+				},
+				'subtotal'            => function() {
+					return 0;
+				},
+				'orderNumber'         => function() {
+					return (string) apply_filters( 'woocommerce_order_number', $this->post->ID, $this );
+				},
+				'orderVersion'        => function() {
+					return get_post_meta( $this->post->ID, '_order_version', true );
+				},
+				'pricesIncludeTax'    => function() {
+					return get_post_meta( $this->post->ID, '_prices_include_tax', true );
+				},
+				'cartHash'            => function() {
+					return get_post_meta( $this->post->ID, '_cart_hash', true );
+				},
+				'customerNote'        => function() {
+					return $this->post->post_excerpt;
+				},
+				'isDownloadPermitted' => function() {
+					return get_post_meta( $this->post->ID, '_download_permissions_granted', true );
+				},
+				'billing'             => function() {
+					return $this->post->id;
+				},
+				'shipping'            => function() {
+					return $this->post->id;
+				},
+				/**
+				 * Connection resolvers fields
+				 *
+				 * These field resolvers are used in connection resolvers to define WP_Query argument
+				 * Note: underscore naming style is used as a quick identifier
+				 */
+				'customer_id'        => function() {
+					return get_post_meta( $this->post->ID, '_customer_user', true );
 				},
 			);
 		}

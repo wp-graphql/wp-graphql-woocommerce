@@ -15,6 +15,7 @@ use GraphQL\Error\UserError;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\Extensions\WooCommerce\Model\WC_Post;
+use WPGraphQL\Model\Post;
 
 /**
  * Class WC_Loader
@@ -54,7 +55,7 @@ class WC_Loader extends AbstractDataLoader {
 		 * to the count of the keys provided. The query must also return results
 		 * in the same order the keys were provided in.
 		 */
-		$args = [
+		$args = array(
 			'post_type'           => 'any',
 			'post_status'         => 'any',
 			'posts_per_page'      => count( $keys ),
@@ -63,7 +64,7 @@ class WC_Loader extends AbstractDataLoader {
 			'no_found_rows'       => true,
 			'split_the_query'     => false,
 			'ignore_sticky_posts' => true,
-		];
+		);
 
 		/**
 		 * Ensure that WP_Query doesn't first ask for IDs since we already have them.
@@ -106,6 +107,13 @@ class WC_Loader extends AbstractDataLoader {
 					if ( ! $post_object instanceof \WP_Post ) {
 						return null;
 					}
+
+					if ( ! in_array( $post_object->post_type, \WP_GraphQL_WooCommerce::$allowed_post_types, true ) ) {
+						$model = Post::class;
+					} else {
+						$model = WC_Post::class;
+					}
+
 					/**
 					 * If there's a Post Author connected to the post, we need to resolve the
 					 * user as it gets set in the globals via `setup_post_data()` and doing it this way
@@ -115,12 +123,12 @@ class WC_Loader extends AbstractDataLoader {
 					if ( ! empty( $post_object->post_author ) && absint( $post_object->post_author ) ) {
 						$author = DataSource::resolve_user( $post_object->post_author, $this->context );
 						return $author->then(
-							function() use ( $post_object ) {
-								return new WC_Post( $post_object );
+							function() use ( $model, $post_object ) {
+								return new $model( $post_object );
 							}
 						);
 					} else {
-						return new WC_Post( $post_object );
+						return new $model( $post_object );
 					}
 				}
 			);

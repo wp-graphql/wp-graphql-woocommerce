@@ -60,18 +60,12 @@ class Actions {
 		/**
 		 * Register fields for WC post_types
 		 */
-		$wc_post_types = array(
-			'shop_coupon',
-			'product',
-			'product_variation',
-			'shop_order',
-			'shop_order_refund',
-		);
+		$wc_post_types = \WP_GraphQL_WooCommerce::$allowed_post_types;
 
 		$allowed_post_types = \WPGraphQL::$allowed_post_types;
 		if ( ! empty( $allowed_post_types ) && is_array( $allowed_post_types ) ) {
 			foreach ( $allowed_post_types as $post_type ) {
-				if ( in_array( $post_type, $wc_post_types ) ) {
+				if ( in_array( $post_type, $wc_post_types, true ) ) {
 					WC_Post_Object::register( \get_post_type_object( $post_type ) );
 				}
 			}

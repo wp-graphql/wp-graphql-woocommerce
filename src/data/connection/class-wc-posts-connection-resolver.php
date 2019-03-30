@@ -40,6 +40,9 @@ class WC_Posts_Connection_Resolver {
 			if ( is_a( $source, WC_Post::class ) ) {
 				$query_args['post_parent'] = 0;
 				unset( $query_args['post__in'] );
+				if ( 'shop_order' === $source->post_type ) {
+					$query_args['post_status'] = array_keys( wc_get_order_statuses() );
+				}
 
 				// @codingStandardsIgnoreStart
 				switch ( $info->fieldName ) {
@@ -83,6 +86,10 @@ class WC_Posts_Connection_Resolver {
 				);
 			}
 		}
+
+		$results = new \WP_Query( $query_args );
+		var_dump( $query_args );
+		var_dump( $results->posts );
 
 		$query_args = apply_filters(
 			'graphql_wc_posts_connection_query_args',
