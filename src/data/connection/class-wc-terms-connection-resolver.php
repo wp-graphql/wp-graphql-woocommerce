@@ -1,6 +1,6 @@
 <?php
 /**
- * Connection resolver - WC_Terms
+ * ConnectionResolver - WC_Terms_Connection_Resolver
  *
  * Resolvers connections to WooCommerce Terms (ProductCategory & ProductTags)
  *

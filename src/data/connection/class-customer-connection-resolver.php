@@ -1,6 +1,6 @@
 <?php
 /**
- * Connection resolver - Customers
+ * ConnectionResolver - Customer_Connection_Resolver
  *
  * Resolves connections to Customers
  *
@@ -10,11 +10,12 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 
-use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extension\WooCommerce\Model\WC_Post;
+use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\Extension\WooCommerce\Model\Order;
+use WPGraphQL\Extension\WooCommerce\Model\Refund;
 
 /**
  * Class Customer_Connection_Resolver

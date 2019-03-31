@@ -12,12 +12,12 @@ namespace WPGraphQL\Extensions\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
 use WPGraphQL\Data\DataSource;
-use WPGraphQL\Model\Post;
+use WPGraphQL\Model\Model;
 
 /**
  * Class WC_Post
  */
-class WC_Post extends Post {
+class WC_Post extends Model {
 	/**
 	 * Stores the instance of the WC data-store
 	 *

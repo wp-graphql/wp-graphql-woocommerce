@@ -1,8 +1,8 @@
 <?php
 /**
- * Loader - WC_Loader
+ * DataLoader - WC_Crud_Loader
  *
- * Loads WC_Post Model
+ * Loads Models for WooCommerce CRUD objects
  *
  * @package WPGraphQL\Extensions\WooCommerce\Data\Loader
  * @since 0.0.1
@@ -14,39 +14,44 @@ use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
-use WPGraphQL\Extensions\WooCommerce\Model\WC_Post;
-use WPGraphQL\Model\Post;
+use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
+use WPGraphQL\Extensions\WooCommerce\Model\Product;
+use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
+use WPGraphQL\Extensions\WooCommerce\Model\Order;
+use WPGraphQL\Extensions\WooCommerce\Model\Refund;
 
 /**
- * Class WC_Loader
+ * Class WC_Crud_Loader
  */
-class WC_Loader extends AbstractDataLoader {
+class WC_Crud_Loader extends AbstractDataLoader {
 	/**
-	 * Stores loaded posts.
+	 * Stores loaded CRUD objects.
 	 *
 	 * @var array
 	 */
-	protected $loaded_posts;
+	protected $loaded_objects;
 
 	/**
-	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
-	 * posts as the values
+	 * Returns CRUD object for provided IDs
 	 *
-	 * Note that order of returned values must match exactly the order of keys.
-	 * If some entry is not available for given key - it must include null for the missing key.
-	 *
-	 * For example:
-	 * loadKeys(['a', 'b', 'c']) -> ['a' => 'value1, 'b' => null, 'c' => 'value3']
-	 *
-	 * @param array $keys - array of keys.
+	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws UserError - throws if a post_id assigned to a key is not found.
+	 * @throws UserError - throws if no corresponding Data store is found ID is not found.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {
 			return $keys;
 		}
+
+		$wc_post_types = array(
+			'product',
+			'product_variation',
+			'shop_coupon',
+			'shop_order',
+			'shop_order_refund',
+		);
+
 		/**
 		 * Prepare the args for the query. We're provided a specific
 		 * set of IDs, so we want to query as efficiently as possible with
@@ -56,7 +61,7 @@ class WC_Loader extends AbstractDataLoader {
 		 * in the same order the keys were provided in.
 		 */
 		$args = array(
-			'post_type'           => 'any',
+			'post_type'           => $wc_post_types,
 			'post_status'         => 'any',
 			'posts_per_page'      => count( $keys ),
 			'post__in'            => $keys,
@@ -64,6 +69,7 @@ class WC_Loader extends AbstractDataLoader {
 			'no_found_rows'       => true,
 			'split_the_query'     => false,
 			'ignore_sticky_posts' => true,
+			'fields'              => 'id=>type',
 		);
 
 		/**
@@ -90,49 +96,47 @@ class WC_Loader extends AbstractDataLoader {
 			/**
 			 * The query above has added our objects to the cache
 			 * so now we can pluck them from the cache to return here
-			 * and if they don't exist we can throw an error, otherwise
+			 * and if they don't exist or aren't a valid post-type we can throw an error, otherwise
 			 * we can proceed to resolve the object via the Model layer.
 			 */
-			$post_object = get_post( (int) $key );
-			if ( empty( $post_object ) ) {
+			$post_type = get_post_type( (int) $key );
+			if ( ! $post_type ) {
 				/* translators: invalid id error message */
 				throw new UserError( sprintf( __( 'No item was found with ID %s', 'wp-graphql-woocommerce' ), $key ) );
 			}
+
+			if ( ! in_array( $post_type, $wc_post_types, false ) ) {
+				/* translators: invalid post-type error message */
+				throw new UserError( sprintf( __( '%s is not a valid WooCommerce post-type', 'wp-graphql-woocommerce' ), $post_type ) );
+			}
+
 			/**
 			 * Return the instance through the Model to ensure we only
 			 * return fields the consumer has access to.
 			 */
-			$this->loaded_posts[ $key ] = new Deferred(
-				function() use ( $post_object ) {
-					if ( ! $post_object instanceof \WP_Post ) {
-						return null;
-					}
-
-					if ( ! in_array( $post_object->post_type, \WP_GraphQL_WooCommerce::$allowed_post_types, true ) ) {
-						$model = Post::class;
-					} else {
-						$model = WC_Post::class;
-					}
-
-					/**
-					 * If there's a Post Author connected to the post, we need to resolve the
-					 * user as it gets set in the globals via `setup_post_data()` and doing it this way
-					 * will batch the loading so when `setup_post_data()` is called the user
-					 * is already in the cache.
-					 */
-					if ( ! empty( $post_object->post_author ) && absint( $post_object->post_author ) ) {
-						$author = DataSource::resolve_user( $post_object->post_author, $this->context );
-						return $author->then(
-							function() use ( $model, $post_object ) {
-								return new $model( $post_object );
+			$this->loaded_objects[ $key ] = new Deferred(
+				function() use ( $post_type, $key ) {
+					switch ( $post_type ) {
+						case 'product':
+							return new Product( $key );
+						case 'product_variation':
+							return new Product_Variation( $key );
+						case 'shop_coupon':
+							return new Coupon( $key );
+						case 'shop_order':
+							return new Order( $key );
+						case 'shop_order_refund':
+							return new Refund( $key );
+						default:
+							$model = apply_filters( 'wc_crud_loader_model', null, $post_type );
+							if ( ! empty( $model ) ) {
+								return $model( $key );
 							}
-						);
-					} else {
-						return new $model( $post_object );
+							return null;
 					}
 				}
 			);
 		}
-		return ! empty( $this->loaded_posts ) ? $this->loaded_posts : array();
+		return ! empty( $this->loaded_objects ) ? $this->loaded_objects : array();
 	}
 }

@@ -13,24 +13,24 @@ namespace WPGraphQL\Extensions\WooCommerce;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\Customer_Loader;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Loader;
+use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
+use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Crud_Loader;
 
 /**
  * Class Filters
  */
 class Filters {
 	/**
-	 * Stores instance WC_Loader
+	 * Stores instance WC_Crud_Loader
 	 *
-	 * @var WC_Loader
+	 * @var WC_Crud_Loader
 	 */
-	private static $wc_loader;
+	private static $crud_loader;
 
 	/**
-	 * Stores instance WC_Loader
+	 * Stores instance WC_Customer_Loader
 	 *
-	 * @var WC_Loader
+	 * @var WC_Customer_Loader
 	 */
 	private static $customer_loader;
 
@@ -38,15 +38,6 @@ class Filters {
 	 * Register filters
 	 */
 	public static function load() {
-		add_filter(
-			'register_post_type_args',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'register_post_type_args',
-			),
-			10,
-			2
-		);
 		add_filter(
 			'register_taxonomy_args',
 			array(
@@ -93,13 +84,13 @@ class Filters {
 	 *
 	 * @param AppContext $context - AppContext.
 	 *
-	 * @return WC_Loader
+	 * @return WC_Crud_Loader
 	 */
-	public static function wc_loader( $context ) {
-		if ( is_null( self::$wc_loader ) ) {
-			self::$wc_loader = new WC_Loader( $context );
+	public static function crud_loader( $context ) {
+		if ( is_null( self::$crud_loader ) ) {
+			self::$crud_loader = new WC_Crud_Loader( $context );
 		}
-		return self::$wc_loader;
+		return self::$crud_loader;
 	}
 
 	/**
@@ -107,51 +98,13 @@ class Filters {
 	 *
 	 * @param AppContext $context - AppContext.
 	 *
-	 * @return Customer_Loader
+	 * @return WC_Customer_Loader
 	 */
 	public static function customer_loader( $context ) {
 		if ( is_null( self::$customer_loader ) ) {
-			self::$customer_loader = new Customer_Loader( $context );
+			self::$customer_loader = new WC_Customer_Loader( $context );
 		}
 		return self::$customer_loader;
-	}
-
-	/**
-	 * Registers WooCommerce post-types to be used in GraphQL schema
-	 *
-	 * @param array  $args      - allowed post-types.
-	 * @param string $post_type - name of post-type being checked.
-	 *
-	 * @return array
-	 */
-	public static function register_post_type_args( $args, $post_type ) {
-		if ( 'product' === $post_type ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'product';
-			$args['graphql_plural_name'] = 'products';
-		}
-		if ( 'product_variation' === $post_type ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'productVariation';
-			$args['graphql_plural_name'] = 'productVariations';
-		}
-		if ( 'shop_coupon' === $post_type ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'coupon';
-			$args['graphql_plural_name'] = 'coupons';
-		}
-		if ( 'shop_order' === $post_type ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'order';
-			$args['graphql_plural_name'] = 'orders';
-		}
-		if ( 'shop_order_refund' === $post_type ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'refund';
-			$args['graphql_plural_name'] = 'refunds';
-		}
-
-		return $args;
 	}
 
 	/**
@@ -207,11 +160,11 @@ class Filters {
 	public static function graphql_data_loaders( $loaders, $context ) {
 		// WooCommerce customer loader.
 		$customer_loader     = self::customer_loader( $context );
-		$loaders['customer'] = &$customer_loader;
+		$loaders['wc_customer'] = &$customer_loader;
 
-		// WooCommerce post-type loader.
-		$wc_loader              = self::wc_loader( $context );
-		$loaders['post_object'] = &$wc_loader;
+		// WooCommerce crud object loader.
+		$crud_loader        = self::crud_loader( $context );
+		$loaders['wc_crud'] = &$crud_loader;
 
 		return $loaders;
 	}

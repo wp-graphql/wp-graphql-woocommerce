@@ -1,6 +1,6 @@
 <?php
 /**
- * Loader - Customer_Loader
+ * DataLoader - WC_Customer_Loader
  *
  * Loads Customer Model
  *
@@ -14,9 +14,9 @@ use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 
 /**
- * Class Customer_Loader
+ * Class WC_Customer_Loader
  */
-class Customer_Loader extends AbstractDataLoader {
+class WC_Customer_Loader extends AbstractDataLoader {
 	/**
 	 * Processes given array keys and loads Model
 	 *

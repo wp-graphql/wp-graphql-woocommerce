@@ -87,10 +87,6 @@ class WC_Posts_Connection_Resolver {
 			}
 		}
 
-		$results = new \WP_Query( $query_args );
-		var_dump( $query_args );
-		var_dump( $results->posts );
-
 		$query_args = apply_filters(
 			'graphql_wc_posts_connection_query_args',
 			$query_args,

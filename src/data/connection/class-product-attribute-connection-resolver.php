@@ -1,6 +1,6 @@
 <?php
 /**
- * Connection resolver - ProductAttributes
+ * ConnectionResolver - Product_Attribute_Connection_Resolver
  *
  * Resolves connections to ProductAttributes
  *
