@@ -1,5 +1,6 @@
 <?php
 
+use GraphQLRelay\Relay;
 class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function setUp() {
@@ -32,9 +33,10 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$wc_coupon->set_free_shipping( false );
 		$wc_coupon->save();
 
-		$query = '
-			query {
-				coupon(id: " ") {
+		$query     = '
+			query CouponQuery( $id: ID! ){
+				coupon( id: $id ) {
+					id
 					couponId
 					code
 					amount
@@ -75,18 +77,21 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 					}
 					usedBy {
 						nodes {
-							userId
+							customerId
 						}
 					}
 				}
 			}
 		';
 
-		$actual = do_graphql_request( $query );
+		$coupon_id = Relay::toGlobalId( 'shop_coupon', $wc_coupon->get_id() );
+		$variables = wp_json_encode( array( 'id' => $coupon_id ) );
+		$actual    = do_graphql_request( $query, 'CouponQuery', $variables );
 
 		$expected = [
 			'data' => [
 				'coupon' => [
+					'id'                        => $coupon_id,
 					'couponId'                  => $wc_coupon->get_id(),
 					'code'                      => $wc_coupon->get_code(),
 					'amount'                    => $wc_coupon->get_amount(),
@@ -106,19 +111,44 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'maximumAmount'             => $wc_coupon->get_maximum_amount(),
 					'emailRestrictions'         => $wc_coupon->get_email_restrictions(),
 					'products'                  => [
-						'nodes' => $wc_coupon->get_product_ids(),
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'productId' => $id );
+							},
+							$wc_coupon->get_product_ids()
+						),
 					],
 					'excludedProducts'          => [
-						'nodes' => $wc_coupon->get_excluded_product_ids(),
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'productId' => $id );
+							},
+							$wc_coupon->get_excluded_product_ids()
+						),
 					],
 					'productCategories'         => [
-						'nodes' => $wc_coupon->get_product_categories(),
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'productCategoryId' => $id );
+							},
+							$wc_coupon->get_product_categories()
+						),
 					],
 					'excludedProductCategories' => [
-						'nodes' => $wc_coupon->get_excluded_product_categories(),
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'productCategoryId' => $id );
+							},
+							$wc_coupon->get_excluded_product_categories()
+						),
 					],
 					'usedBy'                    => [
-						'nodes' => $wc_coupon->get_used_by(),
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'customerId' => $id );
+							},
+							$wc_coupon->get_used_by()
+						),
 					],
 				],
 			],

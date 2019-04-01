@@ -32,12 +32,43 @@ class WC_Crud_Loader extends AbstractDataLoader {
 	protected $loaded_objects;
 
 	/**
+	 * Returns CRUD Model
+	 *
+	 * @param string $post_type - WordPress post-type.
+	 * @param int    $id        - Post ID.
+	 *
+	 * @return mixed
+	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
+	 */
+	private function resolve_crud_object( $post_type, $id ) {
+		switch ( $post_type ) {
+			case 'product':
+				return new Product( $id );
+			case 'product_variation':
+				return new Product_Variation( $id );
+			case 'shop_coupon':
+				return new Coupon( $id );
+			case 'shop_order':
+				return new Order( $id );
+			case 'shop_order_refund':
+				return new Refund( $id );
+			default:
+				$model = apply_filters( 'wc_crud_loader_model', null, $post_type );
+				if ( ! empty( $model ) ) {
+					return $model( $id );
+				}
+				/* translators: no model assigned error message */
+				throw new UserError( sprintf( __( 'No Model is register to the post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
+		}
+	}
+
+	/**
 	 * Returns CRUD object for provided IDs
 	 *
 	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws UserError - throws if no corresponding Data store is found ID is not found.
+	 * @throws UserError - throws if no corresponding Data store exists with the ID.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {
@@ -116,24 +147,18 @@ class WC_Crud_Loader extends AbstractDataLoader {
 			 */
 			$this->loaded_objects[ $key ] = new Deferred(
 				function() use ( $post_type, $key ) {
-					switch ( $post_type ) {
-						case 'product':
-							return new Product( $key );
-						case 'product_variation':
-							return new Product_Variation( $key );
-						case 'shop_coupon':
-							return new Coupon( $key );
-						case 'shop_order':
-							return new Order( $key );
-						case 'shop_order_refund':
-							return new Refund( $key );
-						default:
-							$model = apply_filters( 'wc_crud_loader_model', null, $post_type );
-							if ( ! empty( $model ) ) {
-								return $model( $key );
+					// Resolve post author for future capability checks.
+					$author_id = get_post_field( 'post_author', $key );
+					if ( ! empty( $author_id ) && absint( $author_id ) ) {
+						$author = DataSource::resolve_user( $author_id, $this->context );
+
+						return $author->then(
+							function () use ( $post_type, $key ) {
+								return $this->resolve_crud_object( $post_type, $key );
 							}
-							return null;
+						);
 					}
+					$this->resolve_crud_object( $post_type, $key );
 				}
 			);
 		}

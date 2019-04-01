@@ -43,7 +43,7 @@ class WC_Customer_Loader extends AbstractDataLoader {
 			'number'      => count( $keys ),
 			'orderby'     => 'include',
 			'count_total' => false,
-			'fields'      => 'all_with_meta',
+			'fields'      => 'ids',
 		);
 
 		/**
@@ -60,9 +60,9 @@ class WC_Customer_Loader extends AbstractDataLoader {
 		}
 
 		foreach ( $keys as $key ) {
-			$customer                       = get_user_by( 'id', $key );
-			$all_customers[ $customer->ID ] = new Customer( $customer );
+			$all_customers[ $key ] = new Customer( $key );
 		}
+
 		return $all_customers;
 	}
 }

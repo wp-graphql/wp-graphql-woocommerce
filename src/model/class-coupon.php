@@ -11,13 +11,11 @@
 namespace WPGraphQL\Extensions\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\Model\Model;
 
 /**
  * Class Coupon
  */
-class Coupon extends Model {
+class Coupon extends Crud_CPT {
 	/**
 	 * Stores the instance of WC_Coupon
 	 *
@@ -41,16 +39,40 @@ class Coupon extends Model {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'userId',
-			'name',
-			'firstName',
-			'lastName',
-			'description',
-			'slug',
+			'couponId',
 		];
 
-		parent::__construct( 'CouponObject', $this->coupon, 'list_users', $allowed_restricted_fields, $id );
-		$this->init();
+		parent::__construct(
+			'CouponObject',
+			$this->coupon,
+			$allowed_restricted_fields,
+			'shop_coupon',
+			$id
+		);
+	}
+
+	/**
+	 * Retrieve the cap to check if the data should be restricted for the coupon
+	 *
+	 * @access protected
+	 * @return string
+	 */
+	protected function get_restricted_cap() {
+		if ( post_password_required( $this->coupon->get_id() ) ) {
+			return $this->post_type_object->cap->edit_others_posts;
+		}
+		switch ( get_post_status( $this->coupon->get_id() ) ) {
+			case 'trash':
+				$cap = $this->post_type_object->cap->edit_posts;
+				break;
+			case 'draft':
+				$cap = $this->post_type_object->cap->edit_others_posts;
+				break;
+			default:
+				$cap = '';
+				break;
+		}
+		return $cap;
 	}
 
 	/**
@@ -69,61 +91,61 @@ class Coupon extends Model {
 					return $this->coupon->get_id();
 				},
 				'id'                            => function() {
-					return ! empty( $this->coupon ) ? Relay::toGlobalId( 'shop_coupon', $this->coupon->get_id() ) : null;
+					return ! empty( $this->coupon->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->coupon->get_id() ) : null;
 				},
 				'couponId'                      => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_id() : null;
+					return ! empty( $this->coupon->get_id() ) ? $this->coupon->get_id() : null;
 				},
 				'code'                          => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_code() : null;
+					return ! empty( $this->coupon->get_code() ) ? $this->coupon->get_code() : null;
 				},
 				'date'                          => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_date_created() : null;
+					return ! empty( $this->coupon->get_date_created() ) ? $this->coupon->get_date_created() : null;
 				},
 				'modified'                      => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_date_modified() : null;
+					return ! empty( $this->coupon->get_date_modified() ) ? $this->coupon->get_date_modified() : null;
 				},
 				'description'                   => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_description() : null;
+					return ! empty( $this->coupon->get_description() ) ? $this->coupon->get_description() : null;
 				},
 				'discountType'                  => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_discount_type() : null;
+					return ! empty( $this->coupon->get_discount_type() ) ? $this->coupon->get_discount_type() : null;
 				},
 				'amount'                        => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_amount() : null;
+					return ! empty( $this->coupon->get_amount() ) ? $this->coupon->get_amount() : null;
 				},
 				'dateExpiry'                    => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_date_expires() : null;
+					return ! empty( $this->coupon->get_date_expires() ) ? $this->coupon->get_date_expires() : null;
 				},
 				'usageCount'                    => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_usage_count() : null;
+					return ! empty( $this->coupon->get_usage_count() ) ? $this->coupon->get_usage_count() : null;
 				},
 				'individualUse'                 => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_individual_use() : null;
+					return ! empty( $this->coupon->get_individual_use() ) ? $this->coupon->get_individual_use() : null;
 				},
 				'usageLimit'                    => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_usage_limit() : null;
+					return ! empty( $this->coupon->get_usage_limit() ) ? $this->coupon->get_usage_limit() : null;
 				},
 				'usageLimitPerUser'             => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_usage_limit_per_user() : null;
+					return ! empty( $this->coupon->get_usage_limit_per_user() ) ? $this->coupon->get_usage_limit_per_user() : null;
 				},
 				'limitUsageToXItems'            => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_limit_usage_to_x_items() : null;
+					return ! empty( $this->coupon->get_limit_usage_to_x_items() ) ? $this->coupon->get_limit_usage_to_x_items() : null;
 				},
 				'freeShipping'                  => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_free_shipping() : null;
+					return ! empty( $this->coupon->get_free_shipping() ) ? $this->coupon->get_free_shipping() : null;
 				},
 				'excludeSaleItems'              => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_exclude_sale_items() : null;
+					return ! empty( $this->coupon->get_exclude_sale_items() ) ? $this->coupon->get_exclude_sale_items() : null;
 				},
 				'minimumAmount'                 => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_minimum_amount() : null;
+					return ! empty( $this->coupon->get_minimum_amount() ) ? $this->coupon->get_minimum_amount() : null;
 				},
 				'maximumAmount'                 => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_maximum_amount() : null;
+					return ! empty( $this->coupon->get_maximum_amount() ) ? $this->coupon->get_maximum_amount() : null;
 				},
 				'emailRestrictions'             => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_email_restrictions() : null;
+					return ! empty( $this->coupon->get_email_restrictions() ) ? $this->coupon->get_email_restrictions() : null;
 				},
 				/**
 				 * Connection resolvers fields
@@ -132,19 +154,19 @@ class Coupon extends Model {
 				 * Note: underscore naming style is used as a quick identifier
 				 */
 				'product_ids'                   => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_product_ids() : null;
+					return ! empty( $this->coupon->get_product_ids() ) ? $this->coupon->get_product_ids() : array( '0' );
 				},
 				'excluded_product_ids'          => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_excluded_product_ids() : null;
+					return ! empty( $this->coupon->get_excluded_product_ids() ) ? $this->coupon->get_excluded_product_ids() : array( '0' );
 				},
 				'product_category_ids'          => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_product_categories() : null;
+					return ! empty( $this->coupon->get_product_categories() ) ? $this->coupon->get_product_categories() : array( '0' );
 				},
 				'excluded_product_category_ids' => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_excluded_product_categories() : null;
+					return ! empty( $this->coupon->get_excluded_product_categories() ) ? $this->coupon->get_excluded_product_categories() : array( '0' );
 				},
 				'used_by_ids'                   => function() {
-					return ! empty( $this->coupon ) ? $this->coupon->get_used_by() : null;
+					return ! empty( $this->coupon->get_used_by() ) ? $this->coupon->get_used_by() : array( '0' );
 				},
 			);
 		}

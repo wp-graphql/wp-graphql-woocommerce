@@ -27,7 +27,13 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
-		return true;
+		$post_type_obj = get_post_type_object( 'shop_coupon' );
+		switch ( true ) {
+			case current_user_can( $post_type_obj->cap->edit_posts ):
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
@@ -42,6 +48,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args = array(
 			'post_type'      => 'shop_coupon',
 			'post_status'    => 'any',
+			'perm'           => 'readable',
 			'no_rows_found'  => true,
 			'fields'         => 'ids',
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,

@@ -30,6 +30,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Loader\\WC_Customer_Loader' => $baseDir . '/src/data/loader/class-wc-customer-loader.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Filters' => $baseDir . '/src/class-filters.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Coupon' => $baseDir . '/src/model/class-coupon.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Model\\Crud_CPT' => $baseDir . '/src/model/class-crud-cpt.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Customer' => $baseDir . '/src/model/class-customer.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Order' => $baseDir . '/src/model/class-order.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Product' => $baseDir . '/src/model/class-product.php',

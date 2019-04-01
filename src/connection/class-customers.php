@@ -31,7 +31,7 @@ class Customers {
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Coupons',
+					'fromType'      => 'Coupon',
 					'toType'        => 'Customer',
 					'fromFieldName' => 'usedBy',
 				)

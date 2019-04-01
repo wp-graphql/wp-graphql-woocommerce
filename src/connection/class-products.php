@@ -43,6 +43,24 @@ class Products {
 			self::get_connection_config(
 				array(
 					'fromType'      => 'Product',
+					'fromFieldName' => 'upsell',
+				)
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'fromFieldName' => 'crossSell',
+				)
+			)
+		);
+
+		// From Product to ProductVariation.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
 				)

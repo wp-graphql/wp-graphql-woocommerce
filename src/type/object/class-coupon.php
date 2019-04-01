@@ -41,6 +41,14 @@ class Coupon {
 						'type'        => 'String',
 						'description' => __( 'Coupon code', 'wp-graphql-woocommerce' ),
 					),
+					'date'               => array(
+						'type'        => 'String',
+						'description' => __( 'Date coupon created', 'wp-graphql-woocommerce' ),
+					),
+					'modified'           => array(
+						'type'        => 'String',
+						'description' => __( 'Date coupon modified', 'wp-graphql-woocommerce' ),
+					),
 					'description'        => array(
 						'type'        => 'String',
 						'description' => __( 'Explanation of what the coupon does', 'wp-graphql-woocommerce' ),
