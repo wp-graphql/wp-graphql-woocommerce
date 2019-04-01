@@ -22,9 +22,7 @@ class WC_Terms extends TermObjects {
 	 * Registers the various connections from other Types to WooCommerce taxonomies
 	 */
 	public static function register_connections() {
-		/**
-		 * To product category connections
-		 */
+		// From Coupons.
 		register_graphql_connection(
 			self::get_connection_config(
 				get_taxonomy( 'product_cat' ),
@@ -42,6 +40,28 @@ class WC_Terms extends TermObjects {
 					'fromType'      => 'Coupon',
 					'toType'        => 'ProductCategory',
 					'fromFieldName' => 'excludedProductCategories',
+				)
+			)
+		);
+
+		// From Products.
+		register_graphql_connection(
+			self::get_connection_config(
+				get_taxonomy( 'product_cat' ),
+				array(
+					'fromType'      => 'Product',
+					'toType'        => 'ProductCategory',
+					'fromFieldName' => 'categories',
+				)
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				get_taxonomy( 'product_tag' ),
+				array(
+					'fromType'      => 'Product',
+					'toType'        => 'ProductTag',
+					'fromFieldName' => 'tags',
 				)
 			)
 		);

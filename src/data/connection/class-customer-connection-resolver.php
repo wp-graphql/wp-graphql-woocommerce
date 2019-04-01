@@ -1,6 +1,6 @@
 <?php
 /**
- * Connection resolver - Customers
+ * ConnectionResolver - Customer_Connection_Resolver
  *
  * Resolves connections to Customers
  *
@@ -10,11 +10,12 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 
-use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extension\WooCommerce\Model\WC_Post;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
+use WPGraphQL\Extensions\WooCommerce\Model\Order;
+use WPGraphQL\Extensions\WooCommerce\Model\Refund;
 
 /**
  * Class Customer_Connection_Resolver
@@ -49,23 +50,25 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args['count_total'] = true;
 		}
 
-		$query_args['number']   = $this->get_query_amount();
-		$query_args['role__in'] = 'customer';
+		$query_args['number'] = $this->get_query_amount();
 
-		if ( true === is_object( $source ) ) {
-			if ( is_a( $this->source, Customer::class ) ) {
-				// @codingStandardsIgnoreStart
-				switch ( $info->fieldName ) {
-				// @codingStandardsIgnoreEnd
-					case 'usedBy':
-						$query_args['include'] = ! empty( $source->used_by_ids ) ? $source->used_by_ids : [ '0' ];
-						break;
-					default:
-				}
+		if ( true === is_object( $this->source ) ) {
+			switch ( true ) {
+				case is_a( $this->source, Order::class ):
+					break;
+				case is_a( $this->source, Refund::class ):
+					break;
+				case is_a( $this->source, Coupon::class ):
+					if ( 'usedBy' === $this->info->fieldName ) {
+						$query_args['include'] = ! empty( $this->source->used_by_ids ) ? $this->source->used_by_ids : [ '0' ];
+					}
+					break;
+				default:
+					break;
 			}
 		}
 
-		$query_args['fields'] = 'ID';
+		$query_args['fields'] = 'ids';
 
 		$query_args = apply_filters(
 			'graphql_customer_connection_query_args',

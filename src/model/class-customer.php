@@ -29,13 +29,13 @@ class Customer extends Model {
 	/**
 	 * Customer constructor
 	 *
-	 * @param int $user - Model WP_User instance.
+	 * @param int $id - User ID.
 	 *
 	 * @access public
 	 * @return void
 	 */
-	public function __construct( $user ) {
-		$this->customer            = new \WC_Customer( $user->ID );
+	public function __construct( $id ) {
+		$this->customer            = new \WC_Customer( $id );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
@@ -43,13 +43,9 @@ class Customer extends Model {
 			'id',
 			'userId',
 			'name',
-			'firstName',
-			'lastName',
-			'description',
-			'slug',
 		];
 
-		parent::__construct( 'CustomerObject', $this->customer, 'list_users', $allowed_restricted_fields, $user->ID );
+		parent::__construct( 'CustomerObject', $this->customer, 'list_users', $allowed_restricted_fields, $id );
 		$this->init();
 	}
 

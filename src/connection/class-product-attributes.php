@@ -20,8 +20,19 @@ class Product_Attributes {
 	 * Registers the various connections from other Types to ProductAttribute
 	 */
 	public static function register_connections() {
+		// From Product.
 		register_graphql_connection( self::get_connection_config() );
 		register_graphql_connection( self::get_connection_config( array( 'fromFieldName' => 'defaultAttributes' ) ) );
+		// From ProductVariation.
+		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'ProductVariation' ) ) );
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'ProductVariation',
+					'fromFieldName' => 'defaultAttributes',
+				)
+			)
+		);
 	}
 
 	/**

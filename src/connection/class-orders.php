@@ -1,8 +1,8 @@
 <?php
 /**
- * Connection type - Customers
+ * Connection - Orders
  *
- * Registers connections to Customers
+ * Registers connections to Order
  *
  * @package WPGraphQL\Extensions\WooCommerce\Connection
  */
@@ -12,28 +12,21 @@ namespace WPGraphQL\Extensions\WooCommerce\Connection;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
- * Class - Customers
+ * Class - Orders
  */
-class Customers {
+class Orders {
 	/**
 	 * Registers the various connections from other Types to Customer
 	 */
 	public static function register_connections() {
+		// From RootQuery.
+		register_graphql_connection( self::get_connection_config() );
+		// From Customer.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'RootQuery',
-					'toType'        => 'Customer',
-					'fromFieldName' => 'customers',
-				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Coupon',
-					'toType'        => 'Customer',
-					'fromFieldName' => 'usedBy',
+					'fromType'      => 'Customer',
+					'fromFieldName' => 'orders',
 				)
 			)
 		);
@@ -48,16 +41,28 @@ class Customers {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args ) {
+	public static function get_connection_config( $args = [] ) {
 		$defaults = array(
-			'connectionArgs' => array(),
+			'fromType'       => 'RootQuery',
+			'toType'         => 'Order',
+			'fromFieldName'  => 'orders',
+			'connectionArgs' => self::get_connection_args(),
 			'resolveNode'    => function( $id, $args, $context, $info ) {
-				return Factory::resolve_customer( $id, $context );
+				return Factory::resolve_crud_object( $id, $context );
 			},
 			'resolve'        => function ( $source, $args, $context, $info ) {
-				return Factory::resolve_customer_connection( $source, $args, $context, $info );
+				return Factory::resolve_order_connection( $source, $args, $context, $info );
 			},
 		);
 		return array_merge( $defaults, $args );
+	}
+
+	/**
+	 * Returns array of where args
+	 *
+	 * @return array
+	 */
+	public static function get_connection_args() {
+		return array();
 	}
 }

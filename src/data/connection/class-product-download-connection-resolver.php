@@ -1,6 +1,6 @@
 <?php
 /**
- * Connection resolver - ProductDownloads
+ * ConnectionResolver - Product_Download_Connection_Resolver
  *
  * Resolves connections to ProductDownloads
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Loader - Customer_Loader
+ * DataLoader - WC_Customer_Loader
  *
  * Loads Customer Model
  *
@@ -14,9 +14,9 @@ use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 
 /**
- * Class Customer_Loader
+ * Class WC_Customer_Loader
  */
-class Customer_Loader extends AbstractDataLoader {
+class WC_Customer_Loader extends AbstractDataLoader {
 	/**
 	 * Processes given array keys and loads Model
 	 *
@@ -43,7 +43,7 @@ class Customer_Loader extends AbstractDataLoader {
 			'number'      => count( $keys ),
 			'orderby'     => 'include',
 			'count_total' => false,
-			'fields'      => 'all_with_meta',
+			'fields'      => 'ids',
 		);
 
 		/**
@@ -60,9 +60,9 @@ class Customer_Loader extends AbstractDataLoader {
 		}
 
 		foreach ( $keys as $key ) {
-			$customer                       = get_user_by( 'id', $key );
-			$all_customers[ $customer->ID ] = new Customer( $customer );
+			$all_customers[ $key ] = new Customer( $key );
 		}
+
 		return $all_customers;
 	}
 }
