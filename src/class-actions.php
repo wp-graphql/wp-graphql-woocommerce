@@ -26,6 +26,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address;
+use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
 use WPGraphQL\Extensions\WooCommerce\Connection\Products;
@@ -77,6 +78,7 @@ class Actions {
 		Customer_Address::register();
 
 		// Connections.
+		Posts::register_connections();
 		WC_Terms::register_connections();
 		Coupons::register_connections();
 		Products::register_connections();

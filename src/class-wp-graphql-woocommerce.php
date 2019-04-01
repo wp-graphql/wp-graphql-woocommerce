@@ -40,7 +40,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public static function instance() {
 			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
-				self::$instance   = new WP_GraphQL_WooCommerce();
+				self::$instance           = new WP_GraphQL_WooCommerce();
 				self::$allowed_post_types = apply_filters(
 					'graphql_woocommerce_post_types',
 					array(

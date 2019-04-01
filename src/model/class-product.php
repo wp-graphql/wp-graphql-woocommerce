@@ -323,8 +323,8 @@ class Product extends Crud_CPT {
 				'upsell_ids'         => function() {
 					if ( ! empty( $this->product ) ) {
 						switch ( $this->product->get_type() ) {
-							case is_a( 'external' ):
-							case is_a( 'grouped' ):
+							case 'external':
+							case 'grouped':
 								return null;
 							default:
 								return ! empty( $this->product->get_upsell_ids() )
@@ -338,8 +338,8 @@ class Product extends Crud_CPT {
 				'cross_sell_ids'     => function() {
 					if ( ! empty( $this->product ) ) {
 						switch ( $this->product->get_type() ) {
-							case is_a( 'external' ):
-							case is_a( 'grouped' ):
+							case 'external':
+							case 'grouped':
 								return null;
 							default:
 								return ! empty( $this->product->get_cross_sell_ids() )

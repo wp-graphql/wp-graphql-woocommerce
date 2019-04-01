@@ -10,7 +10,7 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
@@ -159,7 +159,7 @@ class Filters {
 	 */
 	public static function graphql_data_loaders( $loaders, $context ) {
 		// WooCommerce customer loader.
-		$customer_loader     = self::customer_loader( $context );
+		$customer_loader        = self::customer_loader( $context );
 		$loaders['wc_customer'] = &$customer_loader;
 
 		// WooCommerce crud object loader.
@@ -181,7 +181,7 @@ class Filters {
 	 * @return mixed
 	 */
 	public static function graphql_post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return WC_Posts_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
+		return Post_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
 	}
 
 	/**
