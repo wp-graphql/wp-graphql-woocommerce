@@ -29,7 +29,7 @@ env:
 matrix:
   include:
     - php: 7.2
-      env: WP_VERSION=latest
+      env: WP_VERSION=latest COVERAGE=true
     - php: 7.1
       env: WP_VERSION=latest
     - php: 7.0
@@ -56,7 +56,6 @@ install:
 before_script:
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
-      bash bin/install-wp-tests.sh wpgraphql_woocommerce_test root '' 127.0.0.1 $WP_VERSION
       composer self-update
       composer require lucatume/wp-browser:^2.2
       composer install --no-interaction
@@ -66,18 +65,29 @@ before_script:
       cp tests/unit.suite.dist.yml tests/unit.suite.yml
       cp tests/wpunit.suite.dist.yml tests/wpunit.suite.yml
       cp .env.dist .env
+      composer install-wp-tests
       ls -al
     fi
+
+  # Install PHP CodeSniffer and WPCS.
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      composer global require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs:1.2.1 automattic/vipwpcs
-      phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+      composer require squizlabs/php_codesniffer
+      composer require dealerdirect/phpcodesniffer-composer-installer
+      composer require phpcompatibility/phpcompatibility-wp
+      composer require wp-coding-standards/wpcs:1.2.1
+      composer require automattic/vipwpcs
+      composer install
+
+      phpenv rehash
+
+      ./vendor/bin/phpcs --config-set default_standard WordPress
     fi
 
 script:
  # Execute unit tests with coverage if specified, otherwise without coverage
  - |
-    if [[ ! -z "$WP_VERSION" ]] ; then
+    if [[ ! -z "$WP_VERSION" ]]; then
       if [ $COVERAGE == true ]; then
         vendor/bin/codecept run wpunit --coverage --coverage-xml
       else
@@ -85,7 +95,7 @@ script:
       fi
     fi
  - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      phpcs
+    if [[ "$WP_TRAVISCI" == "phpcs" ]]; then
+      ./vendor/bin/phpcs --standard=WordPress
     fi
   
