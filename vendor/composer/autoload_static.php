@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit229ff70dc37de11683a83086ae4d6c0d
+class ComposerStaticInit339485de903a5ec99d466bb7d17239f3
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -51,7 +51,6 @@ class ComposerStaticInit229ff70dc37de11683a83086ae4d6c0d
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Product' => __DIR__ . '/../..' . '/src/model/class-product.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Product_Variation' => __DIR__ . '/../..' . '/src/model/class-product-variation.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Refund' => __DIR__ . '/../..' . '/src/model/class-refund.php',
-        'WPGraphQL\\Extensions\\WooCommerce\\Model\\WC_Post' => __DIR__ . '/../..' . '/src/model/class-wc-post.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/src/type/enum/class-backorders.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/src/type/enum/class-catalog-visibility.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/src/type/enum/class-discount-type.php',
@@ -73,9 +72,9 @@ class ComposerStaticInit229ff70dc37de11683a83086ae4d6c0d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit229ff70dc37de11683a83086ae4d6c0d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit229ff70dc37de11683a83086ae4d6c0d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit229ff70dc37de11683a83086ae4d6c0d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit339485de903a5ec99d466bb7d17239f3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit339485de903a5ec99d466bb7d17239f3::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit339485de903a5ec99d466bb7d17239f3::$classMap;
 
         }, null, ClassLoader::class);
     }

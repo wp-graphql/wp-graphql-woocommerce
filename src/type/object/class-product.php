@@ -37,6 +37,18 @@ class Product {
 						'type'        => 'Int',
 						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
 					),
+					'slug'              => array(
+						'type'        => 'String',
+						'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
+					),
+					'date'              => array(
+						'type'        => 'String',
+						'description' => __( 'Date product created', 'wp-graphql-woocommerce' ),
+					),
+					'modified'          => array(
+						'type'        => 'String',
+						'description' => __( 'Date product last updated', 'wp-graphql-woocommerce' ),
+					),
 					'type'              => array(
 						'type'        => 'String',
 						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
@@ -231,6 +243,10 @@ class Product {
 						'type'        => 'MediaItem',
 						'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
 					),
+					'shippingClassId'   => array(
+						'type'        => 'Int',
+						'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
+					),
 				),
 			)
 		);
@@ -292,7 +308,8 @@ class Product {
 					} elseif ( ! empty( $args['productId'] ) ) {
 						$product_id = absint( $args['productId'] );
 					} elseif ( ! empty( $args['slug'] ) ) {
-						$product_id = 0;
+						$post = get_post_by_slug( $args['slug'] );
+						$product_id = $post->ID;
 					}
 
 					$product = Factory::resolve_crud_object( $product_id, $context );

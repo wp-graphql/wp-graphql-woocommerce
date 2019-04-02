@@ -150,7 +150,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 				orderBy(orderId: \"$order_id\") {
 					orderId
 					currency
-					version
+					orderVersion
 					date
 					modified
 					status
@@ -162,8 +162,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 					total
 					totalTax
 					subtotal
-					taxTotals
-					number
+					orderNumber
 					orderKey
 					createdVia
 					pricesIncludeTax
@@ -210,17 +209,8 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 					datePaid
 					cartHash
 					shippingAddressMapUrl
-					formattedOrderTotal
-					formattedBillingFullName
-					formattedShippingFullName
-					formattedBillingAddress
-					formattedShippingAddress
 					hasBillingAddress
 					hasShippingAddress
-					keyIsValid
-					hasCartHash
-					isEditable
-					isPaid
 					isDownloadPermitted
 					needsShippingAddress
 					hasDownloadableItem
@@ -231,7 +221,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 					}
 					needsPayment
 					needsProcessing
-					lineItem {
+					items {
 						nodes {
 							id
 						}

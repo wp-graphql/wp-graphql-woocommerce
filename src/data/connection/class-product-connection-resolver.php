@@ -57,16 +57,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			switch ( true ) {
 				case is_a( $this->source, Coupon::class ):
 					if ( 'excludedProducts' === $this->info->fieldName ) {
-						$query_args['post__in'] = ! empty( $this->source->excluded_product_ids ) ? $this->source->excluded_product_ids : [ '0' ];
+						$query_args['post__in'] = $this->source->excluded_product_ids;
 					} else {
-						$query_args['post__in'] = ! empty( $this->source->product_ids ) ? $this->source->product_ids : [ '0' ];
+						$query_args['post__in'] = $this->source->product_ids;
 					}
 					break;
 
 				case is_a( $this->source, Customer::class ):
-					break;
-
-				case is_a( $this->source, Order::class ):
 					break;
 
 				case is_a( $this->source, Product::class ):

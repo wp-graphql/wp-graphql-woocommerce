@@ -100,7 +100,6 @@ class WC_Crud_Loader extends AbstractDataLoader {
 			'no_found_rows'       => true,
 			'split_the_query'     => false,
 			'ignore_sticky_posts' => true,
-			'fields'              => 'id=>type',
 		);
 
 		/**

@@ -40,6 +40,16 @@ abstract class Crud_CPT extends Model {
 		$author_id              = get_post_field( 'post_author', $post_id );
 		$this->post_type_object = get_post_type_object( $post_type );
 
+		/**
+		 * Set the resolving post to the global $post. That way any filters that
+		 * might be applied when resolving fields can rely on global post and
+		 * post data being set up.
+		 */
+		$post            = get_post( $post_id );
+		// @codingStandardsIgnoreLine
+		$GLOBALS['post'] = $post;
+		setup_postdata( $post );
+
 		$restricted_cap = $this->get_restricted_cap();
 		if ( ! has_filter( 'graphql_data_is_private', [ $this, 'is_private' ] ) ) {
 			add_filter( 'graphql_data_is_private', [ $this, 'is_private' ], 1, 3 );

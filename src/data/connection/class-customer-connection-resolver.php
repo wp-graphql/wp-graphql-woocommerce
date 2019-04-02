@@ -27,7 +27,12 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
-		return true;
+		switch ( true ) {
+			case current_user_can( 'list-users' ):
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**

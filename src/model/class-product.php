@@ -314,6 +314,9 @@ class Product extends Crud_CPT {
 				'imageId'            => function () {
 					return ! empty( $this->product->get_image_id() ) ? $this->product->get_image_id() : null;
 				},
+				'shippingClassId'            => function () {
+					return ! empty( $this->product->get_image_id() ) ? $this->product->get_shipping_class_id() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *

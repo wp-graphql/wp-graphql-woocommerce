@@ -26,7 +26,13 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
-		return true;
+		$post_type_obj = get_post_type_object( 'shop_coupon' );
+		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
+			return true;
+		} elseif ( is_a( $this->source, Customer::class && 'orders' === $this->info->fieldName ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -45,6 +51,17 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			'fields'         => 'ids',
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		);
+
+		if ( true === is_object( $this->source ) ) {
+			switch ( true ) {
+				case is_a( $this->source, Customer::class ):
+					if ( 'orders' === $this->info->fieldName ) {
+						$query_args['meta_key']   = '_customer_user';
+						$query_args['meta_value'] = $this->source->ID;
+					}
+					break;
+			}
+		}
 
 		return $query_args;
 	}

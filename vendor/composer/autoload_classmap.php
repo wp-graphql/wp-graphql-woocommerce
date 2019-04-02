@@ -36,7 +36,6 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Product' => $baseDir . '/src/model/class-product.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Product_Variation' => $baseDir . '/src/model/class-product-variation.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Refund' => $baseDir . '/src/model/class-refund.php',
-    'WPGraphQL\\Extensions\\WooCommerce\\Model\\WC_Post' => $baseDir . '/src/model/class-wc-post.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/src/type/enum/class-backorders.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/src/type/enum/class-catalog-visibility.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => $baseDir . '/src/type/enum/class-discount-type.php',

@@ -13,7 +13,8 @@ namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-
+use WPGraphQL\Extension\WooCommerce\Model\Order;
+use WPGraphQL\Extensions\WooCommerce\Model\Product;
 /**
  * Class Product_Download_Connection_Resolver
  */
@@ -27,7 +28,22 @@ class Product_Download_Connection_Resolver {
 	 * @param ResolveInfo $info       - ResolveInfo object.
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
-		$downloads = $source->downloads;
+		switch ( true ) {
+			case is_a( $source, Product::class ):
+				// @codingStandardsIgnoreLine
+				if ( 'downloads' === $info->fieldName ) {
+					$downloads = $source->downloads;
+				}
+				break;
+			case is_a( $source, Order::class ):
+				// @codingStandardsIgnoreLine
+				if ( 'downloadableItems' === $info->fieldName ) {
+					$downloads = $source->downloadable_items;
+				}
+				break;
+			default:
+				break;
+		}
 
 		$connection = Relay::connectionFromArray( $downloads, $args );
 		$nodes      = array();

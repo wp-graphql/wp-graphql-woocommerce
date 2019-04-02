@@ -2,13 +2,32 @@
 
 use GraphQLRelay\Relay;
 class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $admin;
+	private $shopManager;
+	private $customer;
+	private $coupon;
 
 	public function setUp() {
-		// before
 		parent::setUp();
-		$this->user = $this->factory->user->create( array(
-			'role' => 'administrator',
-		) );
+
+		$this->admin = $this->factory->user->create(
+			array(
+				'role' => 'administrator',
+			)
+		);
+		$this->shopManager = $this->factory->user->create(
+			array(
+				'role' => 'shop_manager',
+			)
+		);
+		$this->customer = $this->factory->user->create(
+			array(
+				'role' => 'customer',
+			)
+		);
+
+		// Create a coupon
+		$this->coupon = $this->create_coupon( '10off' );
 	}
 
 	public function tearDown() {
@@ -17,22 +36,54 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+
+	/**
+	 * Create a dummy coupon.
+	 *
+	 * @param string $coupon_code
+	 * @param array  $meta
+	 *
+	 * @return WC_Coupon
+	 */
+	private function create_coupon( $coupon_code = 'dummycoupon', $meta = array() ) {
+		// Insert post
+		$coupon_id = wp_insert_post( array(
+			'post_title'   => $coupon_code,
+			'post_type'    => 'shop_coupon',
+			'post_status'  => 'publish',
+			'post_excerpt' => 'This is a dummy coupon',
+		) );
+
+		$meta = wp_parse_args( $meta, array(
+			'discount_type'              => 'fixed_cart',
+			'coupon_amount'              => '1',
+			'individual_use'             => 'no',
+			'product_ids'                => '',
+			'exclude_product_ids'        => '',
+			'usage_limit'                => '',
+			'usage_limit_per_user'       => '',
+			'limit_usage_to_x_items'     => '',
+			'expiry_date'                => '',
+			'free_shipping'              => 'no',
+			'exclude_sale_items'         => 'no',
+			'product_categories'         => array(),
+			'exclude_product_categories' => array(),
+			'minimum_amount'             => '',
+			'maximum_amount'             => '',
+			'customer_email'             => array(),
+			'usage_count'                => '0',
+		) );
+
+		// Update meta.
+		foreach ( $meta as $key => $value ) {
+			update_post_meta( $coupon_id, $key, $value );
+		}
+
+		return new \WC_Coupon( $coupon_code );
+	}
+
 	// tests
 	public function testCouponQuery() {
-		/**
-		 * Create a coupon
-		 */
-		$wc_coupon = new WC_Coupon();
-		$wc_coupon->set_code( '10off' );
-		$wc_coupon->set_description( 'Test coupon' );
-		$wc_coupon->set_discount_type( 'percent' );
-		$wc_coupon->set_amount( floatval( 25 ) );
-		$wc_coupon->set_individual_use( true );
-		$wc_coupon->set_usage_limit( 1 );
-		$wc_coupon->set_date_expires( strtotime( '+6 months' ) );
-		$wc_coupon->set_free_shipping( false );
-		$wc_coupon->save();
-
 		$query     = '
 			query CouponQuery( $id: ID! ){
 				coupon( id: $id ) {
@@ -84,7 +135,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$coupon_id = Relay::toGlobalId( 'shop_coupon', $wc_coupon->get_id() );
+		$coupon_id = Relay::toGlobalId( 'shop_coupon', $this->coupon->get_id() );
 		$variables = wp_json_encode( array( 'id' => $coupon_id ) );
 		$actual    = do_graphql_request( $query, 'CouponQuery', $variables );
 
@@ -92,30 +143,30 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => [
 				'coupon' => [
 					'id'                        => $coupon_id,
-					'couponId'                  => $wc_coupon->get_id(),
-					'code'                      => $wc_coupon->get_code(),
-					'amount'                    => $wc_coupon->get_amount(),
-					'date'                      => $wc_coupon->get_date_created(),
-					'modified'                  => $wc_coupon->get_date_modified(),
-					'discountType'              => $wc_coupon->get_discount_type(),
-					'description'               => $wc_coupon->get_description(),
-					'dateExpiry'                => $wc_coupon->get_date_expires(),
-					'usageCount'                => $wc_coupon->get_usage_count(),
-					'individualUse'             => $wc_coupon->get_individual_use(),
-					'usageLimit'                => $wc_coupon->get_usage_limit(),
-					'usageLimitPerUser'         => $wc_coupon->get_usage_limit_per_user(),
-					'limitUsageToXItems'        => $wc_coupon->get_limit_usage_to_x_items(),
-					'freeShipping'              => $wc_coupon->get_free_shipping(),
-					'excludeSaleItems'          => $wc_coupon->get_exclude_sale_items(),
-					'minimumAmount'             => $wc_coupon->get_minimum_amount(),
-					'maximumAmount'             => $wc_coupon->get_maximum_amount(),
-					'emailRestrictions'         => $wc_coupon->get_email_restrictions(),
+					'couponId'                  => $this->coupon->get_id(),
+					'code'                      => $this->coupon->get_code(),
+					'amount'                    => $this->coupon->get_amount(),
+					'date'                      => $this->coupon->get_date_created(),
+					'modified'                  => $this->coupon->get_date_modified(),
+					'discountType'              => $this->coupon->get_discount_type(),
+					'description'               => $this->coupon->get_description(),
+					'dateExpiry'                => $this->coupon->get_date_expires(),
+					'usageCount'                => $this->coupon->get_usage_count(),
+					'individualUse'             => $this->coupon->get_individual_use(),
+					'usageLimit'                => $this->coupon->get_usage_limit(),
+					'usageLimitPerUser'         => $this->coupon->get_usage_limit_per_user(),
+					'limitUsageToXItems'        => $this->coupon->get_limit_usage_to_x_items(),
+					'freeShipping'              => $this->coupon->get_free_shipping(),
+					'excludeSaleItems'          => $this->coupon->get_exclude_sale_items(),
+					'minimumAmount'             => $this->coupon->get_minimum_amount(),
+					'maximumAmount'             => $this->coupon->get_maximum_amount(),
+					'emailRestrictions'         => $this->coupon->get_email_restrictions(),
 					'products'                  => [
 						'nodes' => array_map(
 							function( $id ) {
 								return array( 'productId' => $id );
 							},
-							$wc_coupon->get_product_ids()
+							$this->coupon->get_product_ids()
 						),
 					],
 					'excludedProducts'          => [
@@ -123,7 +174,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 							function( $id ) {
 								return array( 'productId' => $id );
 							},
-							$wc_coupon->get_excluded_product_ids()
+							$this->coupon->get_excluded_product_ids()
 						),
 					],
 					'productCategories'         => [
@@ -131,7 +182,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 							function( $id ) {
 								return array( 'productCategoryId' => $id );
 							},
-							$wc_coupon->get_product_categories()
+							$this->coupon->get_product_categories()
 						),
 					],
 					'excludedProductCategories' => [
@@ -139,7 +190,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 							function( $id ) {
 								return array( 'productCategoryId' => $id );
 							},
-							$wc_coupon->get_excluded_product_categories()
+							$this->coupon->get_excluded_product_categories()
 						),
 					],
 					'usedBy'                    => [
@@ -147,7 +198,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 							function( $id ) {
 								return array( 'customerId' => $id );
 							},
-							$wc_coupon->get_used_by()
+							$this->coupon->get_used_by()
 						),
 					],
 				],
@@ -157,12 +208,12 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * use --debug flag to view
 		 */
-		\Codeception\Util\Debug::debug( $actual );
+		codecept_debug( $actual );
 
 		/**
 		 * use --debug flag to view
 		 */
-		\Codeception\Util\Debug::debug( $expected );
+		codecept_debug( $expected );
 
 		$this->assertEquals( $expected, $actual );
 	}

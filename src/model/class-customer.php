@@ -61,6 +61,9 @@ class Customer extends Model {
 
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
+				'ID'                    => function() {
+					return $this->customer->get_id();
+				},
 				'id'                    => function() {
 					return ( ! empty( $this->customer ) ) ? Relay::toGlobalId( 'customer', $this->customer->get_id() ) : null;
 				},

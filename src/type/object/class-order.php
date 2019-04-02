@@ -29,117 +29,171 @@ class Order {
 			array(
 				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
-					'id'                  => array(
+					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the order', 'wp-graphql-woocommerce' ),
 					),
-					'orderId'             => array(
+					'orderId'               => array(
 						'type'        => 'Int',
 						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
 					),
-					'orderKey'            => array(
+					'orderKey'              => array(
 						'type'        => 'String',
 						'description' => __( 'Order key', 'wp-graphql-woocommerce' ),
 					),
-					'currency'            => array(
+					'date'                  => array(
+						'type'        => 'String',
+						'description' => __( 'Date order was created', 'wp-graphql-woocommerce' ),
+					),
+					'modified'              => array(
+						'type'        => 'String',
+						'description' => __( 'Date order was last updated', 'wp-graphql-woocommerce' ),
+					),
+					'currency'              => array(
 						'type'        => 'String',
 						'description' => __( 'Order currency', 'wp-graphql-woocommerce' ),
 					),
-					'paymentMethod'       => array(
+					'paymentMethod'         => array(
 						'type'        => 'String',
 						'description' => __( 'Payment method', 'wp-graphql-woocommerce' ),
 					),
-					'paymentMethodTitle'  => array(
+					'paymentMethodTitle'    => array(
 						'type'        => 'String',
 						'description' => __( 'Payment method title', 'wp-graphql-woocommerce' ),
 					),
-					'transactionId'       => array(
+					'transactionId'         => array(
 						'type'        => 'String',
 						'description' => __( 'Transaction ID', 'wp-graphql-woocommerce' ),
 					),
-					'customerIpAddress'   => array(
+					'customerIpAddress'     => array(
 						'type'        => 'String',
 						'description' => __( 'Customer IP Address', 'wp-graphql-woocommerce' ),
 					),
-					'customerUserAgent'   => array(
+					'customerUserAgent'     => array(
 						'type'        => 'String',
 						'description' => __( 'Customer User Agent', 'wp-graphql-woocommerce' ),
 					),
-					'createdVia'          => array(
+					'createdVia'            => array(
 						'type'        => 'String',
 						'description' => __( 'How order was created', 'wp-graphql-woocommerce' ),
 					),
-					'dateCompleted'       => array(
+					'dateCompleted'         => array(
 						'type'        => 'String',
 						'description' => __( 'Date order was completed', 'wp-graphql-woocommerce' ),
 					),
-					'datePaid'            => array(
+					'datePaid'              => array(
 						'type'        => 'String',
 						'description' => __( 'Date order was paid', 'wp-graphql-woocommerce' ),
 					),
-					'discountTotal'       => array(
+					'discountTotal'         => array(
 						'type'        => 'Float',
 						'description' => __( 'Discount total amount', 'wp-graphql-woocommerce' ),
 					),
-					'discountTax'         => array(
+					'discountTax'           => array(
 						'type'        => 'Float',
 						'description' => __( 'Discount tax amount', 'wp-graphql-woocommerce' ),
 					),
-					'shippingTotal'       => array(
+					'shippingTotal'         => array(
 						'type'        => 'Float',
 						'description' => __( 'Shipping total amount', 'wp-graphql-woocommerce' ),
 					),
-					'shippingTax'         => array(
+					'shippingTax'           => array(
 						'type'        => 'Float',
 						'description' => __( 'Shipping tax amount', 'wp-graphql-woocommerce' ),
 					),
-					'cartTax'             => array(
+					'cartTax'               => array(
 						'type'        => 'Float',
 						'description' => __( 'Cart tax amount', 'wp-graphql-woocommerce' ),
 					),
-					'total'               => array(
+					'total'                 => array(
 						'type'        => 'Float',
 						'description' => __( 'Order grand total', 'wp-graphql-woocommerce' ),
 					),
-					'totalTax'            => array(
+					'totalTax'              => array(
 						'type'        => 'Float',
 						'description' => __( 'Order taxes', 'wp-graphql-woocommerce' ),
 					),
-					'subtotal'            => array(
+					'subtotal'              => array(
 						'type'        => 'Float',
 						'description' => __( 'Order subtotal', 'wp-graphql-woocommerce' ),
 					),
-					'orderNumber'         => array(
+					'orderNumber'           => array(
 						'type'        => 'String',
 						'description' => __( 'Order number', 'wp-graphql-woocommerce' ),
 					),
-					'orderVersion'        => array(
+					'orderVersion'          => array(
 						'type'        => 'String',
 						'description' => __( 'Order version', 'wp-graphql-woocommerce' ),
 					),
-					'pricesIncludeTax'    => array(
+					'pricesIncludeTax'      => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Prices include taxes?', 'wp-graphql-woocommerce' ),
 					),
-					'cartHash'            => array(
+					'cartHash'              => array(
 						'type'        => 'String',
 						'description' => __( 'Cart hash', 'wp-graphql-woocommerce' ),
 					),
-					'customerNote'        => array(
+					'customerNote'          => array(
 						'type'        => 'String',
 						'description' => __( 'Customer note', 'wp-graphql-woocommerce' ),
 					),
-					'isDownloadPermitted' => array(
+					'isDownloadPermitted'   => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Is product download is permitted', 'wp-graphql-woocommerce' ),
 					),
-					'billing'             => array(
+					'billing'               => array(
 						'type'        => 'CustomerAddress',
 						'description' => __( 'Order billing properties', 'wp-graphql-woocommerce' ),
 					),
-					'shipping'            => array(
+					'shipping'              => array(
 						'type'        => 'CustomerAddress',
 						'description' => __( 'Order shipping properties', 'wp-graphql-woocommerce' ),
+					),
+					'status'                => array(
+						'type'        => 'String',
+						'description' => __( 'Order status', 'wp-graphql-woocommerce' ),
+					),
+					'parent'                => array(
+						'type'        => 'Order',
+						'description' => __( 'Parent order', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $order, array $args, AppContext $context ) {
+							return Factory::resolve_crud_object( $order->parent, $context );
+						},
+					),
+					'customer'              => array(
+						'type'        => 'Customer',
+						'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $order, array $args, AppContext $context ) {
+							return Factory::resolve_customer( $order->customer_id, $context );
+						},
+					),
+					'shippingAddressMapUrl' => array(
+						'type'        => 'String',
+						'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
+					),
+					'hasBillingAddress'     => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Order has a billing address?', 'wp-graphql-woocommerce' ),
+					),
+					'hasShippingAddress'    => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Order has a shipping address?', 'wp-graphql-woocommerce' ),
+					),
+					'needsShippingAddress'  => array(
+						'type'        => 'Boolean',
+						'description' => __( 'If order needs shipping address', 'wp-graphql-woocommerce' ),
+					),
+					'hasDownloadableItem'   => array(
+						'type'        => 'Boolean',
+						'description' => __( 'If order contains a downloadable product', 'wp-graphql-woocommerce' ),
+					),
+					'needsPayment'          => array(
+						'type'        => 'Boolean',
+						'description' => __( 'If order needs payment', 'wp-graphql-woocommerce' ),
+					),
+					'needsProcessing'       => array(
+						'type'        => 'Boolean',
+						'description' => __( 'If order needs processing before it can be completed', 'wp-graphql-woocommerce' ),
 					),
 				),
 			)

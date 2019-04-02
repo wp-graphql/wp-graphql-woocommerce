@@ -21,6 +21,14 @@ class Product_Downloads {
 	 */
 	public static function register_connections() {
 		register_graphql_connection( self::get_connection_config() );
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Order',
+					'fromFieldName' => 'downloadableItems',
+				)
+			)
+		);
 	}
 
 	/**
