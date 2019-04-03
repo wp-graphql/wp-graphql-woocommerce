@@ -294,7 +294,7 @@ class Product extends Crud_CPT {
 				'imageId'            => function () {
 					return ! empty( $this->data->get_image_id() ) ? $this->data->get_image_id() : null;
 				},
-				'shippingClassId'            => function () {
+				'shippingClassId'    => function () {
 					return ! empty( $this->data->get_image_id() ) ? $this->data->get_shipping_class_id() : null;
 				},
 				/**
