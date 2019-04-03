@@ -135,7 +135,7 @@ class WC_Crud_Loader extends AbstractDataLoader {
 				throw new UserError( sprintf( __( 'No item was found with ID %s', 'wp-graphql-woocommerce' ), $key ) );
 			}
 
-			if ( ! in_array( $post_type, $wc_post_types, false ) ) {
+			if ( ! in_array( $post_type, $wc_post_types, true ) ) {
 				/* translators: invalid post-type error message */
 				throw new UserError( sprintf( __( '%s is not a valid WooCommerce post-type', 'wp-graphql-woocommerce' ), $post_type ) );
 			}

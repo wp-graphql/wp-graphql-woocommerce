@@ -224,15 +224,15 @@ class Order {
 		);
 
 		$post_by_args = array(
-			'id'       => array(
+			'id'          => array(
 				'type'        => 'ID',
 				'description' => __( 'Get the order by its global ID', 'wp-graphql-woocommerce' ),
 			),
-			'orderId' => array(
+			'orderId'     => array(
 				'type'        => 'Int',
 				'description' => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
 			),
-			'orderNumber'      => array(
+			'orderNumber' => array(
 				'type'        => 'String',
 				'description' => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
 			),
