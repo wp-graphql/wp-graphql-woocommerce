@@ -19,14 +19,6 @@ use WPGraphQL\Model\Model;
  */
 class Product_Variation extends Model {
 	/**
-	 * Stores the instance of WC_Product_Variation
-	 *
-	 * @var \WC_Product_Variation $variation
-	 * @access protected
-	 */
-	protected $variation;
-
-	/**
 	 * Product_Variation constructor
 	 *
 	 * @param int $id - product_variation post-type ID.
@@ -35,22 +27,16 @@ class Product_Variation extends Model {
 	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->variation           = new \WC_Product_Variation( $id );
+		$this->data                = new \WC_Product_Variation( $id );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
-			'userId',
-			'name',
-			'firstName',
-			'lastName',
-			'description',
-			'slug',
+			'variationId',
 		];
 
-		parent::__construct( 'ProductVariationObject', $this->variation, 'list_users', $allowed_restricted_fields, $id );
-		$this->init();
+		parent::__construct( 'list_users', $allowed_restricted_fields, $id );
 	}
 
 	/**
@@ -59,68 +45,64 @@ class Product_Variation extends Model {
 	 * @access public
 	 */
 	public function init() {
-		if ( 'private' === $this->get_visibility() || is_null( $this->variation ) ) {
-			return null;
-		}
-
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
 				'ID'                 => function() {
-					return $this->variation->get_id();
+					return $this->data->get_id();
 				},
 				'id'                 => function() {
-					return ! empty( $this->variation ) ? Relay::toGlobalId( 'product_variation', $this->variation->get_id() ) : null;
+					return ! empty( $this->data ) ? Relay::toGlobalId( 'product_variation', $this->data->get_id() ) : null;
 				},
 				'variationId'        => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_id() : null;
+					return ! empty( $this->data ) ? $this->data->get_id() : null;
 				},
 				'sku'                => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_sku() : null;
+					return ! empty( $this->data ) ? $this->data->get_sku() : null;
 				},
 				'weight'             => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_weight() : null;
+					return ! empty( $this->data ) ? $this->data->get_weight() : null;
 				},
 				'length'             => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_length() : null;
+					return ! empty( $this->data ) ? $this->data->get_length() : null;
 				},
 				'width'              => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_width() : null;
+					return ! empty( $this->data ) ? $this->data->get_width() : null;
 				},
 				'height'             => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_height() : null;
+					return ! empty( $this->data ) ? $this->data->get_height() : null;
 				},
 				'taxClass'           => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_tax_class() : null;
+					return ! empty( $this->data ) ? $this->data->get_tax_class() : null;
 				},
 				'manageStock'        => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_manage_stock() : null;
+					return ! empty( $this->data ) ? $this->data->get_manage_stock() : null;
 				},
 				'stockQuantity'      => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_stock_quantity() : null;
+					return ! empty( $this->data ) ? $this->data->get_stock_quantity() : null;
 				},
 				'backorders'         => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_backorders() : null;
+					return ! empty( $this->data ) ? $this->data->get_backorders() : null;
 				},
 				'purchaseNote'       => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_purchase_note() : null;
+					return ! empty( $this->data ) ? $this->data->get_purchase_note() : null;
 				},
 				'catalogVisibility'  => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_catalog_visibility() : null;
+					return ! empty( $this->data ) ? $this->data->get_catalog_visibility() : null;
 				},
 				'hasAttributes'      => function() {
-					return ! empty( $this->variation ) ? $this->variation->has_attributes() : null;
+					return ! empty( $this->data ) ? $this->data->has_attributes() : null;
 				},
 				'isPurchasable'      => function() {
-					return ! empty( $this->variation ) ? $this->variation->is_purchasable() : null;
+					return ! empty( $this->data ) ? $this->data->is_purchasable() : null;
 				},
 				'price'              => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_price() : null;
+					return ! empty( $this->data ) ? $this->data->get_price() : null;
 				},
 				'salePrice'          => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_sale_price() : null;
+					return ! empty( $this->data ) ? $this->data->get_sale_price() : null;
 				},
 				'regularPrice'       => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_regular_price() : null;
+					return ! empty( $this->data ) ? $this->data->get_regular_price() : null;
 				},
 				/**
 				 * Connection resolvers fields
@@ -129,19 +111,19 @@ class Product_Variation extends Model {
 				 * Note: underscore naming style is used as a quick identifier
 				 */
 				'parent_id'          => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_parent_id() : null;
+					return ! empty( $this->data ) ? $this->data->get_parent_id() : null;
 				},
 				'shipping_class_id'  => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_shipping_class_id() : null;
+					return ! empty( $this->data ) ? $this->data->get_shipping_class_id() : null;
 				},
 				'image_id'           => function() {
-					return ! empty( $this->variation ) ? $this->variation->get_image_id() : null;
+					return ! empty( $this->data ) ? $this->data->get_image_id() : null;
 				},
 				'attributes'         => function() {
-					return ! empty( $this->variation ) ? array_values( $this->variation->get_attributes() ) : null;
+					return ! empty( $this->data ) ? array_values( $this->data->get_attributes() ) : null;
 				},
 				'default_attributes' => function() {
-					return ! empty( $this->variation ) ? array_values( $this->variation->get_default_attributes() ) : null;
+					return ! empty( $this->data ) ? array_values( $this->data->get_default_attributes() ) : null;
 				},
 			);
 		}

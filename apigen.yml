@@ -1,0 +1,9 @@
+parameters:
+    visibility_levels: [public, protected] # array
+    annotation_groups: [todo, deprecated] # array
+    title: "WPGraphQL WooCommerce Class Reference" # string
+    base_url: "https://developer.axistaylor.com/wp-graphql-woocommerce/class-reference" # string
+    source: .
+    destination: "docs/class-reference" # string
+    exclude: "tests"
+    overwrite: false # bool

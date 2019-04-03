@@ -19,14 +19,6 @@ use WPGraphQL\Model\Model;
  */
 class Refund extends Model {
 	/**
-	 * Stores the instance of WC_Order_Refund
-	 *
-	 * @var \WC_Order_Refund $refund
-	 * @access protected
-	 */
-	protected $refund;
-
-	/**
 	 * Refund constructor
 	 *
 	 * @param int $id - shop_order_refund post-type ID.
@@ -35,7 +27,7 @@ class Refund extends Model {
 	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->refund              = new \WC_Order_Refund( $id );
+		$this->data                = new \WC_Order_Refund( $id );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
@@ -49,8 +41,7 @@ class Refund extends Model {
 			'slug',
 		];
 
-		parent::__construct( 'RefundObject', $this->refund, 'list_users', $allowed_restricted_fields, $id );
-		$this->init();
+		parent::__construct( 'list_users', $allowed_restricted_fields, $id );
 	}
 
 	/**
@@ -59,33 +50,29 @@ class Refund extends Model {
 	 * @access public
 	 */
 	public function init() {
-		if ( 'private' === $this->get_visibility() || is_null( $this->refund ) ) {
-			return null;
-		}
-
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
 				'ID'             => function() {
-					return $this->refund->get_id();
+					return $this->data->get_id();
 				},
 				'id'             => function() {
-					return ! empty( $this->refund ) ? Relay::toGlobalId( 'shop_order', $this->refund->get_id() ) : null;
+					return ! empty( $this->data ) ? Relay::toGlobalId( 'shop_order', $this->data->get_id() ) : null;
 				},
 				'refundId'       => function() {
-					return ! empty( $this->refund ) ? $this->refund->get_id() : null;
+					return ! empty( $this->data ) ? $this->data->get_id() : null;
 				},
 				'title'          => function() {
-					return ! empty( $this->refund ) ? $this->refund->get_post_title() : null;
+					return ! empty( $this->data ) ? $this->data->get_post_title() : null;
 				},
 				'amount'         => function() {
-					return ! empty( $this->refund ) ? $this->refund->get_amount() : null;
+					return ! empty( $this->data ) ? $this->data->get_amount() : null;
 				},
 				'reason'         => function() {
-					return ! empty( $this->refund ) ? $this->refund->get_reason() : null;
+					return ! empty( $this->data ) ? $this->data->get_reason() : null;
 				},
 				'refunded_by_id' => array(
 					'callback'   => function() {
-						return ! empty( $this->refund ) ? $this->refund->get_refunded_by() : null;
+						return ! empty( $this->data ) ? $this->data->get_refunded_by() : null;
 					},
 					'capability' => 'list_users',
 				),
