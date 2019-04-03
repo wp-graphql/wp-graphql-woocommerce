@@ -5,6 +5,15 @@ paths:
     support: tests/_support
     envs: tests/_envs
 actor_suffix: Tester
+settings:
+    colors: true
+    memory_limit: 1024M
+coverage:
+    enabled: true
+    whitelist:
+      include:
+        - wp-graphql-woocommerce.php
+        - src/*.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed

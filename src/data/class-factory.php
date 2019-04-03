@@ -10,10 +10,16 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Data;
 
+use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 
@@ -22,43 +28,119 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolve
  */
 class Factory {
 	/**
-	 * Resolves WooCommerce post-types connections
+	 * Returns the Customer store object for the provided user ID
+	 *
+	 * @param int        $id      - user ID of the customer being retrieved.
+	 * @param AppContext $context - AppContext object.
+	 *
+	 * @return Deferred object
+	 * @access public
+	 */
+	public static function resolve_customer( $id, $context ) {
+		if ( empty( $id ) || ! absint( $id ) ) {
+			return null;
+		}
+		$customer_id = absint( $id );
+		$loader      = $context->getLoader( 'wc_customer' );
+		$loader->buffer( [ $customer_id ] );
+		return new Deferred(
+			function () use ( $loader, $customer_id ) {
+				return $loader->load( $customer_id );
+			}
+		);
+	}
+
+	/**
+	 * Returns the WooCommerce CRUD object for the post ID
+	 *
+	 * @param int        $id      - post ID of the crud object being retrieved.
+	 * @param AppContext $context - AppContext object.
+	 *
+	 * @return Deferred object
+	 * @access public
+	 */
+	public static function resolve_crud_object( $id, $context ) {
+		if ( empty( $id ) || ! absint( $id ) ) {
+			return null;
+		}
+		$object_id = absint( $id );
+		$loader    = $context->getLoader( 'wc_crud' );
+		$loader->buffer( [ $object_id ] );
+		return new Deferred(
+			function () use ( $loader, $object_id ) {
+				return $loader->load( $object_id );
+			}
+		);
+	}
+
+	/**
+	 * Resolves Coupon connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_coupon_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new Coupon_Connection_Resolver( $source, $args, $context, $info );
+		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves Customer connections
 	 *
 	 * @param mixed       $source     - Connection parent resolver.
 	 * @param array       $args       - Connection arguments.
 	 * @param AppContext  $context    - AppContext object.
 	 * @param ResolveInfo $info       - ResolveInfo object.
-	 * @param string      $post_type  - Connection target post-type.
 	 *
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_wc_posts_connection( $source, array $args, $context, ResolveInfo $info, $post_type ) {
-		$resolver = new WC_Posts_Connection_Resolver( $source, $args, $context, $info, $post_type );
+	public static function resolve_customer_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new Customer_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
 
 	/**
-	 * Resolves WooCommerce term connections
+	 * Resolves Order connections
 	 *
-	 * @param mixed       $source        - Connection parent resolver.
-	 * @param array       $args          - Connection arguments.
-	 * @param AppContext  $context       - AppContext object.
-	 * @param ResolveInfo $info          - ResolveInfo object.
-	 * @param string      $taxonomy_name - Connection target taxonomy.
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
 	 *
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_wc_terms_connection( $source, array $args, $context, ResolveInfo $info, $taxonomy_name ) {
-		$resolver = new WC_Terms_Connection_Resolver( $source, $args, $context, $info, $taxonomy_name );
+	public static function resolve_order_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
 
 	/**
-	 * Resolves product attribute connections
+	 * Resolves Product connections
 	 *
-	 * @param mixed       $source     - Connection parent resolver.
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_product_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves ProductAttribute connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
 	 * @param array       $args       - Connection arguments.
 	 * @param AppContext  $context    - AppContext object.
 	 * @param ResolveInfo $info       - ResolveInfo object.
@@ -72,9 +154,9 @@ class Factory {
 	}
 
 	/**
-	 * Resolves product download connections
+	 * Resolves ProductDownload connections
 	 *
-	 * @param mixed       $source     - Connection parent resolver.
+	 * @param mixed       $source     - Data resolver for connection source.
 	 * @param array       $args       - Connection arguments.
 	 * @param AppContext  $context    - AppContext object.
 	 * @param ResolveInfo $info       - ResolveInfo object.
@@ -85,5 +167,21 @@ class Factory {
 	public static function resolve_product_download_connection( $source, array $args, $context, ResolveInfo $info ) {
 		$resolver = new Product_Download_Connection_Resolver();
 		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
+	/**
+	 * Resolves Refund connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_refund_connection( $source, array $args, $context, ResolveInfo $info ) {
+		$resolver = new Refund_Connection_Resolver( $source, $args, $context, $info );
+		return $resolver->get_connection();
 	}
 }

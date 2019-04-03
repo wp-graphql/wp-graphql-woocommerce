@@ -30,7 +30,7 @@ class Product_Download {
 					'id'              => array(
 						'type'    => array( 'non_null' => 'ID' ),
 						'resolve' => function ( $download ) {
-							return ! empty( $download ) ? Relay::toGlobalId( 'product', $download->get_id() ) : null;
+							return ! empty( $download ) ? Relay::toGlobalId( 'product_download', $download->get_id() ) : null;
 						},
 					),
 					'downloadId'      => array(
