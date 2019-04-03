@@ -26,7 +26,15 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
-		return true;
+		$post_type_obj = get_post_type_object( 'shop_order_refund' );
+		switch ( true ) {
+			case current_user_can( $post_type_obj->cap->edit_posts ):
+			case is_a( $this->source, Order::class ) && 'refunds' === $this->info->fieldName:
+			case is_a( $this->source, Customer::class ) && 'refunds' === $this->info->fieldName:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
@@ -45,6 +53,22 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 			'fields'         => 'ids',
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		);
+
+		switch ( true ) {
+			case is_a( $this->source, Order::class ):
+				if ( 'refunds' === $this->info->fieldName ) {
+					$query_args['post_parent'] = $this->source->ID;
+				}
+				break;
+			case is_a( $this->source, Customer::class ):
+				if ( 'refunds' === $this->info->fieldName ) {
+					$query_args['meta_key']   = '_customer_user';
+					$query_args['meta_value'] = $this->source->ID;
+				}
+				break;
+			default:
+				break;
+		}
 
 		return $query_args;
 	}

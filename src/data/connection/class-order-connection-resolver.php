@@ -26,13 +26,14 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
-		$post_type_obj = get_post_type_object( 'shop_coupon' );
-		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
-			return true;
-		} elseif ( is_a( $this->source, Customer::class && 'orders' === $this->info->fieldName ) ) {
-			return true;
+		$post_type_obj = get_post_type_object( 'shop_order' );
+		switch ( true ) {
+			case current_user_can( $post_type_obj->cap->edit_posts ):
+			case is_a( $this->source, Customer::class ) && 'orders' === $this->info->fieldName:
+				return true;
+			default:
+				return false;
 		}
-		return false;
 	}
 
 	/**

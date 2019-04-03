@@ -65,15 +65,30 @@ class Refund extends Model {
 
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
-				'ID'      => function() {
+				'ID'             => function() {
 					return $this->refund->get_id();
 				},
-				'id'      => function() {
+				'id'             => function() {
 					return ! empty( $this->refund ) ? Relay::toGlobalId( 'shop_order', $this->refund->get_id() ) : null;
 				},
-				'orderId' => function() {
+				'refundId'       => function() {
 					return ! empty( $this->refund ) ? $this->refund->get_id() : null;
 				},
+				'title'          => function() {
+					return ! empty( $this->refund ) ? $this->refund->get_post_title() : null;
+				},
+				'amount'         => function() {
+					return ! empty( $this->refund ) ? $this->refund->get_amount() : null;
+				},
+				'reason'         => function() {
+					return ! empty( $this->refund ) ? $this->refund->get_reason() : null;
+				},
+				'refunded_by_id' => array(
+					'callback'   => function() {
+						return ! empty( $this->refund ) ? $this->refund->get_refunded_by() : null;
+					},
+					'capability' => 'list_users',
+				),
 			);
 		}
 

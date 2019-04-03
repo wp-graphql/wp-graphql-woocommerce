@@ -66,6 +66,16 @@ abstract class Crud_CPT extends Model {
 	}
 
 	/**
+	 * Forwards function calls to crud object instance.
+	 *
+	 * @param string $method - function name.
+	 * @param array  $args  - function call arguments.
+	 */
+	public function __call( $method, $args ) {
+		$data->$method( ...$args );
+	}
+
+	/**
 	 * Callback for the graphql_data_is_private filter to determine if the crud object should be
 	 * considered private
 	 *

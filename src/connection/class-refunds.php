@@ -21,6 +21,17 @@ class Refunds {
 	public static function register_connections() {
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
+		// From Order.
+		register_graphql_connection(
+			self::get_connection_config(
+				array( 'fromType' => 'Order' )
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				array( 'fromType' => 'Customer' )
+			)
+		);
 	}
 
 	/**

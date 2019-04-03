@@ -14,6 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Data\DataSource;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
@@ -29,13 +30,32 @@ class Refund {
 			array(
 				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
-					'id'       => array(
+					'id'         => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the refund', 'wp-graphql-woocommerce' ),
 					),
-					'refundId' => array(
+					'refundId'   => array(
 						'type'        => 'Int',
 						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+					),
+					'title'      => array(
+						'type'        => 'String',
+						'description' => __( 'A title for the new post type', 'wp-graphql-woocommerce' ),
+					),
+					'amount'     => array(
+						'type'        => 'Float',
+						'description' => __( 'Refunded amount', 'wp-graphql-woocommerce' ),
+					),
+					'reason'     => array(
+						'type'        => 'String',
+						'description' => __( 'Reason for refund', 'wp-graphql-woocommerce' ),
+					),
+					'refundedBy' => array(
+						'type'        => 'User',
+						'description' => __( 'User who completed the refund', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context ) {
+							return DataSource::resolve_user( $source->refunded_by_id, $context );
+						},
 					),
 				),
 			)
