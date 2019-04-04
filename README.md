@@ -30,14 +30,14 @@ Until the documentation is full effect, it's recommended that a [GraphiQL](https
 - [WP-CLI](https://wp-cli.org/)
 
 ### Setup
-- Make sure all dependencies are install by running `composer install` from the CMD/Terminal in the project directory.
-- Next the copy 5 distributed files with the `.dist` in there filenames. For instance `.env.dist` becomes `.env` and `wpunit.suite.dist.yml` becomes `wpunit.suite.yml`. The distributed files and what their copied names should are as follows.
+1. Make sure all dependencies are install by running `composer install` from the CMD/Terminal in the project directory.
+2. Next the copy 5 distributed files with the `.dist` in there filenames. For instance `.env.dist` becomes `.env` and `wpunit.suite.dist.yml` becomes `wpunit.suite.yml`. The distributed files and what their copied names should are as follows.
     - `tests/acceptance.suite.dist.yml` => `tests/acceptance.suite.yml`
     - `tests/functional.suite.dist.yml` => `tests/functional.suite.yml`
     - `tests/wpunit.suite.dist.yml` => `tests/wpunit.suite.yml`
     - `codeception.dist.yml` => `codeception.yml`
     - `.env.dist` => `.env`
-- Next open `.env` and alter to make you usage.
+3. Next open `.env` and alter to make you usage.
 ```
 # Shared
 TEST_DB_NAME="wpgraphql_woocommerce_test"
@@ -70,8 +70,8 @@ TEST_SITE_ADMIN_PASSWORD="password"
     - `SKIP_DB_CREATE` Should database creation be skipped?
     - `WP_GRAPHQL_BRANCH` The branch in the `WPGraphQL` repository the tests should be run again. Ex. `origin/feature/model-layer`
 **Codeception** variables are specified to the **Codeception** configuration. View the config files and Codeception's [Docs](https://codeception.com/docs/reference/Configuration#Suite-Configuration) for more info on them.
-- Once you have finish modifying the `.env` file. Run `composer install-wp-tests` from the project directory.
-- Upon success you can begin run tests.
+4. Once you have finish modifying the `.env` file. Run `composer install-wp-tests` from the project directory.
+5. Upon success you can begin running the tests.
 
 ### Running tests
 To run test use the command `vendor/bin/codecept run [suite [test [:test-function]]]`. If you use the command with at least a `suite` specified, **Codeception** will run all tests. This is not recommended. You better off running a suite `vendor/bin/codecept run wpunit` or a tests `vendor/bin/codecept run CouponQueriesTest`. You can all run single `test-function` in a test like they `vendor/bin/codecept run CouponQueriesTest:testCouponQuery`. To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
