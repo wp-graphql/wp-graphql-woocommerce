@@ -38,40 +38,43 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
     - `codeception.dist.yml` => `codeception.yml`
     - `.env.dist` => `.env`
 3. Next open `.env` and alter to make you usage.
-```
-# Shared
-TEST_DB_NAME="wpgraphql_woocommerce_test"
-TEST_DB_HOST="127.0.0.1"
-TEST_DB_USER="root"
-TEST_DB_PASSWORD=""
+	```
+	# Shared
+	TEST_DB_NAME="wpgraphql_woocommerce_test"
+	TEST_DB_HOST="127.0.0.1"
+	TEST_DB_USER="root"
+	TEST_DB_PASSWORD=""
 
-# Install script
-WP_VERSION=latest
-SKIP_DB_CREATE=false
-WP_GRAPHQL_BRANCH=develop
+	# Install script
+	WP_VERSION=latest
+	SKIP_DB_CREATE=false
+	WP_GRAPHQL_BRANCH=develop
 
-# Codeception
-WP_ROOT_FOLDER="/tmp/wordpress"
-TEST_SITE_WP_ADMIN_PATH="/wp-admin"
-TEST_SITE_DB_NAME="wpgraphql_woocommerce_test"
-TEST_SITE_DB_HOST="127.0.0.1"
-TEST_SITE_DB_USER="root"
-TEST_SITE_DB_PASSWORD=""
-TEST_SITE_TABLE_PREFIX="wp_"
-TEST_TABLE_PREFIX="wp_"
-TEST_SITE_WP_URL="http://wp.test"
-TEST_SITE_WP_DOMAIN="wp.test"
-TEST_SITE_ADMIN_EMAIL="admin@wp.test"
-TEST_SITE_ADMIN_USERNAME="admin"
-TEST_SITE_ADMIN_PASSWORD="password"
-```
-`Shared` variables are as the comment implies, variables shared in both the `install-wp-tests` script and the **Codeception** configuration. The variable name should tell you what they mean. `Install script` variables are specified to the `install-wp-tests` script, and most likely won't changed. I've listed their meaning below.
-    - `WP_VERSION` WordPress version used for testing
-    - `SKIP_DB_CREATE` Should database creation be skipped?
-    - `WP_GRAPHQL_BRANCH` The branch in the `WPGraphQL` repository the tests should be run again. Ex. `origin/feature/model-layer`
-**Codeception** variables are specified to the **Codeception** configuration. View the config files and Codeception's [Docs](https://codeception.com/docs/reference/Configuration#Suite-Configuration) for more info on them.
+	# Codeception
+	WP_ROOT_FOLDER="/tmp/wordpress"
+	TEST_SITE_WP_ADMIN_PATH="/wp-admin"
+	TEST_SITE_DB_NAME="wpgraphql_woocommerce_test"
+	TEST_SITE_DB_HOST="127.0.0.1"
+	TEST_SITE_DB_USER="root"
+	TEST_SITE_DB_PASSWORD=""
+	TEST_SITE_TABLE_PREFIX="wp_"
+	TEST_TABLE_PREFIX="wp_"
+	TEST_SITE_WP_URL="http://wp.test"
+	TEST_SITE_WP_DOMAIN="wp.test"
+	TEST_SITE_ADMIN_EMAIL="admin@wp.test"
+	TEST_SITE_ADMIN_USERNAME="admin"
+	TEST_SITE_ADMIN_PASSWORD="password"
+	```
+	- `Shared` variables are as the comment implies, variables shared in both the `install-wp-tests` script and the **Codeception** configuration. The variable names should tell you what they mean.
+	- `Install script` variables are specified to the `install-wp-tests` script, and most likely won't changed. I've listed their meaning below.
+    	- `WP_VERSION` WordPress version used for testing
+    	- `SKIP_DB_CREATE` Should database creation be skipped?
+    	- `WP_GRAPHQL_BRANCH` The branch in the `WPGraphQL` repository the tests should be run again. Ex. `origin/feature/model-layer`
+	- `Codeception` variables are specified to the **Codeception** configuration. View the config files and Codeception's [Docs](https://codeception.com/docs/reference/Configuration#Suite-Configuration) for more info on them.
+
 4. Once you have finish modifying the `.env` file. Run `composer install-wp-tests` from the project directory.
 5. Upon success you can begin running the tests.
 
 ### Running tests
-To run test use the command `vendor/bin/codecept run [suite [test [:test-function]]]`. If you use the command with at least a `suite` specified, **Codeception** will run all tests. This is not recommended. You better off running a suite `vendor/bin/codecept run wpunit` or a tests `vendor/bin/codecept run CouponQueriesTest`. You can all run single `test-function` in a test like they `vendor/bin/codecept run CouponQueriesTest:testCouponQuery`. To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
+To run test use the command `vendor/bin/codecept run [suite [test [:test-function]]]`.
+If you use the command with at least a `suite` specified, **Codeception** will run all tests. This is not recommended. You better off running a suite `vendor/bin/codecept run wpunit` or a tests `vendor/bin/codecept run CouponQueriesTest`. You can all run single `test-function` in a test like they `vendor/bin/codecept run CouponQueriesTest:testCouponQuery`. To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
