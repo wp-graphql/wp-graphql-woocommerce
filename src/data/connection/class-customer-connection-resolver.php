@@ -13,8 +13,6 @@ namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Model\Order;
 use WPGraphQL\Extensions\WooCommerce\Model\Refund;
 
 /**
@@ -28,7 +26,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function should_execute() {
 		switch ( true ) {
-			case current_user_can( 'list-users' ):
+			case current_user_can( 'list_users' ):
 				return true;
 			default:
 				return false;
@@ -59,13 +57,9 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( true === is_object( $this->source ) ) {
 			switch ( true ) {
-				case is_a( $this->source, Order::class ):
-					break;
-				case is_a( $this->source, Refund::class ):
-					break;
 				case is_a( $this->source, Coupon::class ):
 					if ( 'usedBy' === $this->info->fieldName ) {
-						$query_args['include'] = ! empty( $this->source->used_by_ids ) ? $this->source->used_by_ids : [ '0' ];
+						$query_args['include'] = $this->source->used_by_ids;
 					}
 					break;
 				default:

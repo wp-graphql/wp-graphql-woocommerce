@@ -259,9 +259,7 @@ class Product {
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'id' => array(
-						'type' => array(
-							'non_null' => 'ID',
-						),
+						'type' => array( 'non_null' => 'ID' ),
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {

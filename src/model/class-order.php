@@ -66,9 +66,9 @@ class Order extends Crud_CPT {
 	/**
 	 * Initializes the Order field resolvers
 	 *
-	 * @access public
+	 * @access protected
 	 */
-	public function init() {
+	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
 				'ID'                    => function() {

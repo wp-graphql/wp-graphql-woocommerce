@@ -19,14 +19,6 @@ use WPGraphQL\Model\Model;
  */
 class Customer extends Model {
 	/**
-	 * Stores the instance of WC customer data-store object
-	 *
-	 * @var mixed $data
-	 * @access protected
-	 */
-	protected $data;
-
-	/**
 	 * Customer constructor
 	 *
 	 * @param int $id - User ID.
@@ -41,7 +33,7 @@ class Customer extends Model {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'userId',
+			'customerId',
 			'name',
 		];
 
@@ -51,9 +43,9 @@ class Customer extends Model {
 	/**
 	 * Initializes the Customer field resolvers
 	 *
-	 * @access public
+	 * @access protected
 	 */
-	public function init() {
+	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
 				'ID'                    => function() {

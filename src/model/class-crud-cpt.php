@@ -17,14 +17,6 @@ use WPGraphQL\Model\Model;
  */
 abstract class Crud_CPT extends Model {
 	/**
-	 * Stores instance of a WC_Data sub-class
-	 *
-	 * @var mixed $data
-	 * @access protected
-	 */
-	protected $data;
-
-	/**
 	 * Stores the incoming post type object for the post being modeled
 	 *
 	 * @var null|\WP_Post_Type $post_type_object
@@ -102,7 +94,7 @@ abstract class Crud_CPT extends Model {
 	/**
 	 * Initializes the crud object field resolvers
 	 *
-	 * @access public
+	 * @access protected
 	 */
-	abstract public function init();
+	abstract protected function init();
 }

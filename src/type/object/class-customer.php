@@ -10,6 +10,12 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
+use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQLRelay\Relay;
+use WPGraphQL\AppContext;
+use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+
 /**
  * Class Customer
  */
@@ -109,13 +115,11 @@ class Customer {
 			array(
 				'type'        => 'Customer',
 				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'id' => [
-						'type' => [
-							'non_null' => 'ID',
-						],
-					],
-				],
+				'args'        => array(
+					'id' => array(
+						'type' => array( 'non_null' => 'ID' ),
+					),
+				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id_components = Relay::fromGlobalId( $args['id'] );
 					if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
@@ -127,21 +131,24 @@ class Customer {
 				},
 			)
 		);
+
 		register_graphql_field(
 			'RootQuery',
 			'customerBy',
 			array(
 				'type'        => 'Customer',
 				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'customerId' => [
-						'type' => [
-							'non_null' => 'Int',
-						],
-					],
-				],
+				'args'        => array(
+					'customerId' => array(
+						'type'        => array( 'non_null' => 'Int' ),
+						'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
+					),
+				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$customer_id = absint( $args['id'] );
+					if ( empty( $args['customerId'] ) ) {
+						throw new UserError( __( 'customerId must be provided and it must be an integer value', 'wp-graphql-woocommerce' ) );
+					}
+					$customer_id = absint( $args['customerId'] );
 					return Factory::resolve_customer( $customer_id, $context );
 				},
 			)

@@ -64,9 +64,9 @@ class Coupon extends Crud_CPT {
 	/**
 	 * Initializes the Coupon field resolvers
 	 *
-	 * @access public
+	 * @access protected
 	 */
-	public function init() {
+	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
 				'ID'                            => function() {
