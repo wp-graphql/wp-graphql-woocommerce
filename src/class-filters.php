@@ -14,25 +14,25 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Crud_Loader;
+use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
 
 /**
  * Class Filters
  */
 class Filters {
 	/**
-	 * Stores instance WC_Crud_Loader
-	 *
-	 * @var WC_Crud_Loader
-	 */
-	private static $crud_loader;
-
-	/**
 	 * Stores instance WC_Customer_Loader
 	 *
 	 * @var WC_Customer_Loader
 	 */
 	private static $customer_loader;
+
+	/**
+	 * Stores instance WC_Post_Crud_Loader
+	 *
+	 * @var WC_Post_Crud_Loader
+	 */
+	private static $post_crud_loader;
 
 	/**
 	 * Register filters
@@ -84,13 +84,13 @@ class Filters {
 	 *
 	 * @param AppContext $context - AppContext.
 	 *
-	 * @return WC_Crud_Loader
+	 * @return WC_Post_Crud_Loader
 	 */
-	public static function crud_loader( $context ) {
-		if ( is_null( self::$crud_loader ) ) {
-			self::$crud_loader = new WC_Crud_Loader( $context );
+	public static function post_crud_loader( $context ) {
+		if ( is_null( self::$post_crud_loader ) ) {
+			self::$post_crud_loader = new WC_Post_Crud_Loader( $context );
 		}
-		return self::$crud_loader;
+		return self::$post_crud_loader;
 	}
 
 	/**
@@ -163,8 +163,8 @@ class Filters {
 		$loaders['wc_customer'] = &$customer_loader;
 
 		// WooCommerce crud object loader.
-		$crud_loader        = self::crud_loader( $context );
-		$loaders['wc_crud'] = &$crud_loader;
+		$post_crud_loader        = self::post_crud_loader( $context );
+		$loaders['wc_post_crud'] = &$post_crud_loader;
 
 		return $loaders;
 	}

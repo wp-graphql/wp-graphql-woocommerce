@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Product_Variation
+ * WPObject Type - Product_Variation_Type
  *
  * Registers Product_Variation WPObject type
  *
@@ -14,12 +14,14 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
 
 /**
- * Class Product_Variation
+ * Class Product_Variation_Type
  */
-class Product_Variation {
+class Product_Variation_Type {
 	/**
 	 * Register ProductVariation type to the WPGraphQL schema
 	 */
@@ -27,8 +29,9 @@ class Product_Variation {
 		register_graphql_object_type(
 			'ProductVariation',
 			array(
-				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
+				'description'       => __( 'A product variation object', 'wp-graphql-woocommerce' ),
+				'interfaces'        => [ WPObjectType::node_interface() ],
+				'fields'            => array(
 					'id'                => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product variation', 'wp-graphql-woocommerce' ),
@@ -110,6 +113,20 @@ class Product_Variation {
 						'description' => __( 'Product variation\'s sale price', 'wp-graphql-woocommerce' ),
 					),
 				),
+				'resolve_node'      => function( $node, $id, $type, $context ) {
+					if ( 'product_variation' === $type ) {
+						$node = Factory::resolve_crud_object( $id, $context );
+					}
+
+					return $node;
+				},
+				'resolve_node_type' => function( $type, $node ) {
+					if ( is_a( $node, Product_Variation::class ) ) {
+						$type = 'ProductVariation';
+					}
+
+					return $type;
+				},
 			)
 		);
 

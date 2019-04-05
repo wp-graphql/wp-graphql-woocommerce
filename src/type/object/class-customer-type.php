@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Customer
+ * WPObject Type - Customer_Type
  *
  * Registers WPObject type for WooCommerce customers
  *
@@ -14,21 +14,24 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 
 /**
- * Class Customer
+ * Class Customer_Type
  */
-class Customer {
+class Customer_Type {
 	/**
 	 * Registers Customer WPObject type
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Customer',
 			array(
-				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
+				'description'       => __( 'A customer object', 'wp-graphql-woocommerce' ),
+				'interfaces'        => [ WPObjectType::node_interface() ],
+				'fields'            => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
@@ -52,6 +55,9 @@ class Customer {
 					'lastOrder'             => array(
 						'type'        => 'Order',
 						'description' => __( 'Gets the customers last order.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context ) {
+							return Factory::resolve_crud_object( $source->last_order_id, $context );
+						},
 					),
 					'orderCount'            => array(
 						'type'        => 'Int',
@@ -102,10 +108,24 @@ class Customer {
 						'description' => __( 'Return the date customer shipping address properties', 'wp-graphql-woocommerce' ),
 					),
 					'isPayingCustomer'      => array(
-						'type'        => 'String',
+						'type'        => 'Boolean',
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
 				),
+				'resolve_node'      => function( $node, $id, $type, $context ) {
+					if ( 'customer' === $type ) {
+						$node = Factory::resolve_customer( $id, $context );
+					}
+
+					return $node;
+				},
+				'resolve_node_type' => function( $type, $node ) {
+					if ( is_a( $node, Customer::class ) ) {
+						$type = 'Customer';
+					}
+
+					return $type;
+				},
 			)
 		);
 

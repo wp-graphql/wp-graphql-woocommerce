@@ -1,6 +1,6 @@
 <?php
 /**
- * DataLoader - WC_Crud_Loader
+ * DataLoader - WC_Post_Crud_Loader
  *
  * Loads Models for WooCommerce CRUD objects
  *
@@ -21,9 +21,9 @@ use WPGraphQL\Extensions\WooCommerce\Model\Order;
 use WPGraphQL\Extensions\WooCommerce\Model\Refund;
 
 /**
- * Class WC_Crud_Loader
+ * Class WC_Post_Crud_Loader
  */
-class WC_Crud_Loader extends AbstractDataLoader {
+class WC_Post_Crud_Loader extends AbstractDataLoader {
 	/**
 	 * Stores loaded CRUD objects.
 	 *
@@ -40,7 +40,7 @@ class WC_Crud_Loader extends AbstractDataLoader {
 	 * @return mixed
 	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
 	 */
-	private function resolve_crud_object( $post_type, $id ) {
+	private function resolve_model( $post_type, $id ) {
 		switch ( $post_type ) {
 			case 'product':
 				return new Product( $id );
@@ -53,9 +53,9 @@ class WC_Crud_Loader extends AbstractDataLoader {
 			case 'shop_order_refund':
 				return new Refund( $id );
 			default:
-				$model = apply_filters( 'wc_crud_loader_model', null, $post_type );
+				$model = apply_filters( 'wc_post_crud_loader_model', null, $post_type );
 				if ( ! empty( $model ) ) {
-					return $model( $id );
+					return new $model( $id );
 				}
 				/* translators: no model assigned error message */
 				throw new UserError( sprintf( __( 'No Model is register to the post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
@@ -75,14 +75,7 @@ class WC_Crud_Loader extends AbstractDataLoader {
 			return $keys;
 		}
 
-		$wc_post_types = array(
-			'product',
-			'product_variation',
-			'shop_coupon',
-			'shop_order',
-			'shop_order_refund',
-		);
-
+		$wc_post_types = \WP_GraphQL_WooCommerce::get_post_types();
 		/**
 		 * Prepare the args for the query. We're provided a specific
 		 * set of IDs, so we want to query as efficiently as possible with
@@ -153,11 +146,13 @@ class WC_Crud_Loader extends AbstractDataLoader {
 
 						return $author->then(
 							function () use ( $post_type, $key ) {
-								return $this->resolve_crud_object( $post_type, $key );
+								$obj = $this->resolve_model( $post_type, $key );
+								\codecept_debug( $obj );
+								return $obj;
 							}
 						);
 					}
-					$this->resolve_crud_object( $post_type, $key );
+					return $this->resolve_model( $post_type, $key );
 				}
 			);
 		}

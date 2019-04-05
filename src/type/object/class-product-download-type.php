@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Product_Download
+ * WPObject Type - Product_Download_Type
  *
  * Registers proper ProductDownload type and queries
  *
@@ -15,9 +15,9 @@ use WPGraphQL\Data\DataSource;
 use GraphQLRelay\Relay;
 
 /**
- * Class Product_Download
+ * Class Product_Download_Type
  */
-class Product_Download {
+class Product_Download_Type {
 	/**
 	 * Register ProductDownload type
 	 */
@@ -27,12 +27,6 @@ class Product_Download {
 			array(
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
-					'id'              => array(
-						'type'    => array( 'non_null' => 'ID' ),
-						'resolve' => function ( $download ) {
-							return ! empty( $download ) ? Relay::toGlobalId( 'product_download', $download->get_id() ) : null;
-						},
-					),
 					'downloadId'      => array(
 						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Product download ID', 'wp-graphql-woocommerce' ),

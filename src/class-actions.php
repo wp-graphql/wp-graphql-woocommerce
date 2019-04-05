@@ -16,16 +16,15 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\WC_Post_Object;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Refund;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Variation;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Refund_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Variation_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
@@ -67,15 +66,15 @@ class Actions {
 		Tax_Status::register();
 
 		// Objects.
-		Coupon::register();
-		Product::register();
-		Product_Variation::register();
-		Order::register();
-		Refund::register();
-		Product_Attribute::register();
-		Product_Download::register();
-		Customer::register();
-		Customer_Address::register();
+		Coupon_Type::register();
+		Product_Type::register();
+		Product_Variation_Type::register();
+		Order_Type::register();
+		Refund_Type::register();
+		Product_Attribute_Type::register();
+		Product_Download_Type::register();
+		Customer_Type::register();
+		Customer_Address_Type::register();
 
 		// Connections.
 		Posts::register_connections();

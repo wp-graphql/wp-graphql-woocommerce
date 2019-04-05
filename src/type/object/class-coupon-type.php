@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Coupon
+ * WPObject Type - Coupon_Type
  *
  * Registers Coupon WPObject type and queries
  *
@@ -14,12 +14,14 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
 
 /**
- * Class Coupon
+ * Class Coupon_Type
  */
-class Coupon {
+class Coupon_Type {
 	/**
 	 * Register Coupon type and queries to the WPGraphQL schema
 	 */
@@ -27,8 +29,9 @@ class Coupon {
 		register_graphql_object_type(
 			'Coupon',
 			array(
-				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
+				'description'       => __( 'A coupon object', 'wp-graphql-woocommerce' ),
+				'interfaces'        => [ WPObjectType::node_interface() ],
+				'fields'            => array(
 					'id'                 => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the coupon', 'wp-graphql-woocommerce' ),
@@ -106,6 +109,20 @@ class Coupon {
 						'description' => __( 'Only customers with a matching email address can use the coupon', 'wp-graphql-woocommerce' ),
 					),
 				),
+				'resolve_node'      => function( $node, $id, $type, $context ) {
+					if ( 'shop_coupon' === $type ) {
+						$node = Factory::resolve_crud_object( $id, $context );
+					}
+
+					return $node;
+				},
+				'resolve_node_type' => function( $type, $node ) {
+					if ( is_a( $node, Coupon::class ) ) {
+						$type = 'Coupon';
+					}
+
+					return $type;
+				},
 			)
 		);
 

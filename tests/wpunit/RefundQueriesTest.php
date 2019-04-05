@@ -1,12 +1,30 @@
 <?php
 
 class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $admin;
+	private $shopManager;
+	private $customer;
+	private $refund;
 
 	public function setUp() {
 		// before
 		parent::setUp();
 
-		// your set up methods here
+		$this->admin = $this->factory->user->create(
+			array(
+				'role' => 'administrator',
+			)
+		);
+		$this->shopManager = $this->factory->user->create(
+			array(
+				'role' => 'shop_manager',
+			)
+		);
+		$this->customer = $this->factory->user->create(
+			array(
+				'role' => 'customer',
+			)
+		);
 	}
 
 	public function tearDown() {
@@ -18,17 +36,17 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 	// tests
 	public function testRefundQuery() {
 		 $query = '
-			query {
-				refund(id: " ") {
+			query refundQuery( $id: ID! ) {
+				refund(id: $id) {
+					id
 					refundId
-					dateCreated
-					amount
+					title
 					reason
+					amount
 					refundedBy {
 						id
 					}
-					refundPayment
-					lineItems {
+					items {
 						nodes {
 							id
 						}
@@ -37,6 +55,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
+		$variables = array( 'id' => Relay::toGlobalId( 'shop_order_refund', $refund_id ) );
 		$actual = do_graphql_request( $query );
 
 		/**

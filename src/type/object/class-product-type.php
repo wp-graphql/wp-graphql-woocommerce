@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Product
+ * WPObject Type - Product_Type
  *
  * Registers Product WPObject type and queries
  *
@@ -14,12 +14,14 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Model\Product;
 
 /**
- * Class Product
+ * Class Product_Type
  */
-class Product {
+class Product_Type {
 	/**
 	 * Register Product type and queries to the WPGraphQL schema
 	 */
@@ -27,8 +29,9 @@ class Product {
 		register_graphql_object_type(
 			'Product',
 			array(
-				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
+				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),
+				'interfaces'        => [ WPObjectType::node_interface() ],
+				'fields'            => array(
 					'id'                => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product', 'wp-graphql-woocommerce' ),
@@ -248,6 +251,20 @@ class Product {
 						'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
 					),
 				),
+				'resolve_node'      => function( $node, $id, $type, $context ) {
+					if ( 'product' === $type ) {
+						$node = Factory::resolve_crud_object( $id, $context );
+					}
+
+					return $node;
+				},
+				'resolve_node_type' => function( $type, $node ) {
+					if ( is_a( $node, Product::class ) ) {
+						$type = 'Product';
+					}
+
+					return $type;
+				},
 			)
 		);
 

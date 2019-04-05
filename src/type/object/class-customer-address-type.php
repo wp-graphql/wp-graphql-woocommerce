@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - CustomerAddress
+ * WPObject Type - Customer_Address_Type
  *
  * Registers WPObject type for WooCommerce customers address object
  *
@@ -11,9 +11,9 @@
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
 /**
- * Class Customer_Address
+ * Class Customer_Address_Type
  */
-class Customer_Address {
+class Customer_Address_Type {
 	/**
 	 * Registers Customer WPObject type
 	 */

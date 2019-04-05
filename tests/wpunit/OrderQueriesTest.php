@@ -1,12 +1,30 @@
 <?php
 
 class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $admin;
+	private $shopManager;
+	private $customer;
+	private $order;
 
 	public function setUp() {
 		// before
 		parent::setUp();
 
-		// your set up methods here
+		$this->admin = $this->factory->user->create(
+			array(
+				'role' => 'administrator',
+			)
+		);
+		$this->shopManager = $this->factory->user->create(
+			array(
+				'role' => 'shop_manager',
+			)
+		);
+		$this->customer = $this->factory->user->create(
+			array(
+				'role' => 'customer',
+			)
+		);
 	}
 
 	public function tearDown() {
@@ -226,31 +244,9 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 							id
 						}
 					}
-					tax_lines {
-						nodes {
-							id
-						}
-					}
-					shippingLines{
-						nodes {
-							id
-						}
-					}
-					feeLines {
-						nodes {
-							id
-						}
-					}
-					couponLines {
-						nodes {
-							id
-						}
-					}
 					refunds {
 						nodes {
 							id
-							reason
-							total
 						}
 					}
 				}

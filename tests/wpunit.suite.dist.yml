@@ -20,3 +20,4 @@ modules:
             title: "Test"        
             plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
             activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            configFile: "tests/_data/config.php"

@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Refund
+ * WPObject Type - Refund_Type
  *
  * Registers Refund WPObject type and queries
  *
@@ -15,12 +15,14 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
+use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
 
 /**
- * Class Refund
+ * Class Refund_Type
  */
-class Refund {
+class Refund_Type {
 	/**
 	 * Register Refund type and queries to the WPGraphQL schema
 	 */
@@ -28,8 +30,9 @@ class Refund {
 		register_graphql_object_type(
 			'Refund',
 			array(
-				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
+				'description'       => __( 'A refund object', 'wp-graphql-woocommerce' ),
+				'interfaces'        => [ WPObjectType::node_interface() ],
+				'fields'            => array(
 					'id'         => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the refund', 'wp-graphql-woocommerce' ),
@@ -58,6 +61,20 @@ class Refund {
 						},
 					),
 				),
+				'resolve_node'      => function( $node, $id, $type, $context ) {
+					if ( 'shop_order_refund' === $type ) {
+						$node = Factory::resolve_crud_object( $id, $context );
+					}
+
+					return $node;
+				},
+				'resolve_node_type' => function( $type, $node ) {
+					if ( is_a( $node, Refund::class ) ) {
+						$type = 'Refund';
+					}
+
+					return $type;
+				},
 			)
 		);
 

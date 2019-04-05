@@ -1,6 +1,6 @@
 <?php
 /**
- * WPObject Type - Order
+ * WPObject Type - Order_Type
  *
  * Registers Order WPObject type and queries
  *
@@ -14,12 +14,14 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\Extensions\WooCommerce\Model\Order;
 
 /**
- * Class Order
+ * Class Order_Type
  */
-class Order {
+class Order_Type {
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
 	 */
@@ -27,8 +29,9 @@ class Order {
 		register_graphql_object_type(
 			'Order',
 			array(
-				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
+				'description'       => __( 'A order object', 'wp-graphql-woocommerce' ),
+				'interfaces'        => [ WPObjectType::node_interface() ],
+				'fields'            => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the order', 'wp-graphql-woocommerce' ),
@@ -196,6 +199,20 @@ class Order {
 						'description' => __( 'If order needs processing before it can be completed', 'wp-graphql-woocommerce' ),
 					),
 				),
+				'resolve_node'      => function( $node, $id, $type, $context ) {
+					if ( 'shop_order' === $type ) {
+						$node = Factory::resolve_crud_object( $id, $context );
+					}
+
+					return $node;
+				},
+				'resolve_node_type' => function( $type, $node ) {
+					if ( is_a( $node, Order::class ) ) {
+						$type = 'Order';
+					}
+
+					return $type;
+				},
 			)
 		);
 
