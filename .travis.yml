@@ -54,10 +54,10 @@ before_script:
     if [ ! -z "$WP_VERSION" ]; then
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
-        composer require php-coveralls/php-coveralls
+        COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
       # Install and config Codeception
-      composer install --no-interaction
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-interaction
       cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
       cp tests/functional.suite.dist.yml tests/functional.suite.yml
       cp tests/unit.suite.dist.yml tests/unit.suite.yml
@@ -69,14 +69,8 @@ before_script:
   # Install PHP CodeSniffer and WPCS.
   - |
     if [ "$PHPCS" == "1" ]; then
-      composer require squizlabs/php_codesniffer
-      composer require phpcompatibility/phpcompatibility-wp
-      composer require wp-coding-standards/wpcs
-      composer require dealerdirect/phpcodesniffer-composer-installer
-      composer install --no-dev
-
-      ./vendor/bin/phpcs --config-set installed_paths '../../wimg/php-compatibility/,../../wp-coding-standards/wpcs/'
-      ./vendor/bin/phpcs --config-set default_standard WordPress
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
     fi
 
 script:
