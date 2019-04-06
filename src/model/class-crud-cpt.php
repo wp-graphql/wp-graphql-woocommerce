@@ -90,11 +90,4 @@ abstract class Crud_CPT extends Model {
 	 * @return string
 	 */
 	abstract protected function get_restricted_cap();
-
-	/**
-	 * Initializes the crud object field resolvers
-	 *
-	 * @access protected
-	 */
-	abstract protected function init();
 }

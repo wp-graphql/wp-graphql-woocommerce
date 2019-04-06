@@ -13,6 +13,7 @@ coverage:
     whitelist:
       include:
         - wp-graphql-woocommerce.php
+        - access-functions.php
         - src/*.php
 extensions:
     enabled:

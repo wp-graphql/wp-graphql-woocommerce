@@ -23,7 +23,6 @@ cache:
 env:
   global:
     - WP_CORE_DIR: /tmp/wordpress
-    - WP_VERSION: latest
     - COVERAGE: false
 
 matrix:
@@ -55,7 +54,12 @@ install:
 
 before_script:
   - |
-    if [[ ! -z "$WP_VERSION" ]] ; then
+    if [ ! -z "$WP_VERSION" ]; then
+      if [ "$COVERAGE" == true ]; then
+        # Install Coveralls
+        composer require php-coveralls/php-coveralls
+      fi
+      # Install and config tests
       composer self-update
       composer require lucatume/wp-browser:^2.2
       composer install --no-interaction
@@ -67,11 +71,14 @@ before_script:
       cp .env.dist .env
       composer install-wp-tests
       ls -al
-    fi
+
+
+
+    fi   
 
   # Install PHP CodeSniffer and WPCS.
   - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+    if [ "$WP_TRAVISCI" == "phpcs" ]; then
       composer require squizlabs/php_codesniffer
       composer require dealerdirect/phpcodesniffer-composer-installer
       composer require phpcompatibility/phpcompatibility-wp
@@ -87,7 +94,7 @@ before_script:
 script:
  # Execute unit tests with coverage if specified, otherwise without coverage
  - |
-    if [[ ! -z "$WP_VERSION" ]]; then
+    if [ ! -z "$WP_VERSION" ]; then
       if [ $COVERAGE == true ]; then
         vendor/bin/codecept run wpunit --coverage --coverage-xml
       else
@@ -95,7 +102,7 @@ script:
       fi
     fi
  - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]]; then
+    if [ "$WP_TRAVISCI" == "phpcs" ]; then
       ./vendor/bin/phpcs --standard=WordPress
     fi
   
