@@ -29,6 +29,8 @@ matrix:
   include:
     - php: 7.2
       env: WP_VERSION=latest COVERAGE=1
+    - php: 7.2
+      env: PHPCS=1
     - php: 7.1
       env: WP_VERSION=latest
     - php: 7.0
@@ -39,8 +41,6 @@ matrix:
       env: WP_VERSION=latest
     - php: 5.6
       env: WP_VERSION=trunk
-    - php: 5.6
-      env: PHPCS=1
 
 install:
   - |
@@ -76,7 +76,7 @@ before_script:
       composer require phpcompatibility/phpcompatibility-wp
       composer require wp-coding-standards/wpcs
       composer require dealerdirect/phpcodesniffer-composer-installer
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
+      composer install --no-dev
 
       ./vendor/bin/phpcs --config-set installed_paths '../../wimg/php-compatibility/,../../wp-coding-standards/wpcs/'
       ./vendor/bin/phpcs --config-set default_standard WordPress
