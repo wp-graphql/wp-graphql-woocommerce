@@ -71,6 +71,7 @@ before_script:
     if [ "$PHPCS" == "1" ]; then
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
+      ls -al
     fi
 
 script:
@@ -85,6 +86,6 @@ script:
     fi
  - |
     if [ "$PHPCS" == "1" ]; then
-      ./vendor/bin/phpcs . --standard=WordPress
+      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php src/*.php --standard=WordPress
     fi
   
