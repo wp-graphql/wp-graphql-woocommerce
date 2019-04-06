@@ -68,6 +68,24 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
+		 * Returns WooCommerce post-types registered to the WC_Post_Crud_Loader
+		 *
+		 * @return array
+		 */
+		public static function get_post_types() {
+			return apply_filters(
+				'register_graphql_wc_post_types',
+				array(
+					'product',
+					'product_variation',
+					'shop_coupon',
+					'shop_order',
+					'shop_order_refund',
+				)
+			);
+		}
+
+		/**
 		 * Throw error on object clone.
 		 * The whole idea of the singleton design pattern is that there is a single object
 		 * therefore, we don't want the object to be cloned.
@@ -108,6 +126,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true === WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
 				require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
 			}
+
+			// Required non-autoloaded classes.
+			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'access-functions.php';
 		}
 
 		/**

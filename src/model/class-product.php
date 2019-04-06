@@ -120,11 +120,17 @@ class Product extends Crud_CPT {
 				'name'               => function() {
 					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
 				},
+				'date'               => function() {
+					return ! empty( $this->data ) ? $this->data->get_date_created() : null;
+				},
+				'modified'           => function() {
+					return ! empty( $this->data ) ? $this->data->get_date_modified() : null;
+				},
 				'status'             => function() {
 					return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
 				},
 				'featured'           => function() {
-					return ! empty( $this->data->get_featured() ) ? $this->data->get_featured() : null;
+					return ! is_null( $this->data->get_featured() ) ? $this->data->get_featured() : null;
 				},
 				'catalogVisibility'  => function() {
 					return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
@@ -223,7 +229,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_date_on_sale_to() ) ? $this->data->get_date_on_sale_to() : null;
 				},
 				'totalSales'         => function() {
-					return ! empty( $this->data->get_total_sales() ) ? $this->data->get_total_sales() : null;
+					return ! is_null( $this->data->get_total_sales() ) ? $this->data->get_total_sales() : null;
 				},
 				'taxStatus'          => function() {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
@@ -232,7 +238,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : null;
 				},
 				'manageStock'        => function() {
-					return ! empty( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
+					return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
 				},
 				'stockQuantity'      => function() {
 					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
@@ -244,19 +250,19 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
 				},
 				'soldIndividually'   => function() {
-					return ! empty( $this->data->get_sold_individually() ) ? $this->data->get_sold_individually() : null;
+					return ! is_null( $this->data->get_sold_individually() ) ? $this->data->get_sold_individually() : null;
 				},
 				'weight'             => function() {
-					return ! empty( $this->data->get_weight() ) ? $this->data->get_weight() : null;
+					return ! is_null( $this->data->get_weight() ) ? $this->data->get_weight() : null;
 				},
 				'length'             => function() {
-					return ! empty( $this->data->get_length() ) ? $this->data->get_length() : null;
+					return ! is_null( $this->data->get_length() ) ? $this->data->get_length() : null;
 				},
 				'width'              => function() {
-					return ! empty( $this->data->get_width() ) ? $this->data->get_width() : null;
+					return ! is_null( $this->data->get_width() ) ? $this->data->get_width() : null;
 				},
 				'height'             => function() {
-					return ! empty( $this->data->get_height() ) ? $this->data->get_height() : null;
+					return ! is_null( $this->data->get_height() ) ? $this->data->get_height() : null;
 				},
 				'reviewsAllowed'     => function() {
 					return ! empty( $this->data->get_reviews_allowed() ) ? $this->data->get_reviews_allowed() : null;
@@ -265,28 +271,28 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_purchase_note() ) ? $this->data->get_purchase_note() : null;
 				},
 				'menuOrder'          => function() {
-					return ! empty( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
+					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
 				},
 				'virtual'            => function() {
-					return ! empty( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
+					return ! is_null( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
 				},
 				'downloadExpiry'     => function() {
-					return ! empty( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
+					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
 				},
 				'downloadable'       => function() {
-					return ! empty( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
+					return ! is_null( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
 				},
 				'downloadLimit'      => function() {
-					return ! empty( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
+					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
 				},
 				'ratingCount'        => function() {
-					return ! empty( $this->data->get_rating_counts() ) ? $this->data->get_rating_counts() : null;
+					return ! is_null( $this->data->get_rating_counts() ) ? $this->data->get_rating_counts() : null;
 				},
 				'averageRating'      => function() {
-					return ! empty( $this->data->get_average_rating() ) ? $this->data->get_average_rating() : null;
+					return ! is_null( $this->data->get_average_rating() ) ? $this->data->get_average_rating() : null;
 				},
 				'reviewCount'        => function() {
-					return ! empty( $this->data->get_review_count() ) ? $this->data->get_review_count() : null;
+					return ! is_null( $this->data->get_review_count() ) ? $this->data->get_review_count() : null;
 				},
 				'parentId'           => function() {
 					return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;

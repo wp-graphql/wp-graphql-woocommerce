@@ -18,6 +18,7 @@ vendor/composer/installed.json
 vendor/composer/*/
 !/tests
 /tests/*.suite.yml
+codeception.yml
 build/
 coverage/*
 schema.graphql

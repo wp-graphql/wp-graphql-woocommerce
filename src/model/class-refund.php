@@ -33,12 +33,7 @@ class Refund extends Model {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'userId',
-			'name',
-			'firstName',
-			'lastName',
-			'description',
-			'slug',
+			'refundId',
 		];
 
 		parent::__construct( 'list_users', $allowed_restricted_fields, $id );

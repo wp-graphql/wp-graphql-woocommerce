@@ -100,10 +100,10 @@ class Coupon extends Crud_CPT {
 					return ! empty( $this->data->get_date_expires() ) ? $this->data->get_date_expires() : null;
 				},
 				'usageCount'                    => function() {
-					return ! empty( $this->data->get_usage_count() ) ? $this->data->get_usage_count() : null;
+					return ! is_null( $this->data->get_usage_count() ) ? $this->data->get_usage_count() : null;
 				},
 				'individualUse'                 => function() {
-					return ! empty( $this->data->get_individual_use() ) ? $this->data->get_individual_use() : null;
+					return ! is_null( $this->data->get_individual_use() ) ? $this->data->get_individual_use() : null;
 				},
 				'usageLimit'                    => function() {
 					return ! empty( $this->data->get_usage_limit() ) ? $this->data->get_usage_limit() : null;
@@ -115,10 +115,10 @@ class Coupon extends Crud_CPT {
 					return ! empty( $this->data->get_limit_usage_to_x_items() ) ? $this->data->get_limit_usage_to_x_items() : null;
 				},
 				'freeShipping'                  => function() {
-					return ! empty( $this->data->get_free_shipping() ) ? $this->data->get_free_shipping() : null;
+					return ! is_null( $this->data->get_free_shipping() ) ? $this->data->get_free_shipping() : null;
 				},
 				'excludeSaleItems'              => function() {
-					return ! empty( $this->data->get_exclude_sale_items() ) ? $this->data->get_exclude_sale_items() : null;
+					return ! is_null( $this->data->get_exclude_sale_items() ) ? $this->data->get_exclude_sale_items() : null;
 				},
 				'minimumAmount'                 => function() {
 					return ! empty( $this->data->get_minimum_amount() ) ? $this->data->get_minimum_amount() : null;

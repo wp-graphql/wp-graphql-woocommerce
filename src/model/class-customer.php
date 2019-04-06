@@ -34,7 +34,7 @@ class Customer extends Model {
 			'isPublic',
 			'id',
 			'customerId',
-			'name',
+			'displayName',
 		];
 
 		parent::__construct( 'list_users', $allowed_restricted_fields, $id );
@@ -55,58 +55,64 @@ class Customer extends Model {
 					return ( ! empty( $this->data ) ) ? Relay::toGlobalId( 'customer', $this->data->get_id() ) : null;
 				},
 				'customerId'            => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_id() : null;
+					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : null;
 				},
 				'isVatExempt'           => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_is_vat_exempt() : null;
+					return ( ! empty( $this->data->get_is_vat_exempt() ) ) ? $this->data->get_is_vat_exempt() : null;
 				},
 				'hasCalculatedShipping' => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->has_calculated_shipping() : null;
+					return ( ! empty( $this->data->has_calculated_shipping() ) ) ? $this->data->has_calculated_shipping() : null;
 				},
 				'calculatedShipping'    => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_calculated_shipping() : null;
-				},
-				'lastOrder'             => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_last_order() : null;
+					return ( ! empty( $this->data->get_calculated_shipping() ) ) ? $this->data->get_calculated_shipping() : null;
 				},
 				'orderCount'            => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_order_count() : null;
+					return ( ! empty( $this->data->get_order_count() ) ) ? $this->data->get_order_count() : null;
 				},
 				'totalSpent'            => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_total_spent() : null;
+					return ( ! empty( $this->data->get_total_spent() ) ) ? $this->data->get_total_spent() : null;
 				},
 				'username'              => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_username() : null;
+					return ( ! empty( $this->data->get_username() ) ) ? $this->data->get_username() : null;
 				},
 				'email'                 => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_email() : null;
+					return ( ! empty( $this->data->get_email() ) ) ? $this->data->get_email() : null;
 				},
 				'firstName'             => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_first_name() : null;
+					return ( ! empty( $this->data->get_first_name() ) ) ? $this->data->get_first_name() : null;
 				},
 				'lastName'              => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_last_name() : null;
+					return ( ! empty( $this->data->get_last_name() ) ) ? $this->data->get_last_name() : null;
 				},
 				'displayName'           => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_display_name() : null;
+					return ( ! empty( $this->data->get_display_name() ) ) ? $this->data->get_display_name() : null;
 				},
 				'role'                  => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_role() : null;
+					return ( ! empty( $this->data->get_role() ) ) ? $this->data->get_role() : null;
 				},
 				'date'                  => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_date_created() : null;
+					return ( ! empty( $this->data->get_date_created() ) ) ? $this->data->get_date_created() : null;
 				},
 				'modified'              => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_date_modified() : null;
+					return ( ! empty( $this->data->get_date_modified() ) ) ? $this->data->get_date_modified() : null;
 				},
 				'billing'               => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_billing() : null;
+					return ( ! empty( $this->data->get_billing() ) ) ? $this->data->get_billing() : null;
 				},
 				'shipping'              => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_shipping() : null;
+					return ( ! empty( $this->data->get_shipping() ) ) ? $this->data->get_shipping() : null;
 				},
 				'isPayingCustomer'      => function() {
-					return ( ! empty( $this->data ) ) ? $this->data->get_is_paying_customer() : null;
+					return ( ! empty( $this->data->get_is_paying_customer() ) ) ? $this->data->get_is_paying_customer() : null;
+				},
+				/**
+				 * Connection resolvers fields
+				 *
+				 * These field resolvers are used in connection resolvers to define WP_Query argument
+				 * Note: underscore naming style is used as a quick identifier
+				 */
+				'last_order_id'         => function() {
+					return ( ! empty( $this->data->get_last_order() ) ) ? $this->data->get_last_order()->get_id() : null;
 				},
 			);
 		}

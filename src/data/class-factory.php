@@ -13,6 +13,8 @@ namespace WPGraphQL\Extensions\WooCommerce\Data;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQLRelay\Relay;
+use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Connection_Resolver;
@@ -36,7 +38,7 @@ class Factory {
 	 * @return Deferred object
 	 * @access public
 	 */
-	public static function resolve_customer( $id, $context ) {
+	public static function resolve_customer( $id, AppContext $context ) {
 		if ( empty( $id ) || ! absint( $id ) ) {
 			return null;
 		}
@@ -59,12 +61,12 @@ class Factory {
 	 * @return Deferred object
 	 * @access public
 	 */
-	public static function resolve_crud_object( $id, $context ) {
+	public static function resolve_crud_object( $id, AppContext $context ) {
 		if ( empty( $id ) || ! absint( $id ) ) {
 			return null;
 		}
 		$object_id = absint( $id );
-		$loader    = $context->getLoader( 'wc_crud' );
+		$loader    = $context->getLoader( 'wc_post_crud' );
 		$loader->buffer( [ $object_id ] );
 		return new Deferred(
 			function () use ( $loader, $object_id ) {
@@ -84,7 +86,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_coupon_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_coupon_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Coupon_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
@@ -100,7 +102,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_customer_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_customer_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Customer_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
@@ -116,7 +118,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_order_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_order_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
@@ -132,7 +134,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_product_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_product_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
@@ -148,7 +150,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_product_attribute_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_product_attribute_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Product_Attribute_Connection_Resolver();
 		return $resolver->resolve( $source, $args, $context, $info );
 	}
@@ -164,7 +166,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_product_download_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_product_download_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Product_Download_Connection_Resolver();
 		return $resolver->resolve( $source, $args, $context, $info );
 	}
@@ -180,7 +182,7 @@ class Factory {
 	 * @return array
 	 * @access public
 	 */
-	public static function resolve_refund_connection( $source, array $args, $context, ResolveInfo $info ) {
+	public static function resolve_refund_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Refund_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
