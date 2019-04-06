@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export $(cat .env | xargs)
-
 print_usage_instruction() {
 	echo "Ensure that .env file exist in project root directory exists."
 	echo "And run the following 'composer install-wp-tests' in the project root directory"
@@ -39,6 +37,8 @@ fi
 if [ -z "$WP_GRAPHQL_BRANCH" ]; then 
 	WP_GRAPHQL_BRANCH=develop
 fi
+
+echo "$WP_VERSION"
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
