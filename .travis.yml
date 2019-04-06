@@ -78,8 +78,6 @@ before_script:
       composer require dealerdirect/phpcodesniffer-composer-installer
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
 
-      phpenv rehash
-
       ./vendor/bin/phpcs --config-set installed_paths '../../wimg/php-compatibility/,../../wp-coding-standards/wpcs/'
       ./vendor/bin/phpcs --config-set default_standard WordPress
     fi
