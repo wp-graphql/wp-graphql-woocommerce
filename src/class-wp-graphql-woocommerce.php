@@ -1,9 +1,9 @@
 <?php
 /**
  * WP_GraphQL_WooCommerce
- * 
+ *
  * Initializes a singleton instance of WP_GraphQL_WooCommerce
- * 
+ *
  * @package WPGraphQL\Extensions\WooCommerce
  * @since 0.0.1
  */
@@ -20,17 +20,35 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Stores the instance of the WPGraphQL\Extensions\WPGraphQLWooCommerce class
 		 *
-		 * @var WPGraphQLWooCommerce The one true WPGraphQL\Extensions\WPGraphQLWooCommerce
+		 * @var WP_GraphQL_WooCommerce The one true WPGraphQL\Extensions\WP_GraphQL_WooCommerce
 		 * @access private
 		 */
 		private static $instance;
+
+		/**
+		 * Stores the allowed WooCommerce post-types
+		 *
+		 * @var array
+		 * @access public
+		 */
+		public static $allowed_post_types;
 
 		/**
 		 * Singleton provider
 		 */
 		public static function instance() {
 			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
-				self::$instance = new WP_GraphQL_WooCommerce();
+				self::$instance           = new WP_GraphQL_WooCommerce();
+				self::$allowed_post_types = apply_filters(
+					'graphql_woocommerce_post_types',
+					array(
+						'shop_coupon',
+						'product',
+						'product_variation',
+						'shop_order',
+						'shop_order_refund',
+					)
+				);
 				self::$instance->includes();
 				self::$instance->actions();
 				self::$instance->filters();
@@ -47,6 +65,24 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			 * Return the WPGraphQLWooCommerce Instance
 			 */
 			return self::$instance;
+		}
+
+		/**
+		 * Returns WooCommerce post-types registered to the WC_Post_Crud_Loader
+		 *
+		 * @return array
+		 */
+		public static function get_post_types() {
+			return apply_filters(
+				'register_graphql_wc_post_types',
+				array(
+					'product',
+					'product_variation',
+					'shop_coupon',
+					'shop_order',
+					'shop_order_refund',
+				)
+			);
 		}
 
 		/**
@@ -84,10 +120,15 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 * @return void
 		 */
 		private function includes() {
-			// Autoload Required Classes
-			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true == WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
+			/**
+			 * Autoload Required Classes
+			 */
+			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true === WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
 				require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
 			}
+
+			// Required non-autoloaded classes.
+			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'access-functions.php';
 		}
 
 		/**
@@ -105,51 +146,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private function filters() {
 			/**
-			 * Registers WooCommerce taxonomies to be shown in GraphQL
-			 */
-			add_filter( 'register_taxonomy_args', [ $this, 'taxonomies' ], 10, 2 );
-
-			/**
 			 * Setup filters
 			 */
 			\WPGraphQL\Extensions\WooCommerce\Filters::load();
-		}
-
-		/**
-		 * Determine the taxonomies that should show in GraphQL
-		 */
-		public function taxonomies( $args, $taxonomy ) {
-			if ( 'product_type' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'productType';
-				$args['graphql_plural_name'] = 'productTypes';
-			}
-
-			if ( 'product_visibility' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'visibleProduct';
-				$args['graphql_plural_name'] = 'visibleProducts';
-			}
-
-			if ( 'product_cat' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'productCategory';
-				$args['graphql_plural_name'] = 'productCategories';
-			}
-
-			if ( 'product_tag' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'productTag';
-				$args['graphql_plural_name'] = 'productTags';
-			}
-
-			if ( 'product_shipping_class' === $taxonomy ) {
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = 'shippingClass';
-				$args['graphql_plural_name'] = 'shippingClasses';
-			}
-
-			return $args;
 		}
 	}
 endif;

@@ -10,74 +10,71 @@
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
 3. Clone this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
 
-## Documentation
-Coming soon...
+## What does this plugin do?
+It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [CRUD](https://github.com/woocommerce/woocommerce/wiki/CRUD-Objects-in-3.0) objects.
 
-## Unit Testing and Code Coverage 
-Before anything is merged into the WPGraphQL code base it must pass all tests and have 100% code coverage. 
-Travis-CI and Coveralls will check this when you create a pull request to the WPGraphQL repo. 
-However, before that happens, you should ensure all of these requirements are met locally. 
-The following will help you set up both testing and code coverage in your local environment.
+## Working Features
+- Query product, customers, coupons, order, refund, product variations.
 
-### Prerequisites
-To run unit tests and code coverage during development you'll need the following:
+## Upcoming Features
+- Adminstrator mutations. Eg. Creating and deleting products, coupons, orders and refunds
+- Public/Customer mutations, Eg. Manipulating the cart and checking out.
+View [Roadmap](https://github.com/kidunot89/wp-graphql-woocommerce/projects/1) to see progress... 
 
-* [Composer](https://getcomposer.org/doc/00-intro.md)
-    * [php-coveralls](https://github.com/php-coveralls/php-coveralls)
-        * `composer global require php-coveralls/php-coveralls`
-* [Xdebug](https://xdebug.org/docs/install)
+## Unit Tests 
+Until the documentation is in full effect, it's recommended that a [GraphiQL](https://github.com/graphql/graphiql)-based tool like [WPGraphiQL](https://github.com/wp-graphql/wp-graphiql) be used to view the GraphQL schema, an alternative to this is viewing the unit tests located in `tests/wpunit` directory. Which are constantly updated along with the project. If you're interested in contributing when I begin accepting contribution or simply want to run the tests. Follow the instruction below.
 
-### Test Database
-In order for tests to run, you need MySQL setup locally. The test suite will need 2 databases for testing. 
-One named `wpgraphql_serve` and the other you can name yourself. 
-You can keep these databases around if you like and the test suite will use the existing databases, or you can delete them when you're done testing and the test suite will 
-re-install them as needed the next time you run the script to install the tests.
+### Prerequisties
+- Shell/CMD access
+- [Composer](https://getcomposer.org/)
+- [WP-CLI](https://wp-cli.org/)
 
-*NOTE*: You'll want the test database to be a true test database, not a database with valuable, existing information. 
-The tests will create new data and clear out data, and you don't want to cause issues with a database you're actually using for projects.
+### Setup
+1. Make sure all dependencies are install by running `composer install` from the CMD/Terminal in the project directory.
+2. Next the copy 5 distributed files with the `.dist` in there filenames. For instance `.env.dist` becomes `.env` and `wpunit.suite.dist.yml` becomes `wpunit.suite.yml`. The distributed files and what their copied names should are as follows.
+    - `tests/acceptance.suite.dist.yml` => `tests/acceptance.suite.yml`
+    - `tests/functional.suite.dist.yml` => `tests/functional.suite.yml`
+    - `tests/wpunit.suite.dist.yml` => `tests/wpunit.suite.yml`
+    - `codeception.dist.yml` => `codeception.yml`
+    - `.env.dist` => `.env`
+3. Next open `.env` and alter to make you usage.
+	```
+	# Shared
+	TEST_DB_NAME="wpgraphql_woocommerce_test"
+	TEST_DB_HOST="127.0.0.1"
+	TEST_DB_USER="root"
+	TEST_DB_PASSWORD=""
 
-### Installing the Test Suite
-To install the test suite/test databases, from the root of the plugin directory, in the command line run: 
+	# Install script
+	WP_VERSION=latest
+	SKIP_DB_CREATE=false
+	WP_GRAPHQL_BRANCH=develop
 
-`bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version]`
+	# Codeception
+	WP_ROOT_FOLDER="/tmp/wordpress"
+	TEST_SITE_WP_ADMIN_PATH="/wp-admin"
+	TEST_SITE_DB_NAME="wpgraphql_woocommerce_test"
+	TEST_SITE_DB_HOST="127.0.0.1"
+	TEST_SITE_DB_USER="root"
+	TEST_SITE_DB_PASSWORD=""
+	TEST_SITE_TABLE_PREFIX="wp_"
+	TEST_TABLE_PREFIX="wp_"
+	TEST_SITE_WP_URL="http://wp.test"
+	TEST_SITE_WP_DOMAIN="wp.test"
+	TEST_SITE_ADMIN_EMAIL="admin@wp.test"
+	TEST_SITE_ADMIN_USERNAME="admin"
+	TEST_SITE_ADMIN_PASSWORD="password"
+	```
+	- `Shared` variables are as the comment implies, variables shared in both the `install-wp-tests` script and the **Codeception** configuration. The variable names should tell you what they mean.
+	- `Install script` variables are specified to the `install-wp-tests` script, and most likely won't changed. I've listed their meaning below.
+    	- `WP_VERSION` WordPress version used for testing
+    	- `SKIP_DB_CREATE` Should database creation be skipped?
+    	- `WP_GRAPHQL_BRANCH` The branch in the `WPGraphQL` repository the tests should be run again. Ex. `origin/feature/model-layer`
+	- `Codeception` variables are specified to the **Codeception** configuration. View the config files and Codeception's [Docs](https://codeception.com/docs/reference/Configuration#Suite-Configuration) for more info on them.
 
-For example: 
+4. Once you have finish modifying the `.env` file. Run `composer install-wp-tests` from the project directory.
+5. Upon success you can begin running the tests.
 
-`bin/install-wp-tests.sh wpgraphql_woocommerce_test root '' 127.0.0.1 latest`
-
-*DEBUGGING*: If you have run this command before in another branch you may already have a local copy of WordPress downloaded in your `/private/tmp` directory. 
-If this is the case, please remove it and then run the install script again. Without removing this you may receive an error when running phpunit.
-
-#### Local Environment Configuration for Codeception Tests
-
-You may have different local environment configuration than what Travis CI has to run the tests, such as database username/password.
-
-
-In the `/tests` directory you will find `*.suite.dist.yml` config files for each of the codeception test suites. 
-
-You can copy those files and remove the `.dist` from the filename, and that file will be loaded locally _before_ the `.dist` file.
-
-Do the same for the `.env.dist` in the root directory and copy the file as `.env`.
-
-For example, if you wanted to update the `dbName` or `dbPassword` for your local tests, you could copy `wpunit.suite.dist.yml` to `wpunit.suite.yml` and update the `dbName` or `dbPassword` value to reflect your local database and password.
-
-This file is .gitignored, so it will remain in your local environment but will not be added to the repo when you submit pull requests.
-
-### Running the Tests
-The tests are built on top of the Codeception testing framework. 
-
-To run the tests, after you've installed the test suite, as described above, you need to also install the `wp-browser`. 
-
-*@todo*: Make this easier than running all these steps, but for now this is what we've got to do.
-Perhaps someone who's more of a Composer expert could lend some advise?:
-
-- `rm -rf composer.lock vendor` to remove all composer dependencies and the composer lock file
-- `composer require lucatume/wp-browser --dev` to install the Codeception WordPress deps
-- `vendor/bin/codecept run` to run all the codeception tests
-    - You can specify which tests to run like: 
-        - `vendor/bin/codecept run wpunit`
-        - `vendor/bin/codecept run functional`
-        - `vendor/bin/codecept run acceptance`
-    - If you're working on a class, or with a specific test, you can run that class/test with:
-        - `vendor/bin/codecept run tests/wpunit/NodesTest.php`
-        - `vendor/bin/codecept run tests/wpunit/NodesTest.php:testPluginNodeQuery`
+### Running tests
+To run test use the command `vendor/bin/codecept run [suite [test [:test-function]]]`.
+If you use the command with at least a `suite` specified, **Codeception** will run all tests. This is not recommended. You better off running a suite `vendor/bin/codecept run wpunit` or a tests `vendor/bin/codecept run CouponQueriesTest`. You can all run single `test-function` in a test like they `vendor/bin/codecept run CouponQueriesTest:testCouponQuery`. To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  

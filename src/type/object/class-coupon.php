@@ -2,21 +2,26 @@
 /**
  * WPObject Type - Coupon
  *
+ * Registers Coupon WPObject type and queries
+ *
  * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
+use WPGraphQL\AppContext;
+use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class Coupon
  */
 class Coupon {
 	/**
-	 * Registers type and queries
+	 * Register Coupon type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -25,160 +30,122 @@ class Coupon {
 				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'id'                 => array(
-						'type'    => array( 'non_null' => 'ID' ),
-						'resolve' => function ( $coupon ) {
-							return ! empty( $coupon ) ? Relay::toGlobalId( 'coupon', $coupon->get_id() ) : null;
-						},
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'The globally unique identifier for the coupon', 'wp-graphql-woocommerce' ),
 					),
 					'couponId'           => array(
-						'type'        => array( 'non_null' => 'Int' ),
-						'description' => __( 'Coupon ID', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_id();
-						},
+						'type'        => 'Int',
+						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
 					),
 					'code'               => array(
 						'type'        => 'String',
 						'description' => __( 'Coupon code', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_code();
-						},
 					),
 					'date'               => array(
 						'type'        => 'String',
-						'description' => __( 'Date coupon was created', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_date_created();
-						},
+						'description' => __( 'Date coupon created', 'wp-graphql-woocommerce' ),
 					),
 					'modified'           => array(
 						'type'        => 'String',
-						'description' => __( 'Date coupon was last modified', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_date_modified();
-						},
+						'description' => __( 'Date coupon modified', 'wp-graphql-woocommerce' ),
 					),
 					'description'        => array(
 						'type'        => 'String',
 						'description' => __( 'Explanation of what the coupon does', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_description();
-						},
 					),
 					'discountType'       => array(
 						'type'        => 'DiscountTypeEnum',
 						'description' => __( 'Type of discount', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_discount_type();
-						},
 					),
 					'amount'             => array(
 						'type'        => 'Float',
 						'description' => __( 'Amount off provided by the coupon', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_amount();
-						},
 					),
 					'dateExpiry'         => array(
 						'type'        => 'String',
 						'description' => __( 'Date coupon expires', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_date_expires();
-						},
 					),
 					'usageCount'         => array(
 						'type'        => 'Int',
 						'description' => __( 'How many times the coupon has been used', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_usage_count();
-						},
 					),
 					'individualUse'      => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Individual use means this coupon cannot be used in conjunction with other coupons', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_individual_use();
-						},
 					),
 					'usageLimit'         => array(
 						'type'        => 'Int',
 						'description' => __( 'Amount of times this coupon can be used globally', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_usage_limit();
-						},
 					),
 					'usageLimitPerUser'  => array(
 						'type'        => 'Int',
 						'description' => __( 'Amount of times this coupon can be used by a customer', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_usage_limit_per_user();
-						},
 					),
 					'limitUsageToXItems' => array(
 						'type'        => 'Int',
 						'description' => __( 'The number of products in your cart this coupon can apply to (for product discounts)', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_limit_usage_to_x_items();
-						},
 					),
 					'freeShipping'       => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Does this coupon grant free shipping?', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_free_shipping();
-						},
 					),
 					'excludeSaleItems'   => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Excluding sale items mean this coupon cannot be used on items that are on sale (or carts that contain on sale items)', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_exclude_sale_items();
-						},
 					),
 					'minimumAmount'      => array(
 						'type'        => 'Float',
 						'description' => __( 'Minimum spend amount that must be met before this coupon can be used', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_minimun_amount();
-						},
 					),
 					'maximumAmount'      => array(
 						'type'        => 'Float',
 						'description' => __( 'Maximum spend amount that must be met before this coupon can be used ', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_maximum_amount();
-						},
 					),
 					'emailRestrictions'  => array(
 						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'Only customers with a matching email address can use the coupon', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $coupon ) {
-							return $coupon->get_email_restrictions();
-						},
 					),
 				),
 			)
 		);
 
-		/**
-		 * Register coupon queries
-		 */
 		register_graphql_field(
 			'RootQuery',
 			'coupon',
 			array(
 				'type'        => 'Coupon',
-				'description' => __( 'A Coupon object', 'wp-graphql-woocommerce' ),
+				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'id' => array(
-						'type' => array( 'non_null' => 'ID' ),
+						'type' => array(
+							'non_null' => 'ID',
+						),
 					),
 				),
-				'resolve'     => function ( $source, array $args, $context, $info ) {
+				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id_components = Relay::fromGlobalId( $args['id'] );
-					return Factory::resolve_coupon( $id_components['id'] );
+					if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
+						throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+					}
+					$coupon_id = absint( $id_components['id'] );
+					return Factory::resolve_crud_object( $coupon_id, $context );
 				},
 			)
+		);
+
+		$post_by_args = array(
+			'id'       => array(
+				'type'        => 'ID',
+				'description' => __( 'Get the coupon by its global ID', 'wp-graphql-woocommerce' ),
+			),
+			'couponId' => array(
+				'type'        => 'Int',
+				'description' => __( 'Get the coupon by its database ID', 'wp-graphql-woocommerce' ),
+			),
+			'code'     => array(
+				'type'        => 'String',
+				'description' => __( 'Get the coupon by its code', 'wp-graphql-woocommerce' ),
+			),
 		);
 
 		register_graphql_field(
@@ -186,19 +153,30 @@ class Coupon {
 			'couponBy',
 			array(
 				'type'        => 'Coupon',
-				'description' => __( 'A Coupon object', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'couponId' => array( 'type' => 'Int' ),
-					'code'     => array( 'type' => 'String' ),
-				],
-				'resolve'     => function ( $source, array $args, $context, $info ) {
-					if ( ! empty( $args['couponId'] ) ) {
-						return Factory::resolve_coupon( $args['couponId'] );
+				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
+				'args'        => $post_by_args,
+				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$coupon_id = 0;
+					if ( ! empty( $args['id'] ) ) {
+						$id_components = Relay::fromGlobalId( $args['id'] );
+						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+						}
+						$coupon_id = absint( $id_components['id'] );
+					} elseif ( ! empty( $args['couponId'] ) ) {
+						$coupon_id = absint( $args['couponId'] );
+					} elseif ( ! empty( $args['code'] ) ) {
+						$post = get_page_by_title( $args['code'], $output = OBJECT, 'shop_coupon' );
+						$coupon_id = $post->ID;
 					}
-					if ( ! empty( $args['code'] ) ) {
-						return Factory::resolve_coupon( $args['code'] );
+
+					$coupon = Factory::resolve_crud_object( $coupon_id, $context );
+					if ( get_post( $coupon_id )->post_type !== 'shop_coupon' ) {
+						/* translators: not coupon found error message */
+						throw new UserError( sprintf( __( 'No coupon exists with this id: %1$s', 'wp-graphql-woocommerce' ), $args['id'] ) );
 					}
-					return null;
+
+					return $coupon;
 				},
 			)
 		);

@@ -1,11 +1,10 @@
 <?php
 /**
- * Connection type - Coupons
+ * Connection - Coupons
  *
- * Registers connections to Coupons
+ * Registers connections to Coupon
  *
  * @package WPGraphQL\Extensions\WooCommerce\Connection
- * @since 0.0.1
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
@@ -13,13 +12,14 @@ namespace WPGraphQL\Extensions\WooCommerce\Connection;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
- * Class Coupons
+ * Class - Coupons
  */
 class Coupons {
 	/**
 	 * Registers the various connections from other Types to Coupon
 	 */
 	public static function register_connections() {
+		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
 	}
 
@@ -28,36 +28,32 @@ class Coupons {
 	 * with the defaults
 	 *
 	 * @access public
-	 * @param array $args
+	 * @param array $args - Connection configuration.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
+	public static function get_connection_config( $args = [] ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Coupon',
 			'fromFieldName'  => 'coupons',
 			'connectionArgs' => self::get_connection_args(),
-			'resolve'        => function ( $root, $args, $context, $info ) {
-				return Factory::resolve_coupon_connection( $root, $args, $context, $info );
+			'resolveNode'    => function( $id, $args, $context, $info ) {
+				return Factory::resolve_crud_object( $id, $context );
+			},
+			'resolve'        => function ( $source, $args, $context, $info ) {
+				return Factory::resolve_coupon_connection( $source, $args, $context, $info );
 			},
 		);
-
 		return array_merge( $defaults, $args );
 	}
 
 	/**
-	 * This returns the connection args for the Coupon connection
+	 * Returns array of where args
 	 *
-	 * @access public
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array(
-			'code' => array(
-				'type'        => 'String',
-				'description' => __( 'Coupon code', 'wp-graphql-woocommerce' ),
-			),
-		);
+		return array();
 	}
 }

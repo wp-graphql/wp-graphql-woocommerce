@@ -1,5 +1,6 @@
 <?php
 
+use GraphQLRelay\Relay;
 class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function setUp() {
@@ -26,9 +27,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$product->set_weight( .2 );
 		$product->save();
 
-		$query = "
-			query {
-				product(id: \"{$product->get_id()}\") {
+		$query = '
+			query productQuery( $id: ID! ) {
+				product(id: $id) {
 					productId
 					name
 					slug
@@ -63,7 +64,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					virtual
 					downloadable
 					shippingClassId
-					downloads
+					downloads {
+						nodes {
+							id
+						}
+					}
 					downloadLimit
 					downloadExpiry
 					ratingCount
@@ -119,9 +124,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					}
 				}
 			}
-		";
-
-		$actual = do_graphql_request( $query );
+		';
+		
+		$product_id = Relay::toGlobalId( 'product', $product->get_id() );
+		$variables = array( 'id' => $product_id );
+		$actual = do_graphql_request( $query, 'productQuery', $variables );
 
 		$expected = [
 			'data' => [
@@ -160,7 +167,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'virtual'           => $product->get_virtual(),
 					'downloadable'      => $product->get_downloadable(),
 					'shippingClassId'   => $product->get_shipping_class_id(),
-					'downloads'         => $product->get_downloads(),
+					'downloads'         => array(
+						'nodes' => $product->get_downloads(),
+					),
 					'downloadLimit'     => $product->get_download_limit(),
 					'downloadExpiry'    => $product->get_download_expiry(),
 					'ratingCount'       => $product->get_rating_count(),
@@ -193,17 +202,18 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$product->set_weight( .2 );
 		$product->save();
 
-		$query = "
-			query {
-				productBy(slug: \"{$product->get_slug()}\") {
+		$query = '
+			query productQuery( $slug: String! ) {
+				productBy(slug: $slug) {
 					productId
 					name
 					slug
 				}
 			}
-		";
+		';
 
-		$actual = do_graphql_request( $query );
+		$variables = array( 'slug' => 'test-product-2' );
+		$actual = do_graphql_request( $query, 'productQuery', $variables );
 
 		$expected = [
 			'data' => [

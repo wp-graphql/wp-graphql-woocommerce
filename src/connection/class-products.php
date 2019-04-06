@@ -1,10 +1,10 @@
 <?php
 /**
- * Connection type - Products
+ * Connection - Products
  *
- * Registers connections to Products
+ * Registers connections to Product
  *
- * @package WPGraphQL\Connection
+ * @package WPGraphQL\Extensions\WooCommerce\Connection
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
@@ -12,56 +12,21 @@ namespace WPGraphQL\Extensions\WooCommerce\Connection;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
- * Class Products
+ * Class - Products
  */
 class Products {
 	/**
 	 * Registers the various connections from other Types to Product
 	 */
 	public static function register_connections() {
-		/**
-		 * Root connections
-		 */
+		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
-
-		/**
-		 * Taxonomy connections
-		 */
-		register_graphql_connection(
-			self::get_connection_config(
-				array( 'fromType' => 'productTag' )
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array( 'fromType' => 'productCategory' )
-			)
-		);
-
-		/**
-		 * Type connections
-		 */
+		// From Coupon.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'upsell'
-				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'crossSell'
-				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'variations'
+					'fromType'      => 'Coupon',
+					'fromFieldName' => 'products',
 				)
 			)
 		);
@@ -69,15 +34,55 @@ class Products {
 			self::get_connection_config(
 				array(
 					'fromType'      => 'Coupon',
-					'fromFieldName' => 'products'
+					'fromFieldName' => 'excludedProducts',
+				)
+			)
+		);
+		// From Product.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'fromFieldName' => 'upsell',
 				)
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Coupon',
-					'fromFieldName' => 'excludedProducts'
+					'fromType'      => 'Product',
+					'fromFieldName' => 'crossSell',
+				)
+			)
+		);
+
+		// From Product to ProductVariation.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'toType'        => 'ProductVariation',
+					'fromFieldName' => 'variations',
+				)
+			)
+		);
+
+		// From ProductCategory.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'ProductCategory',
+					'fromFieldName' => 'products',
+				)
+			)
+		);
+
+		// From ProductTag.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'ProductTag',
+					'fromFieldName' => 'products',
 				)
 			)
 		);
@@ -88,36 +93,32 @@ class Products {
 	 * with the defaults
 	 *
 	 * @access public
-	 * @param array $args
+	 * @param array $args - Connection configuration.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
-		$defaults = [
+	public static function get_connection_config( $args = [] ) {
+		$defaults = array(
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Product',
 			'fromFieldName'  => 'products',
 			'connectionArgs' => self::get_connection_args(),
-			'resolve'        => function ( $root, $args, $context, $info ) {
-				return Factory::resolve_product_connection( $root, $args, $context, $info );
+			'resolveNode'    => function( $id, $args, $context, $info ) {
+				return Factory::resolve_crud_object( $id, $context );
 			},
-		];
-
+			'resolve'        => function ( $source, $args, $context, $info ) {
+				return Factory::resolve_product_connection( $source, $args, $context, $info );
+			},
+		);
 		return array_merge( $defaults, $args );
 	}
 
 	/**
-	 * This returns the connection args for the Product connection
+	 * Returns array of where args
 	 *
-	 * @access public
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array(
-			'slug' => array(
-				'type'        => 'String',
-				'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
-			),
-		);
+		return array();
 	}
 }
