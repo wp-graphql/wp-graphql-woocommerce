@@ -44,7 +44,7 @@ class Wpunit extends \Codeception\Module {
 
     public function order() {
         if ( is_null( $this->order ) ) {
-            $this->order = new OrderHelper();
+            $this->order = new \OrderHelper();
         }
 
         return $this->order;
@@ -52,7 +52,7 @@ class Wpunit extends \Codeception\Module {
 
     public function product() {
         if ( is_null( $this->product ) ) {
-            $this->product = new Product();
+            $this->product = new \ProductHelper();
         }
 
         return $this->product;
@@ -60,7 +60,7 @@ class Wpunit extends \Codeception\Module {
 
     public function product_variation() {
         if ( is_null( $this->product_variation ) ) {
-            $this->product_variation = new ProductVariationHelper();
+            $this->product_variation = new \ProductVariationHelper();
         }
 
         return $this->product_variation;
@@ -68,7 +68,7 @@ class Wpunit extends \Codeception\Module {
 
     public function refund() {
         if ( is_null( $this->refund ) ) {
-            $this->refund = new RefundHelper();
+            $this->refund = new \RefundHelper();
         }
 
         return $this->refund;

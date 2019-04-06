@@ -2,12 +2,18 @@
 
 use GraphQLRelay\Relay;
 class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $shop_manager;
+	private $customer;
+	private $product;
 
 	public function setUp() {
 		// before
 		parent::setUp();
 
-		// your set up methods here
+		$this->shop_manager  = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer      = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->helper        = $this->getModule('\Helper\Wpunit')->product();
+		$this->product  = $this->helper->create();
 	}
 
 	public function tearDown() {
@@ -18,15 +24,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	// tests
 	public function testProductQuery() {
-		$product = new WC_Product();
-		$product->set_name( 'Test Product' );
-		$product->set_slug( 'test-product' );
-		$product->set_description( 'lorem ipsum dolor' );
-		$product->set_sku( 'wp-pennant' );
-		$product->set_price( 11.05 );
-		$product->set_weight( .2 );
-		$product->save();
-
 		$query = '
 			query productQuery( $id: ID! ) {
 				product(id: $id) {
@@ -51,8 +48,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					taxClass
 					manageStock
 					stockQuantity
-					stockStatus
-					backorders
 					soldIndividually
 					weight
 					length
@@ -63,148 +58,33 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					menuOrder
 					virtual
 					downloadable
-					shippingClassId
-					downloads {
-						nodes {
-							id
-						}
-					}
 					downloadLimit
 					downloadExpiry
-					ratingCount
 					averageRating
 					reviewCount
-					upsell {
-						nodes {
-							productId
-						}
-					}
-					crossSell {
-						nodes {
-							productId
-						}
-					}
-					parent {
-						productId
-					}
-					categories {
-						nodes {
-							id
-							productCategoryId
-						}
-					}
-					tags {
-						nodes {
-							productTagId
-						}
-					}
-					image {
-						mediaItemId
-					}
-					galleryImages {
-						nodes {
-							mediaItemId
-						}
-					}
-					attributes {
-						nodes {
-							id
-							name
-							position
-							visible
-							variation
-							options
-						}
-					}
-					defaultAttributes {
-						nodes {
-							id
-							name
-						}
-					}
 				}
 			}
 		';
 		
-		$product_id = Relay::toGlobalId( 'product', $product->get_id() );
-		$variables = array( 'id' => $product_id );
+		$variables = array( 'id' => Relay::toGlobalId( 'product', $this->product ) );
 		$actual = do_graphql_request( $query, 'productQuery', $variables );
-
-		$expected = [
-			'data' => [
-				'product' => [
-					'productId'         => $product->get_id(),
-					'name'              => $product->get_name(),
-					'slug'              => $product->get_slug(),
-					'date'              => $product->get_date_created(),
-					'modified'          => $product->get_date_modified(),
-					'status'            => $product->get_status(),
-					'featured'          => $product->get_featured(),
-					'catalogVisibility' => $product->get_catalog_visibility(),
-					'description'       => $product->get_description(),
-					'shortDescription'  => $product->get_short_description(),
-					'sku'               => $product->get_sku(),
-					'price'             => $product->get_price(),
-					'regularPrice'      => $product->get_regular_price(),
-					'salePrice'         => $product->get_sale_price(),
-					'dateOnSaleFrom'    => $product->get_date_on_sale_from(),
-					'dateOnSaleTo'      => $product->get_date_on_sale_to(),
-					'totalSales'        => $product->get_total_sales(),
-					'taxStatus'         => $product->get_tax_status(),
-					'taxClass'          => $product->get_tax_class(),
-					'manageStock'       => $product->get_manage_stock(),
-					'stockQuantity'     => $product->get_stock_quantity(),
-					'stockStatus'       => $product->get_stock_status(),
-					'backorders'        => $product->get_backorders(),
-					'soldIndividually'  => $product->get_sold_individually(),
-					'weight'            => $product->get_weight(),
-					'length'            => $product->get_length(),
-					'width'             => $product->get_width(),
-					'height'            => $product->get_height(),
-					'reviewsAllowed'    => $product->get_reviews_allowed(),
-					'purchaseNote'      => $product->get_purchase_note(),
-					'menuOrder'         => $product->get_menu_order(),
-					'virtual'           => $product->get_virtual(),
-					'downloadable'      => $product->get_downloadable(),
-					'shippingClassId'   => $product->get_shipping_class_id(),
-					'downloads'         => array(
-						'nodes' => $product->get_downloads(),
-					),
-					'downloadLimit'     => $product->get_download_limit(),
-					'downloadExpiry'    => $product->get_download_expiry(),
-					'ratingCount'       => $product->get_rating_count(),
-					'averageRating'     => $product->get_average_rating(),
-					'reviewCount'       => $product->get_review_count(),
-				],
-			],
-		];
-
-		/**
-		 * use --debug flag to view
-		 */
-		\Codeception\Util\Debug::debug(
-			[
-				'actual'   => $actual,
-				'expected' => $expected,
-			]
+		$expected = array(
+			'data' => array(
+				'product' => $this->helper->get_query_data( $this->product ),
+			),
 		);
 
-		$this->assertEquals( $expected, $actual );
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
 	}
 
 	public function testProductByQuery() {
-		$product = new WC_Product();
-		$product->set_name( 'Test Product 2' );
-		$product->set_slug( 'test-product-2' );
-		$product->set_description( 'lorem ipsum dolor' );
-		$product->set_sku( 'wp-pennant' );
-		$product->set_price( 11.05 );
-		$product->set_weight( .2 );
-		$product->save();
-
+		$product = \wc_get_product( $this->product );
 		$query = '
-			query productQuery( $slug: String! ) {
-				productBy(slug: $slug) {
+			query productQuery( $productId: Int! ) {
+				productBy(productId: $productId) {
 					productId
 					name
 					slug
@@ -212,42 +92,26 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'slug' => 'test-product-2' );
-		$actual = do_graphql_request( $query, 'productQuery', $variables );
-
-		$expected = [
-			'data' => [
-				'productBy' => [
+		$variables = array( 'productId' => $this->product );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'productBy' => array(
 					'productId' => $product->get_id(),
 					'name'      => $product->get_name(),
 					'slug'      => $product->get_slug(),
-				],
-			],
-		];
-
-		/**
-		 * use --debug flag to view
-		 */
-		\Codeception\Util\Debug::debug(
-			[
-				'actual'   => $actual,
-				'expected' => $expected,
-			]
+				),
+			),
 		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testProductsQuery() {
-		$product = new WC_Product();
-		$product->set_name( 'Test Product-3' );
-		$product->set_slug( 'test-product-3' );
-		$product->set_description( 'lorem ipsum dolor' );
-		$product->set_sku( 'wp-pennant' );
-		$product->set_price( 11.05 );
-		$product->set_weight( .2 );
-		$product->save();
-
+		$product = \wc_get_product( $this->product );
 		$query = '
 			query {
 				products {
@@ -262,29 +126,22 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$actual = do_graphql_request( $query );
 
-		$expected = [
-			'data' => [
-				'products' => [
-					'nodes' => [
-						[
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array(
+						array(
 							'productId' => $product->get_id(),
 							'name'      => $product->get_name(),
 							'slug'      => $product->get_slug(),
-						],
-					],
-				],
-			],
-		];
-
-		/**
-		 * use --debug flag to view
-		 */
-		\Codeception\Util\Debug::debug(
-			[
-				'actual'   => $actual,
-				'expected' => $expected,
-			]
+						),
+					),
+				),
+			),
 		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
 	}

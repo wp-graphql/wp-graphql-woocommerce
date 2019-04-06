@@ -48,6 +48,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => $baseDir . '/src/type/object/class-order-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Attribute_Type' => $baseDir . '/src/type/object/class-product-attribute-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Download_Type' => $baseDir . '/src/type/object/class-product-download-type.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Rating_Counter_Type' => $baseDir . '/src/type/object/class-product-rating-counter-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Type' => $baseDir . '/src/type/object/class-product-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Variation_Type' => $baseDir . '/src/type/object/class-product-variation-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Refund_Type' => $baseDir . '/src/type/object/class-refund-type.php',

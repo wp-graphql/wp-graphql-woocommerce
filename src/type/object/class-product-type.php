@@ -222,9 +222,9 @@ class Product_Type {
 						'type'        => 'Int',
 						'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
 					),
-					'ratingCount'       => array(
-						'type'        => array( 'list_of' => 'String' ),
-						'description' => __( 'Product rating count', 'wp-graphql-woocommerce' ),
+					'ratingCount'      => array(
+						'type'        => 'RatingCounter',
+						'description' => __( 'Product rating counts', 'wp-graphql-woocommerce' ),
 					),
 					'averageRating'     => array(
 						'type'        => 'Float',
@@ -299,10 +299,6 @@ class Product_Type {
 				'type'        => 'Int',
 				'description' => __( 'Get the product by its database ID', 'wp-graphql-woocommerce' ),
 			),
-			'slug'      => array(
-				'type'        => 'String',
-				'description' => __( 'Get the product by its slug', 'wp-graphql-woocommerce' ),
-			),
 		);
 
 		register_graphql_field(
@@ -322,9 +318,6 @@ class Product_Type {
 						$product_id = absint( $id_components['id'] );
 					} elseif ( ! empty( $args['productId'] ) ) {
 						$product_id = absint( $args['productId'] );
-					} elseif ( ! empty( $args['slug'] ) ) {
-						$post = get_post_by_slug( $args['slug'] );
-						$product_id = $post->ID;
 					}
 
 					$product = Factory::resolve_crud_object( $product_id, $context );

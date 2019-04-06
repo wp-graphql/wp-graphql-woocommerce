@@ -146,9 +146,7 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 
 						return $author->then(
 							function () use ( $post_type, $key ) {
-								$obj = $this->resolve_model( $post_type, $key );
-								\codecept_debug( $obj );
-								return $obj;
+								return $this->resolve_model( $post_type, $key );
 							}
 						);
 					}

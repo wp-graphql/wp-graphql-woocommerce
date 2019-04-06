@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7b0d901126c1582278d4a990d615a033
+class ComposerStaticInit4e45c649d5244ea404bfa2a3531b40a3
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -63,6 +63,7 @@ class ComposerStaticInit7b0d901126c1582278d4a990d615a033
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => __DIR__ . '/../..' . '/src/type/object/class-order-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Attribute_Type' => __DIR__ . '/../..' . '/src/type/object/class-product-attribute-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Download_Type' => __DIR__ . '/../..' . '/src/type/object/class-product-download-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Rating_Counter_Type' => __DIR__ . '/../..' . '/src/type/object/class-product-rating-counter-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Type' => __DIR__ . '/../..' . '/src/type/object/class-product-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Variation_Type' => __DIR__ . '/../..' . '/src/type/object/class-product-variation-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Refund_Type' => __DIR__ . '/../..' . '/src/type/object/class-refund-type.php',
@@ -72,9 +73,9 @@ class ComposerStaticInit7b0d901126c1582278d4a990d615a033
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7b0d901126c1582278d4a990d615a033::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7b0d901126c1582278d4a990d615a033::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7b0d901126c1582278d4a990d615a033::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4e45c649d5244ea404bfa2a3531b40a3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4e45c649d5244ea404bfa2a3531b40a3::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4e45c649d5244ea404bfa2a3531b40a3::$classMap;
 
         }, null, ClassLoader::class);
     }
