@@ -42,15 +42,6 @@ matrix:
     - php: 5.6
       env: PHPCS=1
 
-before_install:
-  - |
-    # Remove Xdebug for a huge performance increase:
-    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
-      phpenv config-rm xdebug.ini
-    else
-      echo "xdebug.ini does not exist"
-    fi
-
 install:
   - |
     cd $TRAVIS_BUILD_DIR
@@ -85,7 +76,7 @@ before_script:
       composer require phpcompatibility/phpcompatibility-wp
       composer require wp-coding-standards/wpcs
       composer require dealerdirect/phpcodesniffer-composer-installer
-      composer install
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
 
       phpenv rehash
 
