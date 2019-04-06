@@ -56,11 +56,8 @@ before_script:
         # Install Coveralls
         composer require php-coveralls/php-coveralls
       fi
-      # Install and config tests
-      composer self-update
-      composer require lucatume/wp-browser:^2.2
+      # Install and config Codeception
       composer install --no-interaction
-      mkdir -p build/logs
       cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
       cp tests/functional.suite.dist.yml tests/functional.suite.yml
       cp tests/unit.suite.dist.yml tests/unit.suite.yml
@@ -94,6 +91,6 @@ script:
     fi
  - |
     if [ "$PHPCS" == "1" ]; then
-      ./vendor/bin/phpcs --standard=WordPress
+      ./vendor/bin/phpcs . --standard=WordPress
     fi
   
