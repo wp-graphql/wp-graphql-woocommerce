@@ -57,7 +57,7 @@ before_script:
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
       # Install and config Codeception
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-interaction
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer update --prefer-source --no-interaction --dev
       cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
       cp tests/functional.suite.dist.yml tests/functional.suite.yml
       cp tests/unit.suite.dist.yml tests/unit.suite.yml
