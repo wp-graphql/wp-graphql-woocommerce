@@ -2497,6 +2497,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address' => $baseDir . '/src/type/object/class-customer-address.php', 
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address_Type' => $baseDir . '/src/type/object/class-customer-address-type.php', 
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Type' => $baseDir . '/src/type/object/class-customer-type.php', 
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Meta_Data_Type' => $baseDir . '/src/type/object/class-meta-data-type.php', 
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order' => $baseDir . '/src/type/object/class-order.php', 
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => $baseDir . '/src/type/object/class-order-type.php', 
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product' => $baseDir . '/src/type/object/class-product.php', 

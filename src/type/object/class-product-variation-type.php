@@ -112,6 +112,10 @@ class Product_Variation_Type {
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s sale price', 'wp-graphql-woocommerce' ),
 					),
+					'meta'              => array(
+						'type'        => 'MetaData',
+						'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
+					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {
 					if ( 'product_variation' === $type ) {

@@ -188,6 +188,9 @@ class Order extends Crud_CPT {
 				'needsProcessing'       => function() {
 					return ! empty( $this->data ) ? $this->data->needs_processing() : null;
 				},
+				'meta'                  => function() {
+					return ! empty( $this->data->get_meta_data() ) ? $this->data->get_meta_data() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *

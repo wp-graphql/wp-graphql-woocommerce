@@ -105,6 +105,9 @@ class Customer extends Model {
 				'isPayingCustomer'      => function() {
 					return ( ! empty( $this->data->get_is_paying_customer() ) ) ? $this->data->get_is_paying_customer() : null;
 				},
+				'meta'                  => function() {
+					return ! empty( $this->data->get_meta_data() ) ? $this->data->get_meta_data() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *

@@ -111,6 +111,10 @@ class Customer_Type {
 						'type'        => 'Boolean',
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
+					'meta'                  => array(
+						'type'        => 'MetaData',
+						'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
+					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {
 					if ( 'customer' === $type ) {

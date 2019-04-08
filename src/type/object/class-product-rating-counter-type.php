@@ -75,6 +75,17 @@ class Product_Rating_Counter_Type {
 							return ! empty( $count ) ? min( 5, round( $total / $count, 2 ) ) : 0;
 						},
 					),
+					'total'      => array(
+						'type'        => 'Int',
+						'description' => __( 'Total number of ratings on the product', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							$count = 0;
+							foreach ( $source as $num ) {
+								$count += $num;
+							}
+							return $count;
+						},
+					),
 				),
 			)
 		);

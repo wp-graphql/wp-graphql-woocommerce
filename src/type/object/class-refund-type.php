@@ -60,6 +60,10 @@ class Refund_Type {
 							return DataSource::resolve_user( $source->refunded_by_id, $context );
 						},
 					),
+					'meta'       => array(
+						'type'        => 'MetaData',
+						'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
+					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {
 					if ( 'shop_order_refund' === $type ) {

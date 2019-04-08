@@ -26,6 +26,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Rating_Counter_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Meta_Data_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
@@ -67,6 +68,7 @@ class Actions {
 		Tax_Status::register();
 
 		// Objects.
+		Meta_Data_Type::register();
 		Coupon_Type::register();
 		Product_Type::register();
 		Product_Variation_Type::register();

@@ -2991,6 +2991,7 @@ class ComposerStaticInit703f21dde3c5889862ac86d8135b48b6
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address' => __DIR__ . '/../..' . '/src/type/object/class-customer-address.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address_Type' => __DIR__ . '/../..' . '/src/type/object/class-customer-address-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Type' => __DIR__ . '/../..' . '/src/type/object/class-customer-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Meta_Data_Type' => __DIR__ . '/../..' . '/src/type/object/class-meta-data-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order' => __DIR__ . '/../..' . '/src/type/object/class-order.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => __DIR__ . '/../..' . '/src/type/object/class-order-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product' => __DIR__ . '/../..' . '/src/type/object/class-product.php',

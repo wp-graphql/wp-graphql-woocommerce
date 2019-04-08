@@ -71,6 +71,9 @@ class Refund extends Model {
 					},
 					'capability' => 'list_users',
 				),
+				'meta'           => function() {
+					return ! empty( $this->data->get_meta_data() ) ? $this->data->get_meta_data() : null;
+				},
 			);
 		}
 

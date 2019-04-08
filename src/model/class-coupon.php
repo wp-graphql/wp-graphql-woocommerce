@@ -129,6 +129,9 @@ class Coupon extends Crud_CPT {
 				'emailRestrictions'             => function() {
 					return ! empty( $this->data->get_email_restrictions() ) ? $this->data->get_email_restrictions() : null;
 				},
+				'meta'                          => function() {
+					return ! empty( $this->data->get_meta_data() ) ? $this->data->get_meta_data() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *

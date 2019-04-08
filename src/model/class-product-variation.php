@@ -104,6 +104,9 @@ class Product_Variation extends Model {
 				'regularPrice'       => function() {
 					return ! empty( $this->data ) ? $this->data->get_regular_price() : null;
 				},
+				'meta'               => function() {
+					return ! empty( $this->data->get_meta_data() ) ? $this->data->get_meta_data() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *
