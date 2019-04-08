@@ -303,12 +303,46 @@ class Product extends Crud_CPT {
 				'shippingClassId'    => function () {
 					return ! empty( $this->data->get_image_id() ) ? $this->data->get_shipping_class_id() : null;
 				},
+				'downloads'          => function() {
+					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : null;
+				},
+				'onSale'             => function () {
+					return ! is_null( $this->data->is_on_sale() ) ? $this->data->is_on_sale() : null;
+				},
+				'purchasable'        => function () {
+					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
+				},
+				'externalUrl'        => function() {
+					if ( 'external' === $this->data->get_type() ) {
+						return ! empty( $this->data->get_product_url() ) ? $this->data->get_product_url() : null;
+					}
+					return null;
+				},
+				'buttonText'         => function() {
+					if ( 'external' === $this->data->get_type() ) {
+						return ! empty( $this->data->get_button_text() ) ? $this->data->get_button_text() : null;
+					}
+					return null;
+				},
+				'backordersAllowed'  => function() {
+					return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
+				},
+				'shippingRequired'   => function() {
+					return ! is_null( $this->data->needs_shipping() ) ? $this->data->needs_shipping() : null;
+				},
+				'shippingTaxable'    => function() {
+					return ! is_null( $this->data->is_shipping_taxable() ) ? $this->data->is_shipping_taxable() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *
 				 * These field resolvers are used in connection resolvers to define WP_Query argument
 				 * Note: underscore naming style is used as a quick identifier
 				 */
+				'related_ids'        => function() {
+					$related_ids = array_map( 'absint', array_values( wc_get_related_products( $this->data->get_id() ) ) );
+					return ! empty( $related_ids ) ? $related_ids : array( '0' );
+				},
 				'upsell_ids'         => function() {
 					if ( ! empty( $this->data ) ) {
 						switch ( $this->data->get_type() ) {
@@ -316,9 +350,8 @@ class Product extends Crud_CPT {
 							case 'grouped':
 								return null;
 							default:
-								return ! empty( $this->data->get_upsell_ids() )
-									? $this->data->get_upsell_ids()
-									: array( '0' );
+								$upsell_ids = array_map( 'absint', $this->data->get_upsell_ids() );
+								return ! empty( $upsell_ids ) ? $upsell_ids : array( '0' );
 						}
 					}
 
@@ -331,12 +364,25 @@ class Product extends Crud_CPT {
 							case 'grouped':
 								return null;
 							default:
-								return ! empty( $this->data->get_cross_sell_ids() )
-									? $this->data->get_cross_sell_ids()
-									: array( '0' );
+								$cross_sell_ids = array_map( 'absint', $this->data->get_cross_sell_ids() );
+								return ! empty( $cross_sell_ids ) ? $cross_sell_ids : array( '0' );
 						}
 					}
 
+					return array( '0' );
+				},
+				'grouped_ids'        => function() {
+					if ( ! empty( $this->data ) && 'grouped' === $this->data->get_type() ) {
+						$grouped = array_map( 'absint', $this->data->get_children() );
+						return ! empty( $grouped ) ? $grouped : array( '0' );
+					}
+					return array( '0' );
+				},
+				'variation_ids'      => function() {
+					if ( ! empty( $this->data ) && 'variable' === $this->data->get_type() ) {
+						$variations = array_map( 'absint', $this->data->get_children() );
+						return ! empty( $variations ) ? $variations : array( '0' );
+					}
 					return array( '0' );
 				},
 				'attributes'         => function() {
@@ -345,20 +391,8 @@ class Product extends Crud_CPT {
 				'default_attributes' => function() {
 					return ! empty( $this->data->get_default_attributes() ) ? array_values( $this->data->get_default_attributes() ) : array( '0' );
 				},
-				'downloads'          => function() {
-					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : array( '0' );
-				},
 				'gallery_image_ids'  => function() {
 					return ! empty( $this->data->get_gallery_image_ids() ) ? $this->data->get_gallery_image_ids() : array( '0' );
-				},
-				'children_ids'       => function() {
-					if ( ! empty( $this->data ) && 'variable' === $this->data->get_type() ) {
-						return ! empty( $this->data->get_children )
-							? $this->data->get_children()
-							: null;
-					}
-
-					return array( '0' );
 				},
 				'category_ids'       => function() {
 					return ! empty( $this->data->get_category_ids() ) ? $this->data->get_category_ids() : array( '0' );

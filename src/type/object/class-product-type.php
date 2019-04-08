@@ -222,7 +222,7 @@ class Product_Type {
 						'type'        => 'Int',
 						'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
 					),
-					'ratingCount'      => array(
+					'ratingCount'       => array(
 						'type'        => 'RatingCounter',
 						'description' => __( 'Product rating counts', 'wp-graphql-woocommerce' ),
 					),
@@ -249,6 +249,34 @@ class Product_Type {
 					'downloads'         => array(
 						'type'        => array( 'list_of' => 'ProductDownload' ),
 						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
+					),
+					'onSale'            => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Is product on sale?', 'wp-graphql-woocommerce' ),
+					),
+					'purchasable'       => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
+					),
+					'externalUrl'       => array(
+						'type'        => 'String',
+						'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
+					),
+					'buttonText'        => array(
+						'type'        => 'String',
+						'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
+					),
+					'backordersAllowed' => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
+					),
+					'shippingRequired'  => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' ),
+					),
+					'shippingTaxable'   => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {

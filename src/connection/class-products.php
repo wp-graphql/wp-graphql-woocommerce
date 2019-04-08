@@ -43,6 +43,14 @@ class Products {
 			self::get_connection_config(
 				array(
 					'fromType'      => 'Product',
+					'fromFieldName' => 'related',
+				)
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
 					'fromFieldName' => 'upsell',
 				)
 			)
@@ -52,6 +60,14 @@ class Products {
 				array(
 					'fromType'      => 'Product',
 					'fromFieldName' => 'crossSell',
+				)
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'fromFieldName' => 'grouped',
 				)
 			)
 		);

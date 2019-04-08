@@ -67,13 +67,17 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					break;
 
 				case is_a( $this->source, Product::class ):
-					if ( 'upsell' === $this->info->fieldName ) {
+					if ( 'related' === $this->info->fieldName ) {
+						$query_args['post__in'] = $this->source->related_ids;
+					} elseif ( 'upsell' === $this->info->fieldName ) {
 						$query_args['post__in'] = $this->source->upsell_ids;
 					} elseif ( 'crossSell' === $this->info->fieldName ) {
 						$query_args['post__in'] = $this->source->cross_sell_ids;
+					} elseif ( 'grouped' === $this->info->fieldName ) {
+						$query_args['post__in'] = $this->source->grouped_ids;
 					} elseif ( 'variations' === $this->info->fieldName ) {
 						$query_args['post_parent'] = $this->source->ID;
-						$query_args['post__in']    = $this->source->children_ids;
+						$query_args['post__in']    = $this->source->variation_ids;
 						$query_args['post_type']   = 'product_variation';
 					}
 					break;
