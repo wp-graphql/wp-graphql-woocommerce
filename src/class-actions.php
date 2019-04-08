@@ -33,7 +33,6 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Products;
 use WPGraphQL\Extensions\WooCommerce\Connection\Orders;
 use WPGraphQL\Extensions\WooCommerce\Connection\Refunds;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
-use WPGraphQL\Extensions\WooCommerce\Connection\Product_Downloads;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
 use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
 /**
@@ -86,7 +85,6 @@ class Actions {
 		Orders::register_connections();
 		Refunds::register_connections();
 		Product_Attributes::register_connections();
-		Product_Downloads::register_connections();
 		Customers::register_connections();
 	}
 }

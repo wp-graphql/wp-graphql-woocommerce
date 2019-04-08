@@ -234,10 +234,6 @@ class Product_Type {
 						'type'        => 'Int',
 						'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
 					),
-					'parentId'          => array(
-						'type'        => 'Int',
-						'description' => __( 'Parent product ID', 'wp-graphql-woocommerce' ),
-					),
 					'parent'            => array(
 						'type'        => 'Product',
 						'description' => __( 'Parent product', 'wp-graphql-woocommerce' ),
@@ -249,6 +245,10 @@ class Product_Type {
 					'shippingClassId'   => array(
 						'type'        => 'Int',
 						'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
+					),
+					'downloads'         => array(
+						'type'        => array( 'list_of' => 'ProductDownload' ),
+						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {
