@@ -84,4 +84,6 @@ If you use the command with at least a `suite` specified, **Codeception** will r
 ## Support this extension
 **WP-GraphQL WooCommerce** :point_right: **[KickStarter](http://kck.st/2G268mx)**
 
-**GraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
+**WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
+
+**GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/graphql-php)**
