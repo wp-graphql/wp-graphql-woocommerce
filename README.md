@@ -8,7 +8,8 @@
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
-3. Clone this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
+3. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
+4. (Optional) If you get error upon activation and have CMD/Terminal access with Composer install. Try running `composer dumpautoload -o` in the `wp-graphql-woocommerce` directory in your WordPress installation's `plugins` directory.
 
 ## What does this plugin do?
 It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [CRUD](https://github.com/woocommerce/woocommerce/wiki/CRUD-Objects-in-3.0) objects.
