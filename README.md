@@ -79,3 +79,7 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
 ### Running tests
 To run test use the command `vendor/bin/codecept run [suite [test [:test-function]]]`.
 If you use the command with at least a `suite` specified, **Codeception** will run all tests. This is not recommended. You better off running a suite `vendor/bin/codecept run wpunit` or a tests `vendor/bin/codecept run CouponQueriesTest`. You can all run single `test-function` in a test like they `vendor/bin/codecept run CouponQueriesTest:testCouponQuery`. To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
+
+## Support this extension
+**WP-GraphQL WooCommerce --> [KickStarter](http://kck.st/2G268mx)**
+**GraphQL --> [OpenCollective](http://opencollective.com/wp-graphql)**
