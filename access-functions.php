@@ -24,3 +24,33 @@ function wc_register_graphql_object_type( $type_name, $config ) {
 	}
 	register_graphql_type( $type_name, $config );
 }
+
+/**
+ * Checks if source string starts with the target string
+ *
+ * @param string $haystack - Source string.
+ * @param string $needle - Target string.
+ *
+ * @return bool
+ */
+function wc_graphql_starts_with( $haystack, $needle ) {
+	$length = strlen( $needle );
+	return ( substr( $haystack, 0, $length ) === $needle );
+}
+
+/**
+ * Checks if source string ends with the target string
+ *
+ * @param string $haystack - Source string.
+ * @param string $needle - Target string.
+ *
+ * @return bool
+ */
+function wc_graphql_ends_with( $haystack, $needle ) {
+	$length = strlen( $needle );
+	if ( 0 === $length ) {
+		return true;
+	}
+
+	return ( substr( $haystack, -$length ) === $needle );
+}

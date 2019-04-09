@@ -198,6 +198,10 @@ class Order_Type {
 						'type'        => 'Boolean',
 						'description' => __( 'If order needs processing before it can be completed', 'wp-graphql-woocommerce' ),
 					),
+					'downloadableItems'     => array(
+						'type'        => array( 'list_of' => 'ProductDownload' ),
+						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
+					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {
 					if ( 'shop_order' === $type ) {
