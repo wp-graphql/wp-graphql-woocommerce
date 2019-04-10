@@ -63,6 +63,19 @@ class Orders {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array();
+		return array(
+			'statuses'   => array(
+				'type'        => array( 'list_of' => 'String' ),
+				'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
+			),
+			'customerId' => array(
+				'type'        => 'Int',
+				'description' => __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' ),
+			),
+			'productId'    => array(
+				'type'        => 'Int',
+				'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
+			),
+		);
 	}
 }
