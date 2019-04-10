@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Coupons
  */
-class Coupons {
+class Coupons extends WC_Connection {
 	/**
 	 * Registers the various connections from other Types to Coupon
 	 */
@@ -54,6 +54,14 @@ class Coupons {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array();
+		return array_merge(
+			self::get_shared_connection_args(),
+			array(
+				'code' => array(
+					'type'        => 'String',
+					'description' => __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' ),
+				),
+			)
+		);
 	}
 }

@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Products
  */
-class Products {
+class Products extends WC_Connection {
 	/**
 	 * Registers the various connections from other Types to Product
 	 */
@@ -253,6 +253,6 @@ class Products {
 			);
 		}
 
-		return $args;
+		return array_merge( self::get_shared_connection_args(), $args );
 	}
 }

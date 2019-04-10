@@ -16,6 +16,8 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Refund_Type;
@@ -64,6 +66,10 @@ class Actions {
 		Manage_Stock::register();
 		Stock_Status::register();
 		Tax_Status::register();
+		WC_Connection_Orderby_Enum::register();
+
+		// InputObjects.
+		WC_Connection_Orderby_Input::register();
 
 		// Objects.
 		Coupon_Type::register();
