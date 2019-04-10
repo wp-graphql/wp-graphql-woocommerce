@@ -21,6 +21,36 @@ use WPGraphQL\Extensions\WooCommerce\Model\Refund;
  * Class Coupon_Connection_Resolver
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
+	use WC_Connection_Resolver {
+		sanitize_input_fields as sanitize_shared_input_fields;
+	}
+
+	/**
+	 * The name of the post type, or array of post types the connection resolver is resolving for
+	 *
+	 * @var string|array
+	 */
+	protected $post_type;
+
+	/**
+	 * Refund_Connection_Resolver constructor.
+	 *
+	 * @param mixed       $source    The object passed down from the previous level in the Resolve tree.
+	 * @param array       $args      The input arguments for the query.
+	 * @param AppContext  $context   The context of the request.
+	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
+	 */
+	public function __construct( $source, $args, $context, $info ) {
+		/**
+		 * Set the post type for the resolver
+		 */
+		$this->post_type = 'shop_coupon';
+		/**
+		 * Call the parent construct to setup class data
+		 */
+		parent::__construct( $source, $args, $context, $info );
+	}
+
 	/**
 	 * Confirms the uses has the privileges to query Coupons
 	 *
@@ -66,6 +96,24 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
 
+		/**
+		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
+		 */
+		if ( empty( $query_args['orderby'] ) ) {
+			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
+		}
+
+		/**
+		 * Filter the $query args to allow folks to customize queries programmatically
+		 *
+		 * @param array       $query_args The args that will be passed to the WP_Query
+		 * @param mixed       $source     The source that's passed down the GraphQL queries
+		 * @param array       $args       The inputArgs on the field
+		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
+		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 */
+		$query_args = apply_filters( 'graphql_coupon_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
+
 		return $query_args;
 	}
 
@@ -98,12 +146,39 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = array();
+		$args = $this->sanitize_shared_input_fields( $where_args );
 
 		if ( ! empty( $where_args['code'] ) ) {
 			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );
-			$args['post__in'] = $id ? array( $id ) : array( '0' );
+			$ids              = $id ? array( $id ) : array( '0' );
+			$args['post__in'] = isset( $args['post__in'] )
+			? array_intersect( $ids, $args['post__in'] )
+			: $ids;
 		}
+
+		/**
+		 * Filter the input fields
+		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+		 * from a GraphQL Query to the WP_Query
+		 *
+		 * @param array       $args       The mapped query arguments
+		 * @param array       $where_args Query "where" args
+		 * @param mixed       $source     The query results for a query calling this
+		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param AppContext  $context    The AppContext object
+		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param mixed|string|array      $post_type  The post type for the query
+		 */
+		$args = apply_filters(
+			'graphql_map_input_fields_to_coupon_query',
+			$args,
+			$where_args,
+			$this->source,
+			$this->args,
+			$this->context,
+			$this->info,
+			$this->post_type
+		);
 
 		return $args;
 	}

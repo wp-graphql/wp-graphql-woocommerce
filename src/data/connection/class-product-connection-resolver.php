@@ -23,6 +23,36 @@ use WPGraphQL\Model\Term;
  * Class Product_Connection_Resolver
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
+	use WC_Connection_Resolver {
+		sanitize_input_fields as sanitize_shared_input_fields;
+	}
+
+	/**
+	 * The name of the post type, or array of post types the connection resolver is resolving for
+	 *
+	 * @var string|array
+	 */
+	protected $post_type;
+
+	/**
+	 * Refund_Connection_Resolver constructor.
+	 *
+	 * @param mixed       $source    The object passed down from the previous level in the Resolve tree.
+	 * @param array       $args      The input arguments for the query.
+	 * @param AppContext  $context   The context of the request.
+	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
+	 */
+	public function __construct( $source, $args, $context, $info ) {
+		/**
+		 * Set the post type for the resolver
+		 */
+		$this->post_type = 'product';
+		/**
+		 * Call the parent construct to setup class data
+		 */
+		parent::__construct( $source, $args, $context, $info );
+	}
+
 	/**
 	 * Confirms the uses has the privileges to query Products
 	 *
@@ -110,7 +140,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 				case is_a( $this->source, Term::class ):
 					if ( empty( $query_args['tax_query'] ) ) {
-						$query_args['tax_query'] = array();
+						$query_args['tax_query'] = array(); // WPCS: slow query ok.
 					}
 					$query_args['tax_query'][] = array( // WPCS: slow query ok.
 						'taxonomy' => $this->source->taxonomy,
@@ -132,6 +162,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		if ( isset( $query_args['search'] ) && ! isset( $input_fields['parent'] ) ) {
 			unset( $query_args['post_parent'] );
+		}
+
+		/**
+		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
+		 */
+		if ( empty( $query_args['orderby'] ) ) {
+			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
 		}
 
 		/**
@@ -177,7 +214,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = array();
+		$args = $this->sanitize_shared_input_fields( $where_args );
 
 		if ( ! empty( $where_args['status'] ) ) {
 			$args['post_status'] = $where_args['status'];
@@ -339,6 +376,30 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$on_sale_ids          = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
 			$args[ $on_sale_key ] = $on_sale_ids;
 		}
+
+		/**
+		 * Filter the input fields
+		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+		 * from a GraphQL Query to the WP_Query
+		 *
+		 * @param array       $args       The mapped query arguments
+		 * @param array       $where_args Query "where" args
+		 * @param mixed       $source     The query results for a query calling this
+		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param AppContext  $context    The AppContext object
+		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param mixed|string|array      $post_type  The post type for the query
+		 */
+		$args = apply_filters(
+			'graphql_map_input_fields_to_product_query',
+			$args,
+			$where_args,
+			$this->source,
+			$this->args,
+			$this->context,
+			$this->info,
+			$this->post_type
+		);
 
 		return $args;
 	}
