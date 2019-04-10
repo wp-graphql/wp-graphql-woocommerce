@@ -42,15 +42,15 @@ class WC_Connection {
 				'description' => __( 'Filter the connection based on dates', 'wp-graphql-woocommerce' ),
 			),
 			'parent'      => array(
-				'type'        => 'String',
+				'type'        => 'Int',
 				'description' => __( 'Use ID to return only children. Use 0 to return only top-level items', 'wp-graphql-woocommerce' ),
 			),
 			'parentIn'    => array(
-				'type'        => array( 'list_of' => 'ID' ),
+				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Specify objects whose parent is in an array', 'wp-graphql-woocommerce' ),
 			),
 			'parentNotIn' => array(
-				'type'        => array( 'list_of' => 'ID' ),
+				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Specify objects whose parent is not in an array', 'wp-graphql-woocommerce' ),
 			),
 		);
