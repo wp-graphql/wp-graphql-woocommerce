@@ -47,7 +47,6 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		// Set the $query_args based on various defaults and primary input $args.
 		$query_args = array(
 			'post_type'      => 'shop_order',
-			'post_status'    => 'any',
 			'no_rows_found'  => true,
 			'fields'         => 'ids',
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
@@ -63,6 +62,10 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( ! empty( $input_fields ) ) {
 			$query_args = array_merge( $query_args, $input_fields );
+		}
+
+		if ( empty( $query_args['post_status'] ) ) {
+			$query_args['post_status'] = 'any';
 		}
 
 		if ( true === is_object( $this->source ) ) {
@@ -110,7 +113,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	protected function get_order_statuses() {
 		$order_statuses = array();
-		foreach ( array_keys( wc_get_order_statuses() ) as $status ) {
+		foreach ( array_keys( \wc_get_order_statuses() ) as $status ) {
 			$order_statuses[] = str_replace( 'wc-', '', $status );
 		}
 		return $order_statuses;

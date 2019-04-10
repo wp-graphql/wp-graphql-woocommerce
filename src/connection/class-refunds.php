@@ -65,6 +65,15 @@ class Refunds {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array();
+		return array(
+			'statuses' => array(
+				'type'        => array( 'list_of' => 'String' ),
+				'description' => __( 'Limit result set to refunds assigned a specific status.', 'wp-graphql-woocommerce' ),
+			),
+			'orderIn'  => array(
+				'type'        => array( 'list_of' => 'Int' ),
+				'description' => __( 'Limit result set to refunds from a specific group of order IDs.', 'wp-graphql-woocommerce' ),
+			),
+		);
 	}
 }
