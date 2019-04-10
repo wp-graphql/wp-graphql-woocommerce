@@ -54,6 +54,11 @@ class Coupons {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array();
+		return array(
+			'code' => array(
+				'type'        => 'String',
+				'description' => __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' ),
+			),
+		);
 	}
 }

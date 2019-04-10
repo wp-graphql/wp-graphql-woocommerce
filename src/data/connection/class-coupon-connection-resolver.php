@@ -54,6 +54,18 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		);
 
+		/**
+		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
+		 */
+		$input_fields = [];
+		if ( ! empty( $this->args['where'] ) ) {
+			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
+		}
+
+		if ( ! empty( $input_fields ) ) {
+			$query_args = array_merge( $query_args, $input_fields );
+		}
+
 		return $query_args;
 	}
 
@@ -73,5 +85,26 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_items() {
 		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+	}
+
+	/**
+	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
+	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
+	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
+	 * now this gets the job done.
+	 *
+	 * @param array $where_args - arguments being used to filter query.
+	 *
+	 * @return array
+	 */
+	public function sanitize_input_fields( array $where_args ) {
+		$args = array();
+
+		if ( ! empty( $where_args['code'] ) ) {
+			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );
+			$args['post__in'] = $id ? array( $id ) : array( '0' );
+		}
+
+		return $args;
 	}
 }

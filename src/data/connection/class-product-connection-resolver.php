@@ -174,7 +174,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @param array $where_args - arguments being used to filter query.
 	 *
-	 * @access public
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
