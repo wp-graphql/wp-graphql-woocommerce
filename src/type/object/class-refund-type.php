@@ -27,7 +27,7 @@ class Refund_Type {
 	 * Register Refund type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Refund',
 			array(
 				'description'       => __( 'A refund object', 'wp-graphql-woocommerce' ),

@@ -23,9 +23,11 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Connection_Resolver
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
+use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Factory
@@ -94,6 +96,49 @@ class Factory {
 			return new Order_Item( $item );
 		} else {
 			throw new UserError( __( 'Object provided to order item resolver is an invalid type', 'wp-graphql-woocommerce' ) );
+		}
+	}
+
+	/**
+	 * Returns the Order Item Model for the order item
+	 *
+	 * @param int $id - Tax rate ID.
+	 *
+	 * @return Tax_Rate
+	 * @access public
+	 * @throws UserError Invalid object.
+	 */
+	public static function resolve_tax_rate( $id ) {
+		global $wpdb;
+
+		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
+		/**
+		 * If $id is an instance of WC_Order_Item
+		 */
+		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
+			// Get locales from a tax rate.
+			$locales = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT location_code, location_type
+					FROM {$wpdb->prefix}woocommerce_tax_rate_locations
+					WHERE tax_rate_id = %d",
+					$rate->tax_rate_id
+				)
+			);
+
+			foreach ( $locales as $locale ) {
+				if ( empty( $rate->{'tax_rate_' . $locale->location_type} ) ) {
+					$rate->{'tax_rate_' . $locale->location_type} = array();
+				}
+				$rate->{'tax_rate_' . $locale->location_type}[] = $locale->location_code;
+			}
+
+			return new Tax_Rate( $rate );
+		} else {
+			throw new UserError(
+				/* translators: tax rate not found error message */
+				sprintf( __( 'No Tax Rate assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
+			);
 		}
 	}
 
@@ -222,6 +267,22 @@ class Factory {
 	 */
 	public static function resolve_refund_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Refund_Connection_Resolver( $source, $args, $context, $info );
+		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves TaxRate connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_tax_rate_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Tax_Rate_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
 }

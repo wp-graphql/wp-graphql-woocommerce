@@ -26,7 +26,7 @@ class Order_Type {
 	 * Register Order type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Order',
 			array(
 				'description'       => __( 'A order object', 'wp-graphql-woocommerce' ),

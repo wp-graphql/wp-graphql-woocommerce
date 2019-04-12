@@ -26,7 +26,7 @@ class Product_Type {
 	 * Register Product type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Product',
 			array(
 				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),

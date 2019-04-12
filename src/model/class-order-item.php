@@ -33,7 +33,6 @@ class Order_Item extends Model {
 	 *
 	 * @access public
 	 * @return void
-	 * @throws UserError Order ID not found.
 	 */
 	public function __construct( $item ) {
 		$this->data                = $item;

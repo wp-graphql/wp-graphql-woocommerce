@@ -10,13 +10,8 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
 
 /**
  * Class Order_Item_Type
@@ -147,13 +142,13 @@ class Order_Item_Type {
 						'type'        => 'Int',
 						'description' => __( 'Is this a compound tax rate?', 'wp-graphql-woocommerce' ),
 					),
-					// 'taxRate'          => array(
-					// 	'type'        => 'TaxRate',
-					// 	'description' => __( 'Tax line\'s tax rate', 'wp-graphql-woocommerce' ),
-					// 	'resolve'     => function( $source ) {
-					// 		return Factory::resolve_tax_rate( $source->rate_id );
-					// 	},
-					// ),
+					'taxRate'          => array(
+						'type'        => 'TaxRate',
+						'description' => __( 'Tax line\'s tax rate', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return Factory::resolve_tax_rate( $source->rate_id );
+						},
+					),
 				),
 			),
 			'LineItem'     => array(

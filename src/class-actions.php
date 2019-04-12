@@ -18,7 +18,9 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Item_Type;
@@ -30,6 +32,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Rating_Counter_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
@@ -40,6 +43,7 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Refunds;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
 use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
+use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
 /**
  * Class Actions
  */
@@ -71,9 +75,11 @@ class Actions {
 		Tax_Class::register();
 		Tax_Status::register();
 		WC_Connection_Orderby_Enum::register();
+		Tax_Rate_Connection_Orderby_Enum::register();
 
 		// InputObjects.
 		WC_Connection_Orderby_Input::register();
+		Tax_Rate_Connection_Orderby_Input::register();
 
 		// Objects.
 		Coupon_Type::register();
@@ -87,6 +93,7 @@ class Actions {
 		Product_Rating_Counter_Type::register();
 		Customer_Type::register();
 		Customer_Address_Type::register();
+		Tax_Rate_Type::register();
 
 		// Connections.
 		Posts::register_connections();
@@ -98,5 +105,6 @@ class Actions {
 		Refunds::register_connections();
 		Product_Attributes::register_connections();
 		Customers::register_connections();
+		Tax_Rates::register_connections();
 	}
 }

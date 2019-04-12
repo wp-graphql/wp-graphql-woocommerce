@@ -26,7 +26,7 @@ class Coupon_Type {
 	 * Register Coupon type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Coupon',
 			array(
 				'description'       => __( 'A coupon object', 'wp-graphql-woocommerce' ),
