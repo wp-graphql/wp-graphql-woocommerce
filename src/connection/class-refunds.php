@@ -43,7 +43,7 @@ class Refunds extends WC_Connection {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ) {
+	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Refund',

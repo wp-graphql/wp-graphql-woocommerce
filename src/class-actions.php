@@ -15,11 +15,15 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Item_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Refund_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Variation_Type;
@@ -28,15 +32,21 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Rating_Counter_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Shipping_Method_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
 use WPGraphQL\Extensions\WooCommerce\Connection\Products;
 use WPGraphQL\Extensions\WooCommerce\Connection\Orders;
+use WPGraphQL\Extensions\WooCommerce\Connection\Order_Items;
 use WPGraphQL\Extensions\WooCommerce\Connection\Refunds;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
 use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
+use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
+use WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods;
+
 /**
  * Class Actions
  */
@@ -65,23 +75,29 @@ class Actions {
 		Discount_Type::register();
 		Manage_Stock::register();
 		Stock_Status::register();
+		Tax_Class::register();
 		Tax_Status::register();
 		WC_Connection_Orderby_Enum::register();
+		Tax_Rate_Connection_Orderby_Enum::register();
 
 		// InputObjects.
 		WC_Connection_Orderby_Input::register();
+		Tax_Rate_Connection_Orderby_Input::register();
 
 		// Objects.
 		Coupon_Type::register();
 		Product_Type::register();
 		Product_Variation_Type::register();
 		Order_Type::register();
+		Order_Item_Type::register();
 		Refund_Type::register();
 		Product_Attribute_Type::register();
 		Product_Download_Type::register();
 		Product_Rating_Counter_Type::register();
 		Customer_Type::register();
 		Customer_Address_Type::register();
+		Tax_Rate_Type::register();
+		Shipping_Method_Type::register();
 
 		// Connections.
 		Posts::register_connections();
@@ -89,8 +105,11 @@ class Actions {
 		Coupons::register_connections();
 		Products::register_connections();
 		Orders::register_connections();
+		Order_Items::register_connections();
 		Refunds::register_connections();
 		Product_Attributes::register_connections();
 		Customers::register_connections();
+		Tax_Rates::register_connections();
+		Shipping_Methods::register_connections();
 	}
 }

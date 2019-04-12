@@ -26,7 +26,7 @@ class Product_Variation_Type {
 	 * Register ProductVariation type to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'ProductVariation',
 			array(
 				'description'       => __( 'A product variation object', 'wp-graphql-woocommerce' ),
@@ -61,7 +61,7 @@ class Product_Variation_Type {
 						'description' => __( 'Product variation height', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'          => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Product variation tax class', 'wp-graphql-woocommerce' ),
 					),
 					'manageStock'       => array(
@@ -138,7 +138,7 @@ class Product_Variation_Type {
 				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'id'          => array(
-						'type'        => array( 'non_null' => 'ID' ),
+						'type'        => 'ID',
 						'description' => __( 'Get the product variation by its global ID', 'wp-graphql-woocommerce' ),
 					),
 					'variationId' => array(

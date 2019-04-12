@@ -26,7 +26,7 @@ class Product_Type {
 	 * Register Product type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Product',
 			array(
 				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),
@@ -155,7 +155,7 @@ class Product_Type {
 						'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'          => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
 					),
 					'manageStock'       => array(

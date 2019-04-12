@@ -54,3 +54,25 @@ function wc_graphql_ends_with( $haystack, $needle ) {
 
 	return ( substr( $haystack, -$length ) === $needle );
 }
+
+/**
+ * Returns formatted array of tax statement objects.
+ *
+ * @param array $raw_taxes - array of raw taxes object from WC_Order_Item crud objects.
+ *
+ * @return array
+ */
+function wc_graphql_map_tax_statements( $raw_taxes ) {
+	$taxes = array();
+	foreach ( $raw_taxes as $field => $values ) {
+		foreach ( $values as $id => $amount ) {
+			if ( empty( $taxes[ $id ] ) ) {
+				$taxes[ $id ] = array();
+			}
+			$taxes[ $id ]['ID']     = $id;
+			$taxes[ $id ][ $field ] = $amount;
+		}
+	}
+
+	return array_values( $taxes );
+}
