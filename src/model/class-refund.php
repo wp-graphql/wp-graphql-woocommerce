@@ -17,7 +17,12 @@ use WPGraphQL\Model\Model;
 /**
  * Class Refund
  */
-class Refund extends Model {
+class Refund extends Crud_CPT {
+	/**
+	 * Defines get_restricted_cap
+	 */
+	use Shop_Manager_Caps;
+
 	/**
 	 * Refund constructor
 	 *
@@ -36,7 +41,7 @@ class Refund extends Model {
 			'refundId',
 		];
 
-		parent::__construct( 'list_users', $allowed_restricted_fields, $id );
+		parent::__construct( $allowed_restricted_fields, 'shop_order_refund', $id );
 	}
 
 	/**
@@ -51,7 +56,7 @@ class Refund extends Model {
 					return $this->data->get_id();
 				},
 				'id'             => function() {
-					return ! empty( $this->data ) ? Relay::toGlobalId( 'shop_order', $this->data->get_id() ) : null;
+					return ! empty( $this->data ) ? Relay::toGlobalId( 'shop_order_refund', $this->data->get_id() ) : null;
 				},
 				'refundId'       => function() {
 					return ! empty( $this->data ) ? $this->data->get_id() : null;

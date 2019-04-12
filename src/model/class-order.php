@@ -11,13 +11,16 @@
 namespace WPGraphQL\Extensions\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\Model\Model;
 
 /**
  * Class Order
  */
 class Order extends Crud_CPT {
+	/**
+	 * Defines get_restricted_cap
+	 */
+	use Shop_Manager_Caps;
+
 	/**
 	 * Order constructor
 	 *
@@ -37,30 +40,6 @@ class Order extends Crud_CPT {
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_order', $id );
-	}
-
-	/**
-	 * Retrieve the cap to check if the data should be restricted for the order
-	 *
-	 * @access protected
-	 * @return string
-	 */
-	protected function get_restricted_cap() {
-		if ( post_password_required( $this->data->get_id() ) ) {
-			return $this->post_type_object->cap->edit_others_posts;
-		}
-		switch ( get_post_status( $this->data->get_id() ) ) {
-			case 'trash':
-				$cap = $this->post_type_object->cap->edit_posts;
-				break;
-			case 'draft':
-				$cap = $this->post_type_object->cap->edit_others_posts;
-				break;
-			default:
-				$cap = '';
-				break;
-		}
-		return $cap;
 	}
 
 	/**

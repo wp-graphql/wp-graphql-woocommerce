@@ -18,12 +18,14 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
 
 /**
  * Class Factory
@@ -76,6 +78,26 @@ class Factory {
 	}
 
 	/**
+	 * Returns the Order Item Model for the order item
+	 *
+	 * @param int $item - order item crud object instance.
+	 *
+	 * @return Order_Item
+	 * @access public
+	 * @throws UserError Invalid object.
+	 */
+	public static function resolve_order_item( $item ) {
+		/**
+		 * If $id is an instance of WC_Order_Item
+		 */
+		if ( is_a( $item, \WC_Order_Item::class ) ) {
+			return new Order_Item( $item );
+		} else {
+			throw new UserError( __( 'Object provided to order item resolver is an invalid type', 'wp-graphql-woocommerce' ) );
+		}
+	}
+
+	/**
 	 * Resolves Coupon connections
 	 *
 	 * @param mixed       $source     - Data resolver for connection source.
@@ -121,6 +143,22 @@ class Factory {
 	public static function resolve_order_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves Order connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_order_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Order_Item_Connection_Resolver();
+		return $resolver->resolve( $source, $args, $context, $info );
 	}
 
 	/**
