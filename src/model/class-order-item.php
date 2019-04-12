@@ -116,11 +116,16 @@ class Order_Item extends Model {
 							'name'      => function() {
 								return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
 							},
-							'taxClass'  => function() {
-								return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : null;
-							},
 							'taxStatus' => function() {
 								return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
+							},
+							'taxClass'  => function() {
+								if ( $this->data->get_tax_status() === 'taxable' ) {
+									return ! empty( $this->data->get_tax_class() )
+										? $this->data->get_tax_class()
+										: 'standard';
+								}
+								return null;
 							},
 							'total'     => function() {
 								return ! empty( $this->data->get_total() ) ? $this->data->get_total() : null;
@@ -159,7 +164,7 @@ class Order_Item extends Model {
 									: null;
 							},
 							'taxClass'    => function() {
-								return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : null;
+								return is_callable( $this->data, 'get_tax_class' ) ? $this->data->get_tax_class() : 'standard';
 							},
 							'method_id'   => function() {
 								return ! empty( $this->data->get_method_id() ) ? $this->data->get_method_id() : null;
@@ -206,9 +211,6 @@ class Order_Item extends Model {
 							'quantity'      => function() {
 								return ! empty( $this->data->get_quantity() ) ? $this->data->get_quantity() : null;
 							},
-							'taxClass'      => function() {
-								return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : null;
-							},
 							'subtotal'      => function() {
 								return ! empty( $this->data->get_subtotal() ) ? $this->data->get_subtotal() : null;
 							},
@@ -231,6 +233,14 @@ class Order_Item extends Model {
 							},
 							'taxStatus'     => function() {
 								return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
+							},
+							'taxClass'  => function() {
+								if ( $this->data->get_tax_status() === 'taxable' ) {
+									return ! empty( $this->data->get_tax_class() )
+										? $this->data->get_tax_class()
+										: 'standard';
+								}
+								return null;
 							},
 						)
 					);

@@ -15,6 +15,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
@@ -67,6 +68,7 @@ class Actions {
 		Discount_Type::register();
 		Manage_Stock::register();
 		Stock_Status::register();
+		Tax_Class::register();
 		Tax_Status::register();
 		WC_Connection_Orderby_Enum::register();
 

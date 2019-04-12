@@ -61,7 +61,7 @@ class Product_Variation_Type {
 						'description' => __( 'Product variation height', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'          => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Product variation tax class', 'wp-graphql-woocommerce' ),
 					),
 					'manageStock'       => array(

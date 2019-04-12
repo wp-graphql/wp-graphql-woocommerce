@@ -2548,6 +2548,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => $baseDir . '/src/type/enum/class-discount-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => $baseDir . '/src/type/enum/class-manage-stock.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Stock_Status' => $baseDir . '/src/type/enum/class-stock-status.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Class' => $baseDir . '/src/type/enum/class-tax-class.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Status' => $baseDir . '/src/type/enum/class-tax-status.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\WC_Connection_Orderby_Enum' => $baseDir . '/src/type/enum/class-wc-connection-orderby-enum.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\WC_Connection_Orderby_Input' => $baseDir . '/src/type/input/class-wc-connection-orderby-input.php',

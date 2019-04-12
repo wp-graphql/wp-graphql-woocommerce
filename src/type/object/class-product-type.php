@@ -155,7 +155,7 @@ class Product_Type {
 						'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'          => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
 					),
 					'manageStock'       => array(

@@ -83,7 +83,7 @@ class Order_Item_Type {
 						'description' => __( 'Line taxes', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'  => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
 					),
 				),
@@ -110,7 +110,7 @@ class Order_Item_Type {
 						'description' => __( 'Line taxes', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'       => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
 					),
 					// 'shippingMethod' => array(
@@ -174,7 +174,7 @@ class Order_Item_Type {
 						'description' => __( 'Line item\'s product quantity', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'      => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Line item\'s tax class', 'wp-graphql-woocommerce' ),
 					),
 					'subtotal'      => array(

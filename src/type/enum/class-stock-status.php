@@ -16,11 +16,11 @@ class Stock_Status {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = [
+		$values = array(
 			'IN_STOCK'     => array( 'value' => 'instock' ),
 			'OUT_OF_STOCK' => array( 'value' => 'outofstock' ),
 			'ON_BACKORDER' => array( 'value' => 'onbackorder' ),
-		];
+		);
 
 		register_graphql_enum_type(
 			'StockStatusEnum',
