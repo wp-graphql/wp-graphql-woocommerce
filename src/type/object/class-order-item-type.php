@@ -108,13 +108,13 @@ class Order_Item_Type {
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
 					),
-					// 'shippingMethod' => array(
-					// 	'type'        => 'ShippingMethod',
-					// 	'description' => __( 'Shipping Line\'s shipping method', 'wp-graphql-woocommerce' ),
-					// 	'resolve'     => function( $source ) {
-					// 		return Factory::resolve_shipping_method( $source->method_id );
-					// 	},
-					// ),
+					'shippingMethod' => array(
+						'type'        => 'ShippingMethod',
+						'description' => __( 'Shipping Line\'s shipping method', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return Factory::resolve_shipping_method( $source->method_id );
+						},
+					),
 				),
 			),
 			'TaxLine'      => array(

@@ -24,10 +24,12 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connectio
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
 use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
+use WPGraphQL\Extensions\WooCommerce\Model\Shipping_Method;
 
 /**
  * Class Factory
@@ -80,7 +82,7 @@ class Factory {
 	}
 
 	/**
-	 * Returns the Order Item Model for the order item
+	 * Returns the order item Model for the order item.
 	 *
 	 * @param int $item - order item crud object instance.
 	 *
@@ -100,7 +102,7 @@ class Factory {
 	}
 
 	/**
-	 * Returns the Order Item Model for the order item
+	 * Returns the tax rate Model for the tax rate ID.
 	 *
 	 * @param int $id - Tax rate ID.
 	 *
@@ -112,9 +114,6 @@ class Factory {
 		global $wpdb;
 
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
-		/**
-		 * If $id is an instance of WC_Order_Item
-		 */
 		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
 			// Get locales from a tax rate.
 			$locales = $wpdb->get_results(
@@ -140,6 +139,30 @@ class Factory {
 				sprintf( __( 'No Tax Rate assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
 			);
 		}
+	}
+
+	/**
+	 * Returns the shipping method Model for the shipping method ID.
+	 *
+	 * @param int $id - Shipping method ID.
+	 *
+	 * @return Shipping_Method
+	 * @access public
+	 * @throws UserError Invalid object.
+	 */
+	public static function resolve_shipping_method( $id ) {
+		$wc_shipping = \WC_Shipping::instance();
+		$methods     = $wc_shipping->get_shipping_methods();
+		if ( empty( $methods[ $id ] ) ) {
+			throw new UserError(
+				/* translators: shipping method not found error message */
+				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
+			);
+		}
+
+		$method = $methods[ $id ];
+
+		return new Shipping_Method( $method );
 	}
 
 	/**
@@ -284,5 +307,21 @@ class Factory {
 	public static function resolve_tax_rate_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Tax_Rate_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves ShippingMethod connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_shipping_method_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Shipping_Method_Connection_Resolver();
+		return $resolver->resolve( $source, $args, $context, $info );
 	}
 }

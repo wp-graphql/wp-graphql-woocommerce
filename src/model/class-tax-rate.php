@@ -18,7 +18,7 @@ use WPGraphQL\Model\Model;
  */
 class Tax_Rate extends Model {
 	/**
-	 * Order_Item constructor
+	 * Tax_Rate constructor
 	 *
 	 * @param int $rate - Tax rate object.
 	 *

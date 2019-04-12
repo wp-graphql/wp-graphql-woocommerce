@@ -1,8 +1,8 @@
 <?php
 /**
- * Connection - Tax_Rates
+ * Connection - Shipping_Methods
  *
- * Registers connections to TaxRate
+ * Registers connections to ShippingMethod
  *
  * @package WPGraphQL\Extensions\WooCommerce\Connection
  * @since 0.0.2
@@ -13,9 +13,9 @@ namespace WPGraphQL\Extensions\WooCommerce\Connection;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
- * Class - Tax_Rates
+ * Class - Shipping_Methods
  */
-class Tax_Rates {
+class Shipping_Methods {
 	/**
 	 * Registers the various connections from other Types to TaxRate
 	 */
@@ -36,34 +36,16 @@ class Tax_Rates {
 	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
-			'toType'         => 'TaxRate',
-			'fromFieldName'  => 'taxRates',
-			'connectionArgs' => self::get_connection_args(),
+			'toType'         => 'ShippingMethod',
+			'fromFieldName'  => 'shippingMethods',
+			'connectionArgs' => array(),
 			'resolveNode'    => function( $id, $args, $context, $info ) {
-				return Factory::resolve_tax_rate( $id );
+				return Factory::resolve_shipping_method( $id );
 			},
 			'resolve'        => function ( $source, $args, $context, $info ) {
-				return Factory::resolve_tax_rate_connection( $source, $args, $context, $info );
+				return Factory::resolve_shipping_method_connection( $source, $args, $context, $info );
 			},
 		);
 		return array_merge( $defaults, $args );
-	}
-
-	/**
-	 * Returns array of where args
-	 *
-	 * @return array
-	 */
-	public static function get_connection_args() {
-		return array(
-			'class'   => array(
-				'type'        => 'String',
-				'description' => __( 'Sort by tax class', 'wp-graphql-woocommerce' ),
-			),
-			'orderby' => array(
-				'type'        => array( 'list_of' => 'TaxRateConnectionOrderbyInput' ),
-				'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-			),
-		);
 	}
 }

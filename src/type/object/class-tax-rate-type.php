@@ -2,7 +2,7 @@
 /**
  * WPObject Type - Tax_Rate_Type
  *
- * Registers OrderItem WPObject type and queries
+ * Registers TaxRate WPObject type and queries
  *
  * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
  * @since   0.0.2
