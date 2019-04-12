@@ -1,10 +1,11 @@
 <?php
 /**
- * Connection - Coupons
+ * Connection - Tax_Rates
  *
- * Registers connections to Coupon
+ * Registers connections to TaxRate
  *
  * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @since 0.0.2
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
@@ -12,11 +13,11 @@ namespace WPGraphQL\Extensions\WooCommerce\Connection;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
- * Class - Coupons
+ * Class - Tax_Rates
  */
-class Coupons extends WC_Connection {
+class Tax_Rates {
 	/**
-	 * Registers the various connections from other Types to Coupon
+	 * Registers the various connections from other Types to TaxRate
 	 */
 	public static function register_connections() {
 		// From RootQuery.
@@ -32,17 +33,17 @@ class Coupons extends WC_Connection {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ) {
+	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
-			'toType'         => 'Coupon',
-			'fromFieldName'  => 'coupons',
+			'toType'         => 'TaxRate',
+			'fromFieldName'  => 'taxRates',
 			'connectionArgs' => self::get_connection_args(),
 			'resolveNode'    => function( $id, $args, $context, $info ) {
-				return Factory::resolve_crud_object( $id, $context );
+				return Factory::resolve_tax_rate( $id );
 			},
 			'resolve'        => function ( $source, $args, $context, $info ) {
-				return Factory::resolve_coupon_connection( $source, $args, $context, $info );
+				return Factory::resolve_tax_rate_connection( $source, $args, $context, $info );
 			},
 		);
 		return array_merge( $defaults, $args );
@@ -54,14 +55,15 @@ class Coupons extends WC_Connection {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array_merge(
-			self::get_shared_connection_args(),
-			array(
-				'code' => array(
-					'type'        => 'String',
-					'description' => __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' ),
-				),
-			)
+		return array(
+			'class'   => array(
+				'type'        => 'String',
+				'description' => __( 'Sort by tax class', 'wp-graphql-woocommerce' ),
+			),
+			'orderby' => array(
+				'type'        => array( 'list_of' => 'TaxRateConnectionOrderbyInput' ),
+				'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
+			),
 		);
 	}
 }

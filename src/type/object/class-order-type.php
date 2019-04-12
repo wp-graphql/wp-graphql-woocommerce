@@ -26,7 +26,7 @@ class Order_Type {
 	 * Register Order type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Order',
 			array(
 				'description'       => __( 'A order object', 'wp-graphql-woocommerce' ),
@@ -197,6 +197,10 @@ class Order_Type {
 					'needsProcessing'       => array(
 						'type'        => 'Boolean',
 						'description' => __( 'If order needs processing before it can be completed', 'wp-graphql-woocommerce' ),
+					),
+					'downloadableItems'     => array(
+						'type'        => array( 'list_of' => 'ProductDownload' ),
+						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {

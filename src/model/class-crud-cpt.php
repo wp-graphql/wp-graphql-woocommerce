@@ -58,9 +58,11 @@ abstract class Crud_CPT extends Model {
 	 *
 	 * @param string $method - function name.
 	 * @param array  $args  - function call arguments.
+	 *
+	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
-		$this->data->$method( ...$args );
+		return $this->data->$method( ...$args );
 	}
 
 	/**
@@ -90,11 +92,4 @@ abstract class Crud_CPT extends Model {
 	 * @return string
 	 */
 	abstract protected function get_restricted_cap();
-
-	/**
-	 * Initializes the crud object field resolvers
-	 *
-	 * @access protected
-	 */
-	abstract protected function init();
 }

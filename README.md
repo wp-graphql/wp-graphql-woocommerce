@@ -8,7 +8,8 @@
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
-3. Clone this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
+3. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
+4. (Optional) :construction: If you get error upon activation and have **CMD/Terminal** access with **Composer** installed. Try running `composer dumpautoload -o` in the `wp-graphql-woocommerce` directory in your WordPress installation's `plugins` directory.
 
 ## What does this plugin do?
 It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [CRUD](https://github.com/woocommerce/woocommerce/wiki/CRUD-Objects-in-3.0) objects.
@@ -17,6 +18,7 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 - Query product, customers, coupons, order, refund, product variations.
 
 ## Upcoming Features
+- Connection Where Args.
 - Adminstrator mutations. Eg. Creating and deleting products, coupons, orders and refunds
 - Public/Customer mutations, Eg. Manipulating the cart and checking out.
 View [Roadmap](https://github.com/kidunot89/wp-graphql-woocommerce/projects/1) to see progress... 
@@ -78,3 +80,10 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
 ### Running tests
 To run test use the command `vendor/bin/codecept run [suite [test [:test-function]]]`.
 If you use the command with at least a `suite` specified, **Codeception** will run all tests. This is not recommended. You better off running a suite `vendor/bin/codecept run wpunit` or a tests `vendor/bin/codecept run CouponQueriesTest`. You can all run single `test-function` in a test like they `vendor/bin/codecept run CouponQueriesTest:testCouponQuery`. To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
+
+## Support this extension
+**WP-GraphQL WooCommerce** :point_right: **[KickStarter](http://kck.st/2G268mx)**
+
+**WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
+
+**GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/graphql-php)**

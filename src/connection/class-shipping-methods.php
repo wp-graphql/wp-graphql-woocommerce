@@ -1,11 +1,11 @@
 <?php
 /**
- * Connection type - ProductDownloads
+ * Connection - Shipping_Methods
  *
- * Registers a connection from Product to ProductDownload
+ * Registers connections to ShippingMethod
  *
  * @package WPGraphQL\Extensions\WooCommerce\Connection
- * @since 0.0.1
+ * @since 0.0.2
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
@@ -13,22 +13,15 @@ namespace WPGraphQL\Extensions\WooCommerce\Connection;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
- * Class Product_Downloads
+ * Class - Shipping_Methods
  */
-class Product_Downloads {
+class Shipping_Methods {
 	/**
-	 * Registers a connection from Product to ProductDownload
+	 * Registers the various connections from other Types to TaxRate
 	 */
 	public static function register_connections() {
+		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Order',
-					'fromFieldName' => 'downloadableItems',
-				)
-			)
-		);
 	}
 
 	/**
@@ -42,15 +35,17 @@ class Product_Downloads {
 	 */
 	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
-			'fromType'       => 'Product',
-			'toType'         => 'ProductDownload',
-			'fromFieldName'  => 'downloads',
+			'fromType'       => 'RootQuery',
+			'toType'         => 'ShippingMethod',
+			'fromFieldName'  => 'shippingMethods',
 			'connectionArgs' => array(),
-			'resolve'        => function ( $root, $args, $context, $info ) {
-				return Factory::resolve_product_download_connection( $root, $args, $context, $info );
+			'resolveNode'    => function( $id, $args, $context, $info ) {
+				return Factory::resolve_shipping_method( $id );
+			},
+			'resolve'        => function ( $source, $args, $context, $info ) {
+				return Factory::resolve_shipping_method_connection( $source, $args, $context, $info );
 			},
 		);
-
 		return array_merge( $defaults, $args );
 	}
 }

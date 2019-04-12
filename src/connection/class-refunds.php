@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Refunds
  */
-class Refunds {
+class Refunds extends WC_Connection {
 	/**
 	 * Registers the various connections from other Types to Refund
 	 */
@@ -43,7 +43,7 @@ class Refunds {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ) {
+	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Refund',
@@ -65,6 +65,18 @@ class Refunds {
 	 * @return array
 	 */
 	public static function get_connection_args() {
-		return array();
+		return array_merge(
+			self::get_shared_connection_args(),
+			array(
+				'statuses' => array(
+					'type'        => array( 'list_of' => 'String' ),
+					'description' => __( 'Limit result set to refunds assigned a specific status.', 'wp-graphql-woocommerce' ),
+				),
+				'orderIn'  => array(
+					'type'        => array( 'list_of' => 'Int' ),
+					'description' => __( 'Limit result set to refunds from a specific group of order IDs.', 'wp-graphql-woocommerce' ),
+				),
+			)
+		);
 	}
 }

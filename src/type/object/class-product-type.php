@@ -26,7 +26,7 @@ class Product_Type {
 	 * Register Product type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		register_graphql_object_type(
+		wc_register_graphql_object_type(
 			'Product',
 			array(
 				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),
@@ -155,7 +155,7 @@ class Product_Type {
 						'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'          => array(
-						'type'        => 'String',
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
 					),
 					'manageStock'       => array(
@@ -222,7 +222,7 @@ class Product_Type {
 						'type'        => 'Int',
 						'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
 					),
-					'ratingCount'      => array(
+					'ratingCount'       => array(
 						'type'        => 'RatingCounter',
 						'description' => __( 'Product rating counts', 'wp-graphql-woocommerce' ),
 					),
@@ -233,10 +233,6 @@ class Product_Type {
 					'reviewCount'       => array(
 						'type'        => 'Int',
 						'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
-					),
-					'parentId'          => array(
-						'type'        => 'Int',
-						'description' => __( 'Parent product ID', 'wp-graphql-woocommerce' ),
 					),
 					'parent'            => array(
 						'type'        => 'Product',
@@ -249,6 +245,38 @@ class Product_Type {
 					'shippingClassId'   => array(
 						'type'        => 'Int',
 						'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
+					),
+					'downloads'         => array(
+						'type'        => array( 'list_of' => 'ProductDownload' ),
+						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
+					),
+					'onSale'            => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Is product on sale?', 'wp-graphql-woocommerce' ),
+					),
+					'purchasable'       => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
+					),
+					'externalUrl'       => array(
+						'type'        => 'String',
+						'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
+					),
+					'buttonText'        => array(
+						'type'        => 'String',
+						'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
+					),
+					'backordersAllowed' => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
+					),
+					'shippingRequired'  => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' ),
+					),
+					'shippingTaxable'   => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {

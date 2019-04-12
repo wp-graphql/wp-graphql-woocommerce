@@ -24,3 +24,55 @@ function wc_register_graphql_object_type( $type_name, $config ) {
 	}
 	register_graphql_type( $type_name, $config );
 }
+
+/**
+ * Checks if source string starts with the target string
+ *
+ * @param string $haystack - Source string.
+ * @param string $needle - Target string.
+ *
+ * @return bool
+ */
+function wc_graphql_starts_with( $haystack, $needle ) {
+	$length = strlen( $needle );
+	return ( substr( $haystack, 0, $length ) === $needle );
+}
+
+/**
+ * Checks if source string ends with the target string
+ *
+ * @param string $haystack - Source string.
+ * @param string $needle - Target string.
+ *
+ * @return bool
+ */
+function wc_graphql_ends_with( $haystack, $needle ) {
+	$length = strlen( $needle );
+	if ( 0 === $length ) {
+		return true;
+	}
+
+	return ( substr( $haystack, -$length ) === $needle );
+}
+
+/**
+ * Returns formatted array of tax statement objects.
+ *
+ * @param array $raw_taxes - array of raw taxes object from WC_Order_Item crud objects.
+ *
+ * @return array
+ */
+function wc_graphql_map_tax_statements( $raw_taxes ) {
+	$taxes = array();
+	foreach ( $raw_taxes as $field => $values ) {
+		foreach ( $values as $id => $amount ) {
+			if ( empty( $taxes[ $id ] ) ) {
+				$taxes[ $id ] = array();
+			}
+			$taxes[ $id ]['ID']     = $id;
+			$taxes[ $id ][ $field ] = $amount;
+		}
+	}
+
+	return array_values( $taxes );
+}
