@@ -97,65 +97,54 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $actual );
 	}
 
-	public function testCouponByQuery() {
+	public function testCouponByQueryAndArgs() {
+		wp_set_current_user( $this->customer );
+		$id = Relay::toGlobalId( 'shop_coupon', $this->coupon );
+		$coupon = new WC_Coupon( $this->coupon );
 		$query = '
-			query {
-				couponBy( code: "10off" ) {
+			query CouponBy( $id: ID, $couponId: Int, $code: String ) {
+				couponBy( id: $id, couponId: $couponId, code: $code ) {
 					id
-					couponId
-					code
-					amount
-					date
-					modified
-					discountType
-					description
-					dateExpiry
-					usageCount
-					individualUse
-					usageLimit
-					usageLimitPerUser
-					limitUsageToXItems
-					freeShipping
-					excludeSaleItems
-					minimumAmount
-					maximumAmount
-					emailRestrictions
-					products {
-						nodes {
-							productId
-						}
-					}
-					excludedProducts {
-						nodes {
-							productId
-						}
-					}
-					productCategories {
-						nodes {
-							productCategoryId
-						}
-					}
-					excludedProductCategories {
-						nodes {
-							productCategoryId
-						}
-					}
-					usedBy {
-						nodes {
-							customerId
-						}
-					}
 				}
 			}
 		';
 
 		/**
 		 * Assertion One
+		 * 
+		 * Testing "id" query argument
 		 */
-		wp_set_current_user( $this->customer );
-		$variables = array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) );
-		$actual    = do_graphql_request( $query );
-		$expected  = array( 'data' => array( 'couponBy' => $this->helper->get_query_data( $this->coupon ) ) );
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Testing "couponId" query argument
+		 */
+		$variables = array( 'couponId' => $coupon->get_id() );
+		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Testing "couponId" query argument
+		 */
+		$variables = array( 'code' => $coupon->get_code() );
+		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -163,61 +152,22 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $actual );
 	}
 
-	public function testCouponsQuery() {
+	public function testCouponsQueryAndWhereArgs() {
+		$coupons = array(
+			'10off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) ),
+			'20off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->helper->create( '20off' ) ) ),
+			'30off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->helper->create( '30off' ) ) ),
+		);
+
 		$query = '
-			query {
-				coupons {
+			query CouponsQuery( $code: String ) {
+				coupons( where: { code: $code } ) {
 					nodes {
 						id
-						couponId
-						code
-						amount
-						date
-						modified
-						discountType
-						description
-						dateExpiry
-						usageCount
-						individualUse
-						usageLimit
-						usageLimitPerUser
-						limitUsageToXItems
-						freeShipping
-						excludeSaleItems
-						minimumAmount
-						maximumAmount
-						emailRestrictions
-						products {
-							nodes {
-								productId
-							}
-						}
-						excludedProducts {
-							nodes {
-								productId
-							}
-						}
-						productCategories {
-							nodes {
-								productCategoryId
-							}
-						}
-						excludedProductCategories {
-							nodes {
-								productCategoryId
-							}
-						}
-						usedBy {
-							nodes {
-								customerId
-							}
-						}
 					}
 				}
 			}
 		';
-
-		$actual = do_graphql_request( $query );
 
 		/**
 		 * Assertion One
@@ -225,8 +175,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Should return null due to lack of required capabilities
 		 */
 		wp_set_current_user( $this->customer );
-		$variables = array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) );
-		$actual    = do_graphql_request( $query );
+		$actual    = do_graphql_request( $query ,'CouponsQuery' );
 		$expected  = array( 'data' => array( 'coupons' => array ( 'nodes' => array() ) ) );
 
 		// use --debug flag to view.
@@ -236,29 +185,28 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 
 		/**
-		 * Assertion One
+		 * Assertion Two
 		 * 
 		 * Should return data because user has required capabilities
 		 */
 		wp_set_current_user( $this->shop_manager );
-		$variables = array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) );
-		$actual    = do_graphql_request( $query );
-		
-		// Get array of coupon IDs.
-		$coupons = get_posts(
-			array(
-				'post_type'   => 'shop_coupon',
-				'count_total' => false,
-				'order'       => 'DESC',
-				'fields'      => 'ids',
-			)
-		);
+		$actual    = do_graphql_request( $query, 'CouponsQuery' );
+		$expected  = array( 'data' => array( 'coupons' => array( 'nodes' => array_reverse( array_values( $coupons ) ) ) ) );
 
-		$expected  = array(
-			'data' => array(
-				'coupons' => $this->getModule('\Helper\Wpunit')->get_nodes( $coupons, $this->helper ),
-			)
-		);
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Should return data because user has required capabilities
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$variables = array( 'code' => '10off' );
+		$actual    = do_graphql_request( $query, 'CouponsQuery', $variables );
+		$expected  = array( 'data' => array( 'coupons' => array( 'nodes' => array( $coupons['10off'] ) ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

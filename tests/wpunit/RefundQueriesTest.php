@@ -1,5 +1,6 @@
 <?php
 
+use GraphQLRelay\Relay;
 class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $admin;
 	private $shopManager;
