@@ -69,7 +69,9 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		if ( empty( $query_args['orderby'] ) ) {
 			$query_args['orderby'] = 'tax_rate_order';
-			$query_args['order']   = ! empty( $last ) ? 'ASC' : 'DESC';
+		}
+		if ( empty( $query_args['order'] ) ) {
+			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
 		}
 
 		/**
@@ -94,15 +96,30 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_query() {
 		global $wpdb;
 
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT tax_rate_id
-				FROM {$wpdb->prefix}woocommerce_tax_rates
-				WHERE 1 = 1
-				ORDER BY %s",
-				$this->query_args['orderby']
-			)
-		);
+		if ( ! empty( $this->query_args['column'] ) ) {
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT tax_rate_id
+					FROM {$wpdb->prefix}woocommerce_tax_rates
+					WHERE %1s = %s
+					ORDER BY %s %s",
+					$this->query_args['column'],
+					$this->query_args['column_value'],
+					$this->query_args['orderby'],
+					$this->query_args['order']
+				)
+			);
+		} else {
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT tax_rate_id
+					FROM {$wpdb->prefix}woocommerce_tax_rates
+					ORDER BY %s %s",
+					$this->query_args['orderby'],
+					$this->query_args['order']
+				)
+			);
+		}
 
 		$results = array_map(
 			function( $rate ) {
@@ -135,14 +152,24 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = array();
 		if ( ! empty( $where_args['orderby'] ) ) {
-			$orderby_possibles = array(
-				'id'    => 'tax_rate_id',
-				'order' => 'tax_rate_order',
-			);
-			$args['orderby']   = $orderby_possibles[ $where_args['orderby'] ];
+			if ( ! empty( $where_args['orderby']['field'] ) ) {
+				$orderby_possibles = array(
+					'id'    => 'tax_rate_id',
+					'order' => 'tax_rate_order',
+				);
+				$args['orderby']   = $orderby_possibles[ $where_args['orderby']['field'] ];
+			}
+
+			if ( ! empty( $where_args['orderby']['order'] ) ) {
+				$args['order'] = $where_args['orderby']['order'];
+			}
 		}
 
-		$args['class'] = $where_args['class'];
+		if ( ! empty( $where_args['class'] ) ) {
+			$args['column']       = 'tax_rate_class';
+			$args['column_value'] = 'standard' !== $where_args['class'] ? $where_args['class'] : '';
+		}
+
 		return $args;
 	}
 }

@@ -14,6 +14,7 @@ class Wpunit extends \Codeception\Module {
         require_once __DIR__ . '/crud-helpers/coupon.php';
         require_once __DIR__ . '/crud-helpers/product.php';
         require_once __DIR__ . '/crud-helpers/shipping-method.php';
+        require_once __DIR__ . '/crud-helpers/tax-rate.php';
         require_once __DIR__ . '/crud-helpers/order.php';
         require_once __DIR__ . '/crud-helpers/product-variation.php';
         require_once __DIR__ . '/crud-helpers/refund.php';
@@ -45,6 +46,10 @@ class Wpunit extends \Codeception\Module {
 
     public function shipping_method() {
         return new \ShippingMethodHelper();
+    }
+
+    public function tax_rate() {
+        return new \TaxRateHelper();
     }
 
     public function get_nodes( $ids, $crud ) {

@@ -28,7 +28,6 @@ class ProductHelper {
 
     public function create_simple( $args = array() ) {
         $product = new WC_Product_Simple();
-        codecept_debug( $this->index );
         $product->set_props(
             array_merge(
                 array(

@@ -77,7 +77,7 @@ class Tax_Rate_Type {
 						'description' => __( 'Whether or not this tax rate also gets applied to shipping.', 'wp-graphql-woocommerce' ),
 					),
 					'order'    => array(
-						'type'        => 'Boolean',
+						'type'        => 'Int',
 						'description' => __( 'Indicates the order that will appear in queries.', 'wp-graphql-woocommerce' ),
 					),
 					'class'    => array(
