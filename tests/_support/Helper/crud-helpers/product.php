@@ -1,16 +1,140 @@
 <?php
 
 class ProductHelper {
-    public function create() {
-		$product = new WC_Product();
-		$product->set_name( 'Test Product' );
-		$product->set_slug( 'test-product' );
-		$product->set_description( 'lorem ipsum dolor' );
-		$product->set_sku( 'wp-pennant' );
-		$product->set_price( 11.05 );
-		$product->set_weight( .2 );
+    private $index;
+    private $variation_index;
+
+    public function __construct() {
+        $this->index = 1;
+        $this->variation_index = 1;
+    }
+
+    public function reset_indexes() {
+        $this->index = 1;
+        $this->variation_index = 1;
+    }
+
+    private function next_slug() {
+        $slug = 'test-product-' . absint( $this->index );
+        $this->index += 1;
+        return $slug;
+    }
+
+    private function next_variation_slug() {
+        $slug = 'test-product-variation-' . absint( $this->variation_index );
+        $this->variation_index += 1;
+        return $slug;
+    }
+
+    public function create_simple( $args = array() ) {
+        $product = new WC_Product_Simple();
+        codecept_debug( $this->index );
+        $product->set_props(
+            array_merge(
+                array(
+                    'name'          => 'Dummy Product',
+                    'slug'          => $this->next_slug(),
+                    'regular_price' => 20,
+                    'price'         => 20,
+                    'sku'           => 'DUMMY SKU',
+                    'manage_stock'  => false,
+                    'tax_status'    => 'taxable',
+                    'downloadable'  => false,
+                    'virtual'       => false,
+                    'stock_status'  => 'instock',
+                    'weight'        => '1.1',
+                ),
+                $args
+            )
+        );
 		return $product->save();
     }
+
+    public function create_external( $args = array() ) {
+        $product = new WC_Product_External();
+        $product->set_props(
+            array_merge(
+                array(
+                    'name'          => 'Dummy External Product',
+                    'slug'          => $this->next_slug(),
+                    'regular_price' => 10,
+                    'sku'           => 'DUMMY EXTERNAL SKU',
+                    'product_url'   => 'http://woocommerce.com',
+                    'button_text'   => 'Buy external product',
+                ),
+                $args
+            )
+        );
+		return $product->save();
+    }
+
+	public function create_grouped( $args = array() ) {
+        $children = array(
+            $this->create_simple(),
+            $this->create_simple(),
+        );
+		$product          = new WC_Product_Grouped();
+		$product->set_props(
+            array_merge(
+                array(
+                    'name'          => 'Dummy Grouped Product',
+                    'slug'          => $this->next_slug(),
+                    'sku'           => 'DUMMY GROUPED SKU',
+                ),
+                $args
+            )
+		);
+		$product->set_children( $children );
+		return array( 'product' => $product->save(), 'children' => $children );
+    }
+    
+    public function create_variation() {
+		$product = new WC_Product_Variable();
+		$product->set_props(
+			array(
+                'name' => 'Dummy Variable Product',
+                'slug' => $this->next_slug(),
+				'sku'  => 'DUMMY VARIABLE SKU',
+			)
+        );
+
+		$attribute_data = self::create_attribute( 'size', array( 'small', 'large' ) ); // Create all attribute related things.
+		$attributes     = array();
+		$attribute      = new WC_Product_Attribute();
+		$attribute->set_id( $attribute_data['attribute_id'] );
+		$attribute->set_name( $attribute_data['attribute_taxonomy'] );
+		$attribute->set_options( $attribute_data['term_ids'] );
+		$attribute->set_position( 1 );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$attributes[] = $attribute;
+		$product->set_attributes( $attributes );
+        $product_id = $product->save();
+        
+		$variation_1 = new WC_Product_Variation();
+		$variation_1->set_props(
+			array(
+                'parent_id'     => $product_id,
+                'slug'          => $this->next_variation_slug(),
+				'sku'           => 'DUMMY SKU VARIABLE SMALL',
+				'regular_price' => 10,
+			)
+		);
+        $variation_1->set_attributes( array( 'pa_size' => 'small' ) );
+        
+		$variation_2 = new WC_Product_Variation();
+		$variation_2->set_props(
+			array(
+                'parent_id'     => $product_id,
+                'slug'          => $this->next_variation_slug(),
+				'sku'           => 'DUMMY SKU VARIABLE LARGE',
+				'regular_price' => 15,
+			)
+		);
+		$variation_2->set_attributes( array( 'pa_size' => 'large' ) );
+
+		return array( 'product' => $product->save(), 'variations' => array( $variation_1->save(), $variation_2->save() ) );
+	}
 
     public function get_query_data( $id ) {
         $data = wc_get_product( $id );

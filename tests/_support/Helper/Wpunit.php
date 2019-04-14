@@ -51,11 +51,7 @@ class Wpunit extends \Codeception\Module {
     }
 
     public function product() {
-        if ( is_null( $this->product ) ) {
-            $this->product = new \ProductHelper();
-        }
-
-        return $this->product;
+        return new \ProductHelper();
     }
 
     public function product_variation() {

@@ -216,6 +216,10 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
+		if ( ! empty( $where_args['slug'] ) ) {
+			$args['name'] = $where_args['slug'];
+		}
+
 		if ( ! empty( $where_args['status'] ) ) {
 			$args['post_status'] = $where_args['status'];
 		}
@@ -314,7 +318,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$tax_query[] = array(
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
-				'terms'    => $where_args[ $key ],
+				'terms'    => $where_args['type'],
 			);
 		}
 
