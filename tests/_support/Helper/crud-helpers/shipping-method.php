@@ -1,0 +1,59 @@
+<?php
+
+use GraphQLRelay\Relay;
+
+class ShippingMethodHelper {
+	public function create_legacy_flat_rate_instance( $args = array() ) {
+		$flat_rate_settings = array_merge(
+            array(
+                'enabled'      => 'yes',
+                'title'        => 'Flat rate',
+                'availability' => 'all',
+                'countries'    => '',
+                'tax_status'   => 'taxable',
+                'cost'         => '10',
+            ),
+            $args
+		);
+		update_option( 'woocommerce_flat_rate_settings', $flat_rate_settings );
+		update_option( 'woocommerce_flat_rate', array() );
+		WC_Cache_Helper::get_transient_version( 'shipping', true );
+        WC()->shipping()->load_shipping_methods();
+        
+        return 'legacy_flat_rate';
+    }
+
+    public function create_legacy_free_shipping_instance( $args = array() ) {
+		$free_shipping_settings = array_merge(
+            array(
+                'enabled'      => 'yes',
+                'title'        => 'Free shipping',
+                'availability' => 'all',
+                'countries'    => '',
+            ),
+            $args
+		);
+		update_option( 'woocommerce_free_shipping_settings', $free_shipping_settings );
+		update_option( 'woocommerce_free_shipping', array() );
+		WC_Cache_Helper::get_transient_version( 'shipping', true );
+        WC()->shipping()->load_shipping_methods();
+        
+        return 'legacy_free_shipping';
+    }
+    
+    public function print_query( $id ) {
+        $wc_shipping = \WC_Shipping::instance();
+		$methods     = $wc_shipping->get_shipping_methods();
+		if ( empty( $methods[ $id ] ) ) {
+			return null;
+		}
+
+		$method = $methods[ $id ];
+        return array(
+            'id'          => Relay::toGlobalId( 'shipping_method', $id ),
+            'methodId'    => $id,
+            'title'       => $method->get_method_title(),
+            'description' => $method->get_method_description(),
+        );
+    }
+}
