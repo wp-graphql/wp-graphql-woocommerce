@@ -245,15 +245,15 @@ class Order_Type {
 		);
 
 		$post_by_args = array(
-			'id'          => array(
+			'id'       => array(
 				'type'        => 'ID',
 				'description' => __( 'Get the order by its global ID', 'wp-graphql-woocommerce' ),
 			),
-			'orderId'     => array(
+			'orderId'  => array(
 				'type'        => 'Int',
 				'description' => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
 			),
-			'orderNumber' => array(
+			'orderKey' => array(
 				'type'        => 'String',
 				'description' => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
 			),
@@ -276,8 +276,8 @@ class Order_Type {
 						$order_id = absint( $id_components['id'] );
 					} elseif ( ! empty( $args['orderId'] ) ) {
 						$order_id = absint( $args['orderId'] );
-					} elseif ( ! empty( $args['orderNumber'] ) ) {
-						$order_id = 0;
+					} elseif ( ! empty( $args['orderKey'] ) ) {
+						$order_id = \wc_get_order_id_by_order_key( $args['orderKey'] );
 					}
 
 					$order = Factory::resolve_crud_object( $order_id, $context );

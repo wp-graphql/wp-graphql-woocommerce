@@ -82,7 +82,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
 		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
-		$expected = array( 'data' => array( 'customer' => $this->helper->get_query_data_failed( $this->new_customer ) ) );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_failed_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -96,7 +96,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->customer ) );
 		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
-		$expected = array( 'data' => array( 'customer' => $this->helper->get_query_data( $this->customer ) ) );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -114,7 +114,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
 		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
-		$expected = array( 'data' => array( 'customer' => $this->helper->get_query_data( $this->new_customer ) ) );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -180,7 +180,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		wp_set_current_user( $this->new_customer );
 		$variables = array( 'id' => $this->new_customer );
 		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
-		$expected  = array( 'data' => array( 'customerBy' => $this->helper->get_query_data( $this->new_customer ) ) );
+		$expected  = array( 'data' => array( 'customerBy' => $this->helper->print_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -198,7 +198,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => $this->new_customer );
 		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
-		$expected  = array( 'data' => array( 'customerBy' => $this->helper->get_query_data_failed( $this->new_customer ) ) );
+		$expected  = array( 'data' => array( 'customerBy' => $this->helper->print_failed_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -274,7 +274,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 		$expected  = array(
 			'data' => array(
-				'customers' => $this->helper->get_all_query_data( $users ),
+				'customers' => $this->helper->print_nodes( $users ),
 			),
 		);
 

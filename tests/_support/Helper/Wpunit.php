@@ -10,6 +10,7 @@ class Wpunit extends \Codeception\Module {
      */
     public function _initialize()
     {
+        require_once __DIR__ . '/crud-helpers/wcg-helper.php';
         require_once __DIR__ . '/crud-helpers/customer.php';
         require_once __DIR__ . '/crud-helpers/coupon.php';
         require_once __DIR__ . '/crud-helpers/product.php';
@@ -21,35 +22,35 @@ class Wpunit extends \Codeception\Module {
     }
 
     public function coupon() {
-        return new \CouponHelper();
+        return \CouponHelper::instance();
     }
 
     public function customer() {
-        return new \CustomerHelper();
+        return \CustomerHelper::instance();
     }
 
     public function order() {
-        return new \OrderHelper();
+        return \OrderHelper::instance();
     }
 
     public function product() {
-        return new \ProductHelper();
+        return \ProductHelper::instance();
     }
 
     public function product_variation() {
-        return new \ProductVariationHelper();
+        return \ProductVariationHelper::instance();
     }
 
     public function refund() {
-        return new \RefundHelper();
+        return \RefundHelper::instance();
     }
 
     public function shipping_method() {
-        return new \ShippingMethodHelper();
+        return \ShippingMethodHelper::instance();
     }
 
     public function tax_rate() {
-        return new \TaxRateHelper();
+        return \TaxRateHelper::instance();
     }
 
     public function get_nodes( $ids, $crud ) {

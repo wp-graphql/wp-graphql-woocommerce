@@ -2,7 +2,7 @@
 
 use GraphQLRelay\Relay;
 
-class CouponHelper {
+class CouponHelper extends WCG_Helper {
     public function create( $coupon_code = 'dummycoupon', $meta = array() ) {
         // Insert post
         $coupon_id = wp_insert_post( array(
@@ -40,7 +40,7 @@ class CouponHelper {
         return $coupon_id;
     }
 
-    public function get_query_data( $id ) {
+    public function print_query( $id ) {
         $data = new WC_Coupon( $id );
 
 		return array(
@@ -116,7 +116,7 @@ class CouponHelper {
 		);
     }
 
-    public function get_query_data_failed( $id ) {
+    public function print_failed_query( $id ) {
         $data = new WC_Coupon( $id );
 
 		return array(

@@ -1,35 +1,71 @@
 <?php
 
-class CustomerHelper {
-    public function create( $username = 'testcustomer', $password = 'hunter2', $email = 'test@woo.local' ) {
-        $customer = new WC_Customer();
-		$customer->set_billing_country( 'US' );
-		$customer->set_first_name( 'Justin' );
-		$customer->set_billing_state( 'PA' );
-		$customer->set_billing_postcode( '19123' );
-		$customer->set_billing_city( 'Philadelphia' );
-		$customer->set_billing_address( '123 South Street' );
-		$customer->set_billing_address_2( 'Apt 1' );
-		$customer->set_shipping_country( 'US' );
-		$customer->set_shipping_state( 'PA' );
-		$customer->set_shipping_postcode( '19123' );
-		$customer->set_shipping_city( 'Philadelphia' );
-		$customer->set_shipping_address( '123 South Street' );
-		$customer->set_shipping_address_2( 'Apt 1' );
-		$customer->set_username( $username );
-		$customer->set_password( $password );
-		$customer->set_email( $email );
-		return $customer->save();
-    }
+class CustomerHelper extends WCG_Helper {
+	public function create( $args = array() ) {
+		$customer = new WC_Customer();
 
-    /**
+		// Create customer details
+		$username   = $this->dummy->username();
+		$first_name = $this->dummy->firstname();
+		$last_name  = $this->dummy->lastname();
+		$street     = $this->dummy->street();
+		$city       = $this->dummy->city();
+		$state      = $this->dummy->state();
+		$postcode   = $this->dummy->zipcode();
+		$country    = 'US';
+		$email      = $this->dummy->email();
+		$phone      = $this->dummy->telephone();
+
+		$customer->set_props(
+			array_merge(
+				array(
+					'email'              => $email,
+					'first_name'         => $first_name,
+					'last_name'          => $last_name,
+					'display_name'       => $username,
+					'role'               => 'customer',
+					'username'           => $username,
+					'billing'            => array(
+						'first_name'     => $first_name,
+						'last_name'      => $last_name,
+						'company'        => '',
+						'address_1'      => $street,
+						'address_2'      => '',
+						'city'           => $city,
+						'state'          => $state,
+						'postcode'       => $postcode,
+						'country'        => $country,
+						'email'          => $email,
+						'phone'          => $phone,
+					),
+					'shipping'           => array(
+						'first_name'     => $first_name,
+						'last_name'      => $last_name,
+						'company'        => '',
+						'address_1'      => $street,
+						'address_2'      => '',
+						'city'           => $city,
+						'state'          => $state,
+						'postcode'       => $postcode,
+						'country'        => $country,
+					),
+					'is_paying_customer' => false,
+				),
+				$args
+			)
+		);
+
+		return $customer->save();
+	}
+
+	/**
 	 * Formats customer response data
 	 * 
 	 * @param int $id - customer ID
 	 * 
 	 * @return array
 	 */
-    public function get_query_data( $id ) {
+		public function print_query( $id ) {
 		$data = new WC_Customer( $id );
 
 		return array(
@@ -120,16 +156,16 @@ class CustomerHelper {
 			),
 			'isPayingCustomer'      => $data->get_is_paying_customer(),
 		);
-    }
+		}
 
-    /**
+		/**
 	 * Returns failed customer response data
 	 * 
 	 * @param int $id - customer ID
 	 * 
 	 * @return array
 	 */
-	public function get_query_data_failed( $id ) {
+	public function print_failed_query( $id ) {
 		$data = new WC_Customer( $id );
 
 		return array(
@@ -153,10 +189,10 @@ class CustomerHelper {
 		);
 	}
 
-	public function get_all_query_data( $ids ) {
+	public function print_nodes( $ids ) {
 		$nodes = [];
 		foreach( $ids as $id ) {
-			$nodes[] = $this->get_query_data( $id );
+			$nodes[] = $this->print_query( $id );
 		}
 
 		return array( 'nodes' => $nodes );

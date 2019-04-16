@@ -10,16 +10,8 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$this->shop_manager = $this->factory->user->create(
-			array(
-				'role' => 'shop_manager',
-			)
-		);
-		$this->customer     = $this->factory->user->create(
-			array(
-				'role' => 'customer',
-			)
-		);
+		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
 		$this->helper       = $this->getModule('\Helper\Wpunit')->coupon();
 		$this->coupon       = $this->helper->create( '10off' );
 	}
@@ -89,7 +81,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) );
 		$actual    = do_graphql_request( $query, 'couponQuery', $variables );
-		$expected  = array( 'data' => array( 'coupon' => $this->helper->get_query_data( $this->coupon ) ) );
+		$expected  = array( 'data' => array( 'coupon' => $this->helper->print_query( $this->coupon ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

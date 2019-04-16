@@ -2,7 +2,7 @@
 
 use GraphQLRelay\Relay;
 
-class ShippingMethodHelper {
+class ShippingMethodHelper extends WCG_Helper {
 	public function create_legacy_flat_rate_instance( $args = array() ) {
 		$flat_rate_settings = array_merge(
             array(

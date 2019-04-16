@@ -3,11 +3,13 @@
 use GraphQLRelay\Relay;
 use WPGraphQL\Type\WPEnumType;
 
-class TaxRateHelper {
+class TaxRateHelper extends WCG_Helper {
     private $index;
 
-    public function __construct() {
+    protected function __construct() {
         $this->index = 0;
+
+        parent::construct();
     }
 
     public function get_index() {

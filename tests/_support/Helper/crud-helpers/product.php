@@ -1,12 +1,14 @@
 <?php
 
-class ProductHelper {
+class ProductHelper extends WCG_Helper {
     private $index;
     private $variation_index;
 
-    public function __construct() {
+    protected function __construct() {
         $this->index = 1;
         $this->variation_index = 1;
+
+        parent::__construct();
     }
 
     public function reset_indexes() {
@@ -135,7 +137,7 @@ class ProductHelper {
 		return array( 'product' => $product->save(), 'variations' => array( $variation_1->save(), $variation_2->save() ) );
 	}
 
-    public function get_query_data( $id ) {
+    public function print_query( $id ) {
         $data = wc_get_product( $id );
 
         return array(
@@ -189,9 +191,5 @@ class ProductHelper {
             'averageRating'     => (float) $data->get_average_rating(),
             'reviewCount'       => $data->get_review_count(),
         );
-    }
-
-    public function get_all_query_data( $ids ) {
-        
     }
 }

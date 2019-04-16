@@ -70,7 +70,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$actual = do_graphql_request( $query, 'productQuery', $variables );
 		$expected = array(
 			'data' => array(
-				'product' => $this->helper->get_query_data( $this->product ),
+				'product' => $this->helper->print_query( $this->product ),
 			),
 		);
 

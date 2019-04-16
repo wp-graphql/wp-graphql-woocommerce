@@ -1,15 +1,15 @@
 <?php
 
-class ProductVariationHelper {
-    public static function create() {
+class ProductVariationHelper extends WCG_Helper {
+    public function create() {
 
     }
 
-    public static function get_query_data( $id ) {
+    public function print_query( $id ) {
 
     }
 
-    public static function get_all_query_data( $ids ) {
+    public function print_nodes( $ids ) {
         
     }
 }
