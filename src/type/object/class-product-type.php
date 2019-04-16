@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Type\WPObjectType;
+use WPGraphQL\Data\DataSource;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Model\Product;
 
@@ -241,6 +242,9 @@ class Product_Type {
 					'image'             => array(
 						'type'        => 'MediaItem',
 						'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context ) {
+							return DataSource::resolve_post_object( $source->imageId, $context );
+						}
 					),
 					'shippingClassId'   => array(
 						'type'        => 'Int',
