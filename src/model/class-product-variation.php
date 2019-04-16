@@ -72,7 +72,7 @@ class Product_Variation extends Model {
 					return ! empty( $this->data ) ? $this->data->get_height() : null;
 				},
 				'taxClass'           => function() {
-					return ! empty( $this->data ) ? $this->data->get_tax_class() : null;
+					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
 				},
 				'manageStock'        => function() {
 					return ! empty( $this->data ) ? $this->data->get_manage_stock() : null;

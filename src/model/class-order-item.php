@@ -163,7 +163,7 @@ class Order_Item extends Model {
 									: null;
 							},
 							'taxClass'    => function() {
-								return is_callable( $this->data, 'get_tax_class' ) ? $this->data->get_tax_class() : 'standard';
+								return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
 							},
 							'method_id'   => function() {
 								return ! empty( $this->data->get_method_id() ) ? $this->data->get_method_id() : null;
@@ -233,7 +233,7 @@ class Order_Item extends Model {
 							'taxStatus'     => function() {
 								return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 							},
-							'taxClass'  => function() {
+							'taxClass'      => function() {
 								if ( $this->data->get_tax_status() === 'taxable' ) {
 									return ! empty( $this->data->get_tax_class() )
 										? $this->data->get_tax_class()

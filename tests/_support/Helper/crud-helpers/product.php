@@ -29,15 +29,19 @@ class ProductHelper extends WCG_Helper {
     }
 
     public function create_simple( $args = array() ) {
-        $product = new WC_Product_Simple();
+        $product       = new WC_Product_Simple();
+        $name          = $this->dummy->product();
+        $price         = $this->dummy->price( 15, 200 );
+        $regular_price = $this->dummy->price( $price, $price + ( $price * 0.1 ) );
+
         $product->set_props(
             array_merge(
                 array(
-                    'name'          => 'Dummy Product',
+                    'name'          => $name,
                     'slug'          => $this->next_slug(),
-                    'regular_price' => 20,
-                    'price'         => 20,
-                    'sku'           => 'DUMMY SKU',
+                    'regular_price' => $regular_price,
+                    'price'         => $price,
+                    'sku'           => 'DUMMY SKU '.$this->index,
                     'manage_stock'  => false,
                     'tax_status'    => 'taxable',
                     'downloadable'  => false,
@@ -52,14 +56,16 @@ class ProductHelper extends WCG_Helper {
     }
 
     public function create_external( $args = array() ) {
-        $product = new WC_Product_External();
+        $product       = new WC_Product_External();
+        $name          = $this->dummy->product();
+        $price         = $this->dummy->price( 15, 200 );
         $product->set_props(
             array_merge(
                 array(
-                    'name'          => 'Dummy External Product',
+                    'name'          => $product,
                     'slug'          => $this->next_slug(),
-                    'regular_price' => 10,
-                    'sku'           => 'DUMMY EXTERNAL SKU',
+                    'regular_price' => $price,
+                    'sku'           => 'DUMMY EXTERNAL SKU ' . $this->index,
                     'product_url'   => 'http://woocommerce.com',
                     'button_text'   => 'Buy external product',
                 ),

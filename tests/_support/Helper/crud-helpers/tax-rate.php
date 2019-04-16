@@ -9,7 +9,7 @@ class TaxRateHelper extends WCG_Helper {
     protected function __construct() {
         $this->index = 0;
 
-        parent::construct();
+        parent::__construct();
     }
 
     public function get_index() {

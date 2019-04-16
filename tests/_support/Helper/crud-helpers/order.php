@@ -4,7 +4,7 @@ use GraphQLRelay\Relay;
 
 class OrderHelper extends WCG_Helper {
 
-    public function set_to_customer_billing_address( &$order, $customer, $save = true ) {
+    public function set_to_customer_billing_address( $order, $customer, $save = true ) {
         if ( ! is_a( $order, WC_Order::class ) ) {
             $order = new WC_Order( absint( $order ) );
         }
@@ -27,10 +27,12 @@ class OrderHelper extends WCG_Helper {
 
         if ( $save ) {
             return $order->save();
-        }
+		}
+		
+		return $order;
     }
 
-    public function set_to_customer_shipping_address( &$order, $customer, $save = true ) {
+    public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
         if ( ! is_a( $order, WC_Order::class ) ) {
             $order = new WC_Order( absint( $order ) );
         }
@@ -51,7 +53,9 @@ class OrderHelper extends WCG_Helper {
         
         if ( $save ) {
             return $order->save();
-        }
+		}
+		
+		return $order;
     }
 
 	public function create( $args = array(), $items = array() ) {
@@ -80,41 +84,26 @@ class OrderHelper extends WCG_Helper {
 		// Add line items
 		if ( ! empty( $items['line_items'] ) ) {
 			foreach( $items['line_items'] as $item ) {
-				$product = wc_get_product( $item['product'] );
-				$line_item = new WC_Order_Item_Product();
-				$line_item->set_props(
-					array(
-						'product'  => $product,
-						'quantity' => $item['qty'],
-						'subtotal' => wc_get_price_excluding_tax( $product, array( 'qty' => $item['qty'] ) ),
-						'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => $item['qty'] ) ),
-					)
-				);
-				$line_item->save();
-				$order->add_item( $line_item );
+				$order = OrderItemHelper::instance()->add_line_item( $order, $item, false );
 			}
 		} else {
-            for ( $i = 0; $i > rand( 1, 3 ); $i++ ) {
-				$product  = wc_get_product( ProductHelper::instance()->create_simple() );
-				$qty = rand( 1, 6 );
-                $line_item = new WC_Order_Item_Product();
-                $line_item->set_props(
+            for ( $i = 0; $i < rand( 1, 3 ); $i++ ) {
+				$order = OrderItemHelper::instance()->add_line_item(
+					$order,
 					array(
-						'product'  => $product,
-						'quantity' => $qty,
-						'subtotal' => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
-						'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
-					)
+						'product' => ProductHelper::instance()->create_simple(),
+						'qty'     => rand( 1, 6 ),
+					),
+					false
 				);
-                $line_item->save();
-                $order->add_item( $item );
             }
 		}
+		$order->save();
 		
         
         // Add billing / shipping address
-        $this->set_to_customer_billing_address( $order, $customer_id, false );
-        $this->set_to_customer_shipping_address( $order, $customer_id, false );
+        $order = $this->set_to_customer_billing_address( $order, $customer_id, false );
+        $order = $this->set_to_customer_shipping_address( $order, $customer_id, false );
         
 		// Add shipping costs
 		$shipping_taxes = WC_Tax::calc_shipping_tax( '10', WC_Tax::get_shipping_tax_rates() );

@@ -3,7 +3,33 @@
 use GraphQLRelay\Relay;
 
 class CouponHelper extends WCG_Helper {
-    public function create( $coupon_code = 'dummycoupon', $meta = array() ) {
+    public function create( $args = array(), $save = true ) {
+        // Create new coupon crud object instance.
+        $coupon = new WC_Coupon();
+
+        // Set props.
+        $amount = $this->dummy->number( 0, 75 );
+        $coupon->set_props(
+            array_merge(
+                array(
+                    'code'                        => $amount . 'off',
+                    'amount'                      => floatval( $amount ),
+                    'date_expires'                => null,
+                    'discount_type'               => 'percent',
+                    'description'                 => 'Test coupon',
+                ),
+                $args
+            )
+        );
+
+        // Return instance in not saving.
+        if( ! $save ) {
+            return $coupon;
+        }
+
+        // Return ID upon saving.
+        return $coupon->save();
+
         // Insert post
         $coupon_id = wp_insert_post( array(
             'post_title'   => $coupon_code,
