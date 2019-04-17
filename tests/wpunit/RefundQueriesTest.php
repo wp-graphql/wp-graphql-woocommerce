@@ -136,8 +136,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query refundsQuery( $statuses: [String], $orderIn: [Int] ){
-				refunds( where: { statuses: $statuses, orderIn: $orderIn } ) {
+			query refundsQuery( $statuses: [String], $orderIn: [Int] ) {
+				refunds( where: {
+					statuses: $statuses,
+					orderIn: $orderIn,
+					orderby: { field: SLUG, order: ASC }
+				} ) {
 					nodes {
 						id
 					}
@@ -189,12 +193,14 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected  = array(
 			'data' => array(
 				'refunds' => array(
-					'nodes' => array_filter(
-						$this->refund_helper->print_nodes( $refunds ),
-						function( $refund ) {
-							$refund = new WC_Order_Refund();
-							return 'wc-pending' === $refund->get_status();
-						}
+					'nodes' => $this->refund_helper->print_nodes( 
+						array_filter(
+							$refunds,
+							function( $id ) {
+								$refund = new WC_Order_Refund( $id );
+								return 'wc-pending' === $refund->get_status();
+							}
+						)
 					)
 				),
 			),
@@ -215,11 +221,13 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected  = array(
 			'data' => array(
 				'refunds' => array(
-					'nodes' => array_filter(
-						$this->refund_helper->print_nodes( $refunds ),
-						function( $refund ) {
-							return $refund === $this->refund;
-						}
+					'nodes' => $this->refund_helper->print_nodes( 
+						array_filter(
+							$refunds,
+							function( $refund ) {
+								return $refund === $this->refund;
+							}
+						)
 					)
 				),
 			),

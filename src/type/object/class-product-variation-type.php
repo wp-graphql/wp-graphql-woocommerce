@@ -73,7 +73,7 @@ class Product_Variation_Type {
 						'description' => __( 'Product variation stock quantity', 'wp-graphql-woocommerce' ),
 					),
 					'backorders'        => array(
-						'type'        => 'String',
+						'type'        => 'BackordersEnum',
 						'description' => __( 'Product variation backorders', 'wp-graphql-woocommerce' ),
 					),
 					'image'             => array(
@@ -89,7 +89,7 @@ class Product_Variation_Type {
 						'description' => __( 'Product variation shipping class', 'wp-graphql-woocommerce' ),
 					),
 					'catalogVisibility' => array(
-						'type'        => 'String',
+						'type'        => 'CatalogVisibilityEnum',
 						'description' => __( 'Product variation catalog visibility', 'wp-graphql-woocommerce' ),
 					),
 					'hasAttributes'     => array(
@@ -162,12 +162,12 @@ class Product_Variation_Type {
 					}
 
 					$variation = Factory::resolve_crud_object( $variation_id, $context );
-					if ( get_post( $variation_id )->post_type !== 'variation' ) {
-						/* translators: not coupon found error message */
-						throw new UserError( sprintf( __( 'No product exists with this %1$s: %2$s' ), $arg, $args['id'] ) );
+					if ( get_post( $variation_id )->post_type !== 'product_variation' ) {
+						/* translators: no product variation found error message */
+						throw new UserError( sprintf( __( 'No product variation exists with this %1$s: %2$s' ), $arg, $args['id'] ) );
 					}
 
-					return $product;
+					return $variation;
 				},
 			)
 		);
