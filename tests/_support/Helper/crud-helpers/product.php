@@ -177,7 +177,7 @@ class ProductHelper extends WCG_Helper {
             'taxStatus'         => strtoupper( $data->get_tax_status() ),
             'taxClass'          => ! empty( $data->get_tax_class() )
                 ? $data->get_tax_class()
-                : null,
+                : 'STANDARD',
             'manageStock'       => $data->get_manage_stock(),
             'stockQuantity'     => $data->get_stock_quantity(),
             'soldIndividually'  => $data->get_sold_individually(),

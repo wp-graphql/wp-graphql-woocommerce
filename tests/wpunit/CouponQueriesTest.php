@@ -13,7 +13,13 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
 		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
 		$this->helper       = $this->getModule('\Helper\Wpunit')->coupon();
-		$this->coupon       = $this->helper->create( '10off' );
+		$this->coupon       = $this->helper->create(
+			array(
+				'code'          => '10off',
+				'amount'        => 10,
+				'discount_type' => 'percent',
+			)
+		);
 	}
 
 	public function tearDown() {
@@ -147,8 +153,30 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testCouponsQueryAndWhereArgs() {
 		$coupons = array(
 			'10off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) ),
-			'20off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->helper->create( '20off' ) ) ),
-			'30off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->helper->create( '30off' ) ) ),
+			'20off' => array(
+				'id' => Relay::toGlobalId(
+					'shop_coupon',
+					$this->helper->create(
+						array(
+							'code'          => '20off',
+							'amount'        => 20,
+							'discount_type' => 'percent',
+						)
+					)
+				),
+			),
+			'30off' => array(
+				'id' => Relay::toGlobalId(
+					'shop_coupon',
+					$this->helper->create(
+						array(
+							'code'          => '30off',
+							'amount'        => 30,
+							'discount_type' => 'percent',
+						)
+					)
+				),
+			),
 		);
 
 		$query = '

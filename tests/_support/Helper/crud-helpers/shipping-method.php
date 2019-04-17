@@ -52,8 +52,8 @@ class ShippingMethodHelper extends WCG_Helper {
         return array(
             'id'          => Relay::toGlobalId( 'shipping_method', $id ),
             'methodId'    => $id,
-            'title'       => $method->get_method_title(),
-            'description' => $method->get_method_description(),
+            'title'       => $method->method_title,
+            'description' => $method->method_description,
         );
     }
 }

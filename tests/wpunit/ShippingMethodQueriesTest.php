@@ -69,10 +69,14 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testShippingMethodsQuery() {
-		$methods = array(
-			'flat_rate',
-			'free_shipping',
-			'local_pickup',
+		$wc_shipping = WC_Shipping::instance();
+		$methods = array_values( 
+			array_map(
+				function( $method ) {
+					return array( 'id' => Relay::toGlobalId( 'shipping_method', $method->id ) );
+				},
+				$wc_shipping->get_shipping_methods()
+			)
 		);
 
 		$query = '
@@ -91,18 +95,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests query
 		 */
 		$actual = do_graphql_request( $query, 'shippingMethodQuery' );
-		$expected = array(
-			'data' => array(
-				'shippingMethods' => array(
-					'nodes' => array_map(
-						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'shipping_method', $id ) );
-						},
-						array_values( $methods )
-					)
-				),
-			),
-		);
+		$expected = array( 'data' => array( 'shippingMethods' => array( 'nodes' => $methods ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
