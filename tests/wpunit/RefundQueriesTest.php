@@ -110,7 +110,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEqualSets( $expected, $actual );
 
 		/**
 		 * Assertion Two
@@ -131,7 +131,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$refunds = array(
 			$this->refund,
 			$this->refund_helper->create( $this->order_helper->create() ),
-			$this->refund_helper->create( $this->order_helper->create() ),
+			$this->refund_helper->create( $this->order_helper->create(), array( 'status' => 'pending' ) ),
 			$this->refund_helper->create( $this->order_helper->create() ),
 		);
 
@@ -161,7 +161,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEqualSets( $expected, $actual );
 
 		/**
 		 * Assertion Two
@@ -181,14 +181,15 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEqualSets( $expected, $actual );
 
 		/**
 		 * Assertion Three
 		 * 
 		 * Test "statuses" where argument results should be empty
+		 * Note: This argument is functionally useless Refunds' "post_status" is always set to "completed".
 		 */
-		$variables = array( 'statuses' => array( 'pending' ) );
+		$variables = array( 'statuses' => array( 'completed' ) );
 		$actual    = do_graphql_request( $query, 'refundsQuery', $variables );
 		$expected  = array(
 			'data' => array(
@@ -198,7 +199,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 							$refunds,
 							function( $id ) {
 								$refund = new WC_Order_Refund( $id );
-								return 'wc-pending' === $refund->get_status();
+								return 'completed' === $refund->get_status();
 							}
 						)
 					)
@@ -209,14 +210,14 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEqualSets( $expected, $actual );
 
 		/**
 		 * Assertion Four
 		 * 
 		 * Test "orderIn" where argument
 		 */
-		$variables = array( 'orderIn' => array( $this->refund ) );
+		$variables = array( 'orderIn' => array( $this->order ) );
 		$actual    = do_graphql_request( $query, 'refundsQuery', $variables );
 		$expected  = array(
 			'data' => array(
@@ -224,8 +225,9 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'nodes' => $this->refund_helper->print_nodes( 
 						array_filter(
 							$refunds,
-							function( $refund ) {
-								return $refund === $this->refund;
+							function( $id ) {
+								$refund = new WC_Order_Refund( $id );
+								return $refund->get_parent_id() === $this->order;
 							}
 						)
 					)
@@ -236,6 +238,6 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEqualSets( $expected, $actual );
 	}
 }

@@ -66,6 +66,6 @@ class RefundHelper extends WCG_Helper {
             };
         }
 
-        return array_reverse( array_values( array_map( $mapper, $ids ) ) );
+        return array_values( array_map( $mapper, $ids ) );
     }
 }
