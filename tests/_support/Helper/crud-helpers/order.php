@@ -165,7 +165,7 @@ class OrderHelper extends WCG_Helper {
 			'orderVersion'          => ! empty( $data->get_version() ) ? $data->get_version() : null,
             'date'                  => $data->get_date_created()->__toString(),
             'modified'              => $data->get_date_modified()->__toString(),
-			'status'                => $data->get_status(),
+			'status'                => strtoupper( $data->get_status() ),
 			'discountTotal'         => floatval( $data->get_discount_total() ),
 			'discountTax'           => floatval( $data->get_discount_tax() ),
 			'shippingTotal'         => floatval( $data->get_shipping_total() ),

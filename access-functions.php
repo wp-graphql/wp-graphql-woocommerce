@@ -76,3 +76,17 @@ function wc_graphql_map_tax_statements( $raw_taxes ) {
 
 	return array_values( $taxes );
 }
+
+/**
+ * Get order statuses without prefixes.
+ *
+ * @access protected
+ * @return array
+ */
+function wc_graphql_get_order_statuses() {
+	$order_statuses = array();
+	foreach ( array_keys( wc_get_order_statuses() ) as $status ) {
+		$order_statuses[] = str_replace( 'wc-', '', $status );
+	}
+	return $order_statuses;
+}

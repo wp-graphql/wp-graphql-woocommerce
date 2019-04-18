@@ -153,7 +153,7 @@ class Order_Type {
 						'description' => __( 'Order shipping properties', 'wp-graphql-woocommerce' ),
 					),
 					'status'                => array(
-						'type'        => 'String',
+						'type'        => 'OrderStatusEnum',
 						'description' => __( 'Order status', 'wp-graphql-woocommerce' ),
 					),
 					'parent'                => array(

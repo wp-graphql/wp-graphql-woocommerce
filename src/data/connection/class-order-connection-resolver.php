@@ -171,7 +171,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $where_args['statuses'] ) ) {
 			$args['post_status'] = array();
 			foreach ( $where_args['statuses'] as $status ) {
-				if ( in_array( $status, $this->get_order_statuses(), true ) ) {
+				if ( in_array( $status, wc_graphql_get_order_statuses(), true ) ) {
 					$args['post_status'][] = 'wc-' . $status;
 				} elseif ( 'any' === $status ) {
 					// Set status to "any" and short-circuit out.
