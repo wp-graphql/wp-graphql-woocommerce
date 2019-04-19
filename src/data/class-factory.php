@@ -25,8 +25,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Posts_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
 use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\Extensions\WooCommerce\Model\Shipping_Method;
@@ -322,6 +321,22 @@ class Factory {
 	 */
 	public static function resolve_shipping_method_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Shipping_Method_Connection_Resolver();
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
+	/**
+	 * Resolves CartItem connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_cart_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Cart_Item_Connection_Resolver();
 		return $resolver->resolve( $source, $args, $context, $info );
 	}
 }
