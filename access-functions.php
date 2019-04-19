@@ -80,7 +80,6 @@ function wc_graphql_map_tax_statements( $raw_taxes ) {
 /**
  * Get order statuses without prefixes.
  *
- * @access protected
  * @return array
  */
 function wc_graphql_get_order_statuses() {
