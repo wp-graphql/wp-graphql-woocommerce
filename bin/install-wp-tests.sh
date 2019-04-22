@@ -36,9 +36,6 @@ fi
 if [ -z "$SKIP_DB_CREATE" ]; then 
 	SKIP_DB_CREATE=false
 fi
-if [ -z "$WP_GRAPHQL_BRANCH" ]; then 
-	WP_GRAPHQL_BRANCH=develop
-fi
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
@@ -204,19 +201,14 @@ setup_wpgraphql() {
 	fi
 
 	cd $WP_CORE_DIR/wp-content/plugins/wp-graphql
-	
-	if git remote -v | grep -q "jason"; then
-		echo "WPGraphQL upstream already exists"
-	else
-		echo "Adding WPGraphQL upstream"
-		git remote add jason https://github.com/jasonbahl/wp-graphql.git
+	git checkout develop
+	git pull origin develop
+
+	if [ ! -z "$WP_GRAPHQL_BRANCH" ]; then 
+		echo "Checking out WPGraphQL branch - $WP_GRAPHQL_BRANCH"
+		git checkout --track origin/$WP_GRAPHQL_BRANCH
 	fi
-
-	echo "Fetching WPGraphQL upstream"
-	git fetch jason
-
-	echo "Checking out WPGraphQL branch - $WP_GRAPHQL_BRANCH"
-	git checkout $WP_GRAPHQL_BRANCH
+	
 	
 	cd $WP_CORE_DIR
 	echo "Activating WPGraphQL"

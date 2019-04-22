@@ -56,23 +56,23 @@ class Refund extends Crud_CPT {
 					return $this->data->get_id();
 				},
 				'id'             => function() {
-					return ! empty( $this->data ) ? Relay::toGlobalId( 'shop_order_refund', $this->data->get_id() ) : null;
+					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', $this->data->get_id() ) : null;
 				},
 				'refundId'       => function() {
-					return ! empty( $this->data ) ? $this->data->get_id() : null;
+					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
 				},
 				'title'          => function() {
-					return ! empty( $this->data ) ? $this->data->get_post_title() : null;
+					return ! empty( $this->data->get_post_title() ) ? $this->data->get_post_title() : null;
 				},
 				'amount'         => function() {
-					return ! empty( $this->data ) ? $this->data->get_amount() : null;
+					return ! empty( $this->data->get_amount() ) ? $this->data->get_amount() : null;
 				},
 				'reason'         => function() {
-					return ! empty( $this->data ) ? $this->data->get_reason() : null;
+					return ! empty( $this->data->get_reason() ) ? $this->data->get_reason() : null;
 				},
 				'refunded_by_id' => array(
 					'callback'   => function() {
-						return ! empty( $this->data ) ? $this->data->get_refunded_by() : null;
+						return ! empty( $this->data->get_refunded_by() ) ? $this->data->get_refunded_by() : null;
 					},
 					'capability' => 'list_users',
 				),

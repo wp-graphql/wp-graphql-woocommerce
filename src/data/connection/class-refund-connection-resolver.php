@@ -176,7 +176,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( ! empty( $where_args['statuses'] ) ) {
 			$args['post_status'] = array();
-			$statuses            = $this->get_order_statuses();
+			$statuses            = wc_graphql_get_order_statuses();
 
 			foreach ( $where_args['statuses'] as $status ) {
 				if ( in_array( $status, $statuses, true ) ) {

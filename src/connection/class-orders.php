@@ -74,7 +74,7 @@ class Orders extends WC_Connection {
 					'type'        => 'Int',
 					'description' => __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' ),
 				),
-				'productId'    => array(
+				'productId'  => array(
 					'type'        => 'Int',
 					'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
 				),

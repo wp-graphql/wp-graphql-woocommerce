@@ -38,7 +38,7 @@ class Shipping_Method_Type {
 					),
 					'methodId'    => array(
 						'type'        => array( 'non_null' => 'ID' ),
-						'description' => __( 'The ID of the tax rate.', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the shipping method.', 'wp-graphql-woocommerce' ),
 					),
 					'title'       => array(
 						'type'        => 'String',
@@ -50,7 +50,7 @@ class Shipping_Method_Type {
 					),
 				),
 				'resolve_node'      => function( $node, $id, $type, AppContext $context ) {
-					if ( 'tax_rate' === $type ) {
+					if ( 'shipping_method' === $type ) {
 						$node = Factory::resolve_shipping_method( $id );
 					}
 
@@ -73,12 +73,12 @@ class Shipping_Method_Type {
 				'type'        => 'ShippingMethod',
 				'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
-					'id'     => array(
+					'id'       => array(
 						'type'        => 'ID',
 						'description' => __( 'Get the shipping method by its global ID', 'wp-graphql-woocommerce' ),
 					),
 					'methodId' => array(
-						'type'        => 'Int',
+						'type'        => 'ID',
 						'description' => __( 'Get the shipping method by its database ID', 'wp-graphql-woocommerce' ),
 					),
 				),
@@ -91,10 +91,10 @@ class Shipping_Method_Type {
 						}
 
 						$arg          = 'ID';
-						$method_id = absint( $id_components['id'] );
+						$method_id = $id_components['id'];
 					} elseif ( ! empty( $args['methodId'] ) ) {
 						$arg          = 'database ID';
-						$method_id = absint( $args['methodId'] );
+						$method_id = $args['methodId'];
 					}
 
 					return Factory::resolve_shipping_method( $method_id );

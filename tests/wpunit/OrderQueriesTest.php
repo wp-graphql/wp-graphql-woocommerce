@@ -1,12 +1,24 @@
 <?php
 
+use GraphQLRelay\Relay;
+
 class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $shop_manager;
+	private $customer;
+	private $order;
+	private $order_helper;
+	private $product_helper;
+	private $customer_helper;
 
 	public function setUp() {
-		// before
 		parent::setUp();
 
-		// your set up methods here
+		$this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer        = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->order_helper    = $this->getModule('\Helper\Wpunit')->order();
+		$this->product_helper  = $this->getModule('\Helper\Wpunit')->product();
+		$this->customer_helper = $this->getModule('\Helper\Wpunit')->customer();
+		$this->order           = $this->order_helper->create();
 	}
 
 	public function tearDown() {
@@ -16,138 +28,13 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	// tests
-	private function create_customer( $username = 'testcustomer', $password = 'hunter2', $email = 'test@woo.local' ) {
-		$customer = new WC_Customer();
-		$customer->set_billing_country( 'US' );
-		$customer->set_first_name( 'Justin' );
-		$customer->set_billing_state( 'PA' );
-		$customer->set_billing_postcode( '19123' );
-		$customer->set_billing_city( 'Philadelphia' );
-		$customer->set_billing_address( '123 South Street' );
-		$customer->set_billing_address_2( 'Apt 1' );
-		$customer->set_shipping_country( 'US' );
-		$customer->set_shipping_state( 'PA' );
-		$customer->set_shipping_postcode( '19123' );
-		$customer->set_shipping_city( 'Philadelphia' );
-		$customer->set_shipping_address( '123 South Street' );
-		$customer->set_shipping_address_2( 'Apt 1' );
-		$customer->set_username( $username );
-		$customer->set_password( $password );
-		$customer->set_email( $email );
-		$customer->save();
-		return $customer;
-	}
-
-	private function create_simple_product( $save = true ) {
-		$product = new WC_Product_Simple();
-		$product->set_props(
-			array(
-				'name'          => 'Dummy Product',
-				'regular_price' => 10,
-				'price'         => 10,
-				'sku'           => 'DUMMY SKU',
-				'manage_stock'  => false,
-				'tax_status'    => 'taxable',
-				'downloadable'  => false,
-				'virtual'       => false,
-				'stock_status'  => 'instock',
-				'weight'        => '1.1',
-			)
-		);
-		if ( $save ) {
-			$product->save();
-			return wc_get_product( $product->get_id() );
-		} else {
-			return $product;
-		}
-	}
-
-	private function create_simple_flat_rate() {
-		$flat_rate_settings = array(
-			'enabled'      => 'yes',
-			'title'        => 'Flat rate',
-			'availability' => 'all',
-			'countries'    => '',
-			'tax_status'   => 'taxable',
-			'cost'         => '10',
-		);
-		update_option( 'woocommerce_flat_rate_settings', $flat_rate_settings );
-		update_option( 'woocommerce_flat_rate', array() );
-		WC_Cache_Helper::get_transient_version( 'shipping', true );
-		WC()->shipping()->load_shipping_methods();
-	}
-
-	private function create_order( $customer_id = 1, $product = null ) {
-		if ( ! is_a( $product, 'WC_Product' ) ) {
-			$product = $this->create_simple_product();
-		}
-		$this->create_simple_flat_rate();
-		$order_data = array(
-			'status'        => 'pending',
-			'customer_id'   => $customer_id,
-			'customer_note' => '',
-			'total'         => '',
-		);
-		$_SERVER['REMOTE_ADDR'] = '127.0.0.1'; // Required, else wc_create_order throws an exception
-		$order 					= wc_create_order( $order_data );
-		// Add order products
-		$item = new WC_Order_Item_Product();
-		$item->set_props( array(
-			'product'  => $product,
-			'quantity' => 4,
-			'subtotal' => wc_get_price_excluding_tax( $product, array( 'qty' => 4 ) ),
-			'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => 4 ) ),
-		) );
-		$item->save();
-		$order->add_item( $item );
-		// Set billing address
-		$order->set_billing_first_name( 'Jeroen' );
-		$order->set_billing_last_name( 'Sormani' );
-		$order->set_billing_company( 'WooCompany' );
-		$order->set_billing_address_1( 'WooAddress' );
-		$order->set_billing_address_2( '' );
-		$order->set_billing_city( 'WooCity' );
-		$order->set_billing_state( 'NY' );
-		$order->set_billing_postcode( '123456' );
-		$order->set_billing_country( 'US' );
-		$order->set_billing_email( 'admin@example.org' );
-		$order->set_billing_phone( '555-32123' );
-		// Add shipping costs
-		$shipping_taxes = WC_Tax::calc_shipping_tax( '10', WC_Tax::get_shipping_tax_rates() );
-		$rate   = new WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );
-		$item   = new WC_Order_Item_Shipping();
-		$item->set_props( array(
-			'method_title' => $rate->label,
-			'method_id'    => $rate->id,
-			'total'        => wc_format_decimal( $rate->cost ),
-			'taxes'        => $rate->taxes,
-		) );
-		foreach ( $rate->get_meta_data() as $key => $value ) {
-			$item->add_meta_data( $key, $value, true );
-		}
-		$order->add_item( $item );
-		// Set payment gateway
-		$payment_gateways = WC()->payment_gateways->payment_gateways();
-		$order->set_payment_method( $payment_gateways['bacs'] );
-		// Set totals
-		$order->set_shipping_total( 10 );
-		$order->set_discount_total( 0 );
-		$order->set_discount_tax( 0 );
-		$order->set_cart_tax( 0 );
-		$order->set_shipping_tax( 0 );
-		$order->set_total( 50 ); // 4 x $10 simple helper product
-		$order->save();
-		return $order;
-	}
-
 	public function testOrderQuery() {
-		$customer = $this->create_customer();
-		$order = $this->create_order( $customer );
-		$order_id = $order->get_id();
+		$id = Relay::toGlobalId( 'shop_order', $this->order );
 
-		$query = "
-			query {
-				orderBy(orderId: \"$order_id\") {
+		$query = '
+			query orderQuery( $id: ID! ) {
+				order( id: $id ) {
+					id
 					orderId
 					currency
 					orderVersion
@@ -202,9 +89,6 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 					paymentMethod
 					paymentMethodTitle
 					transactionId
-					customerIpAddress
-					customerUserAgent
-					customerNote
 					dateCompleted
 					datePaid
 					cartHash
@@ -215,56 +99,284 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 					needsShippingAddress
 					hasDownloadableItem
 					downloadableItems {
-						nodes {
-							id
-						}
+						downloadId
 					}
 					needsPayment
 					needsProcessing
-					items {
-						nodes {
-							id
-						}
-					}
-					tax_lines {
-						nodes {
-							id
-						}
-					}
-					shippingLines{
-						nodes {
-							id
-						}
-					}
-					feeLines {
-						nodes {
-							id
-						}
-					}
-					couponLines {
-						nodes {
-							id
-						}
-					}
-					refunds {
-						nodes {
-							id
-							reason
-							total
-						}
+				}
+			}
+		';
+		
+		/**
+		 * Assertion One
+		 * 
+		 * tests query as customer
+		 */
+		wp_set_current_user( $this->customer );
+		$variables = array( 'id' => $id );
+		$actual = do_graphql_request( $query, 'orderQuery', $variables );
+		$expected = array( 'data' => array( 'order' => $this->order_helper->print_restricted_query( $this->order ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		// Clear loader cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * tests query as shop manager
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$variables = array( 'id' => $id );
+		$actual = do_graphql_request( $query, 'orderQuery', $variables );
+		$expected = array( 'data' => array( 'order' => $this->order_helper->print_query( $this->order ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
+
+	public function testOrderByQueryAndArgs() {
+		$id = Relay::toGlobalId( 'shop_order', $this->order );
+
+		$query = '
+			query orderByQuery( $id: ID, $orderId: Int, $orderKey: String ) {
+				orderBy( id: $id, orderId: $orderId, orderKey: $orderKey ) {
+					id
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 * 
+		 * tests query and "id" arg
+		 */
+		$variables = array( 'id' => $id );
+		$actual = do_graphql_request( $query, 'orderByQuery', $variables );
+		$expected = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * tests query and "orderId" arg
+		 */
+		$variables = array( 'orderId' => $this->order );
+		$actual = do_graphql_request( $query, 'orderByQuery', $variables );
+		$expected = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * tests query and "orderNumber" arg
+		 */
+		$variables = array( 'orderKey' => $this->order_helper->get_order_key( $this->order ) );
+		$actual = do_graphql_request( $query, 'orderByQuery', $variables );
+		$expected = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
+
+	public function testOrdersQueryAndWhereArgs() {
+		$customer = $this->customer_helper->create();
+		$product  = $this->product_helper->create_simple();
+		$orders   = array(
+			$this->order,
+			$this->order_helper->create(
+				array(),
+				array(
+					'line_items' => array(
+						array(
+							'product' => $product,
+							'qty'     => 4,
+						),
+					),
+				)
+			),
+			$this->order_helper->create(
+				array(
+					'status'   => 'completed',
+					'customer_id' => $customer,
+				),
+				array(
+					'line_items'    => array(
+						array(
+							'product' => $product,
+							'qty'     => 2,
+						),
+					),
+				)
+			),
+		);
+
+		$query = '
+			query ordersQuery( $statuses: [String], $customerId: Int, $productId: Int ) {
+				orders( where: {
+					statuses: $statuses,
+					customerId: $customerId,
+					productId: $productId,
+					orderby: { field: MENU_ORDER, order: ASC }
+				} ) {
+					nodes {
+						id
 					}
 				}
 			}
-		";
-
-		$actual = do_graphql_request( $query );
+		';
 
 		/**
-		 * use --debug flag to view
+		 * Assertion One
+		 * 
+		 * tests query with no without required capabilities
 		 */
-		\Codeception\Util\Debug::debug( $actual );
+		wp_set_current_user( $this->customer );
+		$actual = do_graphql_request( $query, 'ordersQuery' );
+		$expected = array( 'data' => array( 'orders' => array( 'nodes' => array() ) ) );
 
-		$expected = [];
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * tests query with required capabilities
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$actual = do_graphql_request( $query, 'ordersQuery' );
+		$expected = array(
+			'data' => array(
+				'orders' => array(
+					'nodes' => array_reverse( array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
+						},
+						$orders
+					) ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * tests "statuses" where argument
+		 */
+		$variables = array( 'statuses' => 'completed' );
+		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'orders' => array(
+					'nodes' => array_reverse( array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
+						},
+						array_values(
+							array_filter(
+								$orders,
+								function( $id ) {
+									$order = new WC_Order( $id );
+									codecept_debug( $order->get_status() );
+									return $order->get_status() === 'completed';
+								}
+							)
+						)
+					) ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Four
+		 * 
+		 * tests "customerId" where argument
+		 */
+		$variables = array( 'customerId' => $customer );
+		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'orders' => array(
+					'nodes' => array_reverse( array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
+						},
+						array_values(
+							array_filter(
+								$orders,
+								function( $id ) use ( $customer ) {
+									$order = new WC_Order( $id );
+									return $order->get_customer_id() === $customer;
+								}
+							)
+						)
+					) ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Five
+		 * 
+		 * tests "productId" where argument
+		 */
+		$variables = array( 'productId' => $product );
+		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'orders' => array(
+					'nodes' => array_reverse( array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
+						},
+						array_values(
+							array_filter(
+								$orders,
+								function( $id ) use ( $product ) {
+									return $this->order_helper->has_product( $id, $product );
+								}
+							)
+						)
+					) ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
 	}

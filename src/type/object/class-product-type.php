@@ -243,8 +243,9 @@ class Product_Type {
 						'type'        => 'MediaItem',
 						'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
+							// @codingStandardsIgnoreLine
 							return DataSource::resolve_post_object( $source->imageId, $context );
-						}
+						},
 					),
 					'shippingClassId'   => array(
 						'type'        => 'Int',

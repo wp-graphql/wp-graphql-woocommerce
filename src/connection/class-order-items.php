@@ -58,42 +58,6 @@ class Order_Items {
 
 		// From Refund.
 		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'Refund' ) ) );
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Refund',
-					'toType'        => 'TaxLine',
-					'fromFieldName' => 'taxLines',
-				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Refund',
-					'toType'        => 'ShippingLine',
-					'fromFieldName' => 'shippingLines',
-				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Refund',
-					'toType'        => 'FeeLine',
-					'fromFieldName' => 'feeLines',
-				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Refund',
-					'toType'        => 'CouponLine',
-					'fromFieldName' => 'couponLines',
-				)
-			)
-		);
 	}
 
 	/**
