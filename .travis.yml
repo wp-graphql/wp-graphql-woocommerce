@@ -23,13 +23,14 @@ cache:
 env:
   global:
     - WP_CORE_DIR: /tmp/wordpress
-    - WP_VERSION: latest
     - COVERAGE: false
 
 matrix:
   include:
     - php: 7.2
-      env: WP_VERSION=latest
+      env: WP_VERSION=latest COVERAGE=1
+    - php: 7.2
+      env: PHPCS=1
     - php: 7.1
       env: WP_VERSION=latest
     - php: 7.0
@@ -40,11 +41,6 @@ matrix:
       env: WP_VERSION=latest
     - php: 5.6
       env: WP_VERSION=trunk
-    - php: 5.6
-      env: WP_TRAVISCI=phpcs
-    - php: 5.3
-      env: WP_VERSION=latest
-      dist: precise
 
 install:
   - |
@@ -55,30 +51,48 @@ install:
 
 before_script:
   - |
-    if [[ ! -z "$WP_VERSION" ]] ; then
-      bash bin/install-wp-tests.sh wpgraphql_woocommerce_test root '' 127.0.0.1 $WP_VERSION
-      composer self-update
-      composer require lucatume/wp-browser:^2.2
-      composer install --no-interaction
-      mkdir -p build/logs
+    if [ ! -z "$WP_VERSION" ]; then
+      # Install and config Codeception
       cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
       cp tests/functional.suite.dist.yml tests/functional.suite.yml
       cp tests/unit.suite.dist.yml tests/unit.suite.yml
       cp tests/wpunit.suite.dist.yml tests/wpunit.suite.yml
       cp .env.dist .env
+      composer install-wp-tests
+      if [ "$COVERAGE" == "1" ]; then
+        # Install Coveralls
+        mkdir -p build/logs
+        COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
+      fi
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer update --prefer-source --no-interaction
       ls -al
-    fi
+    fi   
+  # Install PHP CodeSniffer and WPCS.
   - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      composer global require wp-coding-standards/wpcs
-      phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+    if [ "$PHPCS" == "1" ]; then
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
+      ls -al
     fi
 
 script:
- # Execute unit tests with coverage if specified, otherwise without coverage
- - |
-    if [ $COVERAGE == true ]; then
-      vendor/bin/codecept run wpunit --coverage --coverage-xml
-    else
-      vendor/bin/codecept run wpunit
+  # Execute unit tests with coverage if specified, otherwise without coverage
+  - |
+    if [ ! -z "$WP_VERSION" ]; then
+      if [ "$COVERAGE" == "1" ]; then
+        vendor/bin/codecept run wpunit --coverage --coverage-xml
+      else
+        vendor/bin/codecept run wpunit
+      fi
     fi
+  - |
+    if [ "$PHPCS" == "1" ]; then
+      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php src/*.php --standard=WordPress
+    fi
+after_success:
+  # Runs Coveralls.io client
+  - |
+    if [ "$COVERAGE" == "1" ]; then
+      travis_retry php vendor/bin/php-coveralls -v
+    fi
+  

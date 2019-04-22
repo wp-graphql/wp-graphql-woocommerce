@@ -1,433 +1,392 @@
 <?php
 
-class ProductQueriesTest extends \Codeception\TestCase\WPTestCase
-{
+use GraphQLRelay\Relay;
+class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $shop_manager;
+	private $customer;
+	private $product;
 
-    public function setUp()
-    {
-        // before
-        parent::setUp();
+	public function setUp() {
+		// before
+		parent::setUp();
 
-        // your set up methods here
-    }
+		$this->shop_manager  = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer      = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->helper        = $this->getModule('\Helper\Wpunit')->product();
+		$this->product       = $this->helper->create_simple();
+	}
 
-    public function tearDown()
-    {
-        // your tear down methods here
+	public function tearDown() {
+		// your tear down methods here
+		// then
+		parent::tearDown();
+	}
 
-        // then
-        parent::tearDown();
-    }
+	// tests
+	public function testProductQuery() {
+		$query = '
+			query productQuery( $id: ID! ) {
+				product(id: $id) {
+					productId
+					name
+					slug
+					date
+					modified
+					status
+					featured
+					catalogVisibility
+					description
+					shortDescription
+					sku
+					price
+					regularPrice
+					salePrice
+					dateOnSaleFrom
+					dateOnSaleTo
+					totalSales
+					taxStatus
+					taxClass
+					manageStock
+					stockQuantity
+					soldIndividually
+					weight
+					length
+					width
+					height
+					reviewsAllowed
+					purchaseNote
+					menuOrder
+					virtual
+					downloadable
+					downloadLimit
+					downloadExpiry
+					averageRating
+					reviewCount
+				}
+			}
+		';
+		
+		$variables = array( 'id' => Relay::toGlobalId( 'product', $this->product ) );
+		$actual = do_graphql_request( $query, 'productQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'product' => $this->helper->print_query( $this->product ),
+			),
+		);
 
-    // tests
-    public function testProductQuery()
-    {
-        $query = "
-            query {
-                product(id: \" \") {
-                    productId
-                    name
-                    slug
-                    permalink
-                    dateCreated
-                    dateModified
-                    type
-                    status
-                    featured
-                    catalogVisibility
-                    description
-                    shortDescription
-                    sku
-                    price
-                    regularPrice
-                    salePrice
-                    dateOnSaleFrom
-                    dateOnSaleTo
-                    onSale
-                    purchasable
-                    totalSales
-                    virtual
-                    downloadable
-                    downloads
-                    downloadLimit
-                    downloadExpiry
-                    externalUrl
-                    buttonText
-                    taxStatus
-                    taxClass
-                    manageStock
-                    stockQuantity
-                    stockStatus
-                    backorders
-                    backordersAllowed
-                    backordered
-                    soldIndividually
-                    weight
-                    dimensions {
-                        length
-                        width
-                        height
-                    }
-                    shippingRequired
-                    shippingTaxable
-                    shippingClass
-                    shippingClassId
-                    reviewsAllowed
-                    averageRating
-                    ratingCount
-                    related {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    upsell {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    crossSell {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    parent {
-                        id
-                        name
-                    }
-                    purchaseNote
-                    categories {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    tags {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    images {
-                        nodes {
-                            id
-                            src
-                        }
-                    }
-                    attributes {
-                        id
-                        name
-                        position
-                        visible
-                        variation
-                        options
-                    }
-                    defaultAttributes {
-                        id
-                        name
-                        option
-                    }
-                    variations {
-                        nodes {
-                            id
-                        }
-                    }
-                    groupedProducts {
-                        nodes {
-                            id
-                        }
-                    }
-                    menuOrder
-                }
-            }
-        ";
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        $actual = do_graphql_request( $query );
+		$this->assertEqualSets( $expected, $actual );
+	}
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+	public function testProductByQueryAndArgs() {
+		$id = Relay::toGlobalId( 'product', $this->product );
+		$query = '
+			query productQuery( $id: ID, $productId: Int ) {
+				productBy(id: $id productId: $productId ) {
+					id
+				}
+			}
+		';
 
-        $expected = [];
+		$variables = array( 'productId' => $this->product );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 
-        $this->assertEquals( $expected, $actual );
-    }
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-    public function testProductByQuery()
-    {
-        $query = "
-            query {
-                productBy(productId: \" \") {
-                    productId
-                    name
-                    slug
-                    permalink
-                    dateCreated
-                    dateModified
-                    type
-                    status
-                    featured
-                    catalogVisibility
-                    description
-                    shortDescription
-                    sku
-                    price
-                    regularPrice
-                    salePrice
-                    dateOnSaleFrom
-                    dateOnSaleTo
-                    onSale
-                    purchasable
-                    totalSales
-                    virtual
-                    downloadable
-                    downloads
-                    downloadLimit
-                    downloadExpiry
-                    externalUrl
-                    buttonText
-                    taxStatus
-                    taxClass
-                    manageStock
-                    stockQuantity
-                    stockStatus
-                    backorders
-                    backordersAllowed
-                    backordered
-                    soldIndividually
-                    weight
-                    dimensions {
-                        length
-                        width
-                        height
-                    }
-                    shippingRequired
-                    shippingTaxable
-                    shippingClass
-                    shippingClassId
-                    reviewsAllowed
-                    averageRating
-                    ratingCount
-                    related {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    upsell {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    crossSell {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    parent {
-                        id
-                        name
-                    }
-                    purchaseNote
-                    categories {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    tags {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
-                    images {
-                        nodes {
-                            id
-                            src
-                        }
-                    }
-                    attributes {
-                        id
-                        name
-                        position
-                        visible
-                        variation
-                        options
-                    }
-                    defaultAttributes {
-                        id
-                        name
-                        option
-                    }
-                    variations {
-                        nodes {
-                            id
-                        }
-                    }
-                    groupedProducts {
-                        nodes {
-                            id
-                        }
-                    }
-                    menuOrder
-                }
-            }
-        ";
+		$this->assertEquals( $expected, $actual );
 
-        $actual = do_graphql_request( $query );
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        $expected = [];
+		$this->assertEquals( $expected, $actual );
+	}
 
-        $this->assertEquals( $expected, $actual );
-    }
+	public function testProductsQueryAndWhereArgs() {
+		$products = array (
+			$this->product,
+			$this->helper->create_simple(
+				array(
+					'price'         => 10,
+					'regular_price' => 10,
+				)
+			),
+			$this->helper->create_simple(
+				array(
+					'featured' => "true",
+				)
+			),
+			$this->helper->create_external(),
+		);
 
-    public function testProductsQuery()
-    {
-        $query = "
-            query {
-                products {
-                    nodes {
-                        productId
-                        name
-                        slug
-                        permalink
-                        dateCreated
-                        dateModified
-                        type
-                        status
-                        featured
-                        catalogVisibility
-                        description
-                        shortDescription
-                        sku
-                        price
-                        regularPrice
-                        salePrice
-                        dateOnSaleFrom
-                        dateOnSaleTo
-                        onSale
-                        purchasable
-                        totalSales
-                        virtual
-                        downloadable
-                        downloads
-                        downloadLimit
-                        downloadExpiry
-                        externalUrl
-                        buttonText
-                        taxStatus
-                        taxClass
-                        manageStock
-                        stockQuantity
-                        stockStatus
-                        backorders
-                        backordersAllowed
-                        backordered
-                        soldIndividually
-                        weight
-                        dimensions {
-                            length
-                            width
-                            height
-                        }
-                        shippingRequired
-                        shippingTaxable
-                        shippingClass
-                        shippingClassId
-                        reviewsAllowed
-                        averageRating
-                        ratingCount
-                        related {
-                            nodes {
-                                id
-                                name
-                            }
-                        }
-                        upsell {
-                            nodes {
-                                id
-                                name
-                            }
-                        }
-                        crossSell {
-                            nodes {
-                                id
-                                name
-                            }
-                        }
-                        parent {
-                            id
-                            name
-                        }
-                        purchaseNote
-                        categories {
-                            nodes {
-                                id
-                                name
-                            }
-                        }
-                        tags {
-                            nodes {
-                                id
-                                name
-                            }
-                        }
-                        images {
-                            nodes {
-                                id
-                                src
-                            }
-                        }
-                        attributes {
-                            id
-                            name
-                            position
-                            visible
-                            variation
-                            options
-                        }
-                        defaultAttributes {
-                            id
-                            name
-                            option
-                        }
-                        variations {
-                            nodes {
-                                id
-                            }
-                        }
-                        groupedProducts {
-                            nodes {
-                                id
-                            }
-                        }
-                        menuOrder
-                    }
-                }
-            }
-        ";
+		$query = '
+			query ProductsQuery(
+				$slug: String,
+				$status: String,
+				$type: String,
+				$typeIn: [String],
+				$typeNotIn: [String],
+				$featured: Boolean,
+				$maxPrice: String,
+			){
+				products( where: {
+					slug: $slug,
+					status: $status,
+					type: $type,
+					typeIn: $typeIn,
+					typeNotIn: $typeNotIn,
+					featured: $featured,
+					maxPrice: $maxPrice,
+					orderby: { field: SLUG, order: ASC }
+				} ) {
+					nodes {
+						id
+					}
+				}
+			}
+		';
 
-        $actual = do_graphql_request( $query );
+		/**
+		 * Assertion One
+		 * 
+		 * tests query with no arguments
+		 */
+		$actual = do_graphql_request( $query, 'ProductsQuery' );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						$products
+					)
+				),
+			),
+		);
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        $expected = [];
+		$this->assertEquals( $expected, $actual );
 
-        $this->assertEquals( $expected, $actual );
-    }
+		/**
+		 * Assertion Two
+		 * 
+		 * tests "slug" where argument
+		 */
+		$variables = array( 'slug' => 'test-product-1' );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						array_values(
+							array_filter(
+								$products,
+								function( $id ) {
+									$product = \wc_get_product( $id );
+									return 'test-product-1' === $product->get_slug();
+								}
+							)
+						)
+					)
+				),
+			),
+		);
 
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * tests "status" where argument
+		 */
+		$variables = array( 'status' => 'pending' );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array( 'data' => array( 'products' => array( 'nodes' => array() ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Four
+		 * 
+		 * tests "type" where argument
+		 */
+		$variables = array( 'type' => 'simple' );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						array_values(
+							array_filter(
+								$products,
+								function( $id ) {
+									$product = \wc_get_product( $id );
+									return 'simple' === $product->get_type();
+								}
+							)
+						)
+					)
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Five
+		 * 
+		 * tests "typeIn" where argument
+		 */
+		$variables = array( 'typeIn' => array( 'simple' ) );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						array_values(
+							array_filter(
+								$products,
+								function( $id ) {
+									$product = \wc_get_product( $id );
+									return 'simple' === $product->get_type();
+								}
+							)
+						)
+					)
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Six
+		 * 
+		 * tests "typeNotIn" where argument
+		 */
+		$variables = array( 'typeNotIn' => array( 'simple' ) );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						array_values(
+							array_filter(
+								$products,
+								function( $id ) {
+									$product = \wc_get_product( $id );
+									return 'simple' !== $product->get_type();
+								}
+							)
+						)
+					)
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Seven
+		 * 
+		 * tests "featured" where argument
+		 */
+		$variables = array( 'featured' => true );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						array_values(
+							array_filter(
+								$products,
+								function( $id ) {
+									$product = \wc_get_product( $id );
+									return $product->get_featured();
+								}
+							)
+						)
+					)
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Eight
+		 * 
+		 * tests "maxPrice" where argument
+		 */
+		$variables = array( 'maxPrice' => '10.00');
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => array_map(
+						function( $id ) {
+							return array( 'id' => Relay::toGlobalId( 'product', $id ) );
+						},
+						array_values(
+							array_filter(
+								$products,
+								function( $id ) {
+									$product = \wc_get_product( $id );
+									return 10.00 >= floatval( $product->get_price() );
+								}
+							)
+						)
+					)
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
 }

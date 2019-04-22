@@ -1,16 +1,41 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 3 ]; then
-	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
-	exit 1
-fi
+export $(cat .env | xargs)
 
-DB_NAME=$1
-DB_USER=$2
-DB_PASS=$3
-DB_HOST=${4-localhost}
-WP_VERSION=${5-latest}
-SKIP_DB_CREATE=${6-false}
+print_usage_instruction() {
+	echo "Ensure that .env file exist in project root directory exists."
+	echo "And run the following 'composer install-wp-tests' in the project root directory"
+	exit 1
+}
+
+if [[ -z "$TEST_DB_NAME" ]]; then
+	echo "TEST_DB_NAME not found"
+	print_usage_instruction
+else
+	DB_NAME=$TEST_DB_NAME
+fi
+if [[ -z "$TEST_DB_USER" ]]; then 
+	echo "TEST_DB_USER not found"
+	print_usage_instruction
+else
+	DB_USER=$TEST_DB_USER
+fi
+if [[ -z "$TEST_DB_PASSWORD" ]]; then 
+	DB_PASS=""
+else
+	DB_PASS=$TEST_DB_PASSWORD
+fi
+if [[ -z "$TEST_DB_HOST" ]]; then 
+	DB_HOST=localhost
+else
+	DB_HOST=$TEST_DB_HOST
+fi
+if [ -z "$WP_VERSION" ]; then 
+	WP_VERSION=latest
+fi
+if [ -z "$SKIP_DB_CREATE" ]; then 
+	SKIP_DB_CREATE=false
+fi
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
@@ -150,19 +175,14 @@ install_db() {
 
 	# create database
 	RESULT=`mysql -u $DB_USER --password="$DB_PASS" --skip-column-names -e "SHOW DATABASES LIKE '$DB_NAME'"$EXTRA`
-    if [ "$RESULT" != $DB_NAME ]; then
-        mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
-    fi
-
-    RESULT_2=`mysql -u $DB_USER --password="$DB_PASS" --skip-column-names -e "SHOW DATABASES LIKE '$DB_SERVE_NAME'"$EXTRA`
-    if [ "$RESULT_2" != $DB_SERVE_NAME ]; then
-        mysqladmin create $DB_SERVE_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
-    fi
+	if [ "$RESULT" != $DB_NAME ]; then
+			mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	fi
 }
 
 configure_wordpress() {
     cd $WP_CORE_DIR
-    wp config create --dbname="$DB_SERVE_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
+    wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
     wp core install --url=wp.test --title="WPGraphQL WooCommerce Tests" --admin_user=admin --admin_password=password --admin_email=admin@wp.test
     wp rewrite structure '/%year%/%monthnum%/%postname%/'
 }
@@ -172,17 +192,32 @@ setup_woocommerce() {
 	wp plugin install wordpress-importer --activate
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
-	wp import $WP_CORE_DIR/wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip
 }
 
 setup_wpgraphql() {
-	echo "Cloning WPGraphQL"
-	git clone https://github.com/wp-graphql/wp-graphql.git $WP_CORE_DIR/wp-content/plugins/wp-graphql
+	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql ]; then
+		echo "Cloning WPGraphQL"
+		git clone https://github.com/wp-graphql/wp-graphql.git $WP_CORE_DIR/wp-content/plugins/wp-graphql
+	fi
+
+	cd $WP_CORE_DIR/wp-content/plugins/wp-graphql
+	git checkout develop
+	git pull origin develop
+
+	if [ ! -z "$WP_GRAPHQL_BRANCH" ]; then 
+		echo "Checking out WPGraphQL branch - $WP_GRAPHQL_BRANCH"
+		git checkout --track origin/$WP_GRAPHQL_BRANCH
+	fi
+	
+	
+	cd $WP_CORE_DIR
 	echo "Activating WPGraphQL"
 	wp plugin activate wp-graphql
 
-	echo "Cloning WPGraphQL-JWT-Authentication"
-	git clone https://github.com/wp-graphql/wp-graphql-jwt-authentication.git $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication
+	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication ]; then
+		echo "Cloning WPGraphQL-JWT-Authentication"
+		git clone https://github.com/wp-graphql/wp-graphql-jwt-authentication.git $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication
+	fi
 	echo "Activating WPGraphQL-JWT-Authentication"
 	wp plugin activate wp-graphql-jwt-authentication
 }

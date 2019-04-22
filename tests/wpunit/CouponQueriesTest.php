@@ -1,217 +1,236 @@
 <?php
 
-class CouponQueriesTest extends \Codeception\TestCase\WPTestCase
-{
+use GraphQLRelay\Relay;
+class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $shop_manager;
+	private $customer;
+	private $coupon;
+	private $helper;
 
-    public function setUp()
-    {
-        // before
-        parent::setUp();
+	public function setUp() {
+		parent::setUp();
 
-        // your set up methods here
-    }
+		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->helper       = $this->getModule('\Helper\Wpunit')->coupon();
+		$this->coupon       = $this->helper->create(
+			array(
+				'code'          => '10off',
+				'amount'        => 10,
+				'discount_type' => 'percent',
+			)
+		);
+	}
 
-    public function tearDown()
-    {
-        // your tear down methods here
+	public function tearDown() {
+		// your tear down methods here
+		// then
+		parent::tearDown();
+	}
 
-        // then
-        parent::tearDown();
-    }
+	// tests
+	public function testCouponQuery() {
+		$query     = '
+			query couponQuery( $id: ID! ){
+				coupon( id: $id ) {
+					id
+					couponId
+					code
+					amount
+					date
+					modified
+					discountType
+					description
+					dateExpiry
+					usageCount
+					individualUse
+					usageLimit
+					usageLimitPerUser
+					limitUsageToXItems
+					freeShipping
+					excludeSaleItems
+					minimumAmount
+					maximumAmount
+					emailRestrictions
+					products {
+						nodes {
+							productId
+						}
+					}
+					excludedProducts {
+						nodes {
+							productId
+						}
+					}
+					productCategories {
+						nodes {
+							productCategoryId
+						}
+					}
+					excludedProductCategories {
+						nodes {
+							productCategoryId
+						}
+					}
+					usedBy {
+						nodes {
+							customerId
+						}
+					}
+				}
+			}
+		';
 
-    // tests
-    public function testCouponQuery()
-    {
-        $query = "
-            query {
-                coupon(id: \" \") {
-                    couponId
-                    code
-                    amount
-                    dateCreated
-                    dateModified
-                    discountType
-                    description
-                    dateExpires
-                    usageCount
-                    individualUse
-                    products {
-                        nodes {
-                            id
-                        }
-                    }
-                    excludedProducts {
-                        nodes {
-                            id
-                        }
-                    }
-                    usageLimit
-                    usageLimitPerUser
-                    limitUsageToXItems
-                    freeShipping
-                    productCategories {
-                        nodes {
-                            id
-                        }
-                    }
-                    excludedProductCategories {
-                        nodes {
-                            id
-                        }
-                    }
-                    excludeSaleItems
-                    minimumAmount
-                    maximumAmount
-                    emailRestrictions
-                    usedBy {
-                        nodes {
-                            id
-                        }
-                    }
-                }
-            }
-        ";
+		/**
+		 * Assertion One
+		 */
+		wp_set_current_user( $this->customer );
+		$variables = array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) );
+		$actual    = do_graphql_request( $query, 'couponQuery', $variables );
+		$expected  = array( 'data' => array( 'coupon' => $this->helper->print_query( $this->coupon ) ) );
 
-        $actual = do_graphql_request( $query );
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+		$this->assertEqualSets( $expected, $actual );
+	}
 
-        $expected = [];
+	public function testCouponByQueryAndArgs() {
+		wp_set_current_user( $this->customer );
+		$id = Relay::toGlobalId( 'shop_coupon', $this->coupon );
+		$coupon = new WC_Coupon( $this->coupon );
+		$query = '
+			query CouponBy( $id: ID, $couponId: Int, $code: String ) {
+				couponBy( id: $id, couponId: $couponId, code: $code ) {
+					id
+				}
+			}
+		';
 
-        $this->assertEquals( $expected, $actual );
-    }
+		/**
+		 * Assertion One
+		 * 
+		 * Testing "id" query argument
+		 */
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
-    public function testCouponByQuery()
-    {
-        $query = "
-            query {
-                couponBy(couponId: \" \") {
-                    couponId
-                    code
-                    amount
-                    dateCreated
-                    dateModified
-                    discountType
-                    description
-                    dateExpires
-                    usageCount
-                    individualUse
-                    products {
-                        nodes {
-                            id
-                        }
-                    }
-                    excludedProducts {
-                        nodes {
-                            id
-                        }
-                    }
-                    usageLimit
-                    usageLimitPerUser
-                    limitUsageToXItems
-                    freeShipping
-                    productCategories {
-                        nodes {
-                            id
-                        }
-                    }
-                    excludedProductCategories {
-                        nodes {
-                            id
-                        }
-                    }
-                    excludeSaleItems
-                    minimumAmount
-                    maximumAmount
-                    emailRestrictions
-                    usedBy {
-                        nodes {
-                            id
-                        }
-                    }
-                }
-            }
-        ";
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        $actual = do_graphql_request( $query );
+		$this->assertEqualSets( $expected, $actual );
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+		/**
+		 * Assertion Two
+		 * 
+		 * Testing "couponId" query argument
+		 */
+		$variables = array( 'couponId' => $coupon->get_id() );
+		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
-        $expected = [];
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        $this->assertEquals( $expected, $actual );
-    }
+		$this->assertEqualSets( $expected, $actual );
 
-    public function testCouponsQuery()
-    {
-        $query = "
-            query {
-                coupons() {
-                    nodes {
-                        couponId
-                        code
-                        amount
-                        dateCreated
-                        dateModified
-                        discountType
-                        description
-                        dateExpires
-                        usageCount
-                        individualUse
-                        products {
-                            nodes {
-                                id
-                            }
-                        }
-                        excludedProducts {
-                            nodes {
-                                id
-                            }
-                        }
-                        usageLimit
-                        usageLimitPerUser
-                        limitUsageToXItems
-                        freeShipping
-                        productCategories {
-                            nodes {
-                                id
-                            }
-                        }
-                        excludedProductCategories {
-                            nodes {
-                                id
-                            }
-                        }
-                        excludeSaleItems
-                        minimumAmount
-                        maximumAmount
-                        emailRestrictions
-                        usedBy {
-                            nodes {
-                                id
-                            }
-                        }
-                    }
-                }
-            }
-        ";
+		/**
+		 * Assertion Three
+		 * 
+		 * Testing "couponId" query argument
+		 */
+		$variables = array( 'code' => $coupon->get_code() );
+		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
-        $actual = do_graphql_request( $query );
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-        /**
-         * use --debug flag to view
-         */
-        \Codeception\Util\Debug::debug( $actual );
+		$this->assertEqualSets( $expected, $actual );
+	}
 
-        $expected = [];
+	public function testCouponsQueryAndWhereArgs() {
+		$coupons = array(
+			'10off' => array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) ),
+			'20off' => array(
+				'id' => Relay::toGlobalId(
+					'shop_coupon',
+					$this->helper->create(
+						array(
+							'code'          => '20off',
+							'amount'        => 20,
+							'discount_type' => 'percent',
+						)
+					)
+				),
+			),
+			'30off' => array(
+				'id' => Relay::toGlobalId(
+					'shop_coupon',
+					$this->helper->create(
+						array(
+							'code'          => '30off',
+							'amount'        => 30,
+							'discount_type' => 'percent',
+						)
+					)
+				),
+			),
+		);
 
-        $this->assertEquals( $expected, $actual );
-    }
+		$query = '
+			query CouponsQuery( $code: String ) {
+				coupons( where: { code: $code } ) {
+					nodes {
+						id
+					}
+				}
+			}
+		';
 
+		/**
+		 * Assertion One
+		 * 
+		 * Should return null due to lack of required capabilities
+		 */
+		wp_set_current_user( $this->customer );
+		$actual    = do_graphql_request( $query ,'CouponsQuery' );
+		$expected  = array( 'data' => array( 'coupons' => array ( 'nodes' => array() ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Should return data because user has required capabilities
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$actual    = do_graphql_request( $query, 'CouponsQuery' );
+		$expected  = array( 'data' => array( 'coupons' => array( 'nodes' => array_reverse( array_values( $coupons ) ) ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Should return data because user has required capabilities
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$variables = array( 'code' => '10off' );
+		$actual    = do_graphql_request( $query, 'CouponsQuery', $variables );
+		$expected  = array( 'data' => array( 'coupons' => array( 'nodes' => array( $coupons['10off'] ) ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
 }
