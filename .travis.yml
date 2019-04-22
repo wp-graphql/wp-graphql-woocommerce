@@ -75,8 +75,8 @@ before_script:
     fi
 
 script:
- # Execute unit tests with coverage if specified, otherwise without coverage
- - |
+  # Execute unit tests with coverage if specified, otherwise without coverage
+  - |
     if [ ! -z "$WP_VERSION" ]; then
       if [ "$COVERAGE" == "1" ]; then
         vendor/bin/codecept run wpunit --coverage --coverage-xml
@@ -84,8 +84,14 @@ script:
         vendor/bin/codecept run wpunit
       fi
     fi
- - |
+  - |
     if [ "$PHPCS" == "1" ]; then
       vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php src/*.php --standard=WordPress
+    fi
+after_success:
+  # Runs Coveralls.io client
+  - |
+    if [ "$COVERAGE" == "1" ]; then
+      travis_retry php vendor/bin/php-coveralls -v
     fi
   
