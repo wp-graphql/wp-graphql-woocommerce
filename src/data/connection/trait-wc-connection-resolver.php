@@ -15,20 +15,6 @@ namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
  */
 trait WC_Connection_Resolver {
 	/**
-	 * Get order statuses without prefixes.
-	 *
-	 * @access protected
-	 * @return array
-	 */
-	protected function get_order_statuses() {
-		$order_statuses = array();
-		foreach ( array_keys( wc_get_order_statuses() ) as $status ) {
-			$order_statuses[] = str_replace( 'wc-', '', $status );
-		}
-		return $order_statuses;
-	}
-
-	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for

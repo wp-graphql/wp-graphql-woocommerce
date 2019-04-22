@@ -35,7 +35,7 @@ class Shipping_Method_Connection_Resolver {
 			function( $item ) {
 				return $item->id;
 			},
-			$methods
+			array_values( $methods )
 		);
 
 		$connection = Relay::connectionFromArray( $methods, $args );

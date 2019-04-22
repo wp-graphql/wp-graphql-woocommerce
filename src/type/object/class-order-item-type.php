@@ -139,7 +139,7 @@ class Order_Item_Type {
 						'description' => __( 'Tax line\'s shipping tax total', 'wp-graphql-woocommerce' ),
 					),
 					'isCompound'       => array(
-						'type'        => 'Int',
+						'type'        => 'Boolean',
 						'description' => __( 'Is this a compound tax rate?', 'wp-graphql-woocommerce' ),
 					),
 					'taxRate'          => array(
@@ -199,6 +199,28 @@ class Order_Item_Type {
 					'taxStatus'     => array(
 						'type'        => 'TaxStatusEnum',
 						'description' => __( 'Line item\'s taxes', 'wp-graphql-woocommerce' ),
+					),
+					'product'       => array(
+						'type'        => 'Product',
+						'description' => 'Line item\'s product object',
+						'resolve'     => function( $item, array $args, AppContext $context ) {
+							// @codingStandardsIgnoreStart
+							return ! empty( $item->productId )
+								? Factory::resolve_crud_object( $item->productId, $context )
+								: null;
+							// @codingStandardsIgnoreEnd
+						},
+					),
+					'variation'       => array(
+						'type'        => 'ProductVariation',
+						'description' => 'Line item\'s product variation object',
+						'resolve'     => function( $item, array $args, AppContext $context ) {
+							// @codingStandardsIgnoreStart
+							return ! empty( $item->variationId )
+								? Factory::resolve_crud_object( $item->productId, $context )
+								: null;
+							// @codingStandardsIgnoreEnd
+						},
 					),
 				),
 			),

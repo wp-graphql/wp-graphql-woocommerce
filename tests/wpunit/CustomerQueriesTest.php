@@ -1,12 +1,20 @@
 <?php
 
+use GraphQLRelay\Relay;
 class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
+	private $shop_manager;
+	private $customer;
+	private $helper;
+	private $new_customer;
 
 	public function setUp() {
 		// before
 		parent::setUp();
 
-		// your set up methods here
+		$this->shop_manager  = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer      = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->helper        = $this->getModule('\Helper\Wpunit')->customer();
+		$this->new_customer  = $this->helper->create();
 	}
 
 	public function tearDown() {
@@ -15,39 +23,14 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
-	private function create_customer( $username = 'testcustomer', $password = 'hunter2', $email = 'test@woo.local' ) {
-		$customer = new WC_Customer();
-		$customer->set_billing_country( 'US' );
-		$customer->set_first_name( 'Justin' );
-		$customer->set_billing_state( 'PA' );
-		$customer->set_billing_postcode( '19123' );
-		$customer->set_billing_city( 'Philadelphia' );
-		$customer->set_billing_address( '123 South Street' );
-		$customer->set_billing_address_2( 'Apt 1' );
-		$customer->set_shipping_country( 'US' );
-		$customer->set_shipping_state( 'PA' );
-		$customer->set_shipping_postcode( '19123' );
-		$customer->set_shipping_city( 'Philadelphia' );
-		$customer->set_shipping_address( '123 South Street' );
-		$customer->set_shipping_address_2( 'Apt 1' );
-		$customer->set_username( $username );
-		$customer->set_password( $password );
-		$customer->set_email( $email );
-		$customer->save();
-		return $customer;
-	}
-
 	// tests
 	public function testCustomerQuery() {
-		$customer_1 = $this->create_customer();
-
-		$query = "
-			query {
-				customerBy(customerId: \"$customer_1->get_id() \") {
+		$query = '
+			query customerQuery( $id: ID! ) {
+				customer( id: $id ) {
 					isVatExempt
 					hasCalculatedShipping
 					calculatedShipping
-					lastOrder
 					orderCount
 					totalSpent
 					username
@@ -58,6 +41,10 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 					role
 					date
 					modified
+					lastOrder {
+						id
+						orderId
+					}
 					billing {
 						firstName
 						lastName
@@ -81,67 +68,237 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 						state
 						postcode
 						country
-						email
-						phone
 					}
 					isPayingCustomer
 				}
 			}
-		";
-
-		$actual = do_graphql_request( $query );
+		';
 
 		/**
-		 * use --debug flag to view
+		 * Assertion One
+		 * 
+		 * Query should return null value due to lack of permissions.
 		 */
-		\Codeception\Util\Debug::debug( $actual );
+		wp_set_current_user( $this->customer );
+		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
+		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_failed_query( $this->new_customer ) ) );
 
-		$expected = [
-			'data' => [
-				'customer' => [
-					'isVatExempt'           => $customer_1->get_is_vat_exempt(),
-					'hasCalculatedShipping' => $customer_1->has_calculated_shipping(),
-					'calculatedShipping'    => $customer_1->get_calculated_shipping(),
-					'lastOrder'             => $customer_1->get_last_order(),
-					'orderCount'            => $customer_1->get_order_count(),
-					'totalSpent'            => $customer_1->get_total_spent(),
-					'username'              => $customer_1->get_username(),
-					'email'                 => $customer_1->get_email(),
-					'firstName'             => $customer_1->get_first_name(),
-					'lastName'              => $customer_1->get_last_name(),
-					'displayName'           => $customer_1->get_display_name(),
-					'role'                  => $customer_1->get_role(),
-					'date'                  => $customer_1->get_date_created(),
-					'modified'              => $customer_1->get_date_modified(),
-					'billing'               => [
-						'firstName' => $customer_1->get_billing_first_name(),
-						'lastName'  => $customer_1->get_billing_last_name(),
-						'company'   => $customer_1->get_billing_company(),
-						'address1'  => $customer_1->get_billing_address_1(),
-						'address2'  => $customer_1->get_billing_address_2(),
-						'city'      => $customer_1->get_billing_city(),
-						'state'     => $customer_1->get_billing_state(),
-						'postcode'  => $customer_1->get_billing_postcode(),
-						'country'   => $customer_1->get_billing_country(),
-						'email'     => $customer_1->get_billing_email(),
-						'phone'     => $customer_1->get_billing_phone(),
-					],
-					'shipping'              => [
-						'firstName' => $customer_1->get_shipping_first_name(),
-						'lastName'  => $customer_1->get_shipping_last_name(),
-						'company'   => $customer_1->get_shipping_company(),
-						'address1'  => $customer_1->get_shipping_address_1(),
-						'address2'  => $customer_1->get_shipping_address_2(),
-						'city'      => $customer_1->get_shipping_city(),
-						'state'     => $customer_1->get_shipping_state(),
-						'postcode'  => $customer_1->get_shipping_postcode(),
-						'country'   => $customer_1->get_shipping_country(),
-					],
-					'isPayingCustomer'      => $customer_1->get_is_paying_customer(),
-				],
-			],
-		];
+		// use --debug flag to view.
+		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEqualSets( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Query should return requested data because user queried themselves.
+		 */
+		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->customer ) );
+		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->customer ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		// Clear customer cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Query should return requested data because has sufficient permissions.
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
+		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );		
+	}
+
+	public function testCustomerByQuery() {
+		$query = '
+			query customerByQuery( $id: Int! ) {
+				customerBy( customerId: $id ) {
+					isVatExempt
+					hasCalculatedShipping
+					calculatedShipping
+					orderCount
+					totalSpent
+					username
+					email
+					firstName
+					lastName
+					displayName
+					role
+					date
+					modified
+					lastOrder {
+						id
+						orderId
+					}
+					billing {
+						firstName
+						lastName
+						company
+						address1
+						address2
+						city
+						state
+						postcode
+						country
+						email
+						phone
+					}
+					shipping {
+						firstName
+						lastName
+						company
+						address1
+						address2
+						city
+						state
+						postcode
+						country
+					}
+					isPayingCustomer
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 * 
+		 * Query should return requested data because user queried themselves.
+		 */
+		wp_set_current_user( $this->new_customer );
+		$variables = array( 'id' => $this->new_customer );
+		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
+		$expected  = array( 'data' => array( 'customerBy' => $this->helper->print_query( $this->new_customer ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		// Clear customer cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Query should return null value due to lack of permissions..
+		 */
+		wp_set_current_user( $this->customer );
+		$variables = array( 'id' => $this->new_customer );
+		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
+		$expected  = array( 'data' => array( 'customerBy' => $this->helper->print_failed_query( $this->new_customer ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
+
+	public function testCustomersQuery() {
+		$query = '
+			query {
+				customers {
+					nodes{
+						isVatExempt
+						hasCalculatedShipping
+						calculatedShipping
+						orderCount
+						totalSpent
+						username
+						email
+						firstName
+						lastName
+						displayName
+						role
+						date
+						modified
+						lastOrder {
+							id
+							orderId
+						}
+						billing {
+							firstName
+							lastName
+							company
+							address1
+							address2
+							city
+							state
+							postcode
+							country
+							email
+							phone
+						}
+						shipping {
+							firstName
+							lastName
+							company
+							address1
+							address2
+							city
+							state
+							postcode
+							country
+						}
+						isPayingCustomer
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 * 
+		 * Query should return requested data because user queried themselves.
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$actual    = do_graphql_request( $query );
+		$users = get_users(
+			array (
+				'count_total' => false,
+				'order'       => 'DESC',
+				'fields'      => 'ids'
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'customers' => $this->helper->print_nodes( $users ),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		// Clear customer cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Query should return null value due to lack of permissions..
+		 */
+		wp_set_current_user( $this->customer );
+		$variables = array( 'id' => $this->new_customer );
+		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
+		$expected  = array( 'data' => array( 'customers' => array( 'nodes' => array() ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
 	}
 }

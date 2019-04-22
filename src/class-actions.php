@@ -14,6 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Order_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
@@ -76,6 +77,7 @@ class Actions {
 		Catalog_Visibility::register();
 		Discount_Type::register();
 		Manage_Stock::register();
+		Order_Status::register();
 		Stock_Status::register();
 		Tax_Class::register();
 		Tax_Status::register();

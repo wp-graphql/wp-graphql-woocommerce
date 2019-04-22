@@ -183,13 +183,12 @@ class Coupon_Type {
 					} elseif ( ! empty( $args['couponId'] ) ) {
 						$coupon_id = absint( $args['couponId'] );
 					} elseif ( ! empty( $args['code'] ) ) {
-						$post = get_page_by_title( $args['code'], $output = OBJECT, 'shop_coupon' );
-						$coupon_id = $post->ID;
+						$coupon_id = \wc_get_coupon_id_by_code( $args['code'] );
 					}
 
 					$coupon = Factory::resolve_crud_object( $coupon_id, $context );
 					if ( get_post( $coupon_id )->post_type !== 'shop_coupon' ) {
-						/* translators: not coupon found error message */
+						/* translators: no coupon found error message */
 						throw new UserError( sprintf( __( 'No coupon exists with this id: %1$s', 'wp-graphql-woocommerce' ), $args['id'] ) );
 					}
 

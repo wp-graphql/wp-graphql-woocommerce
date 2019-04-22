@@ -111,10 +111,6 @@ class Refund_Type {
 				'type'        => 'Int',
 				'description' => __( 'Get the refund by its database ID', 'wp-graphql-woocommerce' ),
 			),
-			'orderNumber' => array(
-				'type'        => 'String',
-				'description' => __( 'Get the refund by its order number', 'wp-graphql-woocommerce' ),
-			),
 		);
 
 		register_graphql_field(
@@ -134,8 +130,6 @@ class Refund_Type {
 						$refund_id = absint( $id_components['id'] );
 					} elseif ( ! empty( $args['refundId'] ) ) {
 						$refund_id = absint( $args['refundId'] );
-					} elseif ( ! empty( $args['orderNumber'] ) ) {
-						$refund_id = 0;
 					}
 
 					$refund = Factory::resolve_crud_object( $refund_id, $context );
