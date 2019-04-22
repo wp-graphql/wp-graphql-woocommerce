@@ -26,7 +26,6 @@ class Cart_Type {
 	 */
 	public static function register() {
 		self::register_cart_item();
-		self::register_cart_fee();
 		self::register_cart();
 
 		register_graphql_field(
