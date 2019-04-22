@@ -73,13 +73,14 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		// Set the $query_args based on various defaults and primary input $args.
 		$post_type_obj = get_post_type_object( 'product' );
 		$query_args    = array(
-			'post_type'      => 'product',
-			'post_parent'    => 0,
-			'post_status'    => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
-			'perm'           => 'readable',
-			'no_rows_found'  => true,
-			'fields'         => 'ids',
-			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'post_type'           => 'product',
+			'post_parent'         => 0,
+			'post_status'         => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
+			'perm'                => 'readable',
+			'no_rows_found'       => true,
+			'fields'              => 'ids',
+			'posts_per_page'      => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'ignore_sticky_posts' => true,
 		);
 
 		/**
@@ -93,6 +94,14 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $input_fields ) ) {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
+
+		/**
+		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
+		 * to filter the WP_Query to support cursor pagination
+		 */
+		$cursor_offset                        = $this->get_offset();
+		$query_args['graphql_cursor_offset']  = $cursor_offset;
+		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
 		// Determine where we're at in the Graph and adjust the query context appropriately.
 		if ( true === is_object( $this->source ) ) {
@@ -151,6 +160,41 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
+		/**
+		 * Map the orderby inputArgs to the WP_Query
+		 */
+		if ( ! empty( $this->args['where']['orderby'] ) && is_array( $this->args['where']['orderby'] ) ) {
+			$query_args['orderby'] = array();
+			foreach ( $this->args['where']['orderby'] as $orderby_input ) {
+				/**
+				 * These orderby options should not include the order parameter.
+				 */
+				if ( in_array(
+					$orderby_input['field'],
+					array( 'post__in', 'post_name__in', 'post_parent__in' ),
+					true
+				) ) {
+					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
+				} elseif ( ! empty( $orderby_input['field'] ) ) {
+					$query_args['orderby'] = array(
+						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
+					);
+				}
+			}
+		}
+
+		/**
+		 * Convert meta_value_num to seperate meta_value value field which our
+		 * graphql_wp_term_query_cursor_pagination_support knowns how to handle
+		 */
+		if ( isset( $query_args['orderby'] ) && 'meta_value_num' === $query_args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'meta_value' => empty( $query_args['order'] ) ? 'DESC' : $query_args['order'], // WPCS: slow query ok.
+			);
+			unset( $query_args['order'] );
+			$query_args['meta_type'] = 'NUMERIC';
+		}
+
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
 		}
@@ -200,7 +244,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+		return ! empty( $this->query->posts ) ? $this->query->posts : array();
 	}
 
 	/**
