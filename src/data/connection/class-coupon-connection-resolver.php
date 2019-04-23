@@ -86,6 +86,26 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		);
 
 		/**
+		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
+		 * to filter the WP_Query to support cursor pagination
+		 */
+		$cursor_offset                        = $this->get_offset();
+		$query_args['graphql_cursor_offset']  = $cursor_offset;
+		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+
+		/**
+		 * If the starting offset is not 0 sticky posts will not be queried as the automatic checks in wp-query don't
+		 * trigger due to the page parameter not being set in the query_vars, fixes #732
+		 */
+		if ( 0 !== $cursor_offset ) {
+			$query_args['ignore_sticky_posts'] = true;
+		}
+		/**
+		 * Pass the graphql $args to the WP_Query
+		 */
+		$query_args['graphql_args'] = $this->args;
+
+		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
 		$input_fields = [];
@@ -96,14 +116,6 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $input_fields ) ) {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
-
-		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
-		 * to filter the WP_Query to support cursor pagination
-		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
 		/**
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
