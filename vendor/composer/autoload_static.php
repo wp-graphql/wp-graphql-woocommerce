@@ -66,6 +66,7 @@ class ComposerStaticInit703f21dde3c5889862ac86d8135b48b6
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/src/type/enum/class-discount-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => __DIR__ . '/../..' . '/src/type/enum/class-manage-stock.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Order_Status' => __DIR__ . '/../..' . '/src/type/enum/class-order-status.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Product_Types' => __DIR__ . '/../..' . '/src/type/enum/class-product-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Stock_Status' => __DIR__ . '/../..' . '/src/type/enum/class-stock-status.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Class' => __DIR__ . '/../..' . '/src/type/enum/class-tax-class.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Rate_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-tax-rate-connection-orderby-enum.php',

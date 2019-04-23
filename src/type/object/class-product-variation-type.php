@@ -112,6 +112,10 @@ class Product_Variation_Type {
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s sale price', 'wp-graphql-woocommerce' ),
 					),
+					'type'              => array(
+						'type'        => 'ProductTypesEnum',
+						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
+					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {
 					if ( 'product_variation' === $type ) {
