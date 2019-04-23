@@ -58,7 +58,7 @@ trait WC_Connection_Resolver {
 		 * Map the orderby inputArgs to the WP_Query
 		 */
 		if ( ! empty( $where_args['orderby'] ) && is_array( $where_args['orderby'] ) ) {
-			$args['orderby'] = [];
+			$args['orderby'] = array();
 			foreach ( $where_args['orderby'] as $orderby_input ) {
 				/**
 				 * These orderby options should not include the order parameter.
@@ -69,24 +69,19 @@ trait WC_Connection_Resolver {
 					true
 				) ) {
 					$args['orderby'] = esc_sql( $orderby_input['field'] );
+				} elseif ( in_array(
+					$orderby_input['field'],
+					array( '_price', '_regular_price', '_sale_price' ),
+					true
+				) ) {
+					$args['orderby']  = array( 'meta_value_num' => $orderby_input['order'] );
+					$args['meta_key'] = esc_sql( $orderby_input['field'] ); // WPCS: slow query ok.
 				} elseif ( ! empty( $orderby_input['field'] ) ) {
 					$args['orderby'] = array(
 						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
 					);
 				}
 			}
-		}
-
-		/**
-		 * Convert meta_value_num to seperate meta_value value field which our
-		 * graphql_wp_term_query_cursor_pagination_support knowns how to handle
-		 */
-		if ( isset( $args['orderby'] ) && 'meta_value_num' === $args['orderby'] ) {
-			$args['orderby'] = array(
-				'meta_value' => empty( $args['order'] ) ? 'DESC' : $args['order'], // WPCS: slow query ok.
-			);
-			unset( $args['order'] );
-			$args['meta_type'] = 'NUMERIC';
 		}
 
 		if ( ! empty( $where_args['dateQuery'] ) ) {

@@ -139,41 +139,6 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		/**
-		 * Map the orderby inputArgs to the WP_Query
-		 */
-		if ( ! empty( $this->args['where']['orderby'] ) && is_array( $this->args['where']['orderby'] ) ) {
-			$query_args['orderby'] = array();
-			foreach ( $this->args['where']['orderby'] as $orderby_input ) {
-				/**
-				 * These orderby options should not include the order parameter.
-				 */
-				if ( in_array(
-					$orderby_input['field'],
-					array( 'post__in', 'post_name__in', 'post_parent__in' ),
-					true
-				) ) {
-					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
-				} elseif ( ! empty( $orderby_input['field'] ) ) {
-					$query_args['orderby'] = array(
-						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
-					);
-				}
-			}
-		}
-
-		/**
-		 * Convert meta_value_num to seperate meta_value value field which our
-		 * graphql_wp_term_query_cursor_pagination_support knowns how to handle
-		 */
-		if ( isset( $query_args['orderby'] ) && 'meta_value_num' === $query_args['orderby'] ) {
-			$query_args['orderby'] = array(
-				'meta_value' => empty( $query_args['order'] ) ? 'DESC' : $query_args['order'], // WPCS: slow query ok.
-			);
-			unset( $query_args['order'] );
-			$query_args['meta_type'] = 'NUMERIC';
-		}
-
-		/**
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
 		 */
 		if ( empty( $query_args['orderby'] ) ) {
