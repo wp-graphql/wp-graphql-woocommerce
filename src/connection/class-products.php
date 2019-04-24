@@ -224,8 +224,8 @@ class Products extends WC_Connection {
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products with a specific attribute term ID (required an assigned attribute).', 'wp-graphql-woocommerce' ),
 			),
-			'inStock'           => array(
-				'type'        => 'Boolean',
+			'stockStatus'       => array(
+				'type'        => 'StockStatusEnum',
 				'description' => __( 'Limit result set to products in stock or out of stock.', 'wp-graphql-woocommerce' ),
 			),
 			'onSale'            => array(
@@ -233,11 +233,11 @@ class Products extends WC_Connection {
 				'description' => __( 'Limit result set to products on sale.', 'wp-graphql-woocommerce' ),
 			),
 			'minPrice'          => array(
-				'type'        => 'String',
+				'type'        => 'Float',
 				'description' => __( 'Limit result set to products based on a minimum price.', 'wp-graphql-woocommerce' ),
 			),
 			'maxPrice'          => array(
-				'type'        => 'String',
+				'type'        => 'Float',
 				'description' => __( 'Limit result set to products based on a maximum price.', 'wp-graphql-woocommerce' ),
 			),
 			'search'            => array(

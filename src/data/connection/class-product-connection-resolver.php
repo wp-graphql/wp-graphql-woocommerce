@@ -47,10 +47,47 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * Set the post type for the resolver
 		 */
 		$this->post_type = 'product';
+
+		add_filter(
+			'woocommerce_product_data_store_cpt_get_products_query',
+			array( &$this, 'product_query_filter' ),
+			10,
+			2
+		);
 		/**
 		 * Call the parent construct to setup class data
 		 */
 		parent::__construct( $source, $args, $context, $info );
+	}
+
+	/**
+	 * Applies price meta_query args to product query args
+	 *
+	 * @param array $wp_query_args - Formatted query args.
+	 * @param array $query_vars    - Raw query args.
+	 *
+	 * @return array
+	 */
+	public function product_query_filter( $wp_query_args, $query_vars ) {
+		if ( empty( $query_vars['meta_query'] ) ) {
+			return $wp_query_args;
+		}
+
+		$price_meta_query = array_filter(
+			$query_vars['meta_query'],
+			function ( $query ) {
+				return ! empty( $query['key'] ) ? '_price' === $query['key'] : false;
+			}
+		);
+
+		if ( ! empty( $price_meta_query ) ) {
+			$wp_query_args['meta_query'] = array_merge( // WPCS: slow query ok.
+				$wp_query_args['meta_query'],
+				$price_meta_query
+			);
+		}
+
+		return $wp_query_args;
 	}
 
 	/**
@@ -75,7 +112,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args    = array(
 			'post_type'           => 'product',
 			'post_parent'         => 0,
-			'post_status'         => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
+			'status'              => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
 			'perm'                => 'readable',
 			'no_rows_found'       => true,
 			'return'              => 'ids',
@@ -235,7 +272,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( ! empty( $where_args['status'] ) ) {
-			$args['post_status'] = $where_args['status'];
+			$args['status'] = $where_args['status'];
 		}
 
 		if ( ! empty( $where_args['search'] ) ) {
@@ -373,15 +410,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			);
 		}
 
-		if ( ! empty( $where_args['inStock'] ) && is_bool( $where_args['inStock'] ) ) {
-			$meta_query[] = array(
-				'key'   => '_stock_status',
-				'value' => true === $where_args['inStock'] ? 'instock' : 'outofstock',
-			);
-		}
-
 		if ( ! empty( $meta_query ) ) {
 			$args['meta_query'] = $meta_query; // WPCS: slow query ok.
+		}
+
+		if ( isset( $where_args['stockStatus'] ) ) {
+			$args['stock_status'] = $where_args['stockStatus'];
 		}
 
 		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
