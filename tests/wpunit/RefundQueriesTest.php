@@ -140,7 +140,6 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 				refunds( where: {
 					statuses: $statuses,
 					orderIn: $orderIn,
-					orderby: { field: SLUG, order: ASC }
 				} ) {
 					nodes {
 						id
@@ -194,15 +193,15 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected  = array(
 			'data' => array(
 				'refunds' => array(
-					'nodes' => $this->refund_helper->print_nodes( 
-						array_filter(
-							$refunds,
-							function( $id ) {
+					'nodes' => $this->refund_helper->print_nodes(
+						$refunds,
+						array(
+							'filter' => function( $id ) {
 								$refund = new WC_Order_Refund( $id );
 								return 'completed' === $refund->get_status();
-							}
+							},
 						)
-					)
+					),
 				),
 			),
 		);
@@ -222,15 +221,15 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected  = array(
 			'data' => array(
 				'refunds' => array(
-					'nodes' => $this->refund_helper->print_nodes( 
-						array_filter(
-							$refunds,
-							function( $id ) {
+					'nodes' => $this->refund_helper->print_nodes(
+						$refunds,
+						array(
+							'filter' => function( $id ) {
 								$refund = new WC_Order_Refund( $id );
 								return $refund->get_parent_id() === $this->order;
-							}
+							},
 						)
-					)
+					),
 				),
 			),
 		);

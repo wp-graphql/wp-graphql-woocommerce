@@ -127,6 +127,9 @@ class Product_Variation extends Crud_CPT {
 				'regularPrice'       => function() {
 					return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
 				},
+				'type'               => function() {
+					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
+				},
 				/**
 				 * Connection resolvers fields
 				 *

@@ -145,15 +145,15 @@ class Products extends WC_Connection {
 				'description' => __( 'Limit result set to products assigned a specific status.', 'wp-graphql-woocommerce' ),
 			),
 			'type'              => array(
-				'type'        => 'String',
+				'type'        => 'ProductTypesEnum',
 				'description' => __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' ),
 			),
 			'typeIn'            => array(
-				'type'        => array( 'list_of' => 'String' ),
+				'type'        => array( 'list_of' => 'ProductTypesEnum' ),
 				'description' => __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			),
 			'typeNotIn'         => array(
-				'type'        => array( 'list_of' => 'String' ),
+				'type'        => array( 'list_of' => 'ProductTypesEnum' ),
 				'description' => __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			),
 			'sku'               => array(
@@ -224,8 +224,8 @@ class Products extends WC_Connection {
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products with a specific attribute term ID (required an assigned attribute).', 'wp-graphql-woocommerce' ),
 			),
-			'inStock'           => array(
-				'type'        => 'Boolean',
+			'stockStatus'       => array(
+				'type'        => 'StockStatusEnum',
 				'description' => __( 'Limit result set to products in stock or out of stock.', 'wp-graphql-woocommerce' ),
 			),
 			'onSale'            => array(
@@ -233,11 +233,11 @@ class Products extends WC_Connection {
 				'description' => __( 'Limit result set to products on sale.', 'wp-graphql-woocommerce' ),
 			),
 			'minPrice'          => array(
-				'type'        => 'String',
+				'type'        => 'Float',
 				'description' => __( 'Limit result set to products based on a minimum price.', 'wp-graphql-woocommerce' ),
 			),
 			'maxPrice'          => array(
-				'type'        => 'String',
+				'type'        => 'Float',
 				'description' => __( 'Limit result set to products based on a maximum price.', 'wp-graphql-woocommerce' ),
 			),
 			'search'            => array(
@@ -248,7 +248,7 @@ class Products extends WC_Connection {
 
 		if ( wc_tax_enabled() ) {
 			$args['taxClass'] = array(
-				'type'        => 'String',
+				'type'        => 'TaxClassEnum',
 				'description' => __( 'Limit result set to products with a specific tax class.', 'wp-graphql-woocommerce' ),
 			);
 		}
