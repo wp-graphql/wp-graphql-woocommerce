@@ -196,6 +196,18 @@ class Filters {
 	 * @return mixed
 	 */
 	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return WC_Terms_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
+		$wc_taxonomies = [
+			'product_cat',
+			'product_tag',
+		];
+		
+		/**
+		 * Check to see if the current connection term object is a WooCommerce one.
+		 */
+		if ( in_array( $query_args['taxonomy'], $wc_taxonomies, true ) ) {
+			return WC_Terms_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
+		}
+		
+		return $query_args;
 	}
 }
