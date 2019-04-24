@@ -27,7 +27,7 @@ class Cart_Item_Connection_Resolver {
 	 * @return array
 	 */
 	public function filter( $items, $args = array() ) {
-		return $items;
+		return array_values( $items );
 	}
 
 	/**

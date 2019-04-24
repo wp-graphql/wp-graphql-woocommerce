@@ -20,6 +20,11 @@ class Wpunit extends \Codeception\Module {
         require_once __DIR__ . '/crud-helpers/order-item.php';
         require_once __DIR__ . '/crud-helpers/order.php';
         require_once __DIR__ . '/crud-helpers/refund.php';
+        require_once __DIR__ . '/crud-helpers/cart.php';
+    }
+
+    public function cart() {
+        return \CartHelper::instance();
     }
 
     public function coupon() {

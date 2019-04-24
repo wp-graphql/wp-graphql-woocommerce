@@ -239,28 +239,28 @@ class Cart_Type {
 						'type'        => 'Float',
 						'description' => __( 'Item\'s subtotal', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_subtotal'] ) ? absint( $source['line_subtotal'] ) : null;
+							return isset( $source['line_subtotal'] ) ? floatval( $source['line_subtotal'] ) : null;
 						},
 					),
 					'subtotalTax' => array(
 						'type'        => 'Float',
 						'description' => __( 'Item\'s subtotal tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_subtotal_tax'] ) ? absint( $source['line_subtotal_tax'] ) : null;
+							return isset( $source['line_subtotal_tax'] ) ? floatval( $source['line_subtotal_tax'] ) : null;
 						},
 					),
 					'total'       => array(
 						'type'        => 'Float',
 						'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_total'] ) ? absint( $source['line_total'] ) : null;
+							return isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
 						},
 					),
 					'tax'         => array(
 						'type'        => 'Float',
 						'description' => __( 'Item\'s tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_tax'] ) ? absint( $source['line_tax'] ) : null;
+							return isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
 						},
 					),
 				),
