@@ -47,10 +47,47 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * Set the post type for the resolver
 		 */
 		$this->post_type = 'product';
+
+		add_filter(
+			'woocommerce_product_data_store_cpt_get_products_query',
+			array( &$this, 'product_query_filter' ),
+			10,
+			2
+		);
 		/**
 		 * Call the parent construct to setup class data
 		 */
 		parent::__construct( $source, $args, $context, $info );
+	}
+
+	/**
+	 * Applies price meta_query args to product query args
+	 *
+	 * @param array $wp_query_args - Formatted query args.
+	 * @param array $query_vars    - Raw query args.
+	 *
+	 * @return array
+	 */
+	public function product_query_filter( $wp_query_args, $query_vars ) {
+		if ( empty( $query_vars['meta_query'] ) ) {
+			return $wp_query_args;
+		}
+
+		$price_meta_query = array_filter(
+			$query_vars['meta_query'],
+			function ( $query ) {
+				return ! empty( $query['key'] ) ? '_price' === $query['key'] : false;
+			}
+		);
+
+		if ( ! empty( $price_meta_query ) ) {
+			$wp_query_args['meta_query'] = array_merge( // WPCS: slow query ok.
+				$wp_query_args['meta_query'],
+				$price_meta_query
+			);
+		}
+
+		return $wp_query_args;
 	}
 
 	/**
@@ -73,13 +110,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		// Set the $query_args based on various defaults and primary input $args.
 		$post_type_obj = get_post_type_object( 'product' );
 		$query_args    = array(
-			'post_type'      => 'product',
-			'post_parent'    => 0,
-			'post_status'    => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
-			'perm'           => 'readable',
-			'no_rows_found'  => true,
-			'fields'         => 'ids',
-			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'post_parent'         => 0,
+			'status'              => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
+			'perm'                => 'readable',
+			'no_rows_found'       => true,
+			'return'              => 'ids',
+			'limit'               => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'ignore_sticky_posts' => true,
 		);
 
 		/**
@@ -93,6 +130,14 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $input_fields ) ) {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
+
+		/**
+		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
+		 * to filter the WP_Query to support cursor pagination
+		 */
+		$cursor_offset                        = $this->get_offset();
+		$query_args['graphql_cursor_offset']  = $cursor_offset;
+		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
 		// Determine where we're at in the Graph and adjust the query context appropriately.
 		if ( true === is_object( $this->source ) ) {
@@ -134,7 +179,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['post__in']    = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->variation_ids, $query_args['post__in'] )
 							: $this->source->variation_ids;
-						$query_args['post_type']   = 'product_variation';
+						$query_args['type']        = 'variation';
 					}
 					break;
 
@@ -150,6 +195,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					break;
 			}
 		}
+
+		/**
+		 * Pass the graphql $args to the WP_Query
+		 */
+		$query_args['graphql_args'] = $this->args;
 
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
@@ -188,10 +238,10 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return \WC_Product_Query
 	 */
 	public function get_query() {
-		return new \WP_Query( $this->get_query_args() );
+		return new \WC_Product_Query( $this->get_query_args() );
 	}
 
 	/**
@@ -200,7 +250,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+		return ! empty( $this->query->get_products() ) ? $this->query->get_products() : array();
 	}
 
 	/**
@@ -216,12 +266,25 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
+		$key_mapping = array(
+			'post_parent'         => 'parent',
+			'post_parent__not_in' => 'parent_exclude',
+			'post__not_in'        => 'exclude',
+		);
+
+		foreach ( $key_mapping as $key => $field ) {
+			if ( isset( $args[ $key ] ) ) {
+				$args[ $field ] = $args[ $key ];
+				unset( $args[ $key ] );
+			}
+		}
+
 		if ( ! empty( $where_args['slug'] ) ) {
 			$args['name'] = $where_args['slug'];
 		}
 
 		if ( ! empty( $where_args['status'] ) ) {
-			$args['post_status'] = $where_args['status'];
+			$args['status'] = $where_args['status'];
 		}
 
 		if ( ! empty( $where_args['search'] ) ) {
@@ -322,37 +385,23 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			);
 		}
 
-		if ( ! empty( $where_args['featured'] ) && is_bool( $where_args['featured'] ) ) {
-			$tax_query[] = array(
-				'taxonomy' => 'product_visibility',
-				'field'    => 'name',
-				'terms'    => 'featured',
-				'operator' => true === $where_args['featured'] ? 'IN' : 'NOT IN',
-			);
-		}
-
 		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
+		}
+
+		if ( isset( $where_args['featured'] ) ) {
+			$args['featured'] = $where_args['featured'];
 		}
 
 		if ( ! empty( $tax_query ) ) {
 			$args['tax_query'] = $tax_query; // WPCS: slow query ok.
 		}
 
-		$meta_query = array();
 		if ( ! empty( $where_args['sku'] ) ) {
-			$skus = explode( ',', $where_args['sku'] );
-			if ( 1 < count( $skus ) ) {
-				$skus[] = $where_args['sku'];
-			}
-
-			$meta_query[] = array(
-				'key'     => '_sku',
-				'value'   => $skus,
-				'compare' => 'IN',
-			);
+			$args['sku'] = $where_args['sku'];
 		}
 
+		$meta_query = array();
 		if ( ! empty( $where_args['minPrice'] ) || ! empty( $where_args['maxPrice'] ) ) {
 			$current_min_price = isset( $where_args['minPrice'] )
 				? floatval( $where_args['minPrice'] )
@@ -373,15 +422,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			);
 		}
 
-		if ( ! empty( $where_args['inStock'] ) && is_bool( $where_args['inStock'] ) ) {
-			$meta_query[] = array(
-				'key'   => '_stock_status',
-				'value' => true === $where_args['inStock'] ? 'instock' : 'outofstock',
-			);
-		}
-
 		if ( ! empty( $meta_query ) ) {
 			$args['meta_query'] = $meta_query; // WPCS: slow query ok.
+		}
+
+		if ( isset( $where_args['stockStatus'] ) ) {
+			$args['stock_status'] = $where_args['stockStatus'];
 		}
 
 		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
