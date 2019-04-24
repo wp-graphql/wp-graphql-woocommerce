@@ -78,8 +78,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			'post_status'         => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
 			'perm'                => 'readable',
 			'no_rows_found'       => true,
-			'fields'              => 'ids',
-			'posts_per_page'      => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'return'              => 'ids',
+			'limit'               => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 			'ignore_sticky_posts' => true,
 		);
 
@@ -160,6 +160,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
+		/**
+		 * Pass the graphql $args to the WP_Query
+		 */
+		$query_args['graphql_args'] = $this->args;
+
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
 		}
@@ -200,7 +205,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WP_Query
 	 */
 	public function get_query() {
-		return new \WP_Query( $this->get_query_args() );
+		return new \WC_Product_Query( $this->get_query_args() );
 	}
 
 	/**
@@ -209,7 +214,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : array();
+		return ! empty( $this->query->get_products() ) ? $this->query->get_products() : array();
 	}
 
 	/**
@@ -331,37 +336,23 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			);
 		}
 
-		if ( ! empty( $where_args['featured'] ) && is_bool( $where_args['featured'] ) ) {
-			$tax_query[] = array(
-				'taxonomy' => 'product_visibility',
-				'field'    => 'name',
-				'terms'    => 'featured',
-				'operator' => true === $where_args['featured'] ? 'IN' : 'NOT IN',
-			);
-		}
-
 		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
+		}
+
+		if ( isset( $where_args['featured'] ) ) {
+			$args['featured'] = $where_args['featured'];
 		}
 
 		if ( ! empty( $tax_query ) ) {
 			$args['tax_query'] = $tax_query; // WPCS: slow query ok.
 		}
 
-		$meta_query = array();
 		if ( ! empty( $where_args['sku'] ) ) {
-			$skus = explode( ',', $where_args['sku'] );
-			if ( 1 < count( $skus ) ) {
-				$skus[] = $where_args['sku'];
-			}
-
-			$meta_query[] = array(
-				'key'     => '_sku',
-				'value'   => $skus,
-				'compare' => 'IN',
-			);
+			$args['sku'] = $where_args['sku'];
 		}
 
+		$meta_query = array();
 		if ( ! empty( $where_args['minPrice'] ) || ! empty( $where_args['maxPrice'] ) ) {
 			$current_min_price = isset( $where_args['minPrice'] )
 				? floatval( $where_args['minPrice'] )

@@ -145,15 +145,15 @@ class Products extends WC_Connection {
 				'description' => __( 'Limit result set to products assigned a specific status.', 'wp-graphql-woocommerce' ),
 			),
 			'type'              => array(
-				'type'        => 'String',
+				'type'        => 'ProductTypesEnum',
 				'description' => __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' ),
 			),
 			'typeIn'            => array(
-				'type'        => array( 'list_of' => 'String' ),
+				'type'        => array( 'list_of' => 'ProductTypesEnum' ),
 				'description' => __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			),
 			'typeNotIn'         => array(
-				'type'        => array( 'list_of' => 'String' ),
+				'type'        => array( 'list_of' => 'ProductTypesEnum' ),
 				'description' => __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			),
 			'sku'               => array(

@@ -54,7 +54,7 @@ class Product_Type {
 						'description' => __( 'Date product last updated', 'wp-graphql-woocommerce' ),
 					),
 					'type'              => array(
-						'type'        => 'String',
+						'type'        => 'ProductTypesEnum',
 						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
 					),
 					'name'              => array(
