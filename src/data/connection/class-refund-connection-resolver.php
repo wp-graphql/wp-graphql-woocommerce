@@ -77,10 +77,10 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Set the $query_args based on various defaults and primary input $args.
 		$query_args = array(
-			'post_type'      => 'shop_order_refund',
-			'no_rows_found'  => true,
-			'fields'         => 'ids',
-			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'post_type'     => 'shop_order_refund',
+			'no_rows_found' => true,
+			'return'        => 'ids',
+			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		);
 
 		/**
@@ -162,10 +162,10 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return \WC_Order_Query
 	 */
 	public function get_query() {
-		return new \WP_Query( $this->get_query_args() );
+		return new \WC_Order_Query( $this->get_query_args() );
 	}
 
 	/**
@@ -174,7 +174,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
 	}
 
 	/**
@@ -190,20 +190,24 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
-		if ( ! empty( $where_args['statuses'] ) ) {
-			$args['post_status'] = array();
-			$statuses            = wc_graphql_get_order_statuses();
+		$key_mapping = array(
+			'post_parent'         => 'parent',
+			'post_parent__not_in' => 'parent_exclude',
+			'post__not_in'        => 'exclude',
+		);
 
-			foreach ( $where_args['statuses'] as $status ) {
-				if ( in_array( $status, $statuses, true ) ) {
-					$args['post_status'][] = 'wc-' . $status;
-				} elseif ( 'any' === $status ) {
-					// Set status to "any" and short-circuit out.
-					$args['post_status'] = 'any';
-					break;
-				} else {
-					$args['post_status'][] = $status;
-				}
+		foreach ( $key_mapping as $key => $field ) {
+			if ( isset( $args[ $key ] ) ) {
+				$args[ $field ] = $args[ $key ];
+				unset( $args[ $key ] );
+			}
+		}
+
+		if ( ! empty( $where_args['statuses'] ) ) {
+			if ( 1 === count( $where_args ) ) {
+				$args['status'] = $where_args['statuses'][0];
+			} else {
+				$args['status'] = $where_args['statuses'];
 			}
 		}
 

@@ -238,7 +238,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return \WC_Product_Query
 	 */
 	public function get_query() {
 		return new \WC_Product_Query( $this->get_query_args() );

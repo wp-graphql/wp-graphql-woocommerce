@@ -184,6 +184,19 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		global $wpdb;
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
+		$key_mapping = array(
+			'post_parent'         => 'parent',
+			'post_parent__not_in' => 'parent_exclude',
+			'post__not_in'        => 'exclude',
+		);
+
+		foreach ( $key_mapping as $key => $field ) {
+			if ( isset( $args[ $key ] ) ) {
+				$args[ $field ] = $args[ $key ];
+				unset( $args[ $key ] );
+			}
+		}
+
 		if ( ! empty( $where_args['statuses'] ) ) {
 			if ( 1 === count( $where_args ) ) {
 				$args['status'] = $where_args['statuses'][0];
