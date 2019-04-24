@@ -89,9 +89,20 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $variations = $this->products['variations'];
 
         $query      = '
-            query variationsQuery( $id: ID!, $minPrice: Float ) {
+            query variationsQuery(
+                $id: ID!,
+                $minPrice: Float,
+                $parent: Int,
+                $parentIn: [Int],
+                $parentNotIn: [Int]
+            ) {
                 product( id: $id ) {
-                    variations( where: { minPrice: $minPrice } ) {
+                    variations( where: {
+                        minPrice: $minPrice,
+                        parent: $parent,
+                        parentIn: $parentIn,
+                        parentNotIn: $parentNotIn
+                    } ) {
                         nodes {
                             id
                         }

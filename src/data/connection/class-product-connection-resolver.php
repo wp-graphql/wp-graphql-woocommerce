@@ -266,6 +266,19 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
+		$key_mapping = array(
+			'post_parent'         => 'parent',
+			'post_parent__not_in' => 'parent_exclude',
+			'post__not_in'        => 'exclude',
+		);
+
+		foreach ( $key_mapping as $key => $field ) {
+			if ( isset( $args[ $key ] ) ) {
+				$args[ $field ] = $args[ $key ];
+				unset( $args[ $key ] );
+			}
+		}
+
 		if ( ! empty( $where_args['slug'] ) ) {
 			$args['name'] = $where_args['slug'];
 		}

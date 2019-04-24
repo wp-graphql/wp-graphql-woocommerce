@@ -248,7 +248,7 @@ class Products extends WC_Connection {
 
 		if ( wc_tax_enabled() ) {
 			$args['taxClass'] = array(
-				'type'        => 'String',
+				'type'        => 'TaxClassEnum',
 				'description' => __( 'Limit result set to products with a specific tax class.', 'wp-graphql-woocommerce' ),
 			);
 		}
