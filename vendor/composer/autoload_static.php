@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitf825e7947f393fd90ed0de92268053e9
+class ComposerStaticInite15abc8aa89c0275acecd46533d3b8ff
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -66,7 +66,7 @@ class ComposerStaticInitf825e7947f393fd90ed0de92268053e9
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/src/type/enum/class-discount-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => __DIR__ . '/../..' . '/src/type/enum/class-manage-stock.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Order_Status' => __DIR__ . '/../..' . '/src/type/enum/class-order-status.php',
-        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Product_Types' => __DIR__ . '/../..' . '/src/type/enum/class-product-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Product_Types' => __DIR__ . '/../..' . '/src/type/enum/class-product-types.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Stock_Status' => __DIR__ . '/../..' . '/src/type/enum/class-stock-status.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Class' => __DIR__ . '/../..' . '/src/type/enum/class-tax-class.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Rate_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-tax-rate-connection-orderby-enum.php',
@@ -93,9 +93,9 @@ class ComposerStaticInitf825e7947f393fd90ed0de92268053e9
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf825e7947f393fd90ed0de92268053e9::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf825e7947f393fd90ed0de92268053e9::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf825e7947f393fd90ed0de92268053e9::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInite15abc8aa89c0275acecd46533d3b8ff::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInite15abc8aa89c0275acecd46533d3b8ff::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInite15abc8aa89c0275acecd46533d3b8ff::$classMap;
 
         }, null, ClassLoader::class);
     }

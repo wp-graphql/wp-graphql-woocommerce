@@ -3,7 +3,7 @@
  * WPEnum Type - ProductTypesEnum
  *
  * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
- * @since   0.0.2
+ * @since   0.0.3
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;

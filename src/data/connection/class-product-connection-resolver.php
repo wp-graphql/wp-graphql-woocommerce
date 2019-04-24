@@ -110,7 +110,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		// Set the $query_args based on various defaults and primary input $args.
 		$post_type_obj = get_post_type_object( 'product' );
 		$query_args    = array(
-			'post_type'           => 'product',
 			'post_parent'         => 0,
 			'status'              => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
 			'perm'                => 'readable',
@@ -180,7 +179,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['post__in']    = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->variation_ids, $query_args['post__in'] )
 							: $this->source->variation_ids;
-						$query_args['post_type']   = 'product_variation';
+						$query_args['type']        = 'variation';
 					}
 					break;
 
