@@ -53,7 +53,7 @@ class CartHelper extends WCG_Helper {
 				return array( 'key' => $key ); 
 			},
 			'sorter' => function( $key_a, $key_b ) {
-				return 0;
+				return strcmp( $key_a, $key_b );
 			},
 			'filter' => function( $key ) {
 				return true;

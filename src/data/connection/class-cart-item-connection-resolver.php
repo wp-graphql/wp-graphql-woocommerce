@@ -27,7 +27,16 @@ class Cart_Item_Connection_Resolver {
 	 * @return array
 	 */
 	public function filter( $items, $args = array() ) {
-		return array_values( $items );
+		$filter_items = array_values( $items );
+
+		usort(
+			$filter_items,
+			function( $item_a, $item_b ) {
+				return strcmp( $item_a['key'], $item_b['key'] );
+			}
+		);
+
+		return $filter_items;
 	}
 
 	/**
