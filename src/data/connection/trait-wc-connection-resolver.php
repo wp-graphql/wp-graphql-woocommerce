@@ -31,7 +31,6 @@ trait WC_Connection_Resolver {
 		}
 
 		if ( ! empty( $where_args['exclude'] ) ) {
-
 			$args['post__not_in'] = $where_args['exclude'];
 		}
 

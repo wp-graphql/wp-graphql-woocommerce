@@ -66,15 +66,19 @@ class Orders extends WC_Connection {
 		return array_merge(
 			self::get_shared_connection_args(),
 			array(
-				'statuses'   => array(
-					'type'        => array( 'list_of' => 'String' ),
+				'statuses'    => array(
+					'type'        => array( 'list_of' => 'OrderStatusEnum' ),
 					'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
 				),
-				'customerId' => array(
+				'customerId'  => array(
 					'type'        => 'Int',
 					'description' => __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' ),
 				),
-				'productId'  => array(
+				'customersIn' => array(
+					'type'        => array( 'list_of' => 'Int' ),
+					'description' => __( 'Limit result set to orders assigned a specific group of customers.', 'wp-graphql-woocommerce' ),
+				),
+				'productId'   => array(
 					'type'        => 'Int',
 					'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
 				),

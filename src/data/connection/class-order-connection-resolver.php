@@ -114,10 +114,6 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
 
-		if ( empty( $query_args['post_status'] ) ) {
-			$query_args['post_status'] = 'any';
-		}
-
 		if ( true === is_object( $this->source ) ) {
 			switch ( true ) {
 				case is_a( $this->source, Customer::class ):
@@ -189,29 +185,19 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
 		if ( ! empty( $where_args['statuses'] ) ) {
-			$args['post_status'] = array();
-			foreach ( $where_args['statuses'] as $status ) {
-				if ( in_array( $status, wc_graphql_get_order_statuses(), true ) ) {
-					$args['post_status'][] = 'wc-' . $status;
-				} elseif ( 'any' === $status ) {
-					// Set status to "any" and short-circuit out.
-					$args['post_status'] = 'any';
-					break;
-				} else {
-					$args['post_status'][] = $status;
-				}
+			if ( 1 === count( $where_args ) ) {
+				$args['status'] = $where_args['statuses'][0];
+			} else {
+				$args['status'] = $where_args['statuses'];
 			}
 		}
 
 		if ( ! empty( $where_args['customerId'] ) ) {
-			if ( ! empty( $args['meta_query'] ) ) {
-				$args['meta_query'] = array(); // WPCS: slow query ok.
-			}
-			$args['meta_query'][] = array(
-				'key'   => '_customer_user',
-				'value' => $where_args['customerId'],
-				'type'  => 'NUMERIC',
-			);
+			$args['customer_id'] = $where_args['customerId'];
+		}
+
+		if ( ! empty( $where_args['customersIn'] ) ) {
+			$args['customer'] = $where_args['customersIn'];
 		}
 
 		// Search by product.
