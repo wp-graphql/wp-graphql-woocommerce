@@ -45,7 +45,7 @@ class CartHelper extends WCG_Helper {
 		);
 	}
 
-	public function print_nodes( $processors = array() ) {
+	public function print_nodes( $processors = array(), $_ = null ) {
 		$cart = WC()->cart;
 		$ids = array_keys( $cart->get_cart_contents() );
 		$default_processors = array(

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7777e47b06b4261ee8a527d4e3fc4246
+class ComposerStaticInitb7b4315cc10e65121ee877408401e387
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -65,6 +65,7 @@ class ComposerStaticInit7777e47b06b4261ee8a527d4e3fc4246
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/src/model/class-tax-rate.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/src/type/enum/class-backorders.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/src/type/enum/class-catalog-visibility.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-customer-connection-orderby-enum.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/src/type/enum/class-discount-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => __DIR__ . '/../..' . '/src/type/enum/class-manage-stock.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Order_Status' => __DIR__ . '/../..' . '/src/type/enum/class-order-status.php',
@@ -96,9 +97,9 @@ class ComposerStaticInit7777e47b06b4261ee8a527d4e3fc4246
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7777e47b06b4261ee8a527d4e3fc4246::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7777e47b06b4261ee8a527d4e3fc4246::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7777e47b06b4261ee8a527d4e3fc4246::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb7b4315cc10e65121ee877408401e387::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb7b4315cc10e65121ee877408401e387::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb7b4315cc10e65121ee877408401e387::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -7,7 +7,8 @@ class ProductVariationHelper extends WCG_Helper {
 	private $index;
 
 	protected function __construct() {
-		$this->index = 1;
+		$this->index     = 1;
+		$this->node_type = 'product_variation';
 
 		parent::__construct();
 	}
@@ -199,32 +200,5 @@ class ProductVariationHelper extends WCG_Helper {
 			'regularPrice'      => ! empty( $data->get_regular_price() ) ? $data->get_regular_price() : null,
 			'salePrice'         => ! empty( $data->get_sale_price() ) ? $data->get_sale_price() : null,
 		);
-	}
-
-	public function print_nodes( $ids, $processors = array() ) {
-		$default_processors = array(
-			'mapper' => function( $variation_id ) {
-				return array( 'id' => Relay::toGlobalId( 'product_variation', $variation_id ) );
-			},
-			'sorter' => function( $id_a, $id_b ) {
-				if ( $id_a == $id_b ) {
-					return 0;
-				}
-
-				return ( $id_a > $id_b ) ? -1 : 1;
-			},
-			'filter' => function( $id ) {
-				return true;
-			}
-		);
-
-		$processors = array_merge( $default_processors, $processors );
-
-		$results = array_filter( $ids, $processors['filter'] );
-		if( ! empty( $results ) ) {
-			usort( $results, $processors['sorter'] );
-		}
-
-		return array_values( array_map( $processors['mapper'], $results ) );
 	}
 }

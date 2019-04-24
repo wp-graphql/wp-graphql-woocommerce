@@ -50,6 +50,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => $baseDir . '/src/model/class-tax-rate.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/src/type/enum/class-backorders.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/src/type/enum/class-catalog-visibility.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => $baseDir . '/src/type/enum/class-customer-connection-orderby-enum.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => $baseDir . '/src/type/enum/class-discount-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => $baseDir . '/src/type/enum/class-manage-stock.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Order_Status' => $baseDir . '/src/type/enum/class-order-status.php',

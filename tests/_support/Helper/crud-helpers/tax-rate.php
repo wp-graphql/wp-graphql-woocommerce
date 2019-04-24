@@ -106,4 +106,8 @@ class TaxRateHelper extends WCG_Helper {
 			)
 			: null;
 	}
+
+	public function print_nodes( $ids = 0, $processors = array() ) {
+		return array();
+	}
 }

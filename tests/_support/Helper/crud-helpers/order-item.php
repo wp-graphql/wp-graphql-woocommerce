@@ -3,6 +3,10 @@
 use GraphQLRelay\Relay;
 
 class OrderItemHelper extends WCG_Helper {
+	public function __construct() {
+		parent::__construct();
+	}
+
 	public function add_coupon( $order, $coupon_id = 0, $save = true ) {
 		// Retrieve order.
 		if ( ! is_a( $order, WC_Order::class ) ) {
@@ -192,5 +196,9 @@ class OrderItemHelper extends WCG_Helper {
 
 	public function print_query( $id ) {
 		return null;
+	}
+
+	public function print_nodes( $ids = 0, $processors = array() ) {
+		return array();
 	}
 }

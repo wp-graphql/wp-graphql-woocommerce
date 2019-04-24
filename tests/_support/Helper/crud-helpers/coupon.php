@@ -3,6 +3,12 @@
 use GraphQLRelay\Relay;
 
 class CouponHelper extends WCG_Helper {
+	public function __construct() {
+		$this->node_type = 'shop_coupon';
+
+		parent::__construct();
+	}
+
 	public function create( $args = array(), $save = true ) {
 		// Create new coupon crud object instance.
 		$coupon = new WC_Coupon();
@@ -110,34 +116,6 @@ class CouponHelper extends WCG_Helper {
 	public function print_failed_query( $id ) {
 		$data = new WC_Coupon( $id );
 
-		return array(
-		);
-	}
-
-	public function print_nodes( $ids, $processors = array() ) {
-		$default_processors = array(
-			'mapper' => function( $coupon_id ) {
-				return array( 'id' => Relay::toGlobalId( 'shop_coupon', $coupon_id ) ); 
-			},
-			'sorter' => function( $id_a, $id_b ) {
-				if ( $id_a == $id_b ) {
-					return 0;
-				}
-
-				return ( $id_a > $id_b ) ? -1 : 1;
-			},
-			'filter' => function( $id ) {
-				return true;
-			}
-		);
-
-		$processors = array_merge( $default_processors, $processors );
-
-		$results = array_filter( $ids, $processors['filter'] );
-		if( ! empty( $results ) ) {
-			usort( $results, $processors['sorter'] );
-		}
-
-		return array_values( array_map( $processors['mapper'], $results ) );
+		return array();
 	}
 }

@@ -1,6 +1,12 @@
 <?php
 
 class CustomerHelper extends WCG_Helper {
+	public function __construct() {
+		$this->node_type = 'customer';
+
+		parent::__construct();
+	}
+
 	public function create( $args = array() ) {
 		$customer = new WC_Customer();
 
@@ -55,17 +61,10 @@ class CustomerHelper extends WCG_Helper {
 			)
 		);
 
-		return $customer->save();
+		return absint( $customer->save() );
 	}
 
-	/**
-	 * Formats customer response data
-	 * 
-	 * @param int $id - customer ID
-	 * 
-	 * @return array
-	 */
-		public function print_query( $id ) {
+	public function print_query( $id ) {
 		$data = new WC_Customer( $id );
 
 		return array(
@@ -156,15 +155,8 @@ class CustomerHelper extends WCG_Helper {
 			),
 			'isPayingCustomer'      => $data->get_is_paying_customer(),
 		);
-		}
+	}
 
-		/**
-	 * Returns failed customer response data
-	 * 
-	 * @param int $id - customer ID
-	 * 
-	 * @return array
-	 */
 	public function print_failed_query( $id ) {
 		$data = new WC_Customer( $id );
 
@@ -187,14 +179,5 @@ class CustomerHelper extends WCG_Helper {
 			"shipping"              => null,                                                                     
 			"isPayingCustomer"      => null,
 		);
-	}
-
-	public function print_nodes( $ids ) {
-		$nodes = [];
-		foreach( $ids as $id ) {
-			$nodes[] = $this->print_query( $id );
-		}
-
-		return array( 'nodes' => $nodes );
 	}
 }

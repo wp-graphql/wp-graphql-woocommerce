@@ -12,6 +12,7 @@ namespace WPGraphQL\Extensions\WooCommerce;
 
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Customer_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Order_Status;
@@ -21,6 +22,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
@@ -76,6 +78,7 @@ class Actions {
 		// Enumerations.
 		Backorders::register();
 		Catalog_Visibility::register();
+		Customer_Connection_Orderby_Enum::register();
 		Discount_Type::register();
 		Manage_Stock::register();
 		Order_Status::register();

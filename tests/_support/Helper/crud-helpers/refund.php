@@ -3,6 +3,12 @@
 use GraphQLRelay\Relay;
 
 class RefundHelper extends WCG_Helper {
+	public function __construct() {
+		$this->node_type = 'shop_order_refund';
+
+		parent::__construct();
+	}
+
 	public function create( $order, $args = array() ) {
 		$order = new WC_Order( $order );
 		if ( empty( $order ) ) {
@@ -57,32 +63,5 @@ class RefundHelper extends WCG_Helper {
 			'amount'     => null,
 			'refundedBy' => null,
 		);
-	}
-
-	public function print_nodes( $ids, $processors = array() ) {
-		$default_processors = array(
-			'mapper' => function( $refund_id ) {
-				return array( 'id' => Relay::toGlobalId( 'shop_order_refund', $refund_id ) );
-			},
-			'sorter' => function( $id_a, $id_b ) {
-				if ( $id_a == $id_b ) {
-					return 0;
-				}
-
-				return ( $id_a > $id_b ) ? -1 : 1;
-			},
-			'filter' => function( $id ) {
-				return true;
-			}
-		);
-
-		$processors = array_merge( $default_processors, $processors );
-
-		$results = array_filter( $ids, $processors['filter'] );
-		if( ! empty( $results ) ) {
-			usort( $results, $processors['sorter'] );
-		}
-
-		return array_values( array_map( $processors['mapper'], $results ) );
 	}
 }

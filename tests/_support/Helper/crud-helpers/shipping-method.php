@@ -3,6 +3,10 @@
 use GraphQLRelay\Relay;
 
 class ShippingMethodHelper extends WCG_Helper {
+	public function __construct() {
+		parent::__construct();
+	}
+
 	public function create_legacy_flat_rate_instance( $args = array() ) {
 		$flat_rate_settings = array_merge(
 			array(
@@ -55,5 +59,9 @@ class ShippingMethodHelper extends WCG_Helper {
 			'title'       => $method->method_title,
 			'description' => $method->method_description,
 		);
+	}
+
+	public function print_nodes( $ids = 0, $processors = array() ) {
+		return array();
 	}
 }
