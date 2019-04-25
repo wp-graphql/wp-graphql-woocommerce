@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Actions' => $baseDir . '/src/class-actions.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Cart_Items' => $baseDir . '/src/connection/class-cart-items.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Coupons' => $baseDir . '/src/connection/class-coupons.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Customers' => $baseDir . '/src/connection/class-customers.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Order_Items' => $baseDir . '/src/connection/class-order-items.php',
@@ -19,6 +20,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Tax_Rates' => $baseDir . '/src/connection/class-tax-rates.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\WC_Connection' => $baseDir . '/src/connection/class-wc-connection.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Connection\\WC_Terms' => $baseDir . '/src/connection/class-wc-terms.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Cart_Item_Connection_Resolver' => $baseDir . '/src/data/connection/class-cart-item-connection-resolver.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Coupon_Connection_Resolver' => $baseDir . '/src/data/connection/class-coupon-connection-resolver.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Customer_Connection_Resolver' => $baseDir . '/src/data/connection/class-customer-connection-resolver.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Order_Connection_Resolver' => $baseDir . '/src/data/connection/class-order-connection-resolver.php',
@@ -48,6 +50,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => $baseDir . '/src/model/class-tax-rate.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/src/type/enum/class-backorders.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/src/type/enum/class-catalog-visibility.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => $baseDir . '/src/type/enum/class-customer-connection-orderby-enum.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => $baseDir . '/src/type/enum/class-discount-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => $baseDir . '/src/type/enum/class-manage-stock.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Order_Status' => $baseDir . '/src/type/enum/class-order-status.php',
@@ -59,6 +62,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\WC_Connection_Orderby_Enum' => $baseDir . '/src/type/enum/class-wc-connection-orderby-enum.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\Tax_Rate_Connection_Orderby_Input' => $baseDir . '/src/type/input/class-tax-rate-connection-orderby-input.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\WC_Connection_Orderby_Input' => $baseDir . '/src/type/input/class-wc-connection-orderby-input.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Cart_Type' => $baseDir . '/src/type/object/class-cart-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Coupon_Type' => $baseDir . '/src/type/object/class-coupon-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address_Type' => $baseDir . '/src/type/object/class-customer-address-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Type' => $baseDir . '/src/type/object/class-customer-type.php',

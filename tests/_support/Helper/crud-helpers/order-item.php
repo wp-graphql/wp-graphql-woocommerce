@@ -3,194 +3,202 @@
 use GraphQLRelay\Relay;
 
 class OrderItemHelper extends WCG_Helper {
-    public function add_coupon( $order, $coupon_id = 0, $save = true ) {
-        // Retrieve order.
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( $order );
-        }
+	public function __construct() {
+		parent::__construct();
+	}
 
-        // Create new coupon if $coupon_id not passed.
-        if ( empty( $coupon_id ) ) {
-            // Get order product IDs
-            $product_ids = array();
-            foreach( $order->get_items() as $item ) {
-                if ( ! in_array( $item->get_product_id(), $product_ids ) ) {
-                    $product_ids[] = $item->get_product_id();
-                }
-            }
+	public function add_coupon( $order, $coupon_id = 0, $save = true ) {
+		// Retrieve order.
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( $order );
+		}
 
-            $coupon = new WC_Coupon(
-                CouponHelper::instance()->create( array( 'product_ids' => $product_ids ) )
-            );
-        } else {
-            $coupon = new WC_Coupon( $coupon_id ); 
-        }
+		// Create new coupon if $coupon_id not passed.
+		if ( empty( $coupon_id ) ) {
+			// Get order product IDs
+			$product_ids = array();
+			foreach( $order->get_items() as $item ) {
+				if ( ! in_array( $item->get_product_id(), $product_ids ) ) {
+					$product_ids[] = $item->get_product_id();
+				}
+			}
 
-        // Apply coupon to order.
-        $order->apply_coupon( $coupon->get_code() );
+			$coupon = new WC_Coupon(
+				CouponHelper::instance()->create( array( 'product_ids' => $product_ids ) )
+			);
+		} else {
+			$coupon = new WC_Coupon( $coupon_id ); 
+		}
 
-        // If not saving return order.
-        if ( ! $save ) {
-            return $order;
-        }
+		// Apply coupon to order.
+		$order->apply_coupon( $coupon->get_code() );
 
-        // Save order.
-        $order->save();
-    }
+		// If not saving return order.
+		if ( ! $save ) {
+			return $order;
+		}
 
-    public function add_fee( $order, $args = array(), $save = true ) {
-        // Retrieve order.
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( $order );
-        }
+		// Save order.
+		$order->save();
+	}
 
-        // Get thre customer country code.
-        $country_code = $order->get_shipping_country();
+	public function add_fee( $order, $args = array(), $save = true ) {
+		// Retrieve order.
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( $order );
+		}
 
-        // Set the array for tax calculations.
-        $calculate_tax_for = array(
-            'country' => $country_code, 
-            'state' => '', 
-            'postcode' => '', 
-            'city' => ''
-        );
+		// Get thre customer country code.
+		$country_code = $order->get_shipping_country();
 
-        $imported_total_fee = 8.4342;
+		// Set the array for tax calculations.
+		$calculate_tax_for = array(
+			'country' => $country_code, 
+			'state' => '', 
+			'postcode' => '', 
+			'city' => ''
+		);
 
-        // Create and add fee to order.
-        $item = new WC_Order_Item_Fee();
-        $item->set_name( "Fee" ); // Generic fee name
-        $item->set_amount( $imported_total_fee ); // Fee amount
-        $item->set_tax_class( '' ); // default for ''
-        $item->set_tax_status( 'taxable' ); // or 'none'
-        $item->set_total( $imported_total_fee ); // Fee amount
+		$imported_total_fee = 8.4342;
 
-        if ( ! empty( $args ) ) {
-            $item->set_props( $args );
-        }
-        // Calculating Fee taxes
-        $item->calculate_taxes( $calculate_tax_for );
+		// Create and add fee to order.
+		$item = new WC_Order_Item_Fee();
+		$item->set_name( "Fee" ); // Generic fee name
+		$item->set_amount( $imported_total_fee ); // Fee amount
+		$item->set_tax_class( '' ); // default for ''
+		$item->set_tax_status( 'taxable' ); // or 'none'
+		$item->set_total( $imported_total_fee ); // Fee amount
 
-        $order->add_item( $item );
-        $order->calculate_totals();
+		if ( ! empty( $args ) ) {
+			$item->set_props( $args );
+		}
+		// Calculating Fee taxes
+		$item->calculate_taxes( $calculate_tax_for );
 
-        // If not saving return order.
-        if ( ! $save ) {
-            return $order;
-        }
+		$order->add_item( $item );
+		$order->calculate_totals();
 
-        // Save order.
-        $order->save();
-    }
+		// If not saving return order.
+		if ( ! $save ) {
+			return $order;
+		}
 
-    public function add_shipping( $order, $args = array(), $save = true ) {
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( $order );
-        }
+		// Save order.
+		$order->save();
+	}
 
-        ShippingMethodHelper::create_legacy_flat_rate_instance();
-        $item = new WC_Order_Item_Shipping();
-        $item->set_props(
-            array_merge(
-                array(
-                    'method_title' => 'Flat Rate',
-                    'method_id'    => 'flat_rate',
-                    'total'        => '',
-                    'total_tax'    => '',
-                    'taxes'        => array(
-                        'total' => array(),
-                    ),
-                ),
-                $args
-            )
-        );
+	public function add_shipping( $order, $args = array(), $save = true ) {
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( $order );
+		}
 
-        $item_id = $item->save();
+		ShippingMethodHelper::create_legacy_flat_rate_instance();
+		$item = new WC_Order_Item_Shipping();
+		$item->set_props(
+			array_merge(
+				array(
+					'method_title' => 'Flat Rate',
+					'method_id'    => 'flat_rate',
+					'total'        => '',
+					'total_tax'    => '',
+					'taxes'        => array(
+						'total' => array(),
+					),
+				),
+				$args
+			)
+		);
 
-        $order->add_item( $item );
+		$item_id = $item->save();
 
-        if ( ! $save ) {
-            return $order;
-        }
+		$order->add_item( $item );
 
-        $order->save();
+		if ( ! $save ) {
+			return $order;
+		}
 
-        return $item_id;
-    }
+		$order->save();
 
-    public function add_tax( $order, $args = array(), $save = true ) {
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( $order );
-        }
+		return $item_id;
+	}
 
-        if ( empty( $args['rate_id'] ) ) {
-            $rate_id = TaxRateHelper::instance()->create();
-        } else {
-            $rate_id = $args['rate_id'];
-        }
+	public function add_tax( $order, $args = array(), $save = true ) {
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( $order );
+		}
 
-        $item = new WC_Order_Item_Tax();
-        $item->set_props(
-            array_merge(
-                array(
-                    'rate_id'            => $rate_id,
-                    'tax_total'          => 100.66,
-                    'shipping_tax_total' => 150.45,
-                    'rate_code'          => WC_Tax::get_rate_code( $rate_id ),
-                    'label'              => WC_Tax::get_rate_label( $rate_id ),
-                    'compound'           => WC_Tax::is_compound( $rate_id ),
-                ),
-                $args
-            )
-        );
-        $item->save();
+		if ( empty( $args['rate_id'] ) ) {
+			$rate_id = TaxRateHelper::instance()->create();
+		} else {
+			$rate_id = $args['rate_id'];
+		}
 
-        $order->add_item( $item );
+		$item = new WC_Order_Item_Tax();
+		$item->set_props(
+			array_merge(
+				array(
+					'rate_id'            => $rate_id,
+					'tax_total'          => 100.66,
+					'shipping_tax_total' => 150.45,
+					'rate_code'          => WC_Tax::get_rate_code( $rate_id ),
+					'label'              => WC_Tax::get_rate_label( $rate_id ),
+					'compound'           => WC_Tax::is_compound( $rate_id ),
+				),
+				$args
+			)
+		);
+		$item->save();
 
-        if ( ! $save ) {
-            return $order;
-        }
+		$order->add_item( $item );
 
-        $order->save();
-    }
+		if ( ! $save ) {
+			return $order;
+		}
 
-    public function add_line_item( $order, $args = array(), $save = true ) {
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( $order );
-        }
+		$order->save();
+	}
 
-        if ( empty( $args['product'] ) ) {
-            $product = wc_get_product( ProductHelper::instance()->create_simple() );
-        } else {
-            $product = wc_get_product( $args['product'] );
-        }
+	public function add_line_item( $order, $args = array(), $save = true ) {
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( $order );
+		}
 
-        if ( empty( $args['qty'] ) ) {
-            $qty = rand( 1, 6 );
-        } else {
-            $qty = $args['qty'];
-        }
+		if ( empty( $args['product'] ) ) {
+			$product = wc_get_product( ProductHelper::instance()->create_simple() );
+		} else {
+			$product = wc_get_product( $args['product'] );
+		}
 
-        $item = new WC_Order_Item_Product();
-        $item->set_props(
-            array(
-                'product'  => $product,
-                'quantity' => $qty,
-                'subtotal' => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
-                'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
-            )
-        );
+		if ( empty( $args['qty'] ) ) {
+			$qty = rand( 1, 6 );
+		} else {
+			$qty = $args['qty'];
+		}
 
-        $order->add_item( $item );
+		$item = new WC_Order_Item_Product();
+		$item->set_props(
+			array(
+				'product'  => $product,
+				'quantity' => $qty,
+				'subtotal' => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
+				'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
+			)
+		);
 
-        if ( ! $save ) {
-            return $order;
-        }
+		$order->add_item( $item );
 
-        $order->save();
-    }
+		if ( ! $save ) {
+			return $order;
+		}
 
-    public function print_query( $id ) {
-        return null;
-    }
+		$order->save();
+	}
+
+	public function print_query( $id ) {
+		return null;
+	}
+
+	public function print_nodes( $ids = 0, $processors = array() ) {
+		return array();
+	}
 }

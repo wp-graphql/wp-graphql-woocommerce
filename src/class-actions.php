@@ -12,6 +12,7 @@ namespace WPGraphQL\Extensions\WooCommerce;
 
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Customer_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Order_Status;
@@ -21,6 +22,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
@@ -36,6 +38,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Shipping_Method_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Cart_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
@@ -48,6 +51,7 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
 use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
 use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
 use WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods;
+use WPGraphQL\Extensions\WooCommerce\Connection\Cart_Items;
 
 /**
  * Class Actions
@@ -74,6 +78,7 @@ class Actions {
 		// Enumerations.
 		Backorders::register();
 		Catalog_Visibility::register();
+		Customer_Connection_Orderby_Enum::register();
 		Discount_Type::register();
 		Manage_Stock::register();
 		Order_Status::register();
@@ -102,6 +107,7 @@ class Actions {
 		Customer_Address_Type::register();
 		Tax_Rate_Type::register();
 		Shipping_Method_Type::register();
+		Cart_Type::register();
 
 		// Connections.
 		Posts::register_connections();
@@ -115,5 +121,6 @@ class Actions {
 		Customers::register_connections();
 		Tax_Rates::register_connections();
 		Shipping_Methods::register_connections();
+		Cart_Items::register_connections();
 	}
 }

@@ -4,62 +4,67 @@ namespace Helper;
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 class Wpunit extends \Codeception\Module {
-    /**
-     * HOOK:
-     * triggered after module is created and configuration is loaded
-     */
-    public function _initialize()
-    {
-        require_once __DIR__ . '/crud-helpers/wcg-helper.php';
-        require_once __DIR__ . '/crud-helpers/customer.php';
-        require_once __DIR__ . '/crud-helpers/coupon.php';
-        require_once __DIR__ . '/crud-helpers/product.php';
-        require_once __DIR__ . '/crud-helpers/product-variation.php';
-        require_once __DIR__ . '/crud-helpers/shipping-method.php';
-        require_once __DIR__ . '/crud-helpers/tax-rate.php';
-        require_once __DIR__ . '/crud-helpers/order-item.php';
-        require_once __DIR__ . '/crud-helpers/order.php';
-        require_once __DIR__ . '/crud-helpers/refund.php';
-    }
+	/**
+	 * HOOK:
+	 * triggered after module is created and configuration is loaded
+	 */
+	public function _initialize()
+	{
+		require_once __DIR__ . '/crud-helpers/wcg-helper.php';
+		require_once __DIR__ . '/crud-helpers/customer.php';
+		require_once __DIR__ . '/crud-helpers/coupon.php';
+		require_once __DIR__ . '/crud-helpers/product.php';
+		require_once __DIR__ . '/crud-helpers/product-variation.php';
+		require_once __DIR__ . '/crud-helpers/shipping-method.php';
+		require_once __DIR__ . '/crud-helpers/tax-rate.php';
+		require_once __DIR__ . '/crud-helpers/order-item.php';
+		require_once __DIR__ . '/crud-helpers/order.php';
+		require_once __DIR__ . '/crud-helpers/refund.php';
+		require_once __DIR__ . '/crud-helpers/cart.php';
+	}
 
-    public function coupon() {
-        return \CouponHelper::instance();
-    }
+	public function cart() {
+		return \CartHelper::instance();
+	}
 
-    public function customer() {
-        return \CustomerHelper::instance();
-    }
+	public function coupon() {
+		return \CouponHelper::instance();
+	}
 
-    public function order() {
-        return \OrderHelper::instance();
-    }
+	public function customer() {
+		return \CustomerHelper::instance();
+	}
 
-    public function item() {
-        return \OrderItemHelper::instance();
-    }
+	public function order() {
+		return \OrderHelper::instance();
+	}
 
-    public function product() {
-        return \ProductHelper::instance();
-    }
+	public function item() {
+		return \OrderItemHelper::instance();
+	}
 
-    public function product_variation() {
-        return \ProductVariationHelper::instance();
-    }
+	public function product() {
+		return \ProductHelper::instance();
+	}
 
-    public function refund() {
-        return \RefundHelper::instance();
-    }
+	public function product_variation() {
+		return \ProductVariationHelper::instance();
+	}
 
-    public function shipping_method() {
-        return \ShippingMethodHelper::instance();
-    }
+	public function refund() {
+		return \RefundHelper::instance();
+	}
 
-    public function tax_rate() {
-        return \TaxRateHelper::instance();
-    }
+	public function shipping_method() {
+		return \ShippingMethodHelper::instance();
+	}
 
-    public function get_nodes( $ids, $crud ) {
-        $nodes = array();
+	public function tax_rate() {
+		return \TaxRateHelper::instance();
+	}
+
+	public function get_nodes( $ids, $crud ) {
+		$nodes = array();
 		foreach( $ids as $id ) {
 			$nodes[] = $crud->get_query_data( $id );
 		}
@@ -67,7 +72,7 @@ class Wpunit extends \Codeception\Module {
 		return array( 'nodes' => $nodes );
 	}
 
-    public function clear_loader_cache( $loader_name ) {
+	public function clear_loader_cache( $loader_name ) {
 		$loader = \WPGraphQL::get_app_context()->getLoader( $loader_name );
 		$loader->clearAll();
 	}

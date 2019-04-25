@@ -137,16 +137,26 @@ class Customer_Type {
 				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'id' => array(
-						'type' => array( 'non_null' => 'ID' ),
+						'type' => 'ID',
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$id_components = Relay::fromGlobalId( $args['id'] );
-					if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
-						throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+					$customer_id = 0;
+					if ( ! empty( $args['id'] ) ) {
+						$id_components = Relay::fromGlobalId( $args['id'] );
+						if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
+							throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+						}
+
+						$customer_id = absint( $id_components['id'] );
+					} elseif ( isset( $context->viewer->ID ) && ! empty( $context->viewer->ID ) ) {
+						$customer_id = $context->viewer->ID;
 					}
 
-					$customer_id = absint( $id_components['id'] );
+					if ( ! $customer_id ) {
+						throw new UserError( __( 'You must be logged in to access customer fields', 'wp-graphql-woocommerce' ) );
+					}
+
 					return Factory::resolve_customer( $customer_id, $context );
 				},
 			)

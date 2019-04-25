@@ -124,6 +124,19 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
 		}
 
+		if ( is_a( $this->source, \WC_Cart::class ) ) {
+			// @codingStandardsIgnoreLine
+			switch( $this->info->fieldName ) {
+				case 'appliedCoupons':
+					$ids = array();
+					foreach ( $this->source->get_applied_coupons() as $code ) {
+						$ids[] = \wc_get_coupon_id_by_code( $code );
+					}
+					$query_args['post__in'] = $ids;
+					break;
+			}
+		}
+
 		/**
 		 * Filter the $query args to allow folks to customize queries programmatically
 		 *

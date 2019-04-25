@@ -32,12 +32,11 @@ class WC_Terms_Connection_Resolver {
 	 *
 	 * @return mixed
 	 */
-	public static function get_query_args( $query_args = [], $source, $args, $context, $info ) {
+	public static function get_query_args( $query_args = array(), $source, $args, $context, $info ) {
 		/**
 		 * Determine where we're at in the Graph and adjust the query context appropriately.
 		 */
 		if ( true === is_object( $source ) ) {
-			unset( $query_args['object_ids'] );
 			switch ( true ) {
 				case is_a( $source, Coupon::class ):
 					// @codingStandardsIgnoreLine
@@ -50,10 +49,10 @@ class WC_Terms_Connection_Resolver {
 				case is_a( $source, Product::class ):
 					// @codingStandardsIgnoreLine
 					if ( 'categories' === $info->fieldName ) {
-						$query_args['term_taxonomy_id'] = $source->excluded_product_category_ids;
+						$query_args['term_taxonomy_id'] = $source->category_ids;
 					// @codingStandardsIgnoreLine
 					} elseif ( 'tags' === $info->fieldName ) {
-						$query_args['term_taxonomy_id'] = $source->product_category_ids;
+						$query_args['term_taxonomy_id'] = $source->tag_ids;
 					}
 					break;
 				default:
