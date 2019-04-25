@@ -1,6 +1,6 @@
 # Change Log
 
-## [v0.0.3-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-24)
+## [v0.0.3-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-25)
 [Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.2-beta...v0.0.3-beta)
 
 **Implemented enhancements:**
@@ -8,6 +8,15 @@
 - Replaces WP\_Query to WC\_Order\_Query in Order connections [\#38](https://github.com/kidunot89/wp-graphql-woocommerce/pull/38) ([kidunot89](https://github.com/kidunot89))
 - Replaces WP\_Query to WC\_Product\_Query in Product connections [\#37](https://github.com/kidunot89/wp-graphql-woocommerce/pull/37) ([kidunot89](https://github.com/kidunot89))
 - Pagination fix for CPT-backed CRUD objects connections [\#36](https://github.com/kidunot89/wp-graphql-woocommerce/pull/36) ([kidunot89](https://github.com/kidunot89))
+- Cart-type and queries and customer query [\#30](https://github.com/kidunot89/wp-graphql-woocommerce/pull/30) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed bugs:**
+
+- Pagination broken [\#29](https://github.com/kidunot89/wp-graphql-woocommerce/issues/29)
+
+**Closed issues:**
+
+- Unsetting "object\_ids" on all connections [\#39](https://github.com/kidunot89/wp-graphql-woocommerce/issues/39)
 
 **Merged pull requests:**
 
