@@ -94,6 +94,5 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 **GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/graphql-php)**
 
 ## Follow
-
 [![alt text](http://i.imgur.com/tXSoThF.png)](https://twitter.com/woographql)
 [![alt text](http://i.imgur.com/P3YfQoD.png)](https://www.facebook.com/woographql)
