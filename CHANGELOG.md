@@ -1,39 +1,27 @@
 # Change Log
 
-## [0.0.2](https://github.com/kidunot89/wp-graphql-woocommerce/tree/0.0.2) (2019-04-22)
-[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/0.0.1...0.0.2)
+## [v0.0.3-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-25)
+[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.2-beta...v0.0.3-beta)
 
 **Implemented enhancements:**
 
-- TaxClass type  [\#27](https://github.com/kidunot89/wp-graphql-woocommerce/issues/27)
-- Order-Item type queries [\#13](https://github.com/kidunot89/wp-graphql-woocommerce/issues/13)
-- Order items, TaxRate, and ShippingMethod [\#28](https://github.com/kidunot89/wp-graphql-woocommerce/pull/28) ([kidunot89](https://github.com/kidunot89))
-- Where args for Coupon, Order, and Refund connections [\#24](https://github.com/kidunot89/wp-graphql-woocommerce/pull/24) ([kidunot89](https://github.com/kidunot89))
-- Polishing Product types and connections [\#22](https://github.com/kidunot89/wp-graphql-woocommerce/pull/22) ([kidunot89](https://github.com/kidunot89))
-- Testing and CI renovation [\#21](https://github.com/kidunot89/wp-graphql-woocommerce/pull/21) ([kidunot89](https://github.com/kidunot89))
-- WC Post-type re-expansion [\#11](https://github.com/kidunot89/wp-graphql-woocommerce/pull/11) ([kidunot89](https://github.com/kidunot89))
-- Customer/Order/Refund models, data-loaders, connections, types, and queries [\#10](https://github.com/kidunot89/wp-graphql-woocommerce/pull/10) ([kidunot89](https://github.com/kidunot89))
-- WPGraphQL v0.3.0 migration [\#9](https://github.com/kidunot89/wp-graphql-woocommerce/pull/9) ([kidunot89](https://github.com/kidunot89))
+- Replaces WP\_Query to WC\_Order\_Query in Order connections [\#38](https://github.com/kidunot89/wp-graphql-woocommerce/pull/38) ([kidunot89](https://github.com/kidunot89))
+- Replaces WP\_Query to WC\_Product\_Query in Product connections [\#37](https://github.com/kidunot89/wp-graphql-woocommerce/pull/37) ([kidunot89](https://github.com/kidunot89))
+- Pagination fix for CPT-backed CRUD objects connections [\#36](https://github.com/kidunot89/wp-graphql-woocommerce/pull/36) ([kidunot89](https://github.com/kidunot89))
+- Cart-type and queries and customer query [\#30](https://github.com/kidunot89/wp-graphql-woocommerce/pull/30) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed bugs:**
 
-- no queries work [\#31](https://github.com/kidunot89/wp-graphql-woocommerce/issues/31)
-- after\_success script added [\#32](https://github.com/kidunot89/wp-graphql-woocommerce/pull/32) ([kidunot89](https://github.com/kidunot89))
-- Polishing Product types and connections [\#22](https://github.com/kidunot89/wp-graphql-woocommerce/pull/22) ([kidunot89](https://github.com/kidunot89))
+- Pagination broken [\#29](https://github.com/kidunot89/wp-graphql-woocommerce/issues/29)
 
 **Closed issues:**
 
-- v0.0.2-beta [\#33](https://github.com/kidunot89/wp-graphql-woocommerce/issues/33)
+- Unsetting "object\_ids" on all connections [\#39](https://github.com/kidunot89/wp-graphql-woocommerce/issues/39)
 
 **Merged pull requests:**
 
-- Formatting code to WordPress Coding Standards [\#8](https://github.com/kidunot89/wp-graphql-woocommerce/pull/8) ([kidunot89](https://github.com/kidunot89))
-- Feature/Product type [\#7](https://github.com/kidunot89/wp-graphql-woocommerce/pull/7) ([kidunot89](https://github.com/kidunot89))
-- Feature/coupon type [\#6](https://github.com/kidunot89/wp-graphql-woocommerce/pull/6) ([kidunot89](https://github.com/kidunot89))
-- Update issue templates [\#5](https://github.com/kidunot89/wp-graphql-woocommerce/pull/5) ([kidunot89](https://github.com/kidunot89))
-- Create LICENSE [\#3](https://github.com/kidunot89/wp-graphql-woocommerce/pull/3) ([kidunot89](https://github.com/kidunot89))
-- Create CODE\_OF\_CONDUCT.md [\#2](https://github.com/kidunot89/wp-graphql-woocommerce/pull/2) ([kidunot89](https://github.com/kidunot89))
-- travis.yml updated [\#1](https://github.com/kidunot89/wp-graphql-woocommerce/pull/1) ([kidunot89](https://github.com/kidunot89))
+- Master [\#35](https://github.com/kidunot89/wp-graphql-woocommerce/pull/35) ([kidunot89](https://github.com/kidunot89))
+- Release v0.0.2 beta [\#34](https://github.com/kidunot89/wp-graphql-woocommerce/pull/34) ([kidunot89](https://github.com/kidunot89))
 
 
 

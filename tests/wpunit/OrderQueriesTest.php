@@ -228,10 +228,11 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query ordersQuery( $statuses: [String], $customerId: Int, $productId: Int ) {
+			query ordersQuery( $statuses: [OrderStatusEnum], $customerId: Int, $customersIn: [Int] $productId: Int ) {
 				orders( where: {
 					statuses: $statuses,
 					customerId: $customerId,
+					customersIn: $customersIn,
 					productId: $productId,
 					orderby: { field: MENU_ORDER, order: ASC }
 				} ) {
@@ -266,12 +267,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = array(
 			'data' => array(
 				'orders' => array(
-					'nodes' => array_reverse( array_map(
-						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
-						},
-						$orders
-					) ),
+					'nodes' => $this->order_helper->print_nodes( $orders ),
 				),
 			),
 		);
@@ -286,26 +282,20 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * tests "statuses" where argument
 		 */
-		$variables = array( 'statuses' => 'completed' );
+		$variables = array( 'statuses' => array( 'COMPLETED' ) );
 		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
 		$expected  = array(
 			'data' => array(
 				'orders' => array(
-					'nodes' => array_reverse( array_map(
-						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
-						},
-						array_values(
-							array_filter(
-								$orders,
-								function( $id ) {
-									$order = new WC_Order( $id );
-									codecept_debug( $order->get_status() );
-									return $order->get_status() === 'completed';
-								}
-							)
+					'nodes' => $this->order_helper->print_nodes(
+						$orders,
+						array(
+							'filter' => function( $id ) {
+								$order = new WC_Order( $id );
+								return $order->get_status() === 'completed';
+							},
 						)
-					) ),
+					),
 				),
 			),
 		);
@@ -325,20 +315,15 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected  = array(
 			'data' => array(
 				'orders' => array(
-					'nodes' => array_reverse( array_map(
-						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
-						},
-						array_values(
-							array_filter(
-								$orders,
-								function( $id ) use ( $customer ) {
-									$order = new WC_Order( $id );
-									return $order->get_customer_id() === $customer;
-								}
-							)
+					'nodes' => $this->order_helper->print_nodes(
+						$orders,
+						array(
+							'filter' => function( $id ) use ( $customer ) {
+								$order = new WC_Order( $id );
+								return $order->get_customer_id() === $customer;
+							},
 						)
-					) ),
+					),
 				),
 			),
 		);
@@ -351,6 +336,34 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Five
 		 * 
+		 * tests "customerIn" where argument
+		 */
+		$variables = array( 'customersIn' => array( $customer ) );
+		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'orders' => array(
+					'nodes' => $this->order_helper->print_nodes(
+						$orders,
+						array(
+							'filter' => function( $id ) use ( $customer ) {
+								$order = new WC_Order( $id );
+								return $order->get_customer_id() === $customer;
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Six
+		 * 
 		 * tests "productId" where argument
 		 */
 		$variables = array( 'productId' => $product );
@@ -358,19 +371,14 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected  = array(
 			'data' => array(
 				'orders' => array(
-					'nodes' => array_reverse( array_map(
-						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'shop_order', $id ) );
-						},
-						array_values(
-							array_filter(
-								$orders,
-								function( $id ) use ( $product ) {
-									return $this->order_helper->has_product( $id, $product );
-								}
-							)
+					'nodes' =>  $this->order_helper->print_nodes(
+						$orders,
+						array(
+							'filter' => function( $id ) use ( $product ) {
+								return $this->order_helper->has_product( $id, $product );
+							},
 						)
-					) ),
+					),
 				),
 			),
 		);

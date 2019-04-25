@@ -89,9 +89,20 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $variations = $this->products['variations'];
 
         $query      = '
-            query variationsQuery( $id: ID!, $minPrice: String ) {
+            query variationsQuery(
+                $id: ID!,
+                $minPrice: Float,
+                $parent: Int,
+                $parentIn: [Int],
+                $parentNotIn: [Int]
+            ) {
                 product( id: $id ) {
-                    variations( where: { minPrice: $minPrice } ) {
+                    variations( where: {
+                        minPrice: $minPrice,
+                        parent: $parent,
+                        parentIn: $parentIn,
+                        parentNotIn: $parentNotIn
+                    } ) {
                         nodes {
                             id
                         }
@@ -128,18 +139,18 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test "minPrice" where argument
 		 */
-        $variables = array( 'id' => $id, 'minPrice' => '15.00' );
+        $variables = array( 'id' => $id, 'minPrice' => 15 );
 		$actual    = do_graphql_request( $query, 'variationsQuery', $variables );
 		$expected  = array(
 			'data' => array(
                 'product' => array(
                     'variations' => array(
                         'nodes' => $this->helper->print_nodes(
-                            array_filter(
-                                $variations,
-                                function( $id ) {
+                            $variations,
+                            array(
+                                'filter' => function( $id ) {
                                     $variation = new WC_Product_Variation( $id );
-                                    return 15.00 <= floatval( $variation->get_regular_price() );
+                                    return 15.00 <= floatval( $variation->get_price() );
                                 }
                             )
                         ),

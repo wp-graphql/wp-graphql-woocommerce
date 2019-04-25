@@ -3,6 +3,11 @@
 use GraphQLRelay\Relay;
 
 class OrderHelper extends WCG_Helper {
+	public function __construct() {
+		$this->node_type = 'shop_order';
+
+		parent::__construct();
+	}
 
     public function set_to_customer_billing_address( $order, $customer, $save = true ) {
         if ( ! is_a( $order, WC_Order::class ) ) {
@@ -344,5 +349,5 @@ class OrderHelper extends WCG_Helper {
 			'needsPayment'          => null,
 			'needsProcessing'       => null,
 		);
-    }
+	}
 }

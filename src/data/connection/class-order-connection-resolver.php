@@ -76,26 +76,42 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Set the $query_args based on various defaults and primary input $args.
 		$query_args = array(
-			'post_type'      => 'shop_order',
-			'no_rows_found'  => true,
-			'fields'         => 'ids',
-			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'post_type'     => 'shop_order',
+			'no_rows_found' => true,
+			'return'        => 'ids',
+			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		);
+
+		/**
+		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
+		 * to filter the WP_Query to support cursor pagination
+		 */
+		$cursor_offset                        = $this->get_offset();
+		$query_args['graphql_cursor_offset']  = $cursor_offset;
+		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+
+		/**
+		 * If the starting offset is not 0 sticky posts will not be queried as the automatic checks in wp-query don't
+		 * trigger due to the page parameter not being set in the query_vars, fixes #732
+		 */
+		if ( 0 !== $cursor_offset ) {
+			$query_args['ignore_sticky_posts'] = true;
+		}
+		/**
+		 * Pass the graphql $args to the WP_Query
+		 */
+		$query_args['graphql_args'] = $this->args;
 
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = [];
+		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
 
 		if ( ! empty( $input_fields ) ) {
 			$query_args = array_merge( $query_args, $input_fields );
-		}
-
-		if ( empty( $query_args['post_status'] ) ) {
-			$query_args['post_status'] = 'any';
 		}
 
 		if ( true === is_object( $this->source ) ) {
@@ -139,10 +155,10 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return \WC_Order_Query
 	 */
 	public function get_query() {
-		return new \WP_Query( $this->get_query_args() );
+		return new \WC_Order_Query( $this->get_query_args() );
 	}
 
 	/**
@@ -151,7 +167,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
 	}
 
 	/**
@@ -168,30 +184,33 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		global $wpdb;
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
+		$key_mapping = array(
+			'post_parent'         => 'parent',
+			'post_parent__not_in' => 'parent_exclude',
+			'post__not_in'        => 'exclude',
+		);
+
+		foreach ( $key_mapping as $key => $field ) {
+			if ( isset( $args[ $key ] ) ) {
+				$args[ $field ] = $args[ $key ];
+				unset( $args[ $key ] );
+			}
+		}
+
 		if ( ! empty( $where_args['statuses'] ) ) {
-			$args['post_status'] = array();
-			foreach ( $where_args['statuses'] as $status ) {
-				if ( in_array( $status, wc_graphql_get_order_statuses(), true ) ) {
-					$args['post_status'][] = 'wc-' . $status;
-				} elseif ( 'any' === $status ) {
-					// Set status to "any" and short-circuit out.
-					$args['post_status'] = 'any';
-					break;
-				} else {
-					$args['post_status'][] = $status;
-				}
+			if ( 1 === count( $where_args ) ) {
+				$args['status'] = $where_args['statuses'][0];
+			} else {
+				$args['status'] = $where_args['statuses'];
 			}
 		}
 
 		if ( ! empty( $where_args['customerId'] ) ) {
-			if ( ! empty( $args['meta_query'] ) ) {
-				$args['meta_query'] = array(); // WPCS: slow query ok.
-			}
-			$args['meta_query'][] = array(
-				'key'   => '_customer_user',
-				'value' => $where_args['customerId'],
-				'type'  => 'NUMERIC',
-			);
+			$args['customer_id'] = $where_args['customerId'];
+		}
+
+		if ( ! empty( $where_args['customersIn'] ) ) {
+			$args['customer'] = $where_args['customersIn'];
 		}
 
 		// Search by product.
