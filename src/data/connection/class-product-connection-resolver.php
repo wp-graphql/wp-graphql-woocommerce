@@ -188,9 +188,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['tax_query'] = array(); // WPCS: slow query ok.
 					}
 					$query_args['tax_query'][] = array( // WPCS: slow query ok.
-						'taxonomy' => $this->source->taxonomy,
-						'terms'    => array( $this->source->term_id ),
+						'taxonomy' => $this->source->taxonomyName,
 						'field'    => 'term_id',
+						'terms'    => array( $this->source->term_id ),
 					);
 					break;
 			}
@@ -231,6 +231,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
+
+		//wp_send_json( $query_args );
 
 		return $query_args;
 	}
