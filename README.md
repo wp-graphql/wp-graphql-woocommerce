@@ -8,7 +8,7 @@
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
-3. Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication)
+3. (Optional) Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
 4. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
 
 ## What does this plugin do?
