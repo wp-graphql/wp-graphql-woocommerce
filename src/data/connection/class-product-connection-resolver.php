@@ -232,8 +232,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
-		//wp_send_json( $query_args );
-
 		return $query_args;
 	}
 
