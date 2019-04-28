@@ -79,8 +79,80 @@ class Product_Variation extends Crud_CPT {
 				'variationId'        => function() {
 					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
 				},
+				'name'               => function() {
+					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
+				},
+				'date'               => function() {
+					return ! empty( $this->data ) ? $this->data->get_date_created() : null;
+				},
+				'modified'           => function() {
+					return ! empty( $this->data ) ? $this->data->get_date_modified() : null;
+				},
+				'description'        => function() {
+					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+				},
 				'sku'                => function() {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
+				},
+				'price'              => function() {
+					return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+				},
+				'salePrice'          => function() {
+					return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+				},
+				'regularPrice'       => function() {
+					return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+				},
+				'dateOnSaleFrom'     => function() {
+					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
+				},
+				'dateOnSaleTo'       => function() {
+					return ! empty( $this->data->get_date_on_sale_to() ) ? $this->data->get_date_on_sale_to() : null;
+				},
+				'onSale'             => function () {
+					return ! is_null( $this->data->is_on_sale() ) ? $this->data->is_on_sale() : null;
+				},
+				'status'             => function() {
+					return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
+				},
+				'purchasable'        => function() {
+					return ! empty( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
+				},
+				'virtual'            => function() {
+					return ! is_null( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
+				},
+				'downloadable'       => function() {
+					return ! is_null( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
+				},
+				'downloads'          => function() {
+					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : null;
+				},
+				'downloadLimit'      => function() {
+					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
+				},
+				'downloadExpiry'     => function() {
+					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
+				},
+				'taxStatus'          => function() {
+					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
+				},
+				'taxClass'           => function() {
+					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
+				},
+				'manageStock'        => function() {
+					return ! empty( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
+				},
+				'stockQuantity'      => function() {
+					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
+				},
+				'stockStatus'        => function() {
+					return ! empty( $this->data->get_stock_status() ) ? $this->data->get_stock_status() : null;
+				},
+				'backorders'         => function() {
+					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
+				},
+				'backordersAllowed'  => function() {
+					return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
 				},
 				'weight'             => function() {
 					return ! empty( $this->data->get_weight() ) ? $this->data->get_weight() : null;
@@ -94,17 +166,8 @@ class Product_Variation extends Crud_CPT {
 				'height'             => function() {
 					return ! empty( $this->data->get_height() ) ? $this->data->get_height() : null;
 				},
-				'taxClass'           => function() {
-					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
-				},
-				'manageStock'        => function() {
-					return ! empty( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
-				},
-				'stockQuantity'      => function() {
-					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
-				},
-				'backorders'         => function() {
-					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
+				'menuOrder'          => function() {
+					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
 				},
 				'purchaseNote'       => function() {
 					return ! empty( $this->data->get_purchase_note() ) ? $this->data->get_purchase_note() : null;
@@ -114,18 +177,6 @@ class Product_Variation extends Crud_CPT {
 				},
 				'hasAttributes'      => function() {
 					return ! empty( $this->data->has_attributes() ) ? $this->data->has_attributes() : null;
-				},
-				'isPurchasable'      => function() {
-					return ! empty( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
-				},
-				'price'              => function() {
-					return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
-				},
-				'salePrice'          => function() {
-					return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
-				},
-				'regularPrice'       => function() {
-					return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
 				},
 				'type'               => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
