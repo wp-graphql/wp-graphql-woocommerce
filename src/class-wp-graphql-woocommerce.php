@@ -129,6 +129,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 
 			// Required non-autoloaded classes.
 			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'access-functions.php';
+			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'class-inflect.php';
 		}
 
 		/**

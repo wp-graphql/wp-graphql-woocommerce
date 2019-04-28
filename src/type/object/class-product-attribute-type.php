@@ -43,17 +43,8 @@ class Product_Attribute_Type {
 						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'Attribute options', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							if ( empty( $attribute ) ) {
-								return null;
-							}
-							if ( ! $attribute->is_taxonomy() || ! taxonomy_exists( $attribute->get_name() ) ) {
-								return null;
-							}
-							$options = array();
-							foreach ( $attribute->get_options() as $option ) {
-								$options[] = get_term_by( 'id', $option, $attribute->get_name() )->name;
-							}
-							return $options;
+							$slugs = $attribute->get_slugs();
+							return ! empty( $slugs ) ? $slugs : null;
 						},
 					),
 					'position'    => array(
