@@ -14,6 +14,7 @@ coverage:
       include:
         - wp-graphql-woocommerce.php
         - access-functions.php
+        - class-inflect.php
         - src/*.php
 extensions:
     enabled:
