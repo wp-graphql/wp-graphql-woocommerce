@@ -1,11 +1,11 @@
 <?php
 /**
- * Connection type - ProductAttributes
+ * Connection type - VariationAttributes
  *
- * Registers connections to ProductAttribute
+ * Registers connections to VariationAttribute
  *
  * @package WPGraphQL\Extensions\WooCommerce\Connection
- * @since 0.0.1
+ * @since 0.0.4
  */
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
@@ -15,13 +15,22 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class Product_Attributes
  */
-class Product_Attributes {
+class Variation_Attributes {
 	/**
-	 * Registers the various connections from other Types to ProductAttribute
+	 * Registers the various connections from other Types to VariationAttribute
 	 */
 	public static function register_connections() {
-		// From Product.
+		// From ProductVariation.
 		register_graphql_connection( self::get_connection_config() );
+		// From Product.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'fromFieldName' => 'defaultAttributes',
+				)
+			)
+		);
 	}
 
 	/**
@@ -35,12 +44,12 @@ class Product_Attributes {
 	 */
 	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
-			'fromType'       => 'Product',
-			'toType'         => 'ProductAttribute',
+			'fromType'       => 'ProductVariation',
+			'toType'         => 'VariationAttribute',
 			'fromFieldName'  => 'attributes',
 			'connectionArgs' => array(),
 			'resolve'        => function ( $root, $args, $context, $info ) {
-				return Factory::resolve_product_attribute_connection( $root, $args, $context, $info );
+				return Factory::resolve_variation_attribute_connection( $root, $args, $context, $info );
 			},
 		);
 

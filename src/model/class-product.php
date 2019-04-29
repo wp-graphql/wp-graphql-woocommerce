@@ -389,7 +389,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_attributes() ) ? array_values( $this->data->get_attributes() ) : array( '0' );
 				},
 				'default_attributes' => function() {
-					return ! empty( $this->data->get_default_attributes() ) ? array_values( $this->data->get_default_attributes() ) : array( '0' );
+					return ! empty( $this->data->get_default_attributes() ) ? $this->data->get_default_attributes() : array( '0' );
 				},
 				'gallery_image_ids'  => function() {
 					return ! empty( $this->data->get_gallery_image_ids() ) ? $this->data->get_gallery_image_ids() : array( '0' );

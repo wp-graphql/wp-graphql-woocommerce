@@ -2,7 +2,7 @@
 /**
  * WPObject Type - Product_Variation_Type
  *
- * Registers Product_Variation WPObject type
+ * Registers ProductVariation WPObject type
  *
  * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
  * @since   0.0.1

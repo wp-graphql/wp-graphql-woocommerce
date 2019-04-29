@@ -39,6 +39,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Shipping_Method_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Cart_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Variation_Attribute_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
@@ -47,6 +48,7 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Orders;
 use WPGraphQL\Extensions\WooCommerce\Connection\Order_Items;
 use WPGraphQL\Extensions\WooCommerce\Connection\Refunds;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Attributes;
+use WPGraphQL\Extensions\WooCommerce\Connection\Variation_Attributes;
 use WPGraphQL\Extensions\WooCommerce\Connection\Product_Gallery;
 use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
 use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
@@ -108,6 +110,7 @@ class Actions {
 		Tax_Rate_Type::register();
 		Shipping_Method_Type::register();
 		Cart_Type::register();
+		Variation_Attribute_Type::register();
 
 		// Connections.
 		Posts::register_connections();
@@ -118,6 +121,7 @@ class Actions {
 		Order_Items::register_connections();
 		Refunds::register_connections();
 		Product_Attributes::register_connections();
+		Variation_Attributes::register_connections();
 		Customers::register_connections();
 		Tax_Rates::register_connections();
 		Shipping_Methods::register_connections();

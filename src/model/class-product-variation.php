@@ -70,115 +70,115 @@ class Product_Variation extends Crud_CPT {
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
-				'ID'                 => function() {
+				'ID'                => function() {
 					return $this->data->get_id();
 				},
-				'id'                 => function() {
+				'id'                => function() {
 					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'product_variation', $this->data->get_id() ) : null;
 				},
-				'variationId'        => function() {
+				'variationId'       => function() {
 					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
 				},
-				'name'               => function() {
+				'name'              => function() {
 					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
 				},
-				'date'               => function() {
+				'date'              => function() {
 					return ! empty( $this->data ) ? $this->data->get_date_created() : null;
 				},
-				'modified'           => function() {
+				'modified'          => function() {
 					return ! empty( $this->data ) ? $this->data->get_date_modified() : null;
 				},
-				'description'        => function() {
+				'description'       => function() {
 					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
 				},
-				'sku'                => function() {
+				'sku'               => function() {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
 				},
-				'price'              => function() {
+				'price'             => function() {
 					return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
 				},
-				'salePrice'          => function() {
+				'salePrice'         => function() {
 					return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
 				},
-				'regularPrice'       => function() {
+				'regularPrice'      => function() {
 					return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
 				},
-				'dateOnSaleFrom'     => function() {
+				'dateOnSaleFrom'    => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
 				},
-				'dateOnSaleTo'       => function() {
+				'dateOnSaleTo'      => function() {
 					return ! empty( $this->data->get_date_on_sale_to() ) ? $this->data->get_date_on_sale_to() : null;
 				},
-				'onSale'             => function () {
+				'onSale'            => function () {
 					return ! is_null( $this->data->is_on_sale() ) ? $this->data->is_on_sale() : null;
 				},
-				'status'             => function() {
+				'status'            => function() {
 					return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
 				},
-				'purchasable'        => function() {
+				'purchasable'       => function() {
 					return ! empty( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
 				},
-				'virtual'            => function() {
+				'virtual'           => function() {
 					return ! is_null( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
 				},
-				'downloadable'       => function() {
+				'downloadable'      => function() {
 					return ! is_null( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
 				},
-				'downloads'          => function() {
+				'downloads'         => function() {
 					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : null;
 				},
-				'downloadLimit'      => function() {
+				'downloadLimit'     => function() {
 					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
 				},
-				'downloadExpiry'     => function() {
+				'downloadExpiry'    => function() {
 					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
 				},
-				'taxStatus'          => function() {
+				'taxStatus'         => function() {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 				},
-				'taxClass'           => function() {
+				'taxClass'          => function() {
 					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
 				},
-				'manageStock'        => function() {
+				'manageStock'       => function() {
 					return ! empty( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
 				},
-				'stockQuantity'      => function() {
+				'stockQuantity'     => function() {
 					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
 				},
-				'stockStatus'        => function() {
+				'stockStatus'       => function() {
 					return ! empty( $this->data->get_stock_status() ) ? $this->data->get_stock_status() : null;
 				},
-				'backorders'         => function() {
+				'backorders'        => function() {
 					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
 				},
-				'backordersAllowed'  => function() {
+				'backordersAllowed' => function() {
 					return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
 				},
-				'weight'             => function() {
+				'weight'            => function() {
 					return ! empty( $this->data->get_weight() ) ? $this->data->get_weight() : null;
 				},
-				'length'             => function() {
+				'length'            => function() {
 					return ! empty( $this->data->get_length() ) ? $this->data->get_length() : null;
 				},
-				'width'              => function() {
+				'width'             => function() {
 					return ! empty( $this->data->get_width() ) ? $this->data->get_width() : null;
 				},
-				'height'             => function() {
+				'height'            => function() {
 					return ! empty( $this->data->get_height() ) ? $this->data->get_height() : null;
 				},
-				'menuOrder'          => function() {
+				'menuOrder'         => function() {
 					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
 				},
-				'purchaseNote'       => function() {
+				'purchaseNote'      => function() {
 					return ! empty( $this->data->get_purchase_note() ) ? $this->data->get_purchase_note() : null;
 				},
-				'catalogVisibility'  => function() {
+				'catalogVisibility' => function() {
 					return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
 				},
-				'hasAttributes'      => function() {
+				'hasAttributes'     => function() {
 					return ! empty( $this->data->has_attributes() ) ? $this->data->has_attributes() : null;
 				},
-				'type'               => function() {
+				'type'              => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
 				},
 				/**
@@ -187,20 +187,17 @@ class Product_Variation extends Crud_CPT {
 				 * These field resolvers are used in connection resolvers to define WP_Query argument
 				 * Note: underscore naming style is used as a quick identifier
 				 */
-				'parent_id'          => function() {
+				'parent_id'         => function() {
 					return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
 				},
-				'shipping_class_id'  => function() {
+				'shipping_class_id' => function() {
 					return ! empty( $this->data->get_shipping_class_id() ) ? $this->data->get_shipping_class_id() : null;
 				},
-				'image_id'           => function() {
+				'image_id'          => function() {
 					return ! empty( $this->data->get_image_id() ) ? $this->data->get_image_id() : null;
 				},
-				'attributes'         => function() {
-					return ! empty( $this->data->get_attributes() ) ? array_values( $this->data->get_attributes() ) : null;
-				},
-				'default_attributes' => function() {
-					return ! empty( $this->data->get_default_attributes() ) ? array_values( $this->data->get_default_attributes() ) : null;
+				'attributes'        => function() {
+					return ! empty( $this->data->get_attributes() ) ? $this->data->get_attributes() : null;
 				},
 			);
 		}
