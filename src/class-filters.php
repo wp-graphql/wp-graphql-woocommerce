@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
-use Inflect;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
@@ -123,20 +122,12 @@ class Filters {
 		}
 
 		// Filter product attributes taxonomies.
-		$attribute_taxonomies = \wc_get_attribute_taxonomies();
-		if ( $attribute_taxonomies ) {
-			$attributes = array_map(
-				function( $tax ) {
-					return $tax->attribute_name;
-				},
-				$attribute_taxonomies
-			);
-			if ( in_array( $taxonomy, $attributes, true ) ) {
-				$singular_name               = graphql_format_field_name( $taxonomy );
-				$args['show_in_graphql']     = true;
-				$args['graphql_single_name'] = $singular_name;
-				$args['graphql_plural_name'] = Inflect::pluralize( $singular_name );
-			}
+		$attributes = \WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
+		if ( in_array( $taxonomy, $attributes, true ) ) {
+			$singular_name               = graphql_format_field_name( $taxonomy );
+			$args['show_in_graphql']     = true;
+			$args['graphql_single_name'] = $singular_name;
+			$args['graphql_plural_name'] = \Inflect::pluralize( $singular_name );
 		}
 
 		return $args;

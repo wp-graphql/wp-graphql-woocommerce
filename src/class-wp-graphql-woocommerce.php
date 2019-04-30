@@ -86,6 +86,26 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
+		 * Returns WooCommerce post-types registered to the WC_Post_Crud_Loader
+		 *
+		 * @return array
+		 */
+		public static function get_product_attribute_taxonomies() {
+			$attribute_taxonomies = \wc_get_attribute_taxonomies();
+
+			// Get taxonomy names.
+			$attributes = array();
+			foreach ( $attribute_taxonomies as $tax ) {
+				$attributes[] = 'pa_' . $tax->attribute_name;
+			}
+
+			return apply_filters(
+				'register_graphql_wc_product_attributes_taxonomies',
+				$attributes
+			);
+		}
+
+		/**
 		 * Throw error on object clone.
 		 * The whole idea of the singleton design pattern is that there is a single object
 		 * therefore, we don't want the object to be cloned.

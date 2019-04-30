@@ -102,6 +102,19 @@ class Products extends WC_Connection {
 				)
 			)
 		);
+
+		// From WooCommerce product attributes.
+		$attributes = \WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
+		foreach ( $attributes as $attribute ) {
+			register_graphql_connection(
+				self::get_connection_config(
+					array(
+						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
+						'fromFieldName' => 'products',
+					)
+				)
+			);
+		}
 	}
 
 	/**
