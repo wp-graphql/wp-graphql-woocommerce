@@ -28,6 +28,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$query = '
 			query customerQuery( $id: ID ) {
 				customer( id: $id ) {
+					id
+					customerId
 					isVatExempt
 					hasCalculatedShipping
 					calculatedShipping
@@ -89,6 +91,9 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEqualSets( $expected, $actual );
 
+		// Clear customer cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+
 		/**
 		 * Assertion Two
 		 * 
@@ -143,6 +148,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$query = '
 			query customerByQuery( $id: Int! ) {
 				customerBy( customerId: $id ) {
+					id
+					customerId
 					isVatExempt
 					hasCalculatedShipping
 					calculatedShipping

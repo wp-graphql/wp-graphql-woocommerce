@@ -9,6 +9,10 @@ class OrderHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'shop_order', $id );
+	}
+
     public function set_to_customer_billing_address( $order, $customer, $save = true ) {
         if ( ! is_a( $order, WC_Order::class ) ) {
             $order = new WC_Order( absint( $order ) );
@@ -164,7 +168,7 @@ class OrderHelper extends WCG_Helper {
 		}
 
 		return array(
-			'id'                    => Relay::toGlobalId( 'shop_order', $data->get_id() ),
+			'id'                    => $this->to_relay_id( $id ),
 			'orderId'               => $data->get_id(),
 			'currency'              => ! empty( $data->get_currency() ) ? $data->get_currency() : null,
 			'orderVersion'          => ! empty( $data->get_version() ) ? $data->get_version() : null,
@@ -307,8 +311,8 @@ class OrderHelper extends WCG_Helper {
 		}
 
 		return array(
-			'id'                    => Relay::toGlobalId( 'shop_order', $data->get_id() ),
-			'orderId'               => $data->get_id(),
+			'id'                    => $this->to_relay_id( $id ),
+			'orderId'               => $id,
 			'currency'              => null,
 			'orderVersion'          => null,
             'date'                  => null,

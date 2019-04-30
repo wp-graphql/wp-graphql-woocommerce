@@ -103,7 +103,7 @@ class Customer extends Model {
 					return ( ! empty( $this->data->get_shipping() ) ) ? $this->data->get_shipping() : null;
 				},
 				'isPayingCustomer'      => function() {
-					return ( ! empty( $this->data->get_is_paying_customer() ) ) ? $this->data->get_is_paying_customer() : null;
+					return ( ! is_null( $this->data->get_is_paying_customer() ) ) ? $this->data->get_is_paying_customer() : null;
 				},
 				/**
 				 * Connection resolvers fields

@@ -119,10 +119,10 @@ class Product_Variation extends Crud_CPT {
 					return ! empty( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
 				},
 				'virtual'           => function() {
-					return ! is_null( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
+					return ! is_null( $this->data->is_virtual() ) ? $this->data->is_virtual() : null;
 				},
 				'downloadable'      => function() {
-					return ! is_null( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
+					return ! is_null( $this->data->is_downloadable() ) ? $this->data->is_downloadable() : null;
 				},
 				'downloads'         => function() {
 					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : null;
@@ -152,7 +152,7 @@ class Product_Variation extends Crud_CPT {
 					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
 				},
 				'backordersAllowed' => function() {
-					return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
+					return ! is_null( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
 				},
 				'weight'            => function() {
 					return ! empty( $this->data->get_weight() ) ? $this->data->get_weight() : null;

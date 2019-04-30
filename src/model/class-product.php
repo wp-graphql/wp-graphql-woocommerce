@@ -250,7 +250,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
 				},
 				'soldIndividually'   => function() {
-					return ! is_null( $this->data->get_sold_individually() ) ? $this->data->get_sold_individually() : null;
+					return ! is_null( $this->data->is_sold_individually() ) ? $this->data->is_sold_individually() : null;
 				},
 				'weight'             => function() {
 					return ! is_null( $this->data->get_weight() ) ? $this->data->get_weight() : null;
@@ -274,13 +274,13 @@ class Product extends Crud_CPT {
 					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
 				},
 				'virtual'            => function() {
-					return ! is_null( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
+					return ! is_null( $this->data->is_virtual() ) ? $this->data->is_virtual() : null;
 				},
 				'downloadExpiry'     => function() {
 					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
 				},
 				'downloadable'       => function() {
-					return ! is_null( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
+					return ! is_null( $this->data->is_downloadable() ) ? $this->data->is_downloadable() : null;
 				},
 				'downloadLimit'      => function() {
 					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;

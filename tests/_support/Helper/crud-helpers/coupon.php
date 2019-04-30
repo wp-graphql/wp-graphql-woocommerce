@@ -9,6 +9,10 @@ class CouponHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'shop_coupon', $id );
+	}
+
 	public function create( $args = array(), $save = true ) {
 		// Create new coupon crud object instance.
 		$coupon = new WC_Coupon();
@@ -41,7 +45,7 @@ class CouponHelper extends WCG_Helper {
 		$data = new WC_Coupon( $id );
 
 		return array(
-			'id'                        => Relay::toGlobalId( 'shop_coupon', $id ),
+			'id'                        => $this->to_relay_id( $id ),
 			'couponId'                  => $data->get_id(),
 			'code'                      => $data->get_code(),
 			'amount'                    => $data->get_amount(),

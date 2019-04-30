@@ -19,8 +19,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG', true );
-
 /**
  * If the codeception remote coverage file exists, require it.
  *

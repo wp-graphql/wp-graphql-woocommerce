@@ -4,8 +4,8 @@ use GraphQLRelay\Relay;
 
 class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $shop_manager;
-	private $customer;
-    private $variation;
+    private $customer;
+    private $products;
     
     public function setUp() {
         parent::setUp();
@@ -34,23 +34,39 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                 productVariation( id: $id, variationId: $variationId ) {
                     id
                     variationId
+                    name
+                    date
+                    modified
+                    description
                     sku
-                    weight
-                    length
-                    width
-                    height
+                    price
+                    regularPrice
+                    salePrice
+                    dateOnSaleFrom
+                    dateOnSaleTo
+                    onSale
+                    status
+                    purchasable
+                    virtual
+                    downloadable
+                    downloadLimit
+                    downloadExpiry
+                    taxStatus
                     taxClass
                     manageStock
                     stockQuantity
                     backorders
+                    backordersAllowed
+                    weight
+                    length
+                    width
+                    height
+                    menuOrder
                     purchaseNote
                     shippingClass
                     catalogVisibility
                     hasAttributes
-                    isPurchasable
-                    price
-                    regularPrice
-                    salePrice
+                    type
                 }
             }
         ';

@@ -29,12 +29,12 @@ class Variation_Attribute_Connection_Resolver {
 	public function to_data_array( $attrs = array() ) {
 		$attributes = array();
 		if ( array( '0' ) !== $attrs ) {
-			foreach ( $attrs as $key => $value ) {
-				$term = \get_term_by( 'slug', $value, $key );
+			foreach ( $attrs as $name => $value ) {
+				$term = \get_term_by( 'slug', $value, $name );
 				if ( empty( $term ) ) {
 					$attributes[] = array(
 						'id'    => 0,
-						'name'  => $key,
+						'name'  => $name,
 						'value' => $value,
 					);
 				} else {

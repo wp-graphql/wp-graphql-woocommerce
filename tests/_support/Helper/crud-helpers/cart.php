@@ -3,6 +3,10 @@
 use GraphQLRelay\Relay;
 
 class CartHelper extends WCG_Helper {
+	public function to_relay_id( $id ) {
+		return null;
+	}
+
 	public function print_query( $id = 0 ) {
 		$cart = WC()->cart;
 		return array(

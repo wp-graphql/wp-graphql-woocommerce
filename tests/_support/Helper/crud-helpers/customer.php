@@ -1,10 +1,16 @@
 <?php
 
+use GraphQLRelay\Relay;
+
 class CustomerHelper extends WCG_Helper {
 	public function __construct() {
 		$this->node_type = 'customer';
 
 		parent::__construct();
+	}
+
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'customer', $id );
 	}
 
 	public function create( $args = array() ) {
@@ -68,6 +74,8 @@ class CustomerHelper extends WCG_Helper {
 		$data = new WC_Customer( $id );
 
 		return array(
+			'id'                    => $this->to_relay_id( $id ),
+			'customerId'            => $id,
 			'isVatExempt'           => $data->get_is_vat_exempt(),
 			'hasCalculatedShipping' => $data->has_calculated_shipping(),
 			'calculatedShipping'    => $data->get_calculated_shipping(),
@@ -161,23 +169,25 @@ class CustomerHelper extends WCG_Helper {
 		$data = new WC_Customer( $id );
 
 		return array(
-			"isVatExempt"           => null,                                                                  
-			"hasCalculatedShipping" => null,                                                        
-			"calculatedShipping"    => null,                                                           
-			"orderCount"            => null,                                                                   
-			"totalSpent"            => null,                                                                   
-			"username"              => null,                                                                     
-			"email"                 => null,                                                                        
-			"firstName"             => null,                                                                    
-			"lastName"              => null,                                                                     
-			"displayName"           => $data->get_display_name(),                                                                  
-			"role"                  => null,                                                                         
-			"date"                  => null,                                                                         
-			"modified"              => null,                                                                     
-			"lastOrder"             => null,                                                                    
-			"billing"               => null,                                                                      
-			"shipping"              => null,                                                                     
-			"isPayingCustomer"      => null,
+			'id'                    => $this->to_relay_id( $id ),
+			'customerId'            => $id,
+			'isVatExempt'           => null,                                                                  
+			'hasCalculatedShipping' => null,                                                        
+			'calculatedShipping'    => null,                                                           
+			'orderCount'            => null,                                                                   
+			'totalSpent'            => null,                                                                   
+			'username'              => null,                                                                     
+			'email'                 => null,                                                                        
+			'firstName'             => null,                                                                    
+			'lastName'              => null,                                                                     
+			'displayName'           => $data->get_display_name(),                                                                  
+			'role'                  => null,                                                                         
+			'date'                  => null,                                                                         
+			'modified'              => null,                                                                     
+			'lastOrder'             => null,                                                                    
+			'billing'               => null,                                                                      
+			'shipping'              => null,                                                                     
+			'isPayingCustomer'      => null,
 		);
 	}
 }

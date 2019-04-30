@@ -9,6 +9,10 @@ class RefundHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'shop_order_refund', $id );
+	}
+
 	public function create( $order, $args = array() ) {
 		$order = new WC_Order( $order );
 		if ( empty( $order ) ) {
@@ -38,7 +42,7 @@ class RefundHelper extends WCG_Helper {
 		}
 
 		return array(
-			'id'         => Relay::toGlobalId( 'shop_order_refund', $data->get_id() ),
+			'id'         => $this->to_relay_id( $id ),
 			'refundId'   => $data->get_id(),
 			'title'      => $data->get_post_title(),
 			'reason'     => $data->get_reason(),
@@ -56,7 +60,7 @@ class RefundHelper extends WCG_Helper {
 		}
 
 		return array(
-			'id'         => Relay::toGlobalId( 'shop_order_refund', $data->get_id() ),
+			'id'         => $this->to_relay_id( $id ),
 			'refundId'   => $data->get_id(),
 			'title'      => null,
 			'reason'     => null,
