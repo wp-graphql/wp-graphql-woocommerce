@@ -2,7 +2,7 @@
 /**
  * This file contains access functions for various class methods
  *
- * @package     WPGraphQL\Extensions\WooCommerce
+ * @package WPGraphQL\Extensions\WooCommerce
  * @since 0.0.1
  */
 

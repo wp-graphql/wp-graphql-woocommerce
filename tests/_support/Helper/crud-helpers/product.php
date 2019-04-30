@@ -12,6 +12,10 @@ class ProductHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'product', $id );
+	}
+
 	public function reset_indexes() {
 		$this->index = 1;
 	}
@@ -109,6 +113,7 @@ class ProductHelper extends WCG_Helper {
 		$data = wc_get_product( $id );
 
 		return array(
+			'id'                => $this->to_relay_id( $id ),
 			'productId'         => $data->get_id(),
 			'name'              => $data->get_name(),
 			'slug'              => $data->get_slug(),

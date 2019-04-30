@@ -27,6 +27,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$query = '
 			query productQuery( $id: ID! ) {
 				product(id: $id) {
+					id
 					productId
 					name
 					slug

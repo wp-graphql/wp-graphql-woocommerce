@@ -250,7 +250,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
 				},
 				'soldIndividually'   => function() {
-					return ! is_null( $this->data->get_sold_individually() ) ? $this->data->get_sold_individually() : null;
+					return ! is_null( $this->data->is_sold_individually() ) ? $this->data->is_sold_individually() : null;
 				},
 				'weight'             => function() {
 					return ! is_null( $this->data->get_weight() ) ? $this->data->get_weight() : null;
@@ -274,13 +274,13 @@ class Product extends Crud_CPT {
 					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
 				},
 				'virtual'            => function() {
-					return ! is_null( $this->data->get_virtual() ) ? $this->data->get_virtual() : null;
+					return ! is_null( $this->data->is_virtual() ) ? $this->data->is_virtual() : null;
 				},
 				'downloadExpiry'     => function() {
 					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
 				},
 				'downloadable'       => function() {
-					return ! is_null( $this->data->get_downloadable() ) ? $this->data->get_downloadable() : null;
+					return ! is_null( $this->data->is_downloadable() ) ? $this->data->is_downloadable() : null;
 				},
 				'downloadLimit'      => function() {
 					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
@@ -389,7 +389,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_attributes() ) ? array_values( $this->data->get_attributes() ) : array( '0' );
 				},
 				'default_attributes' => function() {
-					return ! empty( $this->data->get_default_attributes() ) ? array_values( $this->data->get_default_attributes() ) : array( '0' );
+					return ! empty( $this->data->get_default_attributes() ) ? $this->data->get_default_attributes() : array( '0' );
 				},
 				'gallery_image_ids'  => function() {
 					return ! empty( $this->data->get_gallery_image_ids() ) ? $this->data->get_gallery_image_ids() : array( '0' );

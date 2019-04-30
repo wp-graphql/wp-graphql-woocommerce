@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb7b4315cc10e65121ee877408401e387
+class ComposerStaticInitf61da8dc20fec320ec89af9dd999f385
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -33,6 +33,7 @@ class ComposerStaticInitb7b4315cc10e65121ee877408401e387
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Refunds' => __DIR__ . '/../..' . '/src/connection/class-refunds.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Shipping_Methods' => __DIR__ . '/../..' . '/src/connection/class-shipping-methods.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Tax_Rates' => __DIR__ . '/../..' . '/src/connection/class-tax-rates.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Variation_Attributes' => __DIR__ . '/../..' . '/src/connection/class-variation-attributes.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\WC_Connection' => __DIR__ . '/../..' . '/src/connection/class-wc-connection.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\WC_Terms' => __DIR__ . '/../..' . '/src/connection/class-wc-terms.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Cart_Item_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/class-cart-item-connection-resolver.php',
@@ -46,6 +47,7 @@ class ComposerStaticInitb7b4315cc10e65121ee877408401e387
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Refund_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/class-refund-connection-resolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Shipping_Method_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/class-shipping-method-connection-resolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Tax_Rate_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/class-tax-rate-connection-resolver.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\Variation_Attribute_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/class-variation-attribute-connection-resolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\WC_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/trait-wc-connection-resolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Connection\\WC_Terms_Connection_Resolver' => __DIR__ . '/../..' . '/src/data/connection/class-wc-terms-connection-resolver.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/src/data/class-factory.php',
@@ -91,15 +93,16 @@ class ComposerStaticInitb7b4315cc10e65121ee877408401e387
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Refund_Type' => __DIR__ . '/../..' . '/src/type/object/class-refund-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => __DIR__ . '/../..' . '/src/type/object/class-shipping-method-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Tax_Rate_Type' => __DIR__ . '/../..' . '/src/type/object/class-tax-rate-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Variation_Attribute_Type' => __DIR__ . '/../..' . '/src/type/object/class-variation-attribute-type.php',
         'WP_GraphQL_WooCommerce' => __DIR__ . '/../..' . '/src/class-wp-graphql-woocommerce.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb7b4315cc10e65121ee877408401e387::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb7b4315cc10e65121ee877408401e387::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitb7b4315cc10e65121ee877408401e387::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf61da8dc20fec320ec89af9dd999f385::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf61da8dc20fec320ec89af9dd999f385::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitf61da8dc20fec320ec89af9dd999f385::$classMap;
 
         }, null, ClassLoader::class);
     }

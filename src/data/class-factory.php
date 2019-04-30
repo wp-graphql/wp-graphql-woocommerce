@@ -21,6 +21,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
+use WPGraphQL\Extensions\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
@@ -257,6 +258,22 @@ class Factory {
 	 */
 	public static function resolve_product_attribute_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Product_Attribute_Connection_Resolver();
+		return $resolver->resolve( $source, $args, $context, $info );
+	}
+
+	/**
+	 * Resolves VariationAttribute connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_variation_attribute_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Variation_Attribute_Connection_Resolver();
 		return $resolver->resolve( $source, $args, $context, $info );
 	}
 

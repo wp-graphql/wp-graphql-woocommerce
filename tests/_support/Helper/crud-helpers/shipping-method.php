@@ -7,6 +7,10 @@ class ShippingMethodHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'shipping_method', $id );
+	}
+
 	public function create_legacy_flat_rate_instance( $args = array() ) {
 		$flat_rate_settings = array_merge(
 			array(
@@ -54,7 +58,7 @@ class ShippingMethodHelper extends WCG_Helper {
 
 		$method = $methods[ $id ];
 		return array(
-			'id'          => Relay::toGlobalId( 'shipping_method', $id ),
+			'id'          => $this->to_relay_id( $id ),
 			'methodId'    => $id,
 			'title'       => $method->method_title,
 			'description' => $method->method_description,

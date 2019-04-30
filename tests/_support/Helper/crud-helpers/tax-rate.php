@@ -12,6 +12,10 @@ class TaxRateHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return Relay::toGlobalId( 'tax_rate', $id );
+	}
+
 	public function get_index() {
 		return $this->index++;
 	}
@@ -88,7 +92,7 @@ class TaxRateHelper extends WCG_Helper {
 
 		return $rate
 			? array(
-				'id'       => Relay::toGlobalId( 'tax_rate', $rate->tax_rate_id ),
+				'id'       => $this->to_relay_id( $rate->tax_rate_id ),
 				'rateId'   => absint( $rate->tax_rate_id ),
 				'country'  => ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : null,
 				'state'    => ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : null,
