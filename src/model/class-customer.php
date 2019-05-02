@@ -21,7 +21,7 @@ class Customer extends Model {
 	/**
 	 * Customer constructor
 	 *
-	 * @param int $id - User ID.
+	 * @param \WC_Customer|int $id - User ID.
 	 *
 	 * @access public
 	 * @return void
@@ -37,7 +37,7 @@ class Customer extends Model {
 			'displayName',
 		];
 
-		parent::__construct( 'list_users', $allowed_restricted_fields, $id );
+		parent::__construct( 'list_users', $allowed_restricted_fields, $this->data->get_id() );
 	}
 
 	/**
