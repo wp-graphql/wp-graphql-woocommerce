@@ -77,7 +77,13 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'size' => 'small' );
-        $actual    = $actual = do_graphql_request( $query, 'attributeConnectionQuery', $variables );
+        $actual    = $actual = graphql(
+            array(
+                'query'          => $query,
+                'operation_name' =>'attributeConnectionQuery',
+                'variables'      => $variables,
+            )
+        );
 		$expected = array(
             'data' => array(
                 'paSizes' => array (
@@ -118,7 +124,13 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'size' => 'small' );
-        $actual    = $actual = do_graphql_request( $query, 'attributeConnectionQuery', $variables );
+        $actual    = $actual = graphql(
+            array(
+                'query'          => $query,
+                'operation_name' => 'attributeConnectionQuery',
+                'variables'      => $variables,
+            )
+        );
 		$expected = array(
             'data' => array(
                 'paSizes' => array (

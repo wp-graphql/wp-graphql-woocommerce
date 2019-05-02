@@ -28,29 +28,11 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		private static $instance;
 
 		/**
-		 * Stores the allowed WooCommerce post-types
-		 *
-		 * @var array
-		 * @access public
-		 */
-		public static $allowed_post_types;
-
-		/**
-		 * Singleton provider
+		 * WP_GraphQL_WooCommerce Constructor
 		 */
 		public static function instance() {
-			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
-				self::$instance           = new WP_GraphQL_WooCommerce();
-				self::$allowed_post_types = apply_filters(
-					'graphql_woocommerce_post_types',
-					array(
-						'shop_coupon',
-						'product',
-						'product_variation',
-						'shop_order',
-						'shop_order_refund',
-					)
-				);
+			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+				self::$instance = new self();
 				self::$instance->includes();
 				self::$instance->actions();
 				self::$instance->filters();
@@ -88,7 +70,8 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
-		 * Returns WooCommerce post-types registered to the WC_Post_Crud_Loader
+		 * Returns WooCommerce product attribute taxonomies to be registered as
+		 * "TermObject" types in the schema.
 		 *
 		 * @return array
 		 */
