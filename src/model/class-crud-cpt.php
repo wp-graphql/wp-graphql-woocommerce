@@ -48,7 +48,10 @@ abstract class Crud_CPT extends Model {
 		$GLOBALS['post'] = $post;
 		setup_postdata( $post );
 
-		$restricted_cap = $this->get_restricted_cap();
+		$restricted_cap = apply_filters(
+			$this->post_type_object->name . '_restricted_cap',
+			$this->get_restricted_cap()
+		);
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );
 	}

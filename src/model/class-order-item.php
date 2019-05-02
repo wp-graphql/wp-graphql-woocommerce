@@ -45,7 +45,9 @@ class Order_Item extends Model {
 			'orderItemId',
 		);
 
-		parent::__construct( '', $allowed_restricted_fields, null );
+		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
+
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
 	}
 
 	/**
