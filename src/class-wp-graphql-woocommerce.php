@@ -11,6 +11,8 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG' );
+
 if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 	/**
 	 * Class WP_GraphQL_WooCommerce

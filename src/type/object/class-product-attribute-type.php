@@ -29,14 +29,14 @@ class Product_Attribute_Type {
 						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Attribute ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							return ! empty( $attribute ) ? $attribute->get_id() : null;
+							return ! empty( $attribute->get_id() ) ? $attribute->get_id() : null;
 						},
 					),
 					'name'        => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Attribute name', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							return ! empty( $attribute ) ? $attribute->get_name() : null;
+							return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 						},
 					),
 					'options'     => array(
@@ -51,21 +51,21 @@ class Product_Attribute_Type {
 						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Attribute position', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							return ! empty( $attribute ) ? $attribute->get_position() : null;
+							return ! is_null( $attribute->get_position() ) ? $attribute->get_position() : null;
 						},
 					),
 					'visible'     => array(
 						'type'        => array( 'non_null' => 'Boolean' ),
 						'description' => __( 'Is attribute visible', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							return ! empty( $attribute ) ? $attribute->get_visible() : null;
+							return ! is_null( $attribute->get_visible() ) ? $attribute->get_visible() : null;
 						},
 					),
 					'variation'   => array(
 						'type'        => array( 'non_null' => 'Boolean' ),
 						'description' => __( 'Is attribute on product variation', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							return ! empty( $attribute ) ? $attribute->get_variation() : null;
+							return ! is_null( $attribute->get_variation() ) ? $attribute->get_variation() : null;
 						},
 					),
 				),

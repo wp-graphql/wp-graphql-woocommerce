@@ -165,4 +165,24 @@ class ProductHelper extends WCG_Helper {
 			'reviewCount'       => $data->get_review_count(),
 		);
 	}
+
+	public function print_attributes( $id ) {
+		$product    = wc_get_product( $id );
+		$attributes = array_values( $product->get_attributes() );
+
+		$results = array();
+
+		foreach( $attributes as $attribute ) {
+			$results[] = array(
+				'attributeId' => $attribute->get_id(),
+				'name'        => $attribute->get_name(),
+				'options'     => $attribute->get_slugs(),
+				'position'    => $attribute->get_position(),
+				'visible'     => $attribute->get_visible(),
+				'variation'   => $attribute->get_variation(),
+			);
+		}
+
+		return ! empty ( $results ) ? array( 'nodes' => $results ) : null;
+	}
 }

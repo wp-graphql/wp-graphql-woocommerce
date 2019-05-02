@@ -114,6 +114,15 @@ class Products extends WC_Connection {
 					)
 				)
 			);
+			register_graphql_connection(
+				self::get_connection_config(
+					array(
+						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
+						'toType'        => 'ProductVariation',
+						'fromFieldName' => 'variations',
+					)
+				)
+			);
 		}
 	}
 

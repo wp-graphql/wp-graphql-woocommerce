@@ -100,6 +100,19 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Returns the attribute meta for the taxonomy provided
+	 *
+	 * @param string $taxonomy - The taxonomy name.
+	 *
+	 * @return string
+	 */
+	private function get_attribute_meta_key( $taxonomy ) {
+		return 'attribute_' . strtolower(
+			preg_replace( '/([A-Z])/', '_$1', $taxonomy )
+		);
+	}
+
+	/**
 	 * Creates query arguments array
 	 */
 	public function get_query_args() {
@@ -184,15 +197,40 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					break;
 
 				case is_a( $this->source, Term::class ):
-					if ( empty( $query_args['tax_query'] ) ) {
-						$query_args['tax_query'] = array(); // WPCS: slow query ok.
-					}
+					if ( 'variations' === $this->info->fieldName ) {
+						$query_args['type'] = 'variation';
 
-					$query_args['tax_query'][] = array( // WPCS: slow query ok.
-						'taxonomy' => $this->source->taxonomyName,
-						'field'    => 'term_id',
-						'terms'    => array( $this->source->term_id ),
-					);
+						// Add meta data.
+						$meta_key                = $this->get_attribute_meta_key( $this->source->taxonomyName );
+						$query_args[ $meta_key ] = $this->source->slug;
+
+						add_filter(
+							'woocommerce_product_data_store_cpt_get_products_query',
+							function( $wp_query_args ) use ( $meta_key ) {
+								if ( isset( $wp_query_args[ $meta_key ] ) ) {
+									$wp_query_args['meta_query'][] = array(
+										'key'     => $meta_key,
+										'value'   => $wp_query_args[ $meta_key ],
+										'compare' => 'LIKE',
+									);
+									unset( $wp_query_args[ $meta_key ] );
+								}
+
+								return $wp_query_args;
+							},
+							10,
+							2
+						);
+					} else {
+						if ( empty( $query_args['tax_query'] ) ) {
+							$query_args['tax_query'] = array(); // WPCS: slow query ok.
+						}
+						$query_args['tax_query'][] = array( // WPCS: slow query ok.
+							'taxonomy' => $this->source->taxonomyName,
+							'field'    => 'term_id',
+							'terms'    => array( $this->source->term_id ),
+						);
+					}
 					break;
 			}
 		}
@@ -232,6 +270,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
+
+		//wp_send_json( $query_args );
 
 		return $query_args;
 	}
