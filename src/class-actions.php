@@ -126,5 +126,7 @@ class Actions {
 		Tax_Rates::register_connections();
 		Shipping_Methods::register_connections();
 		Cart_Items::register_connections();
+
+		// Mutations.
 	}
 }
