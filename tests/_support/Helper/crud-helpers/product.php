@@ -50,6 +50,7 @@ class ProductHelper extends WCG_Helper {
 				$args
 			)
 		);
+
 		return $product->save();
 	}
 

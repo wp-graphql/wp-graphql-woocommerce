@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitf61da8dc20fec320ec89af9dd999f385
+class ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -53,6 +53,7 @@ class ComposerStaticInitf61da8dc20fec320ec89af9dd999f385
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/src/data/class-factory.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Loader\\WC_Customer_Loader' => __DIR__ . '/../..' . '/src/data/loader/class-wc-customer-loader.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Loader\\WC_Post_Crud_Loader' => __DIR__ . '/../..' . '/src/data/loader/class-wc-post-crud-loader.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Cart_Mutation' => __DIR__ . '/../..' . '/src/data/mutation/class-cart-mutation.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Filters' => __DIR__ . '/../..' . '/src/class-filters.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Coupon' => __DIR__ . '/../..' . '/src/model/class-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Crud_CPT' => __DIR__ . '/../..' . '/src/model/class-crud-cpt.php',
@@ -65,6 +66,7 @@ class ComposerStaticInitf61da8dc20fec320ec89af9dd999f385
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shipping_Method' => __DIR__ . '/../..' . '/src/model/class-shipping-method.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shop_Manager_Caps' => __DIR__ . '/../..' . '/src/model/trait-shop-manager-caps.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/src/model/class-tax-rate.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-add-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/src/type/enum/class-backorders.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/src/type/enum/class-catalog-visibility.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-customer-connection-orderby-enum.php',
@@ -77,6 +79,7 @@ class ComposerStaticInitf61da8dc20fec320ec89af9dd999f385
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Rate_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-tax-rate-connection-orderby-enum.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Status' => __DIR__ . '/../..' . '/src/type/enum/class-tax-status.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\WC_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-wc-connection-orderby-enum.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\Product_Attribute_Input' => __DIR__ . '/../..' . '/src/type/input/class-product-attribute-input.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\Tax_Rate_Connection_Orderby_Input' => __DIR__ . '/../..' . '/src/type/input/class-tax-rate-connection-orderby-input.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\WC_Connection_Orderby_Input' => __DIR__ . '/../..' . '/src/type/input/class-wc-connection-orderby-input.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Cart_Type' => __DIR__ . '/../..' . '/src/type/object/class-cart-type.php',
@@ -100,9 +103,9 @@ class ComposerStaticInitf61da8dc20fec320ec89af9dd999f385
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf61da8dc20fec320ec89af9dd999f385::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf61da8dc20fec320ec89af9dd999f385::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf61da8dc20fec320ec89af9dd999f385::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af::$classMap;
 
         }, null, ClassLoader::class);
     }
