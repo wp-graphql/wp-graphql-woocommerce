@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af
+class ComposerStaticInit65062e14ff260f49f0940e1a9ea00e57
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -67,6 +67,7 @@ class ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shop_Manager_Caps' => __DIR__ . '/../..' . '/src/model/trait-shop-manager-caps.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/src/model/class-tax-rate.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-add-item.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/src/type/enum/class-backorders.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/src/type/enum/class-catalog-visibility.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-customer-connection-orderby-enum.php',
@@ -103,9 +104,9 @@ class ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitced0ad5f23d05f710e81b6f8d889d8af::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit65062e14ff260f49f0940e1a9ea00e57::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit65062e14ff260f49f0940e1a9ea00e57::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit65062e14ff260f49f0940e1a9ea00e57::$classMap;
 
         }, null, ClassLoader::class);
     }
