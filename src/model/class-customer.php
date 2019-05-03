@@ -37,7 +37,9 @@ class Customer extends Model {
 			'displayName',
 		];
 
-		parent::__construct( 'list_users', $allowed_restricted_fields, $this->data->get_id() );
+		$restricted_cap = apply_filters( 'customer_restricted_cap', 'list_users' );
+
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, $id );
 	}
 
 	/**

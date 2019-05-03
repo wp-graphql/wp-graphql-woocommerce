@@ -35,7 +35,9 @@ class Shipping_Method extends Model {
 			'rateId',
 		);
 
-		parent::__construct( '', $allowed_restricted_fields, null );
+		$restricted_cap = apply_filters( 'shipping_method_restricted_cap', '' );
+
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
 	}
 
 	/**
