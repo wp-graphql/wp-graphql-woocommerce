@@ -22,7 +22,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
-use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Connection_Orderby_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Attribute_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
@@ -54,6 +54,7 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
 use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
 use WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods;
 use WPGraphQL\Extensions\WooCommerce\Connection\Cart_Items;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Item;
 
 /**
  * Class Actions
@@ -92,6 +93,7 @@ class Actions {
 		Tax_Rate_Connection_Orderby_Enum::register();
 
 		// InputObjects.
+		Product_Attribute_Input::register();
 		WC_Connection_Orderby_Input::register();
 		Tax_Rate_Connection_Orderby_Input::register();
 
@@ -128,5 +130,6 @@ class Actions {
 		Cart_Items::register_connections();
 
 		// Mutations.
+		Cart_Add_Item::register_mutation();
 	}
 }
