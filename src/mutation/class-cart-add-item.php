@@ -2,7 +2,7 @@
 /**
  * Mutation - addToCart
  *
- * Registers mutation for adding an cart item to the cart.
+ * Registers mutation for adding a cart item to the cart.
  *
  * @package WPGraphQL\Extensions\WooCommerce\Mutation
  * @since 0.1.0

@@ -53,6 +53,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => $baseDir . '/src/model/class-tax-rate.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => $baseDir . '/src/mutation/class-cart-add-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => $baseDir . '/src/mutation/class-cart-remove-item.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => $baseDir . '/src/mutation/class-cart-restore-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/src/type/enum/class-backorders.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/src/type/enum/class-catalog-visibility.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => $baseDir . '/src/type/enum/class-customer-connection-orderby-enum.php',

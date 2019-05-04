@@ -1,8 +1,8 @@
 <?php
 /**
- * Mutation - removeItemFromCart
+ * Mutation - restoreCartItem
  *
- * Registers mutation for removing a cart item from the cart.
+ * Registers mutation for restoring a removed cart item to the cart.
  *
  * @package WPGraphQL\Extensions\WooCommerce\Mutation
  * @since 0.1.0
@@ -15,15 +15,15 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 
 /**
- * Class - Cart_Remove_Item
+ * Class - Cart_Restore_Item
  */
-class Cart_Remove_Item {
+class Cart_Restore_Item {
 	/**
 	 * Registers mutation
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
-			'removeItemFromCart',
+			'restoreCartItem',
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
@@ -57,8 +57,8 @@ class Cart_Remove_Item {
 		return array(
 			'cartItem' => array(
 				'type'    => 'CartItem',
-				'resolve' => function ( $item ) {
-					return $item;
+				'resolve' => function ( $payload ) {
+					return WC()->cart->get_cart_item( $payload['id'] );
 				},
 			),
 		);
@@ -79,18 +79,15 @@ class Cart_Remove_Item {
 			// Get WC_Cart instance.
 			$cart = WC()->cart;
 
-			// Get cart item for payload.
-			$cart_item = $cart->get_cart_item( $input['key'] );
-			if ( empty( $cart_item ) ) {
+			// Restore cart item.
+			$success = $cart->restore_cart_item( $input['key'] );
+			if ( false === $success ) {
 				/* translators: Cart item not found message */
-				throw new UserError( sprintf( __( 'No cart item found with the key: %s', 'wp-graphql-woocommerce' ), $input['key'] ) );
+				throw new UserError( sprintf( __( 'Failed to restore cart item with the key: %s', 'wp-graphql-woocommerce' ), $input['key'] ) );
 			}
 
-			// Remove item from cart.
-			$cart->remove_cart_item( $input['key'] );
-
 			// Return payload.
-			return $cart_item;
+			return array( 'id' => $input['key'] );
 		};
 	}
 }

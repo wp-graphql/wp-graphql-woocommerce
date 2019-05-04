@@ -224,4 +224,83 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEqualSets( $expected, $actual );
         $this->assertEmpty( \WC()->cart->get_cart_item( $cart_item['key'] ) );
     }
+
+    public function testRestoreCartItemMutation() {
+        $cart = WC()->cart;
+
+        // Create products.
+        $ids  = $this->variation->create( $this->product->create_variable() );
+
+        // Create cart item.
+        $cart_item = $cart->get_cart_item(
+            $cart->add_to_cart( $ids['product'], 2, $ids['variations'][0] )
+        );
+
+        // Remove cart item.
+        $cart->remove_cart_item( $cart_item['key'] );
+
+        $mutation   = '
+            mutation restoreCartItem( $input: RestoreCartItemInput! ) {
+                restoreCartItem( input: $input ) {
+                    clientMutationId
+                    cartItem {
+                        key
+                        product {
+                            id
+                        }
+                        variation {
+                            id
+                        }
+                        quantity
+                        subtotal
+                        subtotalTax
+                        total
+                        tax
+                    }
+                }
+            }
+        ';
+
+        $variables = array(
+            'input' => array(
+                'clientMutationId' => 'someId',
+                'key'              => $cart_item['key'],
+            ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'operation_name' => 'restoreCartItem',
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $expected = array(
+            'data' => array(
+                'restoreCartItem' => array(
+                    'clientMutationId' => 'someId',
+                    'cartItem'         => array(
+                        'key'          => $cart_item['key'],
+                        'product'      => array(
+                            'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+                        ),
+                        'variation'    => array(
+                            'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
+                        ),
+                        'quantity'     => $cart_item['quantity'],
+                        'subtotal'     => floatval( $cart_item['line_subtotal'] ),
+                        'subtotalTax'  => floatval( $cart_item['line_subtotal_tax'] ),
+                        'total'        => floatval( $cart_item['line_total'] ),
+                        'tax'          => floatval( $cart_item['line_tax'] ),
+                    ),
+                ),
+            ),
+        );
+
+        $this->assertEqualSets( $expected, $actual );
+        $this->assertNotEmpty( \WC()->cart->get_cart_item( $cart_item['key'] ) );
+    }
 }
