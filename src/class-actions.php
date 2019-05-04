@@ -56,6 +56,7 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods;
 use WPGraphQL\Extensions\WooCommerce\Connection\Cart_Items;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Item;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Item;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Restore_Item;
 
 /**
  * Class Actions
@@ -133,5 +134,6 @@ class Actions {
 		// Mutations.
 		Cart_Add_Item::register_mutation();
 		Cart_Remove_Item::register_mutation();
+		Cart_Restore_Item::register_mutation();
 	}
 }
