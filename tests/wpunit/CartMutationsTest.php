@@ -2,6 +2,7 @@
 
 class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
     private $customer;
+    private $coupon;
     private $product;
     private $variation;
 
@@ -9,6 +10,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         parent::setUp();
 
         $this->customer  = $this->getModule('\Helper\Wpunit')->customer();
+        $this->coupon    = $this->getModule('\Helper\Wpunit')->coupon();
         $this->product   = $this->getModule('\Helper\Wpunit')->product();
         $this->variation = $this->getModule('\Helper\Wpunit')->product_variation();
     }
@@ -385,5 +387,114 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         $this->assertEqualSets( $expected, $actual );
         $this->assertTrue( \WC()->cart->is_empty() );
+    }
+
+    public function testApplyCouponMutation() {
+        $cart = WC()->cart;
+
+        // Create products.
+        $product_id = $this->product->create_simple();
+
+        // Create coupon.
+        $coupon_code = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array( 'product_ids' => array( $product_id ) )
+            )
+        );
+
+        // Add items to carts.
+        $cart_item_key = $cart->add_to_cart( $product_id, 1 );
+
+        $old_total = \WC()->cart->get_cart_contents_total();
+
+        $mutation = '
+            mutation applyCoupon( $input: ApplyCouponInput! ) {
+                applyCoupon( input: $input ) {
+                    clientMutationId
+                    cart {
+                        appliedCoupons {
+                            nodes {
+                                code
+                            }
+                        }
+                        contents {
+                            nodes {
+                                key
+                                product {
+                                    id
+                                }
+                                quantity
+                                subtotal
+                                subtotalTax
+                                total
+                                tax
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+        $variables = array(
+            'input' => array(
+                'clientMutationId' => 'someId',
+                'code'             => $coupon_code,
+            ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'operation_name' => 'applyCoupon',
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        // Get updated cart item.
+        $cart_item = WC()->cart->get_cart_item( $cart_item_key );
+
+        $expected = array(
+            'data' => array(
+                'applyCoupon' => array(
+                    'clientMutationId' => 'someId',
+                    'cart'         => array(
+                        'appliedCoupons' => array(
+                            'nodes' => array(
+                                array(
+                                    'code' => $coupon_code,
+                                ),
+                            ),
+                        ),
+                        'contents' => array(
+                            'nodes' => array(
+                                array(
+                                    'key'          => $cart_item['key'],
+                                    'product'      => array(
+                                        'id' => $this->product->to_relay_id( $cart_item['product_id'] ),
+                                    ),
+                                    'quantity'     => $cart_item['quantity'],
+                                    'subtotal'     => floatval( $cart_item['line_subtotal'] ),
+                                    'subtotalTax'  => floatval( $cart_item['line_subtotal_tax'] ),
+                                    'total'        => floatval( $cart_item['line_total'] ),
+                                    'tax'          => floatval( $cart_item['line_tax'] ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+
+        $this->assertEqualSets( $expected, $actual );
+
+
+        $new_total = \WC()->cart->get_cart_contents_total();
+
+        // Use --debug to view.
+        codecept_debug( array( 'old' => $old_total, 'new' => $new_total ) );
+
+        $this->assertTrue( $old_total > $new_total );
     }
 }
