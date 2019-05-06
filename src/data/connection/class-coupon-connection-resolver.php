@@ -133,7 +133,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 					foreach ( $this->source->get_applied_coupons() as $code ) {
 						$ids[] = \wc_get_coupon_id_by_code( $code );
 					}
-					$query_args['post__in'] = $ids;
+					$query_args['post__in'] = ! empty( $ids ) ? $ids : array( '0' );
 					break;
 			}
 		}
