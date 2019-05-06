@@ -59,6 +59,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	public function should_execute() {
 		$post_type_obj = get_post_type_object( 'shop_coupon' );
 		switch ( true ) {
+			case 'appliedCoupons' === $this->info->fieldName:
 			case current_user_can( $post_type_obj->cap->edit_posts ):
 				return true;
 			default:

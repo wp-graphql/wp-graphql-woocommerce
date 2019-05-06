@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit9ed34b529563142df0c7be6685e61cdf
+class ComposerStaticInit9f7845eb8934da280f2653710721b063
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -67,6 +67,7 @@ class ComposerStaticInit9ed34b529563142df0c7be6685e61cdf
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shop_Manager_Caps' => __DIR__ . '/../..' . '/src/model/trait-shop-manager-caps.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/src/model/class-tax-rate.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-add-item.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-apply-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Empty' => __DIR__ . '/../..' . '/src/mutation/class-cart-empty.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-restore-item.php',
@@ -106,9 +107,9 @@ class ComposerStaticInit9ed34b529563142df0c7be6685e61cdf
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit9ed34b529563142df0c7be6685e61cdf::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit9ed34b529563142df0c7be6685e61cdf::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit9ed34b529563142df0c7be6685e61cdf::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9f7845eb8934da280f2653710721b063::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9f7845eb8934da280f2653710721b063::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9f7845eb8934da280f2653710721b063::$classMap;
 
         }, null, ClassLoader::class);
     }
