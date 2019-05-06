@@ -52,6 +52,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shop_Manager_Caps' => $baseDir . '/src/model/trait-shop-manager-caps.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => $baseDir . '/src/model/class-tax-rate.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => $baseDir . '/src/mutation/class-cart-add-item.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Empty' => $baseDir . '/src/mutation/class-cart-empty.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => $baseDir . '/src/mutation/class-cart-remove-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => $baseDir . '/src/mutation/class-cart-restore-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/src/type/enum/class-backorders.php',
