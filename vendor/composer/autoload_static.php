@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit9f7845eb8934da280f2653710721b063
+class ComposerStaticInitb7bf723c502fa62b66818be8b05c5974
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -69,6 +69,7 @@ class ComposerStaticInit9f7845eb8934da280f2653710721b063
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-add-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-apply-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Empty' => __DIR__ . '/../..' . '/src/mutation/class-cart-empty.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-restore-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/src/type/enum/class-backorders.php',
@@ -107,9 +108,9 @@ class ComposerStaticInit9f7845eb8934da280f2653710721b063
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit9f7845eb8934da280f2653710721b063::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit9f7845eb8934da280f2653710721b063::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit9f7845eb8934da280f2653710721b063::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb7bf723c502fa62b66818be8b05c5974::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb7bf723c502fa62b66818be8b05c5974::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb7bf723c502fa62b66818be8b05c5974::$classMap;
 
         }, null, ClassLoader::class);
     }

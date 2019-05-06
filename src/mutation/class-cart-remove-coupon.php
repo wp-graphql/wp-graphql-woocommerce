@@ -1,8 +1,8 @@
 <?php
 /**
- * Mutation - applyCoupon
+ * Mutation - removeCoupon
  *
- * Registers mutation for applying a coupon.
+ * Registers mutation for removing a coupon from cart.
  *
  * @package WPGraphQL\Extensions\WooCommerce\Mutation
  * @since 0.1.0
@@ -15,15 +15,15 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 
 /**
- * Class - Cart_Apply_Coupon
+ * Class - Cart_Remove_Coupon
  */
-class Cart_Apply_Coupon {
+class Cart_Remove_Coupon {
 	/**
 	 * Registers mutation
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
-			'applyCoupon',
+			'removeCoupon',
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
@@ -79,25 +79,15 @@ class Cart_Apply_Coupon {
 			// Get the coupon.
 			$the_coupon = new \WC_Coupon( $input['code'] );
 
-			// Prevent adding coupons by post ID.
-			if ( $the_coupon->get_code() !== $input['code'] ) {
-				throw new UserError( __( 'No coupon found with the code provided', 'wp-graphql-woocommerce' ) );
-			}
-
-			// Check it can be used with cart.
-			if ( ! $the_coupon->is_valid() ) {
-				throw new UserError( $the_coupon->get_error_message() );
-			}
-
 			// Check if applied.
-			if ( \WC()->cart->has_discount( $input['code'] ) ) {
-				throw new UserError( __( 'This coupon has already been applied to the cart', 'wp-graphql-woocommerce' ) );
+			if ( ! \WC()->cart->has_discount( $input['code'] ) ) {
+				throw new UserError( __( 'This coupon has not been applied to the cart.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Get cart item for payload.
-			$success = \WC()->cart->apply_coupon( $input['code'] );
-			if ( false === $success ) {
-				throw new UserError( __( 'Failed to apply coupon. Check for an individual-use coupon on cart.', 'wp-graphql-woocommerce' ) );
+			$success = \WC()->cart->remove_coupon( $input['code'] );
+			if ( true !== $success ) {
+				throw new UserError( __( 'Failed to remove coupon.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Return payload.
