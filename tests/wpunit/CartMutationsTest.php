@@ -14,7 +14,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
     }
 
     public function tearDown() {
-        // your tear down methods here
+        \WC()->cart->empty_cart();
 
         parent::tearDown();
     }
@@ -239,7 +239,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         // Remove cart item.
         $cart->remove_cart_item( $cart_item['key'] );
 
-        $mutation   = '
+        $mutation = '
             mutation restoreCartItem( $input: RestoreCartItemInput! ) {
                 restoreCartItem( input: $input ) {
                     clientMutationId
@@ -302,5 +302,88 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         $this->assertEqualSets( $expected, $actual );
         $this->assertNotEmpty( \WC()->cart->get_cart_item( $cart_item['key'] ) );
+    }
+
+    public function testEmptyCartMutation() {
+        $cart = WC()->cart;
+
+        // Create products.
+        $ids  = $this->variation->create( $this->product->create_variable() );
+
+        // Add items to carts.
+        $cart_item = $cart->get_cart_item(
+            $cart->add_to_cart( $ids['product'], 2, $ids['variations'][0] )
+        );
+
+        $mutation = '
+            mutation emptyCart( $input: EmptyCartInput! ) {
+                emptyCart( input: $input ) {
+                    clientMutationId
+                    cart {
+                        contents {
+                            nodes {
+                                key
+                                product {
+                                    id
+                                }
+                                variation {
+                                    id
+                                }
+                                quantity
+                                subtotal
+                                subtotalTax
+                                total
+                                tax
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+        $variables = array(
+            'input' => array( 'clientMutationId' => 'someId' ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'operation_name' => 'emptyCart',
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $expected = array(
+            'data' => array(
+                'emptyCart' => array(
+                    'clientMutationId' => 'someId',
+                    'cart'         => array(
+                        'contents' => array(
+                            'nodes' => array(
+                                array(
+                                    'key'          => $cart_item['key'],
+                                    'product'      => array(
+                                        'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+                                    ),
+                                    'variation'    => array(
+                                        'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
+                                    ),
+                                    'quantity'     => $cart_item['quantity'],
+                                    'subtotal'     => floatval( $cart_item['line_subtotal'] ),
+                                    'subtotalTax'  => floatval( $cart_item['line_subtotal_tax'] ),
+                                    'total'        => floatval( $cart_item['line_total'] ),
+                                    'tax'          => floatval( $cart_item['line_tax'] ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+
+        $this->assertEqualSets( $expected, $actual );
+        $this->assertTrue( \WC()->cart->is_empty() );
     }
 }
