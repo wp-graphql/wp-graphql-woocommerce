@@ -25,6 +25,7 @@ class Cart_Type {
 	 * Register Cart-related types and queries to the WPGraphQL schema
 	 */
 	public static function register() {
+		self::register_cart_fee();
 		self::register_cart_item();
 		self::register_cart();
 
@@ -52,13 +53,34 @@ class Cart_Type {
 				),
 				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$cart = WC()->cart;
-					$item = $cart->get_cart_item( $args['key'] );
+					$item = Factory::resolve_cart_item( $args['key'] );
 					if ( empty( $item ) ) {
 						throw new UserError( __( 'The key input is invalid', 'wp-graphql-woocommerce' ) );
 					}
 
 					return $item;
+				},
+			)
+		);
+
+		register_graphql_field(
+			'RootQuery',
+			'cartFee',
+			array(
+				'type'        => 'CartFee',
+				'args'        => array(
+					'id' => array(
+						'type' => array( 'non_null' => 'ID' ),
+					),
+				),
+				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$fee = Factory::resolve_cart_fee( $args['id'] );
+					if ( empty( $fee ) ) {
+						throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+					}
+
+					return $fee;
 				},
 			)
 		);
@@ -189,6 +211,14 @@ class Cart_Type {
 								: null;
 						},
 					),
+					'fees'                    => array(
+						'type'        => array( 'list_of' => 'CartFee' ),
+						'description' => __( 'Additional fees on the cart.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$fees = $source->get_fees();
+							return ! empty( $fees ) ? array_values( $fees ) : null;
+						},
+					),
 				),
 			)
 		);
@@ -261,6 +291,62 @@ class Cart_Type {
 						'description' => __( 'Item\'s tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+						},
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Registers CartFee type
+	 */
+	public static function register_cart_fee() {
+		register_graphql_object_type(
+			'CartFee',
+			array(
+				'description' => __( 'An additional fee', 'wp-graphql-woocommerce' ),
+				'fields'       => array(
+					'id'       => array(
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'Fee ID', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return ! empty( $source->id ) ? $source->id : null;
+						},
+					),
+					'name'     => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Fee name', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return ! empty( $source->name ) ? $source->name : null;
+						},
+					),
+					'taxClass' => array(
+						'type'        => 'TaxClassEnum',
+						'description' => __( 'Fee tax class', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return ! empty( $source->tax_class ) ? $source->tax_class : null;
+						},
+					),
+					'taxable'  => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Is fee taxable?', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return ! empty( $source->taxable ) ? $source->taxable : null;
+						},
+					),
+					'amount'   => array(
+						'type'        => 'Float',
+						'description' => __( 'Fee amount', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return ! empty( $source->amount ) ? $source->amount : null;
+						},
+					),
+					'total'    => array(
+						'type'        => 'Float',
+						'description' => __( 'Fee total', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return ! empty( $source->total ) ? $source->total : null;
 						},
 					),
 				),
