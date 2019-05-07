@@ -166,6 +166,36 @@ class Factory {
 	}
 
 	/**
+	 * Resolves a cart item by key.
+	 *
+	 * @param string $id cart item key.
+	 *
+	 * @return object
+	 */
+	public static function resolve_cart_item( $id ) {
+		$item = WC()->cart->get_cart_item( $id );
+
+		return $item;
+	}
+
+	/**
+	 * Resolves a fee object by ID.
+	 *
+	 * @param int $id Fee object generated ID.
+	 *
+	 * @return object
+	 */
+	public static function resolve_cart_fee( $id ) {
+		$fees = WC()->cart->get_fees();
+
+		if ( ! empty( $fees[ $id ] ) ) {
+			return $fees[ $id ];
+		}
+
+		return null;
+	}
+
+	/**
 	 * Resolves Coupon connections
 	 *
 	 * @param mixed       $source     - Data resolver for connection source.
