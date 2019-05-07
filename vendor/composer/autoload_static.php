@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb86120d91acd1402be294c91a0f7a14a
+class ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -66,6 +66,7 @@ class ComposerStaticInitb86120d91acd1402be294c91a0f7a14a
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shipping_Method' => __DIR__ . '/../..' . '/src/model/class-shipping-method.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Shop_Manager_Caps' => __DIR__ . '/../..' . '/src/model/trait-shop-manager-caps.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/src/model/class-tax-rate.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Fee' => __DIR__ . '/../..' . '/src/mutation/class-cart-add-fee.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-add-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-apply-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Empty' => __DIR__ . '/../..' . '/src/mutation/class-cart-empty.php',
@@ -108,9 +109,9 @@ class ComposerStaticInitb86120d91acd1402be294c91a0f7a14a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb86120d91acd1402be294c91a0f7a14a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb86120d91acd1402be294c91a0f7a14a::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitb86120d91acd1402be294c91a0f7a14a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7::$classMap;
 
         }, null, ClassLoader::class);
     }

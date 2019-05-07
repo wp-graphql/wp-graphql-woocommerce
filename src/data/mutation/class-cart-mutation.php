@@ -13,7 +13,7 @@ namespace WPGraphQL\Extensions\WooCommerce\Data\Mutation;
  */
 class Cart_Mutation {
 	/**
-	 * Return array of data to be when defining a cart item
+	 * Return array of data to be when defining a cart item.
 	 *
 	 * @param array       $input   input data describing cart item.
 	 * @param AppContext  $context AppContext instance.
@@ -31,5 +31,25 @@ class Cart_Mutation {
 		);
 
 		return apply_filters( 'woocommerce_new_cart_item_data', $cart_item_args, $input, $context, $info );
+	}
+
+	/**
+	 * Return array of data to be when defining a cart fee.
+	 *
+	 * @param array       $input   input data describing cart item.
+	 * @param AppContext  $context AppContext instance.
+	 * @param ResolveInfo $info    query info.
+	 *
+	 * @return array
+	 */
+	public static function prepare_cart_fee( $input, $context, $info ) {
+		$cart_item_args = array(
+			$input['name'],
+			$input['amount'],
+			! empty( $input['taxable'] ) ? $input['taxable'] : false,
+			! empty( $input['taxClass'] ) ? $input['taxClass'] : '',
+		);
+
+		return apply_filters( 'woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
 }

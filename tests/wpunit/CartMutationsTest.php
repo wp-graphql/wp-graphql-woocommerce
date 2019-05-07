@@ -5,6 +5,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
     private $coupon;
     private $product;
     private $variation;
+    private $cart;
 
     public function setUp() {
         parent::setUp();
@@ -13,6 +14,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->coupon    = $this->getModule('\Helper\Wpunit')->coupon();
         $this->product   = $this->getModule('\Helper\Wpunit')->product();
         $this->variation = $this->getModule('\Helper\Wpunit')->product_variation();
+        $this->cart      = $this->getModule('\Helper\Wpunit')->cart();
     }
 
     public function tearDown() {
@@ -585,6 +587,67 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             ),
                         ),
                     ),
+                ),
+            ),
+        );
+
+        $this->assertEqualSets( $expected, $actual );
+    }
+
+    public function testAddFeeMutation() {
+        $cart = WC()->cart;
+
+        // Create product and coupon.
+        $product_id  = $this->product->create_simple();
+        $coupon_code = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array( 'product_ids' => array( $product_id ) )
+            )
+        );
+
+        // Add item and coupon to cart.
+        $cart->add_to_cart( $product_id, 3 );
+        $cart->apply_coupon( $coupon_code );
+
+        $mutation = '
+            mutation addFee( $input: AddFeeInput! ) {
+                addFee( input: $input ) {
+                    clientMutationId
+                    cartFee {
+                        id
+                        name
+                        taxClass
+                        taxable
+                        amount
+                        total
+                    }
+                }
+            }
+        ';
+
+        $variables = array(
+            'input' => array(
+                'clientMutationId' => 'someId',
+                'name'             => 'extra_fee',
+                'amount'           => 49.99,
+            ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'operation_name' => 'addFee',
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $expected = array(
+            'data' => array(
+                'addFee' => array(
+                    'clientMutationId' => 'someId',
+                    'cartFee'          => $this->cart->print_fee_query( 'extra_fee' ),
                 ),
             ),
         );
