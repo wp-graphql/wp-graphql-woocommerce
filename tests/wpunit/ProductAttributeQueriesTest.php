@@ -21,7 +21,6 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
     }
 
     public function tearDown() {
-        \WPGraphQL::clear_schema();
         parent::tearDown();
     }
 
