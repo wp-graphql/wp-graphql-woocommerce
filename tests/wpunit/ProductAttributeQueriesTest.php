@@ -14,7 +14,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
         $this->customer         = $this->factory->user->create( array( 'role' => 'customer' ) );
         $this->helper           = $this->getModule('\Helper\Wpunit')->product();
-        $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
+        $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();        
         $this->product_id       = $this->helper->create_variable();
         $this->variation_ids    = $this->variation_helper->create( $this->product_id )['variations'];
         
@@ -46,7 +46,13 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'id' => $this->helper->to_relay_id( $this->product_id ) );
-        $actual    = $actual = do_graphql_request( $query, 'attributeQuery', $variables );
+        $actual    = graphql(
+            array(
+                'query' => $query,
+                'operation_name' => 'attributeQuery',
+                'variables' => $variables,
+            )
+        );
 		$expected = array(
             'data' => array(
                 'product' => array(
@@ -78,7 +84,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'size' => 'small' );
-        $actual    = $actual = graphql(
+        $actual    = graphql(
             array(
                 'query'          => $query,
                 'operation_name' =>'attributeConnectionQuery',
@@ -125,7 +131,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'size' => 'small' );
-        $actual    = $actual = graphql(
+        $actual    = graphql(
             array(
                 'query'          => $query,
                 'operation_name' => 'attributeConnectionQuery',
