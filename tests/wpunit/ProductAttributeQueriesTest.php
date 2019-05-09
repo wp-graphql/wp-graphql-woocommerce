@@ -14,13 +14,14 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
         $this->customer         = $this->factory->user->create( array( 'role' => 'customer' ) );
         $this->helper           = $this->getModule('\Helper\Wpunit')->product();
-        $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
+        $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();        
         $this->product_id       = $this->helper->create_variable();
         $this->variation_ids    = $this->variation_helper->create( $this->product_id )['variations'];
-
+        
     }
 
     public function tearDown() {
+        \WPGraphQL::clear_schema();
         parent::tearDown();
     }
 
@@ -45,7 +46,13 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'id' => $this->helper->to_relay_id( $this->product_id ) );
-        $actual    = $actual = do_graphql_request( $query, 'attributeQuery', $variables );
+        $actual    = graphql(
+            array(
+                'query' => $query,
+                'operation_name' => 'attributeQuery',
+                'variables' => $variables,
+            )
+        );
 		$expected = array(
             'data' => array(
                 'product' => array(
@@ -77,7 +84,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'size' => 'small' );
-        $actual    = $actual = graphql(
+        $actual    = graphql(
             array(
                 'query'          => $query,
                 'operation_name' =>'attributeConnectionQuery',
@@ -124,7 +131,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
         $variables = array( 'size' => 'small' );
-        $actual    = $actual = graphql(
+        $actual    = graphql(
             array(
                 'query'          => $query,
                 'operation_name' => 'attributeConnectionQuery',
@@ -137,26 +144,24 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                     'nodes' => array(
                         array(
                             'variations' => array(
-                                'nodes' => array(
-                                    $this->variation_helper->print_nodes(
-                                        $this->variation_ids,
-                                        array(
-                                            'filter' => function( $id ) {
-                                                $variation = new \WC_Product_Variation( $id );
-                                                $small_attribute = array_filter(
-                                                    $variation->get_attributes(),
-                                                    function( $attribute ) {
-                                                        return 'small' === $attribute;
-                                                    }
-                                                );
-                                                return ! empty( $small_attribute );
-                                            }
-                                        )
+                                'nodes' => $this->variation_helper->print_nodes(
+                                    $this->variation_ids,
+                                    array(
+                                        'filter' => function( $id ) {
+                                            $variation = new \WC_Product_Variation( $id );
+                                            $small_attribute = array_filter(
+                                                $variation->get_attributes(),
+                                                function( $attribute ) {
+                                                    return 'small' === $attribute;
+                                                }
+                                            );
+                                            return ! empty( $small_attribute );
+                                        },
                                     )
-                                )
-                            )
-                        )
-                    )
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
             ),
         );

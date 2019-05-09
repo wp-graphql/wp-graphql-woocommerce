@@ -48,7 +48,9 @@ class ProductVariationHelper extends WCG_Helper {
 			$taxonomy_name = wc_attribute_taxonomy_name( $attribute_name );
 
 			// Degister taxonomy which other tests may have created...
-			unregister_taxonomy( $taxonomy_name );
+			if ( true === taxonomy_exists( $taxonomy_name ) ) {
+				unregister_taxonomy( $taxonomy_name );
+			}
 
 			$attribute_id = wc_create_attribute(
 				array(
