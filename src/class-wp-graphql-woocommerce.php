@@ -84,6 +84,11 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 				$attributes[] = 'pa_' . $tax->attribute_name;
 			}
 
+			/**
+			 * Filter the $attributes to allow the removal or addition of product attribute taxonomies
+			 *
+			 * @param array $attributes Product attributes being passed.
+			 */
 			return apply_filters(
 				'register_graphql_wc_product_attributes_taxonomies',
 				$attributes
