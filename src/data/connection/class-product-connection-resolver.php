@@ -43,10 +43,10 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
 	 */
 	public function __construct( $source, $args, $context, $info ) {
-		/**
-		 * Set the post type for the resolver
-		 */
-		$this->post_type = 'product';
+		// @codingStandardsIgnoreLine.
+		$this->post_type = wc_graphql_ends_with( $info->fieldName, 'ariations' )
+			? 'product_variation'
+			: 'product';
 
 		add_filter(
 			'woocommerce_product_data_store_cpt_get_products_query',
@@ -116,19 +116,22 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * Creates query arguments array
 	 */
 	public function get_query_args() {
+		global $wpdb;
+
 		// Prepare for later use.
 		$last  = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
-		$post_type_obj = get_post_type_object( 'product' );
+		$post_type_obj = get_post_type_object( $this->post_type );
 		$query_args    = array(
+			'post_type'           => $this->post_type,
 			'post_parent'         => 0,
-			'status'              => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
+			'post_status'         => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
 			'perm'                => 'readable',
 			'no_rows_found'       => true,
-			'return'              => 'ids',
-			'limit'               => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'fields'              => 'ids',
+			'posts_per_page'      => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 			'ignore_sticky_posts' => true,
 		);
 
@@ -192,35 +195,30 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['post__in']    = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->variation_ids, $query_args['post__in'] )
 							: $this->source->variation_ids;
-						$query_args['type']        = 'variation';
+						$query_args['post_type']   = 'product_variation';
 					}
 					break;
 
 				case is_a( $this->source, Term::class ):
 					if ( 'variations' === $this->info->fieldName ) {
-						$query_args['type'] = 'variation';
-
-						// Add meta data.
-						$meta_key                = $this->get_attribute_meta_key( $this->source->taxonomyName );
-						$query_args[ $meta_key ] = $this->source->slug;
-
-						add_filter(
-							'woocommerce_product_data_store_cpt_get_products_query',
-							function( $wp_query_args ) use ( $meta_key ) {
-								if ( isset( $wp_query_args[ $meta_key ] ) ) {
-									$wp_query_args['meta_query'][] = array(
-										'key'     => $meta_key,
-										'value'   => $wp_query_args[ $meta_key ],
-										'compare' => 'LIKE',
-									);
-									unset( $wp_query_args[ $meta_key ] );
-								}
-
-								return $wp_query_args;
-							},
-							10,
-							2
+						unset( $query_args['post_parent'] );
+						$query_args['post_type'] = 'product_variation';
+						$variation_ids           = $wpdb->get_col(
+							$wpdb->prepare(
+								"SELECT ID
+								FROM {$wpdb->prefix}posts
+								WHERE ID IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = %s AND meta_value = %s)
+								AND post_type = 'product_variation'",
+								$this->get_attribute_meta_key( $this->source->taxonomyName ),
+								$this->source->slug
+							)
 						);
+						if ( ! empty( $variation_ids ) ) {
+							$variation_ids          = array_map( 'absint', $variation_ids );
+							$query_args['post__in'] = isset( $query_args['post__in'] )
+								? array_intersect( $variation_ids, $query_args['post__in'] )
+								: $variation_ids;
+						}
 					} else {
 						if ( empty( $query_args['tax_query'] ) ) {
 							$query_args['tax_query'] = array(); // WPCS: slow query ok.
@@ -242,6 +240,18 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
+		}
+
+		if ( ! current_user_can( $post_type_obj->cap->read_private_posts ) ) {
+			if ( empty( $query_args['tax_query'] ) ) {
+				$query_args['tax_query'] = array(); // WPCS: slow query ok.
+			}
+			$query_args['tax_query'][] = array(
+				'taxonomy' => 'product_visibility',
+				'field'    => 'slug',
+				'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+				'operator' => 'NOT IN',
+			);
 		}
 
 		/**
@@ -271,18 +281,16 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
-		//wp_send_json( $query_args );
-
 		return $query_args;
 	}
 
 	/**
 	 * Executes query
 	 *
-	 * @return \WC_Product_Query
+	 * @return \WP_Query
 	 */
 	public function get_query() {
-		return new \WC_Product_Query( $this->get_query_args() );
+		return new \WP_Query( $this->get_query_args() );
 	}
 
 	/**
@@ -291,7 +299,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->get_products() ) ? $this->query->get_products() : array();
+		return ! empty( $this->query->posts ) ? $this->query->posts : array();
 	}
 
 	/**
@@ -307,25 +315,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_shared_input_fields( $where_args );
 
-		$key_mapping = array(
-			'post_parent'         => 'parent',
-			'post_parent__not_in' => 'parent_exclude',
-			'post__not_in'        => 'exclude',
-		);
-
-		foreach ( $key_mapping as $key => $field ) {
-			if ( isset( $args[ $key ] ) ) {
-				$args[ $field ] = $args[ $key ];
-				unset( $args[ $key ] );
-			}
-		}
-
 		if ( ! empty( $where_args['slug'] ) ) {
 			$args['name'] = $where_args['slug'];
 		}
 
 		if ( ! empty( $where_args['status'] ) ) {
-			$args['status'] = $where_args['status'];
+			$args['post_status'] = $where_args['status'];
 		}
 
 		if ( ! empty( $where_args['search'] ) ) {
@@ -426,23 +421,86 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			);
 		}
 
-		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
-			$tax_query['relation'] = 'AND';
+		if ( isset( $where_args['featured'] ) ) {
+			$product_visibility_term_ids = wc_get_product_visibility_term_ids();
+			if ( $where_args['featured'] ) {
+				$tax_query[] = array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'term_taxonomy_id',
+					'terms'    => array( $product_visibility_term_ids['featured'] ),
+				);
+				$tax_query[] = array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'term_taxonomy_id',
+					'terms'    => array( $product_visibility_term_ids['exclude-from-catalog'] ),
+					'operator' => 'NOT IN',
+				);
+			} else {
+				$tax_query[] = array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'term_taxonomy_id',
+					'terms'    => array( $product_visibility_term_ids['featured'] ),
+					'operator' => 'NOT IN',
+				);
+			}
 		}
 
-		if ( isset( $where_args['featured'] ) ) {
-			$args['featured'] = $where_args['featured'];
+		// Handle visibility.
+		$post_type_obj = get_post_type_object( $this->post_type );
+		if ( ! empty( $where_args['visibility'] ) && current_user_can( $post_type_obj->cap->read_private_posts ) ) {
+			switch ( $where_args['visibility'] ) {
+				case 'search':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-search' ),
+						'operator' => 'NOT IN',
+					);
+					break;
+				case 'catalog':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-catalog' ),
+						'operator' => 'NOT IN',
+					);
+					break;
+				case 'visible':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+						'operator' => 'NOT IN',
+					);
+					break;
+				case 'hidden':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+						'operator' => 'AND',
+					);
+					break;
+			}
+		}
+
+		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
+			$tax_query['relation'] = 'AND';
 		}
 
 		if ( ! empty( $tax_query ) ) {
 			$args['tax_query'] = $tax_query; // WPCS: slow query ok.
 		}
 
+		$meta_query = array();
 		if ( ! empty( $where_args['sku'] ) ) {
-			$args['sku'] = $where_args['sku'];
+			$meta_query[] = array(
+				'key'     => '_sku',
+				'value'   => $where_args['sku'],
+				'compare' => 'LIKE',
+			);
 		}
 
-		$meta_query = array();
 		if ( ! empty( $where_args['minPrice'] ) || ! empty( $where_args['maxPrice'] ) ) {
 			$current_min_price = isset( $where_args['minPrice'] )
 				? floatval( $where_args['minPrice'] )
@@ -463,12 +521,16 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			);
 		}
 
-		if ( ! empty( $meta_query ) ) {
-			$args['meta_query'] = $meta_query; // WPCS: slow query ok.
+		if ( isset( $where_args['stockStatus'] ) ) {
+			$meta_query[] = array(
+				'key'     => '_stock_status',
+				'value'   => $where_args['stockStatus'],
+				'compare' => is_array( $where_args['stockStatus'] ) ? 'IN' : '=',
+			);
 		}
 
-		if ( isset( $where_args['stockStatus'] ) ) {
-			$args['stock_status'] = $where_args['stockStatus'];
+		if ( ! empty( $meta_query ) ) {
+			$args['meta_query'] = $meta_query; // WPCS: slow query ok.
 		}
 
 		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {

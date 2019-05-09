@@ -17,10 +17,11 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->product_id       = $this->helper->create_variable();
         $this->variation_ids    = $this->variation_helper->create( $this->product_id )['variations'];
-
+        
     }
 
     public function tearDown() {
+        \WPGraphQL::clear_schema();
         parent::tearDown();
     }
 
@@ -137,26 +138,24 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                     'nodes' => array(
                         array(
                             'variations' => array(
-                                'nodes' => array(
-                                    $this->variation_helper->print_nodes(
-                                        $this->variation_ids,
-                                        array(
-                                            'filter' => function( $id ) {
-                                                $variation = new \WC_Product_Variation( $id );
-                                                $small_attribute = array_filter(
-                                                    $variation->get_attributes(),
-                                                    function( $attribute ) {
-                                                        return 'small' === $attribute;
-                                                    }
-                                                );
-                                                return ! empty( $small_attribute );
-                                            }
-                                        )
+                                'nodes' => $this->variation_helper->print_nodes(
+                                    $this->variation_ids,
+                                    array(
+                                        'filter' => function( $id ) {
+                                            $variation = new \WC_Product_Variation( $id );
+                                            $small_attribute = array_filter(
+                                                $variation->get_attributes(),
+                                                function( $attribute ) {
+                                                    return 'small' === $attribute;
+                                                }
+                                            );
+                                            return ! empty( $small_attribute );
+                                        },
                                     )
-                                )
-                            )
-                        )
-                    )
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
             ),
         );

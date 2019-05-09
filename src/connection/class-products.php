@@ -247,7 +247,7 @@ class Products extends WC_Connection {
 				'description' => __( 'Limit result set to products with a specific attribute term ID (required an assigned attribute).', 'wp-graphql-woocommerce' ),
 			),
 			'stockStatus'       => array(
-				'type'        => 'StockStatusEnum',
+				'type'        => array( 'list_of' => 'StockStatusEnum' ),
 				'description' => __( 'Limit result set to products in stock or out of stock.', 'wp-graphql-woocommerce' ),
 			),
 			'onSale'            => array(
@@ -265,6 +265,10 @@ class Products extends WC_Connection {
 			'search'            => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products based on a keyword search.', 'wp-graphql-woocommerce' ),
+			),
+			'visibility'        => array(
+				'type'        => 'CatalogVisibilityEnum',
+				'description' => __( 'Limit result set to products with a specific visibility level.', 'wp-graphql-woocommerce' ),
 			),
 		);
 
