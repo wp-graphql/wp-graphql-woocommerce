@@ -10,7 +10,6 @@ notifications:
 
 branches:
   only:
-    - master
     - develop
 
 cache:
