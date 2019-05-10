@@ -38,42 +38,17 @@ class Filters {
 	 * Register filters
 	 */
 	public static function load() {
-		add_filter(
-			'register_taxonomy_args',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'register_taxonomy_args',
-			),
-			10,
-			2
-		);
-
-		add_filter(
-			'graphql_data_loaders',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'graphql_data_loaders',
-			),
-			10,
-			2
-		);
-
+		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );
+		add_filter( 'graphql_data_loaders', array( __CLASS__, 'graphql_data_loaders' ), 10, 2 );
 		add_filter(
 			'graphql_post_object_connection_query_args',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'graphql_post_object_connection_query_args',
-			),
+			array( __CLASS__, 'graphql_post_object_connection_query_args' ),
 			10,
 			5
 		);
-
 		add_filter(
 			'graphql_term_object_connection_query_args',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Filters',
-				'graphql_term_object_connection_query_args',
-			),
+			array( __CLASS__, 'graphql_term_object_connection_query_args' ),
 			10,
 			5
 		);
@@ -144,6 +119,15 @@ class Filters {
 			$args['show_in_graphql']     = true;
 			$args['graphql_single_name'] = 'shippingClass';
 			$args['graphql_plural_name'] = 'shippingClasses';
+		}
+
+		// Filter product attributes taxonomies.
+		$attributes = \WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
+		if ( in_array( $taxonomy, $attributes, true ) ) {
+			$singular_name               = graphql_format_field_name( $taxonomy );
+			$args['show_in_graphql']     = true;
+			$args['graphql_single_name'] = $singular_name;
+			$args['graphql_plural_name'] = \Inflect::pluralize( $singular_name );
 		}
 
 		return $args;
