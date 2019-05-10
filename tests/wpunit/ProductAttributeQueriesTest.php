@@ -69,8 +69,8 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function testProductAttributeToProductConnectionQuery() {
         $query = '
-            query attributeConnectionQuery( $size: [String!] ) {
-                paSizes( where: { name: $size } ) {
+            query attributeConnectionQuery( $color: [String!] ) {
+                paColors( where: { name: $color } ) {
                     nodes {
                         products {
                             nodes {
@@ -82,7 +82,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-        $variables = array( 'size' => 'small' );
+        $variables = array( 'color' => 'red' );
         $actual    = graphql(
             array(
                 'query'          => $query,
@@ -92,7 +92,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         );
 		$expected = array(
             'data' => array(
-                'paSizes' => array (
+                'paColors' => array (
                     'nodes' => array(
                         array(
                             'products' => array(

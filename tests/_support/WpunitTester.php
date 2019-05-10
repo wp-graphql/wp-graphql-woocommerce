@@ -24,4 +24,5 @@ class WpunitTester extends \Codeception\Actor {
 	/**
 	 * Define custom actions here
 	 */
+
 }

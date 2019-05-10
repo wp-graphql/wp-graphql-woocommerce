@@ -27,103 +27,7 @@ class ProductVariationHelper extends WCG_Helper {
 		return $slug;
 	}
 
-	public function create_attribute( $raw_name = 'size', $terms = array( 'small' ) ) {
-		global $wpdb, $wc_product_attributes;
-
-		// Make sure caches are clean.
-		delete_transient( 'wc_attribute_taxonomies' );
-		WC_Cache_Helper::incr_cache_prefix( 'woocommerce-attributes' );
-
-		// These are exported as labels, so convert the label to a name if possible first.
-		$attribute_labels = wp_list_pluck( wc_get_attribute_taxonomies(), 'attribute_label', 'attribute_name' );
-		$attribute_name   = array_search( $raw_name, $attribute_labels, true );
-
-		if ( ! $attribute_name ) {
-			$attribute_name = wc_sanitize_taxonomy_name( $raw_name );
-		}
-
-		$attribute_id = wc_attribute_taxonomy_id_by_name( $attribute_name );
-
-		if ( ! $attribute_id ) {
-			$taxonomy_name = wc_attribute_taxonomy_name( $attribute_name );
-
-			// Degister taxonomy which other tests may have created...
-			if ( true === taxonomy_exists( $taxonomy_name ) ) {
-				unregister_taxonomy( $taxonomy_name );
-			}
-
-			$attribute_id = wc_create_attribute(
-				array(
-					'name'         => $raw_name,
-					'slug'         => $attribute_name,
-					'type'         => 'select',
-					'order_by'     => 'menu_order',
-					'has_archives' => 0,
-				)
-			);
-
-			// Register as taxonomy.
-			register_taxonomy(
-				$taxonomy_name,
-				apply_filters( 'woocommerce_taxonomy_objects_' . $taxonomy_name, array( 'product' ) ),
-				apply_filters(
-					'woocommerce_taxonomy_args_' . $taxonomy_name,
-					array(
-						'labels'       => array(
-							'name' => $raw_name,
-						),
-						'hierarchical' => false,
-						'show_ui'      => false,
-						'query_var'    => true,
-						'rewrite'      => false,
-					)
-				)
-			);
-
-			// Set product attributes global.
-			$wc_product_attributes = array();
-
-			foreach ( wc_get_attribute_taxonomies() as $taxonomy ) {
-				$wc_product_attributes[ wc_attribute_taxonomy_name( $taxonomy->attribute_name ) ] = $taxonomy;
-			}
-		}
-
-		$attribute = wc_get_attribute( $attribute_id );
-		$return    = array(
-			'attribute_name'     => $attribute->name,
-			'attribute_taxonomy' => $attribute->slug,
-			'attribute_id'       => $attribute_id,
-			'term_ids'           => array(),
-		);
-
-		foreach ( $terms as $term ) {
-			$result = term_exists( $term, $attribute->slug );
-
-			if ( ! $result ) {
-				$result = wp_insert_term( $term, $attribute->slug );
-				$return['term_ids'][] = $result['term_id'];
-			} else {
-				$return['term_ids'][] = $result['term_id'];
-			}
-		}
-
-		return $return;
-	}
-
 	public function create( $product_id, $args = array() ) {
-		$product = new WC_Product_Variable( $product_id );
-
-		// Create and add size attribute.
-		$attribute_data = $this->create_attribute( 'size', array( 'small', 'medium', 'large' ) ); // Create all attribute related things.
-		$attribute      = new WC_Product_Attribute();
-		$attribute->set_id( $attribute_data['attribute_id'] );
-		$attribute->set_name( $attribute_data['attribute_taxonomy'] );
-		$attribute->set_options( $attribute_data['term_ids'] );
-		$attribute->set_position( 1 );
-		$attribute->set_visible( true );
-		$attribute->set_variation( true );
-		$product->set_attributes( array( $attribute ) );
-
 		// Create small size variation
 		$variation_1 = new WC_Product_Variation();
 		$variation_1->set_props(
@@ -166,7 +70,7 @@ class ProductVariationHelper extends WCG_Helper {
 				$variation_2->save(),
 				$variation_3->save(),
 			),
-			'product'    => $product->save(),
+			'product'    => $product_id,
 		);
 	}
 

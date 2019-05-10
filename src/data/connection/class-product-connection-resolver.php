@@ -226,7 +226,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['tax_query'][] = array( // WPCS: slow query ok.
 							'taxonomy' => $this->source->taxonomyName,
 							'field'    => 'term_id',
-							'terms'    => array( $this->source->term_id ),
+							'terms'    => $this->source->term_id,
 						);
 					}
 					break;
