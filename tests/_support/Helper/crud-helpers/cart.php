@@ -49,6 +49,23 @@ class CartHelper extends WCG_Helper {
 		);
 	}
 
+	public function print_fee_query( $id ) {
+		$cart = WC()->cart;
+		$fees = $cart->get_fees();
+		$fee  = ! empty( $fees[ $id ] ) ? $fees[ $id ] : null;
+
+		return !empty( $fee ) 
+			? array(
+				'id'       => $fee->id,
+				'name'     => $fee->name,
+				'taxable'  => $fee->taxable,
+				'taxClass' => $fee->tax_class,
+				'amount'   => $fee->amount,
+				'total'    => $fee->total,
+			)
+			: null;
+	}
+
 	public function print_nodes( $processors = array(), $_ = null ) {
 		$cart = WC()->cart;
 		$ids = array_keys( $cart->get_cart_contents() );
@@ -60,6 +77,31 @@ class CartHelper extends WCG_Helper {
 				return strcmp( $key_a, $key_b );
 			},
 			'filter' => function( $key ) {
+				return true;
+			}
+		);
+
+		$processors = array_merge( $default_processors, $processors );
+
+		$results = array_filter( $ids, $processors['filter'] );
+		if( ! empty( $results ) ) {
+			usort( $results, $processors['sorter'] );
+		}
+
+		return array_values( array_map( $processors['mapper'], $results ) );
+	}
+
+	public function print_fee_nodes( $processors = array(), $_ = null ) {
+		$cart = WC()->cart;
+		$ids = array_keys( $cart->get_fees() );
+		$default_processors = array(
+			'mapper' => function( $id ) {
+				return array( 'id' => $id ); 
+			},
+			'sorter' => function( $id_a, $id_b ) {
+				return 0;
+			},
+			'filter' => function( $id ) {
 				return true;
 			}
 		);

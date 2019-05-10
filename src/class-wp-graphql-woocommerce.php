@@ -11,6 +11,8 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG' );
+
 if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 	/**
 	 * Class WP_GraphQL_WooCommerce
@@ -26,29 +28,11 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		private static $instance;
 
 		/**
-		 * Stores the allowed WooCommerce post-types
-		 *
-		 * @var array
-		 * @access public
-		 */
-		public static $allowed_post_types;
-
-		/**
-		 * Singleton provider
+		 * WP_GraphQL_WooCommerce Constructor
 		 */
 		public static function instance() {
-			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof WPGraphQLWooCommerce ) ) {
-				self::$instance           = new WP_GraphQL_WooCommerce();
-				self::$allowed_post_types = apply_filters(
-					'graphql_woocommerce_post_types',
-					array(
-						'shop_coupon',
-						'product',
-						'product_variation',
-						'shop_order',
-						'shop_order_refund',
-					)
-				);
+			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+				self::$instance = new self();
 				self::$instance->includes();
 				self::$instance->actions();
 				self::$instance->filters();
@@ -82,6 +66,32 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 					'shop_order',
 					'shop_order_refund',
 				)
+			);
+		}
+
+		/**
+		 * Returns WooCommerce product attribute taxonomies to be registered as
+		 * "TermObject" types in the schema.
+		 *
+		 * @return array
+		 */
+		public static function get_product_attribute_taxonomies() {
+			$attribute_taxonomies = \wc_get_attribute_taxonomies();
+
+			// Get taxonomy names.
+			$attributes = array();
+			foreach ( $attribute_taxonomies as $tax ) {
+				$attributes[] = 'pa_' . $tax->attribute_name;
+			}
+
+			/**
+			 * Filter the $attributes to allow the removal or addition of product attribute taxonomies
+			 *
+			 * @param array $attributes Product attributes being passed.
+			 */
+			return apply_filters(
+				'register_graphql_wc_product_attributes_taxonomies',
+				$attributes
 			);
 		}
 
@@ -129,6 +139,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 
 			// Required non-autoloaded classes.
 			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'access-functions.php';
+			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'class-inflect.php';
 		}
 
 		/**

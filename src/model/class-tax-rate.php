@@ -35,7 +35,9 @@ class Tax_Rate extends Model {
 			'rateId',
 		);
 
-		parent::__construct( '', $allowed_restricted_fields, null );
+		$restricted_cap = apply_filters( 'tax_rate_restricted_cap', '' );
+
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
 	}
 
 	/**
