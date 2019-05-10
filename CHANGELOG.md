@@ -1,5 +1,12 @@
 # Change Log
 
+## [release-v0.1.0](https://github.com/kidunot89/wp-graphql-woocommerce/tree/release-v0.1.0) (2019-05-10)
+[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.4-beta...release-v0.1.0)
+
+**Closed issues:**
+
+- Release v0.0.4 Summary [\#66](https://github.com/kidunot89/wp-graphql-woocommerce/issues/66)
+
 ## [v0.0.4-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.4-beta) (2019-05-10)
 [Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.3-beta...v0.0.4-beta)
 
