@@ -54,7 +54,7 @@ class Customer_Address_Input {
 						'description' => __( 'Zip Postal Code', 'wp-graphql-woocommerce' ),
 					),
 					'country'   => array(
-						'type'        => 'String',
+						'type'        => 'CountriesEnum',
 						'description' => __( 'Country', 'wp-graphql-woocommerce' ),
 					),
 					'email'     => array(

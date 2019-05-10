@@ -212,7 +212,6 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				'firstName'             => $this->first_name,
 				'lastName'              => $this->last_name,
 				'billing'               => $this->billing,
-				'shipping'              => $this->shipping,
 				'shippingSameAsBilling' => true,
 			)
 		);

@@ -14,6 +14,7 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Mutation\UserRegister;
 use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\Model\User;
 
 /**
  * Class - Customer_Register
@@ -73,6 +74,12 @@ class Customer_Register {
 					return new Customer( $payload['id'] );
 				},
 			),
+			'viewer'   => array(
+				'type'    => 'User',
+				'resolve' => function ( $payload ) {
+					return new User( $payload['id'] );
+				},
+			),
 		);
 	}
 
@@ -93,8 +100,7 @@ class Customer_Register {
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'register' );
 
 			// Create customer object.
-			\WC()->customer = new \WC_Customer( get_current_user_id(), true );
-			$customer       = \WC()->customer;
+			$customer = new \WC_Customer( get_current_user_id() );
 
 			// Add role and billing and shipping info.
 			$customer->set_role( 'customer' );
