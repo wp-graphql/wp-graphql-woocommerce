@@ -8,8 +8,7 @@ class Wpunit extends \Codeception\Module {
 	 * HOOK:
 	 * triggered after module is created and configuration is loaded
 	 */
-	public function _initialize()
-	{
+	public function _initialize() {
 		require_once __DIR__ . '/crud-helpers/wcg-helper.php';
 		require_once __DIR__ . '/crud-helpers/customer.php';
 		require_once __DIR__ . '/crud-helpers/coupon.php';
@@ -21,6 +20,17 @@ class Wpunit extends \Codeception\Module {
 		require_once __DIR__ . '/crud-helpers/order.php';
 		require_once __DIR__ . '/crud-helpers/refund.php';
 		require_once __DIR__ . '/crud-helpers/cart.php';
+	}
+
+	/**
+	 * HOOK:
+	 * executed before suite.
+	 */
+	public function _beforeSuite( $settings = null ) {
+		$helper = $this->product();
+		$helper->create_attribute( 'size', array( 'small', 'medium', 'large' ) );
+		$helper->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
+		codecept_debug( 'ATTRIBUTES_LOADED' );
 	}
 
 	public function cart() {
