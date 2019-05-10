@@ -21,7 +21,7 @@ class Customer extends Model {
 	/**
 	 * Customer constructor
 	 *
-	 * @param int $id - User ID.
+	 * @param \WC_Customer|int $id - User ID.
 	 *
 	 * @access public
 	 * @return void

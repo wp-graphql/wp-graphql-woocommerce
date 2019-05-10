@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7
+class ComposerStaticInit74353f02ce3c6237766d5f993b2feab4
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -54,6 +54,7 @@ class ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Loader\\WC_Customer_Loader' => __DIR__ . '/../..' . '/src/data/loader/class-wc-customer-loader.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Loader\\WC_Post_Crud_Loader' => __DIR__ . '/../..' . '/src/data/loader/class-wc-post-crud-loader.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Cart_Mutation' => __DIR__ . '/../..' . '/src/data/mutation/class-cart-mutation.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Customer_Mutation' => __DIR__ . '/../..' . '/src/data/mutation/class-customer-mutation.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Filters' => __DIR__ . '/../..' . '/src/class-filters.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Coupon' => __DIR__ . '/../..' . '/src/model/class-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Crud_CPT' => __DIR__ . '/../..' . '/src/model/class-crud-cpt.php',
@@ -73,8 +74,10 @@ class ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-restore-item.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Customer_Register' => __DIR__ . '/../..' . '/src/mutation/class-customer-register.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/src/type/enum/class-backorders.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/src/type/enum/class-catalog-visibility.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Countries' => __DIR__ . '/../..' . '/src/type/enum/class-countries.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-customer-connection-orderby-enum.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/src/type/enum/class-discount-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => __DIR__ . '/../..' . '/src/type/enum/class-manage-stock.php',
@@ -85,6 +88,7 @@ class ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Rate_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-tax-rate-connection-orderby-enum.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Status' => __DIR__ . '/../..' . '/src/type/enum/class-tax-status.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\WC_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/src/type/enum/class-wc-connection-orderby-enum.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\Customer_Address_Input' => __DIR__ . '/../..' . '/src/type/input/class-customer-address-input.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\Product_Attribute_Input' => __DIR__ . '/../..' . '/src/type/input/class-product-attribute-input.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\Tax_Rate_Connection_Orderby_Input' => __DIR__ . '/../..' . '/src/type/input/class-tax-rate-connection-orderby-input.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPInputObject\\WC_Connection_Orderby_Input' => __DIR__ . '/../..' . '/src/type/input/class-wc-connection-orderby-input.php',
@@ -109,9 +113,9 @@ class ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit06470672ea9b323ccc46fe10fea7d4d7::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit74353f02ce3c6237766d5f993b2feab4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit74353f02ce3c6237766d5f993b2feab4::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit74353f02ce3c6237766d5f993b2feab4::$classMap;
 
         }, null, ClassLoader::class);
     }
