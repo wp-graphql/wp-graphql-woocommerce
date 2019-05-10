@@ -1,5 +1,36 @@
 # Change Log
 
+## [v0.0.4-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.4-beta) (2019-05-10)
+[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.3-beta...v0.0.4-beta)
+
+**Implemented enhancements:**
+
+- Add filter for restricted\_cap in models [\#51](https://github.com/kidunot89/wp-graphql-woocommerce/issues/51)
+- Add name to ProductVariation [\#41](https://github.com/kidunot89/wp-graphql-woocommerce/issues/41)
+- Cart type and queries [\#12](https://github.com/kidunot89/wp-graphql-woocommerce/issues/12)
+- addFee mutation [\#63](https://github.com/kidunot89/wp-graphql-woocommerce/pull/63) ([kidunot89](https://github.com/kidunot89))
+- CartFee type and queries [\#62](https://github.com/kidunot89/wp-graphql-woocommerce/pull/62) ([kidunot89](https://github.com/kidunot89))
+- removeCoupon mutation. [\#61](https://github.com/kidunot89/wp-graphql-woocommerce/pull/61) ([kidunot89](https://github.com/kidunot89))
+- applyCoupon mutation [\#60](https://github.com/kidunot89/wp-graphql-woocommerce/pull/60) ([kidunot89](https://github.com/kidunot89))
+- emptyCart mutation. [\#59](https://github.com/kidunot89/wp-graphql-woocommerce/pull/59) ([kidunot89](https://github.com/kidunot89))
+- restoreCartItem mutation [\#58](https://github.com/kidunot89/wp-graphql-woocommerce/pull/58) ([kidunot89](https://github.com/kidunot89))
+- removeItemFromCart mutation [\#57](https://github.com/kidunot89/wp-graphql-woocommerce/pull/57) ([kidunot89](https://github.com/kidunot89))
+- addToCart mutation [\#56](https://github.com/kidunot89/wp-graphql-woocommerce/pull/56) ([kidunot89](https://github.com/kidunot89))
+- Adds "\*\_restricted\_cap" filters [\#53](https://github.com/kidunot89/wp-graphql-woocommerce/pull/53) ([kidunot89](https://github.com/kidunot89))
+- ProductAttribute completion [\#50](https://github.com/kidunot89/wp-graphql-woocommerce/pull/50) ([kidunot89](https://github.com/kidunot89))
+- More ProductVariation fields [\#49](https://github.com/kidunot89/wp-graphql-woocommerce/pull/49) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed bugs:**
+
+- Query products by categories returns an empty array. [\#44](https://github.com/kidunot89/wp-graphql-woocommerce/issues/44)
+
+**Merged pull requests:**
+
+- "WC\_Product\_Query" replaced with "WP\_Query" for performance benefits. [\#64](https://github.com/kidunot89/wp-graphql-woocommerce/pull/64) ([kidunot89](https://github.com/kidunot89))
+- Bugfix/\#44 [\#45](https://github.com/kidunot89/wp-graphql-woocommerce/pull/45) ([kidunot89](https://github.com/kidunot89))
+- to v0.0.3 [\#43](https://github.com/kidunot89/wp-graphql-woocommerce/pull/43) ([kidunot89](https://github.com/kidunot89))
+- Release v0.0.3 beta [\#42](https://github.com/kidunot89/wp-graphql-woocommerce/pull/42) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.0.3-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-25)
 [Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.2-beta...v0.0.3-beta)
 
