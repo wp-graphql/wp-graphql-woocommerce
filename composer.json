@@ -18,10 +18,10 @@
     },
     "autoload": {
         "psr-4": {
-            "WPGraphQL\\Extensions\\WooCommerce\\": "src/"
+            "WPGraphQL\\Extensions\\WooCommerce\\": "includes/"
         },
         "classmap": [
-            "src/"
+            "includes/"
         ]
     },
     "require": {},

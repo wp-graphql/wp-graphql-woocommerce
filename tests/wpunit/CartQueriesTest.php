@@ -12,12 +12,12 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
-		$this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer        = $this->factory->user->create( array( 'role' => 'customer' ) );
-		$this->product_helper  = $this->getModule('\Helper\Wpunit')->product();
-		$this->variation_helper  = $this->getModule('\Helper\Wpunit')->product_variation();
-		$this->coupon_helper   = $this->getModule('\Helper\Wpunit')->coupon();
-		$this->helper          = $this->getModule('\Helper\Wpunit')->cart();
+		$this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer         = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->product_helper   = $this->getModule('\Helper\Wpunit')->product();
+		$this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
+		$this->coupon_helper    = $this->getModule('\Helper\Wpunit')->coupon();
+		$this->helper           = $this->getModule('\Helper\Wpunit')->cart();
 	}
 
 	public function tearDown()
@@ -159,4 +159,68 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $actual );
 	}
 
+	public function testCartFeeQuery() {
+		$product_id = $this->product_helper->create_simple();
+		WC()->cart->add_to_cart( $product_id, 3 );
+		WC()->cart->add_fee( 'Test fee', 30.50 );
+		$fee_ids = array_keys( WC()->cart->get_fees() );
+
+		$query = '
+			query cartFeeQuery( $id: ID! ) {
+				cartFee( id: $id ) {
+					id
+					name
+					taxClass
+					taxable
+					amount
+					total
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 */
+		$variables = array( 'id' => $fee_ids[0] );
+		$actual    = do_graphql_request( $query, 'cartFeeQuery', $variables );
+		$expected  = array( 'data' => array( 'cartFee' => $this->helper->print_fee_query( $fee_ids[0] ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
+
+	public function testCartToCartFeeQuery() {
+		$product_id = $this->product_helper->create_simple();
+		WC()->cart->add_to_cart( $product_id, 3 );
+		WC()->cart->add_fee( 'Test fee', 30.50 );
+
+		$query = '
+			query cartQuery {
+				cart {
+					fees {
+						id
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 */
+		$actual    = do_graphql_request( $query, 'cartFeeQuery' );
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'fees' => $this->helper->print_fee_nodes(),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
 }

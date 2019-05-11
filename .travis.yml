@@ -11,6 +11,7 @@ notifications:
 branches:
   only:
     - develop
+    - release-v0.1.0
 
 cache:
   apt: true
@@ -89,7 +90,7 @@ script:
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
-      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php class-inflect.php src/*.php --standard=WordPress
+      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php class-inflect.php includes/*.php --standard=WordPress
     fi
 after_success:
   # Runs Coveralls.io client

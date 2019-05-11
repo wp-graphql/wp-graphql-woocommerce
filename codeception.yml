@@ -15,7 +15,7 @@ coverage:
         - wp-graphql-woocommerce.php
         - access-functions.php
         - class-inflect.php
-        - src/*.php
+        - includes/*.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed

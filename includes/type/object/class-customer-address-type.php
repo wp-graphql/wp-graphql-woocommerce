@@ -80,7 +80,7 @@ class Customer_Address_Type {
 						},
 					),
 					'country'   => array(
-						'type'        => 'String',
+						'type'        => 'CountriesEnum',
 						'description' => __( 'Country', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $address ) {
 							return ! empty( $address['country'] ) ? $address['country'] : null;

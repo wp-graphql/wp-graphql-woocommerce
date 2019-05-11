@@ -12,6 +12,7 @@ namespace WPGraphQL\Extensions\WooCommerce;
 
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Countries;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Customer_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Discount_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Manage_Stock;
@@ -22,7 +23,8 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
-use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Connection_Orderby_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Address_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Attribute_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
@@ -54,6 +56,16 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Customers;
 use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
 use WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods;
 use WPGraphQL\Extensions\WooCommerce\Connection\Cart_Items;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Customer_Register;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Customer_Update;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Item;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Update_Item_Quantity;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Items;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Restore_Items;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Empty;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Apply_Coupon;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Coupons;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
 
 /**
  * Class Actions
@@ -80,6 +92,7 @@ class Actions {
 		// Enumerations.
 		Backorders::register();
 		Catalog_Visibility::register();
+		Countries::register();
 		Customer_Connection_Orderby_Enum::register();
 		Discount_Type::register();
 		Manage_Stock::register();
@@ -92,6 +105,8 @@ class Actions {
 		Tax_Rate_Connection_Orderby_Enum::register();
 
 		// InputObjects.
+		Customer_Address_Input::register();
+		Product_Attribute_Input::register();
 		WC_Connection_Orderby_Input::register();
 		Tax_Rate_Connection_Orderby_Input::register();
 
@@ -126,5 +141,17 @@ class Actions {
 		Tax_Rates::register_connections();
 		Shipping_Methods::register_connections();
 		Cart_Items::register_connections();
+
+		// Mutations.
+		Customer_Register::register_mutation();
+		Customer_Update::register_mutation();
+		Cart_Add_Item::register_mutation();
+		Cart_Update_Item_Quantity::register_mutation();
+		Cart_Remove_Items::register_mutation();
+		Cart_Restore_Items::register_mutation();
+		Cart_Empty::register_mutation();
+		Cart_Apply_Coupon::register_mutation();
+		Cart_Remove_Coupons::register_mutation();
+		Cart_Add_Fee::register_mutation();
 	}
 }
