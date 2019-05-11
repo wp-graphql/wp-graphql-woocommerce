@@ -181,9 +181,6 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							country
 						}
 					}
-					viewer {
-						userId
-					}
 				}
 			}
 		';
@@ -443,9 +440,6 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'billing'    => array_merge( $this->empty_billing(), $this->new_billing ),
 						'shipping'   => array_merge( $this->empty_shipping(), $this->new_shipping ),
 					),
-					'viewer'           => array(
-						'userId' => $user->ID,
-					)
 				),
 			),
 		);
@@ -502,9 +496,6 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							array_intersect_key( $this->billing, $this->empty_shipping() )
 						),
 					),
-					'viewer'           => array(
-						'userId' => $user->ID,
-					)
 				),
 			),
 		);

@@ -67,7 +67,14 @@ class Customer_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return Customer_Register::get_output_fields();
+		return array(
+			'customer' => array(
+				'type'    => 'Customer',
+				'resolve' => function ( $payload ) {
+					return new Customer( $payload['id'] );
+				},
+			),
+		);
 	}
 
 	/**
