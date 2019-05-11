@@ -56,7 +56,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Add_Item' => $baseDir . '/src/mutation/class-cart-add-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => $baseDir . '/src/mutation/class-cart-apply-coupon.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Empty' => $baseDir . '/src/mutation/class-cart-empty.php',
-    'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Coupon' => $baseDir . '/src/mutation/class-cart-remove-coupon.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Coupons' => $baseDir . '/src/mutation/class-cart-remove-coupons.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Items' => $baseDir . '/src/mutation/class-cart-remove-items.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Items' => $baseDir . '/src/mutation/class-cart-restore-items.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Update_Item_Quantity' => $baseDir . '/src/mutation/class-cart-update-item-quantity.php',

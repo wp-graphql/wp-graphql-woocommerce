@@ -1,8 +1,8 @@
 <?php
 /**
- * Mutation - removeCoupon
+ * Mutation - removeCoupons
  *
- * Registers mutation for removing a coupon from cart.
+ * Registers mutation for removing coupon(s) from cart.
  *
  * @package WPGraphQL\Extensions\WooCommerce\Mutation
  * @since 0.1.0
@@ -15,15 +15,15 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 
 /**
- * Class - Cart_Remove_Coupon
+ * Class - Cart_Remove_Coupons
  */
-class Cart_Remove_Coupon {
+class Cart_Remove_Coupons {
 	/**
 	 * Registers mutation
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
-			'removeCoupon',
+			'removeCoupons',
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
@@ -39,8 +39,8 @@ class Cart_Remove_Coupon {
 	 */
 	public static function get_input_fields() {
 		$input_fields = array(
-			'code' => array(
-				'type'        => array( 'non_null' => 'String' ),
+			'codes' => array(
+				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
 			),
 		);
@@ -72,22 +72,24 @@ class Cart_Remove_Coupon {
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve product database ID if relay ID provided.
-			if ( empty( $input['code'] ) ) {
-				throw new UserError( __( 'No coupon code provided', 'wp-graphql-woocommerce' ) );
+			if ( empty( $input['codes'] ) ) {
+				throw new UserError( __( 'No coupon codes provided', 'wp-graphql-woocommerce' ) );
 			}
 
-			// Get the coupon.
-			$the_coupon = new \WC_Coupon( $input['code'] );
+			foreach ( $input['codes'] as $code ) {
+				// Get the coupon.
+				$the_coupon = new \WC_Coupon( $code );
 
-			// Check if applied.
-			if ( ! \WC()->cart->has_discount( $input['code'] ) ) {
-				throw new UserError( __( 'This coupon has not been applied to the cart.', 'wp-graphql-woocommerce' ) );
-			}
+				// Check if applied.
+				if ( ! \WC()->cart->has_discount( $code ) ) {
+					throw new UserError( __( 'This coupon has not been applied to the cart.', 'wp-graphql-woocommerce' ) );
+				}
 
-			// Get cart item for payload.
-			$success = \WC()->cart->remove_coupon( $input['code'] );
-			if ( true !== $success ) {
-				throw new UserError( __( 'Failed to remove coupon.', 'wp-graphql-woocommerce' ) );
+				// Get cart item for payload.
+				$success = \WC()->cart->remove_coupon( $code );
+				if ( true !== $success ) {
+					throw new UserError( __( 'Failed to remove coupon.', 'wp-graphql-woocommerce' ) );
+				}
 			}
 
 			// Return payload.

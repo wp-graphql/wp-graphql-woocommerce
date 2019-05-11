@@ -64,7 +64,7 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Items;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Restore_Items;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Empty;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Apply_Coupon;
-use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Coupon;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Coupons;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
 
 /**
@@ -151,7 +151,7 @@ class Actions {
 		Cart_Restore_Items::register_mutation();
 		Cart_Empty::register_mutation();
 		Cart_Apply_Coupon::register_mutation();
-		Cart_Remove_Coupon::register_mutation();
+		Cart_Remove_Coupons::register_mutation();
 		Cart_Add_Fee::register_mutation();
 	}
 }
