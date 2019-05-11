@@ -85,7 +85,10 @@ class Cart_Add_Fee {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			// Retrieve product database ID if relay ID provided.
+			if ( ! current_user_can( 'edit_shop_orders' ) ) {
+				throw new UserError( __( 'You do not have the appropriate capabilities to perform this action', 'wp-graphql' ) );
+			}
+
 			if ( empty( $input['name'] ) ) {
 				throw new UserError( __( 'No name provided for fee', 'wp-graphql-woocommerce' ) );
 			}

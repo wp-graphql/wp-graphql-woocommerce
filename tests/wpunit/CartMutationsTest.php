@@ -1,6 +1,7 @@
 <?php
 
 class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
+    private $shop_manager;
     private $customer;
     private $coupon;
     private $product;
@@ -10,11 +11,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
     public function setUp() {
         parent::setUp();
 
-        $this->customer  = $this->getModule('\Helper\Wpunit')->customer();
-        $this->coupon    = $this->getModule('\Helper\Wpunit')->coupon();
-        $this->product   = $this->getModule('\Helper\Wpunit')->product();
-        $this->variation = $this->getModule('\Helper\Wpunit')->product_variation();
-        $this->cart      = $this->getModule('\Helper\Wpunit')->cart();
+        $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+        $this->customer     = $this->getModule('\Helper\Wpunit')->customer();
+        $this->coupon       = $this->getModule('\Helper\Wpunit')->coupon();
+        $this->product      = $this->getModule('\Helper\Wpunit')->product();
+        $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
+        $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
     }
 
     public function tearDown() {
@@ -888,6 +890,20 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'amount'           => 49.99,
             ),
         );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'operation_name' => 'addFee',
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertArrayHasKey('errors', $actual );
+
+        wp_set_current_user( $this->shop_manager );
         $actual    = graphql(
             array(
                 'query'          => $mutation,
