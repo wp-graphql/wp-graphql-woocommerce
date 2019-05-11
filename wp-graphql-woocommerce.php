@@ -79,7 +79,7 @@ function wp_graphql_woocommerce_init() {
 
 	$not_ready = wp_graphql_woocommerce_dependencies_not_ready();
 	if ( empty( $not_ready ) ) {
-		require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'src/class-wp-graphql-woocommerce.php';
+		require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'includes/class-wp-graphql-woocommerce.php';
 		return WP_GraphQL_WooCommerce::instance();
 	}
 
