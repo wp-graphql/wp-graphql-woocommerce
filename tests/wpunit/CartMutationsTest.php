@@ -772,8 +772,8 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $cart->apply_coupon( $coupon_code );
 
         $mutation = '
-            mutation removeCoupon( $input: RemoveCouponInput! ) {
-                removeCoupon( input: $input ) {
+            mutation removeCoupons( $input: RemoveCouponsInput! ) {
+                removeCoupons( input: $input ) {
                     clientMutationId
                     cart {
                         appliedCoupons {
@@ -802,13 +802,13 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $variables = array(
             'input' => array(
                 'clientMutationId' => 'someId',
-                'code'             => $coupon_code,
+                'codes'            => array( $coupon_code ),
             ),
         );
         $actual    = graphql(
             array(
                 'query'          => $mutation,
-                'operation_name' => 'removeCoupon',
+                'operation_name' => 'removeCoupons',
                 'variables'      => $variables,
             )
         );
@@ -821,7 +821,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         $expected = array(
             'data' => array(
-                'removeCoupon' => array(
+                'removeCoupons' => array(
                     'clientMutationId' => 'someId',
                     'cart'         => array(
                         'appliedCoupons' => array(
