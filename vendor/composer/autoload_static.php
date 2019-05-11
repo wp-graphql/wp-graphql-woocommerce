@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6435da3701bc6fd8e2fee24595606a11
+class ComposerStaticInitc0b9c25b0e0e6597e0a2526e78def682
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -72,7 +72,7 @@ class ComposerStaticInit6435da3701bc6fd8e2fee24595606a11
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-apply-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Empty' => __DIR__ . '/../..' . '/src/mutation/class-cart-empty.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Coupon' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-coupon.php',
-        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-item.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Items' => __DIR__ . '/../..' . '/src/mutation/class-cart-remove-items.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => __DIR__ . '/../..' . '/src/mutation/class-cart-restore-item.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Update_Item_Quantity' => __DIR__ . '/../..' . '/src/mutation/class-cart-update-item-quantity.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Customer_Register' => __DIR__ . '/../..' . '/src/mutation/class-customer-register.php',
@@ -115,9 +115,9 @@ class ComposerStaticInit6435da3701bc6fd8e2fee24595606a11
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6435da3701bc6fd8e2fee24595606a11::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6435da3701bc6fd8e2fee24595606a11::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit6435da3701bc6fd8e2fee24595606a11::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc0b9c25b0e0e6597e0a2526e78def682::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc0b9c25b0e0e6597e0a2526e78def682::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc0b9c25b0e0e6597e0a2526e78def682::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -99,11 +99,8 @@ class Cart_Add_Item {
 			// Prepare args for "add_to_cart" from input data.
 			$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );
 
-			// Get WC_Cart instance.
-			$cart = WC()->cart;
-
 			// Add item to cart and get item key.
-			$cart_item_key = $cart->add_to_cart( ...$cart_item_args );
+			$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
 
 			// Return payload.
 			return array( 'key' => $cart_item_key );
