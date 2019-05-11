@@ -30,18 +30,11 @@ class Customer_Mutation {
 		$customer_args = array();
 
 		if ( ! empty( $input['billing'] ) ) {
-			$customer_args['billing'] = self::address_input_mapping( $input['billing'] );
-		}
-
-		if ( ! empty( $input['shippingSameAsBilling'] ) ) {
-			$shipping = self::address_input_mapping( $input['billing'] );
-			unset( $shipping['email'] );
-			unset( $shipping['phone'] );
-			$customer_args['shipping'] = $shipping;
+			$customer_args['billing'] = self::address_input_mapping( 'billing', $input['billing'] );
 		}
 
 		if ( ! empty( $input['shipping'] ) ) {
-			$customer_args['shipping'] = self::address_input_mapping( $input['shipping'] );
+			$customer_args['shipping'] = self::address_input_mapping( 'shipping', $input['shipping'] );
 		}
 
 		$customer_args['role'] = 'customer';
@@ -61,11 +54,12 @@ class Customer_Mutation {
 	/**
 	 * Formats CustomerAddressInput into a address object to be used by WC_Customer object
 	 *
-	 * @param array $input Customer address input.
+	 * @param string $type  Address type.
+	 * @param array  $input Customer address input.
 	 *
 	 * @return array;
 	 */
-	private function address_input_mapping( $input ) {
+	private function address_input_mapping( $type = 'billing', $input ) {
 		// Map GQL input to address props array.
 		$key_mapping = array(
 			'firstName' => 'first_name',
@@ -74,15 +68,56 @@ class Customer_Mutation {
 			'address2'  => 'address_2',
 		);
 
-		$address = array();
+		$skip = apply_filters( 'customer_address_input_mapping_skipped', array( 'overwrite' ) );
+
+		$type    = 'empty_' . $type;
+		$address = ! empty( $input['overwrite'] ) && true === $input['overwrite']
+			? self::{$type}()
+			: array();
 		foreach ( $input as $input_field => $value ) {
 			if ( in_array( $input_field, array_keys( $key_mapping ), true ) ) {
 				$address[ $key_mapping[ $input_field ] ] = $value;
+			} elseif ( in_array( $input_field, $skip, true ) ) {
+				continue;
 			} else {
 				$address[ $input_field ] = $value;
 			}
 		}
 
 		return $address;
+	}
+
+	/**
+	 * Returns default customer shipping address data
+	 *
+	 * @return array
+	 */
+	public static function empty_shipping() {
+		return array(
+			'first_name' => '',
+			'last_name'  => '',
+			'company'    => '',
+			'address_1'  => '',
+			'address_2'  => '',
+			'city'       => '',
+			'state'      => '',
+			'postcode'   => '',
+			'country'    => '',
+		);
+	}
+
+	/**
+	 * Returns default customer billing address data
+	 *
+	 * @return array
+	 */
+	public static function empty_billing() {
+		return array_merge(
+			self::empty_shipping(),
+			array(
+				'email' => '',
+				'phone' => '',
+			)
+		);
 	}
 }

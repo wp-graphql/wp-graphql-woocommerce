@@ -65,6 +65,10 @@ class Customer_Address_Input {
 						'type'        => 'String',
 						'description' => __( 'Phone', 'wp-graphql-woocommerce' ),
 					),
+					'overwrite' => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Clear old address data', 'wp-graphql-woocommerce' ),
+					),
 				),
 			)
 		);

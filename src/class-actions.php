@@ -57,6 +57,7 @@ use WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates;
 use WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods;
 use WPGraphQL\Extensions\WooCommerce\Connection\Cart_Items;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Customer_Register;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Customer_Update;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Item;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Item;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Restore_Item;
@@ -142,6 +143,7 @@ class Actions {
 
 		// Mutations.
 		Customer_Register::register_mutation();
+		Customer_Update::register_mutation();
 		Cart_Add_Item::register_mutation();
 		Cart_Remove_Item::register_mutation();
 		Cart_Restore_Item::register_mutation();
