@@ -1,6 +1,6 @@
 <?php
 /**
- * Registers "registerCustomer" mutation
+ * Registers "updateCustomer" mutation
  *
  * @package WPGraphQL\Extensions\WooCommerce\Mutation
  * @since 0.1.0
@@ -11,21 +11,21 @@ namespace WPGraphQL\Extensions\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Mutation\UserRegister;
+use WPGraphQL\Mutation\UserUpdate;
 use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 use WPGraphQL\Model\User;
 
 /**
- * Class - Customer_Register
+ * Class - Customer_Update
  */
-class Customer_Register {
+class Customer_Update {
 	/**
 	 * Registers mutation
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
-			'registerCustomer',
+			'updateCustomer',
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
@@ -41,7 +41,7 @@ class Customer_Register {
 	 */
 	public static function get_input_fields() {
 		$input_fields = array_merge(
-			UserRegister::get_input_fields(),
+			UserUpdate::get_input_fields(),
 			array(
 				'billing'               => array(
 					'type'        => 'CustomerAddressInput',
@@ -74,13 +74,6 @@ class Customer_Register {
 					return new Customer( $payload['id'] );
 				},
 			),
-			'viewer'   => array(
-				'type'    => 'User',
-				'resolve' => function ( $payload ) {
-					$user = get_user_by( 'ID', $payload['id'] );
-					return new User( $user );
-				},
-			),
 		);
 	}
 
@@ -92,23 +85,20 @@ class Customer_Register {
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			// Get closure from "UserRegister::mutate_and_get_payload".
-			$register_user = UserRegister::mutate_and_get_payload();
+			$update_user = UserUpdate::mutate_and_get_payload();
 
-			// Register customer with core UserRegister closure.
-			$payload = $register_user( $input, $context, $info );
+			// Update customer with core UserUpdate closure.
+			$payload = $update_user( $input, $context, $info );
 
 			if ( empty( $payload ) ) {
 				throw new UserError( __( 'Failed to update customer.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Map all of the args from GQL to WC friendly.
-			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'register' );
+			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'update' );
 
 			// Create customer object.
-			$customer = new \WC_Customer( get_current_user_id() );
-
-			// Set role to customer.
-			$customer->set_role( 'customer' );
+			$customer = new \WC_Customer( $payload['id'] );
 
 			// Set billing address.
 			if ( ! empty( $customer_args['billing'] ) ) {

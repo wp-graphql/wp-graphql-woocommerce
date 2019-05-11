@@ -60,6 +60,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Remove_Item' => $baseDir . '/src/mutation/class-cart-remove-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Cart_Restore_Item' => $baseDir . '/src/mutation/class-cart-restore-item.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Customer_Register' => $baseDir . '/src/mutation/class-customer-register.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Customer_Update' => $baseDir . '/src/mutation/class-customer-update.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/src/type/enum/class-backorders.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/src/type/enum/class-catalog-visibility.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Countries' => $baseDir . '/src/type/enum/class-countries.php',
