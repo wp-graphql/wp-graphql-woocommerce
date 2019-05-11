@@ -157,6 +157,65 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEqualSets( $expected, $actual );
     }
 
+    public function testUpdateCartItemQuantityMutation() {
+        $product_id = $this->product->create_simple();
+        $addToCart = $this->addToCart(
+            array(
+                'clientMutationId' => 'someId',
+                'productId'        => $product_id,
+                'quantity'         => 2,
+            )
+        );
+
+        // Retrieve cart item key.
+        $this->assertArrayHasKey('data', $addToCart );
+        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
+        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
+        $this->assertArrayHasKey('key', $addToCart['data']['addToCart']['cartItem'] );
+        $key = $addToCart['data']['addToCart']['cartItem']['key'];
+
+        $mutation = '
+            mutation updateItemQuantity( $input: UpdateItemQuantityInput! ) {
+                updateItemQuantity( input: $input ) {
+                    clientMutationId
+                    cartItem {
+                        quantity
+                    }
+                }
+            }
+        ';
+
+        $actual = graphql(
+            array(
+                'query'          => $mutation,
+                'operation_name' => 'updateItemQuantity',
+                'variables'      => array(
+                    'input' => array(
+                        'clientMutationId' => 'someId',
+                        'key'              => $key,
+                        'quantity'         => 4,
+                    )
+                ),
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+        
+        // Check cart item data.
+		$expected = array(
+			'data' => array(
+				'updateItemQuantity' => array(
+					'clientMutationId' => 'someId',
+					'cartItem'         => array(
+                        'quantity'     => 4,
+					),
+				),
+			),
+		);
+		$this->assertEqualSets( $expected, $actual );
+    }
+
     public function testRemoveItemFromCartMutation() {
         $ids  = $this->variation->create( $this->product->create_variable() );
         $cart = WC()->cart;
