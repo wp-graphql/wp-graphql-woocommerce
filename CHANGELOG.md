@@ -6,7 +6,7 @@
 **Implemented enhancements:**
 
 - "src" directory renamed to "includes" [\#73](https://github.com/kidunot89/wp-graphql-woocommerce/pull/73) ([kidunot89](https://github.com/kidunot89))
-- `edit_shop_order` cap check in addFee [\#72](https://github.com/kidunot89/wp-graphql-woocommerce/pull/72) ([kidunot89](https://github.com/kidunot89))
+- `edit\_shop\_order` cap check in addFee [\#72](https://github.com/kidunot89/wp-graphql-woocommerce/pull/72) ([kidunot89](https://github.com/kidunot89))
 - removeCoupon changed to removeCoupons. [\#71](https://github.com/kidunot89/wp-graphql-woocommerce/pull/71) ([kidunot89](https://github.com/kidunot89))
 - restoreCartItem changed to restoreCartItems [\#70](https://github.com/kidunot89/wp-graphql-woocommerce/pull/70) ([kidunot89](https://github.com/kidunot89))
 - removeItemFromCart changed to removeItemsFromCart [\#69](https://github.com/kidunot89/wp-graphql-woocommerce/pull/69) ([kidunot89](https://github.com/kidunot89))
@@ -17,6 +17,38 @@
 **Closed issues:**
 
 - Release v0.0.4 Summary [\#66](https://github.com/kidunot89/wp-graphql-woocommerce/issues/66)
+
+## [v0.0.4-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.4-beta) (2019-05-10)
+[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.3-beta...v0.0.4-beta)
+
+**Implemented enhancements:**
+
+- Add filter for restricted\_cap in models [\#51](https://github.com/kidunot89/wp-graphql-woocommerce/issues/51)
+- Add name to ProductVariation [\#41](https://github.com/kidunot89/wp-graphql-woocommerce/issues/41)
+- Cart type and queries [\#12](https://github.com/kidunot89/wp-graphql-woocommerce/issues/12)
+- addFee mutation [\#63](https://github.com/kidunot89/wp-graphql-woocommerce/pull/63) ([kidunot89](https://github.com/kidunot89))
+- CartFee type and queries [\#62](https://github.com/kidunot89/wp-graphql-woocommerce/pull/62) ([kidunot89](https://github.com/kidunot89))
+- removeCoupon mutation. [\#61](https://github.com/kidunot89/wp-graphql-woocommerce/pull/61) ([kidunot89](https://github.com/kidunot89))
+- applyCoupon mutation [\#60](https://github.com/kidunot89/wp-graphql-woocommerce/pull/60) ([kidunot89](https://github.com/kidunot89))
+- emptyCart mutation. [\#59](https://github.com/kidunot89/wp-graphql-woocommerce/pull/59) ([kidunot89](https://github.com/kidunot89))
+- restoreCartItem mutation [\#58](https://github.com/kidunot89/wp-graphql-woocommerce/pull/58) ([kidunot89](https://github.com/kidunot89))
+- removeItemFromCart mutation [\#57](https://github.com/kidunot89/wp-graphql-woocommerce/pull/57) ([kidunot89](https://github.com/kidunot89))
+- addToCart mutation [\#56](https://github.com/kidunot89/wp-graphql-woocommerce/pull/56) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed bugs:**
+
+- Query products by categories returns an empty array. [\#44](https://github.com/kidunot89/wp-graphql-woocommerce/issues/44)
+
+## [v0.0.3-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-25)
+[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.2-beta...v0.0.3-beta)
+
+**Fixed bugs:**
+
+- Pagination broken [\#29](https://github.com/kidunot89/wp-graphql-woocommerce/issues/29)
+
+**Closed issues:**
+
+- Unsetting "object\_ids" on all connections [\#39](https://github.com/kidunot89/wp-graphql-woocommerce/issues/39)
 
 
 
