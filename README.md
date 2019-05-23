@@ -1,7 +1,7 @@
 <img src="./logo.svg" width="250px">
 
 # WPGraphQL WooCommerce
-[![Build Status](https://travis-ci.org/kidunot89/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/kidunot89/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/kidunot89/wp-graphql-woocommerce/badge.svg?branch=master)](https://coveralls.io/github/kidunot89/wp-graphql-woocommerce?branch=master)
+[![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/kidunot89/wp-graphql-woocommerce/badge.svg?branch=master)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=master)
 
 ## Note: This plugin is in early stages and is not quite ready for use.
 
@@ -20,7 +20,7 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 ## Upcoming Features
 - Adminstrator mutations. Eg. Creating and deleting products, coupons, orders and refunds
 - Public/Customer mutations, Eg. Manipulating the cart and checking out.
-View [Roadmap](https://github.com/kidunot89/wp-graphql-woocommerce/projects/1) to see progress... 
+View [Roadmap](https://github.com/wp-graphql/wp-graphql-woocommerce/projects/1) to see progress... 
 
 ## Unit Tests 
 Until the documentation is in full effect, it's recommended that a [GraphiQL](https://github.com/graphql/graphiql)-based tool like [WPGraphiQL](https://github.com/wp-graphql/wp-graphiql) be used to view the GraphQL schema, an alternative to this is viewing the unit tests located in `tests/wpunit` directory. Which are constantly updated along with the project. If you're interested in contributing when I begin accepting contribution or simply want to run the tests. Follow the instruction below.
