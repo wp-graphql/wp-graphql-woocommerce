@@ -65,7 +65,7 @@ before_script:
         mkdir -p build/logs
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-interaction
       ls -al
     fi   
   # Install PHP CodeSniffer and WPCS.
