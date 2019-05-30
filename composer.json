@@ -1,8 +1,19 @@
 {
     "name": "wp-graphql/wp-graphql-woocommerce",
     "description": "WooCommerce bindings for wp-graphql",
+    "version": "0.1.0",
     "type": "wordpress-plugin",
-    "license": "GPLv3",
+    "keywords": [
+        "wordpress",
+        "woocommerce",
+        "graphql",
+        "wp-graphql",
+        "wp-graphql-extension",
+        "woocommerce-extension",
+        "api",
+        "woographql"
+    ],
+    "license": "GPL-3.0",
     "authors": [
         {
             "name": "kidunot89",
