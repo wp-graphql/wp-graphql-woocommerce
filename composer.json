@@ -11,10 +11,8 @@
         }
     ],
     "require-dev": {
+        "codeception/codeception": "~2.5.0",
         "lucatume/wp-browser": "^2.2"
-    },
-    "suggest": {
-        "codeception/codeception": "~2.5.5"
     },
     "config": {
         "optimize-autoloader": true
