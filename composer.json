@@ -22,11 +22,7 @@
         }
     ],
     "require-dev": {
-        "php": ">=5.6.0",
-        "lucatume/wp-browser": "2.2.1",
-        "codeception/codeception": "2.5.6",
-        "codeception/phpunit-wrapper": "6.0.9",
-        "phpunit/phpunit": "~5.7"
+        "lucatume/wp-browser": "~2.2"
     },
     "config": {
         "optimize-autoloader": true
@@ -39,7 +35,9 @@
             "includes/"
         ]
     },
-    "require": {},
+    "require": {
+        "php": ">=5.6.0"
+    },
     "scripts": {
         "install-wp-tests": "bash bin/install-wp-tests.sh",
         "test": "vendor/bin/codecept run",
