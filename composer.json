@@ -22,8 +22,10 @@
         }
     ],
     "require-dev": {
+        "php": ">=5.6.0",
         "lucatume/wp-browser": "2.2.1",
-        "codeception/codeception": "<=2.5.6"
+        "codeception/codeception": "2.5.6",
+        "codeception/phpunit-wrapper": "6.0.9"
     },
     "config": {
         "optimize-autoloader": true
