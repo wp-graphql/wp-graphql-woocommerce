@@ -51,8 +51,6 @@ install:
     sudo mv wp-cli.phar /usr/local/bin/wp
 
 before_script:
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - composer self-update
   - |
     if [ ! -z "$WP_VERSION" ]; then
       # Install and config Codeception
