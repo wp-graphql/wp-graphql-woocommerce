@@ -54,18 +54,14 @@ before_script:
   - |
     if [ ! -z "$WP_VERSION" ]; then
       # Install and config Codeception
-      cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-      cp tests/functional.suite.dist.yml tests/functional.suite.yml
-      cp tests/unit.suite.dist.yml tests/unit.suite.yml
-      cp tests/wpunit.suite.dist.yml tests/wpunit.suite.yml
       cp .env.dist .env
       composer install-wp-tests
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
         mkdir -p build/logs
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer update --prefer-source --no-interaction
       ls -al
     fi   
   # Install PHP CodeSniffer and WPCS.
