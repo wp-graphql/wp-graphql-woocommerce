@@ -87,57 +87,15 @@ class Product_Type {
 					),
 					'price'             => array(
 						'type'        => 'String',
-						'args'        => array(
-							'max' => array(
-								'type'        => 'Boolean',
-								'description' => __( 'Show maximum price (Variable type product)', 'wp-graphql-woocommerce' ),
-							),
-						),
 						'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $product, array $args ) {
-							if ( ! empty( $args['max'] ) && $args['max'] ) {
-								// @codingStandardsIgnoreLine
-								return $product->priceMax;
-							}
-							// @codingStandardsIgnoreLine
-							return $product->price;
-						},
 					),
 					'regularPrice'      => array(
 						'type'        => 'String',
-						'args'        => array(
-							'max' => array(
-								'type'        => 'Boolean',
-								'description' => __( 'Show maximum price (Variable type product)', 'wp-graphql-woocommerce' ),
-							),
-						),
 						'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $product, array $args ) {
-							if ( ! empty( $args['max'] ) && $args['max'] ) {
-								// @codingStandardsIgnoreLine
-								return $product->regularPriceMax;
-							}
-							// @codingStandardsIgnoreLine
-							return $product->regularPrice;
-						},
 					),
 					'salePrice'         => array(
 						'type'        => 'String',
-						'args'        => array(
-							'max' => array(
-								'type'        => 'Boolean',
-								'description' => __( 'Show maximum price (Variable type product)', 'wp-graphql-woocommerce' ),
-							),
-						),
 						'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $product, array $args ) {
-							if ( ! empty( $args['max'] ) && $args['max'] ) {
-								// @codingStandardsIgnoreLine
-								return $product->salePriceMax;
-							}
-							// @codingStandardsIgnoreLine
-							return $product->salePrice;
-						},
 					),
 					'dateOnSaleFrom'    => array(
 						'type'        => 'String',

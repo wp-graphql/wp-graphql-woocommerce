@@ -136,7 +136,7 @@ function wc_graphql_price( $price, $args = array() ) {
 	}
 
 	$symbol = html_entity_decode( get_woocommerce_currency_symbol( $args['currency'] ) );
-	return ( $negative ? '-' : '' ) . sprintf( $args['price_format'], $symbol, $price );
+	$return = ( $negative ? '-' : '' ) . sprintf( $args['price_format'], $symbol, $price );
 
 	/**
 	 * Filters the string of price markup.
@@ -146,5 +146,24 @@ function wc_graphql_price( $price, $args = array() ) {
 	 * @param array  $args              Pass on the args.
 	 * @param float  $unformatted_price Price as float to allow plugins custom formatting. Since 3.2.0.
 	 */
-	return apply_filters( 'wc_price', $return, $price, $args, $unformatted_price );
+	return apply_filters( 'wc_graphql_price', $return, $price, $args, $unformatted_price, $symbol );
+}
+
+/**
+ * Format a price range for display.
+ *
+ * @param  string $from Price from.
+ * @param  string $to   Price to.
+ * @return string
+ */
+function wc_graphql_price_range( $from, $to ) {
+	$price = sprintf(
+		/* translators: 1: price from 2: price to */
+		_x( '%1$s %2$s %3$s', 'Price range: from-to', 'wp-graphql-woocommerce' ),
+		is_numeric( $from ) ? wc_graphql_price( $from ) : $from,
+		apply_filters( 'graphql_format_price_range_separator', '-', $from, $to ),
+		is_numeric( $to ) ? wc_graphql_price( $to ) : $to
+	);
+
+	return apply_filters( 'graphql_format_price_range', $price, $from, $to );
 }

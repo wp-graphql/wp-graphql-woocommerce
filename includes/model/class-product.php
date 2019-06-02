@@ -93,6 +93,36 @@ class Product extends Crud_CPT {
 	}
 
 	/**
+	 * Returns string of variation price range.
+	 *
+	 * @param string $pricing_type - Range selected pricing type.
+	 *
+	 * @return string|null
+	 */
+	private function get_variation_price( $pricing_type = '' ) {
+		$prices = $this->data->get_variation_prices( true );
+
+		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->data->is_on_sale() ) ) {
+			return null;
+		} else {
+			$min_price     = current( $prices['price'] );
+			$max_price     = end( $prices['price'] );
+			$min_reg_price = current( $prices['regular_price'] );
+			$max_reg_price = end( $prices['regular_price'] );
+
+			if ( $min_price !== $max_price ) {
+				$price = wc_graphql_price_range( $min_price, $max_price );
+			} elseif ( 'regular' !== $pricing_type && $this->data->is_on_sale() && $min_reg_price === $max_reg_price ) {
+				$price = wc_graphql_price_range( $min_price, $max_reg_price );
+			} else {
+				$price = \wc_graphql_price( $min_price );
+			}
+		}
+
+		return apply_filters( 'graphql_get_variation_price', $price, $this );
+	}
+
+	/**
 	 * Initializes the Product field resolvers
 	 *
 	 * @access protected
@@ -146,80 +176,30 @@ class Product extends Crud_CPT {
 				},
 				'price'              => function() {
 					if ( 'variable' === $this->data->get_type() ) {
-						$price = ! empty( $this->data->get_variation_price( 'min' ) )
-							? $this->data->get_variation_price( 'min' )
-							: null;
-					} else {
-						$price = ! empty( $this->data->get_price() )
-							? $this->data->get_price()
-							: null;
+						return $this->get_variation_price();
 					}
 
-					return $price ? \wc_graphql_price( $price ) : $price;
-				},
-				'priceMax'           => function() {
-					if ( 'variable' === $this->data->get_type() ) {
-						$price = ! empty( $this->data->get_variation_price( 'max' ) )
-							? $this->data->get_variation_price( 'max' )
-							: null;
-					} else {
-						$price = ! empty( $this->data->get_price() )
-							? $this->data->get_price()
-							: null;
-					}
-
-					return $price ? \wc_graphql_price( $price ) : $price;
+					return ! empty( $this->data->get_price() )
+						? \wc_graphql_price( $this->data->get_price() )
+						: null;
 				},
 				'regularPrice'       => function() {
 					if ( 'variable' === $this->data->get_type() ) {
-						$price = ! empty( $this->data->get_variation_regular_price( 'min' ) )
-							? $this->data->get_variation_regular_price( 'min' )
-							: null;
-					} else {
-						$price = ! empty( $this->data->get_regular_price() )
-							? $this->data->get_regular_price()
-							: null;
+						return $this->get_variation_price( 'regular' );
 					}
 
-					return $price ? \wc_graphql_price( $price ) : $price;
-				},
-				'regularPriceMax'    => function() {
-					if ( 'variable' === $this->data->get_type() ) {
-						$price = ! empty( $this->data->get_variation_regular_price( 'max' ) )
-							? $this->data->get_variation_regular_price( 'max' )
-							: null;
-					} else {
-						$price = ! empty( $this->data->get_regular_price() )
-							? $this->data->get_regular_price()
-							: null;
-					}
-
-					return $price ? \wc_graphql_price( $price ) : $price;
+					return ! empty( $this->data->get_regular_price() )
+						? \wc_graphql_price( $this->data->get_regular_price() )
+						: null;
 				},
 				'salePrice'          => function() {
 					if ( 'variable' === $this->data->get_type() ) {
-						$price = ! empty( $this->data->get_variation_sale_price( 'min' ) )
-						? $this->data->get_variation_sale_price( 'min' )
-						: null;
-					} else {
-						$price = ! empty( $this->data->get_sale_price() )
-							? $this->data->get_sale_price()
-							: null;
+						return $this->get_variation_price( 'sale' );
 					}
 
-					return $price ? \wc_graphql_price( $price ) : $price;
-				},
-				'salePriceMax'       => function() {
-					if ( 'variable' === $this->data->get_type() ) {
-						$price = ! empty( $this->data->get_variation_sale_price( 'max' ) )
-							? $this->data->get_variation_sale_price( 'max' )
-							: null;
-					} else {
-						$price = ! empty( $this->data->get_sale_price() )
-						? $this->data->get_sale_price()
+					return ! empty( $this->data->get_sale_price() )
+						? \wc_graphql_price( $this->data->get_sale_price() )
 						: null;
-					}
-					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'dateOnSaleFrom'     => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
