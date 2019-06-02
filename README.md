@@ -22,6 +22,9 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 - Public/Customer mutations, Eg. Manipulating the cart and checking out.
 View [Roadmap](https://github.com/wp-graphql/wp-graphql-woocommerce/projects/1) to see progress... 
 
+## Playground
+Feel free to test out the extension using the [playground](https://docs.wpgraphql.com/extensions/wpgraphql-woocommerce/). The playground allows you to execute queries and mutations, as well as view the schema.
+
 ## Unit Tests 
 Until the documentation is in full effect, it's recommended that a [GraphiQL](https://github.com/graphql/graphiql)-based tool like [WPGraphiQL](https://github.com/wp-graphql/wp-graphiql) be used to view the GraphQL schema, an alternative to this is viewing the unit tests located in `tests/wpunit` directory. Which are constantly updated along with the project. If you're interested in contributing when I begin accepting contribution or simply want to run the tests. Follow the instruction below.
 
