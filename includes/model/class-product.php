@@ -145,82 +145,81 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
 				},
 				'price'              => function() {
-					if ( ! empty( $this->data ) ) {
-						if ( 'variable' === $this->data->get_type() ) {
-							return ! empty( $this->data->get_variation_price( 'min' ) )
-								? $this->data->get_variation_price( 'min' )
-								: null;
-						}
-						return ! empty( $this->data->get_price() )
+					if ( 'variable' === $this->data->get_type() ) {
+						$price = ! empty( $this->data->get_variation_price( 'min' ) )
+							? $this->data->get_variation_price( 'min' )
+							: null;
+					} else {
+						$price = ! empty( $this->data->get_price() )
 							? $this->data->get_price()
 							: null;
 					}
-					return null;
+
+					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'priceMax'           => function() {
-					if ( ! empty( $this->data ) ) {
-						if ( 'variable' === $this->data->get_type() ) {
-							return ! empty( $this->data->get_variation_price( 'max' ) )
-								? $this->data->get_variation_price( 'max' )
-								: null;
-						}
-						return ! empty( $this->data->get_price() )
+					if ( 'variable' === $this->data->get_type() ) {
+						$price = ! empty( $this->data->get_variation_price( 'max' ) )
+							? $this->data->get_variation_price( 'max' )
+							: null;
+					} else {
+						$price = ! empty( $this->data->get_price() )
 							? $this->data->get_price()
 							: null;
 					}
-					return null;
+
+					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'regularPrice'       => function() {
-					if ( ! empty( $this->data ) ) {
-						if ( 'variable' === $this->data->get_type() ) {
-							return ! empty( $this->data->get_variation_regular_price( 'min' ) )
-								? $this->data->get_variation_regular_price( 'min' )
-								: null;
-						}
-						return ! empty( $this->data->get_regular_price() )
+					if ( 'variable' === $this->data->get_type() ) {
+						$price = ! empty( $this->data->get_variation_regular_price( 'min' ) )
+							? $this->data->get_variation_regular_price( 'min' )
+							: null;
+					} else {
+						$price = ! empty( $this->data->get_regular_price() )
 							? $this->data->get_regular_price()
 							: null;
 					}
-					return null;
+
+					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'regularPriceMax'    => function() {
-					if ( ! empty( $this->data ) ) {
-						if ( 'variable' === $this->data->get_type() ) {
-							return ! empty( $this->data->get_variation_regular_price( 'max' ) )
-								? $this->data->get_variation_regular_price( 'max' )
-								: null;
-						}
-						return ! empty( $this->data->get_regular_price() )
+					if ( 'variable' === $this->data->get_type() ) {
+						$price = ! empty( $this->data->get_variation_regular_price( 'max' ) )
+							? $this->data->get_variation_regular_price( 'max' )
+							: null;
+					} else {
+						$price = ! empty( $this->data->get_regular_price() )
 							? $this->data->get_regular_price()
 							: null;
 					}
-					return null;
+
+					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'salePrice'          => function() {
-					if ( ! empty( $this->data ) ) {
-						if ( 'variable' === $this->data->get_type() ) {
-							return ! empty( $this->data->get_variation_sale_price( 'min' ) )
-							? $this->data->get_variation_sale_price( 'min' )
-							: null;
-						}
-						return ! empty( $this->data->get_sale_price() )
+					if ( 'variable' === $this->data->get_type() ) {
+						$price = ! empty( $this->data->get_variation_sale_price( 'min' ) )
+						? $this->data->get_variation_sale_price( 'min' )
+						: null;
+					} else {
+						$price = ! empty( $this->data->get_sale_price() )
 							? $this->data->get_sale_price()
 							: null;
 					}
-					return null;
+
+					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'salePriceMax'       => function() {
-					if ( ! empty( $this->data ) ) {
-						if ( 'variable' === $this->data->get_type() ) {
-							return ! empty( $this->data->get_variation_sale_price( 'max' ) )
-								? $this->data->get_variation_sale_price( 'max' )
-								: null;
-						}
-						return ! empty( $this->data->get_sale_price() )
-							? $this->data->get_sale_price()
+					if ( 'variable' === $this->data->get_type() ) {
+						$price = ! empty( $this->data->get_variation_sale_price( 'max' ) )
+							? $this->data->get_variation_sale_price( 'max' )
 							: null;
+					} else {
+						$price = ! empty( $this->data->get_sale_price() )
+						? $this->data->get_sale_price()
+						: null;
 					}
-					return null;
+					return $price ? \wc_graphql_price( $price ) : $price;
 				},
 				'dateOnSaleFrom'     => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;

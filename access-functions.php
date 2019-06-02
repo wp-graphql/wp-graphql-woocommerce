@@ -89,3 +89,62 @@ function wc_graphql_get_order_statuses() {
 	}
 	return $order_statuses;
 }
+
+/**
+ * Format the price with a currency symbol.
+ *
+ * @param  float $price Raw price.
+ * @param  array $args  Arguments to format a price {
+ *     Array of arguments.
+ *     Defaults to empty array.
+ *
+ *     @type string $currency           Currency code.
+ *                                      Defaults to empty string (Use the result from get_woocommerce_currency()).
+ *     @type string $decimal_separator  Decimal separator.
+ *                                      Defaults the result of wc_get_price_decimal_separator().
+ *     @type string $thousand_separator Thousand separator.
+ *                                      Defaults the result of wc_get_price_thousand_separator().
+ *     @type string $decimals           Number of decimals.
+ *                                      Defaults the result of wc_get_price_decimals().
+ *     @type string $price_format       Price format depending on the currency position.
+ *                                      Defaults the result of get_woocommerce_price_format().
+ * }
+ * @return string
+ */
+function wc_graphql_price( $price, $args = array() ) {
+	$args = apply_filters(
+		'wc_price_args',
+		wp_parse_args(
+			$args,
+			array(
+				'currency'           => '',
+				'decimal_separator'  => wc_get_price_decimal_separator(),
+				'thousand_separator' => wc_get_price_thousand_separator(),
+				'decimals'           => wc_get_price_decimals(),
+				'price_format'       => get_woocommerce_price_format(),
+			)
+		)
+	);
+
+	$unformatted_price = $price;
+	$negative          = $price < 0;
+	$price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) );
+	$price             = apply_filters( 'formatted_woocommerce_price', number_format( $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] ), $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] );
+
+	if ( apply_filters( 'woocommerce_price_trim_zeros', false ) && $args['decimals'] > 0 ) {
+		$price = wc_trim_zeros( $price );
+	}
+
+	$symbol = html_entity_decode( get_woocommerce_currency_symbol( $args['currency'] ) );
+	return ( $negative ? '-' : '' ) . sprintf( $args['price_format'], $symbol, $price );
+
+	/**
+	 * Filters the string of price markup.
+	 *
+	 * @param string $return            Price HTML markup.
+	 * @param string $price             Formatted price.
+	 * @param array  $args              Pass on the args.
+	 * @param float  $unformatted_price Price as float to allow plugins custom formatting. Since 3.2.0.
+	 */
+	return apply_filters( 'wc_price', $return, $price, $args, $unformatted_price );
+}
