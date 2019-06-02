@@ -229,13 +229,13 @@ class ProductHelper extends WCG_Helper {
 			: null,
 			'sku'               => $data->get_sku(),
 			'price'             => ! empty( $data->get_price() )
-				? $data->get_price()
+				? \wc_graphql_price( $data->get_price() )
 				: null,
 			'regularPrice'      => ! empty( $data->get_regular_price() )
-				? $data->get_regular_price()
+				? \wc_graphql_price( $data->get_regular_price() )
 				: null,
 			'salePrice'         => ! empty( $data->get_sale_price() )
-				? $data->get_sale_price()
+				? \wc_graphql_price( $data->get_sale_price() )
 				: null,
 			'dateOnSaleFrom'    => $data->get_date_on_sale_from(),
 			'dateOnSaleTo'      => $data->get_date_on_sale_to(),
