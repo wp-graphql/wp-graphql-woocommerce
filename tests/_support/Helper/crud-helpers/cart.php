@@ -42,10 +42,10 @@ class CartHelper extends WCG_Helper {
 				'variationId' => $item['variation_id']
 			),
 			'quantity'    => $item['quantity'],
-			'subtotal'    => $item['line_subtotal'],
-			'subtotalTax' => $item['line_subtotal_tax'],
-			'total'       => $item['line_total'],
-			'tax'         => $item['line_tax'],
+			'subtotal'    => \wc_graphql_price( $item['line_subtotal'] ),
+			'subtotalTax' => \wc_graphql_price( $item['line_subtotal_tax'] ),
+			'total'       => \wc_graphql_price( $item['line_total'] ),
+			'tax'         => \wc_graphql_price( $item['line_tax'] ),
 		);
 	}
 

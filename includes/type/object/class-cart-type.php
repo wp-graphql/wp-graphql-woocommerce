@@ -278,31 +278,35 @@ class Cart_Type {
 						},
 					),
 					'subtotal'    => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Item\'s subtotal', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_subtotal'] ) ? floatval( $source['line_subtotal'] ) : null;
+							$price = isset( $source['line_subtotal'] ) ? floatval( $source['line_subtotal'] ) : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'subtotalTax' => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Item\'s subtotal tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_subtotal_tax'] ) ? floatval( $source['line_subtotal_tax'] ) : null;
+							$price = isset( $source['line_subtotal_tax'] ) ? floatval( $source['line_subtotal_tax'] ) : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'total'       => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
+							$price = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'tax'         => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Item\'s tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+							$price = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+							return \wc_graphql_price( $price );
 						},
 					),
 				),
