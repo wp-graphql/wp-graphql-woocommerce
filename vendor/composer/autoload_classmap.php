@@ -69,6 +69,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Discount_Type' => $baseDir . '/includes/type/enum/class-discount-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => $baseDir . '/includes/type/enum/class-manage-stock.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Order_Status' => $baseDir . '/includes/type/enum/class-order-status.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Pricing_Field_Format' => $baseDir . '/includes/type/enum/class-pricing-field-format.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Product_Types' => $baseDir . '/includes/type/enum/class-product-types.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Stock_Status' => $baseDir . '/includes/type/enum/class-stock-status.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Tax_Class' => $baseDir . '/includes/type/enum/class-tax-class.php',

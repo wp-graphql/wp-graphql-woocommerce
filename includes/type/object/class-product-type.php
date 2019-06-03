@@ -87,56 +87,58 @@ class Product_Type {
 					),
 					'price'             => array(
 						'type'        => 'String',
+						'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
 						'args'        => array(
-							'max' => array(
-								'type'        => 'Boolean',
-								'description' => __( 'Show maximum price (Variable type product)', 'wp-graphql-woocommerce' ),
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							),
 						),
-						'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $product, array $args ) {
-							if ( ! empty( $args['max'] ) && $args['max'] ) {
-								// @codingStandardsIgnoreLine
-								return $product->priceMax;
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->priceRaw;
+							} else {
+								return $source->price;
 							}
-							// @codingStandardsIgnoreLine
-							return $product->price;
 						},
 					),
 					'regularPrice'      => array(
 						'type'        => 'String',
+						'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
 						'args'        => array(
-							'max' => array(
-								'type'        => 'Boolean',
-								'description' => __( 'Show maximum price (Variable type product)', 'wp-graphql-woocommerce' ),
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							),
 						),
-						'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $product, array $args ) {
-							if ( ! empty( $args['max'] ) && $args['max'] ) {
-								// @codingStandardsIgnoreLine
-								return $product->regularPriceMax;
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->regularPriceRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->regularPrice;
 							}
-							// @codingStandardsIgnoreLine
-							return $product->regularPrice;
 						},
 					),
 					'salePrice'         => array(
 						'type'        => 'String',
+						'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
 						'args'        => array(
-							'max' => array(
-								'type'        => 'Boolean',
-								'description' => __( 'Show maximum price (Variable type product)', 'wp-graphql-woocommerce' ),
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							),
 						),
-						'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $product, array $args ) {
-							if ( ! empty( $args['max'] ) && $args['max'] ) {
-								// @codingStandardsIgnoreLine
-								return $product->salePriceMax;
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->salePriceRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->salePrice;
 							}
-							// @codingStandardsIgnoreLine
-							return $product->salePrice;
 						},
 					),
 					'dateOnSaleFrom'    => array(

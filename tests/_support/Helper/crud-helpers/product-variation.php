@@ -91,9 +91,9 @@ class ProductVariationHelper extends WCG_Helper {
 				: null,
 			'description'       => ! empty( $data->get_description() ) ? $data->get_description() : null,
 			'sku'               => $data->get_sku(),
-			'price'             => ! empty( $data->get_price() ) ? $data->get_price() : null,
-			'regularPrice'      => ! empty( $data->get_regular_price() ) ? $data->get_regular_price() : null,
-			'salePrice'         => ! empty( $data->get_sale_price() ) ? $data->get_sale_price() : null,
+			'price'             => ! empty( $data->get_price() ) ? \wc_graphql_price( $data->get_price() ) : null,
+			'regularPrice'      => ! empty( $data->get_regular_price() ) ? \wc_graphql_price( $data->get_regular_price() ) : null,
+			'salePrice'         => ! empty( $data->get_sale_price() ) ? \wc_graphql_price( $data->get_sale_price() ) : null,
 			'dateOnSaleFrom'    => ! empty( $data->get_date_on_sale_from() )
 				? $data->get_date_on_sale_from()
 				: null,
