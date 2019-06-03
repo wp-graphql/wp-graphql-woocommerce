@@ -91,34 +91,152 @@ class Order_Type {
 					'discountTotal'         => array(
 						'type'        => 'String',
 						'description' => __( 'Discount total amount', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->discountTotalRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->discountTotal;
+							}
+						},
 					),
 					'discountTax'           => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Discount tax amount', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->discountTaxRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->discountTax;
+							}
+						},
 					),
 					'shippingTotal'         => array(
 						'type'        => 'String',
 						'description' => __( 'Shipping total amount', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->shippingTotalRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->shippingTotal;
+							}
+						},
 					),
 					'shippingTax'           => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Shipping tax amount', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->shippingTaxRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->shippingTax;
+							}
+						},
 					),
 					'cartTax'               => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart tax amount', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->cartTaxRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->cartTax;
+							}
+						},
 					),
 					'total'                 => array(
 						'type'        => 'String',
 						'description' => __( 'Order grand total', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->totalRaw;
+							} else {
+								return $source->total;
+							}
+						},
 					),
 					'totalTax'              => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Order taxes', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->totalTaxRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->totalTax;
+							}
+						},
 					),
 					'subtotal'              => array(
 						'type'        => 'String',
 						'description' => __( 'Order subtotal', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->subtotalRaw;
+							} else {
+								return $source->subtotal;
+							}
+						},
 					),
 					'orderNumber'           => array(
 						'type'        => 'String',
