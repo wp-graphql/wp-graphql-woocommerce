@@ -96,94 +96,106 @@ class Cart_Type {
 				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'subtotal'                => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart subtotal', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
+							$price = ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'subtotalTax'             => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart subtotal tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
+							$price = is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'discountTotal'           => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart discount total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_discount_total() ) ? $source->get_discount_total() : 0;
+							$price = ! is_null( $source->get_discount_total() ) ? $source->get_discount_total() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'discountTax'             => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart discount tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_discount_tax() ) ? $source->get_discount_tax() : 0;
+							$price = ! is_null( $source->get_discount_tax() ) ? $source->get_discount_tax() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'shippingTotal'           => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart shipping total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_shipping_total() ) ? $source->get_shipping_total() : 0;
+							$price = ! is_null( $source->get_shipping_total() ) ? $source->get_shipping_total() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'shippingTax'             => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart shipping tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_shipping_tax() ) ? $source->get_shipping_tax() : 0;
+							$price = ! is_null( $source->get_shipping_tax() ) ? $source->get_shipping_tax() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'contentsTotal'           => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart contents total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_cart_contents_total() )
+							$price = ! is_null( $source->get_cart_contents_total() )
 								? $source->get_cart_contents_total()
 								: 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'contentsTax'             => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart contents tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_cart_contents_tax() )
+							$price = ! is_null( $source->get_cart_contents_tax() )
 								? $source->get_cart_contents_tax()
 								: 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'feeTotal'                => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart fee total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_fee_total() ) ? $source->get_fee_total() : 0;
+							$price = ! is_null( $source->get_fee_total() ) ? $source->get_fee_total() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'feeTax'                  => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart fee tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_fee_tax() ) ? $source->get_fee_tax() : 0;
+							$price = ! is_null( $source->get_fee_tax() ) ? $source->get_fee_tax() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'total'                   => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart total after calculation', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$source->calculate_totals();
-							return isset( $source->get_totals()['total'] )
+							$price = isset( $source->get_totals()['total'] )
 								? apply_filters( 'woocommerce_cart_get_total', $source->get_totals()['total'] )
 								: null;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'totalTax'                => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Cart total tax amount', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return ! is_null( $source->get_total_tax() ) ? $source->get_total_tax() : 0;
+							$price = ! is_null( $source->get_total_tax() ) ? $source->get_total_tax() : 0;
+							return \wc_graphql_price( $price );
 						},
 					),
 					'isEmpty'                 => array(
@@ -306,7 +318,7 @@ class Cart_Type {
 			'CartFee',
 			array(
 				'description' => __( 'An additional fee', 'wp-graphql-woocommerce' ),
-				'fields'       => array(
+				'fields'      => array(
 					'id'       => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'Fee ID', 'wp-graphql-woocommerce' ),
