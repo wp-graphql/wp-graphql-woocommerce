@@ -96,13 +96,15 @@ class Order extends Crud_CPT {
 					return ! empty( $this->data->get_date_paid() ) ? $this->data->get_date_paid() : null;
 				},
 				'discountTotal'         => function() {
-					return ! empty( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
+					$price = ! empty( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
+					return \wc_graphql_price( $price, array( 'currency' => $this->data->get_currency() ) );
 				},
 				'discountTax'           => function() {
 					return ! empty( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : 0;
 				},
 				'shippingTotal'         => function() {
-					return ! empty( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
+					$price = ! empty( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
+					return \wc_graphql_price( $price, array( 'currency' => $this->data->get_currency() ) );
 				},
 				'shippingTax'           => function() {
 					return ! empty( $this->data->get_shipping_tax() ) ? $this->data->get_shipping_tax() : 0;
@@ -111,13 +113,16 @@ class Order extends Crud_CPT {
 					return ! empty( $this->data->get_cart_tax() ) ? $this->data->get_cart_tax() : 0;
 				},
 				'total'                 => function() {
-					return ! empty( $this->data->get_total() ) ? $this->data->get_total() : 0;
+					$price = ! empty( $this->data->get_total() ) ? $this->data->get_total() : 0;
+					return \wc_graphql_price( $price, array( 'currency' => $this->data->get_currency() ) );
 				},
 				'totalTax'              => function() {
 					return ! empty( $this->data->get_total_tax() ) ? $this->data->get_total_tax() : 0;
 				},
 				'subtotal'              => function() {
-					return ! empty( $this->data->get_subtotal() ) ? $this->data->get_subtotal() : 0;
+					return ! empty( $this->data->get_subtotal() )
+						? \wc_graphql_price( $this->data->get_subtotal(), array( 'currency' => $this->data->get_currency() ) )
+						: null;
 				},
 				'orderNumber'           => function() {
 					return ! empty( $this->data->get_order_number() ) ? $this->data->get_order_number() : null;

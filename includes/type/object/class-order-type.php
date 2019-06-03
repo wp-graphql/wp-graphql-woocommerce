@@ -89,7 +89,7 @@ class Order_Type {
 						'description' => __( 'Date order was paid', 'wp-graphql-woocommerce' ),
 					),
 					'discountTotal'         => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Discount total amount', 'wp-graphql-woocommerce' ),
 					),
 					'discountTax'           => array(
@@ -97,7 +97,7 @@ class Order_Type {
 						'description' => __( 'Discount tax amount', 'wp-graphql-woocommerce' ),
 					),
 					'shippingTotal'         => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Shipping total amount', 'wp-graphql-woocommerce' ),
 					),
 					'shippingTax'           => array(
@@ -109,7 +109,7 @@ class Order_Type {
 						'description' => __( 'Cart tax amount', 'wp-graphql-woocommerce' ),
 					),
 					'total'                 => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Order grand total', 'wp-graphql-woocommerce' ),
 					),
 					'totalTax'              => array(
@@ -117,7 +117,7 @@ class Order_Type {
 						'description' => __( 'Order taxes', 'wp-graphql-woocommerce' ),
 					),
 					'subtotal'              => array(
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Order subtotal', 'wp-graphql-woocommerce' ),
 					),
 					'orderNumber'           => array(
