@@ -63,14 +63,58 @@ class Product_Variation_Type {
 					'price'             => array(
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s active price', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->priceRaw;
+							} else {
+								return $source->price;
+							}
+						},
 					),
 					'regularPrice'      => array(
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s regular price', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->regularPriceRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->regularPrice;
+							}
+						},
 					),
 					'salePrice'         => array(
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s sale price', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->salePriceRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->salePrice;
+							}
+						},
 					),
 					'dateOnSaleFrom'    => array(
 						'type'        => 'String',

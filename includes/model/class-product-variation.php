@@ -99,16 +99,34 @@ class Product_Variation extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_price() )
 						: null;
 				},
+				'priceRaw'          => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'salePrice'         => function() {
 					return ! empty( $this->data->get_sale_price() )
 						? \wc_graphql_price( $this->data->get_sale_price() )
 						: null;
 				},
+				'salePriceRaw'      => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'regularPrice'      => function() {
 					return ! empty( $this->data->get_regular_price() ) ?
 						\wc_graphql_price( $this->data->get_regular_price() )
 						: null;
 				},
+				'regularPriceRaw'   => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'dateOnSaleFrom'    => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
 				},

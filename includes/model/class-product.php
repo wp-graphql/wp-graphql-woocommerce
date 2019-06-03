@@ -95,11 +95,12 @@ class Product extends Crud_CPT {
 	/**
 	 * Returns string of variation price range.
 	 *
-	 * @param string $pricing_type - Range selected pricing type.
+	 * @param string  $pricing_type - Range selected pricing type.
+	 * @param boolean $raw          - Whether to return raw value.
 	 *
 	 * @return string|null
 	 */
-	private function get_variation_price( $pricing_type = '' ) {
+	private function get_variation_price( $pricing_type = '', $raw = false ) {
 		$prices = $this->data->get_variation_prices( true );
 
 		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->data->is_on_sale() ) ) {
@@ -111,11 +112,11 @@ class Product extends Crud_CPT {
 			$max_reg_price = end( $prices['regular_price'] );
 
 			if ( $min_price !== $max_price ) {
-				$price = wc_graphql_price_range( $min_price, $max_price );
+				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_price ) : implode( ', ', $prices['price'] );
 			} elseif ( 'regular' !== $pricing_type && $this->data->is_on_sale() && $min_reg_price === $max_reg_price ) {
-				$price = wc_graphql_price_range( $min_price, $max_reg_price );
+				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_reg_price ) : implode( ', ', $prices['price'] );
 			} else {
-				$price = \wc_graphql_price( $min_price );
+				$price = ! $raw ? \wc_graphql_price( $min_price ) : $min_price;
 			}
 		}
 
@@ -183,6 +184,16 @@ class Product extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_price() )
 						: null;
 				},
+				'priceRaw'           => array(
+					'callback'   => function() {
+						if ( 'variable' === $this->data->get_type() ) {
+							return $this->get_variation_price( '', true );
+						}
+
+						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'regularPrice'       => function() {
 					if ( 'variable' === $this->data->get_type() ) {
 						return $this->get_variation_price( 'regular' );
@@ -192,6 +203,16 @@ class Product extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_regular_price() )
 						: null;
 				},
+				'regularPriceRaw'    => array(
+					'callback'   => function() {
+						if ( 'variable' === $this->data->get_type() ) {
+							return $this->get_variation_price( 'regular', true );
+						}
+
+						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'salePrice'          => function() {
 					if ( 'variable' === $this->data->get_type() ) {
 						return $this->get_variation_price( 'sale' );
@@ -201,6 +222,16 @@ class Product extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_sale_price() )
 						: null;
 				},
+				'salePriceRaw'       => array(
+					'callback'   => function() {
+						if ( 'variable' === $this->data->get_type() ) {
+							return $this->get_variation_price( 'sale', true );
+						}
+
+						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'dateOnSaleFrom'     => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
 				},
