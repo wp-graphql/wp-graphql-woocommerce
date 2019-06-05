@@ -18,10 +18,23 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->helper        = $this->getModule('\Helper\Wpunit')->product();
 		$this->product_tag   = 'tag-one';
 		$this->product_cat   = 'category-one';
+		$this->image_id     = $this->factory->post->create(
+			array(
+				'post_author'  => $this->shop_manager,
+				'post_content' => '',
+				'post_excerpt' => '',
+				'post_status'  => 'publish',
+				'post_title'   => 'Product Image',
+				'post_type'    => 'attachment',
+				'post_content' => 'product image',
+			)
+		);
 		$this->product       = $this->helper->create_simple(
 			array(
-				'tag_ids' => array( $this->helper->create_product_tag( $this->product_tag ) ),
-				'category_ids' => array( $this->helper->create_product_category( $this->product_cat ) ),
+				'tag_ids'           => array( $this->helper->create_product_tag( $this->product_tag ) ),
+				'category_ids'      => array( $this->helper->create_product_category( $this->product_cat ) ),
+				'image_id'          => $this->image_id,
+				'gallery_image_ids' => array( $this->image_id ),
 			)
 		);
 	}
@@ -450,7 +463,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$id = Relay::toGlobalId( 'product', $this->product );
 		$query = '
 			query tagAndCategoryQuery {
-				productTags {
+				productTags( where: { hideEmpty: true } ) {
 					nodes {
 						name
 						products {
@@ -460,7 +473,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						}
 					}
 				}
-				productCategories( where: { hideEmpty: true }) {
+				productCategories( where: { hideEmpty: true } ) {
 					nodes {
 						name
 						products {
@@ -473,7 +486,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$actual    = do_graphql_request( $query, 'productQuery' );
+		$actual    = do_graphql_request( $query, 'tagAndCategoryQuery' );
 		$expected  = array(
 			'data' => array(
 				'productTags' => array(
@@ -501,6 +514,50 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 									),
 								),
 							),
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductToMediaItemConnections() {
+		$id       = Relay::toGlobalId( 'product', $this->product );
+		$image_id = Relay::toGlobalId( 'attachment', $this->image_id );
+
+		$query = '
+			query productQuery( $id: ID! ) {
+				product( id: $id ) {
+					id
+					image {
+						id
+					}
+					galleryImages {
+						nodes {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'id'            => $id,
+					'image'         => array(
+						'id' => $image_id,
+					),
+					'galleryImages' => array(
+						'nodes' => array(
+							array( 'id' => $image_id ),
 						),
 					),
 				),
