@@ -73,6 +73,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					taxClass
 					manageStock
 					stockQuantity
+					stockStatus
+					backorders
 					soldIndividually
 					weight
 					length

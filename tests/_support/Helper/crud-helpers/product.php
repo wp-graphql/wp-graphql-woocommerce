@@ -1,6 +1,7 @@
 <?php
 
 use GraphQLRelay\Relay;
+use WPGraphQL\Type\WPEnumType;
 
 class ProductHelper extends WCG_Helper {
 	private $index;
@@ -320,6 +321,8 @@ class ProductHelper extends WCG_Helper {
 				: 'STANDARD',
 			'manageStock'       => $data->get_manage_stock(),
 			'stockQuantity'     => $data->get_stock_quantity(),
+			'stockStatus'       => self::get_stock_status_enum( $data->get_stock_status() ),
+			'backorders'        => WPEnumType::get_safe_name( $data->get_backorders() ),
 			'soldIndividually'  => $data->get_sold_individually(),
 			'weight'            => $data->get_weight(),
 			'length'            => $data->get_length(),
@@ -416,11 +419,11 @@ class ProductHelper extends WCG_Helper {
 		);
 	}
 
-	public function field( $id, $field_name = 'id' ) {
+	public function field( $id, $field_name = 'id', $args = array() ) {
 		$get = 'get_' . $field_name;
 		$product = wc_get_product( $id );
 		if ( ! empty( $product ) ) {
-			return $product->{$get}();
+			return $product->{$get}( ...$args );
 		}
 
 		return null;
