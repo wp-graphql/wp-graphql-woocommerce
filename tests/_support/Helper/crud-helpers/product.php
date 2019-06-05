@@ -192,6 +192,21 @@ class ProductHelper extends WCG_Helper {
 		return $return;
 	}
 
+	public function create_download( $id = 0 ) {
+		$download = new WC_Product_Download();
+		$download->set_id( 'testid' );
+		$download->set_name( 'Test Name' );
+		$download->set_file( 'http://example.com/file.jpg' );
+
+		if ( $id ) {
+			$product = \wc_get_product( $id );
+			$product->set_downloads( array($download) );
+			$product->save();
+		}
+
+		return $download;
+	}
+
 	public function create_variable( $args = array() ) {
 		$product = new WC_Product_Variable();
 		$product->set_props(
@@ -303,5 +318,29 @@ class ProductHelper extends WCG_Helper {
 		}
 
 		return ! empty ( $results ) ? array( 'nodes' => $results ) : null;
+	}
+
+	public function print_downloads( $id ) {
+		$product    = wc_get_product( $id );
+		$downloads  = (array) $product->get_downloads();
+		if ( empty( $downloads ) ) {
+			return null;
+		}
+		
+		$results = array();
+		foreach ( $downloads as $download ) {
+			$results[] = array(
+				'name'            => $download->get_name(),
+				'downloadId'      => $download->get_id(),
+				'filePathType'    => $download->get_type_of_file_path(),
+				'fileType'        => $download->get_file_type(),
+				'fileExt'         => $download->get_file_extension(),
+				'allowedFileType' => $download->is_allowed_filetype(),
+				'fileExists'      => $download->file_exists(),
+				'file'            => $download->get_file(),
+			);
+		}
+		
+		return $results;
 	}
 }

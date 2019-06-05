@@ -28,7 +28,7 @@ class Product_Download_Type {
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'downloadId'      => array(
-						'type'        => array( 'non_null' => 'Int' ),
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Product download ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $download ) {
 							return ! empty( $download ) ? $download->get_id() : null;

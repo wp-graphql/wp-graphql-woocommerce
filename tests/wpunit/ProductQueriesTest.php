@@ -35,6 +35,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'category_ids'      => array( $this->helper->create_product_category( $this->product_cat ) ),
 				'image_id'          => $this->image_id,
 				'gallery_image_ids' => array( $this->image_id ),
+				'downloads'         => array( $this->helper->create_download() ),
 			)
 		);
 	}
@@ -560,6 +561,44 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 							array( 'id' => $image_id ),
 						),
 					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductDownloads() {
+		$id       = $this->helper->to_relay_id( $this->product );
+
+		$query = '
+			query productQuery( $id: ID! ) {
+				product( id: $id ) {
+					id
+					downloads {
+						name
+						downloadId
+						filePathType
+						fileType
+						fileExt
+						allowedFileType
+						fileExists
+						file
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'id'            => $id,
+					'downloads'     => $this->helper->print_downloads($this->product),
 				),
 			),
 		);
