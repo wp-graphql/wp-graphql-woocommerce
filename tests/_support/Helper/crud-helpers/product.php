@@ -26,6 +26,26 @@ class ProductHelper extends WCG_Helper {
 		return $slug;
 	}
 
+	public function create_product_tag( $term ) {
+		if ( term_exists( $term, 'product_tag' ) ) {
+			$term = get_term( $term, 'product_tag', ARRAY_A );
+		} else {
+			$term = wp_insert_term( $term, 'product_tag' );
+		}
+
+		return ! empty( $term['term_id'] ) ? $term['term_id'] : null;
+	}
+
+	public function create_product_category( $term ) {
+		if ( term_exists( $term, 'product_cat' ) ) {
+			$term = get_term( $term, 'product_cat', ARRAY_A );
+		} else {
+			$term = wp_insert_term( $term, 'product_cat' );
+		}
+
+		return ! empty( $term['term_id'] ) ? $term['term_id'] : null;
+	}
+
 	public function create_simple( $args = array() ) {
 		$product       = new WC_Product_Simple();
 		$name          = $this->dummy->product();

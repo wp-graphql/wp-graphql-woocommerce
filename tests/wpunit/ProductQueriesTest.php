@@ -4,7 +4,10 @@ use GraphQLRelay\Relay;
 class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $shop_manager;
 	private $customer;
+	private $helper;
 	private $product;
+	private $product_tag;
+	private $product_cat;
 
 	public function setUp() {
 		// before
@@ -13,7 +16,14 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->shop_manager  = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
 		$this->customer      = $this->factory->user->create( array( 'role' => 'customer' ) );
 		$this->helper        = $this->getModule('\Helper\Wpunit')->product();
-		$this->product       = $this->helper->create_simple();
+		$this->product_tag   = 'tag-one';
+		$this->product_cat   = 'category-one';
+		$this->product       = $this->helper->create_simple(
+			array(
+				'tag_ids' => array( $this->helper->create_product_tag( $this->product_tag ) ),
+				'category_ids' => array( $this->helper->create_product_category( $this->product_cat ) ),
+			)
+		);
 	}
 
 	public function tearDown() {
@@ -379,6 +389,119 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 								return floatval( $product_a->get_price() ) > floatval( $product_b->get_price() ) ? -1 : 1;
 							},
 						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductToTermConnection() {
+		$id = Relay::toGlobalId( 'product', $this->product );
+		$query = '
+			query productQuery($id: ID!) {
+				product(id: $id) {
+					id
+					tags {
+						nodes {
+						  	name
+						}
+					}
+					categories {
+						nodes {
+						  	name
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'id'         => $id,
+					'tags'       => array(
+						'nodes' => array(
+							array( 'name' => $this->product_tag ),
+						),
+					),
+					'categories' => array(
+						'nodes' => array(
+							array( 'name' => $this->product_cat ),
+						),
+					),
+				)
+			)
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testTermToProductConnection() {
+		$id = Relay::toGlobalId( 'product', $this->product );
+		$query = '
+			query tagAndCategoryQuery {
+				productTags {
+					nodes {
+						name
+						products {
+							nodes {
+								id
+							}
+						}
+					}
+				}
+				productCategories( where: { hideEmpty: true }) {
+					nodes {
+						name
+						products {
+							nodes {
+								id
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$actual    = do_graphql_request( $query, 'productQuery' );
+		$expected  = array(
+			'data' => array(
+				'productTags' => array(
+					'nodes' => array(
+						array(
+							'name'     => $this->product_tag,
+							'products' => array(
+								'nodes' => array(
+									array (
+										'id' => $id
+									),
+								),
+							),
+						),
+					),
+				),
+				'productCategories' => array(
+					'nodes' => array(
+						array(
+							'name'     => $this->product_cat,
+							'products' => array(
+								'nodes' => array(
+									array (
+										'id' => $id
+									),
+								),
+							),
+						),
 					),
 				),
 			),
