@@ -131,51 +131,51 @@ class Product extends Crud_CPT {
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
-				'ID'                 => function() {
+				'ID'                   => function() {
 					return $this->data->get_id();
 				},
-				'id'                 => function() {
+				'id'                   => function() {
 					return ! empty( $this->data->get_id() )
 						? Relay::toGlobalId( 'product', $this->data->get_id() )
 						: null;
 				},
-				'productId'          => function() {
+				'productId'            => function() {
 					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
 				},
-				'type'               => function() {
+				'type'                 => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
 				},
-				'slug'               => function() {
+				'slug'                 => function() {
 					return ! empty( $this->data->get_slug() ) ? $this->data->get_slug() : null;
 				},
-				'name'               => function() {
+				'name'                 => function() {
 					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
 				},
-				'date'               => function() {
+				'date'                 => function() {
 					return ! empty( $this->data ) ? $this->data->get_date_created() : null;
 				},
-				'modified'           => function() {
+				'modified'             => function() {
 					return ! empty( $this->data ) ? $this->data->get_date_modified() : null;
 				},
-				'status'             => function() {
+				'status'               => function() {
 					return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
 				},
-				'featured'           => function() {
+				'featured'             => function() {
 					return ! is_null( $this->data->get_featured() ) ? $this->data->get_featured() : null;
 				},
-				'catalogVisibility'  => function() {
+				'catalogVisibility'    => function() {
 					return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
 				},
-				'description'        => function() {
+				'description'          => function() {
 					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
 				},
-				'shortDescription'   => function() {
+				'shortDescription'     => function() {
 					return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
 				},
-				'sku'                => function() {
+				'sku'                  => function() {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
 				},
-				'price'              => function() {
+				'price'                => function() {
 					if ( 'variable' === $this->data->get_type() ) {
 						return $this->get_variation_price();
 					}
@@ -184,7 +184,7 @@ class Product extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_price() )
 						: null;
 				},
-				'priceRaw'           => array(
+				'priceRaw'             => array(
 					'callback'   => function() {
 						if ( 'variable' === $this->data->get_type() ) {
 							return $this->get_variation_price( '', true );
@@ -194,7 +194,7 @@ class Product extends Crud_CPT {
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				),
-				'regularPrice'       => function() {
+				'regularPrice'         => function() {
 					if ( 'variable' === $this->data->get_type() ) {
 						return $this->get_variation_price( 'regular' );
 					}
@@ -203,7 +203,7 @@ class Product extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_regular_price() )
 						: null;
 				},
-				'regularPriceRaw'    => array(
+				'regularPriceRaw'      => array(
 					'callback'   => function() {
 						if ( 'variable' === $this->data->get_type() ) {
 							return $this->get_variation_price( 'regular', true );
@@ -213,7 +213,7 @@ class Product extends Crud_CPT {
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				),
-				'salePrice'          => function() {
+				'salePrice'            => function() {
 					if ( 'variable' === $this->data->get_type() ) {
 						return $this->get_variation_price( 'sale' );
 					}
@@ -222,7 +222,7 @@ class Product extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_sale_price() )
 						: null;
 				},
-				'salePriceRaw'       => array(
+				'salePriceRaw'         => array(
 					'callback'   => function() {
 						if ( 'variable' === $this->data->get_type() ) {
 							return $this->get_variation_price( 'sale', true );
@@ -232,115 +232,118 @@ class Product extends Crud_CPT {
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				),
-				'dateOnSaleFrom'     => function() {
+				'dateOnSaleFrom'       => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
 				},
-				'dateOnSaleTo'       => function() {
+				'dateOnSaleTo'         => function() {
 					return ! empty( $this->data->get_date_on_sale_to() ) ? $this->data->get_date_on_sale_to() : null;
 				},
-				'totalSales'         => function() {
+				'totalSales'           => function() {
 					return ! is_null( $this->data->get_total_sales() ) ? $this->data->get_total_sales() : null;
 				},
-				'taxStatus'          => function() {
+				'taxStatus'            => function() {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 				},
-				'taxClass'           => function() {
+				'taxClass'             => function() {
 					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
 				},
-				'manageStock'        => function() {
+				'manageStock'          => function() {
 					return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
 				},
-				'stockQuantity'      => function() {
+				'stockQuantity'        => function() {
 					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
 				},
-				'stockStatus'        => function() {
+				'stockStatus'          => function() {
 					return ! empty( $this->data->get_stock_status() ) ? $this->data->get_stock_status() : null;
 				},
-				'backorders'         => function() {
+				'backorders'           => function() {
 					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
 				},
-				'soldIndividually'   => function() {
+				'soldIndividually'     => function() {
 					return ! is_null( $this->data->is_sold_individually() ) ? $this->data->is_sold_individually() : null;
 				},
-				'weight'             => function() {
+				'weight'               => function() {
 					return ! is_null( $this->data->get_weight() ) ? $this->data->get_weight() : null;
 				},
-				'length'             => function() {
+				'length'               => function() {
 					return ! is_null( $this->data->get_length() ) ? $this->data->get_length() : null;
 				},
-				'width'              => function() {
+				'width'                => function() {
 					return ! is_null( $this->data->get_width() ) ? $this->data->get_width() : null;
 				},
-				'height'             => function() {
+				'height'               => function() {
 					return ! is_null( $this->data->get_height() ) ? $this->data->get_height() : null;
 				},
-				'reviewsAllowed'     => function() {
+				'reviewsAllowed'       => function() {
 					return ! empty( $this->data->get_reviews_allowed() ) ? $this->data->get_reviews_allowed() : null;
 				},
-				'purchaseNote'       => function() {
+				'purchaseNote'         => function() {
 					return ! empty( $this->data->get_purchase_note() ) ? $this->data->get_purchase_note() : null;
 				},
-				'menuOrder'          => function() {
+				'menuOrder'            => function() {
 					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
 				},
-				'virtual'            => function() {
+				'virtual'              => function() {
 					return ! is_null( $this->data->is_virtual() ) ? $this->data->is_virtual() : null;
 				},
-				'downloadExpiry'     => function() {
+				'downloadExpiry'       => function() {
 					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
 				},
-				'downloadable'       => function() {
+				'downloadable'         => function() {
 					return ! is_null( $this->data->is_downloadable() ) ? $this->data->is_downloadable() : null;
 				},
-				'downloadLimit'      => function() {
+				'downloadLimit'        => function() {
 					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
 				},
-				'ratingCount'        => function() {
-					return ! is_null( $this->data->get_rating_counts() ) ? $this->data->get_rating_counts() : null;
-				},
-				'averageRating'      => function() {
+				'averageRating'        => function() {
 					return ! is_null( $this->data->get_average_rating() ) ? $this->data->get_average_rating() : null;
 				},
-				'reviewCount'        => function() {
+				'reviewCount'          => function() {
 					return ! is_null( $this->data->get_review_count() ) ? $this->data->get_review_count() : null;
 				},
-				'parentId'           => function() {
-					return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
-				},
-				'imageId'            => function () {
-					return ! empty( $this->data->get_image_id() ) ? $this->data->get_image_id() : null;
-				},
-				'shippingClassId'    => function () {
+				'shippingClassId'      => function () {
 					return ! empty( $this->data->get_image_id() ) ? $this->data->get_shipping_class_id() : null;
 				},
-				'downloads'          => function() {
+				'downloads'            => function() {
 					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : null;
 				},
-				'onSale'             => function () {
+				'onSale'               => function () {
 					return ! is_null( $this->data->is_on_sale() ) ? $this->data->is_on_sale() : null;
 				},
-				'purchasable'        => function () {
+				'purchasable'          => function () {
 					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
 				},
-				'externalUrl'        => function() {
+				'externalUrl'          => function() {
 					if ( 'external' === $this->data->get_type() ) {
 						return ! empty( $this->data->get_product_url() ) ? $this->data->get_product_url() : null;
 					}
 					return null;
 				},
-				'buttonText'         => function() {
+				'buttonText'           => function() {
 					if ( 'external' === $this->data->get_type() ) {
 						return ! empty( $this->data->get_button_text() ) ? $this->data->get_button_text() : null;
 					}
 					return null;
 				},
-				'backordersAllowed'  => function() {
+				'addToCartText'        => function() {
+					if ( 'grouped' === $this->data->get_type() || 'external' === $this->data->get_type() ) {
+						return ! empty( $this->data->add_to_cart_text() ) ? $this->data->add_to_cart_text() : null;
+					}
+					return null;
+				},
+				'addToCartDescription' => function() {
+					if ( 'grouped' === $this->data->get_type() || 'external' === $this->data->get_type() ) {
+						return ! empty( $this->data->add_to_cart_description() ) ? $this->data->add_to_cart_description() : null;
+					}
+					return null;
+				},
+				'backordersAllowed'    => function() {
 					return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
 				},
-				'shippingRequired'   => function() {
+				'shippingRequired'     => function() {
 					return ! is_null( $this->data->needs_shipping() ) ? $this->data->needs_shipping() : null;
 				},
-				'shippingTaxable'    => function() {
+				'shippingTaxable'      => function() {
 					return ! is_null( $this->data->is_shipping_taxable() ) ? $this->data->is_shipping_taxable() : null;
 				},
 				/**
@@ -349,11 +352,11 @@ class Product extends Crud_CPT {
 				 * These field resolvers are used in connection resolvers to define WP_Query argument
 				 * Note: underscore naming style is used as a quick identifier
 				 */
-				'related_ids'        => function() {
+				'related_ids'          => function() {
 					$related_ids = array_map( 'absint', array_values( wc_get_related_products( $this->data->get_id() ) ) );
 					return ! empty( $related_ids ) ? $related_ids : array( '0' );
 				},
-				'upsell_ids'         => function() {
+				'upsell_ids'           => function() {
 					if ( ! empty( $this->data ) ) {
 						switch ( $this->data->get_type() ) {
 							case 'external':
@@ -367,7 +370,7 @@ class Product extends Crud_CPT {
 
 					return array( '0' );
 				},
-				'cross_sell_ids'     => function() {
+				'cross_sell_ids'       => function() {
 					if ( ! empty( $this->data ) ) {
 						switch ( $this->data->get_type() ) {
 							case 'external':
@@ -381,34 +384,40 @@ class Product extends Crud_CPT {
 
 					return array( '0' );
 				},
-				'grouped_ids'        => function() {
+				'grouped_ids'          => function() {
 					if ( ! empty( $this->data ) && 'grouped' === $this->data->get_type() ) {
 						$grouped = array_map( 'absint', $this->data->get_children() );
 						return ! empty( $grouped ) ? $grouped : array( '0' );
 					}
 					return array( '0' );
 				},
-				'variation_ids'      => function() {
+				'variation_ids'        => function() {
 					if ( ! empty( $this->data ) && 'variable' === $this->data->get_type() ) {
 						$variations = array_map( 'absint', $this->data->get_children() );
 						return ! empty( $variations ) ? $variations : array( '0' );
 					}
 					return array( '0' );
 				},
-				'attributes'         => function() {
+				'attributes'           => function() {
 					return ! empty( $this->data->get_attributes() ) ? array_values( $this->data->get_attributes() ) : array( '0' );
 				},
-				'default_attributes' => function() {
+				'default_attributes'   => function() {
 					return ! empty( $this->data->get_default_attributes() ) ? $this->data->get_default_attributes() : array( '0' );
 				},
-				'gallery_image_ids'  => function() {
+				'image_id'             => function () {
+					return ! empty( $this->data->get_image_id() ) ? $this->data->get_image_id() : null;
+				},
+				'gallery_image_ids'    => function() {
 					return ! empty( $this->data->get_gallery_image_ids() ) ? $this->data->get_gallery_image_ids() : array( '0' );
 				},
-				'category_ids'       => function() {
+				'category_ids'         => function() {
 					return ! empty( $this->data->get_category_ids() ) ? $this->data->get_category_ids() : array( '0' );
 				},
-				'tag_ids'            => function() {
+				'tag_ids'              => function() {
 					return ! empty( $this->data->get_tag_ids() ) ? $this->data->get_tag_ids() : array( '0' );
+				},
+				'parent_id'            => function() {
+					return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
 				},
 			);
 		}

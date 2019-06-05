@@ -35,7 +35,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'category_ids'      => array( $this->helper->create_product_category( $this->product_cat ) ),
 				'image_id'          => $this->image_id,
 				'gallery_image_ids' => array( $this->image_id ),
-				'downloads'         => array( $this->helper->create_download() ),
+				'downloads'         => array( ProductHelper::create_download() ),
 			)
 		);
 	}
@@ -87,6 +87,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					downloadExpiry
 					averageRating
 					reviewCount
+					backordersAllowed
+					onSale
+					purchasable
+					shippingRequired
+					shippingTaxable
 				}
 			}
 		';
@@ -607,5 +612,110 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testExternalProductQuery() {
+		$product_id = $this->helper->create_external();
+		$query = '
+			query productQuery( $id: ID! ) {
+				product(id: $id) {
+					id
+					buttonText
+					externalUrl
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $product_id ) );
+		$actual = do_graphql_request( $query, 'productQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'product' => $this->helper->print_external( $product_id ),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
+
+	public function testGroupProductConnections() {
+		$grouped_product = $this->helper->create_grouped();
+		$query = '
+			query productQuery( $id: ID! ) {
+				product(id: $id) {
+					addToCartText
+					addToCartDescription
+					grouped {
+						nodes {
+							id
+							parent {
+								id
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $grouped_product['parent'] ) );
+		$actual = do_graphql_request( $query, 'productQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'product' => $this->helper->print_grouped( $grouped_product['parent'] ),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+	}
+
+	public function testRelatedProductConnections() {
+		$products = $this->helper->create_related();
+		$query = '
+			query productQuery( $id: ID! ) {
+				product(id: $id) {
+					related {
+						nodes {
+							id
+						}
+					}
+					crossSell {
+						nodes {
+							id
+						}
+					}
+					upsell {
+						nodes {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $products['product'] ) );
+		$actual = do_graphql_request( $query, 'productQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'product' => array(
+					'related'   => array(
+						'nodes' => $this->helper->print_nodes(
+							array_merge( $products['related'], $products['cross_sell'], $products['upsell'] )
+						),
+					),
+					'crossSell' => array( 'nodes' => $this->helper->print_nodes( $products['cross_sell'] ) ),
+					'upsell'    => array( 'nodes' => $this->helper->print_nodes( $products['upsell'] ) ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
 	}
 }

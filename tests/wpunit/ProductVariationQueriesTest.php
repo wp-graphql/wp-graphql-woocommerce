@@ -27,7 +27,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
     // tests
     public function testVariationQuery() {
         $variation_id = $this->products['variations'][0];
-        $id           = Relay::toGlobalId( 'product_variation', $variation_id );
+        $id           = $this->helper->to_relay_id( $variation_id );
 
         $query        = '
             query variationQuery( $id: ID, $variationId: Int ) {
@@ -55,6 +55,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                     taxClass
                     manageStock
                     stockQuantity
+                    stockStatus
                     backorders
                     backordersAllowed
                     weight
@@ -67,6 +68,9 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                     catalogVisibility
                     hasAttributes
                     type
+                    parent {
+                        id
+                    }
                 }
             }
         ';
@@ -181,4 +185,77 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEqualSets( $expected, $actual );
     }
 
+    public function testProductVariationToMediaItemConnections() {
+		$id    = $this->helper->to_relay_id( $this->products['variations'][1] );
+
+		$query = '
+			query productVariationQuery( $id: ID! ) {
+				productVariation( id: $id ) {
+					id
+					image {
+						id
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productVariationQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'productVariation' => array(
+					'id'            => $id,
+					'image'         => array(
+                        'id' => Relay::toGlobalId(
+                            'attachment',
+                            $this->helper->field( $this->products['variations'][1], 'image_id' )
+                        ),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+        codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductVariationDownloads() {
+		$id    = $this->helper->to_relay_id( $this->products['variations'][0] );
+
+		$query = '
+			query productVariationQuery( $id: ID! ) {
+				productVariation( id: $id ) {
+					id
+					downloads {
+						name
+						downloadId
+						filePathType
+						fileType
+						fileExt
+						allowedFileType
+						fileExists
+						file
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productVariationQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'productVariation' => array(
+					'id'            => $id,
+					'downloads'     => $this->helper->print_downloads( $this->products['variations'][0] ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
 }
