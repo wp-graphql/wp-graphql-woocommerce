@@ -14,6 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Data\DataSource;
 use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
@@ -63,14 +64,58 @@ class Product_Variation_Type {
 					'price'             => array(
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s active price', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->priceRaw;
+							} else {
+								return $source->price;
+							}
+						},
 					),
 					'regularPrice'      => array(
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s regular price', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->regularPriceRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->regularPrice;
+							}
+						},
 					),
 					'salePrice'         => array(
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s sale price', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->salePriceRaw;
+							} else {
+								// @codingStandardsIgnoreLine.
+								return $source->salePrice;
+							}
+						},
 					),
 					'dateOnSaleFrom'    => array(
 						'type'        => 'String',
@@ -185,7 +230,14 @@ class Product_Variation_Type {
 						'description' => __( 'Product variation main image', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreLine
-							return DataSource::resolve_post_object( $source->imageId, $context );
+							return DataSource::resolve_post_object( $source->image_id, $context );
+						},
+					),
+					'parent'            => array(
+						'type'        => 'Product',
+						'description' => __( 'Product variation parent product', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context ) {
+							return Factory::resolve_crud_object( $source->parent_id, $context );
 						},
 					),
 				),

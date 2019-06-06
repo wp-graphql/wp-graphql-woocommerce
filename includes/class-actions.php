@@ -23,6 +23,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum;
+use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Pricing_Field_Format;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Address_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Attribute_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
@@ -35,7 +36,6 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Variation_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download_Type;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Rating_Counter_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
@@ -103,6 +103,7 @@ class Actions {
 		Tax_Status::register();
 		WC_Connection_Orderby_Enum::register();
 		Tax_Rate_Connection_Orderby_Enum::register();
+		Pricing_Field_Format::register();
 
 		// InputObjects.
 		Customer_Address_Input::register();
@@ -119,7 +120,6 @@ class Actions {
 		Refund_Type::register();
 		Product_Attribute_Type::register();
 		Product_Download_Type::register();
-		Product_Rating_Counter_Type::register();
 		Customer_Type::register();
 		Customer_Address_Type::register();
 		Tax_Rate_Type::register();
