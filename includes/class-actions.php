@@ -36,7 +36,6 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Variation_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Attribute_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Download_Type;
-use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Rating_Counter_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Customer_Address_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
@@ -121,7 +120,6 @@ class Actions {
 		Refund_Type::register();
 		Product_Attribute_Type::register();
 		Product_Download_Type::register();
-		Product_Rating_Counter_Type::register();
 		Customer_Type::register();
 		Customer_Address_Type::register();
 		Tax_Rate_Type::register();

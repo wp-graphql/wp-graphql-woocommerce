@@ -33,59 +33,59 @@ class Product_Type {
 				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'interfaces'        => [ WPObjectType::node_interface() ],
 				'fields'            => array(
-					'id'                => array(
+					'id'                   => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product', 'wp-graphql-woocommerce' ),
 					),
-					'productId'         => array(
+					'productId'            => array(
 						'type'        => 'Int',
 						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
 					),
-					'slug'              => array(
+					'slug'                 => array(
 						'type'        => 'String',
 						'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
 					),
-					'date'              => array(
+					'date'                 => array(
 						'type'        => 'String',
 						'description' => __( 'Date product created', 'wp-graphql-woocommerce' ),
 					),
-					'modified'          => array(
+					'modified'             => array(
 						'type'        => 'String',
 						'description' => __( 'Date product last updated', 'wp-graphql-woocommerce' ),
 					),
-					'type'              => array(
+					'type'                 => array(
 						'type'        => 'ProductTypesEnum',
 						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
 					),
-					'name'              => array(
+					'name'                 => array(
 						'type'        => 'String',
 						'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
 					),
-					'status'            => array(
+					'status'               => array(
 						'type'        => 'String',
 						'description' => __( 'Product status', 'wp-graphql-woocommerce' ),
 					),
-					'featured'          => array(
+					'featured'             => array(
 						'type'        => 'Boolean',
 						'description' => __( 'If the product is featured', 'wp-graphql-woocommerce' ),
 					),
-					'catalogVisibility' => array(
+					'catalogVisibility'    => array(
 						'type'        => 'CatalogVisibilityEnum',
 						'description' => __( 'Catalog visibility', 'wp-graphql-woocommerce' ),
 					),
-					'description'       => array(
+					'description'          => array(
 						'type'        => 'String',
 						'description' => __( 'Product description', 'wp-graphql-woocommerce' ),
 					),
-					'shortDescription'  => array(
+					'shortDescription'     => array(
 						'type'        => 'String',
 						'description' => __( 'Product short description', 'wp-graphql-woocommerce' ),
 					),
-					'sku'               => array(
+					'sku'                  => array(
 						'type'        => 'String',
 						'description' => __( 'Product SKU', 'wp-graphql-woocommerce' ),
 					),
-					'price'             => array(
+					'price'                => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
 						'args'        => array(
@@ -103,7 +103,7 @@ class Product_Type {
 							}
 						},
 					),
-					'regularPrice'      => array(
+					'regularPrice'         => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
 						'args'        => array(
@@ -122,7 +122,7 @@ class Product_Type {
 							}
 						},
 					),
-					'salePrice'         => array(
+					'salePrice'            => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
 						'args'        => array(
@@ -141,149 +141,155 @@ class Product_Type {
 							}
 						},
 					),
-					'dateOnSaleFrom'    => array(
+					'dateOnSaleFrom'       => array(
 						'type'        => 'String',
 						'description' => __( 'Date on sale from', 'wp-graphql-woocommerce' ),
 					),
-					'dateOnSaleTo'      => array(
+					'dateOnSaleTo'         => array(
 						'type'        => 'String',
 						'description' => __( 'Date on sale to', 'wp-graphql-woocommerce' ),
 					),
-					'totalSales'        => array(
+					'totalSales'           => array(
 						'type'        => 'Int',
 						'description' => __( 'Number total of sales', 'wp-graphql-woocommerce' ),
 					),
-					'taxStatus'         => array(
+					'taxStatus'            => array(
 						'type'        => 'TaxStatusEnum',
 						'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
 					),
-					'taxClass'          => array(
+					'taxClass'             => array(
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
 					),
-					'manageStock'       => array(
+					'manageStock'          => array(
 						'type'        => 'Boolean',
 						'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
 					),
-					'stockQuantity'     => array(
+					'stockQuantity'        => array(
 						'type'        => 'Int',
 						'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),
 					),
-					'stockStatus'       => array(
+					'stockStatus'          => array(
 						'type'        => 'StockStatusEnum',
 						'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
 					),
-					'backorders'        => array(
+					'backorders'           => array(
 						'type'        => 'BackordersEnum',
 						'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
 					),
-					'soldIndividually'  => array(
+					'soldIndividually'     => array(
 						'type'        => 'Boolean',
 						'description' => __( 'If should be sold individually', 'wp-graphql-woocommerce' ),
 					),
-					'weight'            => array(
+					'weight'               => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s weight', 'wp-graphql-woocommerce' ),
 					),
-					'length'            => array(
+					'length'               => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s length', 'wp-graphql-woocommerce' ),
 					),
-					'width'             => array(
+					'width'                => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s width', 'wp-graphql-woocommerce' ),
 					),
-					'height'            => array(
+					'height'               => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s height', 'wp-graphql-woocommerce' ),
 					),
-					'reviewsAllowed'    => array(
+					'reviewsAllowed'       => array(
 						'type'        => 'Boolean',
 						'description' => __( 'If reviews are allowed', 'wp-graphql-woocommerce' ),
 					),
-					'purchaseNote'      => array(
+					'purchaseNote'         => array(
 						'type'        => 'String',
 						'description' => __( 'Purchase note', 'wp-graphql-woocommerce' ),
 					),
-					'menuOrder'         => array(
+					'menuOrder'            => array(
 						'type'        => 'Int',
 						'description' => __( 'Menu order', 'wp-graphql-woocommerce' ),
 					),
-					'virtual'           => array(
+					'virtual'              => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
 					),
-					'downloadExpiry'    => array(
+					'downloadExpiry'       => array(
 						'type'        => 'Int',
 						'description' => __( 'Download expiry', 'wp-graphql-woocommerce' ),
 					),
-					'downloadable'      => array(
+					'downloadable'         => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Is downloadable?', 'wp-graphql-woocommerce' ),
 					),
-					'downloadLimit'     => array(
+					'downloadLimit'        => array(
 						'type'        => 'Int',
 						'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
 					),
-					'ratingCount'       => array(
-						'type'        => 'RatingCounter',
-						'description' => __( 'Product rating counts', 'wp-graphql-woocommerce' ),
-					),
-					'averageRating'     => array(
+					'averageRating'        => array(
 						'type'        => 'Float',
 						'description' => __( 'Product average count', 'wp-graphql-woocommerce' ),
 					),
-					'reviewCount'       => array(
+					'reviewCount'          => array(
 						'type'        => 'Int',
 						'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
 					),
-					'parent'            => array(
+					'parent'               => array(
 						'type'        => 'Product',
 						'description' => __( 'Parent product', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context ) {
+							return Factory::resolve_crud_object( $source->parent_id, $context );
+						},
 					),
-					'image'             => array(
+					'image'                => array(
 						'type'        => 'MediaItem',
 						'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
-							// @codingStandardsIgnoreLine
-							return DataSource::resolve_post_object( $source->imageId, $context );
+							return DataSource::resolve_post_object( $source->image_id, $context );
 						},
 					),
-					'shippingClassId'   => array(
+					'shippingClassId'      => array(
 						'type'        => 'Int',
 						'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
 					),
-					'downloads'         => array(
+					'downloads'            => array(
 						'type'        => array( 'list_of' => 'ProductDownload' ),
 						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
 					),
-					'onSale'            => array(
+					'onSale'               => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Is product on sale?', 'wp-graphql-woocommerce' ),
 					),
-					'purchasable'       => array(
+					'purchasable'          => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
 					),
-					'externalUrl'       => array(
+					'externalUrl'          => array(
 						'type'        => 'String',
 						'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
 					),
-					'buttonText'        => array(
+					'buttonText'           => array(
 						'type'        => 'String',
 						'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
 					),
-					'backordersAllowed' => array(
+					'backordersAllowed'    => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
 					),
-					'shippingRequired'  => array(
+					'shippingRequired'     => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' ),
 					),
-					'shippingTaxable'   => array(
+					'shippingTaxable'      => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' ),
+					),
+					'addToCartText'        => array(
+						'type'        => 'String',
+						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
+					),
+					'addToCartDescription' => array(
+						'type'        => 'String',
+						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve_node'      => function( $node, $id, $type, $context ) {

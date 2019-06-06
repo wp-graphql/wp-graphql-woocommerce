@@ -1,6 +1,7 @@
 <?php
 
 use GraphQLRelay\Relay;
+use WPGraphQL\Type\WPEnumType;
 
 class ProductHelper extends WCG_Helper {
 	private $index;
@@ -24,6 +25,40 @@ class ProductHelper extends WCG_Helper {
 		$slug = 'test-product-' . absint( $this->index );
 		$this->index += 1;
 		return $slug;
+	}
+
+	public static function get_stock_status_enum( $status ) {
+		$statuses = array(
+			'instock'     => 'IN_STOCK',
+			'outofstock'  => 'OUT_OF_STOCK',
+			'onbackorder' => 'ON_BACKORDER',
+		);
+
+		if ( in_array( $status, array_keys( $statuses ) ) ) {
+			return $statuses[$status];
+		}
+
+		return null;
+	}
+
+	public function create_product_tag( $term ) {
+		if ( term_exists( $term, 'product_tag' ) ) {
+			$term = get_term( $term, 'product_tag', ARRAY_A );
+		} else {
+			$term = wp_insert_term( $term, 'product_tag' );
+		}
+
+		return ! empty( $term['term_id'] ) ? $term['term_id'] : null;
+	}
+
+	public function create_product_category( $term ) {
+		if ( term_exists( $term, 'product_cat' ) ) {
+			$term = get_term( $term, 'product_cat', ARRAY_A );
+		} else {
+			$term = wp_insert_term( $term, 'product_cat' );
+		}
+
+		return ! empty( $term['term_id'] ) ? $term['term_id'] : null;
 	}
 
 	public function create_simple( $args = array() ) {
@@ -77,7 +112,6 @@ class ProductHelper extends WCG_Helper {
 	public function create_grouped( $args = array() ) {
 		$children = array(
 			$this->create_simple(),
-			$this->create_simple(),
 		);
 		$product          = new WC_Product_Grouped();
 		$product->set_props(
@@ -91,7 +125,69 @@ class ProductHelper extends WCG_Helper {
 			)
 		);
 		$product->set_children( $children );
-		return array( 'product' => $product->save(), 'children' => $children );
+		return array( 'parent' => $product->save(), 'children' => $children );
+	}
+
+	public function create_variable( $args = array() ) {
+		$product = new WC_Product_Variable();
+		$product->set_props(
+			array_merge(
+				array(
+					'name' => $this->dummy->product(),
+					'slug' => $this->next_slug(),
+					'sku'  => 'DUMMY VARIABLE SKU ' . $this->index,
+				),
+				$args
+			)
+		);
+
+		// Create and add size attribute.
+		$attribute_data = $this->create_attribute( 'size', array( 'small', 'medium', 'large' ) ); // Create all attribute related things.
+		$attribute_1    = new WC_Product_Attribute();
+		$attribute_1->set_id( $attribute_data['attribute_id'] );
+		$attribute_1->set_name( $attribute_data['attribute_taxonomy'] );
+		$attribute_1->set_options( $attribute_data['term_ids'] );
+		$attribute_1->set_position( 1 );
+		$attribute_1->set_visible( true );
+		$attribute_1->set_variation( true );
+
+		$attribute_data = $this->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
+		$attribute_2    = new WC_Product_Attribute();
+		$attribute_2->set_id( $attribute_data['attribute_id'] );
+		$attribute_2->set_name( $attribute_data['attribute_taxonomy'] );
+		$attribute_2->set_options( $attribute_data['term_ids'] );
+		$attribute_2->set_position( 2 );
+		$attribute_2->set_visible( true );
+		$attribute_2->set_variation( true );
+
+		$product->set_attributes( array( $attribute_1, $attribute_2 ) );
+		return $product->save();
+	}
+
+	public function create_related( $args = array() ) {
+		$cross_sell_ids     = array(
+			$this->create_simple(),
+			$this->create_simple(),
+		);
+		$upsell_ids         = array(
+			$this->create_simple(),
+			$this->create_simple(),
+		);
+		$tag_ids            = array( $this->create_product_tag( 'related' ) ); 
+		$related_product_id = $this->create_simple( array( 'tag_ids' => $tag_ids ) );
+
+		return array(
+			'product'    => $this->create_simple(
+				array(
+					'tag_ids'        => $tag_ids,
+					'cross_sell_ids' => $cross_sell_ids,
+					'upsell_ids'     => $upsell_ids,
+				)
+			),
+			'related'   => array( $related_product_id ),
+			'cross_sell' => $cross_sell_ids,
+			'upsell'     => $upsell_ids,
+		);
 	}
 
 	public function create_attribute( $raw_name = 'size', $terms = array( 'small' ) ) {
@@ -172,40 +268,19 @@ class ProductHelper extends WCG_Helper {
 		return $return;
 	}
 
-	public function create_variable( $args = array() ) {
-		$product = new WC_Product_Variable();
-		$product->set_props(
-			array_merge(
-				array(
-					'name' => $this->dummy->product(),
-					'slug' => $this->next_slug(),
-					'sku'  => 'DUMMY VARIABLE SKU ' . $this->index,
-				),
-				$args
-			)
-		);
+	public function create_download( $id = 0 ) {
+		$download = new WC_Product_Download();
+		$download->set_id( 'testid' );
+		$download->set_name( 'Test Name' );
+		$download->set_file( 'http://example.com/file.jpg' );
 
-		// Create and add size attribute.
-		$attribute_data = $this->create_attribute( 'size', array( 'small', 'medium', 'large' ) ); // Create all attribute related things.
-		$attribute_1    = new WC_Product_Attribute();
-		$attribute_1->set_id( $attribute_data['attribute_id'] );
-		$attribute_1->set_name( $attribute_data['attribute_taxonomy'] );
-		$attribute_1->set_options( $attribute_data['term_ids'] );
-		$attribute_1->set_position( 1 );
-		$attribute_1->set_visible( true );
-		$attribute_1->set_variation( true );
+		if ( $id ) {
+			$product = \wc_get_product( $id );
+			$product->set_downloads( array($download) );
+			$product->save();
+		}
 
-		$attribute_data = $this->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
-		$attribute_2    = new WC_Product_Attribute();
-		$attribute_2->set_id( $attribute_data['attribute_id'] );
-		$attribute_2->set_name( $attribute_data['attribute_taxonomy'] );
-		$attribute_2->set_options( $attribute_data['term_ids'] );
-		$attribute_2->set_position( 2 );
-		$attribute_2->set_visible( true );
-		$attribute_2->set_variation( true );
-
-		$product->set_attributes( array( $attribute_1, $attribute_2 ) );
-		return $product->save();
+		return $download;
 	}
 
 	public function print_query( $id ) {
@@ -246,6 +321,8 @@ class ProductHelper extends WCG_Helper {
 				: 'STANDARD',
 			'manageStock'       => $data->get_manage_stock(),
 			'stockQuantity'     => $data->get_stock_quantity(),
+			'stockStatus'       => self::get_stock_status_enum( $data->get_stock_status() ),
+			'backorders'        => WPEnumType::get_safe_name( $data->get_backorders() ),
 			'soldIndividually'  => $data->get_sold_individually(),
 			'weight'            => $data->get_weight(),
 			'length'            => $data->get_length(),
@@ -262,6 +339,11 @@ class ProductHelper extends WCG_Helper {
 			'downloadExpiry'    => $data->get_download_expiry(),
 			'averageRating'     => (float) $data->get_average_rating(),
 			'reviewCount'       => $data->get_review_count(),
+			'backordersAllowed' => $data->backorders_allowed(),
+			'onSale'            => $data->is_on_sale(),
+			'purchasable'       => $data->is_purchasable(),
+			'shippingRequired'  => $data->needs_shipping(),
+			'shippingTaxable'   => $data->is_shipping_taxable()
 		);
 	}
 
@@ -283,5 +365,67 @@ class ProductHelper extends WCG_Helper {
 		}
 
 		return ! empty ( $results ) ? array( 'nodes' => $results ) : null;
+	}
+
+	public function print_downloads( $id ) {
+		$product    = wc_get_product( $id );
+		$downloads  = (array) $product->get_downloads();
+		if ( empty( $downloads ) ) {
+			return null;
+		}
+		
+		$results = array();
+		foreach ( $downloads as $download ) {
+			$results[] = array(
+				'name'            => $download->get_name(),
+				'downloadId'      => $download->get_id(),
+				'filePathType'    => $download->get_type_of_file_path(),
+				'fileType'        => $download->get_file_type(),
+				'fileExt'         => $download->get_file_extension(),
+				'allowedFileType' => $download->is_allowed_filetype(),
+				'fileExists'      => $download->file_exists(),
+				'file'            => $download->get_file(),
+			);
+		}
+		
+		return $results;
+	}
+
+	public function print_grouped( $id ) {
+		$data = wc_get_product( $id );
+		$children = array( 'nodes' => array() );
+		foreach ( $data->get_children() as $child ) {
+			$parent_id = $this->field( $child, 'parent_id' );
+			$children['nodes'][] = array(
+				'id'     => $this->to_relay_id( $child ),
+				'parent' => ! empty( $parent_id ) ? array( 'id' => $this->to_relay_id( $parent_id ) ) : null,
+			);
+		}
+
+		return array(
+			'addToCartText'        => ! empty( $data->add_to_cart_text() ) ? $data->add_to_cart_text() : null,
+			'addToCartDescription' => ! empty( $data->add_to_cart_description() ) ? $data->add_to_cart_description() : null,
+			'grouped'             => $children,
+		);
+	}
+
+	public function print_external( $id ) {
+		$data = wc_get_product( $id );
+
+		return array(
+			'id'          => $this->to_relay_id( $id ),
+			'buttonText'  => ! empty( $data->get_button_text() ) ? $data->get_button_text() : null,
+			'externalUrl' => ! empty( $data->get_product_url() ) ? $data->get_product_url() : null,
+		);
+	}
+
+	public function field( $id, $field_name = 'id', $args = array() ) {
+		$get = 'get_' . $field_name;
+		$product = wc_get_product( $id );
+		if ( ! empty( $product ) ) {
+			return $product->{$get}( ...$args );
+		}
+
+		return null;
 	}
 }

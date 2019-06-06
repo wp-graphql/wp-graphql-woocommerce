@@ -28,7 +28,7 @@ class ProductVariationHelper extends WCG_Helper {
 	}
 
 	public function create( $product_id, $args = array() ) {
-		// Create small size variation
+		// Create small size variation with download
 		$variation_1 = new WC_Product_Variation();
 		$variation_1->set_props(
 			array(
@@ -36,11 +36,23 @@ class ProductVariationHelper extends WCG_Helper {
 				'slug'          => $this->next_slug(),
 				'sku'           => 'DUMMY SKU VARIABLE SMALL',
 				'regular_price' => 10,
+				'downloads'     => array( ProductHelper::create_download() ),
 			)
 		);
 		$variation_1->set_attributes( array( 'pa_size' => 'small' ) );
 
-		// Create medium size variation
+		// Create medium size variation with image
+		$image_id = \wp_insert_post(
+			array(
+				'post_author'  => 1,
+				'post_content' => '',
+				'post_excerpt' => '',
+				'post_status'  => 'publish',
+				'post_title'   => 'Product Image',
+				'post_type'    => 'attachment',
+				'post_content' => 'product image',
+			)
+		);
 		$variation_2 = new WC_Product_Variation();
 		$variation_2->set_props(
 			array(
@@ -48,6 +60,7 @@ class ProductVariationHelper extends WCG_Helper {
 				'slug'          => $this->next_slug(),
 				'sku'           => 'DUMMY SKU VARIABLE MEDIUM',
 				'regular_price' => 15,
+				'image_id'      => $image_id,
 			)
 		);
 		$variation_2->set_attributes( array( 'pa_size' => 'medium' ) );
@@ -115,6 +128,7 @@ class ProductVariationHelper extends WCG_Helper {
 				? WPEnumType::get_safe_name( $data->get_manage_stock() )
 				: null,
 			'stockQuantity'     => ! empty( $data->get_stock_quantity() ) ? $data->get_stock_quantity() : null,
+			'stockStatus'       => ProductHelper::get_stock_status_enum( $data->get_stock_status() ),
 			'backorders'        => ! empty( $data->get_backorders() )
 				? WPEnumType::get_safe_name( $data->get_backorders() )
 				: null,
@@ -131,6 +145,9 @@ class ProductVariationHelper extends WCG_Helper {
 				: null,
 			'hasAttributes'     => ! empty( $data->has_attributes() ) ? $data->has_attributes() : null,
 			'type'              => WPEnumType::get_safe_name( $data->get_type() ),
+			'parent'            => array (
+				'id' => Relay::toGlobalId( 'product', $data->get_parent_id() )
+			)
 		);
 	}
 
@@ -155,5 +172,39 @@ class ProductVariationHelper extends WCG_Helper {
 		}
 
 		return ! empty ( $results ) ? array( 'nodes' => $results ) : null;
+	}
+
+	public function field( $id, $field_name = 'id' ) {
+		$get = 'get_' . $field_name;
+		$variation = new WC_Product_Variation( $id );
+		if ( ! empty( $variation ) ) {
+			return $variation->{$get}();
+		}
+
+		return null;
+	}
+
+	public function print_downloads( $id ) {
+		$variation = new WC_Product_Variation( $id );
+		$downloads = (array) $variation->get_downloads();
+		if ( empty( $downloads ) ) {
+			return null;
+		}
+		
+		$results = array();
+		foreach ( $downloads as $download ) {
+			$results[] = array(
+				'name'            => $download->get_name(),
+				'downloadId'      => $download->get_id(),
+				'filePathType'    => $download->get_type_of_file_path(),
+				'fileType'        => $download->get_file_type(),
+				'fileExt'         => $download->get_file_extension(),
+				'allowedFileType' => $download->is_allowed_filetype(),
+				'fileExists'      => $download->file_exists(),
+				'file'            => $download->get_file(),
+			);
+		}
+		
+		return $results;
 	}
 }
