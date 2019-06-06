@@ -1,7 +1,7 @@
 <img src="./logo.svg" width="250px">
 
 # WPGraphQL WooCommerce
-[![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/kidunot89/wp-graphql-woocommerce/badge.svg?branch=master)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=master)
+[![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop)
 
 ## Note: This plugin is in early stages and is not quite ready for use.
 
