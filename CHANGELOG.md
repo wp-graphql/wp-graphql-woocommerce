@@ -1,70 +1,78 @@
 # Change Log
 
-## [Unreleased](https://github.com/kidunot89/wp-graphql-woocommerce/tree/HEAD)
-
-[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.1.0-beta...HEAD)
-
-**Implemented enhancements:**
-
-- Customer mutations [\#48](https://github.com/kidunot89/wp-graphql-woocommerce/issues/48)
-- Cart mutations [\#18](https://github.com/kidunot89/wp-graphql-woocommerce/issues/18)
-- Release v0.1.0 [\#54](https://github.com/kidunot89/wp-graphql-woocommerce/pull/54) ([kidunot89](https://github.com/kidunot89))
-
-**Closed issues:**
-
-- Release v0.1.0 Summary [\#74](https://github.com/kidunot89/wp-graphql-woocommerce/issues/74)
-
-## [v0.1.0-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.1.0-beta) (2019-05-11)
-[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.4-beta...v0.1.0-beta)
-
-**Closed issues:**
-
-- Release v0.0.4 Summary [\#66](https://github.com/kidunot89/wp-graphql-woocommerce/issues/66)
-
-**Merged pull requests:**
-
-- Release v0.0.4 [\#65](https://github.com/kidunot89/wp-graphql-woocommerce/pull/65) ([kidunot89](https://github.com/kidunot89))
-
-## [v0.0.4-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.4-beta) (2019-05-10)
-[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.3-beta...v0.0.4-beta)
+## [v0.1.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.1.1-beta) (2019-06-06)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.1.0-beta...v0.1.1-beta)
 
 **Implemented enhancements:**
 
-- Add filter for restricted\_cap in models [\#51](https://github.com/kidunot89/wp-graphql-woocommerce/issues/51)
-- Add name to ProductVariation [\#41](https://github.com/kidunot89/wp-graphql-woocommerce/issues/41)
-- Cart type and queries [\#12](https://github.com/kidunot89/wp-graphql-woocommerce/issues/12)
-- Adds "\*\_restricted\_cap" filters [\#53](https://github.com/kidunot89/wp-graphql-woocommerce/pull/53) ([kidunot89](https://github.com/kidunot89))
-- ProductAttribute completion [\#50](https://github.com/kidunot89/wp-graphql-woocommerce/pull/50) ([kidunot89](https://github.com/kidunot89))
-- More ProductVariation fields [\#49](https://github.com/kidunot89/wp-graphql-woocommerce/pull/49) ([kidunot89](https://github.com/kidunot89))
+- Add format argument to product pricing fields [\#75](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/75)
+- Customer mutations [\#48](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/48)
+- Cart mutations [\#18](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/18)
+- Release v0.1.0 [\#54](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/54) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed bugs:**
 
-- Query products by categories returns an empty array. [\#44](https://github.com/kidunot89/wp-graphql-woocommerce/issues/44)
-
-**Merged pull requests:**
-
-- Bugfix/\#44 [\#45](https://github.com/kidunot89/wp-graphql-woocommerce/pull/45) ([kidunot89](https://github.com/kidunot89))
-- to v0.0.3 [\#43](https://github.com/kidunot89/wp-graphql-woocommerce/pull/43) ([kidunot89](https://github.com/kidunot89))
-
-## [v0.0.3-beta](https://github.com/kidunot89/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-25)
-[Full Changelog](https://github.com/kidunot89/wp-graphql-woocommerce/compare/v0.0.2-beta...v0.0.3-beta)
-
-**Implemented enhancements:**
-
-- Pagination fix for CPT-backed CRUD objects connections [\#36](https://github.com/kidunot89/wp-graphql-woocommerce/pull/36) ([kidunot89](https://github.com/kidunot89))
-- Cart-type and queries and customer query [\#30](https://github.com/kidunot89/wp-graphql-woocommerce/pull/30) ([kidunot89](https://github.com/kidunot89))
-
-**Fixed bugs:**
-
-- Pagination broken [\#29](https://github.com/kidunot89/wp-graphql-woocommerce/issues/29)
+- Provide guest user authentication [\#79](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/79)
 
 **Closed issues:**
 
-- Unsetting "object\_ids" on all connections [\#39](https://github.com/kidunot89/wp-graphql-woocommerce/issues/39)
+- Release v0.1.0 Summary [\#74](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/74)
 
 **Merged pull requests:**
 
-- Master [\#35](https://github.com/kidunot89/wp-graphql-woocommerce/pull/35) ([kidunot89](https://github.com/kidunot89))
+- Codeception versioning problem in Travis-CI build [\#77](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/77) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.1.0-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.1.0-beta) (2019-05-11)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.0.4-beta...v0.1.0-beta)
+
+**Closed issues:**
+
+- Release v0.0.4 Summary [\#66](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/66)
+
+**Merged pull requests:**
+
+- Release v0.0.4 [\#65](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/65) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.0.4-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.0.4-beta) (2019-05-10)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.0.3-beta...v0.0.4-beta)
+
+**Implemented enhancements:**
+
+- Add filter for restricted\_cap in models [\#51](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/51)
+- Add name to ProductVariation [\#41](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/41)
+- Cart type and queries [\#12](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/12)
+- Adds "\*\_restricted\_cap" filters [\#53](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/53) ([kidunot89](https://github.com/kidunot89))
+- ProductAttribute completion [\#50](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/50) ([kidunot89](https://github.com/kidunot89))
+- More ProductVariation fields [\#49](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/49) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed bugs:**
+
+- Query products by categories returns an empty array. [\#44](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/44)
+
+**Merged pull requests:**
+
+- Bugfix/\#44 [\#45](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/45) ([kidunot89](https://github.com/kidunot89))
+- to v0.0.3 [\#43](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/43) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.0.3-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.0.3-beta) (2019-04-25)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.0.2-beta...v0.0.3-beta)
+
+**Implemented enhancements:**
+
+- Pagination fix for CPT-backed CRUD objects connections [\#36](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/36) ([kidunot89](https://github.com/kidunot89))
+- Cart-type and queries and customer query [\#30](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/30) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed bugs:**
+
+- Pagination broken [\#29](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/29)
+
+**Closed issues:**
+
+- Unsetting "object\_ids" on all connections [\#39](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/39)
+
+**Merged pull requests:**
+
+- Master [\#35](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/35) ([kidunot89](https://github.com/kidunot89))
 
 
 
