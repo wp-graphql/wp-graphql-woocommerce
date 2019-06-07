@@ -57,7 +57,7 @@ class Cart_Item_Connection_Resolver {
 				$nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;
 			}
 		}
-		$connection['nodes'] = ! empty( $nodes ) ? $nodes : null;
-		return ! empty( $items ) ? $connection : null;
+		$connection['nodes'] = ! empty( $nodes ) ? $nodes : array();
+		return $connection;
 	}
 }
