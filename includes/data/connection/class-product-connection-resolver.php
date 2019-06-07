@@ -407,7 +407,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			if ( in_array( $where_args['attribute'], \wc_get_attribute_taxonomy_names(), true ) ) {
 				$tax_query[] = array(
 					'taxonomy' => $where_args['attribute'],
-					'field'    => 'term_id',
+					'field'    => 'slug',
 					'terms'    => $where_args['attributeTerm'],
 				);
 			}
