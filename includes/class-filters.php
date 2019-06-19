@@ -15,6 +15,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolve
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
+use WPGraphQL\Extensions\WooCommerce\Utils\QL_Session_Handler;
 
 /**
  * Class Filters
@@ -52,6 +53,7 @@ class Filters {
 			10,
 			5
 		);
+		add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
 	}
 
 	/**
@@ -181,5 +183,20 @@ class Filters {
 	 */
 	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
 		return WC_Terms_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
+	}
+
+	/**
+	 * Filters WooCommerce session handler class on GraphQL requests
+	 *
+	 * @param string $session_class Classname of the current session handler class.
+	 *
+	 * @return string
+	 */
+	public static function init_ql_session_handler( $session_class ) {
+		if ( defined( 'GRAPHQL_REQUEST' ) && GRAPHQL_REQUEST === true ) {
+			return QL_Session_Handler::class;
+		}
+
+		return $session_class;
 	}
 }
