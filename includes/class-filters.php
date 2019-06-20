@@ -36,11 +36,23 @@ class Filters {
 	private static $post_crud_loader;
 
 	/**
+	 * Stores instance session header name.
+	 *
+	 * @var string
+	 */
+	private static $session_header;
+
+	/**
 	 * Register filters
 	 */
 	public static function load() {
+		// Registers WooCommerce taxonomies.
 		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );
+
+		// Add data-loaders to AppContext.
 		add_filter( 'graphql_data_loaders', array( __CLASS__, 'graphql_data_loaders' ), 10, 2 );
+
+		// Filter core connection resolutions.
 		add_filter(
 			'graphql_post_object_connection_query_args',
 			array( __CLASS__, 'graphql_post_object_connection_query_args' ),
@@ -53,7 +65,13 @@ class Filters {
 			10,
 			5
 		);
+
+		// Setup QL session handler.
+		self::$session_header = apply_filters( 'woocommerce_session_header_name', 'woocommerce-session' );
+		add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
 		add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
+		add_filter( 'graphql_response_headers_to_send', array( __CLASS__, 'add_session_header_to_expose_headers' ) );
+		add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
 	}
 
 	/**
@@ -186,17 +204,53 @@ class Filters {
 	}
 
 	/**
-	 * Filters WooCommerce session handler class on GraphQL requests
+	 * Filters WooCommerce cookie key to be used as a HTTP Header on GraphQL HTTP requests
+	 *
+	 * @param string $cookie WooCommerce cookie key.
+	 *
+	 * @return string
+	 */
+	public static function woocommerce_cookie( $cookie ) {
+		return self::$session_header;
+	}
+
+	/**
+	 * Filters WooCommerce session handler class on GraphQL HTTP requests
 	 *
 	 * @param string $session_class Classname of the current session handler class.
 	 *
 	 * @return string
 	 */
 	public static function init_ql_session_handler( $session_class ) {
-		if ( defined( 'GRAPHQL_REQUEST' ) && GRAPHQL_REQUEST === true ) {
-			return QL_Session_Handler::class;
+		return QL_Session_Handler::class;
+	}
+
+	/**
+	 * Append session header to the exposed headers in GraphQL responses
+	 *
+	 * @param array $headers GraphQL responser headers.
+	 *
+	 * @return array
+	 */
+	public static function add_session_header_to_expose_headers( $headers ) {
+		if ( empty( $headers['Access-Control-Expose-Headers'] ) ) {
+			$headers['Access-Control-Expose-Headers'] = apply_filters( 'woocommerce_cookie', self::$session_header );
+		} else {
+			$headers['Access-Control-Expose-Headers'] .= ', ' . apply_filters( 'woocommerce_cookie', self::$session_header );
 		}
 
-		return $session_class;
+		return $headers;
+	}
+
+	/**
+	 * Append the session header to the allowed headers in GraphQL responses
+	 *
+	 * @param array $allowed_headers The existing allowed headers.
+	 *
+	 * @return array
+	 */
+	public static function add_session_header_to_allow_headers( array $allowed_headers ) {
+		$allowed_headers[] = self::$session_header;
+		return $allowed_headers;
 	}
 }
