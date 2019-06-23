@@ -31,21 +31,28 @@ class Variation_Attribute_Type {
 			array(
 				'description' => __( 'A product variation attribute object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
-					'id'    => array(
-						'type'        => 'Int',
+					'id'          => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['id'] ) ? $source['id'] : null;
 						},
 					),
-					'name'  => array(
+					'attributeId' => array(
+						'type'        => 'Int',
+						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $source ) {
+							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
+						},
+					),
+					'name'        => array(
 						'type'        => 'String',
 						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
 					),
-					'value' => array(
+					'value'       => array(
 						'type'        => 'String',
 						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {

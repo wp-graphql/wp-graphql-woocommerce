@@ -161,6 +161,7 @@ class ProductHelper extends WCG_Helper {
 		$attribute_2->set_variation( true );
 
 		$product->set_attributes( array( $attribute_1, $attribute_2 ) );
+		$product->set_default_attributes( array( 'size' => 'small' ) );
 		return $product->save();
 	}
 

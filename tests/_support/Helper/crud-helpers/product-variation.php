@@ -165,9 +165,10 @@ class ProductVariationHelper extends WCG_Helper {
 		foreach( $attributes as $name => $value ) {
 			$term   = get_term_by( 'slug', $value, $name );
 			$results[] = array(
-				'id'    => ! empty( $term ) ? $term->term_id : 0,
-				'name'  => $name,
-				'value' => $value,
+				'id'          => base64_encode( $product->get_id() . '||' . $name . '||' . $value ),
+				'attributeId' => ! empty( $term ) ? $term->term_id : 0,
+				'name'        => $name,
+				'value'       => $value,
 			);
 		}
 
