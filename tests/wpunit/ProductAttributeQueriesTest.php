@@ -32,6 +32,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                     id
                     attributes {
                         nodes {
+                            id
                             attributeId
                             name
                             options
