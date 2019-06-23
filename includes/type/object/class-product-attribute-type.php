@@ -25,11 +25,18 @@ class Product_Attribute_Type {
 			array(
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
+					'id'          => array(
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $attribute ) {
+							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : null;
+						},
+					),
 					'attributeId' => array(
 						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Attribute ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
-							return ! empty( $attribute->get_id() ) ? $attribute->get_id() : null;
+							return ! is_null( $attribute->get_id() ) ? $attribute->get_id() : null;
 						},
 					),
 					'name'        => array(
