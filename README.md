@@ -92,6 +92,7 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 
 ## Support this extension
 **WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
+
 **GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
 
 ## Follow
