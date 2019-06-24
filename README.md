@@ -91,10 +91,7 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 - (Alternative) You can also try delete and cloning the repository again. The latest release should have fixed the issue.
 
 ## Support this extension
-**WP-GraphQL WooCommerce** :point_right: **[KickStarter](http://kck.st/2G268mx)**
-
 **WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
-
 **GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
 
 ## Follow

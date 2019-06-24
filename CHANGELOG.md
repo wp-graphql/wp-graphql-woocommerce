@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.1.2-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.1.2-beta) (2019-06-23)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.1.1-beta...v0.1.2-beta)
+
+**Implemented enhancements:**
+
+- ProductAttribute null key error fixed. [\#91](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/91) ([kidunot89](https://github.com/kidunot89))
+- VariationAttribute field "id" updated. [\#89](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/89) ([kidunot89](https://github.com/kidunot89))
+- QL Session Handler [\#88](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/88) ([kidunot89](https://github.com/kidunot89))
+
+**Closed issues:**
+
+- Tests needed [\#46](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/46)
+
 ## [v0.1.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.1.1-beta) (2019-06-06)
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.1.0-beta...v0.1.1-beta)
 
@@ -8,8 +21,6 @@
 - Add format argument to product pricing fields [\#75](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/75)
 - Customer mutations [\#48](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/48)
 - Cart mutations [\#18](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/18)
-- Cleanup/Code coverage update. [\#83](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/83) ([kidunot89](https://github.com/kidunot89))
-- Resolve formatted price string for pricing fields  [\#82](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/82) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed bugs:**
 
