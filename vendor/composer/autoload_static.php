@@ -109,6 +109,7 @@ class ComposerStaticInitee0d17af17b841ed3a93c4a0e5cc5e5f
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-method-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Tax_Rate_Type' => __DIR__ . '/../..' . '/includes/type/object/class-tax-rate-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Variation_Attribute_Type' => __DIR__ . '/../..' . '/includes/type/object/class-variation-attribute-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Utils\\QL_Session_Handler' => __DIR__ . '/../..' . '/includes/utils/class-ql-session-handler.php',
         'WP_GraphQL_WooCommerce' => __DIR__ . '/../..' . '/includes/class-wp-graphql-woocommerce.php',
     );
 

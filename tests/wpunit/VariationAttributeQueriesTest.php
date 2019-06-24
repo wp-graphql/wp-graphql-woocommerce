@@ -35,6 +35,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                     attributes {
                         nodes {
                             id
+                            attributeId
                             name
                             value
                         }
@@ -73,6 +74,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                     defaultAttributes {
                         nodes {
                             id
+                            attributeId
                             name
                             value
                         }

@@ -161,6 +161,7 @@ class ProductHelper extends WCG_Helper {
 		$attribute_2->set_variation( true );
 
 		$product->set_attributes( array( $attribute_1, $attribute_2 ) );
+		$product->set_default_attributes( array( 'size' => 'small' ) );
 		return $product->save();
 	}
 
@@ -349,12 +350,13 @@ class ProductHelper extends WCG_Helper {
 
 	public function print_attributes( $id ) {
 		$product    = wc_get_product( $id );
-		$attributes = array_values( $product->get_attributes() );
+		$attributes = $product->get_attributes();
 
 		$results = array();
 
-		foreach( $attributes as $attribute ) {
+		foreach( $attributes as $attribute_name => $attribute ) {
 			$results[] = array(
+				'id'          => base64_encode( $attribute_name . '||' . $id . '||' . $attribute->get_id() ),
 				'attributeId' => $attribute->get_id(),
 				'name'        => $attribute->get_name(),
 				'options'     => $attribute->get_slugs(),
