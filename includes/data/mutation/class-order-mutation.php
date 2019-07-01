@@ -24,20 +24,39 @@ class Order_Mutation {
 	 * @return array
 	 */
 	public static function prepare_props( $input, $context, $info ) {
-		$props           = array();
+		$props = array();
+
+		// Input keys to be formatted.
 		$formatted_props = array(
-			'customerId'    => 'customer_id',
-			'transactionId' => 'transaction_id',
-			'billing'       => 'billing',
-			'shipping'      => 'shipping',
-			'lineItems'     => 'line_items',
-			'shippingLines' => 'shipping_lines',
-			'feeLines'      => 'fee_lines',
-			'metaData'      => 'meta_data',
+			'parentId'           => 'parent_id',
+			'customerId'         => 'customer_id',
+			'transactionId'      => 'transaction_id',
+			'customerNote'       => 'customer_note',
+			'lineItems'          => 'line_items',
+			'shippingLines'      => 'shipping_lines',
+			'feeLines'           => 'fee_lines',
+			'metaData'           => 'meta_data',
+			'paymentMethod'      => 'payment_method',
+			'paymentMethodTitle' => 'payment_method_title',
 		);
+
+		// Input keys to be skipped.
+		$skipped_keys = apply_filters(
+			'woocommerce_new_order_s',
+			array(
+				'status',
+				'coupon',
+				'isPaid',
+			)
+		);
+
 		foreach ( $input as $key => $value ) {
-			if ( array_key_exists( $key, $formatted_props ) ) {
+			if ( in_array( $key, $skipped_keys, true ) ) {
+				continue;
+			} elseif ( array_key_exists( $key, $formatted_props ) ) {
 				$props[ $formatted_props[ $key ] ] = $value;
+			} else {
+				$props[ $key ] = $value;
 			}
 		}
 
