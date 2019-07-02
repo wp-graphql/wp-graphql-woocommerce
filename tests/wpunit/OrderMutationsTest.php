@@ -48,7 +48,46 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 
     // tests
     public function testCreateOrderMutationAndArgs() {
-        $product_id = $this->product->create_simple();
+        $input = array(
+            'clientMutationId' => 'someId',
+			'customerId'         => $this->customer,
+			'customerNote'       => 'Customer test note',
+			'coupons'            => array(),
+			'status'             => 'PENDING',
+			'paymentMethod'      => '',
+			'paymentMethodTitle' => '',
+			'transactionId'      => '',
+			'billing'            => array(
+                'firstName' => 'May',
+                'lastName'  => 'Parker',
+                'address1'  => '20 Ingram St',
+                'city'      => 'New York City',
+                'state'     => 'NY',
+                'postcode'  => '12345',
+                'country'   => 'US',
+                'email'     => 'superfreak500@gmail.com',
+                'phone'     => '555-555-1234',
+            ),
+			'shipping'           => array(
+                'firstName' => 'May',
+                'lastName'  => 'Parker',
+                'address1'  => '20 Ingram St',
+                'city'      => 'New York City',
+                'state'     => 'NY',
+                'postcode'  => '12345',
+                'country'   => 'US',
+            ),
+			'lineItems'          => array(
+                array(
+                    'productId' => $product_id = $this->product->create_simple(),
+                    'quantity'  => 2,
+                )
+            ),
+			'shippingLines'      => array(),
+			'feeLines'           => array(),
+			'metaData'           => array(),
+			'isPaid'             => false,
+        );
 
         /**
 		 * Assertion One
@@ -56,16 +95,12 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * User without necessary capabilities cannot create order an order.
 		 */
 		wp_set_current_user( $this->customer );
-        $createOrder = $this->createOrder(
-            array(
-                'clientMutationId' => 'someId',
-            )
-        );
+        $actual = $this->createOrder( $input );
 
         // use --debug flag to view.
-        codecept_debug( $createOrder );
+        codecept_debug( $actual );
 
-        $this->assertArrayHasKey('errors', $createOrder );
+        $this->assertArrayHasKey('errors', $actual );
 
         /**
 		 * Assertion Two
@@ -73,14 +108,10 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * User without necessary capabilities cannot create order an order.
 		 */
 		wp_set_current_user( $this->shop_manager );
-        $createOrder = $this->createOrder(
-            array(
-                'clientMutationId' => 'someId',
-            )
-        );
+        $actual = $this->createOrder( $input );
 
         // use --debug flag to view.
-        codecept_debug( $createOrder );
+        codecept_debug( $actual );
 
         $this->assertArrayHasKey('data', $actual );
         $this->assertArrayHasKey('createOrder', $actual['data'] );
