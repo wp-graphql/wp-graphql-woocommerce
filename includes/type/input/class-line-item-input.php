@@ -21,6 +21,10 @@ class Line_Item_Input {
 			array(
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
+					'name'        => array(
+						'type'        => 'String',
+						'description' => __( 'Line name', 'wp-graphql-woocommerce' ),
+					),
 					'productId'   => array(
 						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Product ID.', 'wp-graphql-woocommerce' ),
@@ -48,6 +52,10 @@ class Line_Item_Input {
 					'metaData'    => array(
 						'type'        => array( 'list_of' => 'MetaDataInput' ),
 						'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
+					),
+					'sku'         => array(
+						'type'        => 'string',
+						'description' => __( 'Product SKU.', 'wp-graphql-woocommerce' ),
 					),
 				),
 			)

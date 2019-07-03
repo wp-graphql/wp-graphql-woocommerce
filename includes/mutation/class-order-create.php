@@ -137,47 +137,79 @@ class Order_Create {
 			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
 				throw new UserError( __( 'Sorry, you are not allowed to create a new order.', 'wp-graphql-woocommerce' ) );
 			}
-
+			// Prepare order prop data.
 			$props = Order_Mutation::prepare_props( $input, $context, $info );
-			$order = Order_Mutation::prepare_order_instance( $props, $context, $info );
+			$order = null;
+			try {
+				$order = Order_Mutation::prepare_order_instance( $props, $context, $info );
 
-			if ( is_wp_error( $order ) ) {
-				throw new UserError( __( 'Sorry, there was a problem initializing the order.', 'wp-graphql-woocommerce' ) );
+				if ( is_wp_error( $order ) ) {
+					throw new UserError( __( 'Sorry, there was a problem initializing the order.', 'wp-graphql-woocommerce' ) );
+				}
+
+				// Make sure gateways are loaded so hooks from gateways fire on save/create.
+				WC()->payment_gateways();
+
+				// Validate customer ID.
+				if ( empty( $input['customerId'] ) ) {
+					throw new UserError( __( 'No customer ID provided.', 'wp-graphql-woocommerce' ) );
+				} elseif ( ! Order_Mutation::validate_customer( $input ) ) {
+					throw new UserError( __( 'Customer ID is invalid.', 'wp-graphql-woocommerce' ) );
+				}
+
+				$order->set_created_via( 'graphql-api' );
+				$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
+				$order->calculate_totals();
+
+				// Apply coupons.
+				if ( ! empty( $input['coupons'] ) ) {
+					Order_Mutation::apply_coupons( $input['coupons'], $order );
+				}
+
+				// Set status.
+				if ( ! empty( $input['status'] ) ) {
+					$order->set_status( $input['status'] );
+				}
+
+				\add_action(
+					'woocommerce_before_order_item_object_save',
+					function( $item ) {
+						\codecept_debug( 'ITEM SAVED' );
+					}
+				);
+
+				\add_action(
+					'woocommerce_before_order_object_save',
+					function( $item ) {
+						\codecept_debug( 'ORDER SAVED' );
+						//\codecept_debug( $item->get_items() );
+					}
+				);
+
+				\add_action(
+					'woocommerce_new_order',
+					function( $id ) {
+						\codecept_debug( "ORDER {$id} CREATED" );
+					}
+				);
+
+				$order->apply_changes();
+				$order->save();
+
+				// Actions for after the order is saved.
+				if ( true === $input['isPaid'] ) {
+					$order->payment_complete(
+						! empty( $input['transactionId'] ) ?
+							$input['transactionId']
+							: ''
+					);
+				}
+
+				return array( 'id' => $order->get_id() );
+			} catch ( \Exception $e ) {
+				Order_Mutation::purge( $order, $creating );
+				return new UserError( $e->getMessage() );
 			}
-
-			// Make sure gateways are loaded so hooks from gateways fire on save/create.
-			WC()->payment_gateways();
-
-			// Validate customer ID.
-			if ( empty( $input['customerId'] ) ) {
-				throw new UserError( __( 'No customer ID provided.', 'wp-graphql-woocommerce' ) );
-			} elseif ( ! Order_Mutation::validate_customer( $input ) ) {
-				throw new UserError( __( 'Customer ID is invalid.', 'wp-graphql-woocommerce' ) );
-			}
-
-			$order->set_created_via( 'graphql-api' );
-			$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
-			$order->calculate_totals();
-
-			// Apply coupons.
-			if ( ! empty( $input['coupons'] ) ) {
-				Order_Mutation::apply_coupons( $input['coupons'], $order );
-			}
-
-			// Set status.
-			if ( ! empty( $input['status'] ) ) {
-				$order->set_status( $input['status'] );
-			}
-
-			$order_id = $order->save();
-
-
-			// Actions for after the order is saved.
-			if ( true === $input['isPaid'] ) {
-				$order->payment_complete( $input['transactionId'] );
-			}
-
-			return array( 'id' => $order_id );
 		};
 	}
 }

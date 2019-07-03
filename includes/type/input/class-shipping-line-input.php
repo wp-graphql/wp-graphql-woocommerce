@@ -26,11 +26,11 @@ class Shipping_Line_Input {
 						'description' => __( 'Shipping method name.', 'wp-graphql-woocommerce' ),
 					),
 					'methodId'    => array(
-						'type'        => array( 'non_null' => 'Int' ),
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Shipping method ID.', 'wp-graphql-woocommerce' ),
 					),
 					'instanceId'  => array(
-						'type'        => array( 'non_null' => 'String' ),
+						'type'        => 'String',
 						'description' => __( 'Shipping instance ID.', 'wp-graphql-woocommerce' ),
 					),
 					'total'       => array(

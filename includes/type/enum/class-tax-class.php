@@ -24,7 +24,7 @@ class Tax_Class {
 				'description' => __( 'Inherits Tax class from cart', 'wp-graphql-woocommerce' ),
 			),
 			WPEnumType::get_safe_name( 'standard' )     => array(
-				'value'       => 'standard',
+				'value'       => '',
 				'description' => __( 'Standard Tax rate', 'wp-graphql-woocommerce' ),
 			),
 		);

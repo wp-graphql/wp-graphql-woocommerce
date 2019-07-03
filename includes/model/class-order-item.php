@@ -124,7 +124,7 @@ class Order_Item extends Model {
 								if ( $this->data->get_tax_status() === 'taxable' ) {
 									return ! empty( $this->data->get_tax_class() )
 										? $this->data->get_tax_class()
-										: 'standard';
+										: '';
 								}
 								return null;
 							},
@@ -239,7 +239,7 @@ class Order_Item extends Model {
 								if ( $this->data->get_tax_status() === 'taxable' ) {
 									return ! empty( $this->data->get_tax_class() )
 										? $this->data->get_tax_class()
-										: 'standard';
+										: '';
 								}
 								return null;
 							},
