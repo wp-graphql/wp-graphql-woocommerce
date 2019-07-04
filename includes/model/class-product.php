@@ -245,7 +245,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 				},
 				'taxClass'             => function() {
-					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
+					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
 				},
 				'manageStock'          => function() {
 					return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;

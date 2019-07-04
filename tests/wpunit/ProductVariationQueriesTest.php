@@ -87,7 +87,9 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+        $this->assertEqualSets( $expected, $actual );
+
+        $this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
 
 		/**
 		 * Assertion Two

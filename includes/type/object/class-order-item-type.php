@@ -211,13 +211,13 @@ class Order_Item_Type {
 							// @codingStandardsIgnoreEnd
 						},
 					),
-					'variation'       => array(
+					'variation'     => array(
 						'type'        => 'ProductVariation',
 						'description' => 'Line item\'s product variation object',
 						'resolve'     => function( $item, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreStart
 							return ! empty( $item->variationId )
-								? Factory::resolve_crud_object( $item->productId, $context )
+								? Factory::resolve_crud_object( $item->variationId, $context )
 								: null;
 							// @codingStandardsIgnoreEnd
 						},

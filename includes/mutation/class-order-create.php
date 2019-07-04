@@ -164,7 +164,7 @@ class Order_Create {
 
 				$order->set_created_via( 'graphql-api' );
 				$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
-				\codecept_debug( $order->calculate_totals( true ) );
+				$order->calculate_totals( true );
 
 				// Set status.
 				if ( ! empty( $input['status'] ) ) {

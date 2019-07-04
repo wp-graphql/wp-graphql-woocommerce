@@ -8,23 +8,38 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
         // before
         parent::setUp();
 
+        // Create users.
         $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
         $this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
 
-        $this->order        = $this->getModule('\Helper\Wpunit')->order();
-        $this->coupon       = $this->getModule('\Helper\Wpunit')->coupon();
-        $this->product      = $this->getModule('\Helper\Wpunit')->product();
-        $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
-        $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
-        $this->getModule('\Helper\Wpunit')->tax_rate()->create(
+        // Get helper instances
+        $this->order      = $this->getModule('\Helper\Wpunit')->order();
+        $this->coupon     = $this->getModule('\Helper\Wpunit')->coupon();
+        $this->product    = $this->getModule('\Helper\Wpunit')->product();
+        $this->variation  = $this->getModule('\Helper\Wpunit')->product_variation();
+        $this->cart       = $this->getModule('\Helper\Wpunit')->cart();
+        $this->tax        = $this->getModule('\Helper\Wpunit')->tax_rate();
+        
+        // Turn on tax calculations. Important!
+        update_option( 'woocommerce_prices_include_tax', 'no' );
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
+
+        // Create a tax rate.
+        $this->tax->create(
             array(
-                'country'  => 'US',
-                'state'    => 'NY',
+                'country'  => '',
+                'state'    => '',
                 'rate'     => 20.000,
-                'name'     => 'BVAT',
+                'name'     => 'VAT',
+                'priority' => '1',
+                'compound' => '0',
+                'shipping' => '1',
+                'class'    => ''
             )
         );
-        $this->order->create();
+        // Create sample order to be used as a parent order.
+        $this->order_id = $this->order->create();
     }
 
     public function tearDown() {
@@ -412,13 +427,13 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                                     ? strtoupper( $item->get_tax_class() )
                                                     : 'STANDARD',
                                                 'subtotal'      => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-                                                'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal() : null,
+                                                'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
                                                 'total'         => ! empty( $item->get_total() ) ? $item->get_total() : null,
                                                 'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
                                                 'itemDownloads' => null,
                                                 'taxStatus'     => strtoupper( $item->get_tax_status() ),
                                                 'product'       => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ),
-                                                'variation'     => ! empty( $item->get_variation_id )
+                                                'variation'     => ! empty( $item->get_variation_id() )
                                                     ? array(
                                                         'id' => $this->variation->to_relay_id( $item->get_variation_id() )
                                                     )

@@ -350,13 +350,13 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                                             ? strtoupper( $item->get_tax_class() )
                                             : 'STANDARD',
                                         'subtotal'      => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-                                        'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal() : null,
+                                        'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
                                         'total'         => ! empty( $item->get_total() ) ? $item->get_total() : null,
                                         'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
                                         'itemDownloads' => null,
                                         'taxStatus'     => strtoupper( $item->get_tax_status() ),
                                         'product'       => array( 'id' => Relay::toGlobalId( 'product', $item->get_product_id() ) ),
-                                        'variation'     => ! empty( $item->get_variation_id )
+                                        'variation'     => ! empty( $item->get_variation_id() )
                                             ? array( 'id' => Relay::toGlobalId( 'product_variation', $item->get_variation_id() ) )
                                             : null,
                                     );

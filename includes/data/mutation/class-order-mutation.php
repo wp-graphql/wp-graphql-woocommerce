@@ -127,7 +127,7 @@ class Order_Mutation {
 		}
 
 		// Update item meta data if any is found.
-		if ( 0 !== $item_id && $meta_data ) {
+		if ( 0 !== $item_id && ! empty( $meta_data ) ) {
 			// Update item meta data.
 			self::update_item_meta_data( $item_id, $meta_data, $context, $info );
 		}

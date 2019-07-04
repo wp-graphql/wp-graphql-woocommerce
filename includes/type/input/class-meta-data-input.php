@@ -22,11 +22,11 @@ class Meta_Data_Input {
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'key'   => array(
-						'type'        => array( 'list_of' => 'String' ),
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
 					),
 					'value' => array(
-						'type'        => array( 'list_of' => 'String' ),
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
 					),
 				),
