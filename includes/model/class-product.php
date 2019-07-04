@@ -245,7 +245,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 				},
 				'taxClass'             => function() {
-					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
+					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
 				},
 				'manageStock'          => function() {
 					return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
@@ -399,7 +399,7 @@ class Product extends Crud_CPT {
 					return array( '0' );
 				},
 				'attributes'           => function() {
-					return ! empty( $this->data->get_attributes() ) ? $this->data->get_attributes() : array( '0' );
+					return ! empty( $this->data->get_attributes() ) ? $this->data->get_attributes() : array();
 				},
 				'default_attributes'   => function() {
 					return ! empty( $this->data->get_default_attributes() ) ? $this->data->get_default_attributes() : array( '0' );

@@ -28,6 +28,10 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Address_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Attribute_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Fee_Line_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Line_Item_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Meta_Data_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Shipping_Line_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Item_Type;
@@ -66,6 +70,7 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Empty;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Apply_Coupon;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Coupons;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Create;
 
 /**
  * Class Actions
@@ -110,6 +115,10 @@ class Actions {
 		Product_Attribute_Input::register();
 		WC_Connection_Orderby_Input::register();
 		Tax_Rate_Connection_Orderby_Input::register();
+		Fee_Line_Input::register();
+		Line_Item_Input::register();
+		Meta_Data_Input::register();
+		Shipping_Line_Input::register();
 
 		// Objects.
 		Coupon_Type::register();
@@ -153,5 +162,6 @@ class Actions {
 		Cart_Apply_Coupon::register_mutation();
 		Cart_Remove_Coupons::register_mutation();
 		Cart_Add_Fee::register_mutation();
+		Order_Create::register_mutation();
 	}
 }

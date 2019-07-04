@@ -163,9 +163,16 @@ class OrderHelper extends WCG_Helper {
     public function print_query( $id ) {
 		$data = new WC_Order( $id );
 
-		if ( ! $data ) {
+		if ( ! $data->get_id() ) {
 			return null;
 		}
+		// Get unformatted country before it's cached.
+		$billing_country = ! empty( $data->get_billing_country( 'edit' ) )
+			? 'US'
+			: null;
+		$shipping_country = ! empty( $data->get_address( 'shipping' )['country'] )
+			? 'US'
+			: null;
 
 		return array(
 			'id'                    => $this->to_relay_id( $id ),
@@ -227,9 +234,7 @@ class OrderHelper extends WCG_Helper {
 				'postcode'  => ! empty( $data->get_billing_postcode() )
 					? $data->get_billing_postcode()
 					: null,
-				'country'   => ! empty( $data->get_billing_country() )
-					? $data->get_billing_country()
-					: null,
+				'country'   => $billing_country,
 				'email'     => ! empty( $data->get_billing_email() )
 					? $data->get_billing_email()
 					: null,
@@ -262,9 +267,7 @@ class OrderHelper extends WCG_Helper {
 				'postcode'  => ! empty( $data->get_shipping_postcode() )
 					? $data->get_shipping_postcode()
 					: null,
-				'country'   => ! empty( $data->get_shipping_country() )
-					? $data->get_shipping_country()
-					: null,
+				'country'   => $shipping_country,
 			),
 			'paymentMethod'         => ! empty( $data->get_payment_method() )
 				? $data->get_payment_method()
@@ -276,10 +279,10 @@ class OrderHelper extends WCG_Helper {
 				? $data->get_transaction_id()
 				: null,
 			'dateCompleted'         => ! empty( $data->get_date_completed() )
-				? $data->get_date_completed()
+				? $data->get_date_completed()->__toString()
 				: null,
 			'datePaid'              => ! empty( $data->get_date_paid() )
-				? $data->get_date_paid()
+				? $data->get_date_paid()->__toString()
 				: null,
 			'cartHash'              => ! empty( $data->get_cart_hash() )
 				? $data->get_cart_hash()

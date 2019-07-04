@@ -30,7 +30,7 @@ class Order extends Crud_CPT {
 	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->data                = new \WC_Order( $id );
+		$this->data                = \WC_Order_Factory::get_order( $id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',

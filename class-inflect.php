@@ -187,4 +187,45 @@ class Inflect {
 
 		return $count . ' ' . self::pluralize( $string );
 	}
+
+	/**
+	 * Converts a camel case formatted string to a underscore formatted string.
+	 *
+	 * @param string  $string      String to be formatted.
+	 * @param boolean $capitalize  Capitalize first letter of string.
+	 *
+	 * @return string
+	 */
+	public static function underscore_to_camel_case( $string, $capitalize = false ) {
+		$str = str_replace( ' ', '', ucwords( str_replace( '-', ' ', $string ) ) );
+
+		if ( ! $capitalize ) {
+			$str[0] = strtolower( $str[0] );
+		}
+
+		return $str;
+	}
+
+	/**
+	 * Converts a camel case formatted string to a underscore formatted string.
+	 *
+	 * @param string $string  String to be formatted.
+	 *
+	 * @return string
+	 */
+	public static function camel_case_to_underscore( $string ) {
+		preg_match_all(
+			'!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!',
+			$string,
+			$matches
+		);
+
+		$ret = $matches[0];
+
+		foreach ( $ret as &$match ) {
+			$match = strtoupper( $match ) === $match ? strtolower( $match ) : lcfirst( $match );
+		}
+
+		return implode( '_', $ret );
+	}
 }
