@@ -279,10 +279,10 @@ class OrderHelper extends WCG_Helper {
 				? $data->get_transaction_id()
 				: null,
 			'dateCompleted'         => ! empty( $data->get_date_completed() )
-				? $data->get_date_completed()
+				? $data->get_date_completed()->__toString()
 				: null,
 			'datePaid'              => ! empty( $data->get_date_paid() )
-				? $data->get_date_paid()
+				? $data->get_date_paid()->__toString()
 				: null,
 			'cartHash'              => ! empty( $data->get_cart_hash() )
 				? $data->get_cart_hash()

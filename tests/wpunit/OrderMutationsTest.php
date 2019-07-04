@@ -1,5 +1,7 @@
 <?php
 
+use WPGraphQL\Type\WPEnumType;
+
 class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 
     public function setUp() {
@@ -14,6 +16,14 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->product      = $this->getModule('\Helper\Wpunit')->product();
         $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
+        $this->getModule('\Helper\Wpunit')->tax_rate()->create(
+            array(
+                'country'  => 'US',
+                'state'    => 'NY',
+                'rate'     => 20.000,
+                'name'     => 'BVAT',
+            )
+        );
         $this->order->create();
     }
 
@@ -185,18 +195,23 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 
     // tests
     public function testCreateOrderMutationAndArgs() {
-        $product_id = $this->product->create_simple();
+        $variable  = $this->variation->create( $this->product->create_variable() );
+        $product_ids = array(
+            $this->product->create_simple(),
+            $this->product->create_simple(),
+            $variable['product'],
+        );
         $coupon     = new WC_Coupon(
-            $this->coupon->create( array( 'product_ids' => array( $product_id ) ) )
+            $this->coupon->create( array( 'product_ids' => $product_ids ) )
         );
 
         $input      = array(
             'clientMutationId'   => 'someId',
 			'customerId'         => $this->customer,
 			'customerNote'       => 'Customer test note',
-			// 'coupons'            => array(
-            //     $coupon->get_code(),
-            // ),
+			'coupons'            => array(
+                $coupon->get_code(),
+            ),
 			'paymentMethod'      => 'bacs',
             'paymentMethodTitle' => 'Direct Bank Transfer',
             'isPaid'             => true,
@@ -222,25 +237,40 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
 			'lineItems'          => array(
                 array(
-                    'productId' => $product_id,
+                    'productId' => $product_ids[0],
                     'quantity'  => 5,
+                    'metaData'  => array( 
+                        array( 
+                            'key'   => 'test_product_key',
+                            'value' => 'test product value',
+                        ), 
+                    ),
+                ),
+                array(
+                    'productId' => $product_ids[1],
+                    'quantity'  => 2,
+                ),
+                array(
+                    'productId'   => $product_ids[2],
+                    'quantity'    => 6,
+                    'variationId' => $variable['variations'][0]
                 ),
             ),
-            // 'shippingLines'      => array(
-            //     array(
-            //         'methodId'    => 'flat_rate_shipping',
-            //         'methodTitle' => 'Flat Rate shipping',
-            //         'total'       => '10',
-            //     ),
-            // ),
-			// 'feeLines'           => array(
-            //     array(
-            //         'name'       => 'Some Fee',
-            //         'taxStatus' => 'TAXABLE',
-            //         'total'      => '100',
-            //         'taxClass'  => 'STANDARD',
-            //     ),
-            // ),
+            'shippingLines'      => array(
+                array(
+                    'methodId'    => 'flat_rate_shipping',
+                    'methodTitle' => 'Flat Rate shipping',
+                    'total'       => '10',
+                ),
+            ),
+			'feeLines'           => array(
+                array(
+                    'name'       => 'Some Fee',
+                    'taxStatus' => 'TAXABLE',
+                    'total'      => '100',
+                    'taxClass'  => 'STANDARD',
+                ),
+            ),
 			'metaData'           => array( 
                 array( 
                     'key'   => 'test_key',
@@ -298,7 +328,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                                 'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
                                                 'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
                                                 'coupon'      => array(
-                                                    'id' => Relay::toGlobalId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) ),
+                                                    'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
                                                 ),
                                             );
                                         },
@@ -387,9 +417,11 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                                 'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
                                                 'itemDownloads' => null,
                                                 'taxStatus'     => strtoupper( $item->get_tax_status() ),
-                                                'product'       => array( 'id' => Relay::toGlobalId( 'product', $item->get_product_id() ) ),
+                                                'product'       => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ),
                                                 'variation'     => ! empty( $item->get_variation_id )
-                                                    ? array( 'id' => Relay::toGlobalId( 'product_variation', $item->get_variation_id() ) )
+                                                    ? array(
+                                                        'id' => $this->variation->to_relay_id( $item->get_variation_id() )
+                                                    )
                                                     : null,
                                             );
                                         },

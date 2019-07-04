@@ -137,15 +137,20 @@ class Order_Create {
 			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
 				throw new UserError( __( 'Sorry, you are not allowed to create a new order.', 'wp-graphql-woocommerce' ) );
 			}
-			// Prepare order prop data.
-			$props = Order_Mutation::prepare_props( $input, $context, $info );
+
+			// Create order.
 			$order = null;
 			try {
-				$order = Order_Mutation::prepare_order_instance( $props, $context, $info );
+				$order_id = Order_Mutation::create_order( $input, $context, $info );
+				Order_Mutation::add_order_meta( $order_id, $input, $context, $info );
+				Order_Mutation::add_items( $input, $order_id, $context, $info );
 
-				if ( is_wp_error( $order ) ) {
-					throw new UserError( __( 'Sorry, there was a problem initializing the order.', 'wp-graphql-woocommerce' ) );
+				// Apply coupons.
+				if ( ! empty( $input['coupons'] ) ) {
+					Order_Mutation::apply_coupons( $order_id, $input['coupons'] );
 				}
+
+				$order = \WC_Order_Factory::get_order( $order_id );
 
 				// Make sure gateways are loaded so hooks from gateways fire on save/create.
 				WC()->payment_gateways();
@@ -159,42 +164,12 @@ class Order_Create {
 
 				$order->set_created_via( 'graphql-api' );
 				$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
-				$order->calculate_totals();
-
-				// Apply coupons.
-				if ( ! empty( $input['coupons'] ) ) {
-					Order_Mutation::apply_coupons( $input['coupons'], $order );
-				}
+				\codecept_debug( $order->calculate_totals( true ) );
 
 				// Set status.
 				if ( ! empty( $input['status'] ) ) {
 					$order->set_status( $input['status'] );
 				}
-
-				\add_action(
-					'woocommerce_before_order_item_object_save',
-					function( $item ) {
-						\codecept_debug( 'ITEM SAVED' );
-					}
-				);
-
-				\add_action(
-					'woocommerce_before_order_object_save',
-					function( $item ) {
-						\codecept_debug( 'ORDER SAVED' );
-						//\codecept_debug( $item->get_items() );
-					}
-				);
-
-				\add_action(
-					'woocommerce_new_order',
-					function( $id ) {
-						\codecept_debug( "ORDER {$id} CREATED" );
-					}
-				);
-
-				$order->apply_changes();
-				$order->save();
 
 				// Actions for after the order is saved.
 				if ( true === $input['isPaid'] ) {
@@ -207,8 +182,8 @@ class Order_Create {
 
 				return array( 'id' => $order->get_id() );
 			} catch ( \Exception $e ) {
-				Order_Mutation::purge( $order, $creating );
-				return new UserError( $e->getMessage() );
+				Order_Mutation::purge( $order );
+				throw new UserError( $e->getMessage() );
 			}
 		};
 	}
