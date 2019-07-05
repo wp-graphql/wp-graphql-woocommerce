@@ -882,6 +882,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
         $deleted_input = array(
             'clientMutationId' => 'someId',
             'id'               => $this->order->to_relay_id( $order->get_id() ),
+            'forceDelete'      => true,
         );
 
         /**
