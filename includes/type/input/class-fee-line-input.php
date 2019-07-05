@@ -21,20 +21,24 @@ class Fee_Line_Input {
 			array(
 				'description' => __( 'Fee line data.', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
+					'id'        => array(
+						'type'        => 'ID',
+						'description' => __( 'Fee Line ID', 'wp-graphql-woocommerce' ),
+					),
 					'name'      => array(
-						'type'        => array( 'non_null' => 'String' ),
+						'type'        => 'String',
 						'description' => __( 'Fee name.', 'wp-graphql-woocommerce' ),
 					),
 					'taxClass'  => array(
-						'type'        => array( 'non_null' => 'TaxClassEnum' ),
+						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class of fee.', 'wp-graphql-woocommerce' ),
 					),
 					'taxStatus' => array(
-						'type'        => array( 'non_null' => 'TaxStatusEnum' ),
+						'type'        => 'TaxStatusEnum',
 						'description' => __( 'Tax status of fee.', 'wp-graphql-woocommerce' ),
 					),
 					'total'     => array(
-						'type'        => array( 'non_null' => 'String' ),
+						'type'        => 'String',
 						'description' => __( 'Line total (after discounts).', 'wp-graphql-woocommerce' ),
 					),
 				),

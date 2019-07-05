@@ -33,6 +33,7 @@ class Order_Create {
 			)
 		);
 	}
+
 	/**
 	 * Defines the mutation input field configuration
 	 *

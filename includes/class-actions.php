@@ -71,6 +71,7 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Apply_Coupon;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Remove_Coupons;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Create;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Update;
 
 /**
  * Class Actions
@@ -163,5 +164,6 @@ class Actions {
 		Cart_Remove_Coupons::register_mutation();
 		Cart_Add_Fee::register_mutation();
 		Order_Create::register_mutation();
+		Order_Update::register_mutation();
 	}
 }
