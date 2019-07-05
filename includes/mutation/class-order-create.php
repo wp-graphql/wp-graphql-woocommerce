@@ -136,7 +136,7 @@ class Order_Create {
 			$post_type_object = get_post_type_object( 'shop_order' );
 
 			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to create a new order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to create an order.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Create order.

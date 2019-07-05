@@ -1,8 +1,8 @@
 <?php
 /**
- * Mutation - updateOrder
+ * Mutation - deleteOrder
  *
- * Registers mutation for updating an existing order.
+ * Registers mutation for delete an order.
  *
  * @package WPGraphQL\Extensions\WooCommerce\Mutation
  * @since 0.2.0
@@ -18,15 +18,15 @@ use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\Extensions\WooCommerce\Model\Order;
 
 /**
- * Class Order_Update
+ * Class Order_Delete
  */
-class Order_Update {
+class Order_Delete {
 	/**
 	 * Registers mutation
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
-			'updateOrder',
+			'deleteOrder',
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
@@ -42,19 +42,14 @@ class Order_Update {
 	 */
 	public static function get_input_fields() {
 		$input_fields = array_merge(
-			Order_Create::get_input_fields(),
 			array(
-				'id'         => array(
+				'id'    => array(
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
 				),
-				'order'      => array(
+				'order' => array(
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
-				),
-				'customerId' => array(
-					'type'        => 'Int',
-					'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
 				),
 			)
 		);
@@ -72,7 +67,7 @@ class Order_Update {
 			'order' => array(
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
-					return new Order( $payload['id'] );
+					return $payload['order'];
 				},
 			),
 		);
@@ -88,7 +83,7 @@ class Order_Update {
 			$post_type_object = get_post_type_object( 'shop_order' );
 
 			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to update an order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Sorry, you are not allowed to update this order.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Retrieve order ID.
@@ -105,45 +100,47 @@ class Order_Update {
 				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
 			}
 
-			Order_Mutation::add_order_meta( $order_id, $input, $context, $info );
-			Order_Mutation::add_items( $input, $order_id, $context, $info );
+			// Get Order model instance for output.
+			$order = new Order( $order_id );
 
-			// Apply coupons.
-			if ( ! empty( $input['coupons'] ) ) {
-				Order_Mutation::apply_coupons( $order_id, $input['coupons'] );
-			}
+			// Cache items to prevent null value errors.
+			// @codingStandardsIgnoreStart
+			$order->downloadableItems;
+			$order->get_items();
+			$order->get_items( 'fee' );
+			$order->get_items( 'shipping' );
+			$order->get_items( 'tax' );
+			$order->get_items( 'coupon' );
+			// @codingStandardsIgnoreEnd.
 
-			$order = \WC_Order_Factory::get_order( $order_id );
+			/**
+			 * Action called before order is deleted.
+			 *
+			 * @param WC_Order    $order   WC_Order instance.
+			 * @param array       $props   Order props array.
+			 * @param AppContext  $context Request AppContext instance.
+			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 */
+			do_action( 'woocommerce_graphql_before_order_delete', $order, $context, $info );
 
-			// Make sure gateways are loaded so hooks from gateways fire on save/create.
-			WC()->payment_gateways();
+			// Delete order.
+			$success = Order_Mutation::purge(
+				\WC_Order_Factory::get_order( $order->ID ),
+				$context,
+				$info
+			);
 
-			// Validate customer ID.
-			if ( ! empty( $input['customerId'] ) ) {
-				if ( ! Order_Mutation::validate_customer( $input ) ) {
-					throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
-				}
-			}
-
-			$order->set_created_via( 'graphql-api' );
-			$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
-			$order->calculate_totals( true );
-
-			// Set status.
-			if ( ! empty( $input['status'] ) ) {
-				$order->set_status( $input['status'] );
-			}
-
-			// Actions for after the order is saved.
-			if ( true === $input['isPaid'] ) {
-				$order->payment_complete(
-					! empty( $input['transactionId'] ) ?
-						$input['transactionId']
-						: ''
+			if ( ! $success ) {
+				throw new UserError(
+					sprintf(
+						/* translators: Deletion failed message */
+						__( 'Removal of Order %d failed', 'wp-graphql-woocommerce' ),
+						$order->get_id()
+					)
 				);
 			}
 
-			return array( 'id' => $order->get_id() );
+			return array( 'order' => $order );
 		};
 	}
 }

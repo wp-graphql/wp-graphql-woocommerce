@@ -180,9 +180,6 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                 subtotalTax
                                 total
                                 totalTax
-                                itemDownloads {
-                                    downloadId
-                                }
                                 taxStatus
                                 product {
                                     id
@@ -429,7 +426,6 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                                 'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
                                                 'total'         => ! empty( $item->get_total() ) ? $item->get_total() : null,
                                                 'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'itemDownloads' => null,
                                                 'taxStatus'     => strtoupper( $item->get_tax_status() ),
                                                 'product'       => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ),
                                                 'variation'     => ! empty( $item->get_variation_id() )
@@ -753,7 +749,6 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                                 'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
                                                 'total'         => ! empty( $item->get_total() ) ? $item->get_total() : null,
                                                 'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'itemDownloads' => null,
                                                 'taxStatus'     => strtoupper( $item->get_tax_status() ),
                                                 'product'       => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ),
                                                 'variation'     => ! empty( $item->get_variation_id() )
@@ -773,6 +768,157 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
+        $this->assertNotEquals( $initial_response, $actual );
+    }
+
+    public function testDeleteOrderMutation() {
+        // Create products and coupons to be used in order creation.
+        $variable    = $this->variation->create( $this->product->create_variable() );
+        $product_ids = array(
+            $this->product->create_simple(),
+            $this->product->create_simple(),
+            $variable['product'],
+        );
+        $coupon      = new WC_Coupon(
+            $this->coupon->create( array( 'product_ids' => $product_ids ) )
+        );
+
+        // Create initial order input.
+        $initial_input = array(
+            'clientMutationId'   => 'someId',
+			'customerId'         => $this->customer,
+			'customerNote'       => 'Customer test note',
+			'coupons'            => array(
+                $coupon->get_code(),
+            ),
+			'paymentMethod'      => 'bacs',
+            'paymentMethodTitle' => 'Direct Bank Transfer',
+			'billing'            => array(
+                'firstName' => 'May',
+                'lastName'  => 'Parker',
+                'address1'  => '20 Ingram St',
+                'city'      => 'New York City',
+                'state'     => 'NY',
+                'postcode'  => '12345',
+                'country'   => 'US',
+                'email'     => 'superfreak500@gmail.com',
+                'phone'     => '555-555-1234',
+            ),
+			'shipping'           => array(
+                'firstName' => 'May',
+                'lastName'  => 'Parker',
+                'address1'  => '20 Ingram St',
+                'city'      => 'New York City',
+                'state'     => 'NY',
+                'postcode'  => '12345',
+                'country'   => 'US',
+            ),
+			'lineItems'          => array(
+                array(
+                    'productId' => $product_ids[0],
+                    'quantity'  => 5,
+                    'metaData'  => array( 
+                        array( 
+                            'key'   => 'test_product_key',
+                            'value' => 'test product value',
+                        ), 
+                    ),
+                ),
+                array(
+                    'productId' => $product_ids[1],
+                    'quantity'  => 2,
+                ),
+                array(
+                    'productId'   => $product_ids[2],
+                    'quantity'    => 6,
+                    'variationId' => $variable['variations'][0]
+                ),
+            ),
+            'shippingLines'      => array(
+                array(
+                    'methodId'    => 'flat_rate_shipping',
+                    'methodTitle' => 'Flat Rate shipping',
+                    'total'       => '10',
+                ),
+            ),
+			'feeLines'           => array(
+                array(
+                    'name'       => 'Some Fee',
+                    'taxStatus' => 'TAXABLE',
+                    'total'      => '100',
+                    'taxClass'  => 'STANDARD',
+                ),
+            ),
+			'metaData'           => array( 
+                array( 
+                    'key'   => 'test_key',
+                    'value' => 'test value',
+                ), 
+            ),
+			'isPaid'             => false,
+        );
+
+        // Create order to delete.
+		wp_set_current_user( $this->shop_manager );
+        $initial_response = $this->orderMutation( $initial_input );
+
+        // use --debug flag to view.
+        codecept_debug( $initial_response );
+
+        // Clear loader cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
+
+        // Retrieve order and items
+        $order_id       = $initial_response['data']['createOrder']['order']['orderId'];
+        $order          = \WC_Order_Factory::get_order( $order_id );
+        $line_items     = $order->get_items();
+        $shipping_lines = $order->get_items( 'shipping' );
+        $fee_lines      = $order->get_items( 'fee' );
+        $coupon_lines   = $order->get_items( 'coupon' );
+        $tax_lines      = $order->get_items( 'tax' );
+
+        // Create DeleteOrderInput.
+        $deleted_input = array(
+            'clientMutationId' => 'someId',
+            'id'               => $this->order->to_relay_id( $order->get_id() ),
+        );
+
+        /**
+		 * Assertion One
+		 * 
+		 * User without necessary capabilities cannot delete order an order.
+		 */
+        wp_set_current_user( $this->customer );
+        $actual = $this->orderMutation(
+            $deleted_input,
+            'deleteOrder',
+            'DeleteOrderInput'
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertArrayHasKey('errors', $actual );
+
+        /**
+		 * Assertion Two
+		 * 
+		 * Test mutation and input.
+		 */
+		wp_set_current_user( $this->shop_manager );
+        $actual = $this->orderMutation(
+            $deleted_input,
+            'deleteOrder',
+            'DeleteOrderInput'
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+        
+        $this->assertArrayHasKey( 'data', $actual );
+        $this->assertArrayHasKey( 'deleteOrder', $actual['data'] );
+        $this->assertEquals( $initial_response['data']['createOrder'], $actual['data']['deleteOrder'] );
+        $this->assertFalse( \WC_Order_Factory::get_order( $order->get_id() ) );
     }
 }

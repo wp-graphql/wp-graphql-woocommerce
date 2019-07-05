@@ -224,7 +224,7 @@ class Order extends Crud_CPT {
 					return ! is_null( $this->data->needs_processing() ) ? $this->data->needs_processing() : null;
 				},
 				'downloadableItems'     => function() {
-					return ! is_null( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
+					return ! empty( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
 				},
 				/**
 				 * Connection resolvers fields

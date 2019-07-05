@@ -337,12 +337,15 @@ class Order_Mutation {
 	/**
 	 * Purge object when creating.
 	 *
-	 * @param WC_Order $order  Object data.
+	 * @param WC_Order|Order $order    Object data.
+	 * @param AppContext     $context  AppContext instance.
+	 * @param ResolveInfo    $info     ResolveInfo instance.
 	 *
 	 * @return bool
+	 * @throws UserError  Failed to delete order.
 	 */
-	public static function purge( $order ) {
-		if ( $order instanceof WC_Order ) {
+	public static function purge( $order, $context, $info ) {
+		if ( is_callable( array( $order, 'delete' ) ) ) {
 			return $order->delete( true );
 		}
 
