@@ -43,13 +43,17 @@ class Order_Delete {
 	public static function get_input_fields() {
 		$input_fields = array_merge(
 			array(
-				'id'      => array(
+				'id'          => array(
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
 				),
-				'orderId' => array(
+				'orderId'     => array(
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+				),
+				'forceDelete' => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' ),
 				),
 			)
 		);
@@ -100,6 +104,11 @@ class Order_Delete {
 				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
 			}
 
+			$force_delete = false;
+			if ( ! empty( $input['forceDelete'] ) ) {
+				$force_delete = $input['forceDelete'];
+			}
+
 			// Get Order model instance for output.
 			$order = new Order( $order_id );
 
@@ -124,11 +133,7 @@ class Order_Delete {
 			do_action( 'woocommerce_graphql_before_order_delete', $order, $context, $info );
 
 			// Delete order.
-			$success = Order_Mutation::purge(
-				\WC_Order_Factory::get_order( $order->ID ),
-				$context,
-				$info
-			);
+			$success = Order_Mutation::purge( \WC_Order_Factory::get_order( $order->ID ), $force_delete );
 
 			if ( ! $success ) {
 				throw new UserError(
