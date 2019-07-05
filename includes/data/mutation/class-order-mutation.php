@@ -72,7 +72,7 @@ class Order_Mutation {
 				foreach ( $items as $item_data ) {
 					// Create Order item.
 					$item_id = ( ! empty( $item_data['id'] ) && \WC_Order_Factory::get_order_item( $item_data['id'] ) )
-						? $item['id']
+						? $item_data['id']
 						: \wc_add_order_item( $order_id, array( 'order_item_type' => $type ) );
 
 					// Continue if order item creation failed.
@@ -113,7 +113,9 @@ class Order_Mutation {
 
 		// Calculate to subtotal/total for line items.
 		if ( isset( $args['quantity'] ) ) {
-			$product          = wc_get_product( self::get_product_id( $args ) );
+			$product          = ( ! empty( $order_item['product_id'] ) )
+				? wc_get_product( $order_item['product_id'] )
+				: wc_get_product( self::get_product_id( $args ) );
 			$total            = wc_get_price_excluding_tax( $product, array( 'qty' => $args['quantity'] ) );
 			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
 			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;

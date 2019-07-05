@@ -21,12 +21,16 @@ class Line_Item_Input {
 			array(
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
+					'id'          => array(
+						'type'        => 'ID',
+						'description' => __( 'Line Item ID', 'wp-graphql-woocommerce' ),
+					),
 					'name'        => array(
 						'type'        => 'String',
 						'description' => __( 'Line name', 'wp-graphql-woocommerce' ),
 					),
 					'productId'   => array(
-						'type'        => array( 'non_null' => 'Int' ),
+						'type'        => 'Int',
 						'description' => __( 'Product ID.', 'wp-graphql-woocommerce' ),
 					),
 					'variationId' => array(
