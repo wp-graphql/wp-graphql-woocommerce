@@ -43,11 +43,11 @@ class Order_Delete {
 	public static function get_input_fields() {
 		$input_fields = array_merge(
 			array(
-				'id'    => array(
+				'id'      => array(
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
 				),
-				'order' => array(
+				'orderId' => array(
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 				),
@@ -83,7 +83,7 @@ class Order_Delete {
 			$post_type_object = get_post_type_object( 'shop_order' );
 
 			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to update this order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Retrieve order ID.

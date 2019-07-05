@@ -48,7 +48,7 @@ class Order_Update {
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
 				),
-				'order'      => array(
+				'orderId'    => array(
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 				),
