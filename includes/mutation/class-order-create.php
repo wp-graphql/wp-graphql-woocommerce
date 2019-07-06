@@ -179,6 +179,16 @@ class Order_Create {
 					);
 				}
 
+				/**
+				 * Action called after order is created.
+				 *
+				 * @param WC_Order    $order   WC_Order instance.
+				 * @param array       $input   Input data describing order.
+				 * @param AppContext  $context Request AppContext instance.
+				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 */
+				do_action( 'woocommerce_graphql_after_order_create', $order, $input, $context, $info );
+
 				return array( 'id' => $order->get_id() );
 			} catch ( \Exception $e ) {
 				Order_Mutation::purge( $order );

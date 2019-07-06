@@ -103,6 +103,16 @@ class Order_Update {
 				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
 			}
 
+			/**
+			 * Action called before order is updated.
+			 *
+			 * @param int         $order_id  Order ID.
+			 * @param array       $input     Input data describing order
+			 * @param AppContext  $context   Request AppContext instance.
+			 * @param ResolveInfo $info      Request ResolveInfo instance.
+			 */
+			do_action( 'woocommerce_graphql_before_order_update', $order_id, $input, $context, $info );
+
 			Order_Mutation::add_order_meta( $order_id, $input, $context, $info );
 			Order_Mutation::add_items( $input, $order_id, $context, $info );
 
@@ -140,6 +150,16 @@ class Order_Update {
 						: ''
 				);
 			}
+
+			/**
+			 * Action called after order is updated.
+			 *
+			 * @param WC_Order    $order   WC_Order instance.
+			 * @param array       $input   Input data describing order
+			 * @param AppContext  $context Request AppContext instance.
+			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 */
+			do_action( 'woocommerce_graphql_after_order_update', $order, $input, $context, $info );
 
 			return array( 'id' => $order->get_id() );
 		};
