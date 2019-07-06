@@ -15,6 +15,25 @@ use GraphQL\Error\UserError;
  */
 class Order_Mutation {
 	/**
+	 * Filterable authentication function.
+	 *
+	 * @param string $mutation  Mutation being executed.
+	 *
+	 * @return boolean
+	 */
+	public static function authorized( $mutation = 'create', $input, $context, $info ) {
+		$post_type_object = get_post_type_object( 'shop_order' );
+
+		return apply_filters(
+			"authorized_to_{$mutation}_orders",
+			! current_user_can( $post_type_object->cap->create_posts ),
+			$input,
+			$context,
+			$info
+		);
+	}
+
+	/**
 	 * Create an order.
 	 *
 	 * @param array       $input    Input data describing order.

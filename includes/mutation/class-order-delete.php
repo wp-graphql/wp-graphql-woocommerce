@@ -84,9 +84,7 @@ class Order_Delete {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			$post_type_object = get_post_type_object( 'shop_order' );
-
-			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
+			if ( Order_Mutation::authorized( 'delete', $input, $context, $info ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
 			}
 
