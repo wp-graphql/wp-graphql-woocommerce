@@ -295,12 +295,14 @@ class OrderHelper extends WCG_Helper {
 			'isDownloadPermitted'   => $data->is_download_permitted(),
 			'needsShippingAddress'  => $data->needs_shipping_address(),
 			'hasDownloadableItem'   => $data->has_downloadable_item(),
-			'downloadableItems'     => array_map(
-				function( $download ) {
-					return array( 'downloadId' => $download->get_id() );
-				},
-				$data->get_downloadable_items()
-			),
+			'downloadableItems'     => ! empty( $data->get_downloadable_items() )
+				? array_map(
+					function( $download ) {
+						return array( 'downloadId' => $download->get_id() );
+					},
+					$data->get_downloadable_items()
+				)
+				: null,
 			'needsPayment'          => $data->needs_payment(),
 			'needsProcessing'       => $data->needs_processing(),
 		);

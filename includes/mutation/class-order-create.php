@@ -133,10 +133,8 @@ class Order_Create {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			$post_type_object = get_post_type_object( 'shop_order' );
-
-			if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to create a new order.', 'wp-graphql-woocommerce' ) );
+			if ( Order_Mutation::authorized( 'create', $input, $context, $info ) ) {
+				throw new UserError( __( 'User does not have the capabilities necessary to create an order.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Create order.
@@ -180,6 +178,16 @@ class Order_Create {
 							: ''
 					);
 				}
+
+				/**
+				 * Action called after order is created.
+				 *
+				 * @param WC_Order    $order   WC_Order instance.
+				 * @param array       $input   Input data describing order.
+				 * @param AppContext  $context Request AppContext instance.
+				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 */
+				do_action( 'woocommerce_graphql_after_order_create', $order, $input, $context, $info );
 
 				return array( 'id' => $order->get_id() );
 			} catch ( \Exception $e ) {

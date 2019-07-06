@@ -15,6 +15,28 @@ use GraphQL\Error\UserError;
  */
 class Order_Mutation {
 	/**
+	 * Filterable authentication function.
+	 *
+	 * @param string      $mutation  Mutation being executed.
+	 * @param array       $input     Input data describing order.
+	 * @param AppContext  $context   AppContext instance.
+	 * @param ResolveInfo $info      ResolveInfo instance.
+	 *
+	 * @return boolean
+	 */
+	public static function authorized( $mutation = 'create', $input, $context, $info ) {
+		$post_type_object = get_post_type_object( 'shop_order' );
+
+		return apply_filters(
+			"authorized_to_{$mutation}_orders",
+			! current_user_can( $post_type_object->cap->create_posts ),
+			$input,
+			$context,
+			$info
+		);
+	}
+
+	/**
 	 * Create an order.
 	 *
 	 * @param array       $input    Input data describing order.
@@ -42,10 +64,30 @@ class Order_Mutation {
 			}
 		}
 
+		/**
+		 * Action called before order is created.
+		 *
+		 * @param WC_Order    $order   WC_Order instance.
+		 * @param array       $input   Input data describing order.
+		 * @param AppContext  $context Request AppContext instance.
+		 * @param ResolveInfo $info    Request ResolveInfo instance.
+		 */
+		do_action( 'woocommerce_graphql_before_order_create', $input, $context, $info );
+
 		$order = \wc_create_order( $args );
 		if ( is_wp_error( $order ) ) {
 			throw UserError( $order->get_error_code() . $order->get_message() );
 		}
+
+		/**
+		 * Action called after order is created.
+		 *
+		 * @param WC_Order    $order   WC_Order instance.
+		 * @param array       $input   Input data describing order.
+		 * @param AppContext  $context Request AppContext instance.
+		 * @param ResolveInfo $info    Request ResolveInfo instance.
+		 */
+		do_action( 'woocommerce_graphql_after_order_create', $order, $input, $context, $info );
 
 		return $order->get_id();
 	}
@@ -69,6 +111,17 @@ class Order_Mutation {
 		foreach ( $input as $key => $items ) {
 			if ( array_key_exists( $key, $item_group_keys ) ) {
 				$type = $item_group_keys[ $key ];
+
+				/**
+				 * Action called before an item group is added to an order.
+				 *
+				 * @param array       $items     Item data being added.
+				 * @param integer     $order_id  ID of target order.
+				 * @param AppContext  $context   Request AppContext instance.
+				 * @param ResolveInfo $info      Request ResolveInfo instance.
+				 */
+				do_action( "woocommerce_graphql_before_{$type}s_added_to_order", $items, $order_id, $context, $info );
+
 				foreach ( $items as $item_data ) {
 					// Create Order item.
 					$item_id = ( ! empty( $item_data['id'] ) && \WC_Order_Factory::get_order_item( $item_data['id'] ) )
@@ -84,6 +137,16 @@ class Order_Mutation {
 					$item_keys = self::get_order_item_keys( $type );
 					self::map_input_to_item( $item_id, $item_data, $item_keys, $context, $info );
 				}
+
+				/**
+				 * Action called after an item group is added to an order.
+				 *
+				 * @param array       $items     Item data being added.
+				 * @param integer     $order_id  ID of target order.
+				 * @param AppContext  $context   Request AppContext instance.
+				 * @param ResolveInfo $info      Request ResolveInfo instance.
+				 */
+				do_action( "woocommerce_graphql_after_{$type}s_added_to_order", $items, $order_id, $context, $info );
 			}
 		}
 	}
@@ -255,7 +318,7 @@ class Order_Mutation {
 		}
 
 		/**
-		 * Action called before order meta saved.
+		 * Action called before changes to order meta are saved.
 		 *
 		 * @param WC_Order    $order   WC_Order instance.
 		 * @param array       $props   Order props array.
@@ -337,13 +400,15 @@ class Order_Mutation {
 	/**
 	 * Purge object when creating.
 	 *
-	 * @param WC_Order $order  Object data.
+	 * @param WC_Order|Order $order         Object data.
+	 * @param boolean        $force_delete  Delete or put in trash.
 	 *
 	 * @return bool
+	 * @throws UserError  Failed to delete order.
 	 */
-	public static function purge( $order ) {
-		if ( $order instanceof WC_Order ) {
-			return $order->delete( true );
+	public static function purge( $order, $force_delete = true ) {
+		if ( is_callable( array( $order, 'delete' ) ) ) {
+			return $order->delete( $force_delete );
 		}
 
 		return false;
