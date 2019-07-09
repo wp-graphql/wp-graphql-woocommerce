@@ -32,6 +32,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Fee_Line_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Line_Item_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Meta_Data_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Shipping_Line_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Create_Account_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Item_Type;
@@ -73,6 +74,7 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Create;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Update;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Delete;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Checkout;
 
 /**
  * Class Actions
@@ -121,6 +123,7 @@ class Actions {
 		Line_Item_Input::register();
 		Meta_Data_Input::register();
 		Shipping_Line_Input::register();
+		Create_Account_Input::register();
 
 		// Objects.
 		Coupon_Type::register();
@@ -167,5 +170,6 @@ class Actions {
 		Order_Create::register_mutation();
 		Order_Update::register_mutation();
 		Order_Delete::register_mutation();
+		Checkout::register_mutation();
 	}
 }

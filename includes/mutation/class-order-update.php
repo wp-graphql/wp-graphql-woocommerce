@@ -127,10 +127,8 @@ class Order_Update {
 			WC()->payment_gateways();
 
 			// Validate customer ID.
-			if ( ! empty( $input['customerId'] ) ) {
-				if ( ! Order_Mutation::validate_customer( $input ) ) {
-					throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
-				}
+			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input ) ) {
+				throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
 			}
 
 			$order->set_created_via( 'graphql-api' );
