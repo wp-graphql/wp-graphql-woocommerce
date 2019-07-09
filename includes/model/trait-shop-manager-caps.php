@@ -19,7 +19,7 @@ trait Shop_Manager_Caps {
 	 * @access protected
 	 * @return string
 	 */
-	protected function get_restricted_cap() {
+	public function get_restricted_cap() {
 		if ( post_password_required( $this->data->get_id() ) ) {
 			return $this->post_type_object->cap->edit_others_posts;
 		}
@@ -32,5 +32,26 @@ trait Shop_Manager_Caps {
 				break;
 		}
 		return $cap;
+	}
+
+	/**
+	 * Whether or not the owner of the data matches the current user
+	 *
+	 * @return bool
+	 * @access protected
+	 */
+	protected function owner_matches_current_user() {
+		// Get Customer ID.
+		$customer_id = null;
+		if ( is_callable( array( $this->data, 'get_customer_id' ) ) ) {
+			$customer_id = $this->data->get_customer_id();
+		}
+
+		if ( empty( $this->current_user->ID ) || ( empty( $this->owner ) && empty( $customer_id ) ) ) {
+			return false;
+		}
+		return ( absint( $this->owner ) === absint( $this->current_user->ID ) || absint( $customer_id ) === absint( $this->current_user->ID ) )
+			? true
+			: false;
 	}
 }

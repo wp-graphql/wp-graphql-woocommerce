@@ -292,7 +292,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'checkout' => array(
                     'clientMutationId' => 'someId',
                     'order'            => array_merge(
-                        $this->order->print_restricted_query( $order->get_id() ),
+                        $this->order->print_query( $order->get_id() ),
                         array(
                             'couponLines'   => array(
                                 'nodes' => array_reverse(

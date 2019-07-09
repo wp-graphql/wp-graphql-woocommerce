@@ -39,7 +39,7 @@ class Order extends Crud_CPT {
 			'orderId',
 		);
 
-		parent::__construct( $allowed_restricted_fields, 'shop_order', $id );
+		parent::__construct( $allowed_restricted_fields, 'shop_order', $id, $this->data->get_customer_id() );
 	}
 
 	/**

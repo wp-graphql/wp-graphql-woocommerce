@@ -89,7 +89,7 @@ class Checkout_Mutation {
 		}
 
 		if ( in_array( 'shipping', $skipped, true ) && ( \WC()->cart->needs_shipping_address() || \wc_ship_to_billing_address_only() ) ) {
-			foreach ( self::get_checkout_fields( 'shipping' ) as $field ) {
+			foreach ( self::get_checkout_fields( 'shipping' ) as $field => $input_key ) {
 				$data[ "shipping_{$field}" ] = isset( $data[ "billing_{$field}" ] ) ? $data[ "billing_{$field}" ] : '';
 			}
 		}
@@ -493,7 +493,7 @@ class Checkout_Mutation {
 
 		if ( empty( $data['woocommerce_checkout_update_totals'] ) ) {
 			self::process_customer( $data );
-			$order_id = WC()->checkout()->create_order( $data );
+			$order_id = WC()->checkout->create_order( $data );
 			$order    = wc_get_order( $order_id );
 
 			if ( is_wp_error( $order_id ) ) {

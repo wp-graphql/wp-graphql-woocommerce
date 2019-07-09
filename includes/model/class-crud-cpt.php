@@ -90,6 +90,14 @@ abstract class Crud_CPT extends Model {
 	}
 
 	/**
+	 * Retrieve the cap to check if the data should be restricted for the crud object
+	 *
+	 * @access protected
+	 * @return string
+	 */
+	abstract public function get_restricted_cap();
+
+	/**
 	 * Wrapper function for deleting
 	 *
 	 * @param boolean $force_delete  Should the data be deleted permanently.
@@ -109,12 +117,4 @@ abstract class Crud_CPT extends Model {
 
 		return $this->data->delete( $force_delete );
 	}
-
-	/**
-	 * Retrieve the cap to check if the data should be restricted for the crud object
-	 *
-	 * @access protected
-	 * @return string
-	 */
-	abstract protected function get_restricted_cap();
 }

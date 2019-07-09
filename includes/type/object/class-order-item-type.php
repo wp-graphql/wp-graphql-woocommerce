@@ -275,7 +275,7 @@ class Order_Item_Type {
 						'type'        => 'TaxLine',
 						'description' => __( 'Tax line connected to this statement', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$item = new \WC_Order_Item_Tax( $source['ID'] );
+							$item = WC_Order_Factory::get_order_item( $source['ID'] );
 							return ! empty( $item ) ? Factory::resolve_order_item( $item ) : null;
 						},
 					),

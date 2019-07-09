@@ -1,6 +1,7 @@
 <?php
 
 use GraphQLRelay\Relay;
+use WPGraphQL\Type\WPEnumType;
 
 class OrderHelper extends WCG_Helper {
 	public function __construct() {
@@ -181,7 +182,7 @@ class OrderHelper extends WCG_Helper {
 			'orderVersion'          => ! empty( $data->get_version() ) ? $data->get_version() : null,
             'date'                  => $data->get_date_created()->__toString(),
             'modified'              => $data->get_date_modified()->__toString(),
-			'status'                => strtoupper( $data->get_status() ),
+			'status'                => WPEnumType::get_safe_name( $data->get_status() ),
 			'discountTotal'         => \wc_graphql_price(  $data->get_discount_total(), array( 'currency' => $data->get_currency() ) ),
 			'discountTax'           => \wc_graphql_price( $data->get_discount_tax(), array( 'currency' => $data->get_currency() ) ),
 			'shippingTotal'         => \wc_graphql_price( $data->get_shipping_total(), array( 'currency' => $data->get_currency() ) ),
