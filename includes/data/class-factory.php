@@ -135,7 +135,7 @@ class Factory {
 			return new Tax_Rate( $rate );
 		} else {
 			throw new UserError(
-				/* translators: tax rate not found error message */
+				/* translators: %s: Tax rate ID */
 				sprintf( __( 'No Tax Rate assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
 			);
 		}
@@ -155,7 +155,7 @@ class Factory {
 		$methods     = $wc_shipping->get_shipping_methods();
 		if ( empty( $methods[ $id ] ) ) {
 			throw new UserError(
-				/* translators: shipping method not found error message */
+				/* translators: shipping method ID */
 				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
 			);
 		}

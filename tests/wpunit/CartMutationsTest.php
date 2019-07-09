@@ -17,6 +17,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->product      = $this->getModule('\Helper\Wpunit')->product();
         $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
+
+        // Clear cart.
+        WC()->cart->empty_cart( true );
     }
 
     public function tearDown() {

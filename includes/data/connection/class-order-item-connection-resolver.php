@@ -19,15 +19,16 @@ use WPGraphQL\AppContext;
  */
 class Order_Item_Connection_Resolver {
 	/**
-	 * Creates connection
+	 * Prepare items
 	 *
 	 * @param mixed       $source     - Connection source Model instance.
 	 * @param array       $args       - Connection arguments.
 	 * @param AppContext  $context    - AppContext object.
 	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return WC_Order_Item[]
 	 */
-	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
-		global $wpdb;
+	public function query( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		// @codingStandardsIgnoreLine
 		switch ( $info->fieldName ) {
 			case 'taxLines':
@@ -46,7 +47,26 @@ class Order_Item_Connection_Resolver {
 				$type = 'line_item';
 				break;
 		}
-		$items = $source->get_items( $type );
+
+		$items = array();
+		foreach ( $source->get_items( $type ) as $id => $item ) {
+			$item->cached_order = $source;
+			$items[]            = $item;
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Creates connection
+	 *
+	 * @param mixed       $source     - Connection source Model instance.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 */
+	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$items = $this->query( $source, $args, $context, $info );
 
 		$connection = Relay::connectionFromArray( $items, $args );
 		$nodes      = array();

@@ -9,6 +9,7 @@ class Wpunit extends \Codeception\Module {
 	 * triggered after module is created and configuration is loaded
 	 */
 	public function _initialize() {
+		// Helper classes
 		require_once __DIR__ . '/crud-helpers/wcg-helper.php';
 		require_once __DIR__ . '/crud-helpers/customer.php';
 		require_once __DIR__ . '/crud-helpers/coupon.php';

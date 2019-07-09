@@ -52,7 +52,7 @@ class Product extends Crud_CPT {
 	 * @access protected
 	 * @return string
 	 */
-	protected function get_restricted_cap() {
+	public function get_restricted_cap() {
 		if ( post_password_required( $this->data->get_id() ) ) {
 			return $this->post_type_object->cap->edit_others_posts;
 		}

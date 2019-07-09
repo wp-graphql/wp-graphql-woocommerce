@@ -32,6 +32,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Fee_Line_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Line_Item_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Meta_Data_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Shipping_Line_Input;
+use WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Create_Account_Input;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Item_Type;
@@ -73,6 +74,7 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Create;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Update;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Delete;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Checkout;
 
 /**
  * Class Actions
@@ -121,6 +123,7 @@ class Actions {
 		Line_Item_Input::register();
 		Meta_Data_Input::register();
 		Shipping_Line_Input::register();
+		Create_Account_Input::register();
 
 		// Objects.
 		Coupon_Type::register();
@@ -167,5 +170,26 @@ class Actions {
 		Order_Create::register_mutation();
 		Order_Update::register_mutation();
 		Order_Delete::register_mutation();
+		Checkout::register_mutation();
+
+		if ( class_exists( '\WPGraphQL\JWT_Authentication\ManageTokens' ) ) {
+			$fields = array();
+			foreach ( \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields() as $field_name => $field ) {
+				$root_resolver         = $field['resolve'];
+				$fields[ $field_name ] = array_merge(
+					$field,
+					array(
+						'resolve' => function( $source ) use ( $root_resolver ) {
+							$user = get_user_by( 'id', $source->ID );
+							return $root_resolver( $user );
+						},
+					)
+				);
+			}
+			register_graphql_fields(
+				'Customer',
+				$fields
+			);
+		}
 	}
 }

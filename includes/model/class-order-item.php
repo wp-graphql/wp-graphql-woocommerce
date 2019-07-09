@@ -27,6 +27,13 @@ class Order_Item extends Model {
 	protected $item_type;
 
 	/**
+	 * Stores parent order model.
+	 *
+	 * @var Order
+	 */
+	protected $order;
+
+	/**
 	 * Order_Item constructor
 	 *
 	 * @param int $item - order item crud object.
@@ -37,6 +44,9 @@ class Order_Item extends Model {
 	public function __construct( $item ) {
 		$this->data                = $item;
 		$this->item_type           = $item->get_type();
+		$order_id                  = $item->get_order_id();
+		$author_id                 = get_post_field( 'post_author', $order_id );
+		$this->order               = ! empty( $item->cached_order ) ? $item->cached_order : new Order( $order_id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
@@ -47,17 +57,7 @@ class Order_Item extends Model {
 
 		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
 
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
-	}
-
-	/**
-	 * Determines if the order item should be considered private
-	 *
-	 * @access public
-	 * @return bool
-	 */
-	protected function is_private() {
-		return false;
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );
 	}
 
 	/**
@@ -250,5 +250,28 @@ class Order_Item extends Model {
 		}
 
 		parent::prepare_fields();
+	}
+
+
+	/**
+	 * Determines if the order item should be considered private
+	 *
+	 * @access public
+	 * @return bool
+	 * @since 0.2.0
+	 */
+	protected function is_private() {
+		return $this->order->is_private();
+	}
+
+	/**
+	 * Retrieve the cap to check if the data should be restricted for the order
+	 *
+	 * @access protected
+	 * @return string
+	 * @since 0.2.0
+	 */
+	protected function get_restricted_cap() {
+		return $this->order->get_restricted_cap();
 	}
 }
