@@ -62,6 +62,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         );
         // Create sample order to be used as a parent order.
         $this->order_id = $this->order->create();
+
+        // Clear cart.
+        WC()->cart->empty_cart( true );
     }
 
     public function tearDown() {
@@ -239,7 +242,6 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $coupon     = new WC_Coupon(
             $this->coupon->create( array( 'product_ids' => $product_ids ) )
         );
-
         WC()->cart->add_to_cart( $product_ids[0], 3 );
         WC()->cart->add_to_cart( $product_ids[1], 6 );
         WC()->cart->add_to_cart( $product_ids[2], 2, $variable['variations'][0] );

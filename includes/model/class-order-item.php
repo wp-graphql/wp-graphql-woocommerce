@@ -44,7 +44,9 @@ class Order_Item extends Model {
 	public function __construct( $item ) {
 		$this->data                = $item;
 		$this->item_type           = $item->get_type();
-		$this->order               = new Order( $this->data->get_order_id() );
+		$order_id                  = $item->get_order_id();
+		$author_id                 = get_post_field( 'post_author', $order_id );
+		$this->order               = ! empty( $item->cached_order ) ? $item->cached_order : new Order( $order_id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
@@ -55,7 +57,7 @@ class Order_Item extends Model {
 
 		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
 
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );
 	}
 
 	/**

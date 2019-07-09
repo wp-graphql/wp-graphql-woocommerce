@@ -28,7 +28,10 @@ trait Shop_Manager_Caps {
 				$cap = $this->post_type_object->cap->edit_others_posts;
 				break;
 			default:
-				$cap = $this->post_type_object->cap->edit_posts;
+				$cap = '';
+				if ( ! $this->owner_matches_current_user() ) {
+					$cap = $this->post_type_object->cap->edit_posts;
+				}
 				break;
 		}
 		return $cap;
