@@ -37,9 +37,33 @@ class Order extends Crud_CPT {
 			'isPublic',
 			'id',
 			'orderId',
+			'orderNumber',
+			'date',
+			'modified',
+			'datePaid',
+			'dateCompleted',
+			'paymentMethodTitle',
+			'customerNote',
+			'billing',
+			'shipping',
+			'discountTotal',
+			'discountTax',
+			'shippingTotal',
+			'shippingTax',
+			'cartTax',
+			'subtotal',
+			'total',
+			'totalTax',
+			'isDownloadPermitted',
+			'shippingAddressMapUrl',
+			'needsShippingAddress',
+			'needsPayment',
+			'needsProcessing',
+			'hasDownloadableItem',
+			'downloadableItems',
 		);
 
-		parent::__construct( $allowed_restricted_fields, 'shop_order', $id, $this->data->get_customer_id() );
+		parent::__construct( $allowed_restricted_fields, 'shop_order', $id );
 	}
 
 	/**

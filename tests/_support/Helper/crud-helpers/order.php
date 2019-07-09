@@ -235,7 +235,9 @@ class OrderHelper extends WCG_Helper {
 				'postcode'  => ! empty( $data->get_billing_postcode() )
 					? $data->get_billing_postcode()
 					: null,
-				'country'   => $billing_country,
+				'country'   => ! empty( $data->get_billing_country() )
+					? $data->get_billing_country()
+					: null,
 				'email'     => ! empty( $data->get_billing_email() )
 					? $data->get_billing_email()
 					: null,
@@ -268,7 +270,9 @@ class OrderHelper extends WCG_Helper {
 				'postcode'  => ! empty( $data->get_shipping_postcode() )
 					? $data->get_shipping_postcode()
 					: null,
-				'country'   => $shipping_country,
+				'country'   => ! empty( $data->get_shipping_country() )
+					? $data->get_shipping_country()
+					: null,
 			),
 			'paymentMethod'         => ! empty( $data->get_payment_method() )
 				? $data->get_payment_method()
@@ -321,18 +325,18 @@ class OrderHelper extends WCG_Helper {
 			'orderId'               => $id,
 			'currency'              => null,
 			'orderVersion'          => null,
-            'date'                  => null,
-            'modified'              => null,
+            'date'                  => $data->get_date_created()->__toString(),
+            'modified'              => $data->get_date_modified()->__toString(),
 			'status'                => null,
-			'discountTotal'         => null,
-			'discountTax'           => null,
-			'shippingTotal'         => null,
-			'shippingTax'           => null,
-			'cartTax'               => null,
-			'total'                 => null,
-			'totalTax'              => null,
-			'subtotal'              => null,
-			'orderNumber'           => null,
+			'discountTotal'         => \wc_graphql_price(  $data->get_discount_total(), array( 'currency' => $data->get_currency() ) ),
+			'discountTax'           => \wc_graphql_price( $data->get_discount_tax(), array( 'currency' => $data->get_currency() ) ),
+			'shippingTotal'         => \wc_graphql_price( $data->get_shipping_total(), array( 'currency' => $data->get_currency() ) ),
+			'shippingTax'           => \wc_graphql_price( $data->get_shipping_tax(), array( 'currency' => $data->get_currency() ) ),
+			'cartTax'               => \wc_graphql_price( $data->get_cart_tax(), array( 'currency' => $data->get_currency() ) ),
+			'total'                 => \wc_graphql_price( $data->get_total(), array( 'currency' => $data->get_currency() ) ),
+			'totalTax'              => \wc_graphql_price( $data->get_total_tax(), array( 'currency' => $data->get_currency() ) ),
+			'subtotal'              => \wc_graphql_price( $data->get_subtotal(), array( 'currency' => $data->get_currency() ) ),
+			'orderNumber'           => $data->get_order_number(),
 			'orderKey'              => null,
 			'createdVia'            => null,
 			'pricesIncludeTax'      => null,
@@ -340,24 +344,102 @@ class OrderHelper extends WCG_Helper {
 			'customer'              => null,
 			'customerIpAddress'     => null,
 			'customerUserAgent'     => null,
-			'customerNote'          => null,
-			'billing'               => null,
-			'shipping'              => null,
+			'customerNote'          => ! empty( $data->get_customer_note() )
+				? $data->get_customer_note()
+				: null,
+			'billing'               => array(
+				'firstName' => ! empty( $data->get_billing_first_name() )
+					? $data->get_billing_first_name()
+					: null,
+				'lastName'  => ! empty( $data->get_billing_last_name() )
+					? $data->get_billing_last_name()
+					: null,
+				'company'   => ! empty( $data->get_billing_company() )
+					? $data->get_billing_company()
+					: null,
+				'address1'  => ! empty( $data->get_billing_address_1() )
+					? $data->get_billing_address_1()
+					: null,
+				'address2'  => ! empty( $data->get_billing_address_2() )
+					? $data->get_billing_address_2()
+					: null,
+				'city'      => ! empty( $data->get_billing_city() )
+					? $data->get_billing_city()
+					: null,
+				'state'     => ! empty( $data->get_billing_state() )
+					? $data->get_billing_state()
+					: null,
+				'postcode'  => ! empty( $data->get_billing_postcode() )
+					? $data->get_billing_postcode()
+					: null,
+				'country'   => ! empty( $data->get_billing_country() )
+					? $data->get_billing_country()
+					: null,
+				'email'     => ! empty( $data->get_billing_email() )
+					? $data->get_billing_email()
+					: null,
+				'phone'     => ! empty( $data->get_billing_phone() )
+					? $data->get_billing_phone()
+					: null,
+			),
+			'shipping'              => array(
+				'firstName' => ! empty( $data->get_shipping_first_name() )
+					? $data->get_shipping_first_name()
+					: null,
+				'lastName'  => ! empty( $data->get_shipping_last_name() )
+					? $data->get_shipping_last_name()
+					: null,
+				'company'   => ! empty( $data->get_shipping_company() )
+					? $data->get_shipping_company()
+					: null,
+				'address1'  => ! empty( $data->get_shipping_address_1() )
+					? $data->get_shipping_address_1()
+					: null,
+				'address2'  => ! empty( $data->get_shipping_address_2() )
+					? $data->get_shipping_address_2()
+					: null,
+				'city'      => ! empty( $data->get_shipping_city() )
+					? $data->get_shipping_city()
+					: null,
+				'state'     => ! empty( $data->get_shipping_state() )
+					? $data->get_shipping_state()
+					: null,
+				'postcode'  => ! empty( $data->get_shipping_postcode() )
+					? $data->get_shipping_postcode()
+					: null,
+				'country'   => ! empty( $data->get_shipping_country() )
+					? $data->get_shipping_country()
+					: null,
+			),
 			'paymentMethod'         => null,
-			'paymentMethodTitle'    => null,
+			'paymentMethodTitle'    => ! empty( $data->get_payment_method_title() )
+				? $data->get_payment_method_title()
+				: null,
 			'transactionId'         => null,
-			'dateCompleted'         => null,
-			'datePaid'              => null,
-			'cartHash'              => null,
-			'shippingAddressMapUrl' => null,
+			'dateCompleted'         => ! empty( $data->get_date_completed() )
+				? $data->get_date_completed()->__toString()
+				: null,
+			'datePaid'              => ! empty( $data->get_date_paid() )
+				? $data->get_date_paid()->__toString()
+				: null,'cartHash'              => null,
+			'shippingAddressMapUrl' => ! empty( $data->get_shipping_address_map_url() )
+				? $data->get_shipping_address_map_url()
+				: null,
 			'hasBillingAddress'     => null,
 			'hasShippingAddress'    => null,
-			'isDownloadPermitted'   => null,
-			'needsShippingAddress'  => null,
-			'hasDownloadableItem'   => null,
-			'downloadableItems'     => null,
-			'needsPayment'          => null,
-			'needsProcessing'       => null,
+			'isDownloadPermitted'   => $data->is_download_permitted(),
+			'needsShippingAddress'  => $data->needs_shipping_address(),
+			'hasDownloadableItem'   => $data->has_downloadable_item(),
+			'downloadableItems'     => ! empty( $data->get_downloadable_items() )
+				? array_map(
+					function( $download ) {
+						return array( 'downloadId' => $download->get_id() );
+					},
+					$data->get_downloadable_items()
+				)
+				: null,
+			'needsPayment'          => $data->needs_payment(),
+			'needsProcessing'       => $data->needs_processing(),
 		);
 	}
 }

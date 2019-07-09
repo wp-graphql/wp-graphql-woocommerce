@@ -8,8 +8,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         parent::setUp();
 
         // Create users.
-        $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-        $this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
+        $this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+        $this->simple_customer = $this->factory->user->create( array( 'role' => 'customer' ) );
 
         // Get helper instances
         $this->order      = $this->getModule('\Helper\Wpunit')->order();
@@ -18,6 +18,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->variation  = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart       = $this->getModule('\Helper\Wpunit')->cart();
         $this->tax        = $this->getModule('\Helper\Wpunit')->tax_rate();
+        $this->customer   = $this->getModule('\Helper\Wpunit')->customer();
         
         // Turn on tax calculations and store shipping countries. Important!
         update_option( 'woocommerce_ship_to_countries', 'all' );
@@ -216,6 +217,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                             }
                         }
                     }
+                    customer {
+                        id
+                    }
                 }
             }
         ';
@@ -233,7 +237,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
     // tests
     public function testCheckoutOrderMutation() {
-		wp_set_current_user( $this->customer );
+		wp_set_current_user( $this->simple_customer );
         $variable  = $this->variation->create( $this->product->create_variable() );
         $product_ids = array(
             $this->product->create_simple(),
@@ -407,6 +411,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 ),
                             ),
                         )
+                    ),
+                    'customer'         => array(
+                        'id' => $this->customer->to_relay_id( $order->get_customer_id() )
                     )
                 ),
             )
@@ -584,6 +591,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 ),
                             ),
                         )
+                    ),
+                    'customer'         => array(
+                        'id' => $this->customer->to_relay_id( $order->get_customer_id() )
                     )
                 ),
             )
@@ -655,7 +665,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'checkout' => array(
                     'clientMutationId' => 'someId',
                     'order'            => array_merge(
-                        $this->order->print_query( $order->get_id() ),
+                        $this->order->print_restricted_query( $order->get_id() ),
                         array(
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
@@ -767,7 +777,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 ),
                             ),
                         )
-                    )
+                    ),
+                    'customer'         => null,
                 ),
             )
         );

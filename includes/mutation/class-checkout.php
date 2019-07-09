@@ -16,6 +16,7 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Checkout_Mutation;
 use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\Extensions\WooCommerce\Model\Order;
+use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 
 /**
  * Class Checkout
@@ -84,10 +85,16 @@ class Checkout {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'order' => array(
+			'order'    => array(
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return new Order( $payload['id'] );
+				},
+			),
+			'customer' => array(
+				'type'    => 'Customer',
+				'resolve' => function() {
+					return is_user_logged_in() ? new Customer( get_current_user_id() ) : null;
 				},
 			),
 		);
