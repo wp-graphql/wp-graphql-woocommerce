@@ -29,15 +29,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'post_content' => 'product image',
 			)
 		);
+		$category_id         = $this->helper->create_product_category( $this->product_cat );
 		$this->product       = $this->helper->create_simple(
 			array(
 				'tag_ids'           => array( $this->helper->create_product_tag( $this->product_tag ) ),
-				'category_ids'      => array( $this->helper->create_product_category( $this->product_cat ) ),
+				'category_ids'      => array( $category_id ),
 				'image_id'          => $this->image_id,
 				'gallery_image_ids' => array( $this->image_id ),
 				'downloads'         => array( ProductHelper::create_download() ),
 			)
 		);
+		update_term_meta( $category_id, 'thumbnail_id', $this->image_id );
 	}
 
 	public function tearDown() {
@@ -484,6 +486,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				productCategories( where: { hideEmpty: true } ) {
 					nodes {
 						name
+						image {
+							id
+						}
 						products {
 							nodes {
 								id
@@ -515,6 +520,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'nodes' => array(
 						array(
 							'name'     => $this->product_cat,
+							'image'    => array(
+								'id' => Relay::toGlobalId( 'attachment', $this->image_id ),
+							),
 							'products' => array(
 								'nodes' => array(
 									array (

@@ -10,6 +10,8 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
+use WPGraphQL\AppContext;
+use WPGraphQL\Data\DataSource;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Countries;
@@ -171,6 +173,21 @@ class Actions {
 		Order_Update::register_mutation();
 		Order_Delete::register_mutation();
 		Checkout::register_mutation();
+
+		register_graphql_field(
+			'ProductCategory',
+			'image',
+			array(
+				'type'        => 'MediaItem',
+				'description' => __( 'Product category image', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $source, array $args, AppContext $context ) {
+					$thumbnail_id = get_term_meta( $source->term_id, 'thumbnail_id', true );
+					return ! empty( $thumbnail_id )
+						? DataSource::resolve_post_object( $thumbnail_id, $context )
+						: null;
+				},
+			)
+		);
 
 		if ( class_exists( '\WPGraphQL\JWT_Authentication\ManageTokens' ) ) {
 			$fields = array();
