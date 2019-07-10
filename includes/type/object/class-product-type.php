@@ -340,6 +340,14 @@ class Product_Type {
 				'type'        => 'Int',
 				'description' => __( 'Get the product by its database ID', 'wp-graphql-woocommerce' ),
 			),
+			'slug'      => array(
+				'type'        => 'String',
+				'description' => __( 'Get the product by its slug', 'wp-graphql-woocommerce' ),
+			),
+			'sku'       => array(
+				'type'        => 'String',
+				'description' => __( 'Get the product by its sku', 'wp-graphql-woocommerce' ),
+			),
 		);
 
 		register_graphql_field(
@@ -351,21 +359,35 @@ class Product_Type {
 				'args'        => $post_by_args,
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$product_id = 0;
+					$id_type = '';
 					if ( ! empty( $args['id'] ) ) {
 						$id_components = Relay::fromGlobalId( $args['id'] );
 						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
 							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
 						}
 						$product_id = absint( $id_components['id'] );
+						$id_type = 'ID';
 					} elseif ( ! empty( $args['productId'] ) ) {
 						$product_id = absint( $args['productId'] );
+						$id_type = 'product ID';
+					} elseif ( ! empty( $args['slug'] ) ) {
+						$post       = get_page_by_path( $args['slug'], OBJECT, 'product' );
+						$product_id = ! empty( $post ) ? absint( $post->ID ) : 0;
+						$id_type = 'slug';
+					} elseif ( ! empty( $args['sku'] ) ) {
+						$product_id = \wc_get_product_id_by_sku( $args['sku'] );
+						$id_type = 'sku';
+					}
+
+					if ( empty( $product_id ) ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s' ), $id_type, $product_id ) );
+					} elseif ( get_post( $product_id )->post_type !== 'product' ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s' ), $id_type, $product_id ) );
 					}
 
 					$product = Factory::resolve_crud_object( $product_id, $context );
-					if ( get_post( $product_id )->post_type !== 'product' ) {
-						/* translators: not coupon found error message */
-						throw new UserError( sprintf( __( 'No product exists with this id: %1$s' ), $args['id'] ) );
-					}
 
 					return $product;
 				},
