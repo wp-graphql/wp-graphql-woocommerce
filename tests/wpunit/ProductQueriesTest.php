@@ -36,13 +36,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'image_id'          => $this->image_id,
 				'gallery_image_ids' => array( $this->image_id ),
 				'downloads'         => array( ProductHelper::create_download() ),
+				'slug'              => 'product-slug',
+				'sku'               => 'product-sku',
 			)
 		);
 	}
 
 	public function tearDown() {
 		// your tear down methods here
-		// then
+		$product = \WC()->product_factory->get_product( $this->product );
+		$product->delete( true );
+
 		parent::tearDown();
 	}
 
@@ -113,15 +117,20 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testProductByQueryAndArgs() {
-		$id = Relay::toGlobalId( 'product', $this->product );
+		$id = $this->helper->to_relay_id( $this->product );
 		$query = '
-			query productQuery( $id: ID, $productId: Int ) {
-				productBy(id: $id productId: $productId ) {
+			query productQuery( $id: ID, $productId: Int, $slug: String, $sku: String ) {
+				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
 					id
 				}
 			}
 		';
 
+		/**
+		 * Assertion One
+		 * 
+		 * Test querying product with "productId" argument.
+		 */
 		$variables = array( 'productId' => $this->product );
 		$actual    = do_graphql_request( $query, 'productQuery', $variables );
 		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
@@ -131,7 +140,40 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( $expected, $actual );
 
+		/**
+		 * Assertion Two
+		 * 
+		 * Test querying product with "id" argument.
+		 */
 		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Test querying product with "slug" argument.
+		 */
+		$variables = array( 'slug' => 'product-slug' );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Four
+		 * 
+		 * Test querying product with "sku" argument.
+		 */
+		$variables = array( 'sku' => 'product-sku' );
 		$actual    = do_graphql_request( $query, 'productQuery', $variables );
 		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 

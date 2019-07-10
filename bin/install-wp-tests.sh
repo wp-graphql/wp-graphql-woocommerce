@@ -192,6 +192,8 @@ setup_woocommerce() {
 	wp plugin install wordpress-importer --activate
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
+	echo "Upgrading database"
+	wp wc update
 }
 
 setup_wpgraphql() {
