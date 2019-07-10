@@ -113,6 +113,7 @@ class ComposerStaticInitee0d17af17b841ed3a93c4a0e5cc5e5f
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Item_Type' => __DIR__ . '/../..' . '/includes/type/object/class-order-item-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => __DIR__ . '/../..' . '/includes/type/object/class-order-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Attribute_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-attribute-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Category_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-category-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Download_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-download-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Product_Variation_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-variation-type.php',

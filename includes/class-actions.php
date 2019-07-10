@@ -10,6 +10,8 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
+use WPGraphQL\AppContext;
+use WPGraphQL\Data\DataSource;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility;
 use WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Countries;
@@ -47,6 +49,7 @@ use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Tax_Rate_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Shipping_Method_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Cart_Type;
 use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Variation_Attribute_Type;
+use WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Category_Type;
 use WPGraphQL\Extensions\WooCommerce\Connection\Posts;
 use WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms;
 use WPGraphQL\Extensions\WooCommerce\Connection\Coupons;
@@ -141,6 +144,9 @@ class Actions {
 		Cart_Type::register();
 		Variation_Attribute_Type::register();
 
+		// Object fields.
+		Product_Category_Type::register_fields();
+
 		// Connections.
 		Posts::register_connections();
 		WC_Terms::register_connections();
@@ -171,25 +177,5 @@ class Actions {
 		Order_Update::register_mutation();
 		Order_Delete::register_mutation();
 		Checkout::register_mutation();
-
-		if ( class_exists( '\WPGraphQL\JWT_Authentication\ManageTokens' ) ) {
-			$fields = array();
-			foreach ( \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields() as $field_name => $field ) {
-				$root_resolver         = $field['resolve'];
-				$fields[ $field_name ] = array_merge(
-					$field,
-					array(
-						'resolve' => function( $source ) use ( $root_resolver ) {
-							$user = get_user_by( 'id', $source->ID );
-							return $root_resolver( $user );
-						},
-					)
-				);
-			}
-			register_graphql_fields(
-				'Customer',
-				$fields
-			);
-		}
 	}
 }
