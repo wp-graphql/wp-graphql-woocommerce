@@ -183,5 +183,25 @@ class Customer_Type {
 				},
 			)
 		);
+
+		if ( class_exists( '\WPGraphQL\JWT_Authentication\ManageTokens' ) ) {
+			$fields = array();
+			foreach ( \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields() as $field_name => $field ) {
+				$root_resolver         = $field['resolve'];
+				$fields[ $field_name ] = array_merge(
+					$field,
+					array(
+						'resolve' => function( $source ) use ( $root_resolver ) {
+							$user = get_user_by( 'id', $source->ID );
+							return $root_resolver( $user );
+						},
+					)
+				);
+			}
+			register_graphql_fields(
+				'Customer',
+				$fields
+			);
+		}
 	}
 }
