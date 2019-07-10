@@ -77,6 +77,7 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Cart_Add_Fee;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Create;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Update;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Delete;
+use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Delete_Items;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Checkout;
 
 /**
@@ -176,6 +177,7 @@ class Actions {
 		Order_Create::register_mutation();
 		Order_Update::register_mutation();
 		Order_Delete::register_mutation();
+		Order_Delete_Items::register_mutation();
 		Checkout::register_mutation();
 	}
 }

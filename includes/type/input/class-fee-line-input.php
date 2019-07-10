@@ -29,6 +29,10 @@ class Fee_Line_Input {
 						'type'        => 'String',
 						'description' => __( 'Fee name.', 'wp-graphql-woocommerce' ),
 					),
+					'amount'    => array(
+						'type'        => 'String',
+						'description' => __( 'Fee amount.', 'wp-graphql-woocommerce' ),
+					),
 					'taxClass'  => array(
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class of fee.', 'wp-graphql-woocommerce' ),

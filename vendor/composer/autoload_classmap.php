@@ -67,6 +67,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Customer_Update' => $baseDir . '/includes/mutation/class-customer-update.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Create' => $baseDir . '/includes/mutation/class-order-create.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Delete' => $baseDir . '/includes/mutation/class-order-delete.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Delete_Items' => $baseDir . '/includes/mutation/class-order-delete-items.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Update' => $baseDir . '/includes/mutation/class-order-update.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/includes/type/enum/class-backorders.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/includes/type/enum/class-catalog-visibility.php',

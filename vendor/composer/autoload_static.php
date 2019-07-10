@@ -82,6 +82,7 @@ class ComposerStaticInitee0d17af17b841ed3a93c4a0e5cc5e5f
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Customer_Update' => __DIR__ . '/../..' . '/includes/mutation/class-customer-update.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Create' => __DIR__ . '/../..' . '/includes/mutation/class-order-create.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Delete' => __DIR__ . '/../..' . '/includes/mutation/class-order-delete.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Delete_Items' => __DIR__ . '/../..' . '/includes/mutation/class-order-delete-items.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Mutation\\Order_Update' => __DIR__ . '/../..' . '/includes/mutation/class-order-update.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/includes/type/enum/class-backorders.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/includes/type/enum/class-catalog-visibility.php',
