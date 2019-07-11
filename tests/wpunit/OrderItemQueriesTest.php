@@ -66,21 +66,23 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'order' => array(
                     'couponLines' => array(
-                        'nodes' => array_reverse( array_map(
-                            function( $item ) {
-                                return array(
-                                    'itemId'      => $item->get_id(),
-                                    'orderId'     => $item->get_order_id(),
-                                    'code'        => $item->get_code(),
-                                    'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-                                    'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-                                    'coupon'      => array(
-                                        'id' => Relay::toGlobalId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) ),
-                                    ),
-                                );
-                            },
-                            $coupon_lines
-                        ) ),
+                        'nodes' => array_reverse(
+                            array_map(
+                                function( $item ) {
+                                    return array(
+                                        'itemId'      => $item->get_id(),
+                                        'orderId'     => $item->get_order_id(),
+                                        'code'        => $item->get_code(),
+                                        'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
+                                        'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
+                                        'coupon'      => array(
+                                            'id' => Relay::toGlobalId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) ),
+                                        ),
+                                    );
+                                },
+                                $coupon_lines
+                            ) 
+                        ),
                     )
 				),
 			),
@@ -129,23 +131,25 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'order' => array(
                     'feeLines' => array(
-                        'nodes' => array_reverse( array_map(
-                            function( $item ) {
-                                return array(
-                                    'itemId'    => $item->get_id(),
-                                    'orderId'   => $item->get_order_id(),
-                                    'amount'    => $item->get_amount(),
-                                    'name'      => $item->get_name(),
-                                    'taxStatus' => strtoupper( $item->get_tax_status() ),
-                                    'total'     => $item->get_total(),
-                                    'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                    'taxClass'  => ! empty( $item->get_tax_class() ) 
-                                        ? WPEnumType::get_safe_name( $item->get_tax_class() )
-                                        : 'STANDARD',
-                                );
-                            },
-                            $fee_lines
-                        ) ),
+                        'nodes' => array_reverse(
+                            array_map(
+                                function( $item ) {
+                                    return array(
+                                        'itemId'    => $item->get_id(),
+                                        'orderId'   => $item->get_order_id(),
+                                        'amount'    => $item->get_amount(),
+                                        'name'      => $item->get_name(),
+                                        'taxStatus' => strtoupper( $item->get_tax_status() ),
+                                        'total'     => $item->get_total(),
+                                        'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+                                        'taxClass'  => ! empty( $item->get_tax_class() ) 
+                                            ? WPEnumType::get_safe_name( $item->get_tax_class() )
+                                            : 'STANDARD',
+                                    );
+                                },
+                                $fee_lines
+                            )
+                        ),
                     ),
 				),
 			),
@@ -191,26 +195,28 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'order' => array(
                     'shippingLines' => array(
-                        'nodes' => array_reverse( array_map(
-                            function( $item ) {
+                        'nodes' => array_reverse(
+                            array_map(
+                                function( $item ) {
 
-                                return array(
-                                    'itemId'         => $item->get_id(),
-                                    'orderId'        => $item->get_order_id(),
-                                    'methodTitle'    => $item->get_method_title(),
-                                    'total'          => $item->get_total(),
-                                    'totalTax'       => !empty( $item->get_total_tax() )
-                                        ? $item->get_total_tax()
-                                        : null,
-                                    'taxClass'       => ! empty( $item->get_tax_class() )
-                                        ? $item->get_tax_class() === 'inherit'
-                                            ? WPEnumType::get_safe_name( 'inherit cart' )
-                                            : WPEnumType::get_safe_name( $item->get_tax_class() )
-                                        : 'STANDARD'
-                                );
-                            },
-                            $shipping_lines
-                        ) ),
+                                    return array(
+                                        'itemId'         => $item->get_id(),
+                                        'orderId'        => $item->get_order_id(),
+                                        'methodTitle'    => $item->get_method_title(),
+                                        'total'          => $item->get_total(),
+                                        'totalTax'       => !empty( $item->get_total_tax() )
+                                            ? $item->get_total_tax()
+                                            : null,
+                                        'taxClass'       => ! empty( $item->get_tax_class() )
+                                            ? $item->get_tax_class() === 'inherit'
+                                                ? WPEnumType::get_safe_name( 'inherit cart' )
+                                                : WPEnumType::get_safe_name( $item->get_tax_class() )
+                                            : 'STANDARD'
+                                    );
+                                },
+                                $shipping_lines
+                            )
+                        ),
                     ),
 				),
 			),
@@ -259,19 +265,21 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'order' => array(
                     'taxLines' => array(
-                        'nodes' => array_reverse( array_map(
-                            function( $item ) {
-                                return array(
-                                    'rateCode'         => $item->get_rate_code(),
-                                    'label'            => $item->get_label(),
-                                    'taxTotal'         => $item->get_tax_total(),
-                                    'shippingTaxTotal' => $item->get_shipping_tax_total(),
-                                    'isCompound'       => $item->is_compound(),
-                                    'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
-                                );
-                            },
-                            $tax_lines
-                        ) ),
+                        'nodes' => array_reverse(
+                            array_map(
+                                function( $item ) {
+                                    return array(
+                                        'rateCode'         => $item->get_rate_code(),
+                                        'label'            => $item->get_label(),
+                                        'taxTotal'         => $item->get_tax_total(),
+                                        'shippingTaxTotal' => $item->get_shipping_tax_total(),
+                                        'isCompound'       => $item->is_compound(),
+                                        'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
+                                    );
+                                },
+                                $tax_lines
+                            )
+                        ),
                     ),
 				),
 			),
@@ -329,31 +337,33 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'order' => array(
                     'lineItems' => array(
-                        'nodes' => array_values( array_map(
-                            function( $item ) {
-                                return array(
-                                    'productId'     => $item->get_product_id(),
-                                    'variationId'   => ! empty( $item->get_variation_id() )
-                                        ? $item->get_variation_id()
-                                        : null,
-                                    'quantity'      => $item->get_quantity(),
-                                    'taxClass'      => ! empty( $item->get_tax_class() )
-                                        ? strtoupper( $item->get_tax_class() )
-                                        : 'STANDARD',
-                                    'subtotal'      => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-                                    'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal() : null,
-                                    'total'         => ! empty( $item->get_total() ) ? $item->get_total() : null,
-                                    'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                    'itemDownloads' => null,
-                                    'taxStatus'     => strtoupper( $item->get_tax_status() ),
-                                    'product'       => array( 'id' => Relay::toGlobalId( 'product', $item->get_product_id() ) ),
-                                    'variation'     => ! empty( $item->get_variation_id )
-                                        ? array( 'id' => Relay::toGlobalId( 'product_variation', $item->get_variation_id() ) )
-                                        : null,
-                                );
-                            },
-                            $line_items
-                        ) ),
+                        'nodes' => array_values(
+                            array_map(
+                                function( $item ) {
+                                    return array(
+                                        'productId'     => $item->get_product_id(),
+                                        'variationId'   => ! empty( $item->get_variation_id() )
+                                            ? $item->get_variation_id()
+                                            : null,
+                                        'quantity'      => $item->get_quantity(),
+                                        'taxClass'      => ! empty( $item->get_tax_class() )
+                                            ? strtoupper( $item->get_tax_class() )
+                                            : 'STANDARD',
+                                        'subtotal'      => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
+                                        'subtotalTax'   => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
+                                        'total'         => ! empty( $item->get_total() ) ? $item->get_total() : null,
+                                        'totalTax'      => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+                                        'itemDownloads' => null,
+                                        'taxStatus'     => strtoupper( $item->get_tax_status() ),
+                                        'product'       => array( 'id' => Relay::toGlobalId( 'product', $item->get_product_id() ) ),
+                                        'variation'     => ! empty( $item->get_variation_id() )
+                                            ? array( 'id' => Relay::toGlobalId( 'product_variation', $item->get_variation_id() ) )
+                                            : null,
+                                    );
+                                },
+                                $line_items
+                            )
+                        ),
                     ),
 				),
 			),

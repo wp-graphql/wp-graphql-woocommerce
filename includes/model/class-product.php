@@ -52,7 +52,7 @@ class Product extends Crud_CPT {
 	 * @access protected
 	 * @return string
 	 */
-	protected function get_restricted_cap() {
+	public function get_restricted_cap() {
 		if ( post_password_required( $this->data->get_id() ) ) {
 			return $this->post_type_object->cap->edit_others_posts;
 		}
@@ -245,7 +245,7 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 				},
 				'taxClass'             => function() {
-					return ! empty( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : 'standard';
+					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
 				},
 				'manageStock'          => function() {
 					return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;

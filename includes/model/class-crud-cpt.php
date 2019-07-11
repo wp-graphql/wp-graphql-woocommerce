@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Model;
 
+use GraphQL\Error\UserError;
 use WPGraphQL\Model\Model;
 
 /**
@@ -94,5 +95,26 @@ abstract class Crud_CPT extends Model {
 	 * @access protected
 	 * @return string
 	 */
-	abstract protected function get_restricted_cap();
+	abstract public function get_restricted_cap();
+
+	/**
+	 * Wrapper function for deleting
+	 *
+	 * @param boolean $force_delete  Should the data be deleted permanently.
+	 *
+	 * @return boolean
+	 * @throws UserError  Not authorized.
+	 */
+	public function delete( $force_delete = false ) {
+		if ( ! current_user_can( $this->post_type_object->cap->edit_posts ) ) {
+			throw new UserError(
+				__(
+					'User does not have the capabilities necessary to delete this object.',
+					'wp-graphql-woocommerce'
+				)
+			);
+		}
+
+		return $this->data->delete( $force_delete );
+	}
 }

@@ -19,12 +19,12 @@ class Tax_Class {
 	 */
 	public static function register() {
 		$values = array(
-			WPEnumType::get_safe_name( 'inherit cart' ) => array(
+			'INHERIT_CART' => array(
 				'value'       => 'inherit',
 				'description' => __( 'Inherits Tax class from cart', 'wp-graphql-woocommerce' ),
 			),
-			WPEnumType::get_safe_name( 'standard' )     => array(
-				'value'       => 'standard',
+			'STANDARD'     => array(
+				'value'       => '',
 				'description' => __( 'Standard Tax rate', 'wp-graphql-woocommerce' ),
 			),
 		);

@@ -211,13 +211,13 @@ class Order_Item_Type {
 							// @codingStandardsIgnoreEnd
 						},
 					),
-					'variation'       => array(
+					'variation'     => array(
 						'type'        => 'ProductVariation',
 						'description' => 'Line item\'s product variation object',
 						'resolve'     => function( $item, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreStart
 							return ! empty( $item->variationId )
-								? Factory::resolve_crud_object( $item->productId, $context )
+								? Factory::resolve_crud_object( $item->variationId, $context )
 								: null;
 							// @codingStandardsIgnoreEnd
 						},
@@ -275,7 +275,8 @@ class Order_Item_Type {
 						'type'        => 'TaxLine',
 						'description' => __( 'Tax line connected to this statement', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$item = new \WC_Order_Item_Tax( $source['ID'] );
+							$item               = \WC_Order_Factory::get_order_item( $source['ID'] );
+							$item->cached_order = $source;
 							return ! empty( $item ) ? Factory::resolve_order_item( $item ) : null;
 						},
 					),

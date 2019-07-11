@@ -24,7 +24,7 @@ class Variation_Attribute_Connection_Resolver {
 	 * Returns data array from WC_Product_Attribute ArrayAccess object.
 	 *
 	 * @param WC_Product_Attribute $attrs        - WC_Product_Attribute object.
-	 * @param string               $variation_id - ProductVariation Relay ID.
+	 * @param string               $parent_id - ProductVariation Relay ID.
 	 *
 	 * @return array
 	 */

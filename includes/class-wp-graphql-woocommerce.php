@@ -147,7 +147,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Setup actions
 			 */
-			\WPGraphQL\Extensions\WooCommerce\Actions::load();
+			\WPGraphQL\Extensions\WooCommerce\Type_Registry::add_actions();
 		}
 
 		/**
@@ -157,7 +157,8 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Setup filters
 			 */
-			\WPGraphQL\Extensions\WooCommerce\Filters::load();
+			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
+			\WPGraphQL\Extensions\WooCommerce\WooCommerce_Filters::add_filters();
 		}
 	}
 endif;

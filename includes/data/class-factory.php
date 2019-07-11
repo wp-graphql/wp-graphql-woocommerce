@@ -13,7 +13,6 @@ namespace WPGraphQL\Extensions\WooCommerce\Data;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;
@@ -135,7 +134,7 @@ class Factory {
 			return new Tax_Rate( $rate );
 		} else {
 			throw new UserError(
-				/* translators: tax rate not found error message */
+				/* translators: %s: Tax rate ID */
 				sprintf( __( 'No Tax Rate assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
 			);
 		}
@@ -155,7 +154,7 @@ class Factory {
 		$methods     = $wc_shipping->get_shipping_methods();
 		if ( empty( $methods[ $id ] ) ) {
 			throw new UserError(
-				/* translators: shipping method not found error message */
+				/* translators: shipping method ID */
 				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
 			);
 		}

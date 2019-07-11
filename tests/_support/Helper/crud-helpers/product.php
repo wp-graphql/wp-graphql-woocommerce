@@ -67,24 +67,28 @@ class ProductHelper extends WCG_Helper {
 		$price         = $this->dummy->price( 15, 200 );
 		$regular_price = $this->dummy->price( $price, $price + ( $price * 0.1 ) );
 
-		$product->set_props(
-			array_merge(
-				array(
-					'name'          => $name,
-					'slug'          => $this->next_slug(),
-					'regular_price' => $regular_price,
-					'price'         => $price,
-					'sku'           => 'DUMMY SKU '.$this->index,
-					'manage_stock'  => false,
-					'tax_status'    => 'taxable',
-					'downloadable'  => false,
-					'virtual'       => false,
-					'stock_status'  => 'instock',
-					'weight'        => '1.1',
-				),
-				$args
-			)
+		$props = array_merge(
+			array(
+				'name'          => $name,
+				'slug'          => $this->next_slug(),
+				'regular_price' => $regular_price,
+				'price'         => $price,
+				'sku'           => uniqid(),
+				'manage_stock'  => false,
+				'tax_status'    => 'taxable',
+				'downloadable'  => false,
+				'virtual'       => false,
+				'stock_status'  => 'instock',
+				'weight'        => '1.1',
+			),
+			$args
 		);
+
+		foreach ( $props as $key => $value ) {
+			if ( is_callable( array( $product, "set_{$key}" ) ) ) {
+				$product->{"set_{$key}"}( $value );
+			}
+		}
 
 		return $product->save();
 	}

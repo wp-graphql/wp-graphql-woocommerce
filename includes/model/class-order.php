@@ -30,13 +30,37 @@ class Order extends Crud_CPT {
 	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->data                = new \WC_Order( $id );
+		$this->data                = \WC_Order_Factory::get_order( $id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'orderId',
+			'orderNumber',
+			'date',
+			'modified',
+			'datePaid',
+			'dateCompleted',
+			'paymentMethodTitle',
+			'customerNote',
+			'billing',
+			'shipping',
+			'discountTotal',
+			'discountTax',
+			'shippingTotal',
+			'shippingTax',
+			'cartTax',
+			'subtotal',
+			'total',
+			'totalTax',
+			'isDownloadPermitted',
+			'shippingAddressMapUrl',
+			'needsShippingAddress',
+			'needsPayment',
+			'needsProcessing',
+			'hasDownloadableItem',
+			'downloadableItems',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_order', $id );
@@ -224,7 +248,7 @@ class Order extends Crud_CPT {
 					return ! is_null( $this->data->needs_processing() ) ? $this->data->needs_processing() : null;
 				},
 				'downloadableItems'     => function() {
-					return ! is_null( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
+					return ! empty( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
 				},
 				/**
 				 * Connection resolvers fields

@@ -3,8 +3,6 @@
 # WPGraphQL WooCommerce
 [![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=develop)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop)
 
-## Note: This plugin is in early stages and is not quite ready for use.
-
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
@@ -18,9 +16,7 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 - Query product, customers, coupons, order, refund, product variations.
 
 ## Upcoming Features
-- Adminstrator mutations. Eg. Creating and deleting products, coupons, orders and refunds
-- Public/Customer mutations, Eg. Manipulating the cart and checking out.
-View [Roadmap](https://github.com/wp-graphql/wp-graphql-woocommerce/projects/1) to see progress... 
+- Adminstrator mutations. Eg. Creating and deleting products, coupons, and refunds.
 
 ## Playground
 Feel free to test out the extension using the [playground](https://docs.wpgraphql.com/extensions/wpgraphql-woocommerce/). The playground allows you to execute queries and mutations, as well as view the schema.

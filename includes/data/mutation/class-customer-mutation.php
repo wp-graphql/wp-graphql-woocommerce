@@ -59,7 +59,7 @@ class Customer_Mutation {
 	 *
 	 * @return array;
 	 */
-	private function address_input_mapping( $type = 'billing', $input ) {
+	public static function address_input_mapping( $type = 'billing', $input ) {
 		// Map GQL input to address props array.
 		$key_mapping = array(
 			'firstName' => 'first_name',

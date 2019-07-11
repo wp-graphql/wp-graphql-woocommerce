@@ -12,8 +12,8 @@ namespace WPGraphQL\Extensions\WooCommerce\Data\Loader;
 
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
+use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
 use WPGraphQL\Extensions\WooCommerce\Model\Product;
 use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
@@ -140,11 +140,18 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			$this->loaded_objects[ $key ] = new Deferred(
 				function() use ( $post_type, $key ) {
 					// Resolve post author for future capability checks.
-					$author_id = get_post_field( 'post_author', $key );
-					if ( ! empty( $author_id ) && absint( $author_id ) ) {
-						$author = DataSource::resolve_user( $author_id, $this->context );
-
-						return $author->then(
+					if ( 'shop_order' === $post_type ) {
+						$customer_id = get_post_meta( $key, '_customer_user', true );
+						$customer    = Factory::resolve_customer( $customer_id, $this->context );
+						return $customer->then(
+							function () use ( $post_type, $key ) {
+								return $this->resolve_model( $post_type, $key );
+							}
+						);
+					} elseif ( 'product_variation' === $post_type || 'shop_refund' === $post_type ) {
+						$parent_id = get_post_field( 'post_parent', $key );
+						$parent    = Factory::resolve_crud_object( $parent_id, $this->context );
+						return $parent->then(
 							function () use ( $post_type, $key ) {
 								return $this->resolve_model( $post_type, $key );
 							}

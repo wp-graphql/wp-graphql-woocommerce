@@ -11,9 +11,9 @@ notifications:
 branches:
   only:
     - develop
-    - release-v0.1.0
     - release-v0.1.1
     - release-v0.1.2
+    - release-v0.2.0
 
 cache:
   apt: true

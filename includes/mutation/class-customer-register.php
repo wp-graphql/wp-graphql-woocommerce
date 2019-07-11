@@ -11,10 +11,10 @@ namespace WPGraphQL\Extensions\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Mutation\UserRegister;
 use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 use WPGraphQL\Model\User;
+use WPGraphQL\Mutation\UserRegister;
 
 /**
  * Class - Customer_Register

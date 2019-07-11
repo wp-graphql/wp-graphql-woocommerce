@@ -14,9 +14,9 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\Type\WPObjectType;
 
 /**
  * Class Shipping_Method_Type

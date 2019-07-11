@@ -17,18 +17,18 @@ class Countries {
 	 */
 	public static function register() {
 		$countries = \WC()->countries->get_countries();
-		$values    = array_map(
-			function( $value ) {
-				return array( 'value' => $value );
-			},
-			$countries
+		array_walk(
+			$countries,
+			function( &$value, $code ) {
+				$value = array( 'value' => $code );
+			}
 		);
 
 		register_graphql_enum_type(
 			'CountriesEnum',
 			array(
 				'description' => __( 'Countries enumeration', 'wp-graphql-woocommerce' ),
-				'values'      => $values,
+				'values'      => $countries,
 			)
 		);
 	}

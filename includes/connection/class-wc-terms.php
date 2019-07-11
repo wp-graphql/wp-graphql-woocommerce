@@ -10,9 +10,7 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\Connection\TermObjects;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class - WC_Terms

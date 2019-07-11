@@ -98,7 +98,7 @@ class Tax_Rate extends Model {
 					return ! is_null( $this->data->tax_rate_order ) ? absint( $this->data->tax_rate_order ) : null;
 				},
 				'class'    => function() {
-					return ! empty( $this->data->tax_rate_class ) ? $this->data->tax_rate_class : 'standard';
+					return ! is_null( $this->data->tax_rate_class ) ? $this->data->tax_rate_class : '';
 				},
 			);
 		}
