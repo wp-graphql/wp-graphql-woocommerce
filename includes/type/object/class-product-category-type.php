@@ -12,8 +12,6 @@ namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
-use WPGraphQL\Type\WPObjectType;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class - Product_Category_Type

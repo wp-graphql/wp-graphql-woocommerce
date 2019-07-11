@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 
-use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Model\Product;

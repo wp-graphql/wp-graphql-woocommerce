@@ -8,10 +8,6 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Data\DataSource;
-use GraphQLRelay\Relay;
-
 /**
  * Class Product_Attribute_Type
  */

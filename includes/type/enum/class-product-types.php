@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
 
-use WPGraphQL\Type\WPEnumType;
-
 /**
  * Class Product_Types
  */

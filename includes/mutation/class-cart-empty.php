@@ -58,8 +58,12 @@ class Cart_Empty {
 			// Get WC_Cart instance.
 			$cloned_cart = clone \WC()->cart;
 
+			do_action( 'woocommerce_graphql_before_empty_cart', $cloned_cart, $input, $context, $info );
+
 			// Empty cart.
 			\WC()->cart->empty_cart();
+
+			do_action( 'woocommerce_graphql_after_empty_cart', $cloned_cart, $input, $context, $info );
 
 			return array( 'cart' => $cloned_cart );
 		};

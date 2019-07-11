@@ -13,7 +13,6 @@ namespace WPGraphQL\Extensions\WooCommerce\Data;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;

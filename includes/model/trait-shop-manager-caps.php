@@ -8,7 +8,6 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Model;
 
-use GraphQLRelay\Relay;
 /**
  * Trait Shop_Manager_Capabilities
  */

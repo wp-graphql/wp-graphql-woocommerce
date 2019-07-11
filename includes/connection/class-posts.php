@@ -9,9 +9,7 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Connection;
 
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\Connection\PostObjects;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 
 /**
  * Class - Posts

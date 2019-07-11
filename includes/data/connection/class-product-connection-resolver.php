@@ -15,7 +15,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
 use WPGraphQL\Extensions\WooCommerce\Model\Customer;
-use WPGraphQL\Extensions\WooCommerce\Model\Order;
 use WPGraphQL\Extensions\WooCommerce\Model\Product;
 use WPGraphQL\Model\Term;
 

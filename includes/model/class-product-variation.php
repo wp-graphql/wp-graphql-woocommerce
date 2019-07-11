@@ -11,7 +11,6 @@
 namespace WPGraphQL\Extensions\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WPGraphQL\Data\DataSource;
 
 /**
  * Class Product_Variation
