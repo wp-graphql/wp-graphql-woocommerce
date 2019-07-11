@@ -1,8 +1,6 @@
 <?php
 /**
- * Actions
- *
- * Action callbacks for executing actions on the GraphQL Schema
+ * Registers WooGraphQL types to the schema.
  *
  * @package \WPGraphQL\Extensions\WooCommerce
  * @since   0.0.1
@@ -82,25 +80,19 @@ use WPGraphQL\Extensions\WooCommerce\Mutation\Order_Delete_Items;
 use WPGraphQL\Extensions\WooCommerce\Mutation\Checkout;
 
 /**
- * Class Actions
+ * Class Type_Registry
  */
-class Actions {
+class Type_Registry {
 	/**
-	 * Loads plugin actions
+	 * Registers actions related to type registry.
 	 */
-	public static function load() {
-		add_action(
-			'graphql_register_types',
-			array(
-				'\WPGraphQL\Extensions\WooCommerce\Actions',
-				'graphql_register_types',
-			),
-			10
-		);
+	public static function add_actions() {
+		// Register types.
+		add_action( 'graphql_register_types', array( __CLASS__, 'graphql_register_types' ), 10 );
 	}
 
 	/**
-	 * Registers WooCommerce types and type_fields to GraphQL schema
+	 * Registers WooGraphQL types, connection, and mutations to GraphQL schema
 	 */
 	public static function graphql_register_types() {
 		// Enumerations.
