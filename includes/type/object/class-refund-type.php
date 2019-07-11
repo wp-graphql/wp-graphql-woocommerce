@@ -15,9 +15,8 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
-use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
+use WPGraphQL\Type\WPObjectType;
 
 /**
  * Class Refund_Type
@@ -103,11 +102,11 @@ class Refund_Type {
 		);
 
 		$post_by_args = array(
-			'id'          => array(
+			'id'       => array(
 				'type'        => 'ID',
 				'description' => __( 'Get the refund by its global ID', 'wp-graphql-woocommerce' ),
 			),
-			'refundId'    => array(
+			'refundId' => array(
 				'type'        => 'Int',
 				'description' => __( 'Get the refund by its database ID', 'wp-graphql-woocommerce' ),
 			),

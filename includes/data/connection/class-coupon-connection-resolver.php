@@ -13,9 +13,7 @@ namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
 use WPGraphQL\Extension\WooCommerce\Model\Order;
-use WPGraphQL\Extensions\WooCommerce\Model\Refund;
 
 /**
  * Class Coupon_Connection_Resolver

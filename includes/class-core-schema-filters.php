@@ -10,7 +10,6 @@ namespace WPGraphQL\Extensions\WooCommerce;
 
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
 
