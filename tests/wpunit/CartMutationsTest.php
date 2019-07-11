@@ -229,28 +229,56 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEqualSets( $expected, $actual );
     }
 
-    public function testUpdateCartItemQuantityMutation() {
-        $product_id = $this->product->create_simple();
+    public function testUpdateCartItemQuantitiesMutation() {
+        // Create products.
+        $product_1 = $this->product->create_simple();
+        $product_2 = $this->product->create_simple();
+        $product_3 = $this->product->create_simple();
+
+        // Add items to cart and retrieve keys
         $addToCart = $this->addToCart(
             array(
                 'clientMutationId' => 'someId',
-                'productId'        => $product_id,
+                'productId'        => $product_1,
                 'quantity'         => 2,
             )
         );
-
-        // Retrieve cart item key.
         $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $this->assertArrayHasKey('key', $addToCart['data']['addToCart']['cartItem'] );
-        $key = $addToCart['data']['addToCart']['cartItem']['key'];
+        $key_1 = $addToCart['data']['addToCart']['cartItem']['key'];
+        $addToCart = $this->addToCart(
+            array(
+                'clientMutationId' => 'someId',
+                'productId'        => $product_2,
+                'quantity'         => 5,
+            )
+        );
+        $this->assertArrayHasKey('data', $addToCart );
+        $key_2 = $addToCart['data']['addToCart']['cartItem']['key'];
+        $addToCart = $this->addToCart(
+            array(
+                'clientMutationId' => 'someId',
+                'productId'        => $product_3,
+                'quantity'         => 1,
+            )
+        );
+        $this->assertArrayHasKey('data', $addToCart );
+        $key_3 = $addToCart['data']['addToCart']['cartItem']['key'];
 
+        // Update items mutation.
         $mutation = '
-            mutation updateItemQuantity( $input: UpdateItemQuantityInput! ) {
-                updateItemQuantity( input: $input ) {
+            mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
+                updateItemQuantities( input: $input ) {
                     clientMutationId
-                    cartItem {
+                    updated {
+                        key
+                        quantity
+                    }
+                    removed {
+                        key
+                        quantity
+                    }
+                    items {
+                        key
                         quantity
                     }
                 }
@@ -260,13 +288,16 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $actual = graphql(
             array(
                 'query'          => $mutation,
-                'operation_name' => 'updateItemQuantity',
+                'operation_name' => 'updateItemQuantities',
                 'variables'      => array(
                     'input' => array(
                         'clientMutationId' => 'someId',
-                        'key'              => $key,
-                        'quantity'         => 4,
-                    )
+                        'items'            => array(
+                            array( 'key' => $key_1, 'quantity' => 4 ),
+                            array( 'key' => $key_2, 'quantity' => 2 ),
+                            array( 'key' => $key_3, 'quantity' => 0 ),
+                        ),
+                    ),
                 ),
             )
         );
@@ -277,11 +308,20 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         // Check cart item data.
 		$expected = array(
 			'data' => array(
-				'updateItemQuantity' => array(
+				'updateItemQuantities' => array(
 					'clientMutationId' => 'someId',
-					'cartItem'         => array(
-                        'quantity'     => 4,
-					),
+					'updated' => array(
+                        array( 'key' => $key_1, 'quantity' => 4 ),
+                        array( 'key' => $key_2, 'quantity' => 2 ),
+                    ),
+                    'removed' => array(
+                        array( 'key' => $key_3, 'quantity' => 1 ),
+                    ),
+                    'items'   => array(
+                        array( 'key' => $key_1, 'quantity' => 4 ),
+                        array( 'key' => $key_2, 'quantity' => 2 ),
+                        array( 'key' => $key_3, 'quantity' => 1 ),
+                    )
 				),
 			),
 		);

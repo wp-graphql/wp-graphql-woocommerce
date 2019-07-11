@@ -85,4 +85,21 @@ class Cart_Mutation {
 
 		return apply_filters( 'woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
+
+	/**
+	 * Validate CartItemQuantityInput item.
+	 *
+	 * @param array $item  CartItemQuantityInput object.
+	 *
+	 * @return boolean
+	 */
+	public static function item_is_valid( array $item ) {
+		if ( empty( $item['key'] ) ) {
+			return false;
+		}
+		if ( ! isset( $item['quantity'] ) || ! is_numeric( $item['quantity'] ) ) {
+			return false;
+		}
+		return true;
+	}
 }
