@@ -184,24 +184,32 @@ class Customer_Type {
 			)
 		);
 
+		// Registers JWT Auth fields if WPGraphQL-JWT-Authentication is installed and activated.
 		if ( class_exists( '\WPGraphQL\JWT_Authentication\ManageTokens' ) ) {
-			$fields = array();
-			foreach ( \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields() as $field_name => $field ) {
-				$root_resolver         = $field['resolve'];
-				$fields[ $field_name ] = array_merge(
+			$customer_fields = array();
+
+			// Retrieve Auth fields.
+			$fields = \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields( array() );
+
+			// Wrapper field resolvers in a lambda that retrieves the WP_User object for the corresponding customer.
+			foreach ( $fields as $field_name => $field ) {
+				$root_resolver                  = $field['resolve'];
+				$customer_fields[ $field_name ] = array_merge(
 					$field,
 					array(
-						'resolve' => function( $source ) use ( $root_resolver ) {
+						'resolve' => function( $source, array $args, AppContext $content, ResolveInfo $info ) use ( $root_resolver ) {
 							$user = get_user_by( 'id', $source->ID );
-							return $root_resolver( $user );
+							if ( $user ) {
+								return $root_resolver( $user, $args, $context, $info );
+							}
+
+							return false;
 						},
 					)
 				);
 			}
-			register_graphql_fields(
-				'Customer',
-				$fields
-			);
+
+			register_graphql_fields( 'Customer', $customer_fields );
 		}
 	}
 }
