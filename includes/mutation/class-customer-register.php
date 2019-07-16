@@ -77,8 +77,7 @@ class Customer_Register {
 			'viewer'   => array(
 				'type'    => 'User',
 				'resolve' => function ( $payload ) {
-					$user = get_user_by( 'ID', $payload['id'] );
-					return new User( $user );
+					return get_user_by( 'ID', $payload['id'] );
 				},
 			),
 		);
