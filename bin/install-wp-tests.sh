@@ -36,6 +36,12 @@ fi
 if [ -z "$SKIP_DB_CREATE" ]; then 
 	SKIP_DB_CREATE=false
 fi
+if [[ -z "$TEST_SITE_WP_URL" ]]; then
+	echo "TEST_SITE_WP_URL not found"
+	print_usage_instruction
+else
+	DB_NAME=$TEST_DB_NAME
+fi
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
@@ -183,7 +189,7 @@ install_db() {
 configure_wordpress() {
     cd $WP_CORE_DIR
     wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
-    wp core install --url=wp.test --title="WPGraphQL WooCommerce Tests" --admin_user=admin --admin_password=password --admin_email=admin@wp.test
+    wp core install --url="$TEST_SITE_WP_URL" --title="WPGraphQL WooCommerce Tests" --admin_user=admin --admin_password=password --admin_email=admin@wp.test
     wp rewrite structure '/%year%/%monthnum%/%postname%/'
 }
 

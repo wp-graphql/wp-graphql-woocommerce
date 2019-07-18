@@ -28,8 +28,8 @@ class WooCommerce_Filters {
 		// Setup QL session handler.
 		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
 			self::$session_header = apply_filters( 'woocommerce_graphql_session_header_name', 'woocommerce-session' );
-			add_filter( 'woocommerce_graphql_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
-			add_filter( 'woocommerce_graphql_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
+			add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
+			add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
 			add_filter( 'graphql_response_headers_to_send', array( __CLASS__, 'add_session_header_to_expose_headers' ) );
 			add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
 		}

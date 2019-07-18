@@ -1,22 +1,30 @@
 <?php 
 
 class QLSessionHandlerCest {
+    private $product_id;
+
     public function _before( FunctionalTester $I ) {
+        // Activate plugins
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
         $I->activatePlugin(
             array(
                 'woocommerce',
                 'wp-graphql',
-                'wp-graphql-jwt-authentication',
+                'wpgraphql-jwt-authentication',
                 'wp-graphql-woocommerce',
             )
         );
-    }
+        $I->seePluginActivated( 'woocommerce' );
+        $I->seePluginActivated( 'wp-graphql' );
+        $I->seePluginActivated( 'wpgraphql-jwt-authentication' );
+        $I->seePluginActivated( 'wp-graphql-woocommerce' );
+        $I->amOnAdminPage('options-permalink.php');
+        $I->click('#submit');
+        $I->amOnPage( '/' );
 
-    // tests
-    public function test_session_update( FunctionalTester $I ) {
-        $product_id = $I->havePostInDatabase( array(
+        // Create Product
+        $this->product_id = $I->havePostInDatabase( array(
             'post_type'  => 'product',
             'post_title' => 't-shirt',
             'meta_input' => array(
@@ -55,8 +63,10 @@ class QLSessionHandlerCest {
                 '_wc_review_count'        => 0,        
             ),
         ));
-        
-        
+    }
+
+    // tests
+    public function test_session_update( FunctionalTester $I ) {
         $mutation = '
             mutation addToCart( $input: AddToCartInput! ) {
                 addToCart( input: $input ) {
@@ -81,10 +91,12 @@ class QLSessionHandlerCest {
         
         $input = array(
             'clientMutationId' => 'someId',
-            'productId'        => $product_id,
+            'productId'        => $this->product_id,
             'quantity'         => 2,
         );
         
+        // Add item to cart.
+        $I->haveHttpHeader( 'Content-Type', 'application/json' );
         $I->sendPOST(
             '/graphql',
             json_encode(
@@ -94,9 +106,65 @@ class QLSessionHandlerCest {
                 )
             )
         );
-        
+
         $I->seeResponseCodeIs( 200 );
-        $response = $I->canSeeHttpHeader( 'woocommerce-session' );
+        $I->seeHttpHeaderOnce('woocommerce-session');
+        $wc_session_header = $I->grabHttpHeader( 'woocommerce-session' );
+        $I->seeResponseIsJson();
+        $mutation_response = $I->grabResponse();
+        $mutation_data     = json_decode( $mutation_response, true );
+
+        // use --debug flag to view
+        codecept_debug( $mutation_data );
+
+        $I->assertArrayHasKey('data', $mutation_data );
+        $I->assertArrayHasKey('addToCart', $mutation_data['data'] );
+        $I->assertArrayHasKey('cartItem', $mutation_data['data']['addToCart'] );
+        $I->assertArrayHasKey('key', $mutation_data['data']['addToCart']['cartItem'] );
+        $key = $mutation_data['data']['addToCart']['cartItem']['key'];
+
+        $query = '
+            query {
+                cart {
+                    contents {
+                        nodes {
+                            key
+                        }
+                    }
+                }
+            }
+        ';
+
+        // Set session header and query cart.
+        $I->haveHttpHeader( 'woocommerce-session', $wc_session_header );
+        $I->sendPOST(
+            '/graphql',
+            json_encode( array( 'query' => $query ) )
+        );
+
+        $I->seeResponseCodeIs( 200 );
+        $I->seeResponseIsJson();
+        $query_response = $I->grabResponse();
+        $query_data     = json_decode( $query_response, true );
+
+        // use --debug flag to view.
+        codecept_debug( $query_data );
+
+        $expected = array(
+            'data' => array(
+                'cart' => array(
+                    'contents' => array(
+                        'nodes' => array(
+                            array(
+                                'key' => $key,
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+
+        $I->assertEquals( $expected, $query_data );
         
     }
 }

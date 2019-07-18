@@ -12,7 +12,7 @@ services:
       - "./tests:/var/www/html/tests"
       - "./codeception.docker.yml:/var/www/config/codeception.dist.yml"
       - ".:/var/www/html/wp-content/plugins/wp-graphql-woocommerce"
-    command: bash -c "codecept run functional && codecept run acceptance && codecept run wpunit"
+    command: bash -c "codecept run functional --debug && codecept run acceptance && codecept run wpunit"
     environment:
       DB_NAME:     wordpress
       DB_HOST:     db
