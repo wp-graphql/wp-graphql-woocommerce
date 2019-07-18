@@ -1,5 +1,5 @@
-ARG PHP_VERSION=7.2
-FROM php:${PHP_VERSION}-apache-stretch
+ARG PHP_VERSION
+FROM php:${PHP_VERSION:-7.2}-apache-stretch
 
 SHELL [ "/bin/bash", "-c" ]
 
