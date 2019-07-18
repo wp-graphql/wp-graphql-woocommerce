@@ -24,13 +24,9 @@ RUN docker-php-ext-install \
     gd \
     pdo_mysql \
     mysqli \
-    opcache
-
-# Install Xdebug
-RUN yes | pecl install xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+    opcache \
+    pcov \
+    && docker-php-ext-enable pcov
 
 # Configure php
 RUN echo "date.timezone = UTC" >> /usr/local/etc/php/php.ini

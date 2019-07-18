@@ -12,6 +12,7 @@ settings:
     memory_limit: 1024M
 coverage:
     enabled: true
+    remote: false
     whitelist:
       include:
         - wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php
