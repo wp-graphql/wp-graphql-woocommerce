@@ -193,8 +193,6 @@ configure_wordpress() {
 setup_woocommerce() {
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
-	echo "Upgrading database"
-	wp wc update
 	echo "Installing & Activating WordPress Importer"
 	wp plugin install wordpress-importer
 	wp plugin activate wordpress-importer
