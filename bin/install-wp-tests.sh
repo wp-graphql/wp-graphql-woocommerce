@@ -30,9 +30,6 @@ if [[ -z "$TEST_DB_HOST" ]]; then
 else
 	DB_HOST=$TEST_DB_HOST
 fi
-if [ -z "$WP_VERSION" ]; then 
-	
-fi
 if [ -z "$SKIP_DB_CREATE" ]; then 
 	SKIP_DB_CREATE=false
 fi
