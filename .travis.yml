@@ -58,12 +58,12 @@ before_script:
       cp .env.dist .env
       composer install-wp-tests
       travis_retry composer install --no-dev --prefer-source --no-interaction
-      docker-compose build --build-arg PHP_VERSION=$(PHP_VERSION) wpbrowser
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
         mkdir -p build/logs
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
+      docker-compose build --build-arg PHP_VERSION=$(PHP_VERSION) wpbrowser
       ls -al
     fi   
   # Install PHP CodeSniffer and WPCS.

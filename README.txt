@@ -10,4 +10,4 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Maintained at: https://github.com/wp-graphql/wp-graphql-woocommerce
 
 == Description ==
-Adds WooCommerce functionality to the WPGraphQL schema
+Adds WooCommerce functionality to the WPGraphQL schema.

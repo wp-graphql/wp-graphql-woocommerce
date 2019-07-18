@@ -47,6 +47,9 @@ fi
 
 mkdir -p /var/www/html/wp-content
 
+# Build Code coverage log directory
+mkdir -p /var/www/html/build/logs
+
 wp db export \
 	/var/www/html/wp-content/mysql.sql \
 	--allow-root
