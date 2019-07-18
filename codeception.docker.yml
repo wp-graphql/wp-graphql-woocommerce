@@ -4,6 +4,8 @@ paths:
     data: tests/_data
     support: tests/_support
     envs: tests/_envs
+params:
+    - env
 actor_suffix: Tester
 settings:
     colors: true
@@ -12,10 +14,10 @@ coverage:
     enabled: true
     whitelist:
       include:
-        - wp-graphql-woocommerce.php
-        - access-functions.php
-        - class-inflect.php
-        - includes/*.php
+        - wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php
+        - wp-content/plugins/wp-graphql-woocommerce/access-functions.php
+        - wp-content/plugins/wp-graphql-woocommerce/class-inflect.php
+        - wp-content/plugins/wp-graphql-woocommerce/includes/*.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
@@ -27,31 +29,28 @@ extensions:
         - Codeception\Command\GenerateWPAjax
         - Codeception\Command\GenerateWPCanonical
         - Codeception\Command\GenerateWPXMLRPC
-params:
-    - .env
 modules:
     config:
         WPDb:
-            dsn: 'mysql:host=%TEST_SITE_DB_HOST%;dbname=%TEST_SITE_DB_NAME%'
-            user: '%TEST_SITE_DB_USER%'
-            password: '%TEST_SITE_DB_PASSWORD%'
+            dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
+            user: '%DB_USER%'
+            password: '%DB_PASSWORD%'
+            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
             dump: 'tests/_data/dump.sql'
-            #import the dump before the tests; this means the test site database will be repopulated before the tests.
-            populate: true 
-            # re-import the dump between tests; this means the test site database will be repopulated between the tests.
-            cleanup: true 
-            waitlock: 0
-            url: '%TEST_SITE_WP_URL%'
-            urlReplacement: true #replace the hardcoded dump URL with the one above
-            tablePrefix: '%TEST_SITE_TABLE_PREFIX%'
+            populate: true
+            cleanup: true
+            url: '%WP_URL%'
+            urlReplacement: true
+            tablePrefix: '%WP_TABLE_PREFIX%'
         WPBrowser:
-            url: '%TEST_SITE_WP_URL%'
-            adminUsername: '%TEST_SITE_ADMIN_USERNAME%'
-            adminPassword: '%TEST_SITE_ADMIN_PASSWORD%'
-            adminPath: '%TEST_SITE_WP_ADMIN_PATH%'
+            url: 'http://localhost'
+            wpRootFolder: '%WP_ROOT_FOLDER%'
+            adminUsername: '%ADMIN_USERNAME%'
+            adminPassword: '%ADMIN_PASSWORD%'
+            adminPath: '/wp-admin'
         REST:
             depends: WPBrowser
-            url: '%TEST_SITE_WP_URL%'
+            url: 'http://localhost'
         WPFilesystem:
             wpRootFolder: '%WP_ROOT_FOLDER%'
             plugins: '/wp-content/plugins'
@@ -60,13 +59,13 @@ modules:
             uploads: '/wp-content/uploads'
         WPLoader:
             wpRootFolder: "%WP_ROOT_FOLDER%"
-            dbName: "%TEST_DB_NAME%"
-            dbHost: "%TEST_DB_HOST%"
-            dbUser: "%TEST_DB_USER%"
-            dbPassword: "%TEST_DB_PASSWORD%"
-            tablePrefix: "%TEST_TABLE_PREFIX%"
-            domain: "%TEST_SITE_WP_DOMAIN%"
-            adminEmail: "%TEST_SITE_ADMIN_EMAIL%"
+            dbName: "%DB_NAME%"
+            dbHost: "%DB_HOST%"
+            dbUser: "%DB_USER%"
+            dbPassword: "%DB_PASSWORD%"
+            tablePrefix: "%WP_TABLE_PREFIX%"
+            domain: "%WP_DOMAIN%"
+            adminEmail: "%ADMIN_EMAIL%"
             title: "Test"        
             plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
             activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']

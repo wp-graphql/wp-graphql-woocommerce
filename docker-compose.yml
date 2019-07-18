@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+
+  wpbrowser:
+    build: .
+    image: kidunot89/wp-browser 
+    links:
+      - db:mysql
+    volumes:
+      - "/tmp/wordpress/wp-content:/var/www/html/wp-content"
+      - "./tests:/var/www/html/tests"
+      - "./codeception.docker.yml:/var/www/config/codeception.dist.yml"
+      - ".:/var/www/html/wp-content/plugins/wp-graphql-woocommerce"
+    command: bash -c "codecept run functional && codecept run acceptance && codecept run wpunit"
+    environment:
+      DB_NAME:     wordpress
+      DB_HOST:     db
+      DB_USER:     wordpress
+      DB_PASSWORD: wordpress
+      WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
+    ports:
+      - 8080:80
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE:      wordpress
+      MYSQL_USER:          wordpress
+      MYSQL_PASSWORD:      wordpress

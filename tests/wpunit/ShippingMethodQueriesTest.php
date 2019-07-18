@@ -8,7 +8,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $method;
 	private $helper;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -17,7 +17,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->method       = 'flat_rate';
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// your tear down methods here
 		// then
 		parent::tearDown();

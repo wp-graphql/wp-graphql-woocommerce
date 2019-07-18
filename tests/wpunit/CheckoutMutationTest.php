@@ -3,7 +3,7 @@
 use WPGraphQL\Type\WPEnumType;
 
 class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
-    public function setUp() {
+    public function setUp(): void {
         // before
         parent::setUp();
 
@@ -69,7 +69,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         wp_logout();
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then

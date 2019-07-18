@@ -8,7 +8,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $rate;
 	private $helper;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -17,7 +17,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->rate         = $this->helper->create();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// your tear down methods here
 		// then
 		parent::tearDown();

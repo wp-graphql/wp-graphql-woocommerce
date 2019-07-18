@@ -8,7 +8,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
     private $variation;
     private $cart;
 
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
 
         $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -22,7 +22,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         WC()->cart->empty_cart( true );
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         \WC()->cart->empty_cart();
 
         parent::tearDown();

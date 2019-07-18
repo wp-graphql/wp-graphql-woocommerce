@@ -188,12 +188,15 @@ configure_wordpress() {
 }
 
 setup_woocommerce() {
-	echo "Installing & Activating WordPress Importer"
-	wp plugin install wordpress-importer --activate
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
 	echo "Upgrading database"
 	wp wc update
+	echo "Installing & Activating WordPress Importer"
+	wp plugin install wordpress-importer
+	wp plugin activate wordpress-importer
+	echo "Import sample products"
+	wp import $WP_CORE_DIR/wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip --path=$WP_CORE_DIR
 }
 
 setup_wpgraphql() {

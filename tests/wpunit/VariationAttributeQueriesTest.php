@@ -6,7 +6,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
     private $product_id;
     private $variation_id;
 
-    public function setUp() {
+    public function setUp(): void {
         // before
         parent::setUp();
 
@@ -19,7 +19,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->variation_id   = $ids['variations'][0];
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then

@@ -10,7 +10,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $product_helper;
 	private $customer_helper;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -21,7 +21,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->order           = $this->order_helper->create();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// your tear down methods here
 		// then
 		parent::tearDown();
