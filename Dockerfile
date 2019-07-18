@@ -52,7 +52,8 @@ RUN composer global require \
     phpunit/phpunit:8.1 \
     lucatume/wp-browser:^2.2 \
     league/factory-muffin:^3.0 \
-    league/factory-muffin-faker:^2.0
+    league/factory-muffin-faker:^2.0 \
+    php-coveralls/php-coveralls
 
 # Add composer global binaries to PATH
 ENV PATH "$PATH:~/.composer/vendor/bin"
