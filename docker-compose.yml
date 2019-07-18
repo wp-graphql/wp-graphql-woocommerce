@@ -8,17 +8,18 @@ services:
     links:
       - db:mysql
     volumes:
-      - "/tmp/wordpress/wp-content:/var/www/html/wp-content"
-      - "./tests:/var/www/html/tests"
-      - "./codeception.docker.yml:/var/www/config/codeception.dist.yml"
-      - ".:/var/www/html/wp-content/plugins/wp-graphql-woocommerce"
-    command: bash -c "codecept run functional --debug && codecept run acceptance && codecept run wpunit"
+      - '$WP_CORE_DIR/wp-content:/var/www/html/wp-content'
+      - './tests:/var/www/html/tests'
+      - './codeception.docker.yml:/var/www/config/codeception.dist.yml'
+      - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
     environment:
-      DB_NAME:     wordpress
-      DB_HOST:     db
-      DB_USER:     wordpress
-      DB_PASSWORD: wordpress
-      WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
+      - DB_NAME=wordpress
+      - DB_HOST=db
+      - DB_USER=wordpress
+      - DB_PASSWORD=wordpress
+      - WPGRAPHQL_WOOCOMMERCE_AUTOLOAD=1
+      - COVERAGE
+      - DEBUG
     ports:
       - 8080:80
 

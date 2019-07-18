@@ -31,7 +31,7 @@ else
 	DB_HOST=$TEST_DB_HOST
 fi
 if [ -z "$WP_VERSION" ]; then 
-	WP_VERSION=latest
+	
 fi
 if [ -z "$SKIP_DB_CREATE" ]; then 
 	SKIP_DB_CREATE=false
@@ -42,7 +42,7 @@ if [[ -z "$TEST_SITE_WP_URL" ]]; then
 else
 	DB_NAME=$TEST_DB_NAME
 fi
-
+WP_VERSION=${WP_VERSION-latest}
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}

@@ -3,6 +3,9 @@ dist: trusty
 
 language: php
 
+services:
+  - docker
+
 notifications:
   email:
     on_success: never
@@ -11,9 +14,9 @@ notifications:
 branches:
   only:
     - develop
-    - release-v0.1.1
     - release-v0.1.2
     - release-v0.2.0
+    - release-v0.2.1
 
 cache:
   apt: true
@@ -25,25 +28,27 @@ cache:
 env:
   global:
     - WP_CORE_DIR: /tmp/wordpress
-    - COVERAGE: false
-    - DEBUG: false
+  matrix:
+    - PHP_VERSION=7.2 WP_VERSION=latest COVERAGE=1
+    - PHP_VERSION=7.2 PHPCS=1
+    - PHP_VERSION=7.1 WP_VERSION=latest
+    - PHP_VERSION=7.0 WP_VERSION=latest
+    - PHP_VERSION=5.6 WP_VERSION=4.5
+    - PHP_VERSION=5.6 WP_VERSION=latest DEBUG=1
+    - PHP_VERSION=5.6 WP_VERSION=trunk
 
-matrix:
-  include:
-    - php: 7.2
-      env: WP_VERSION=latest COVERAGE=1
-    - php: 7.2
-      env: PHPCS=1
-    - php: 7.1
-      env: WP_VERSION=latest
-    - php: 7.0
-      env: WP_VERSION=latest
-    - php: 5.6
-      env: WP_VERSION=4.5
-    - php: 5.6
-      env: WP_VERSION=latest DEBUG=1
-    - php: 5.6
-      env: WP_VERSION=trunk
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - |
+    # Remove Xdebug for a huge performance increase:
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    else
+      echo "xdebug.ini does not exist"
+    fi
 
 install:
   - |
@@ -58,7 +63,8 @@ before_script:
       # Install and config Codeception
       cp .env.dist .env
       composer install-wp-tests
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
+      travis_retry composer install --no-dev --prefer-source --no-interaction
+      docker-compose build --build-arg PHP_VERSION=$(PHP_VERSION) wpbrowser
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
         mkdir -p build/logs
@@ -78,13 +84,7 @@ script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      if [ "$COVERAGE" == "1" ]; then
-        vendor/bin/codecept run wpunit --coverage --coverage-xml
-      elif [ "$DEBUG" == "1" ]; then
-        vendor/bin/codecept run wpunit --debug
-      else
-        vendor/bin/codecept run wpunit
-      fi
+      docker-compose run --rm wpbrowser
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
