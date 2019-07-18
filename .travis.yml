@@ -29,11 +29,12 @@ env:
   global:
     - WP_CORE_DIR: /tmp/wordpress
   matrix:
-    - PHP_VERSION=7.2 WP_VERSION=latest COVERAGE=1
+    - PHP_VERSION=7.3 WP_VERSION=latest COVERAGE=1
     - PHP_VERSION=7.2 PHPCS=1
+    - PHP_VERSION=7.2 WP_VERSION=latest
     - PHP_VERSION=7.1 WP_VERSION=latest
     - PHP_VERSION=7.0 WP_VERSION=latest
-    - PHP_VERSION=5.6 WP_VERSION=4.5
+    - PHP_VERSION=5.6 WP_VERSION=4.9
     - PHP_VERSION=5.6 WP_VERSION=latest DEBUG=1
     - PHP_VERSION=5.6 WP_VERSION=trunk
 
