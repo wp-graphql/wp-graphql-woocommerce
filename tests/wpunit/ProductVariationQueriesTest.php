@@ -4,8 +4,8 @@ use GraphQLRelay\Relay;
 
 class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $shop_manager;
-	private $customer;
-    private $variation;
+    private $customer;
+    private $products;
     
     public function setUp() {
         parent::setUp();
@@ -27,30 +27,50 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
     // tests
     public function testVariationQuery() {
         $variation_id = $this->products['variations'][0];
-        $id           = Relay::toGlobalId( 'product_variation', $variation_id );
+        $id           = $this->helper->to_relay_id( $variation_id );
 
         $query        = '
             query variationQuery( $id: ID, $variationId: Int ) {
                 productVariation( id: $id, variationId: $variationId ) {
                     id
                     variationId
+                    name
+                    date
+                    modified
+                    description
                     sku
+                    price
+                    regularPrice
+                    salePrice
+                    dateOnSaleFrom
+                    dateOnSaleTo
+                    onSale
+                    status
+                    purchasable
+                    virtual
+                    downloadable
+                    downloadLimit
+                    downloadExpiry
+                    taxStatus
+                    taxClass
+                    manageStock
+                    stockQuantity
+                    stockStatus
+                    backorders
+                    backordersAllowed
                     weight
                     length
                     width
                     height
-                    taxClass
-                    manageStock
-                    stockQuantity
-                    backorders
+                    menuOrder
                     purchaseNote
                     shippingClass
                     catalogVisibility
                     hasAttributes
-                    isPurchasable
-                    price
-                    regularPrice
-                    salePrice
+                    type
+                    parent {
+                        id
+                    }
                 }
             }
         ';
@@ -67,7 +87,9 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+        $this->assertEqualSets( $expected, $actual );
+
+        $this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
 
 		/**
 		 * Assertion Two
@@ -85,7 +107,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
     }
 
     public function testVariationsQueryAndWhereArgs() {
-        $id = Relay::toGlobalId( 'product', $this->products['product'] );
+        $id = $this->product_helper->to_relay_id( $this->products['product'] );
         $variations = $this->products['variations'];
 
         $query      = '
@@ -97,6 +119,9 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                 $parentNotIn: [Int]
             ) {
                 product( id: $id ) {
+                    price
+                    regularPrice
+                    salePrice
                     variations( where: {
                         minPrice: $minPrice,
                         parent: $parent,
@@ -118,13 +143,28 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'variationsQuery', $variables );
-		$expected  = array(
+        $actual    = do_graphql_request( $query, 'variationsQuery', $variables );
+
+        $prices = $this->product_helper->field( $this->products['product'], 'variation_prices', array( true ) );
+        $product_fields = array(
+            'price'        => \wc_graphql_price( current( $prices['price'] ) )
+            . ' - '
+            . \wc_graphql_price( end( $prices['price'] ) ),
+            'regularPrice' => \wc_graphql_price( current( $prices['regular_price'] ) )
+                . ' - '
+                . \wc_graphql_price( end( $prices['regular_price'] ) ),
+            'salePrice'    => null,
+        );
+        
+        $expected  = array(
 			'data' => array(
-                'product' => array(
-                    'variations' => array(
-                        'nodes' => $this->helper->print_nodes( $variations ),
-                    ),
+                'product' => array_merge(
+                    $product_fields,
+                    array(
+                        'variations' => array(
+                            'nodes' => $this->helper->print_nodes( $variations ),
+                        ),
+                    )
                 ),
 			),
 		);
@@ -143,18 +183,21 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$actual    = do_graphql_request( $query, 'variationsQuery', $variables );
 		$expected  = array(
 			'data' => array(
-                'product' => array(
-                    'variations' => array(
-                        'nodes' => $this->helper->print_nodes(
-                            $variations,
-                            array(
-                                'filter' => function( $id ) {
-                                    $variation = new WC_Product_Variation( $id );
-                                    return 15.00 <= floatval( $variation->get_price() );
-                                }
-                            )
+                'product' => array_merge(
+                    $product_fields,
+                    array(
+                        'variations' => array(
+                            'nodes' => $this->helper->print_nodes(
+                                $variations,
+                                array(
+                                    'filter' => function( $id ) {
+                                        $variation = new WC_Product_Variation( $id );
+                                        return 15.00 <= floatval( $variation->get_price() );
+                                    }
+                                )
+                            ),
                         ),
-                    ),
+                    )
                 ),
 			),
 		);
@@ -165,4 +208,77 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEqualSets( $expected, $actual );
     }
 
+    public function testProductVariationToMediaItemConnections() {
+		$id    = $this->helper->to_relay_id( $this->products['variations'][1] );
+
+		$query = '
+			query productVariationQuery( $id: ID! ) {
+				productVariation( id: $id ) {
+					id
+					image {
+						id
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productVariationQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'productVariation' => array(
+					'id'            => $id,
+					'image'         => array(
+                        'id' => Relay::toGlobalId(
+                            'attachment',
+                            $this->helper->field( $this->products['variations'][1], 'image_id' )
+                        ),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+        codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductVariationDownloads() {
+		$id    = $this->helper->to_relay_id( $this->products['variations'][0] );
+
+		$query = '
+			query productVariationQuery( $id: ID! ) {
+				productVariation( id: $id ) {
+					id
+					downloads {
+						name
+						downloadId
+						filePathType
+						fileType
+						fileExt
+						allowedFileType
+						fileExists
+						file
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $id );
+		$actual    = do_graphql_request( $query, 'productVariationQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'productVariation' => array(
+					'id'            => $id,
+					'downloads'     => $this->helper->print_downloads( $this->products['variations'][0] ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
 }

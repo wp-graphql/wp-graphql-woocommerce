@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: WP GraphQL WooCommerce
- * Plugin URI: https://developer.axistaylor.com/wp-graphql-woocommerce
- * Description: Adds Woocommerce types to WPGraphQL schema.
- * Version: 0.0.1
+ * Plugin URI: https://github.com/kidunot89/wp-graphql-woocommerce
+ * Description: Adds Woocommerce Functionality to WPGraphQL schema.
+ * Version: 0.2.0
  * Author: kidunot89
  * Author URI: https://axistaylor.com
  * Text Domain: wp-graphql-woocommerce
@@ -18,6 +18,8 @@
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
+
+defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG', true );
 
 /**
  * If the codeception remote coverage file exists, require it.
@@ -77,7 +79,7 @@ function wp_graphql_woocommerce_init() {
 
 	$not_ready = wp_graphql_woocommerce_dependencies_not_ready();
 	if ( empty( $not_ready ) ) {
-		require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'src/class-wp-graphql-woocommerce.php';
+		require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'includes/class-wp-graphql-woocommerce.php';
 		return WP_GraphQL_WooCommerce::instance();
 	}
 

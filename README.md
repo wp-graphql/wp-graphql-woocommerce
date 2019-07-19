@@ -1,14 +1,13 @@
 <img src="./logo.svg" width="250px">
 
 # WPGraphQL WooCommerce
-[![Build Status](https://travis-ci.org/kidunot89/wp-graphql-woocommerce.svg?branch=master)](https://travis-ci.org/kidunot89/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/kidunot89/wp-graphql-woocommerce/badge.svg?branch=master)](https://coveralls.io/github/kidunot89/wp-graphql-woocommerce?branch=master)
-
-## Note: This plugin is in early stages and is not quite ready for use.
+[![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=develop)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop)
 
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
-3. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
+3. (Optional) Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
+4. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
 
 ## What does this plugin do?
 It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [CRUD](https://github.com/woocommerce/woocommerce/wiki/CRUD-Objects-in-3.0) objects.
@@ -17,9 +16,10 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 - Query product, customers, coupons, order, refund, product variations.
 
 ## Upcoming Features
-- Adminstrator mutations. Eg. Creating and deleting products, coupons, orders and refunds
-- Public/Customer mutations, Eg. Manipulating the cart and checking out.
-View [Roadmap](https://github.com/kidunot89/wp-graphql-woocommerce/projects/1) to see progress... 
+- Adminstrator mutations. Eg. Creating and deleting products, coupons, and refunds.
+
+## Playground
+Feel free to test out the extension using the [playground](https://docs.wpgraphql.com/extensions/wpgraphql-woocommerce/). The playground allows you to execute queries and mutations, as well as view the schema.
 
 ## Unit Tests 
 Until the documentation is in full effect, it's recommended that a [GraphiQL](https://github.com/graphql/graphiql)-based tool like [WPGraphiQL](https://github.com/wp-graphql/wp-graphiql) be used to view the GraphQL schema, an alternative to this is viewing the unit tests located in `tests/wpunit` directory. Which are constantly updated along with the project. If you're interested in contributing when I begin accepting contribution or simply want to run the tests. Follow the instruction below.
@@ -87,8 +87,10 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 - (Alternative) You can also try delete and cloning the repository again. The latest release should have fixed the issue.
 
 ## Support this extension
-**WP-GraphQL WooCommerce** :point_right: **[KickStarter](http://kck.st/2G268mx)**
-
 **WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
 
-**GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/graphql-php)**
+**GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
+
+## Follow
+[![alt text](http://i.imgur.com/tXSoThF.png)](https://twitter.com/woographql)
+[![alt text](http://i.imgur.com/P3YfQoD.png)](https://www.facebook.com/woographql)

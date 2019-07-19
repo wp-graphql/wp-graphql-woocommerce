@@ -19,6 +19,8 @@ abstract class WCG_Helper {
 		return new static();
 	}
 
+	public abstract function to_relay_id( $id );
+
 	public abstract function print_query( $id );
 
 	public function print_nodes( $ids, $processors = array() ) {

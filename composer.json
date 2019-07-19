@@ -1,8 +1,19 @@
 {
-    "name": "kidunot89/wp-graphql-woocommerce",
+    "name": "wp-graphql/wp-graphql-woocommerce",
     "description": "WooCommerce bindings for wp-graphql",
+    "version": "0.2.0",
     "type": "wordpress-plugin",
-    "license": "GPLv3",
+    "keywords": [
+        "wordpress",
+        "woocommerce",
+        "graphql",
+        "wp-graphql",
+        "wp-graphql-extension",
+        "woocommerce-extension",
+        "api",
+        "woographql"
+    ],
+    "license": "GPL-3.0",
     "authors": [
         {
             "name": "kidunot89",
@@ -11,20 +22,22 @@
         }
     ],
     "require-dev": {
-        "lucatume/wp-browser": "^2.2"
+        "lucatume/wp-browser": ">=2.2.1 <2.2.8"
     },
     "config": {
         "optimize-autoloader": true
     },
     "autoload": {
         "psr-4": {
-            "WPGraphQL\\Extensions\\WooCommerce\\": "src/"
+            "WPGraphQL\\Extensions\\WooCommerce\\": "includes/"
         },
         "classmap": [
-            "src/"
+            "includes/"
         ]
     },
-    "require": {},
+    "require": {
+        "php": ">=5.6.0"
+    },
     "scripts": {
         "install-wp-tests": "bash bin/install-wp-tests.sh",
         "test": "vendor/bin/codecept run",
@@ -33,7 +46,7 @@
         "wpunit-test": "vendor/bin/codecept run wpunit"
     },
     "support"    : {
-		"issues": "https://github.com/kidunot89/wp-graphql-woocommerce/issues",
-		"source": "https://github.com/kidunot89/wp-graphql-woocommerce"
+		"issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
+		"source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
 	}
 }

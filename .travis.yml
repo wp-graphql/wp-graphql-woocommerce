@@ -10,8 +10,10 @@ notifications:
 
 branches:
   only:
-    - master
     - develop
+    - release-v0.1.1
+    - release-v0.1.2
+    - release-v0.2.0
 
 cache:
   apt: true
@@ -24,6 +26,7 @@ env:
   global:
     - WP_CORE_DIR: /tmp/wordpress
     - COVERAGE: false
+    - DEBUG: false
 
 matrix:
   include:
@@ -38,7 +41,7 @@ matrix:
     - php: 5.6
       env: WP_VERSION=4.5
     - php: 5.6
-      env: WP_VERSION=latest
+      env: WP_VERSION=latest DEBUG=1
     - php: 5.6
       env: WP_VERSION=trunk
 
@@ -53,18 +56,14 @@ before_script:
   - |
     if [ ! -z "$WP_VERSION" ]; then
       # Install and config Codeception
-      cp tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-      cp tests/functional.suite.dist.yml tests/functional.suite.yml
-      cp tests/unit.suite.dist.yml tests/unit.suite.yml
-      cp tests/wpunit.suite.dist.yml tests/wpunit.suite.yml
       cp .env.dist .env
       composer install-wp-tests
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
         mkdir -p build/logs
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer update --prefer-source --no-interaction
       ls -al
     fi   
   # Install PHP CodeSniffer and WPCS.
@@ -81,13 +80,15 @@ script:
     if [ ! -z "$WP_VERSION" ]; then
       if [ "$COVERAGE" == "1" ]; then
         vendor/bin/codecept run wpunit --coverage --coverage-xml
+      elif [ "$DEBUG" == "1" ]; then
+        vendor/bin/codecept run wpunit --debug
       else
         vendor/bin/codecept run wpunit
       fi
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
-      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php src/*.php --standard=WordPress
+      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php class-inflect.php includes/*.php --standard=WordPress
     fi
 after_success:
   # Runs Coveralls.io client

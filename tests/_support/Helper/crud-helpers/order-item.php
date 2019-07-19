@@ -7,6 +7,10 @@ class OrderItemHelper extends WCG_Helper {
 		parent::__construct();
 	}
 
+	public function to_relay_id( $id ) {
+		return null;
+	}
+
 	public function add_coupon( $order, $coupon_id = 0, $save = true ) {
 		// Retrieve order.
 		if ( ! is_a( $order, WC_Order::class ) ) {
