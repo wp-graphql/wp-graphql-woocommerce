@@ -4,25 +4,6 @@ class QLSessionHandlerCest {
     private $product_id;
 
     public function _before( FunctionalTester $I ) {
-        // Activate plugins
-        $I->loginAsAdmin();
-        $I->amOnPluginsPage();
-        $I->activatePlugin(
-            array(
-                'woocommerce',
-                'wp-graphql',
-                'wpgraphql-jwt-authentication',
-                'wp-graphql-woocommerce',
-            )
-        );
-        $I->seePluginActivated( 'woocommerce' );
-        $I->seePluginActivated( 'wp-graphql' );
-        $I->seePluginActivated( 'wpgraphql-jwt-authentication' );
-        $I->seePluginActivated( 'wp-graphql-woocommerce' );
-        $I->amOnAdminPage('options-permalink.php');
-        $I->click('#submit');
-        $I->amOnPage( '/' );
-
         // Create Product
         $this->product_id = $I->havePostInDatabase( array(
             'post_type'  => 'product',

@@ -1,33 +1,78 @@
 version: '3.3'
 
 services:
-
-  wpbrowser:
-    build: .
-    image: kidunot89/wp-browser 
-    links:
-      - db:mysql
+  app:
+    depends_on:
+      - app_db
+    build:
+      context: .
+      args: 
+        DESIRED_PHP_VERSION: "${PHP_VERSION:-7.2}"
+        DESIRED_WP_VERSION: "${WP_VERSION:-5.2.2}"
+    image: kidunot89/woographql-app
     volumes:
-      - '$WP_CORE_DIR/wp-content:/var/www/html/wp-content'
-      - './tests:/var/www/html/tests'
-      - './codeception.docker.yml:/var/www/config/codeception.dist.yml'
       - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
+      - './.log/app:/var/log/apache2'
+    env_file: .env
     environment:
-      - DB_NAME=wordpress
-      - DB_HOST=db
-      - DB_USER=wordpress
-      - DB_PASSWORD=wordpress
-      - WPGRAPHQL_WOOCOMMERCE_AUTOLOAD=1
-      - COVERAGE
-      - DEBUG
+      WP_URL: 'http://localhost:8001'
+      WP_DOMAIN: 'localhost:8001'
+      DB_HOST: app_db
+      INCLUDE_WPGRAPHIQL: 1
     ports:
-      - 8080:80
+      - '8001:80'
+    networks:
+      local:
 
-  db:
+  app_db:
     image: mysql:5.7
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE:      wordpress
       MYSQL_USER:          wordpress
       MYSQL_PASSWORD:      wordpress
+    ports:
+      - '3306'
+    networks:
+      testing:
+      local:
+
+  testing:
+    depends_on:
+      - app_db
+      - testing_db
+    build:
+      context: .
+      dockerfile: Dockerfile.tester
+    image: kidunot89/woographql-testing
+    volumes:
+      - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
+      - './tests:/var/www/html/tests'
+      - './.log/testing:/var/log/apache2'
+    env_file: .env
+    environment:
+      TEST_DB_HOST: testing_db
+      TEST_DB_USER: wordpress
+      TEST_DB_PASSWORD: wordpress
+      DB_HOST: app_db
+      DB_USER: wordpress
+      DB_PASSWORD: wordpress
+      WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
+    networks:
+      testing:
+
+  testing_db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE:      wordpress_tests
+      MYSQL_USER:          wordpress
+      MYSQL_PASSWORD:      wordpress
+    ports:
+      - '3306'
+    networks:
+      testing:
+
+networks:
+  local:
+  testing:

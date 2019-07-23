@@ -1,35 +1,29 @@
-ARG PHP_VERSION
-FROM php:${PHP_VERSION:-7.2}-apache-stretch
+###############################################################################
+# Pre-configured WordPress Installation w/ WooCommerce, WPGraphQL, WooGraphQL #
+# For testing only, use in production not recommended.                        #
+###############################################################################
+
+# Using the 'DESIRED_' prefix to avoid confusion with environment variables of the same name.
+ARG DESIRED_WP_VERSION
+ARG DESIRED_PHP_VERSION
+
+FROM wordpress:${DESIRED_WP_VERSION}-php${DESIRED_PHP_VERSION}-apache
+
+LABEL author=kidunot89
+LABEL author_uri=https://github.com/kidunot89
 
 SHELL [ "/bin/bash", "-c" ]
 
-# Install required system packages
+# Install system packages
 RUN apt-get update && \
     apt-get -y install \
-    # WordPress dependencies
-    libjpeg-dev \
-    libpng-dev \
-    mysql-client \
     # CircleCI depedencies
     git \
     ssh \
     tar \
     gzip \
-    wget
-
-# Install php extensions
-RUN docker-php-ext-install \
-    bcmath \
-    zip \
-    gd \
-    pdo_mysql \
-    mysqli \
-    opcache \
-    pcov \
-    && docker-php-ext-enable pcov
-
-# Configure php
-RUN echo "date.timezone = UTC" >> /usr/local/etc/php/php.ini
+    wget \
+    mariadb-client
 
 # Install Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
@@ -37,47 +31,29 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+# Install WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
-# Install composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-RUN curl -sS https://getcomposer.org/installer | php -- \
-    --filename=composer \
-    --install-dir=/usr/local/bin
-
-# Install tool to speed up composer installations
-RUN composer global require --optimize-autoloader \
-    "hirak/prestissimo"
-
-# Install wp-browser and php-coveralls globally
-RUN composer global require \
-    phpunit/phpunit:8.1 \
-    lucatume/wp-browser:^2.2 \
-    league/factory-muffin:^3.0 \
-    league/factory-muffin-faker:^2.0 \
-    php-coveralls/php-coveralls
-
-# Add composer global binaries to PATH
-ENV PATH "$PATH:~/.composer/vendor/bin"
-
-# Set up WordPress config
+# Set project environmental variables
 ENV WP_ROOT_FOLDER="/var/www/html"
-ENV WP_URL="http://localhost"
-ENV WP_DOMAIN="localhost"
-ENV WP_TABLE_PREFIX="wp_"
-ENV ADMIN_EMAIL="admin@wordpress.local"
-ENV ADMIN_USERNAME="admin"
-ENV ADMIN_PASSWORD="password"
+ENV WORDPRESS_DB_HOST=${DB_HOST}
+ENV WORDPRESS_DB_USER=${DB_USER}
+ENV WORDPRESS_DB_PASSWORD=${DB_PASSWORD}
+ENV WORDPRESS_DB_NAME=${DB_NAME}
+ENV PLUGINS_DIR="${WP_ROOT_FOLDER}/wp-content/plugins"
+ENV PROJECT_DIR="${PLUGINS_DIR}/wp-graphql-woocommerce"
 
-# Set up wp-browser / codeception
-WORKDIR /var/www/config
-COPY    codeception.docker.yml codeception.dist.yml
+# Remove exec statement from base entrypoint script.
+RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
 
 # Set up Apache
-RUN  echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 # Set up entrypoint
 WORKDIR    /var/www/html
-COPY       bin/entrypoint.sh /entrypoint.sh
-RUN        chmod 755 /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY       bin/entrypoint.sh /usr/local/bin/app-entrypoint.sh
+RUN        chmod 755 /usr/local/bin/app-entrypoint.sh
+ENTRYPOINT ["app-entrypoint.sh"]
+CMD ["apache2-foreground"]

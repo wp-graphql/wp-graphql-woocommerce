@@ -14,6 +14,7 @@ notifications:
 branches:
   only:
     - develop
+    - master
     - release-v0.1.2
     - release-v0.2.0
     - release-v0.2.1
@@ -29,13 +30,13 @@ env:
   global:
     - WP_CORE_DIR: /tmp/wordpress
   matrix:
-    - PHP_VERSION=7.3 WP_VERSION=latest COVERAGE=1
+    - PHP_VERSION=7.3 WP_VERSION=5.2.2 COVERAGE=1
     - PHP_VERSION=7.2 PHPCS=1
-    - PHP_VERSION=7.2 WP_VERSION=latest
-    - PHP_VERSION=7.1 WP_VERSION=latest
-    - PHP_VERSION=7.0 WP_VERSION=latest
+    - PHP_VERSION=7.2 WP_VERSION=5.2.2
+    - PHP_VERSION=7.1 WP_VERSION=5.2.2
+    - PHP_VERSION=7.0 WP_VERSION=5.2.2
     - PHP_VERSION=5.6 WP_VERSION=4.9
-    - PHP_VERSION=5.6 WP_VERSION=latest DEBUG=1
+    - PHP_VERSION=5.6 WP_VERSION=5.2.2 DEBUG=1
     - PHP_VERSION=5.6 WP_VERSION=trunk
 
 before_install:
@@ -63,14 +64,16 @@ before_script:
     if [ ! -z "$WP_VERSION" ]; then
       # Install and config Codeception
       cp .env.dist .env
-      composer install-wp-tests
-      travis_retry composer install --no-dev --prefer-source --no-interaction
+      travis_retry composer install --prefer-source --no-interaction
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
         mkdir -p build/logs
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
-      docker-compose build --build-arg PHP_VERSION=$(PHP_VERSION) wpbrowser
+      docker-compose build \
+        --build-arg DESIRED_PHP_VERSION=$(PHP_VERSION) \
+        --build-arg DESIRED_WP_VERSION=$(WP_VERSION) \
+        woographql
       ls -al
     fi   
   # Install PHP CodeSniffer and WPCS.
@@ -85,7 +88,9 @@ script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      docker-compose run --rm wpbrowser
+      docker-compose run -e SUITE=functional -e COVERAGE=${COVERAGE:-0} testing --rm testing --scale app=0
+      docker-compose run -e SUITE=acceptance -e COVERAGE=${COVERAGE:-0} testing --rm testing --scale app=0
+      docker-compose run -e SUITE=wpunit -e COVERAGE=${COVERAGE:-0} testing --rm testing --scale app=0
     fi
   - |
     if [ "$PHPCS" == "1" ]; then

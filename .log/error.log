@@ -1,0 +1,25 @@
+[Tue Jul 23 00:34:59.367015 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 00:34:59.367160 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 00:39:52.575557 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 00:41:30.660723 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 00:41:30.702662 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 00:53:44.867254 2019] [php7:warn] [pid 42] [client 192.168.192.3:38964] PHP Warning:  ftp_rename() expects parameter 1 to be resource, null given in /var/www/html/wp-admin/includes/class-wp-filesystem-ftpext.php on line 358, referer: http://wordpress/wp-cron.php?doing_wp_cron=1563843220.4602689743041992187500
+[Tue Jul 23 00:54:31.957084 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 00:58:11.529737 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 00:58:11.529912 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 01:36:34.388618 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 15:47:13.645483 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 15:47:13.676461 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 15:55:24.547799 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 15:59:03.156410 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 15:59:03.189905 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 16:17:38.287007 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 16:18:03.637095 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 16:18:03.637232 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 16:22:44.209266 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 16:40:31.256545 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 16:40:31.256714 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 16:53:30.554674 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down
+[Tue Jul 23 17:20:41.296607 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.20 configured -- resuming normal operations
+[Tue Jul 23 17:20:41.296757 2019] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Jul 23 17:26:22.268374 2019] [mpm_prefork:notice] [pid 1] AH00169: caught SIGTERM, shutting down

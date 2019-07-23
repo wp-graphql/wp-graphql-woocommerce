@@ -19,8 +19,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG', true );
-
 /**
  * If the codeception remote coverage file exists, require it.
  *
@@ -36,7 +34,7 @@ if ( file_exists( __DIR__ . '/c3.php' ) ) {
 function wp_graphql_woocommerce_constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
-		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.0.1' );
+		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.2.1' );
 	}
 	// Plugin Folder Path.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR' ) ) {
