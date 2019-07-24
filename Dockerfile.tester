@@ -2,7 +2,11 @@
 # Container for running Codeception tests on a WooGraphQL Docker instance. #
 ############################################################################
 
-FROM kidunot89/woographql-app
+# Using the 'DESIRED_' prefix to avoid confusion with environment variables of the same name.
+ARG DESIRED_WP_VERSION
+ARG DESIRED_PHP_VERSION
+
+FROM kidunot89/woographql-app:wp${DESIRED_WP_VERSION:-5.2.2}-php${DESIRED_PHP_VERSION:-7.3}
 
 LABEL author=kidunot89
 LABEL author_uri=https://github.com/kidunot89

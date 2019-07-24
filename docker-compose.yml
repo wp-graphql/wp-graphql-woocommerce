@@ -4,12 +4,7 @@ services:
   app:
     depends_on:
       - app_db
-    build:
-      context: .
-      args: 
-        DESIRED_PHP_VERSION: "${PHP_VERSION:-7.2}"
-        DESIRED_WP_VERSION: "${WP_VERSION:-5.2.2}"
-    image: kidunot89/woographql-app
+    image: "kidunot89/woographql-app:wp${WP_VERSION:-5.2.2}-php${PHP_VERSION:-7.2}"
     volumes:
       - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
       - './.log/app:/var/log/apache2'
@@ -44,7 +39,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.tester
-    image: kidunot89/woographql-testing
+      args:
+        DESIRED_PHP_VERSION: "${PHP_VERSION:-7.2}"
+        DESIRED_WP_VERSION: "${WP_VERSION:-5.2.2}"
+    image: woographql-testing
     volumes:
       - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
       - './tests:/var/www/html/tests'
