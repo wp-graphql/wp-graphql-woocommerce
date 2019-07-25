@@ -73,7 +73,7 @@ before_script:
     if [ ! -z "$WP_VERSION" ]; then
       # Install and config Codeception
       cp .env.dist .env
-      travis_retry composer install --prefer-source --no-interaction
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
       if [ "$COVERAGE" == "1" ]; then
         # Install Coveralls
         mkdir -p build/logs
