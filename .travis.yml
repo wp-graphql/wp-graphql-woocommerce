@@ -73,8 +73,8 @@ before_script:
         COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
       fi
       docker-compose build \
-        --build-arg DESIRED_PHP_VERSION=$(PHP_VERSION) \
-        --build-arg DESIRED_WP_VERSION=$(WP_VERSION) \
+        --build-arg DESIRED_PHP_VERSION=${PHP_VERSION} \
+        --build-arg DESIRED_WP_VERSION=${WP_VERSION} \
         testing
     fi   
   # Install PHP CodeSniffer and WPCS.
