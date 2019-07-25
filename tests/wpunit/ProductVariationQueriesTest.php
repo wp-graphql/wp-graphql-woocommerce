@@ -7,7 +7,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
     private $customer;
     private $products;
     
-    public function setUp(): void {
+    public function setUp() {
         parent::setUp();
 
         $this->shop_manager   = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -17,7 +17,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->products       = $this->helper->create( $this->product_helper->create_variable() );
     }
 
-    public function tearDown(): void {
+    public function tearDown() {
         // your tear down methods here
 
         // then

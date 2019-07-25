@@ -9,7 +9,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $order;
 	private $refund;
 
-	public function setUp(): void {
+	public function setUp() {
 		parent::setUp();
 
 		$this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -20,7 +20,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->refund          = $this->refund_helper->create( $this->order );
 	}
 
-	public function tearDown(): void {
+	public function tearDown() {
 		// your tear down methods here
 		// then
 		parent::tearDown();

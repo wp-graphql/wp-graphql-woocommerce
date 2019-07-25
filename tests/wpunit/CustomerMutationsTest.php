@@ -1,7 +1,7 @@
 <?php
 
 class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
-	public function setUp(): void {
+	public function setUp() {
 		// before
 		parent::setUp();
 
@@ -62,7 +62,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		);
 	}
 
-	public function tearDown(): void {
+	public function tearDown() {
 		// your tear down methods here
 
 		// then

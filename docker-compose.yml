@@ -1,32 +1,72 @@
 version: '3.3'
 
 services:
-
-  wpbrowser:
-    build: .
-    image: kidunot89/wp-browser 
-    links:
-      - db:mysql
+  app:
+    depends_on:
+      - app_db
+    image: "kidunot89/woographql-app:wp${WP_VERSION:-5.2.2}-php${PHP_VERSION:-7.2}"
     volumes:
-      - "/tmp/wordpress/wp-content:/var/www/html/wp-content"
-      - "./tests:/var/www/html/tests"
-      - "./codeception.docker.yml:/var/www/config/codeception.dist.yml"
-      - ".:/var/www/html/wp-content/plugins/wp-graphql-woocommerce"
-    command: bash -c "codecept run functional --debug && codecept run acceptance && codecept run wpunit"
+      - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
+      - './.log/app:/var/log/apache2'
+    env_file: .env.dist
     environment:
-      DB_NAME:     wordpress
-      DB_HOST:     db
-      DB_USER:     wordpress
-      DB_PASSWORD: wordpress
-      WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
+      WP_URL: 'http://localhost:8001'
+      WP_DOMAIN: 'localhost:8001'
+      DB_HOST: app_db
+      INCLUDE_WPGRAPHIQL: 1
     ports:
-      - 8080:80
+      - '8001:80'
+    networks:
+      local:
 
-  db:
+  app_db:
     image: mysql:5.7
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE:      wordpress
       MYSQL_USER:          wordpress
       MYSQL_PASSWORD:      wordpress
+    ports:
+      - '3306'
+    networks:
+      testing:
+      local:
+
+  testing:
+    depends_on:
+      - app_db
+      - testing_db
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DESIRED_PHP_VERSION: "${PHP_VERSION:-7.2}"
+        DESIRED_WP_VERSION: "${WP_VERSION:-5.2.2}"
+    image: woographql-testing
+    volumes:
+      - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
+      - './.log/testing:/var/log/apache2'
+    env_file: .env.dist
+    environment:
+      WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
+      TEST_DB_HOST: testing_db
+      DB_HOST: app_db
+      WP_URL: 'http://localhost'
+    networks:
+      testing:
+
+  testing_db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE:      woographql_tests
+      MYSQL_USER:          wordpress
+      MYSQL_PASSWORD:      wordpress
+    ports:
+      - '3306'
+    networks:
+      testing:
+
+networks:
+  local:
+  testing:

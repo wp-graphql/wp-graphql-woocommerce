@@ -7,7 +7,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $coupon;
 	private $helper;
 
-	public function setUp(): void {
+	public function setUp() {
 		parent::setUp();
 
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -22,7 +22,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 	}
 
-	public function tearDown(): void {
+	public function tearDown() {
 		// your tear down methods here
 		// then
 		parent::tearDown();

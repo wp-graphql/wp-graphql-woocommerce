@@ -46,12 +46,9 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
 	TEST_DB_PASSWORD=""
 
 	# Install script
-	WP_VERSION=latest
 	SKIP_DB_CREATE=false
-	WP_GRAPHQL_BRANCH=develop
 
 	# Codeception
-	WP_ROOT_FOLDER="/tmp/wordpress"
 	TEST_SITE_WP_ADMIN_PATH="/wp-admin"
 	TEST_SITE_DB_NAME="wpgraphql_woocommerce_test"
 	TEST_SITE_DB_HOST="127.0.0.1"
@@ -59,9 +56,9 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
 	TEST_SITE_DB_PASSWORD=""
 	TEST_SITE_TABLE_PREFIX="wp_"
 	TEST_TABLE_PREFIX="wp_"
-	TEST_SITE_WP_URL="http://wp.test"
-	TEST_SITE_WP_DOMAIN="wp.test"
-	TEST_SITE_ADMIN_EMAIL="admin@wp.test"
+	TEST_SITE_WP_URL="http://localhost"
+	TEST_SITE_WP_DOMAIN="localhost"
+	TEST_SITE_ADMIN_EMAIL="admin@localhost"
 	TEST_SITE_ADMIN_USERNAME="admin"
 	TEST_SITE_ADMIN_PASSWORD="password"
 	```
@@ -69,7 +66,6 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
 	- `Install script` variables are specified to the `install-wp-tests` script, and most likely won't changed. I've listed their meaning below.
     	- `WP_VERSION` WordPress version used for testing
     	- `SKIP_DB_CREATE` Should database creation be skipped?
-    	- `WP_GRAPHQL_BRANCH` The branch in the `WPGraphQL` repository the tests should be run again. Ex. `origin/feature/model-layer`
 	- `Codeception` variables are specified to the **Codeception** configuration. View the config files and Codeception's [Docs](https://codeception.com/docs/reference/Configuration#Suite-Configuration) for more info on them.
 
 4. Once you have finish modifying the `.env` file. Run `composer install-wp-tests` from the project directory.
@@ -80,6 +76,17 @@ To run test use the command `vendor/bin/codecept run [suite [test [:test-functio
 If you use the command with at least a `suite` specified, **Codeception** will run all tests, however this is not recommended. Running a suite `vendor/bin/codecept run wpunit` or a test `vendor/bin/codecept run CouponQueriesTest` is recommended. Running a single `test-function` like `vendor/bin/codecept run ProductQueriesTest:testProductsQueryAndWhereArgs` is also possible.
 
 To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
+
+## Functional and Acceptance Tests (Docker/Docker-Compose required)
+It's possible to run functional and acceptance tests, but is very limited at the moment. The script docker entrypoint script runs all three suites (acceptance, functional, and wpunit) at once. This will change eventually, however as of right now, this is the limitation.
+
+### Running tests
+Even though the two suite use a Docker environment to run, the docker environment relies on a few environmental variables defined in `.env` and a volume source provided by the test install script.
+0. Ensure that you can copy `.env.dist` to `.env`.
+1. First you must run `composer install-wp-tests` to ensure the required dependencies are available.
+2. Next run `docker-compose build` from the terminal in the project root directory, to build the docker image for test environment.
+3. And now you're ready to run the tests. Running `docker-compose run --rm wpbrowser` does just that.
+You can rerun the tests by simply repeating step 3.
 
 ## HTTP Error 500 :construction: 
 If you get HTTP 500 error upon activation or accessing the `endpoint` and have **CMD/Terminal** access with **Composer** installed. 

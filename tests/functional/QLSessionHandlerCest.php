@@ -4,29 +4,10 @@ class QLSessionHandlerCest {
     private $product_id;
 
     public function _before( FunctionalTester $I ) {
-        // Activate plugins
-        $I->loginAsAdmin();
-        $I->amOnPluginsPage();
-        $I->activatePlugin(
-            array(
-                'woocommerce',
-                'wp-graphql',
-                'wpgraphql-jwt-authentication',
-                'wp-graphql-woocommerce',
-            )
-        );
-        $I->seePluginActivated( 'woocommerce' );
-        $I->seePluginActivated( 'wp-graphql' );
-        $I->seePluginActivated( 'wpgraphql-jwt-authentication' );
-        $I->seePluginActivated( 'wp-graphql-woocommerce' );
-        $I->amOnAdminPage('options-permalink.php');
-        $I->click('#submit');
-        $I->amOnPage( '/' );
-
         // Create Product
         $this->product_id = $I->havePostInDatabase( array(
             'post_type'  => 'product',
-            'post_title' => 't-shirt',
+            'post_name' => 't-shirt',
             'meta_input' => array(
                 '_visibility'             => 'visible',
                 '_sku'                    => '',
@@ -63,6 +44,9 @@ class QLSessionHandlerCest {
                 '_wc_review_count'        => 0,        
             ),
         ));
+        $term_id          = $I->grabTermIdFromDatabase( [ 'name' => 'simple', 'slug' => 'simple' ] );
+        $term_taxonomy_id = $I->grabTermTaxonomyIdFromDatabase( [ 'term_id' => $term_id, 'taxonomy' => 'product_type' ] );
+        $I->haveTermRelationshipInDatabase( $this->product_id, $term_id );
     }
 
     // tests
