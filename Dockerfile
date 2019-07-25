@@ -17,7 +17,7 @@ SHELL [ "/bin/bash", "-c" ]
 RUN docker-php-ext-install pdo_mysql
 
 # Install Xdebug
-RUN yes | pecl install xdebug \
+RUN if [ "$DESIRED_PHP_VERSION" -ne "5.6"  ]; then yes | pecl install xdebug; else yes | pecl install xdebug-2.5.5; fi \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini

@@ -21,6 +21,9 @@
             "role": "Lead developer"
         }
     ],
+    "require": {
+        "php": ">=5.6.0"
+    },
     "require-dev": {
         "lucatume/wp-browser": ">=2.2.1 <2.2.8"
     },
@@ -34,9 +37,6 @@
         "classmap": [
             "includes/"
         ]
-    },
-    "require": {
-        "php": ">=5.6.0"
     },
     "scripts": {
         "install-wp-tests": "bash bin/install-wp-tests.sh",
