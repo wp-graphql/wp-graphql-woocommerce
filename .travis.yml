@@ -75,8 +75,7 @@ before_script:
       docker-compose build \
         --build-arg DESIRED_PHP_VERSION=$(PHP_VERSION) \
         --build-arg DESIRED_WP_VERSION=$(WP_VERSION) \
-        woographql
-      ls -al
+        testing
     fi   
   # Install PHP CodeSniffer and WPCS.
   - |
@@ -112,6 +111,6 @@ after_success:
   # Runs Coveralls.io client
   - |
     if [ "$COVERAGE" == "1" ]; then
-      travis_retry php vendor/bin/php-coveralls -v
+      travis_retry vendor/bin/php-coveralls -v
     fi
   

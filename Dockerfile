@@ -6,18 +6,22 @@
 ARG DESIRED_WP_VERSION
 ARG DESIRED_PHP_VERSION
 
-FROM kidunot89/woographql-app:wp${DESIRED_WP_VERSION:-5.2.2}-php${DESIRED_PHP_VERSION:-7.3}
+FROM kidunot89/woographql-app:wp${DESIRED_WP_VERSION}-php${DESIRED_PHP_VERSION}
+
 
 LABEL author=kidunot89
 LABEL author_uri=https://github.com/kidunot89
 
 SHELL [ "/bin/bash", "-c" ]
 
+ARG DESIRED_WP_VERSION
+ARG DESIRED_PHP_VERSION
+
 # Install php extensions
 RUN docker-php-ext-install pdo_mysql
 
 # Install Xdebug
-RUN if [ "$DESIRED_PHP_VERSION" -ne "5.6"  ]; then yes | pecl install xdebug; else yes | pecl install xdebug-2.5.5; fi \
+RUN if [ "$DESIRED_PHP_VERSION" == "5.6" ]; then yes | pecl install xdebug-2.5.5; else yes | pecl install xdebug;  fi \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
