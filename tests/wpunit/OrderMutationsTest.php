@@ -4,7 +4,7 @@ use WPGraphQL\Type\WPEnumType;
 
 class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 
-    public function setUp(): void {
+    public function setUp() {
         // before
         parent::setUp();
 
@@ -42,7 +42,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->order_id = $this->order->create();
     }
 
-    public function tearDown(): void {
+    public function tearDown() {
         // your tear down methods here
 
         // then

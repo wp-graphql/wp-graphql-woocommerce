@@ -8,7 +8,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $coupon_helper;
 	private $helper;
 
-	public function setUp(): void {
+	public function setUp() {
 		// before
 		parent::setUp();
 
@@ -23,7 +23,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		WC()->cart->empty_cart( true );
 	}
 
-	public function tearDown(): void {
+	public function tearDown() {
 		// your tear down methods here
 
 		// then
