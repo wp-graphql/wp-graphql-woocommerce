@@ -8,6 +8,8 @@ node_modules/
 *.tar.gz
 *.zip
 .env
+.env.*
+!.env.dist
 .idea
 .vscode
 .github_changelog_generator
@@ -17,8 +19,8 @@ vendor/*
 !vendor/composer
 vendor/composer/installed.json
 vendor/composer/*/
-!/tests
-/tests/*.suite.yml
+!tests
+tests/*.suite.yml
 build/
 coverage/*
 schema.graphql

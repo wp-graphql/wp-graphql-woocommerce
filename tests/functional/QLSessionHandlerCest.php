@@ -7,7 +7,7 @@ class QLSessionHandlerCest {
         // Create Product
         $this->product_id = $I->havePostInDatabase( array(
             'post_type'  => 'product',
-            'post_title' => 't-shirt',
+            'post_name' => 't-shirt',
             'meta_input' => array(
                 '_visibility'             => 'visible',
                 '_sku'                    => '',
@@ -44,6 +44,9 @@ class QLSessionHandlerCest {
                 '_wc_review_count'        => 0,        
             ),
         ));
+        $term_id          = $I->grabTermIdFromDatabase( [ 'name' => 'simple', 'slug' => 'simple' ] );
+        $term_taxonomy_id = $I->grabTermTaxonomyIdFromDatabase( [ 'term_id' => $term_id, 'taxonomy' => 'product_type' ] );
+        $I->haveTermRelationshipInDatabase( $this->product_id, $term_id );
     }
 
     // tests

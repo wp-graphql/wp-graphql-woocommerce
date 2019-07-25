@@ -36,7 +36,7 @@ env:
     - PHP_VERSION=7.1 WP_VERSION=5.2.2
     - PHP_VERSION=7.0 WP_VERSION=5.2.2
     - PHP_VERSION=5.6 WP_VERSION=4.9
-    - PHP_VERSION=5.6 WP_VERSION=5.2.2 DEBUG=1
+    - PHP_VERSION=5.6 WP_VERSION=5.0.2 DEBUG=1
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -78,7 +78,10 @@ before_script:
   # Install PHP CodeSniffer and WPCS.
   - |
     if [ "$PHPCS" == "1" ]; then
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require \
+        squizlabs/php_codesniffer \
+        phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs \
+        dealerdirect/phpcodesniffer-composer-installer
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
       ls -al
     fi
@@ -87,13 +90,20 @@ script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      docker-compose run -e SUITE=functional -e COVERAGE=${COVERAGE:-0} testing --rm testing --scale app=0
-      docker-compose run -e SUITE=acceptance -e COVERAGE=${COVERAGE:-0} testing --rm testing --scale app=0
-      docker-compose run -e SUITE=wpunit -e COVERAGE=${COVERAGE:-0} testing --rm testing --scale app=0
+      declare -a suites=( 'acceptance', 'functional', 'wpunit' )
+      for i in "${suites[@]}"; do
+        docker-compose run \
+          -e SUITE=${i} -e COVERAGE=${COVERAGE:-0} -e DEBUG=${DEBUG:-0} testing \
+          --rm testing --scale app=0
+      done
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
-      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php class-inflect.php includes/*.php --standard=WordPress
+      vendor/bin/phpcs \
+        wp-graphql-woocommerce.php \
+        access-functions.php \
+        class-inflect.php \
+        includes/*.php --standard=WordPress
     fi
 after_success:
   # Runs Coveralls.io client
