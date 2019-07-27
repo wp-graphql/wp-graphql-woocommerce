@@ -111,7 +111,6 @@ after_success:
   # Download and run Coveralls.io client
   - |
     if [ "$COVERAGE" == "1" ]; then
-      ls -la
       wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
       chmod +x php-coveralls.phar
       travis_retry php php-coveralls.phar -v -r .

@@ -13,6 +13,8 @@ settings:
     memory_limit: 1024M
 coverage:
     enabled: true
+    remote: false
+    work_dir: /var/www/html/wp-content/plugins/wp-graphql-woocommerce
     c3_url: http://localhost/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php
     whitelist:
       include:
