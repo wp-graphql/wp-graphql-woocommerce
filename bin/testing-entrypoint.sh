@@ -22,9 +22,6 @@ fi
 echo 'Moving to WooGraphQL directory.'
 cd ${PROJECT_DIR}
 
-echo 'Setting Codeception output directory permissions'.
-chmod 777 ${TESTS_OUTPUT}
-
 if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
     vendor/bin/codecept run ${SUITE} --debug --coverage --coverage-xml
 elif [ "$COVERAGE" == "1" ]; then
@@ -34,3 +31,6 @@ elif [ "$DEBUG" == "1" ]; then
 else
     vendor/bin/codecept run ${SUITE}
 fi
+
+echo 'Setting Codeception output directory permissions'.
+chmod 777 R -${TESTS_OUTPUT}
