@@ -72,13 +72,7 @@ before_script:
   - |
     if [ ! -z "$WP_VERSION" ]; then
       # Install and config Codeception
-      cp .env.dist .env
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
-      if [ "$COVERAGE" == "1" ]; then
-        # Install Coveralls
-        mkdir -p build/logs
-        COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
-      fi
       docker-compose build \
         --build-arg DESIRED_PHP_VERSION=${PHP_VERSION} \
         --build-arg DESIRED_WP_VERSION=${WP_VERSION} \
@@ -92,7 +86,6 @@ before_script:
         phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs \
         dealerdirect/phpcodesniffer-composer-installer
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
-      ls -al
     fi
 
 script:
@@ -115,9 +108,13 @@ script:
         includes/*.php --standard=WordPress
     fi
 after_success:
-  # Runs Coveralls.io client
+  # Download and run Coveralls.io client
   - |
     if [ "$COVERAGE" == "1" ]; then
-      travis_retry vendor/bin/php-coveralls -v
+      ls -la
+      wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+      chmod +x php-coveralls.phar
+
+      travis_retry php php-coveralls.phar -v
     fi
   
