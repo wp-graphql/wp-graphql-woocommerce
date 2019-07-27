@@ -33,4 +33,4 @@ else
 fi
 
 echo 'Setting Codeception output directory permissions'.
-chmod 777 R -${TESTS_OUTPUT}
+chmod 777 -R ${TESTS_OUTPUT}
