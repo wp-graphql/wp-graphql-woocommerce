@@ -40,7 +40,7 @@ ENV PATH "$PATH:~/.composer/vendor/bin"
 RUN sed -i '$d' /usr/local/bin/app-entrypoint.sh
 
 # Set up entrypoint
-WORKDIR    /var/www/html
+WORKDIR    /var/www/html/wp-content/plugins/wp-graphql-woocommerce
 COPY       bin/testing-entrypoint.sh /usr/local/bin/testing-entrypoint.sh
 RUN        chmod 755 /usr/local/bin/testing-entrypoint.sh
 ENTRYPOINT ["testing-entrypoint.sh"]

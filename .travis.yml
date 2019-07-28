@@ -71,8 +71,7 @@ install:
 before_script:
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      # Install and config Codeception
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
+      # Build images.
       docker-compose build \
         --build-arg DESIRED_PHP_VERSION=${PHP_VERSION} \
         --build-arg DESIRED_WP_VERSION=${WP_VERSION} \
@@ -92,12 +91,11 @@ script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      declare -a suites=( 'acceptance', 'functional', 'wpunit' )
-      for i in "${suites[@]}"; do
-        docker-compose run \
-          -e SUITE=${i} -e COVERAGE=${COVERAGE:-0} -e DEBUG=${DEBUG:-0} testing \
-          --rm testing --scale app=0
-      done
+      docker-compose run \
+        -e SUITES='acceptance;functional;wpunit' \
+        -e COVERAGE=${COVERAGE:-0} \
+        -e DEBUG=${DEBUG:-0} \
+        testing --rm testing --scale app=0
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
@@ -113,6 +111,8 @@ after_success:
     if [ "$COVERAGE" == "1" ]; then
       wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
       chmod +x php-coveralls.phar
-      travis_retry php php-coveralls.phar -v -r .
+
+      sed -i 's/\/var\/www\/html\/wp-content\/plugins\/wp-graphql-woocommerce\///g' tests/_output/coverage.xml
+      travis_retry php php-coveralls.phar -v
     fi
   

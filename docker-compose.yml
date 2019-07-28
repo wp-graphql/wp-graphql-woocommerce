@@ -10,12 +10,12 @@ services:
       - './.log/app:/var/log/apache2'
     env_file: .env.dist
     environment:
-      WP_URL: 'http://localhost:8001'
-      WP_DOMAIN: 'localhost:8001'
+      WP_URL: 'http://localhost:8091'
+      WP_DOMAIN: 'localhost:8091'
       DB_HOST: app_db
       INCLUDE_WPGRAPHIQL: 1
     ports:
-      - '8001:80'
+      - '8091:80'
     networks:
       local:
 
@@ -35,13 +35,12 @@ services:
   testing:
     depends_on:
       - app_db
-      - testing_db
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        DESIRED_PHP_VERSION: "${PHP_VERSION:-7.2}"
-        DESIRED_WP_VERSION: "${WP_VERSION:-5.2.2}"
+        DESIRED_PHP_VERSION: "${PHP_VERSION:-7.3}"
+        DESIRED_WP_VERSION: "${WP_VERSION:-5.2}"
     image: woographql-testing
     volumes:
       - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
@@ -49,21 +48,9 @@ services:
     env_file: .env.dist
     environment:
       WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
-      TEST_DB_HOST: testing_db
       DB_HOST: app_db
       WP_URL: 'http://localhost'
-    networks:
-      testing:
-
-  testing_db:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE:      woographql_tests
-      MYSQL_USER:          wordpress
-      MYSQL_PASSWORD:      wordpress
-    ports:
-      - '3306'
+      WP_DOMAIN: 'localhost'
     networks:
       testing:
 
