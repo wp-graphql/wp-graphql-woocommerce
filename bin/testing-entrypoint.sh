@@ -31,7 +31,7 @@ echo 'Setting Codeception output directory permissions'.
 chmod 777 -R ${TESTS_DIR}
 
 # Install dependencies
-composer install --prefer-source --no-interaction
+COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
 if [[ -z "$SUITES" ]]; then
     echo 'A target testing suite(s) must be selected.'
