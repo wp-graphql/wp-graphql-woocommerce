@@ -28,7 +28,7 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 			array(
 				'enabled'      => 'no',
 				'title'        => 'Check payments',
-				'description'  => 'Take payments in person via checks. This offline gateway can also be useful to test purchases.',
+				'description'  => 'Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.',
 				'instructions' => 'Instructions that will be added to the thank you page and emails.',
 				'account'      => '',
 			)
@@ -122,7 +122,7 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 						array(
 							'id'          => 'cheque',
 							'title'       => 'Check payments',
-							'description' => 'Take payments in person via checks. This offline gateway can also be useful to test purchases.',
+							'description' => 'Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.',
 							'icon'        => null,
 						),
 						array(
