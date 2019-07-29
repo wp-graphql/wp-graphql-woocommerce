@@ -27,9 +27,6 @@ if [ ! -f "${PROJECT_DIR}/c3.php" ]; then
     curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "${PROJECT_DIR}/c3.php"
 fi
 
-echo 'Setting Codeception output directory permissions'.
-chmod 777 -R ${TESTS_OUTPUT}/*
-
 # Install dependencies
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
@@ -52,3 +49,7 @@ for suite in "${target_suites[@]}"; do
     fi
 done
 
+if [ -f "${TESTS_OUTPUT}/coverage.xml" ]; then
+    echo 'Setting Codeception output directory permissions'.
+    chmod 777 -R ${TESTS_OUTPUT}/coverage.xml
+fi
