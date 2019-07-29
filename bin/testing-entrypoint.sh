@@ -30,6 +30,10 @@ fi
 # Install dependencies
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
+# Set output permission
+echo "Setting Codeception output directory permissions"
+chmod 777 ${TESTS_OUTPUT}
+
 if [[ -z "$SUITES" ]]; then
     echo 'A target testing suite(s) must be selected.'
     echo 'Using the environment variable "$SUITES" set on the "testing" service.'
@@ -49,7 +53,7 @@ for suite in "${target_suites[@]}"; do
     fi
 done
 
-if [ -f "${TESTS_OUTPUT}/coverage.xml" ]; then
-    echo 'Setting Codeception output directory permissions'.
+if [ -f "${TESTS_OUTPUT}" ]; then
+    echo 'Setting "coverage.xml" permissions'.
     chmod 777 -R ${TESTS_OUTPUT}/coverage.xml
 fi
