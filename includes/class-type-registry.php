@@ -67,6 +67,7 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Shipping_Method_Type::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Cart_Type::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Variation_Attribute_Type::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Payment_Gateway_Type::register();
 
 		// Object fields.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
@@ -85,6 +86,7 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Connection\Tax_Rates::register_connections();
 		\WPGraphQL\Extensions\WooCommerce\Connection\Shipping_Methods::register_connections();
 		\WPGraphQL\Extensions\WooCommerce\Connection\Cart_Items::register_connections();
+		\WPGraphQL\Extensions\WooCommerce\Connection\Payment_Gateways::register_connections();
 
 		// Mutations.
 		\WPGraphQL\Extensions\WooCommerce\Mutation\Customer_Register::register_mutation();
