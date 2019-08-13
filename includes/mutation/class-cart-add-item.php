@@ -104,7 +104,7 @@ class Cart_Add_Item {
 			// Add item to cart and get item key.
 			$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
 
-			if ( ! $cart_item_key ) {
+			if ( empty( $cart_item_key ) ) {
 				throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
 			}
 
