@@ -17,6 +17,11 @@ class CouponHelper extends WCG_Helper {
 		// Create new coupon crud object instance.
 		$coupon = new WC_Coupon();
 
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$coupon->set_meta_data( $args['meta_data'] );
+		}
+
 		// Set props.
 		$amount = $this->dummy->number( 0, 75 );
 		$coupon->set_props(

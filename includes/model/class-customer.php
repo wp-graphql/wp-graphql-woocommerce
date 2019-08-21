@@ -42,6 +42,18 @@ class Customer extends Model {
 	}
 
 	/**
+	 * Forwards function calls to WC_Data sub-class instance.
+	 *
+	 * @param string $method - function name.
+	 * @param array  $args  - function call arguments.
+	 *
+	 * @return mixed
+	 */
+	public function __call( $method, $args ) {
+		return $this->data->$method( ...$args );
+	}
+
+	/**
 	 * Initializes the Customer field resolvers
 	 *
 	 * @access protected

@@ -68,6 +68,7 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Cart_Type::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Variation_Attribute_Type::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Payment_Gateway_Type::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Meta_Data_Type::register();
 
 		// Object fields.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
