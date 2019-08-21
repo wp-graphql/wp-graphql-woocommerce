@@ -26,18 +26,25 @@ class Meta_Data_Type {
 			array(
 				'description' => __( 'Extra data defined on the WC object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
+					'id'    => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $source ) {
+							return ! empty( $source->id ) ? $source->id : null;
+						},
+					),
 					'key'   => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
-							return ! empty( $source['key'] ) ? $source['key'] : null;
+							return ! empty( $source->key ) ? $source->key : null;
 						},
 					),
 					'value' => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
-							return ! empty( $source['value'] ) ? $source['value'] : null;
+							return ! empty( $source->value ) ? $source->value : null;
 						},
 					),
 				),
@@ -62,16 +69,17 @@ class Meta_Data_Type {
 					),
 				),
 				'resolve'     => function( $source, array $args ) {
+					// Check if "key" argument set and assigns to target "keys" array.
 					if ( ! empty( $args['key'] ) && ! empty( $source[ $args['key'] ] ) ) {
 						$keys = array( $args['key'] );
-					} elseif ( ! empty( $args['keysIn'] ) ) {
+					} elseif ( ! empty( $args['keysIn'] ) ) { // Check if "keysIn" argument set and assigns to target "keys" array.
 						$keys = array();
 						foreach ( $args['keysIn'] as $key ) {
 							if ( ! empty( $source[ $key ] ) ) {
 								$keys[] = $key;
 							}
 						}
-					} else {
+					} else { // If no arguments set, all extra data keys are assigns to target "keys" array.
 						$keys = array_diff(
 							array_keys( $source ),
 							array(
@@ -90,10 +98,14 @@ class Meta_Data_Type {
 							)
 						);
 					}
+					// Create meta ID prefix.
+					$id_prefix = apply_filters( 'cart_meta_id_prefix', 'cart_' );
 
+					// Format meta data for resolution.
 					$data = array();
 					foreach ( $keys as $key ) {
-						$data[] = array(
+						$data[] = (object) array(
+							'id'    => "{$id_prefix}_{$key}",
 							'key'   => $key,
 							'value' => $source[ $key ],
 						);
@@ -104,6 +116,7 @@ class Meta_Data_Type {
 			)
 		);
 
+		// Register 'metaData' field on WC CRUD types.
 		$types = array(
 			'Coupon',
 			'Customer',
@@ -130,7 +143,7 @@ class Meta_Data_Type {
 							'type'        => 'String',
 							'description' => __( 'Retrieve meta by key', 'wp-graphql-woocommerce' ),
 						),
-						'keysIn'     => array(
+						'keysIn'   => array(
 							'type'        => array( 'list_of' => 'String' ),
 							'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
 						),
@@ -140,21 +153,56 @@ class Meta_Data_Type {
 						),
 					),
 					'resolve'     => function( $source, array $args ) {
+						// Set unique flag.
 						$single = ! empty( $args['multiple'] ) ? ! $args['multiple'] : true;
-						$data   = array();
 
-						if ( ! empty( $args['key'] ) ) {
-							$data[ $args['key'] ] = $source->get_meta( $args['key'], $single );
-						} elseif ( ! empty( $args['keysIn'] ) ) {
-							$data = array();
-							foreach ( $args['keysIn'] as $key ) {
-								$data[ $key ] = $source->get_meta( $key, $single );
+						// Check "key" argument and format meta_data objects.
+						if ( ! empty( $args['key'] ) && $source->meta_exists( $args['key'] ) ) {
+							$data = $source->get_meta( $args['key'], $single );
+							if ( ! is_array( $data ) ) {
+								$data = array_filter(
+									$source->get_meta_data(),
+									function( $meta ) use ( $data ) {
+										return $meta->value === $data;
+									}
+								);
 							}
-						} else {
-							$data = $source->get_meta_data();
+						} elseif ( ! empty( $args['keysIn'] ) ) { // Check "keysIn" argument and format meta_data objects.
+							$keys = $args['keysIn'];
+
+							$found = array();
+							$data = array_filter(
+								$source->get_meta_data(),
+								function( $meta ) use ( $keys, $single, &$found ) {
+									if ( in_array( $meta->key, $keys, true ) ) {
+										if ( $single ) {
+											if ( ! in_array( $meta->key, $found, true ) ) {
+												$found[] = $meta->key;
+												return true;
+											}
+											return false;
+										}
+										return true;
+									}
+								}
+							);
+						} else { // If no arguments set return all meta (in accordance with unique flag).
+							$found = array();
+							$data = array_filter(
+								$source->get_meta_data(),
+								function( $meta ) use ( $single, &$found ) {
+									if ( $single ) {
+										if ( ! in_array( $meta->key, $found, true ) ) {
+											$found[] = $meta->key;
+											return true;
+										}
+										return false;
+									}
+									return true;
+								}
+							);
 						}
 
-						\codecept_debug( $source->get_meta_data() );
 						return ! empty( $data ) ? $data : null;
 					},
 				)

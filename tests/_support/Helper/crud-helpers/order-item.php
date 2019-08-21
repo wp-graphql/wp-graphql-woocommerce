@@ -48,9 +48,7 @@ class OrderItemHelper extends WCG_Helper {
 
 	public function add_fee( $order, $args = array(), $save = true ) {
 		// Retrieve order.
-		if ( ! is_a( $order, WC_Order::class ) ) {
-			$order = new WC_Order( $order );
-		}
+		$order = new WC_Order( $order );
 
 		// Get thre customer country code.
 		$country_code = $order->get_shipping_country();
@@ -76,6 +74,12 @@ class OrderItemHelper extends WCG_Helper {
 		if ( ! empty( $args ) ) {
 			$item->set_props( $args );
 		}
+
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$item->set_meta_data( $args['meta_data'] );
+		}
+
 		// Calculating Fee taxes
 		$item->calculate_taxes( $calculate_tax_for );
 
@@ -112,6 +116,11 @@ class OrderItemHelper extends WCG_Helper {
 				$args
 			)
 		);
+
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$item->set_meta_data( $args['meta_data'] );
+		}
 
 		$item_id = $item->save();
 
@@ -151,6 +160,12 @@ class OrderItemHelper extends WCG_Helper {
 				$args
 			)
 		);
+
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$item->set_meta_data( $args['meta_data'] );
+		}
+
 		$item->save();
 
 		$order->add_item( $item );
@@ -188,6 +203,11 @@ class OrderItemHelper extends WCG_Helper {
 				'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
 			)
 		);
+
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$item->set_meta_data( $args['meta_data'] );
+		}
 
 		$order->add_item( $item );
 

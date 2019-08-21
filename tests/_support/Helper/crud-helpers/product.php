@@ -145,6 +145,10 @@ class ProductHelper extends WCG_Helper {
 			)
 		);
 
+		if ( ! empty( $args['meta_data'] ) ) {
+			$product->set_meta_data( $args['meta_data'] );
+		}
+
 		// Create and add size attribute.
 		$attribute_data = $this->create_attribute( 'size', array( 'small', 'medium', 'large' ) ); // Create all attribute related things.
 		$attribute_1    = new WC_Product_Attribute();

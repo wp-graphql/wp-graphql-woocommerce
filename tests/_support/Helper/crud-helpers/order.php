@@ -141,7 +141,12 @@ class OrderHelper extends WCG_Helper {
 		$order->set_cart_tax( 0 );
 		$order->set_shipping_tax( 0 );
         $order->set_total( 50 ); // 4 x $10 simple helper product
-        
+		
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$order->set_meta_data( $args['meta_data'] );
+		}
+
         // Save and return ID.
 		return $order->save();
 	}

@@ -37,9 +37,22 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
     private function createObjects() {
         $data = array(
             'meta_data' => array(
-                'meta_1' => 'test_meta_1',
-                'meta_2' => 'test_meta_2'
-            )
+                array(
+                    'id'    => 0,
+                    'key'   => 'meta_1',
+                    'value' => 'test_meta_1'
+                ),
+                array(
+                    'id'    => 0,
+                    'key'   => 'meta_2',
+                    'value' => 'test_meta_2'
+                ),
+                array(
+                    'id'    => 0,
+                    'key'   => 'meta_1',
+                    'value' => 'test_meta_3'
+                ),
+            ),
         );
 
         // Create Coupon with meta data.
@@ -48,21 +61,26 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // Create Customer with meta data.
         $this->customer_id = $this->customers->create( $data );
 
-        // Create Order with meta data.
-        $this->order_id    = $this->orders->create( $data );
-        $this->order_items->add_coupon( $this->order_id, $this->coupon_id );
+        // Create Order and Refund with meta data.
+        $this->order_id = $this->orders->create( $data );
+        $this->order_items->add_fee( $this->order_id, $data );
+        $this->refund_id = $this->refunds->create( $this->order_id, $data );
 
         // Create Products with meta data.
         $this->product_id    = $this->products->create_variable( $data );
         $this->variation_ids = $this->variations->create( $this->product_id, $data );
 
         // Add Cart Item with extra data.
+        $cart_meta_data = array(
+            'meta_1' => 'test_meta_1',
+            'meta_2' => 'test_meta_2'
+        );
         $this->cart_item_key = WC()->cart->add_to_cart(
             $this->product_id,
             2,
             $this->variation_ids['variations'][1],
             array(),
-            $data['meta_data']
+            $cart_meta_data
         );
     }
 
@@ -187,10 +205,10 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
     public function testCouponMetaDataQueries() {
         $id    = Relay::toGlobalId( 'shop_coupon', $this->coupon_id );
         $query = '
-            query ($id: ID!, $key: String, $keysIn: [String]) {
+            query ($id: ID!, $key: String, $keysIn: [String], $multiple: Boolean) {
                 coupon(id: $id) {
                     id
-                    metaData(key: $key, keysIn: $keysIn) {
+                    metaData(key: $key, keysIn: $keysIn, multiple: $multiple) {
                         key
                         value
                     }
@@ -285,6 +303,100 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         codecept_debug( $actual );
 
         $this->assertEqualSets( $expected, $actual );
+
+        /**
+         * Assertion Four
+         * 
+         * query w/ "key" filter and "multiple" set to true to get non-unique results.
+         */
+        $variables = array( 'id' => $id, 'key' => 'meta_1', 'multiple' => true );
+        $actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+        $expected = array(
+            'data' => array(
+                'coupon' => array(
+                    'id' => $id,
+                    'metaData' => array(
+                        array(
+                            'key'   => 'meta_1',
+                            'value' => 'test_meta_1',
+                        ),
+                        array(
+                            'key'   => 'meta_1',
+                            'value' => 'test_meta_3',
+                        ),
+                    )
+                ),
+            ),
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertEqualSets( $expected, $actual );
+
+        /**
+         * Assertion Five
+         * 
+         * query w/ "keysIn" filter and "multiple" set to true to get non-unique results.
+         */
+        $variables = array( 'id' => $id, 'keysIn' => array( 'meta_1' ), 'multiple' => true );
+        $actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+        $expected = array(
+            'data' => array(
+                'coupon' => array(
+                    'id' => $id,
+                    'metaData' => array(
+                        array(
+                            'key'   => 'meta_1',
+                            'value' => 'test_meta_1',
+                        ),
+                        array(
+                            'key'   => 'meta_1',
+                            'value' => 'test_meta_3',
+                        ),
+                    )
+                ),
+            ),
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertEqualSets( $expected, $actual );
+
+        /**
+         * Assertion Six
+         * 
+         * query w/o filters and "multiple" set to true to get non-unique results.
+         */
+        $variables = array( 'id' => $id, 'multiple' => true );
+        $actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+        $expected = array(
+            'data' => array(
+                'coupon' => array(
+                    'id' => $id,
+                    'metaData' => array(
+                        array(
+                            'key'   => 'meta_1',
+                            'value' => 'test_meta_1',
+                        ),
+                        array(
+                            'key'   => 'meta_2',
+                            'value' => 'test_meta_2',
+                        ),
+                        array(
+                            'key'   => 'meta_1',
+                            'value' => 'test_meta_3',
+                        ),
+                    )
+                ),
+            ),
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertEqualSets( $expected, $actual );
     }
 
     public function testCustomerMetaDataQueries() {
@@ -339,7 +451,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                         key
                         value
                     }
-                    couponLines {
+                    feeLines {
                         nodes {
                             metaData {
                                 key
@@ -375,7 +487,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                             'value' => 'test_meta_2',
                         ),
                     ),
-                    'couponLines' => array(
+                    'feeLines' => array(
                         'nodes' => array(
                             array(
                                 'metaData' => array(
