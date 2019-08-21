@@ -32,6 +32,11 @@ class CouponHelper extends WCG_Helper {
 			)
 		);
 
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$coupon->set_meta_data( $args['meta_data'] );
+		}
+
 		// Return instance in not saving.
 		if( ! $save ) {
 			return $coupon;

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7a6810d883e7e56f4120cefc43c77766
+class ComposerStaticInit83ea8ceeec7856c3ed76cc34ad81baa1
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -113,6 +113,7 @@ class ComposerStaticInit7a6810d883e7e56f4120cefc43c77766
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Coupon_Type' => __DIR__ . '/../..' . '/includes/type/object/class-coupon-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address_Type' => __DIR__ . '/../..' . '/includes/type/object/class-customer-address-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Type' => __DIR__ . '/../..' . '/includes/type/object/class-customer-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Meta_Data_Type' => __DIR__ . '/../..' . '/includes/type/object/class-meta-data-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Item_Type' => __DIR__ . '/../..' . '/includes/type/object/class-order-item-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => __DIR__ . '/../..' . '/includes/type/object/class-order-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Payment_Gateway_Type' => __DIR__ . '/../..' . '/includes/type/object/class-payment-gateway-type.php',
@@ -134,9 +135,9 @@ class ComposerStaticInit7a6810d883e7e56f4120cefc43c77766
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7a6810d883e7e56f4120cefc43c77766::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7a6810d883e7e56f4120cefc43c77766::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7a6810d883e7e56f4120cefc43c77766::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit83ea8ceeec7856c3ed76cc34ad81baa1::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit83ea8ceeec7856c3ed76cc34ad81baa1::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit83ea8ceeec7856c3ed76cc34ad81baa1::$classMap;
 
         }, null, ClassLoader::class);
     }

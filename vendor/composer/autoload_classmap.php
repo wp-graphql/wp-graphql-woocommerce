@@ -98,6 +98,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Coupon_Type' => $baseDir . '/includes/type/object/class-coupon-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Address_Type' => $baseDir . '/includes/type/object/class-customer-address-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Customer_Type' => $baseDir . '/includes/type/object/class-customer-type.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Meta_Data_Type' => $baseDir . '/includes/type/object/class-meta-data-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Item_Type' => $baseDir . '/includes/type/object/class-order-item-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Order_Type' => $baseDir . '/includes/type/object/class-order-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Payment_Gateway_Type' => $baseDir . '/includes/type/object/class-payment-gateway-type.php',

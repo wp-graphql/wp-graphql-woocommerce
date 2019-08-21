@@ -32,6 +32,11 @@ class RefundHelper extends WCG_Helper {
 			)
 		);
 
+		if ( ! empty( $refund ) && ! empty( $args['meta_data'] ) ) {
+			$refund->set_meta_data( $args['meta_data'] );
+			$refund->save_meta_data();
+		}
+
 		return ! empty( $refund ) ? $refund->get_id() : 0;
 	}
 
