@@ -222,6 +222,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				$featured: Boolean,
 				$maxPrice: Float,
 				$orderby: [WCConnectionOrderbyInput]
+				$taxonomyFilter: [ProductTaxonomyFilterRelationInput]
 			){
 				products( where: {
 					slug: $slug,
@@ -238,6 +239,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					featured: $featured,
 					maxPrice: $maxPrice,
 					orderby: $orderby
+					taxonomyFilter: $taxonomyFilter
 				} ) {
 					nodes {
 						id
@@ -483,7 +485,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Ten
 		 * 
-		 * tests "categoryName" where argument
+		 * tests "category" where argument
 		 */
 		$variables = array( 'category' => 'category-three' );
 		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
@@ -511,7 +513,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Eleven
 		 * 
-		 * tests "categoryName" where argument
+		 * tests "categoryIn" where argument
 		 */
 		$variables = array( 'categoryIn' => array( 'category-three' ) );
 		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
@@ -539,7 +541,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Twelve
 		 * 
-		 * tests "categoryName" where argument
+		 * tests "categoryNotIn" where argument
 		 */
 		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
 		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
@@ -567,7 +569,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Thirteen
 		 * 
-		 * tests "categoryName" where argument
+		 * tests "categoryId" where argument
 		 */
 		$variables = array( 'categoryId' => $category_3 );
 		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
@@ -595,7 +597,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Fourteen
 		 * 
-		 * tests "categoryName" where argument
+		 * tests "categoryIdIn" where argument
 		 */
 		$variables = array( 'categoryIdIn' => array( $category_3 ) );
 		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
@@ -623,7 +625,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Fifteen
 		 * 
-		 * tests "categoryName" where argument
+		 * tests "categoryIdNotIn" where argument
 		 */
 		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
 		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
@@ -636,6 +638,51 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 							'filter' => function( $id ) use ( $category_4 ) {
 								$product = \wc_get_product( $id );
 								return ! in_array( $category_4, $product->get_category_ids() );;
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Sixteen
+		 * 
+		 * tests "taxonomyFilter" where argument
+		 */
+		$variables = array(
+			'taxonomyFilter' => array(
+				array(
+					'and' => array(
+						array(
+							'taxonomy' => 'CATEGORY',
+							'terms'    => array( 'category-three' ),
+						),
+						array(
+							'taxonomy' => 'CATEGORY',
+							'terms'    => array( 'category-four' ),
+							'operator' => 'NOT_IN'
+						),
+					)
+				)
+			),
+		);
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_4, $category_3 ) {
+								$product = \wc_get_product( $id );
+								return ! in_array( $category_4, $product->get_category_ids() )
+									&& in_array( $category_3, $product->get_category_ids() );
 							},
 						)
 					),

@@ -39,6 +39,8 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Pricing_Field_Format::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Product_Taxonomy::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Taxonomy_Operator::register();
 
 		// InputObjects.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Address_Input::register();
@@ -51,6 +53,8 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Shipping_Line_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Create_Account_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Cart_Item_Quantity_Input::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Input::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Relation_Input::register();
 
 		// Objects.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type::register();

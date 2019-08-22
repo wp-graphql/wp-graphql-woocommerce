@@ -478,6 +478,29 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
+		// Process "taxonomyFilter".
+		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
+			foreach ( $where_args['taxonomyFilter'] as $filter ) {
+				foreach ( $filter as $relation => $filter_args ) {
+					foreach ( $filter_args as $filter_arg ) {
+						$tax_query[] = array(
+							'relation' => $relation,
+							array(
+								'taxonomy' => $filter_arg['taxonomy'],
+								'field'    => ! empty( $filter_arg['ids'] ) ? 'term_id' : 'slug',
+								'terms'    => ! empty( $filter_arg['ids'] )
+									? $filter_arg['ids']
+									: $filter_arg['terms'],
+								'operator' => ! empty( $filter_arg['operator'] )
+									? $filter_arg['operator']
+									: 'IN',
+							),
+						);
+					}
+				}
+			}
+		}
+
 		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
 		}

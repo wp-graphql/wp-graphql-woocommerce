@@ -270,6 +270,10 @@ class Products extends WC_Connection {
 				'type'        => 'CatalogVisibilityEnum',
 				'description' => __( 'Limit result set to products with a specific visibility level.', 'wp-graphql-woocommerce' ),
 			),
+			'taxonomyFilter'  => array(
+				'type'        => array( 'list_of' => 'ProductTaxonomyFilterRelationInput' ),
+				'description' => __( 'Limit result set with complex set of taxonomy filters.', 'wp-graphql-woocommerce' ),
+			),
 		);
 
 		if ( wc_tax_enabled() ) {
