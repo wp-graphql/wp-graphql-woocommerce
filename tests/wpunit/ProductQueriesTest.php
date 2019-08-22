@@ -186,17 +186,21 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testProductsQueryAndWhereArgs() {
+		$category_3 = $this->helper->create_product_category( 'category-three' );
+		$category_4 = $this->helper->create_product_category( 'category-four' );
 		$products = array (
 			$this->product,
 			$this->helper->create_simple(
 				array(
 					'price'         => 10,
 					'regular_price' => 10,
+					'category_ids'  => array( $category_3, $category_4 )
 				)
 			),
 			$this->helper->create_simple(
 				array(
-					'featured' => "true",
+					'featured'     => 'true',
+					'category_ids' => array( $category_3 ),
 				)
 			),
 			$this->helper->create_external(),
@@ -206,6 +210,12 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ProductsQuery(
 				$slug: String,
 				$status: String,
+				$category: String,
+				$categoryIn: [String],
+				$categoryNotIn: [String],
+				$categoryId: Int,
+				$categoryIdIn: [Int]
+				$categoryIdNotIn: [Int]
 				$type: ProductTypesEnum,
 				$typeIn: [ProductTypesEnum],
 				$typeNotIn: [ProductTypesEnum],
@@ -216,6 +226,12 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				products( where: {
 					slug: $slug,
 					status: $status,
+					category: $category,
+					categoryIn: $categoryIn,
+					categoryNotIn: $categoryNotIn,
+					categoryId: $categoryId,
+					categoryIdIn: $categoryIdIn,
+					categoryIdNotIn: $categoryIdNotIn,
 					type: $type,
 					typeIn: $typeIn,
 					typeNotIn: $typeNotIn,
@@ -452,6 +468,174 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 									return 0;
 								}
 								return floatval( $product_a->get_price() ) > floatval( $product_b->get_price() ) ? -1 : 1;
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Ten
+		 * 
+		 * tests "categoryName" where argument
+		 */
+		$variables = array( 'category' => 'category-three' );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_3 ) {
+								$product = \wc_get_product( $id );
+								return in_array( $category_3, $product->get_category_ids(), true );
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Eleven
+		 * 
+		 * tests "categoryName" where argument
+		 */
+		$variables = array( 'categoryIn' => array( 'category-three' ) );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_3 ) {
+								$product = \wc_get_product( $id );
+								return in_array( $category_3, $product->get_category_ids(), true );
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Twelve
+		 * 
+		 * tests "categoryName" where argument
+		 */
+		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_4 ) {
+								$product = \wc_get_product( $id );
+								return ! in_array( $category_4, $product->get_category_ids() );
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Thirteen
+		 * 
+		 * tests "categoryName" where argument
+		 */
+		$variables = array( 'categoryId' => $category_3 );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_3 ) {
+								$product = \wc_get_product( $id );
+								return in_array( $category_3, $product->get_category_ids(), true );
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Fourteen
+		 * 
+		 * tests "categoryName" where argument
+		 */
+		$variables = array( 'categoryIdIn' => array( $category_3 ) );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_3 ) {
+								$product = \wc_get_product( $id );
+								return in_array( $category_3, $product->get_category_ids(), true );
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Fifteen
+		 * 
+		 * tests "categoryName" where argument
+		 */
+		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
+		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$expected = array(
+			'data' => array(
+				'products' => array(
+					'nodes' => $this->helper->print_nodes(
+						$products,
+						array(
+							'filter' => function( $id ) use ( $category_4 ) {
+								$product = \wc_get_product( $id );
+								return ! in_array( $category_4, $product->get_category_ids() );;
 							},
 						)
 					),
