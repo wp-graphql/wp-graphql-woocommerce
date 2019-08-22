@@ -16,17 +16,15 @@ class Tax_Status {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = [
-			'TAXABLE'  => array( 'value' => 'taxable' ),
-			'SHIPPING' => array( 'value' => 'shipping' ),
-			'NONE'     => array( 'value' => 'none' ),
-		];
-
 		register_graphql_enum_type(
 			'TaxStatusEnum',
 			array(
 				'description' => __( 'Product tax status enumeration', 'wp-graphql' ),
-				'values'      => $values,
+				'values'      => array(
+					'TAXABLE'  => array( 'value' => 'taxable' ),
+					'SHIPPING' => array( 'value' => 'shipping' ),
+					'NONE'     => array( 'value' => 'none' ),
+				),
 			)
 		);
 	}
