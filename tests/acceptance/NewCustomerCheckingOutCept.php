@@ -55,4 +55,8 @@ $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('checkout', $success['data'] );
 $I->assertArrayHasKey('order', $success['data']['checkout'] );
+$I->assertArrayHasKey('customer', $success['data']['checkout'] );
+$I->assertArrayHasKey('result', $success['data']['checkout'] );
+$I->assertEquals( 'success', $success['data']['checkout']['result'] );
+$I->assertArrayHasKey('redirect', $success['data']['checkout'] );
 $I->assertArrayHasKey('id', $success['data']['checkout']['order'] );

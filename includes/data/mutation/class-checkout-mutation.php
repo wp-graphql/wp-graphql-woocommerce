@@ -63,12 +63,11 @@ class Checkout_Mutation {
 	 */
 	public static function prepare_checkout_args( $input, $context, $info ) {
 		$data    = array(
-			'terms'                              => (int) isset( $input['terms'] ),
-			'createaccount'                      => (int) ! empty( $input['account'] ),
-			'payment_method'                     => isset( $input['paymentMethod'] ) ? $input['paymentMethod'] : '',
-			'shipping_method'                    => isset( $input['shippingMethod'] ) ? $input['shippingMethod'] : '',
-			'ship_to_different_address'          => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
-			'woocommerce_checkout_update_totals' => isset( $input['updateTotals'] ),
+			'terms'                     => (int) isset( $input['terms'] ),
+			'createaccount'             => (int) ! empty( $input['account'] ),
+			'payment_method'            => isset( $input['paymentMethod'] ) ? $input['paymentMethod'] : '',
+			'shipping_method'           => isset( $input['shippingMethod'] ) ? $input['shippingMethod'] : '',
+			'ship_to_different_address' => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
 		);
 		$skipped = array();
 
@@ -460,6 +459,11 @@ class Checkout_Mutation {
 		$order = wc_get_order( $order_id );
 		$order->payment_complete();
 		wc_empty_cart();
+
+		return array(
+			'result'   => 'success',
+			'redirect' => apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', $order->get_checkout_order_received_url(), $order ),
+		);
 	}
 
 	/**
@@ -468,12 +472,11 @@ class Checkout_Mutation {
 	 * @param array       $data     Order data.
 	 * @param AppContext  $context  AppContext instance.
 	 * @param ResolveInfo $info     ResolveInfo instance.
+	 * @param array       $results  Order status.
 	 *
 	 * @throws UserError When validation fails.
 	 */
-	public static function process_checkout( $data, $context, $info ) {
-		WC()->session->set( 'refresh_totals', true );
-
+	public static function process_checkout( $data, $context, $info, &$results = null ) {
 		wc_maybe_define_constant( 'WOOCOMMERCE_CHECKOUT', true );
 		wc_set_time_limit( 0 );
 
@@ -491,26 +494,24 @@ class Checkout_Mutation {
 		// Validate posted data and cart items before proceeding.
 		self::validate_checkout( $data );
 
-		if ( empty( $data['woocommerce_checkout_update_totals'] ) ) {
-			self::process_customer( $data );
-			$order_id = WC()->checkout->create_order( $data );
-			$order    = wc_get_order( $order_id );
+		self::process_customer( $data );
+		$order_id = WC()->checkout->create_order( $data );
+		$order    = wc_get_order( $order_id );
 
-			if ( is_wp_error( $order_id ) ) {
-				throw new UserError( $order_id->get_error_message() );
-			}
+		if ( is_wp_error( $order_id ) ) {
+			throw new UserError( $order_id->get_error_message() );
+		}
 
-			if ( ! $order ) {
-				throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
-			}
+		if ( ! $order ) {
+			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
+		}
 
-			do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
+		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
-			if ( WC()->cart->needs_payment() ) {
-				self::process_order_payment( $order_id, $data['payment_method'] );
-			} else {
-				self::process_order_without_payment( $order_id );
-			}
+		if ( WC()->cart->needs_payment() ) {
+			$results = self::process_order_payment( $order_id, $data['payment_method'] );
+		} else {
+			$results = self::process_order_without_payment( $order_id );
 		}
 
 		return $order_id;

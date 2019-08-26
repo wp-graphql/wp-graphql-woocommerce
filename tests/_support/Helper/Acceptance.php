@@ -224,6 +224,8 @@ class Acceptance extends \Codeception\Module {
                     customer {
                         id
                     }
+                    result
+                    redirect
                 }
             }
         ';

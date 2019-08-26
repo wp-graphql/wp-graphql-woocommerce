@@ -55,10 +55,6 @@ class Checkout {
 				'type'        => 'Boolean',
 				'description' => __( 'Ship to a separate address', 'wp-graphql-woocommerce' ),
 			),
-			'updateTotals'           => array(
-				'type'        => 'Boolean',
-				'description' => __( 'Update order totals', 'wp-graphql-woocommerce' ),
-			),
 			'paymentMethodTitle'     => array(
 				'type'        => 'String',
 				'description' => __( 'Payment method title.', 'woocommerce' ),
@@ -97,6 +93,18 @@ class Checkout {
 					return is_user_logged_in() ? new Customer( get_current_user_id() ) : null;
 				},
 			),
+			'result'  => array(
+				'type'    => 'String',
+				'resolve' => function( $payload ) {
+					return $payload['result'];
+				},
+			),
+			'redirect' => array(
+				'type'    => 'String',
+				'resolve' => function( $payload ) {
+					return $payload['redirect'];
+				},
+			),
 		);
 	}
 
@@ -122,7 +130,7 @@ class Checkout {
 				 */
 				do_action( 'woocommerce_graphql_before_checkout', $args, $input, $context, $info );
 
-				$order_id = Checkout_Mutation::process_checkout( $args, $context, $info );
+				$order_id = Checkout_Mutation::process_checkout( $args, $context, $info, $results );
 
 				if ( is_wp_error( $order_id ) ) {
 					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
@@ -138,7 +146,7 @@ class Checkout {
 				 */
 				do_action( 'woocommerce_graphql_after_checkout', $order_id, $input, $context, $info );
 
-				return array( 'id' => $order_id );
+				return array_merge( array( 'id' => $order_id ), $results );
 			} catch ( \Exception $e ) {
 				Order_Mutation::purge( $order );
 				throw new UserError( $e->getMessage() );
