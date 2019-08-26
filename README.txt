@@ -1,5 +1,5 @@
 === WP GraphQL WooCommerce ===
-Contributors: kidunot89
+Contributors: kidunot89, ranaaterning
 Tags: GraphQL, WooCommerce, WPGraphQL
 Requires at least: 4.9
 Tested up to: 5.2
