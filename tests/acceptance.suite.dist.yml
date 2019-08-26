@@ -8,8 +8,12 @@
 actor: AcceptanceTester
 modules:
     enabled:
-        - WPDb
+        - Asserts
+        - REST
         - WPBrowser
-        - \Helper\Acceptance
-    disabled:
+        - WPDb
         - WPLoader
+        - \Helper\Acceptance
+    config:
+        WPDb:
+            cleanup: false

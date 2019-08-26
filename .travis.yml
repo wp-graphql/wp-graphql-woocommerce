@@ -91,11 +91,11 @@ script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      docker-compose run \
+      docker-compose run --rm \
         -e SUITES='acceptance;functional;wpunit' \
         -e COVERAGE=${COVERAGE:-0} \
         -e DEBUG=${DEBUG:-0} \
-        testing --rm testing --scale app=0
+        testing --scale app=0
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
