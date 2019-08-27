@@ -481,23 +481,31 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		// Process "taxonomyFilter".
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
 			foreach ( $where_args['taxonomyFilter'] as $filter ) {
+				// Holds sub tax query parameters.
+				$sub_tax_query = array();
+
+				// Process parameters.
 				foreach ( $filter as $relation => $filter_args ) {
 					foreach ( $filter_args as $filter_arg ) {
-						$tax_query[] = array(
-							'relation' => $relation,
-							array(
-								'taxonomy' => $filter_arg['taxonomy'],
-								'field'    => ! empty( $filter_arg['ids'] ) ? 'term_id' : 'slug',
-								'terms'    => ! empty( $filter_arg['ids'] )
-									? $filter_arg['ids']
-									: $filter_arg['terms'],
-								'operator' => ! empty( $filter_arg['operator'] )
-									? $filter_arg['operator']
-									: 'IN',
-							),
+						$sub_tax_query[] = array(
+							'taxonomy' => $filter_arg['taxonomy'],
+							'field'    => ! empty( $filter_arg['ids'] ) ? 'term_id' : 'slug',
+							'terms'    => ! empty( $filter_arg['ids'] )
+								? $filter_arg['ids']
+								: $filter_arg['terms'],
+							'operator' => ! empty( $filter_arg['operator'] )
+								? $filter_arg['operator']
+								: 'IN',
 						);
 					}
 				}
+
+				// Set sub tax query relation.
+				if ( 1 > count( $sub_tax_query ) ) {
+					$sub_tax_query['relation'] = strtoupper( $relation );
+				}
+
+				$tax_query[] = $sub_tax_query;
 			}
 		}
 
