@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export $(cat .env | xargs)
+source .env
 
 print_usage_instruction() {
 	echo "Ensure that .env file exist in project root directory exists."
@@ -30,19 +30,17 @@ if [[ -z "$TEST_DB_HOST" ]]; then
 else
 	DB_HOST=$TEST_DB_HOST
 fi
-if [ -z "$WP_VERSION" ]; then 
-	WP_VERSION=latest
-fi
 if [ -z "$SKIP_DB_CREATE" ]; then 
 	SKIP_DB_CREATE=false
 fi
 
+WP_VERSION=${WP_VERSION-latest}
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
 PLUGIN_DIR=$(pwd)
-DB_SERVE_NAME=${DB_SERVE_NAME-wpgraphql_serve}
+DB_SERVE_NAME=${DB_SERVE_NAME-woographql_serve}
 
 download() {
     if [ `which curl` ]; then
@@ -188,37 +186,21 @@ configure_wordpress() {
 }
 
 setup_woocommerce() {
-	echo "Installing & Activating WordPress Importer"
-	wp plugin install wordpress-importer --activate
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
-	echo "Upgrading database"
-	wp wc update
 }
 
 setup_wpgraphql() {
 	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql ]; then
 		echo "Cloning WPGraphQL"
-		git clone https://github.com/wp-graphql/wp-graphql.git $WP_CORE_DIR/wp-content/plugins/wp-graphql
+		wp plugin install https://github.com/wp-graphql/wp-graphql/archive/master.zip
 	fi
-
-	cd $WP_CORE_DIR/wp-content/plugins/wp-graphql
-	git checkout develop
-	git pull origin develop
-
-	if [ ! -z "$WP_GRAPHQL_BRANCH" ]; then 
-		echo "Checking out WPGraphQL branch - $WP_GRAPHQL_BRANCH"
-		git checkout --track origin/$WP_GRAPHQL_BRANCH
-	fi
-	
-	
-	cd $WP_CORE_DIR
 	echo "Activating WPGraphQL"
 	wp plugin activate wp-graphql
 
 	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication ]; then
 		echo "Cloning WPGraphQL-JWT-Authentication"
-		git clone https://github.com/wp-graphql/wp-graphql-jwt-authentication.git $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication
+		wp plugin install https://github.com/wp-graphql/wp-graphql-jwt-authentication/archive/master.zip
 	fi
 	echo "Activating WPGraphQL-JWT-Authentication"
 	wp plugin activate wp-graphql-jwt-authentication

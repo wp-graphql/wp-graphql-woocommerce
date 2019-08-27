@@ -24,13 +24,13 @@ class Cart_Mutation {
 	 * @return array
 	 */
 	public static function prepare_cart_item( $input, $context, $info ) {
-		$cart_item_args = array(
-			$input['productId'],
-			! empty( $input['quantity'] ) ? $input['quantity'] : 1,
-			! empty( $input['variationId'] ) ? $input['variationId'] : 0,
-			! empty( $input['variation'] ) ? $input['variation'] : array(),
-			! empty( $input['extraData'] ) ? json_decode( $input['extraData'], true ) : array(),
-		);
+		$cart_item_args   = array( $input['productId'] );
+		$cart_item_args[] = ! empty( $input['quantity'] ) ? $input['quantity'] : 1;
+		$cart_item_args[] = ! empty( $input['variationId'] ) ? $input['variationId'] : 0;
+		$cart_item_args[] = ! empty( $input['variation'] ) ? $input['variation'] : array();
+		$cart_item_args[] = ! empty( $input['extraData'] )
+			? json_decode( $input['extraData'], true )
+			: array();
 
 		return apply_filters( 'woocommerce_new_cart_item_data', $cart_item_args, $input, $context, $info );
 	}

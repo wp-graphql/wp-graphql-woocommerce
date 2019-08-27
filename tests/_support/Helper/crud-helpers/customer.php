@@ -28,6 +28,7 @@ class CustomerHelper extends WCG_Helper {
 		$email      = $this->dummy->email();
 		$phone      = $this->dummy->telephone();
 
+		// Set data.
 		$customer->set_props(
 			array_merge(
 				array(
@@ -66,6 +67,11 @@ class CustomerHelper extends WCG_Helper {
 				$args
 			)
 		);
+
+		// Set meta data.
+		if ( ! empty( $args['meta_data'] ) ) {
+			$customer->set_meta_data( $args['meta_data'] );
+		}
 
 		return absint( $customer->save() );
 	}

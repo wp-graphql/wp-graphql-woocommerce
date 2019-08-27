@@ -3,6 +3,9 @@ dist: trusty
 
 language: php
 
+services:
+  - docker
+
 notifications:
   email:
     on_success: never
@@ -11,9 +14,10 @@ notifications:
 branches:
   only:
     - develop
-    - release-v0.1.1
+    - master
     - release-v0.1.2
     - release-v0.2.0
+    - release-v0.2.1
 
 cache:
   apt: true
@@ -21,29 +25,41 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
-# Set the global environment variables
-env:
-  global:
-    - WP_CORE_DIR: /tmp/wordpress
-    - COVERAGE: false
-    - DEBUG: false
-
 matrix:
   include:
+    - php: 7.3
+      env: PHP_VERSION=7.3 WP_VERSION=5.2 COVERAGE=1
+    - php: 7.3
+      env: PHP_VERSION=7.3 PHPCS=1
     - php: 7.2
-      env: WP_VERSION=latest COVERAGE=1
+      env: PHP_VERSION=7.2 WP_VERSION=5.2
     - php: 7.2
-      env: PHPCS=1
+      env: PHP_VERSION=7.2 WP_VERSION=4.9
     - php: 7.1
-      env: WP_VERSION=latest
+      env: PHP_VERSION=7.1 WP_VERSION=5.2
+    - php: 7.1
+      env: PHP_VERSION=7.1 WP_VERSION=4.9
     - php: 7.0
-      env: WP_VERSION=latest
+      env: PHP_VERSION=7.0 WP_VERSION=5.0
+    - php: 7.0
+      env: PHP_VERSION=7.0 WP_VERSION=4.9
     - php: 5.6
-      env: WP_VERSION=4.5
+      env: PHP_VERSION=5.6 WP_VERSION=5.0 DEBUG=1
     - php: 5.6
-      env: WP_VERSION=latest DEBUG=1
-    - php: 5.6
-      env: WP_VERSION=trunk
+      env: PHP_VERSION=5.6 WP_VERSION=4.9 DEBUG=1
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - |
+    # Remove Xdebug for a huge performance increase:
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    else
+      echo "xdebug.ini does not exist"
+    fi
 
 install:
   - |
@@ -55,45 +71,48 @@ install:
 before_script:
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      # Install and config Codeception
-      cp .env.dist .env
-      composer install-wp-tests
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
-      if [ "$COVERAGE" == "1" ]; then
-        # Install Coveralls
-        mkdir -p build/logs
-        COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require php-coveralls/php-coveralls
-      fi
-      ls -al
+      # Build images.
+      docker-compose build \
+        --build-arg DESIRED_PHP_VERSION=${PHP_VERSION} \
+        --build-arg DESIRED_WP_VERSION=${WP_VERSION} \
+        testing
     fi   
   # Install PHP CodeSniffer and WPCS.
   - |
     if [ "$PHPCS" == "1" ]; then
-      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require squizlabs/php_codesniffer phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
+      COMPOSER_MEMORY_LIMIT=-1 travis_retry composer require \
+        squizlabs/php_codesniffer \
+        phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs \
+        dealerdirect/phpcodesniffer-composer-installer
       COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --no-dev
-      ls -al
     fi
 
 script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      if [ "$COVERAGE" == "1" ]; then
-        vendor/bin/codecept run wpunit --coverage --coverage-xml
-      elif [ "$DEBUG" == "1" ]; then
-        vendor/bin/codecept run wpunit --debug
-      else
-        vendor/bin/codecept run wpunit
-      fi
+      docker-compose run --rm \
+        -e SUITES='acceptance;functional;wpunit' \
+        -e COVERAGE=${COVERAGE:-0} \
+        -e DEBUG=${DEBUG:-0} \
+        testing --scale app=0
     fi
   - |
     if [ "$PHPCS" == "1" ]; then
-      vendor/bin/phpcs wp-graphql-woocommerce.php access-functions.php class-inflect.php includes/*.php --standard=WordPress
+      vendor/bin/phpcs \
+        wp-graphql-woocommerce.php \
+        access-functions.php \
+        class-inflect.php \
+        includes/*.php --standard=WordPress
     fi
 after_success:
-  # Runs Coveralls.io client
+  # Download and run Coveralls.io client
   - |
     if [ "$COVERAGE" == "1" ]; then
-      travis_retry php vendor/bin/php-coveralls -v
+      wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+      chmod +x php-coveralls.phar
+
+      sed -i 's/\/var\/www\/html\/wp-content\/plugins\/wp-graphql-woocommerce\///g' tests/_output/coverage.xml
+      travis_retry php php-coveralls.phar -v
     fi
   

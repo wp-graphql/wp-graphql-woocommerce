@@ -158,117 +158,121 @@ class Products extends WC_Connection {
 	 */
 	public static function get_connection_args() {
 		$args = array(
-			'slug'              => array(
+			'slug'            => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products with a specific slug.', 'wp-graphql-woocommerce' ),
 			),
-			'status'            => array(
+			'status'          => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products assigned a specific status.', 'wp-graphql-woocommerce' ),
 			),
-			'type'              => array(
+			'type'            => array(
 				'type'        => 'ProductTypesEnum',
 				'description' => __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' ),
 			),
-			'typeIn'            => array(
+			'typeIn'          => array(
 				'type'        => array( 'list_of' => 'ProductTypesEnum' ),
 				'description' => __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			),
-			'typeNotIn'         => array(
+			'typeNotIn'       => array(
 				'type'        => array( 'list_of' => 'ProductTypesEnum' ),
 				'description' => __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			),
-			'sku'               => array(
+			'sku'             => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products with specific SKU(s). Use commas to separate.', 'wp-graphql-woocommerce' ),
 			),
-			'featured'          => array(
+			'featured'        => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Limit result set to featured products.', 'wp-graphql-woocommerce' ),
 			),
-			'categoryName'      => array(
+			'category'        => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products assigned a specific category name.', 'wp-graphql-woocommerce' ),
 			),
-			'categoryNameIn'    => array(
+			'categoryIn'      => array(
 				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Limit result set to products assigned to a group of specific categories by name.', 'wp-graphql-woocommerce' ),
 			),
-			'categoryNameNotIn' => array(
+			'categoryNotIn'   => array(
 				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Limit result set to products not assigned to a group of specific categories by name.', 'wp-graphql-woocommerce' ),
 			),
-			'category'          => array(
+			'categoryId'      => array(
 				'type'        => 'Int',
 				'description' => __( 'Limit result set to products assigned a specific category name.', 'wp-graphql-woocommerce' ),
 			),
-			'categoryIn'        => array(
+			'categoryIdIn'    => array(
 				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Limit result set to products assigned to a specific group of category IDs.', 'wp-graphql-woocommerce' ),
 			),
-			'categoryNotIn'     => array(
+			'categoryIdNotIn' => array(
 				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Limit result set to products not assigned to a specific group of category IDs.', 'wp-graphql-woocommerce' ),
 			),
-			'tag'               => array(
+			'tag'             => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products assigned a specific tag name.', 'wp-graphql-woocommerce' ),
 			),
-			'tagSlugIn'         => array(
+			'tagIn'           => array(
 				'type'        => array( 'list_of' => 'String' ),
-				'description' => __( 'Limit result set to products assigned to a specific group of tag IDs.', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Limit result set to products assigned to a specific group of tags by name.', 'wp-graphql-woocommerce' ),
 			),
-			'tagSlugNotIn'      => array(
+			'tagNotIn'        => array(
 				'type'        => array( 'list_of' => 'String' ),
-				'description' => __( 'Limit result set to products not assigned to a specific group of tag IDs.', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Limit result set to products not assigned to a specific group of tags by name.', 'wp-graphql-woocommerce' ),
 			),
-			'tagId'             => array(
+			'tagId'           => array(
 				'type'        => 'Int',
 				'description' => __( 'Limit result set to products assigned a specific tag ID.', 'wp-graphql-woocommerce' ),
 			),
-			'tagIn'             => array(
+			'tagIdIn'         => array(
 				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Limit result set to products assigned to a specific group of tag IDs.', 'wp-graphql-woocommerce' ),
 			),
-			'tagNotIn'          => array(
+			'tagIdNotIn'      => array(
 				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Limit result set to products not assigned to a specific group of tag IDs.', 'wp-graphql-woocommerce' ),
 			),
-			'shippingClassId'   => array(
+			'shippingClassId' => array(
 				'type'        => 'Int',
 				'description' => __( 'Limit result set to products assigned a specific shipping class ID.', 'wp-graphql-woocommerce' ),
 			),
-			'attribute'         => array(
+			'attribute'       => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products with a specific attribute. Use the taxonomy name/attribute slug.', 'wp-graphql-woocommerce' ),
 			),
-			'attributeTerm'     => array(
+			'attributeTerm'   => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products with a specific attribute term ID (required an assigned attribute).', 'wp-graphql-woocommerce' ),
 			),
-			'stockStatus'       => array(
+			'stockStatus'     => array(
 				'type'        => array( 'list_of' => 'StockStatusEnum' ),
 				'description' => __( 'Limit result set to products in stock or out of stock.', 'wp-graphql-woocommerce' ),
 			),
-			'onSale'            => array(
+			'onSale'          => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Limit result set to products on sale.', 'wp-graphql-woocommerce' ),
 			),
-			'minPrice'          => array(
+			'minPrice'        => array(
 				'type'        => 'Float',
 				'description' => __( 'Limit result set to products based on a minimum price.', 'wp-graphql-woocommerce' ),
 			),
-			'maxPrice'          => array(
+			'maxPrice'        => array(
 				'type'        => 'Float',
 				'description' => __( 'Limit result set to products based on a maximum price.', 'wp-graphql-woocommerce' ),
 			),
-			'search'            => array(
+			'search'          => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products based on a keyword search.', 'wp-graphql-woocommerce' ),
 			),
-			'visibility'        => array(
+			'visibility'      => array(
 				'type'        => 'CatalogVisibilityEnum',
 				'description' => __( 'Limit result set to products with a specific visibility level.', 'wp-graphql-woocommerce' ),
+			),
+			'taxonomyFilter'  => array(
+				'type'        => array( 'list_of' => 'ProductTaxonomyFilterRelationInput' ),
+				'description' => __( 'Limit result set with complex set of taxonomy filters.', 'wp-graphql-woocommerce' ),
 			),
 		);
 

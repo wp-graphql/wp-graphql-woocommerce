@@ -131,7 +131,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Autoload Required Classes
 			 */
-			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true === WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
+			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && false !== WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
 				require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
 			}
 

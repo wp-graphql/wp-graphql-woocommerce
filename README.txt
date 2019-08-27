@@ -1,11 +1,13 @@
 === WP GraphQL WooCommerce ===
-Contributors: kidunot89
-Tags: GraphQL, WooCommerce
-Requires at least: 4.7.0
-Tested up to: 5.1
+Contributors: kidunot89, ranaaterning
+Tags: GraphQL, WooCommerce, WPGraphQL
+Requires at least: 4.9
+Tested up to: 5.2
+Requires PHP: 5.6
+Stable tag: 0.2.1
 License: GPL-3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Maintained at: https://github.com/kidunot89/wp-graphql-woocommerce
+Maintained at: https://github.com/wp-graphql/wp-graphql-woocommerce
 
 == Description ==
-Adds WooCommerce Types to WPGraphQL schema
+Adds WooCommerce functionality to the WPGraphQL schema.

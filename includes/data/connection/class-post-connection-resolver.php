@@ -33,8 +33,6 @@ class Post_Connection_Resolver {
 	public static function get_query_args( $query_args, $source, $args, $context, $info ) {
 		// Determine where we're at in the Graph and adjust the query context appropriately.
 		if ( true === is_object( $source ) ) {
-			$query_args['post_parent'] = 0;
-			unset( $query_args['post__in'] );
 			switch ( true ) {
 				case is_a( $source, Product::class ):
 					// @codingStandardsIgnoreLine
