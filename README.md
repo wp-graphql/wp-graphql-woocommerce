@@ -97,7 +97,12 @@ docker-compose run --rm -e SUITE=acceptance;wpunit;functional -e DEBUG=1 -e COVE
 - `--scale app=0` ensures that the service running a local app doesn't create any instances. It must be added or a collision with `mysql` will occur. More on this service in the next section
 
 ## Using docker-compose to run a local installation for live testing.
-This is rather simple just like with testing using docker ensure that `env.dist` and `codeception.dist.yml` are untouched and run `docker-compose up --scale testing=0 app` and wait for `app_1      | Success: Exported to '/var/www/html/wp-content/plugins/wp-graphql-woocommerce/tests/_data/dump.sql'.` to print to the terminal, then navigate to `http://localhost:8091`. And that's it. You can view the configuration for the installation in the `docker-compose.yml`. Note if you get redirected to `http://localhost` run `docker-compose down` to remove any existing containers related to the project, then re-run the `docker-compose up --scale testing=0 app` command.
+This is rather simple just like with testing using docker ensure that `env.dist` and `codeception.dist.yml` are untouched.
+1. Run `docker-compose up --scale testing=0 app`
+2. wait for `app_1      | Success: Exported to '/var/www/html/wp-content/plugins/wp-graphql-woocommerce/tests/_data/dump.sql'.` to print to the terminal.
+3. navigate to `http://localhost:8091`. And that's it.
+You can view the configuration for the installation in the `docker-compose.yml`.
+**NOTE: if you get redirected to `http://localhost` run `docker-compose down` to remove any existing containers related to the project, then re-run Step 1.**
 - For more information about the docker-image uses in the service, it's on [Docker Hub](https://hub.docker.com/r/kidunot89/woographql-app). 
 
 
