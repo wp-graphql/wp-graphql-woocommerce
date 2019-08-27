@@ -484,7 +484,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				foreach ( $filter as $relation => $filter_args ) {
 					foreach ( $filter_args as $filter_arg ) {
 						$tax_query[] = array(
-							'relation' => $relation,
+							'relation' => strtoupper( $relation ),
 							array(
 								'taxonomy' => $filter_arg['taxonomy'],
 								'field'    => ! empty( $filter_arg['ids'] ) ? 'term_id' : 'slug',
