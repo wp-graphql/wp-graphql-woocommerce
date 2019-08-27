@@ -23,6 +23,13 @@ class Checkout_Mutation {
 	private static $fields;
 
 	/**
+	 * Caches customer object. @see get_value.
+	 *
+	 * @var WC_Customer
+	 */
+	private $logged_in_customer = null;
+
+	/**
 	 * Is registration required to checkout?
 	 *
 	 * @since  3.0.0
@@ -78,11 +85,14 @@ class Checkout_Mutation {
 			}
 
 			foreach ( $fieldset as $field => $input_key ) {
+				$key   = "{$fieldset_key}_{$field}";
 				$value = ! empty( $input[ $fieldset_key ][ $input_key ] )
 					? $input[ $fieldset_key ][ $input_key ]
 					: null;
 				if ( $value ) {
-					$data[ "{$fieldset_key}_{$field}" ] = $value;
+					$data[ $key ] = $value;
+				} elseif ( 'billing_country' === $key || 'shipping_country' === $key ) {
+					$data[ $key ] = self::get_value( $key );
 				}
 			}
 		}
@@ -515,5 +525,47 @@ class Checkout_Mutation {
 		}
 
 		return $order_id;
+	}
+
+	/**
+	 * Gets the value either from 3rd party logic or the customer object. Sets the default values in checkout fields.
+	 *
+	 * @param string $input Name of the input we want to grab data for. e.g. billing_country.
+	 * @return string The default value.
+	 */
+	public static function get_value( $input ) {
+		// Allow 3rd parties to short circuit the logic and return their own default value.
+		$value = apply_filters( 'woocommerce_checkout_get_value', null, $input );
+		if ( ! is_null( $value ) ) {
+			return $value;
+		}
+
+		/**
+		 * For logged in customers, pull data from their account rather than the session which may contain incomplete data.
+		 * Another reason is that WC sets shipping address to the billing address on the checkout updates unless the
+		 * "shipToDifferentAddress" is set.
+		 */
+		$customer_object = false;
+		if ( is_user_logged_in() ) {
+			// Load customer object, but keep it cached to avoid reloading it multiple times.
+			if ( is_null( self::$logged_in_customer ) ) {
+				self::$logged_in_customer = new WC_Customer( get_current_user_id(), true );
+			}
+			$customer_object = new WC_Customer( get_current_user_id(), true );
+		}
+
+		if ( ! $customer_object ) {
+			$customer_object = WC()->customer;
+		}
+
+		if ( is_callable( array( $customer_object, "get_$input" ) ) ) {
+			$value = $customer_object->{"get_$input"}();
+		} elseif ( $customer_object->meta_exists( $input ) ) {
+			$value = $customer_object->get_meta( $input, true );
+		}
+		if ( '' === $value ) {
+			$value = null;
+		}
+		return apply_filters( 'default_checkout_' . $input, $value, $input );
 	}
 }
