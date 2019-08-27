@@ -1,16 +1,34 @@
 # Change Log
 
-## [v0.2.0-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.2.0-beta) (2019-07-11)
-[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.1.2-beta...v0.2.0-beta)
+## [v0.2.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.2.1-beta) (2019-08-27)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.2.0-beta...v0.2.1-beta)
 
 **Implemented enhancements:**
 
-- Release v0.2.0 code cleanup [\#107](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/107) ([kidunot89](https://github.com/kidunot89))
-- updateItemQuantities mutation [\#106](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/106) ([kidunot89](https://github.com/kidunot89))
-- deleteOrderItems mutation [\#104](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/104) ([kidunot89](https://github.com/kidunot89))
-- Adds NO\_QL\_SESSION\_HANDLER flag [\#103](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/103) ([kidunot89](https://github.com/kidunot89))
-- Adds product category image to schema. [\#102](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/102) ([kidunot89](https://github.com/kidunot89))
-- Query products by slug and sku [\#101](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/101) ([kidunot89](https://github.com/kidunot89))
+- Hooks for mutations [\#108](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/108)
+- productBy query should support querying by slug [\#95](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/95)
+- Support update of multiple quantities in cart in a single mutation [\#94](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/94)
+- Other mutations [\#19](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/19)
+- Order mutations [\#16](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/16)
+- Checkout mutation bugfix/enhancements [\#132](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/132) ([kidunot89](https://github.com/kidunot89))
+- Adds "taxonomyFilter" to product connections [\#126](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/126) ([kidunot89](https://github.com/kidunot89))
+- MetaData type and queries [\#123](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/123) ([kidunot89](https://github.com/kidunot89))
+- PaymentGateway type. [\#118](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/118) ([kidunot89](https://github.com/kidunot89))
+- CI upgrade [\#115](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/115) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed bugs:**
+
+- customerRegister mutation resolves wrong object for `viewer` field [\#111](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/111)
+- I cant see the category thumbnail  [\#93](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/93)
+
+**Merged pull requests:**
+
+- Add contributor [\#131](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/131) ([ranaaterning](https://github.com/ranaaterning))
+- Bug related to resolving product connections by taxonomies fixed. [\#125](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/125) ([kidunot89](https://github.com/kidunot89))
+- PostObject hierarchy bugfix [\#124](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/124) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.2.0-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.2.0-beta) (2019-07-11)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.1.2-beta...v0.2.0-beta)
 
 **Fixed bugs:**
 
@@ -19,13 +37,6 @@
 **Closed issues:**
 
 - Customer id doesn't match user id [\#90](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/90)
-
-**Merged pull requests:**
-
-- checkout mutation [\#100](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/100) ([kidunot89](https://github.com/kidunot89))
-- deleteOrder mutation [\#99](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/99) ([kidunot89](https://github.com/kidunot89))
-- updateOrder mutation [\#98](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/98) ([kidunot89](https://github.com/kidunot89))
-- createOrder mutation [\#97](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/97) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.1.2-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.1.2-beta) (2019-06-23)
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.1.1-beta...v0.1.2-beta)
