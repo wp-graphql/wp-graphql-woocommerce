@@ -8,10 +8,12 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Utils;
 
+use WC_Session_Handler;
+
 /**
  * Class - QL_Session_Handler
  */
-class QL_Session_Handler extends \WC_Session_Handler {
+class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Encrypt and decrypt
 	 *

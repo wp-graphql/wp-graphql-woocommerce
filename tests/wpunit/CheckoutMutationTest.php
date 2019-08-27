@@ -220,6 +220,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                     customer {
                         id
                     }
+                    result
+                    redirect
                 }
             }
         ';
@@ -294,6 +296,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
         $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
 
+        // Get Available payment gateways.
+        $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+
         $expected = array(
             'data' => array(
                 'checkout' => array(
@@ -414,7 +419,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                     ),
                     'customer'         => array(
                         'id' => $this->customer->to_relay_id( $order->get_customer_id() )
-                    )
+                    ),
+                    'result'           => 'success',
+                    'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
                 ),
             )
         );
@@ -474,6 +481,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
         $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
 
+        // Get Available payment gateways.
+        $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+
         $expected = array(
             'data' => array(
                 'checkout' => array(
@@ -594,7 +604,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                     ),
                     'customer'         => array(
                         'id' => $this->customer->to_relay_id( $order->get_customer_id() )
-                    )
+                    ),
+                    'result'           => 'success',
+                    'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
                 ),
             )
         );
@@ -659,6 +671,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('order', $actual['data']['checkout'] );
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
         $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
+
+        // Get Available payment gateways.
+        $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
         $expected = array(
             'data' => array(
@@ -779,6 +794,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                         )
                     ),
                     'customer'         => null,
+                    'result'           => 'success',
+                    'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
                 ),
             )
         );
