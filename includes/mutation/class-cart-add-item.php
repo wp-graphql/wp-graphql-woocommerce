@@ -75,8 +75,7 @@ class Cart_Add_Item {
 			'cartItem' => array(
 				'type'    => 'CartItem',
 				'resolve' => function ( $payload ) {
-					$cart = WC()->cart;
-					$item = $cart->get_cart_item( $payload['key'] );
+					$item = \WC()->cart->get_cart_item( $payload['key'] );
 
 					return $item;
 				},
@@ -95,12 +94,19 @@ class Cart_Add_Item {
 			if ( empty( $input['productId'] ) ) {
 				throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
 			}
+			if ( ! \wc_get_product( $input['productId'] ) ) {
+				throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
+			}
 
 			// Prepare args for "add_to_cart" from input data.
 			$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );
 
 			// Add item to cart and get item key.
 			$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
+
+			if ( empty( $cart_item_key ) ) {
+				throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
+			}
 
 			// Return payload.
 			return array( 'key' => $cart_item_key );

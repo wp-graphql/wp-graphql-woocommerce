@@ -23,8 +23,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		WC()->cart->empty_cart( true );
 	}
 
-	public function tearDown()
-	{
+	public function tearDown() {
 		// your tear down methods here
 
 		// then

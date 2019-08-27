@@ -3,7 +3,7 @@
  * Plugin Name: WP GraphQL WooCommerce
  * Plugin URI: https://github.com/kidunot89/wp-graphql-woocommerce
  * Description: Adds Woocommerce Functionality to WPGraphQL schema.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: kidunot89
  * Author URI: https://axistaylor.com
  * Text Domain: wp-graphql-woocommerce
@@ -19,14 +19,15 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-defined( 'GRAPHQL_DEBUG' ) || define( 'GRAPHQL_DEBUG', true );
-
 /**
  * If the codeception remote coverage file exists, require it.
  *
  * This file should only exist locally or when CI bootstraps the environment for testing
  */
 if ( file_exists( __DIR__ . '/c3.php' ) ) {
+	// Get tests output directory.
+	$test_dir = __DIR__ . '/tests/output';
+	define( 'C3_CODECOVERAGE_ERROR_LOG_FILE', $test_dir . '/c3_error.log' );
 	require_once __DIR__ . '/c3.php';
 }
 
@@ -36,7 +37,7 @@ if ( file_exists( __DIR__ . '/c3.php' ) ) {
 function wp_graphql_woocommerce_constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
-		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.0.1' );
+		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.2.1' );
 	}
 	// Plugin Folder Path.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR' ) ) {

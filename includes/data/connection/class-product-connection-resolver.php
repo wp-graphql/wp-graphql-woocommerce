@@ -328,77 +328,72 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		$tax_query     = array();
 		$taxonomy_args = array(
-			'type'          => 'product_type',
-			'typeIn'        => 'product_type',
-			'typeNotIn'     => 'product_type',
-			'categoryName'  => 'product_cat',
-			'category'      => 'product_cat',
-			'categoryIn'    => 'product_cat',
-			'categoryNotIn' => 'product_cat',
-			'tagSlug'       => 'product_tag',
-			'tagId'         => 'product_tag',
-			'tagIn'         => 'product_tag',
-			'tagNotIn'      => 'product_tag',
+			'type'            => 'product_type',
+			'typeIn'          => 'product_type',
+			'typeNotIn'       => 'product_type',
+			'category'        => 'product_cat',
+			'categoryIn'      => 'product_cat',
+			'categoryNotIn'   => 'product_cat',
+			'categoryId'      => 'product_cat',
+			'categoryIdIn'    => 'product_cat',
+			'categoryIdNotIn' => 'product_cat',
+			'tag'             => 'product_tag',
+			'tagIn'           => 'product_tag',
+			'tagNotIn'        => 'product_tag',
+			'tagId'           => 'product_tag',
+			'tagIdIn'         => 'product_tag',
+			'tagIdNotIn'      => 'product_tag',
 		);
 
 		foreach ( $taxonomy_args as $field => $taxonomy ) {
 			if ( ! empty( $where_args[ $field ] ) ) {
+				// Set tax query operator.
+				switch ( true ) {
+					case \wc_graphql_ends_with( $field, 'NotIn' ):
+						$operator = 'NOT IN';
+						break;
+					default:
+						$operator = 'IN';
+						break;
+				}
+
+				// Set tax query config.
 				switch ( $field ) {
 					case 'type':
 					case 'typeIn':
 					case 'typeNotIn':
-						$tax_query[] = array(
-							'taxonomy' => $taxonomy,
-							'field'    => 'slug',
-							'terms'    => $where_args[ $field ],
-						);
-						break;
-					case 'categoryName':
-					case 'categoryNameIn':
-					case 'categoryNameNotIn':
-						$tax_query[] = array(
-							'taxonomy' => $taxonomy,
-							'field'    => 'slug',
-							'terms'    => $where_args[ $field ],
-						);
-						break;
 					case 'category':
 					case 'categoryIn':
 					case 'categoryNotIn':
-						$tax_query[] = array(
-							'taxonomy' => $taxonomy,
-							'field'    => 'term_id',
-							'terms'    => $where_args[ $field ],
-						);
-						break;
 					case 'tag':
-					case 'tagSlugIn':
-					case 'tagSlugNotIn':
-						$tax_query[] = array(
-							'taxonomy' => $taxonomy,
-							'field'    => 'slug',
-							'terms'    => $where_args[ $field ],
-						);
-						break;
-					case 'tagId':
 					case 'tagIn':
 					case 'tagNotIn':
 						$tax_query[] = array(
 							'taxonomy' => $taxonomy,
+							'field'    => 'slug',
+							'terms'    => $where_args[ $field ],
+							'operator' => $operator,
+						);
+						break;
+					case 'categoryId':
+					case 'categoryIdIn':
+					case 'categoryIdNotIn':
+					case 'tagId':
+					case 'tagIdIn':
+					case 'tagIdNotIn':
+						$tax_query[] = array(
+							'taxonomy' => $taxonomy,
 							'field'    => 'term_id',
 							'terms'    => $where_args[ $field ],
+							'operator' => $operator,
 						);
 						break;
 				}
-
-				if ( \wc_graphql_ends_with( $field, 'NotIn' ) ) {
-					$key                           = max( array_keys( $tax_query ) );
-					$tax_query[ $key ]['operator'] = 'NOT IN';
-				} elseif ( \wc_graphql_ends_with( $field, 'In' ) ) {
-					$key                           = max( array_keys( $tax_query ) );
-					$tax_query[ $key ]['operator'] = 'IN';
-				}
 			}
+		}
+
+		if ( 1 < count( $tax_query ) ) {
+			$tax_query['relation'] = 'AND';
 		}
 
 		// Filter by attribute and term.
@@ -480,6 +475,29 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						'operator' => 'AND',
 					);
 					break;
+			}
+		}
+
+		// Process "taxonomyFilter".
+		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
+			foreach ( $where_args['taxonomyFilter'] as $filter ) {
+				foreach ( $filter as $relation => $filter_args ) {
+					foreach ( $filter_args as $filter_arg ) {
+						$tax_query[] = array(
+							'relation' => $relation,
+							array(
+								'taxonomy' => $filter_arg['taxonomy'],
+								'field'    => ! empty( $filter_arg['ids'] ) ? 'term_id' : 'slug',
+								'terms'    => ! empty( $filter_arg['ids'] )
+									? $filter_arg['ids']
+									: $filter_arg['terms'],
+								'operator' => ! empty( $filter_arg['operator'] )
+									? $filter_arg['operator']
+									: 'IN',
+							),
+						);
+					}
+				}
 			}
 		}
 

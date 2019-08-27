@@ -40,6 +40,9 @@ class ProductVariationHelper extends WCG_Helper {
 			)
 		);
 		$variation_1->set_attributes( array( 'pa_size' => 'small' ) );
+		if ( ! empty( $args['meta_data'] ) ) {
+			$variation_1->set_meta_data( $args['meta_data'] );
+		}
 
 		// Create medium size variation with image
 		$image_id = \wp_insert_post(
@@ -64,6 +67,9 @@ class ProductVariationHelper extends WCG_Helper {
 			)
 		);
 		$variation_2->set_attributes( array( 'pa_size' => 'medium' ) );
+		if ( ! empty( $args['meta_data'] ) ) {
+			$variation_2->set_meta_data( $args['meta_data'] );
+		}
 
 		// Create large size variation
 		$variation_3 = new WC_Product_Variation();
@@ -76,6 +82,9 @@ class ProductVariationHelper extends WCG_Helper {
 			)
 		);
 		$variation_3->set_attributes( array( 'pa_size' => 'large' ) );
+		if ( ! empty( $args['meta_data'] ) ) {
+			$variation_3->set_meta_data( $args['meta_data'] );
+		}
 
 		return array(
 			'variations' => array(

@@ -45,7 +45,7 @@ class Product_Types {
 		register_graphql_enum_type(
 			'ProductTypesEnum',
 			array(
-				'description' => __( 'Product type enumeration', 'wp-graphql' ),
+				'description' => __( 'Product type enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
 			)
 		);

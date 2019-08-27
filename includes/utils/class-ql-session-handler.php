@@ -8,10 +8,12 @@
 
 namespace WPGraphQL\Extensions\WooCommerce\Utils;
 
+use WC_Session_Handler;
+
 /**
  * Class - QL_Session_Handler
  */
-class QL_Session_Handler extends \WC_Session_Handler {
+class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Encrypt and decrypt
 	 *
@@ -62,20 +64,18 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	 * @param bool $set Should the session cookie be set.
 	 */
 	public function set_customer_session_cookie( $set ) {
-		if ( $set ) {
-			$to_hash           = $this->_customer_id . '|' . $this->_session_expiration;
-			$cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-			$cookie_value      = $this->_customer_id . '||' . $this->_session_expiration . '||' . $this->_session_expiring . '||' . $cookie_hash;
-			$this->_has_cookie = true;
-			if ( ! isset( $_SERVER[ $this->_cookie ] ) || $_SERVER[ $this->_cookie ] !== $cookie_value ) {
-				add_filter(
-					'graphql_response_headers_to_send',
-					function( $headers ) use ( $cookie_value ) {
-						$headers[ $this->_cookie ] = $this->crypt( $cookie_value, 'e' );
-						return $headers;
-					}
-				);
-			}
+		$to_hash           = $this->_customer_id . '|' . $this->_session_expiration;
+		$cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
+		$cookie_value      = $this->_customer_id . '||' . $this->_session_expiration . '||' . $this->_session_expiring . '||' . $cookie_hash;
+		$this->_has_cookie = true;
+		if ( ! isset( $_SERVER[ $this->_cookie ] ) || $_SERVER[ $this->_cookie ] !== $cookie_value ) {
+			add_filter(
+				'graphql_response_headers_to_send',
+				function( $headers ) use ( $cookie_value ) {
+					$headers[ $this->_cookie ] = $this->crypt( $cookie_value, 'e' );
+					return $headers;
+				}
+			);
 		}
 	}
 
