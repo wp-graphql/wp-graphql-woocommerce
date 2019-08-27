@@ -11,7 +11,7 @@ class Acceptance extends \Codeception\Module {
      * @param string $session_header
      * @return array
      */
-    public function addToCart( array $input, $session_header = null ) {
+    public function addToCart( $input, $session_header = null ) {
         // Add to cart mutation
         $mutation = '
             mutation ( $input: AddToCartInput! ) {
@@ -49,7 +49,7 @@ class Acceptance extends \Codeception\Module {
      * @param string $session_header
      * @return array
      */
-    public function updateQuantity( array $input, $session_header = null ) {
+    public function updateQuantity( $input, $session_header = null ) {
         // Update cart items mutation
         $mutation = '
             mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
@@ -85,7 +85,7 @@ class Acceptance extends \Codeception\Module {
      * @param string $session_header
      * @return array
      */
-    public function removeFromCart( array $input, $session_header = null ) {
+    public function removeFromCart( $input, $session_header = null ) {
         // Remove item from cart mutation
         $mutation = '
             mutation ( $input: RemoveItemsFromCartInput! ) {
@@ -124,7 +124,7 @@ class Acceptance extends \Codeception\Module {
      * 
      * @return array
      */
-    public function checkout( array $input, $session_header = null ) {
+    public function checkout( $input, $session_header = null ) {
         // Checkout mutation.
         $mutation = '
             mutation checkout( $input: CheckoutInput! ) {
@@ -292,7 +292,7 @@ class Acceptance extends \Codeception\Module {
      * 
      * @return array
      */
-    public function executeQuery( string $mutation, array $input, $session_header = null, $update_header = false ) {
+    public function executeQuery( $mutation, $input, $session_header = null, $update_header = false ) {
         $rest = $this->getModule( 'REST' );
 
         // Add item to cart.
