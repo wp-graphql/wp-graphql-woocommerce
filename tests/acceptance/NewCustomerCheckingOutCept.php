@@ -1,7 +1,7 @@
 <?php 
 $I = new AcceptanceTester($scenario);
 $product_catalog = $I->getCatalog();
-$I->wantTo('add an some items to the cart and checkout.');
+$I->wantTo('add items to the cart');
 
 $add_to_cart_input = array(
     'clientMutationId' => 'someId',
@@ -14,11 +14,127 @@ $success = $I->addToCart( $add_to_cart_input, null );
 // use --debug flag to view
 codecept_debug( $success );
 
+if ( ! empty ( $success['session_header'] ) ) {
+    $session = $success['session_header'];
+}
+
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
 $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
 $I->assertArrayHasKey('key', $success['data']['addToCart']['cartItem'] );
+$shirt_key = $success['data']['addToCart']['cartItem']['key'];
+
+$add_to_cart_input = array(
+    'clientMutationId' => 'someId',
+    'productId'        => $product_catalog['belt'],
+    'quantity'         => 2,
+);
+
+$success = $I->addToCart( $add_to_cart_input, $session );
+
+// use --debug flag to view
+codecept_debug( $success );
+
+if ( ! empty ( $success['session_header'] ) ) {
+    $session = $success['session_header'];
+}
+
+$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayHasKey('data', $success );
+$I->assertArrayHasKey('addToCart', $success['data'] );
+$I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
+$I->assertArrayHasKey('key', $success['data']['addToCart']['cartItem'] );
+$belt_key = $success['data']['addToCart']['cartItem']['key'];
+
+$add_to_cart_input = array(
+    'clientMutationId' => 'someId',
+    'productId'        => $product_catalog['jeans'],
+    'quantity'         => 4,
+);
+
+$success = $I->addToCart( $add_to_cart_input, $session );
+
+// use --debug flag to view
+codecept_debug( $success );
+
+if ( ! empty ( $success['session_header'] ) ) {
+    $session = $success['session_header'];
+}
+
+$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayHasKey('data', $success );
+$I->assertArrayHasKey('addToCart', $success['data'] );
+$I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
+$I->assertArrayHasKey('key', $success['data']['addToCart']['cartItem'] );
+$jeans_key = $success['data']['addToCart']['cartItem']['key'];
+
+$add_to_cart_input = array(
+    'clientMutationId' => 'someId',
+    'productId'        => $product_catalog['socks'],
+    'quantity'         => 1,
+);
+
+$success = $I->addToCart( $add_to_cart_input, $session );
+
+// use --debug flag to view
+codecept_debug( $success );
+
+if ( ! empty ( $success['session_header'] ) ) {
+    $session = $success['session_header'];
+}
+
+$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayHasKey('data', $success );
+$I->assertArrayHasKey('addToCart', $success['data'] );
+$I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
+$I->assertArrayHasKey('key', $success['data']['addToCart']['cartItem'] );
+$socks_key = $success['data']['addToCart']['cartItem']['key'];
+
+$I->wantTo('remove some items from the cart');
+
+$remove_from_cart_input = array(
+    'clientMutationId' => 'someId',
+    'keys'             => $socks_key,
+);
+
+$success = $I->removeFromCart( $remove_from_cart_input, $session );
+
+// use --debug flag to view
+codecept_debug( $success );
+
+$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayHasKey('data', $success );
+$I->assertArrayHasKey('removeItemsFromCart', $success['data'] );
+$I->assertArrayHasKey('cartItems', $success['data']['removeItemsFromCart'] );
+$I->assertCount( 1, $success['data']['removeItemsFromCart']['cartItems'] );
+
+$I->wantTo('update an item in the cart');
+
+$update_quantity_input = array(
+    'clientMutationId' => 'someId',
+    'items'            => array(
+        array( 'key' => $belt_key, 'quantity' => 0 ),
+        array( 'key' => $jeans_key, 'quantity' => 1 ),
+    ),
+);
+
+$success = $I->updateQuantity( $update_quantity_input, $session );
+
+// use --debug flag to view
+codecept_debug( $success );
+
+$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayHasKey('data', $success );
+$I->assertArrayHasKey('updateItemQuantities', $success['data'] );
+$I->assertArrayHasKey('removed', $success['data']['updateItemQuantities'] );
+$I->assertCount( 1, $success['data']['updateItemQuantities']['removed'] );
+$I->assertArrayHasKey('updated', $success['data']['updateItemQuantities'] );
+$I->assertCount( 1, $success['data']['updateItemQuantities']['updated'] );
+$I->assertArrayHasKey('items', $success['data']['updateItemQuantities'] );
+$I->assertCount( 2, $success['data']['updateItemQuantities']['items'] );
+
+$I->wantTo('checkout');
 
 $checkout_input = array(
     'clientMutationId'   => 'someId',
@@ -46,7 +162,7 @@ $checkout_input = array(
     ),
 );
 
-$success = $I->checkout( $checkout_input, $success['session_header'] );
+$success = $I->checkout( $checkout_input, $session );
 
 // use --debug flag to view
 codecept_debug( $success );

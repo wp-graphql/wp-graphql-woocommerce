@@ -12,11 +12,9 @@ class Acceptance extends \Codeception\Module {
      * @return array
      */
     public function addToCart( array $input, $session_header = null ) {
-        $rest = $this->getModule( 'REST' );
-
         // Add to cart mutation
         $mutation = '
-            mutation addToCart( $input: AddToCartInput! ) {
+            mutation ( $input: AddToCartInput! ) {
                 addToCart( input: $input ) {
                     clientMutationId
                     cartItem {
@@ -37,33 +35,82 @@ class Acceptance extends \Codeception\Module {
             }
         ';
 
-        // Add item to cart.
-        $rest->haveHttpHeader( 'Content-Type', 'application/json' );
-        if ( ! empty( $session_header ) ) {
-            $rest->haveHttpHeader( 'woocommerce-session', $session_header );
-        }
+        // Execute query.
+        $response = $this->executeQuery( $mutation, $input, $session_header, true );
 
-        // Send request.
-        $rest->sendPOST(
-            '/graphql',
-            json_encode(
-                array(
-                    'query'     => $mutation,
-                    'variables' => array( 'input' => $input ),
-                )
-            )
-        );
+        // Return response.
+        return $response;
+    }
 
-        // Confirm success.
-        $rest->seeResponseCodeIs( 200 );
-        $rest->seeResponseIsJson();
+    /**
+     * Update cart items quantities.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function updateQuantity( array $input, $session_header = null ) {
+        // Update cart items mutation
+        $mutation = '
+            mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
+                updateItemQuantities( input: $input ) {
+                    clientMutationId
+                    updated {
+                        key
+                        quantity
+                    }
+                    removed {
+                        key
+                        quantity
+                    }
+                    items {
+                        key
+                        quantity
+                    }
+                }
+            }
+        ';
 
-        // Get response.
-        $response = json_decode( $rest->grabResponse(), true );
+        // Execute query.
+        $response = $this->executeQuery( $mutation, $input, $session_header );
 
-        // Update session header.
-        $rest->seeHttpHeaderOnce('woocommerce-session');
-        $response['session_header'] = $rest->grabHttpHeader( 'woocommerce-session' );
+        // Return response.
+        return $response;
+    }
+
+    /**
+     * Removes an items from the cart.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function removeFromCart( array $input, $session_header = null ) {
+        // Remove item from cart mutation
+        $mutation = '
+            mutation ( $input: RemoveItemsFromCartInput! ) {
+                removeItemsFromCart( input: $input ) {
+                    clientMutationId
+                    cartItems {
+                        key
+                        product {
+                            id
+                        }
+                        variation {
+                            id
+                        }
+                        quantity
+                        subtotal
+                        subtotalTax
+                        total
+                        tax
+                    }
+                }
+            }
+        ';
+
+        // Execute query.
+        $response = $this->executeQuery( $mutation, $input, $session_header );
 
         // Return response.
         return $response;
@@ -78,8 +125,6 @@ class Acceptance extends \Codeception\Module {
      * @return array
      */
     public function checkout( array $input, $session_header = null ) {
-        $rest = $this->getModule( 'REST' );
-
         // Checkout mutation.
         $mutation = '
             mutation checkout( $input: CheckoutInput! ) {
@@ -230,11 +275,33 @@ class Acceptance extends \Codeception\Module {
             }
         ';
 
-        // Checkout customer order.
+        // Execute query.
+        $response = $this->executeQuery( $mutation, $input, $session_header );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
+     * Executes GraphQL query and returns a response
+     * 
+     * @param string      $mutation
+     * @param array       $input
+     * @param string|null $session_header
+     * @param bool        $update_header
+     * 
+     * @return array
+     */
+    public function executeQuery( string $mutation, array $input, $session_header = null, $update_header = false ) {
+        $rest = $this->getModule( 'REST' );
+
+        // Add item to cart.
         $rest->haveHttpHeader( 'Content-Type', 'application/json' );
         if ( ! empty( $session_header ) ) {
             $rest->haveHttpHeader( 'woocommerce-session', $session_header );
         }
+
+        // Send request.
         $rest->sendPOST(
             '/graphql',
             json_encode(
@@ -252,11 +319,12 @@ class Acceptance extends \Codeception\Module {
         // Get response.
         $response = json_decode( $rest->grabResponse(), true );
 
-        // Update session header.
-        $rest->seeHttpHeaderOnce('woocommerce-session');
-        $response['session_header'] = $rest->grabHttpHeader( 'woocommerce-session' );
+        if ( $update_header ) {
+            // Update session header.
+            $rest->seeHttpHeaderOnce('woocommerce-session');
+            $response['session_header'] = $rest->grabHttpHeader( 'woocommerce-session' );
+        }
 
-        // Return response.
         return $response;
     }
 
