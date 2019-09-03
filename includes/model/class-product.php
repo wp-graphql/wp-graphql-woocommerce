@@ -167,11 +167,32 @@ class Product extends Crud_CPT {
 					return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
 				},
 				'description'          => function() {
-					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+					return ! empty( $this->data->get_description() )
+						? apply_filters( 'the_content', $this->data->get_description() )
+						: null;
 				},
+				'descriptionRaw'       => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'shortDescription'     => function() {
-					return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
+					$short_description = ! empty( $this->data->get_short_description() )
+						? apply_filters(
+							'get_the_excerpt',
+							$this->data->get_short_description(),
+							get_post( $this->data->get_id() )
+						)
+						: null;
+					return apply_filters( 'the_excerpt', $short_description );
 				},
+				'shortDescriptionRaw'  => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
 				'sku'                  => function() {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
 				},

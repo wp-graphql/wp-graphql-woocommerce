@@ -55,7 +55,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	// tests
 	public function testProductQuery() {
 		$query = '
-			query productQuery( $id: ID! ) {
+			query ( $id: ID!, $format: PostObjectFieldFormatEnum ) {
 				product(id: $id) {
 					id
 					productId
@@ -66,8 +66,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					status
 					featured
 					catalogVisibility
-					description
-					shortDescription
+					description(format: $format)
+					shortDescription(format: $format)
 					sku
 					price
 					regularPrice
@@ -104,11 +104,49 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 		
-		$variables = array( 'id' => Relay::toGlobalId( 'product', $this->product ) );
-		$actual = do_graphql_request( $query, 'productQuery', $variables );
+		/**
+		 * Assertion One
+		 * 
+		 * Test querying product.
+		 */
+		$actual = graphql(
+			array(
+				'query'     => $query,
+				'variables' => array( 'id' => $this->helper->to_relay_id( $this->product ) ),
+			)
+		);
 		$expected = array(
 			'data' => array(
 				'product' => $this->helper->print_query( $this->product ),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEqualSets( $expected, $actual );
+
+		// Clear cache
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Test querying product with unformatted content (edit-product cap required).
+		 */
+		wp_set_current_user( $this->shop_manager );
+		$actual = graphql(
+			array(
+				'query'     => $query,
+				'variables' => array(
+					'id'     => $this->helper->to_relay_id( $this->product ),
+					'format' => 'RAW',
+				),
+			)
+		);
+		$expected = array(
+			'data' => array(
+				'product' => $this->helper->print_query( $this->product, true ),
 			),
 		);
 

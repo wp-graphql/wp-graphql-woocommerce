@@ -76,10 +76,37 @@ class Product_Type {
 					'description'          => array(
 						'type'        => 'String',
 						'description' => __( 'Product description', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PostObjectFieldFormatEnum',
+								'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->descriptionRaw;
+							}
+							return $source->description;
+						},
 					),
 					'shortDescription'     => array(
 						'type'        => 'String',
 						'description' => __( 'Product short description', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'format' => array(
+								'type'        => 'PostObjectFieldFormatEnum',
+								'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								// @codingStandardsIgnoreLine.
+								return $source->shortDescriptionRaw;
+							}
+							// @codingStandardsIgnoreLine.
+							return $source->shortDescription;
+						},
 					),
 					'sku'                  => array(
 						'type'        => 'String',
