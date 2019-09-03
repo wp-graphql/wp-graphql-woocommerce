@@ -69,17 +69,19 @@ class ProductHelper extends WCG_Helper {
 
 		$props = array_merge(
 			array(
-				'name'          => $name,
-				'slug'          => $this->next_slug(),
-				'regular_price' => $regular_price,
-				'price'         => $price,
-				'sku'           => uniqid(),
-				'manage_stock'  => false,
-				'tax_status'    => 'taxable',
-				'downloadable'  => false,
-				'virtual'       => false,
-				'stock_status'  => 'instock',
-				'weight'        => '1.1',
+				'name'              => $name,
+				'slug'              => $this->next_slug(),
+				'regular_price'     => $regular_price,
+				'price'             => $price,
+				'sku'               => uniqid(),
+				'manage_stock'      => false,
+				'tax_status'        => 'taxable',
+				'downloadable'      => false,
+				'virtual'           => false,
+				'stock_status'      => 'instock',
+				'weight'            => '1.1',
+				'description'       => '[shortcode_test]',
+				'short_description' => $this->dummy->sentence(),
 			),
 			$args
 		);
@@ -292,7 +294,7 @@ class ProductHelper extends WCG_Helper {
 		return $download;
 	}
 
-	public function print_query( $id ) {
+	public function print_query( $id, $raw = false ) {
 		$data = wc_get_product( $id );
 
 		return array(
@@ -306,11 +308,18 @@ class ProductHelper extends WCG_Helper {
 			'featured'          => $data->get_featured(),
 			'catalogVisibility' => strtoupper( $data->get_catalog_visibility() ),
 			'description'       => ! empty( $data->get_description() )
-				? $data->get_description()
+				? $raw
+					? $data->get_description()
+					: apply_filters( 'the_content', $data->get_description() )
 				: null,
 			'shortDescription'  => ! empty( $data->get_short_description() )
-			? $data->get_short_description()
-			: null,
+				? $raw
+					? $data->get_short_description()
+					: apply_filters(
+						'get_the_excerpt',
+						apply_filters( 'the_excerpt', $data->get_short_description() )
+					)
+				: null,
 			'sku'               => $data->get_sku(),
 			'price'             => ! empty( $data->get_price() )
 				? \wc_graphql_price( $data->get_price() )
@@ -352,7 +361,7 @@ class ProductHelper extends WCG_Helper {
 			'onSale'            => $data->is_on_sale(),
 			'purchasable'       => $data->is_purchasable(),
 			'shippingRequired'  => $data->needs_shipping(),
-			'shippingTaxable'   => $data->is_shipping_taxable()
+			'shippingTaxable'   => $data->is_shipping_taxable(),
 		);
 	}
 
