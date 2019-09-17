@@ -35,6 +35,11 @@ class Core_Schema_Filters {
 	 * Register filters
 	 */
 	public static function add_filters() {
+		// Registers WooCommerce CPTs.
+		add_filter( 'register_post_type_args', array( __CLASS__, 'register_post_types' ), 10, 2 );
+		add_filter( 'graphql_post_entities_allowed_post_types', array( __CLASS__, 'skip_type_registry' ), 10 );
+		add_filter( 'resolve_menu_item_type', array( __CLASS__, 'resolve_menu_item_type' ), 10, 2 );
+
 		// Registers WooCommerce taxonomies.
 		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );
 
@@ -85,9 +90,87 @@ class Core_Schema_Filters {
 	}
 
 	/**
+	 * Registers WooCommerce post-types to be used in GraphQL schema
+	 *
+	 * @param array  $args      - allowed post-types.
+	 * @param string $post_type - name of taxonomy being checked.
+	 *
+	 * @return array
+	 */
+	public static function register_post_types( $args, $post_type ) {
+		if ( 'product' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Product';
+			$args['graphql_plural_name']        = 'Products';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'product_variation' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'ProductVariation';
+			$args['graphql_plural_name']        = 'ProductVariations';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'shop_coupon' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Coupon';
+			$args['graphql_plural_name']        = 'Coupons';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'shop_order' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Order';
+			$args['graphql_plural_name']        = 'Orders';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'shop_order_refund' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Refund';
+			$args['graphql_plural_name']        = 'Refunds';
+			$args['skip_graphql_type_registry'] = true;
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Filters "allowed_post_types" list if schema hasn't been defined.
+	 *
+	 * @param array $post_types  Post types registered in GraphQL schema.
+	 *
+	 * @return array
+	 */
+	public static function skip_type_registry( $post_types ) {
+		return array_diff(
+			$post_types,
+			get_post_types(
+				[
+					'show_in_graphql'            => true,
+					'skip_graphql_type_registry' => true,
+				]
+			)
+		);
+	}
+
+	/**
+	 * Filters the "MenuItemObjectUnion" resolver to include "Products".
+	 *
+	 * @param mixed|null $type    Object type definition.
+	 * @param mixed      $object  Source resolver.
+	 *
+	 * @return mixed|null
+	 */
+	public static function resolve_menu_item_type( $type, $object ) {
+		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Product ) {
+			return \WPGraphQL\TypeRegistry::get_type( 'Product' );
+		}
+
+		return $type;
+	}
+
+	/**
 	 * Registers WooCommerce taxonomies to be used in GraphQL schema
 	 *
-	 * @param array  $args     - allowed post-types.
+	 * @param array  $args     - allowed taxonomies.
 	 * @param string $taxonomy - name of taxonomy being checked.
 	 *
 	 * @return array

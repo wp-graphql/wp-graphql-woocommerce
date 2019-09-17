@@ -94,7 +94,7 @@ function wp_graphql_woocommerce_init() {
 						<?php
 							printf(
 								/* translators: dependency not ready error message */
-								esc_html__( '%1$s must be active for wp-graphql-woocommerce to work', 'wp-graphql-woocommerce' ),
+								esc_html__( '%1$s must be active for "WPGraphQL WooCommerce (WooGraphQL)" to work', 'wp-graphql-woocommerce' ),
 								esc_html( $dep )
 							);
 						?>

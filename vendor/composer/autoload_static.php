@@ -21,6 +21,7 @@ class ComposerStaticInit47658c4b7d8904b82de7ca7f79505649
     );
 
     public static $classMap = array (
+        'WPGraphQL\\Extensions\\WooCommerce\\ACF_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-acf-schema-filters.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Cart_Items' => __DIR__ . '/../..' . '/includes/connection/class-cart-items.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Coupons' => __DIR__ . '/../..' . '/includes/connection/class-coupons.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Connection\\Customers' => __DIR__ . '/../..' . '/includes/connection/class-customers.php',
