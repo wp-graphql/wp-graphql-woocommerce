@@ -38,7 +38,7 @@ class Core_Schema_Filters {
 		// Registers WooCommerce CPTs.
 		add_filter( 'register_post_type_args', array( __CLASS__, 'register_post_types' ), 10, 2 );
 		add_filter( 'graphql_post_entities_allowed_post_types', array( __CLASS__, 'skip_type_registry' ), 10 );
-		add_filter( 'resolve_menu_item_type', array( __CLASS__, 'resolve_menu_item_type' ), 10, 2 );
+		add_filter( 'graphql_union_resolve_type', array( __CLASS__, 'graphql_union_resolve_type' ), 10, 3 );
 
 		// Registers WooCommerce taxonomies.
 		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );
@@ -133,7 +133,7 @@ class Core_Schema_Filters {
 	}
 
 	/**
-	 * Filters "allowed_post_types" list if schema hasn't been defined.
+	 * Filters "allowed_post_types" and removed Woocommerce CPTs.
 	 *
 	 * @param array $post_types  Post types registered in GraphQL schema.
 	 *
@@ -152,16 +152,33 @@ class Core_Schema_Filters {
 	}
 
 	/**
-	 * Filters the "MenuItemObjectUnion" resolver to include "Products".
+	 * Filters "WPUnionType" resolver to include "Products".
 	 *
-	 * @param mixed|null $type    Object type definition.
-	 * @param mixed      $object  Source resolver.
+	 * @param mixed|null                  $type    Object type definition.
+	 * @param mixed|null                  $object  Source resolver.
+	 * @param \WPGraphQL\Type\WPUnionType $union   WPUnionType instance.
 	 *
 	 * @return mixed|null
 	 */
-	public static function resolve_menu_item_type( $type, $object ) {
+	public static function graphql_union_resolve_type( $type, $object, $union ) {
+		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Coupon ) {
+			return \WPGraphQL\TypeRegistry::get_type( 'Coupon' );
+		}
+
+		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Order ) {
+			return \WPGraphQL\TypeRegistry::get_type( 'Order' );
+		}
+
 		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Product ) {
 			return \WPGraphQL\TypeRegistry::get_type( 'Product' );
+		}
+
+		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\ProductVariation ) {
+			return \WPGraphQL\TypeRegistry::get_type( 'ProductVariation' );
+		}
+
+		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Refund ) {
+			return \WPGraphQL\TypeRegistry::get_type( 'Refund' );
 		}
 
 		return $type;
