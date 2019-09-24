@@ -262,14 +262,14 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			 * Filters the default catalog visibility tax query for non-adminstrator requests.
 			 *
 			 * @param array       $default_visibility  Default catalog visibility tax query.
-			 * @param array       $query_args          The args that will be passed to the WP_Query
-			 * @param mixed       $source              The source that's passed down the GraphQL queries
-			 * @param array       $args                The inputArgs on the field
-			 * @param AppContext  $context             The AppContext passed down the GraphQL tree
-			 * @param ResolveInfo $info                The ResolveInfo passed down the GraphQL tree
+			 * @param array       $query_args          The args that will be passed to the WP_Query.
+			 * @param mixed       $source              The source that's passed down the GraphQL queries.
+			 * @param array       $args                The inputArgs on the field.
+			 * @param AppContext  $context             The AppContext passed down the GraphQL tree.
+			 * @param ResolveInfo $info                The ResolveInfo passed down the GraphQL tree.
 			 */
 			$catalog_visibility = apply_filters(
-				'product_connection_catalog_visibility',
+				'graphql_product_connection_catalog_visibility',
 				self::$default_visibility,
 				$query_args,
 				$this->source,
@@ -300,13 +300,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		/**
-		 * Filter the $query_args to allow folks to customize queries programmatically
+		 * Filter the $query_args to allow folks to customize queries programmatically.
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param array       $query_args The args that will be passed to the WP_Query.
+		 * @param mixed       $source     The source that's passed down the GraphQL queries.
+		 * @param array       $args       The inputArgs on the field.
+		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
