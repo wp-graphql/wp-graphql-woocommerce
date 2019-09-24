@@ -34,6 +34,18 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	protected $post_type;
 
 	/**
+	 * Holds default catalog visibility tax query.
+	 *
+	 * @var array
+	 */
+	public static $default_visibility = array(
+		'taxonomy' => 'product_visibility',
+		'field'    => 'slug',
+		'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+		'operator' => 'NOT IN',
+	);
+
+	/**
 	 * Refund_Connection_Resolver constructor.
 	 *
 	 * @param mixed       $source    The object passed down from the previous level in the Resolve tree.
@@ -245,12 +257,30 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			if ( empty( $query_args['tax_query'] ) ) {
 				$query_args['tax_query'] = array(); // WPCS: slow query ok.
 			}
-			$query_args['tax_query'][] = array(
-				'taxonomy' => 'product_visibility',
-				'field'    => 'slug',
-				'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
-				'operator' => 'NOT IN',
+
+			/**
+			 * Filters the default catalog visibility tax query for non-adminstrator requests.
+			 *
+			 * @param array       $default_visibility  Default catalog visibility tax query.
+			 * @param array       $query_args          The args that will be passed to the WP_Query.
+			 * @param mixed       $source              The source that's passed down the GraphQL queries.
+			 * @param array       $args                The inputArgs on the field.
+			 * @param AppContext  $context             The AppContext passed down the GraphQL tree.
+			 * @param ResolveInfo $info                The ResolveInfo passed down the GraphQL tree.
+			 */
+			$catalog_visibility = apply_filters(
+				'graphql_product_connection_catalog_visibility',
+				self::$default_visibility,
+				$query_args,
+				$this->source,
+				$this->args,
+				$this->context,
+				$this->info
 			);
+
+			if ( ! empty( $catalog_visibility ) ) {
+				$query_args['tax_query'][] = $catalog_visibility;
+			}
 		}
 
 		/**
@@ -270,13 +300,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		/**
-		 * Filter the $query args to allow folks to customize queries programmatically
+		 * Filter the $query_args to allow folks to customize queries programmatically.
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param array       $query_args The args that will be passed to the WP_Query.
+		 * @param mixed       $source     The source that's passed down the GraphQL queries.
+		 * @param array       $args       The inputArgs on the field.
+		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
