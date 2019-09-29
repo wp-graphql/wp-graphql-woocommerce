@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Refunds
  */
-class Refunds extends WC_Connection {
+class Refunds {
 	/**
 	 * Registers the various connections from other Types to Refund
 	 */
@@ -66,7 +66,7 @@ class Refunds extends WC_Connection {
 	 */
 	public static function get_connection_args() {
 		return array_merge(
-			self::get_shared_connection_args(),
+			get_common_post_type_args(),
 			array(
 				'statuses' => array(
 					'type'        => array( 'list_of' => 'String' ),

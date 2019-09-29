@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Products
  */
-class Products extends WC_Connection {
+class Products {
 	/**
 	 * Registers the various connections from other Types to Product
 	 */
@@ -274,6 +274,10 @@ class Products extends WC_Connection {
 				'type'        => array( 'list_of' => 'ProductTaxonomyFilterRelationInput' ),
 				'description' => __( 'Limit result set with complex set of taxonomy filters.', 'wp-graphql-woocommerce' ),
 			),
+			'orderby'         => array(
+				'type'        => array( 'list_of' => 'ProductsOrderbyInput' ),
+				'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
+			),
 		);
 
 		if ( wc_tax_enabled() ) {
@@ -283,6 +287,6 @@ class Products extends WC_Connection {
 			);
 		}
 
-		return array_merge( self::get_shared_connection_args(), $args );
+		return array_merge( get_common_post_type_args(), $args );
 	}
 }
