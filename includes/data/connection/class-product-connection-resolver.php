@@ -22,9 +22,7 @@ use WPGraphQL\Model\Term;
  * Class Product_Connection_Resolver
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
-	use WC_Connection_Resolver {
-		sanitize_input_fields as sanitize_shared_input_fields;
-	}
+	use Common_CPT_Input_Sanitize_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -166,6 +164,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['graphql_cursor_offset']  = $cursor_offset;
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
+		/**
+		 * Pass the graphql $args to the WP_Query
+		 */
+		$query_args['graphql_args'] = $this->args;
+
 		// Determine where we're at in the Graph and adjust the query context appropriately.
 		if ( true === is_object( $this->source ) ) {
 			switch ( true ) {
@@ -243,11 +246,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					break;
 			}
 		}
-
-		/**
-		 * Pass the graphql $args to the WP_Query
-		 */
-		$query_args['graphql_args'] = $this->args;
 
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
@@ -332,6 +330,24 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Returns meta keys to be used for connection ordering.
+	 *
+	 * @return array
+	 */
+	public function ordering_meta() {
+		return array(
+			'_price',
+			'_regular_price',
+			'_sale_price',
+			'_wc_rating_count',
+			'_wc_average_rating',
+			'_sale_price_dates_from',
+			'_sale_price_dates_to',
+			'total_sales',
+		);
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -342,7 +358,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = $this->sanitize_shared_input_fields( $where_args );
+		$args = $this->sanitize_common_inputs( $where_args );
 
 		if ( ! empty( $where_args['slug'] ) ) {
 			$args['name'] = $where_args['slug'];

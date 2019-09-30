@@ -20,9 +20,7 @@ use WPGraphQL\Extension\WooCommerce\Model\Order;
  * Class Refund_Connection_Resolver
  */
 class Refund_Connection_Resolver extends AbstractConnectionResolver {
-	use WC_Connection_Resolver {
-		sanitize_input_fields as sanitize_shared_input_fields;
-	}
+	use Common_CPT_Input_Sanitize_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -178,6 +176,15 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Returns meta keys to be used for connection ordering.
+	 *
+	 * @return array
+	 */
+	public function ordering_meta() {
+		return array();
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -188,7 +195,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = $this->sanitize_shared_input_fields( $where_args );
+		$args = $this->sanitize_common_inputs( $where_args );
 
 		$key_mapping = array(
 			'post_parent'         => 'parent',

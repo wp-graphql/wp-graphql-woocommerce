@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Coupons
  */
-class Coupons extends WC_Connection {
+class Coupons {
 	/**
 	 * Registers the various connections from other Types to Coupon
 	 */
@@ -65,7 +65,7 @@ class Coupons extends WC_Connection {
 	 */
 	public static function get_connection_args() {
 		return array_merge(
-			self::get_shared_connection_args(),
+			get_common_post_type_args(),
 			array(
 				'code' => array(
 					'type'        => 'String',

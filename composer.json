@@ -16,7 +16,7 @@
     "license": "GPL-3.0",
     "authors": [
         {
-            "name": "kidunot89",
+            "name": "Geoff Taylor",
             "email": "kidunot89@gmail.com",
             "role": "Lead developer"
         }
@@ -31,6 +31,9 @@
         "optimize-autoloader": true
     },
     "autoload": {
+        "files":[
+            "includes/connection/common-post-type-args.php"
+        ],
         "psr-4": {
             "WPGraphQL\\Extensions\\WooCommerce\\": "includes/"
         },

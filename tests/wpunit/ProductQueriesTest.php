@@ -259,7 +259,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				$typeNotIn: [ProductTypesEnum],
 				$featured: Boolean,
 				$maxPrice: Float,
-				$orderby: [WCConnectionOrderbyInput]
+				$orderby: [ProductsOrderbyInput]
 				$taxonomyFilter: [ProductTaxonomyFilterRelationInput]
 			){
 				products( where: {

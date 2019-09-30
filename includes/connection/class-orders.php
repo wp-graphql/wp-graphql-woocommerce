@@ -14,7 +14,7 @@ use WPGraphQL\Extensions\WooCommerce\Data\Factory;
 /**
  * Class - Orders
  */
-class Orders extends WC_Connection {
+class Orders {
 	/**
 	 * Registers the various connections from other Types to Customer
 	 */
@@ -64,7 +64,7 @@ class Orders extends WC_Connection {
 	 */
 	public static function get_connection_args() {
 		return array_merge(
-			self::get_shared_connection_args(),
+			get_common_post_type_args(),
 			array(
 				'statuses'    => array(
 					'type'        => array( 'list_of' => 'OrderStatusEnum' ),
@@ -81,6 +81,10 @@ class Orders extends WC_Connection {
 				'productId'   => array(
 					'type'        => 'Int',
 					'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
+				),
+				'orderby'     => array(
+					'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
+					'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
 				),
 			)
 		);
