@@ -95,8 +95,9 @@ class WooCommerce_Filters {
 	 * @return bool
 	 */
 	private static function is_graphql_post_request() {
+		global $wp;
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			$haystack = wp_unslash( $_SERVER['REQUEST_URI'] );
+			$haystack = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			$needle   = apply_filters( 'graphql_endpoint', 'graphql' );
 			$length   = strlen( $needle );
 			if ( 0 === $length ) {
