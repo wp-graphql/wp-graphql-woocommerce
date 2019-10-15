@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\Extensions\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
 
@@ -44,13 +42,19 @@ class Core_Schema_Filters {
 		// Adds connection resolutions for WooGraphQL type to WPGraphQL type connections.
 		add_filter(
 			'graphql_post_object_connection_query_args',
-			array( __CLASS__, 'graphql_post_object_connection_query_args' ),
+			array(
+				'\WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver',
+				'get_query_args',
+			),
 			10,
 			5
 		);
 		add_filter(
 			'graphql_term_object_connection_query_args',
-			array( __CLASS__, 'graphql_term_object_connection_query_args' ),
+			array(
+				'\WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver',
+				'get_query_args',
+			),
 			10,
 			5
 		);
@@ -153,35 +157,5 @@ class Core_Schema_Filters {
 		$loaders['wc_post_crud'] = &$post_crud_loader;
 
 		return $loaders;
-	}
-
-	/**
-	 * Filter PostObjectConnectionResolver's query_args and adds args to used when querying WooCommerce post-types
-	 *
-	 * @param array       $query_args - WP_Query args.
-	 * @param mixed       $source     - Connection parent resolver.
-	 * @param array       $args       - Connection arguments.
-	 * @param AppContext  $context    - AppContext object.
-	 * @param ResolveInfo $info       - ResolveInfo object.
-	 *
-	 * @return mixed
-	 */
-	public static function graphql_post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return Post_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
-	}
-
-	/**
-	 * Filter TermObjectConnectionResolver's query_args and adds args to used when querying WooCommerce taxonomies
-	 *
-	 * @param array       $query_args - WP_Term_Query args.
-	 * @param mixed       $source     - Connection parent resolver.
-	 * @param array       $args       - Connection arguments.
-	 * @param AppContext  $context    - AppContext object.
-	 * @param ResolveInfo $info       - ResolveInfo object.
-	 *
-	 * @return mixed
-	 */
-	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return WC_Terms_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
 	}
 }
