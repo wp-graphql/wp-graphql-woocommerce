@@ -156,6 +156,81 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $actual );
 	}
 
+	public function testProductTaxonomies() {
+		// Create product for first assertion.
+		$category_5 = $this->helper->create_product_category( 'category-five' );
+		$category_6 = $this->helper->create_product_category( 'category-six', $category_5 );
+		$tag_2      = $this->helper->create_product_tag( 'tag-two' );
+		$product = $this->helper->create_simple(
+			array(
+				'price'         => 10,
+				'regular_price' => 10,
+				'category_ids'  => array( $category_5, $category_6 ),
+				'tag_ids'       => array( $tag_2 ),
+			)
+		);
+
+		$query = '
+			query productQuery( $id: ID, $productId: Int, $slug: String, $sku: String ) {
+				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
+					id
+					categories {
+						nodes {
+							name
+							children {
+								nodes {
+									name
+								}
+							}
+						}
+					}
+					tags {
+						nodes {
+							name
+						}
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 * 
+		 * Test querying product with "productId" argument.
+		 */
+		$variables = array( 'productId' => $product );
+		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$expected  = array(
+			'data' => array(
+				'productBy' => array(
+					'id'         => $this->helper->to_relay_id( $product ),
+					'categories' => array(
+						'nodes' => array(
+							array(
+								'name'     => 'category-five',
+								'children' => array(
+									'nodes' => array(
+										array( 'name' => 'category-six' ),
+									),
+								),
+							),
+						),
+					),
+					'tags' => array(
+						'nodes' => array(
+							array( 'name' => 'tag-two' ),
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
 	public function testProductByQueryAndArgs() {
 		$id = $this->helper->to_relay_id( $this->product );
 		$query = '
