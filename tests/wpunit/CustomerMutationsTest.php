@@ -95,6 +95,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			mutation register( $input: RegisterCustomerInput! ) {
 				registerCustomer( input: $input ) {
 					clientMutationId
+					authToken
+					refreshToken
 					customer {
 						customerId
 						username
@@ -150,6 +152,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			mutation update( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					clientMutationId
+					authToken
+					refreshToken
 					customer {
 						customerId
 						username
@@ -225,6 +229,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'registerCustomer' => array(
 					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
 						'customerId' => $user->ID,
 						'email'      => $this->email,
@@ -272,6 +278,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'registerCustomer' => array(
 					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
 						'customerId' => $user->ID,
 						'email'      => $this->email,
@@ -320,6 +328,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'registerCustomer' => array(
 					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
 						'customerId' => $user->ID,
 						'email'      => $this->email,
@@ -371,6 +381,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'registerCustomer' => array(
 					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
 						'customerId' => $user->ID,
 						'email'      => $this->email,
@@ -431,6 +443,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'updateCustomer' => array(
 					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
 						'customerId' => $user->ID,
 						'email'      => $this->new_email,
@@ -484,6 +498,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'updateCustomer' => array(
 					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
 						'customerId' => $user->ID,
 						'email'      => $this->email,
@@ -502,5 +518,4 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEqualSets( $expected, $actual );
 	}
-
 }

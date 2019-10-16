@@ -78,6 +78,7 @@ class CustomerHelper extends WCG_Helper {
 
 	public function print_query( $id ) {
 		$data = new WC_Customer( $id );
+		$wp_user = get_user_by( 'ID', $data->get_id() );
 
 		return array(
 			'id'                    => $this->to_relay_id( $id ),
@@ -89,8 +90,8 @@ class CustomerHelper extends WCG_Helper {
 			'totalSpent'            => (float) $data->get_total_spent(),
 			'username'              => $data->get_username(),
 			'email'                 => $data->get_email(),
-			'firstName'             => $data->get_first_name(),
-			'lastName'              => $data->get_last_name(),
+			'firstName'             => ! empty( $data->get_first_name() ) ? $data->get_first_name() : null,
+			'lastName'              => ! empty( $data->get_last_name() ) ? $data->get_last_name() : null,
 			'displayName'           => $data->get_display_name(),
 			'role'                  => $data->get_role(),
 			'date'                  => $data->get_date_created()->__toString(),
@@ -168,6 +169,12 @@ class CustomerHelper extends WCG_Helper {
 					: null,
 			),
 			'isPayingCustomer'      => $data->get_is_paying_customer(),
+			'jwtAuthToken'          => ! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user ) )
+				? \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user )
+				: null,
+			'jwtRefreshToken'       => ! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user ) )
+				? \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user )
+				: null,
 		);
 	}
 
@@ -194,6 +201,8 @@ class CustomerHelper extends WCG_Helper {
 			'billing'               => null,                                                                      
 			'shipping'              => null,                                                                     
 			'isPayingCustomer'      => null,
+			'jwtAuthToken'          => null,
+			'jwtRefreshToken'       => null,
 		);
 	}
 }

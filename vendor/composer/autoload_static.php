@@ -62,6 +62,7 @@ class ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Checkout_Mutation' => __DIR__ . '/../..' . '/includes/data/mutation/class-checkout-mutation.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Customer_Mutation' => __DIR__ . '/../..' . '/includes/data/mutation/class-customer-mutation.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Order_Mutation' => __DIR__ . '/../..' . '/includes/data/mutation/class-order-mutation.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\JWT_Auth_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-jwt-auth-schema-filters.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Coupon' => __DIR__ . '/../..' . '/includes/model/class-coupon.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Crud_CPT' => __DIR__ . '/../..' . '/includes/model/class-crud-cpt.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Model\\Customer' => __DIR__ . '/../..' . '/includes/model/class-customer.php',

@@ -43,6 +43,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Checkout_Mutation' => $baseDir . '/includes/data/mutation/class-checkout-mutation.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Customer_Mutation' => $baseDir . '/includes/data/mutation/class-customer-mutation.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Data\\Mutation\\Order_Mutation' => $baseDir . '/includes/data/mutation/class-order-mutation.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\JWT_Auth_Schema_Filters' => $baseDir . '/includes/class-jwt-auth-schema-filters.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Coupon' => $baseDir . '/includes/model/class-coupon.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Crud_CPT' => $baseDir . '/includes/model/class-crud-cpt.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Model\\Customer' => $baseDir . '/includes/model/class-customer.php',
