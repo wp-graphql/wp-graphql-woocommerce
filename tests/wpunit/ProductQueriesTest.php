@@ -158,15 +158,22 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testProductTaxonomies() {
 		// Create product for first assertion.
-		$category_5 = $this->helper->create_product_category( 'category-five' );
-		$category_6 = $this->helper->create_product_category( 'category-six', $category_5 );
-		$tag_2      = $this->helper->create_product_tag( 'tag-two' );
+		$category_5    = $this->helper->create_product_category( 'category-five' );
+		$category_6    = $this->helper->create_product_category( 'category-six', $category_5 );
+		$tag_2         = $this->helper->create_product_tag( 'tag-two' );
+		$attachment_id = $this->factory()->attachment->create(
+			array(
+				'post_mime_type' => 'image/gif',
+				'post_author' => $this->admin
+			 )
+		);
 		$product = $this->helper->create_simple(
 			array(
 				'price'         => 10,
 				'regular_price' => 10,
 				'category_ids'  => array( $category_5, $category_6 ),
 				'tag_ids'       => array( $tag_2 ),
+				'image_id'      => $attachment_id,
 			)
 		);
 
@@ -174,6 +181,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query productQuery( $id: ID, $productId: Int, $slug: String, $sku: String ) {
 				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
 					id
+					image {
+						id
+					}
 					categories {
 						nodes {
 							name
@@ -204,6 +214,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'productBy' => array(
 					'id'         => $this->helper->to_relay_id( $product ),
+					'image'      => array(
+						'id' => \GraphQLRelay\Relay::toGlobalId( 'attachment', $attachment_id ),
+					),
 					'categories' => array(
 						'nodes' => array(
 							array(
@@ -216,7 +229,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 							),
 						),
 					),
-					'tags' => array(
+					'tags'       => array(
 						'nodes' => array(
 							array( 'name' => 'tag-two' ),
 						),
