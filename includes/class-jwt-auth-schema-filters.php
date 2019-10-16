@@ -10,6 +10,9 @@
 namespace WPGraphQL\Extensions\WooCommerce;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
+use WPGraphQL\Model\User;
 
 /**
  * Class JWT_Auth_Schema_Filters
@@ -41,14 +44,14 @@ class JWT_Auth_Schema_Filters {
 			$jwt_token_fields[ $field_name ] = array_merge(
 				$field,
 				array(
-					'resolve' => function( $source, array $args, AppContext $content, ResolveInfo $info ) use ( $root_resolver ) {
+					'resolve' => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $root_resolver ) {
 						$wp_user = get_user_by( 'id', $source->ID );
 						if ( $wp_user ) {
 							$user = new User( $wp_user );
 							return $root_resolver( $user, $args, $context, $info );
 						}
 
-						return false;
+						return null;
 					},
 				)
 			);
