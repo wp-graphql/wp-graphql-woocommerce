@@ -51,11 +51,15 @@ class ProductHelper extends WCG_Helper {
 		return ! empty( $term['term_id'] ) ? $term['term_id'] : null;
 	}
 
-	public function create_product_category( $term ) {
+	public function create_product_category( $term, $parent_id = 0 ) {
 		if ( term_exists( $term, 'product_cat' ) ) {
 			$term = get_term( $term, 'product_cat', ARRAY_A );
 		} else {
-			$term = wp_insert_term( $term, 'product_cat' );
+			$args = [];
+			if ( $parent_id ) {
+				$args['parent'] = $parent_id;
+			}
+			$term = wp_insert_term( $term, 'product_cat', $args );
 		}
 
 		return ! empty( $term['term_id'] ) ? $term['term_id'] : null;

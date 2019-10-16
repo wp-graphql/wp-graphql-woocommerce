@@ -26,6 +26,10 @@ class WooCommerce_Filters {
 	 */
 	public static function add_filters() {
 		// Setup QL session handler.
+		$graphql_endpoint = '/' . apply_filters( 'graphql_endpoint', 'graphql' );
+		if ( isset( $_SERVER['REQUEST_URI'] ) && $graphql_endpoint !== $_SERVER['REQUEST_URI'] ) {
+			return;
+		}
 		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
 			self::$session_header = apply_filters( 'woocommerce_graphql_session_header_name', 'woocommerce-session' );
 			add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );

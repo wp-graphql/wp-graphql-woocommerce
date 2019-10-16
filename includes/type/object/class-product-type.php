@@ -271,6 +271,10 @@ class Product_Type {
 						'type'        => 'MediaItem',
 						'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
+							// @codingStandardsIgnoreLine.
+							if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
+								return null;
+							}
 							return DataSource::resolve_post_object( $source->image_id, $context );
 						},
 					),
