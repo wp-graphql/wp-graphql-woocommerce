@@ -117,6 +117,7 @@ return array(
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => $baseDir . '/includes/type/object/class-shipping-method-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Tax_Rate_Type' => $baseDir . '/includes/type/object/class-tax-rate-type.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Variation_Attribute_Type' => $baseDir . '/includes/type/object/class-variation-attribute-type.php',
+    'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPUnion\\Product_Union' => $baseDir . '/includes/type/union/class-product-union.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Type_Registry' => $baseDir . '/includes/class-type-registry.php',
     'WPGraphQL\\Extensions\\WooCommerce\\Utils\\QL_Session_Handler' => $baseDir . '/includes/utils/class-ql-session-handler.php',
     'WPGraphQL\\Extensions\\WooCommerce\\WooCommerce_Filters' => $baseDir . '/includes/class-woocommerce-filters.php',

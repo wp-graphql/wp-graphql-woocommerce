@@ -28,10 +28,9 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
     public function testVariationQuery() {
         $variation_id = $this->products['variations'][0];
         $id           = $this->helper->to_relay_id( $variation_id );
-
         $query        = '
-            query variationQuery( $id: ID, $variationId: Int ) {
-                productVariation( id: $id, variationId: $variationId ) {
+            query ($id: ID, $variationId: Int) {
+                productVariation(id: $id, variationId: $variationId) {
                     id
                     variationId
                     name
@@ -81,8 +80,8 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * test query and "id" query argument
 		 */
 		$variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'variationQuery', $variables );
-		$expected = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -97,8 +96,8 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * test query and "methodId" query argument
 		 */
 		$variables = array( 'variationId' => $variation_id );
-		$actual = do_graphql_request( $query, 'variationQuery', $variables );
-		$expected = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -111,7 +110,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $variations = $this->products['variations'];
 
         $query      = '
-            query variationsQuery(
+            query (
                 $id: ID!,
                 $minPrice: Float,
                 $parent: Int,
@@ -119,17 +118,19 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                 $parentNotIn: [Int]
             ) {
                 product( id: $id ) {
-                    price
-                    regularPrice
-                    salePrice
-                    variations( where: {
-                        minPrice: $minPrice,
-                        parent: $parent,
-                        parentIn: $parentIn,
-                        parentNotIn: $parentNotIn
-                    } ) {
-                        nodes {
-                            id
+                    ... on VariableProduct {
+                        price
+                        regularPrice
+                        salePrice
+                        variations( where: {
+                            minPrice: $minPrice,
+                            parent: $parent,
+                            parentIn: $parentIn,
+                            parentNotIn: $parentNotIn
+                        } ) {
+                            nodes {
+                                id
+                            }
                         }
                     }
                 }
@@ -143,7 +144,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-        $actual    = do_graphql_request( $query, 'variationsQuery', $variables );
+        $actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 
         $prices = $this->product_helper->field( $this->products['product'], 'variation_prices', array( true ) );
         $product_fields = array(
@@ -180,7 +181,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test "minPrice" where argument
 		 */
         $variables = array( 'id' => $id, 'minPrice' => 15 );
-		$actual    = do_graphql_request( $query, 'variationsQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
                 'product' => array_merge(
@@ -210,10 +211,9 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function testProductVariationToMediaItemConnections() {
 		$id    = $this->helper->to_relay_id( $this->products['variations'][1] );
-
 		$query = '
-			query productVariationQuery( $id: ID! ) {
-				productVariation( id: $id ) {
+			query ($id: ID!) {
+				productVariation(id: $id) {
 					id
 					image {
 						id
@@ -223,7 +223,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'productVariationQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'productVariation' => array(
@@ -248,8 +248,8 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$id    = $this->helper->to_relay_id( $this->products['variations'][0] );
 
 		$query = '
-			query productVariationQuery( $id: ID! ) {
-				productVariation( id: $id ) {
+			query ($id: ID!) {
+				productVariation(id: $id) {
 					id
 					downloads {
 						name
@@ -266,7 +266,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'productVariationQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'productVariation' => array(

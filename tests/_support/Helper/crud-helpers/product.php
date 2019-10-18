@@ -428,7 +428,7 @@ class ProductHelper extends WCG_Helper {
 		return array(
 			'addToCartText'        => ! empty( $data->add_to_cart_text() ) ? $data->add_to_cart_text() : null,
 			'addToCartDescription' => ! empty( $data->add_to_cart_description() ) ? $data->add_to_cart_description() : null,
-			'grouped'             => $children,
+			'products'             => $children,
 		);
 	}
 

@@ -36,7 +36,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     cartItem {
                         key
                         product {
-                            id
+                            ... on SimpleProduct {
+                                id
+                            }
+                            ... on VariableProduct {
+                                id
+                            }
                         }
                         variation {
                             id
@@ -70,7 +75,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     cartItems {
                         key
                         product {
-                            id
+                            ... on SimpleProduct {
+                                id
+                            }
+                            ... on VariableProduct {
+                                id
+                            }
                         }
                         variation {
                             id
@@ -104,7 +114,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     cartItems {
                         key
                         product {
-                            id
+                            ... on SimpleProduct {
+                                id
+                            }
+                            ... on VariableProduct {
+                                id
+                            }
                         }
                         variation {
                             id
@@ -629,7 +644,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 key
                                 product {
-                                    id
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
                                 }
                                 variation {
                                     id
@@ -724,7 +744,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 key
                                 product {
-                                    id
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
                                 }
                                 quantity
                                 subtotal
@@ -830,7 +855,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 key
                                 product {
-                                    id
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
                                 }
                                 quantity
                                 subtotal

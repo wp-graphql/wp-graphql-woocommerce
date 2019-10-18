@@ -136,6 +136,7 @@ class ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-method-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Tax_Rate_Type' => __DIR__ . '/../..' . '/includes/type/object/class-tax-rate-type.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPObject\\Variation_Attribute_Type' => __DIR__ . '/../..' . '/includes/type/object/class-variation-attribute-type.php',
+        'WPGraphQL\\Extensions\\WooCommerce\\Type\\WPUnion\\Product_Union' => __DIR__ . '/../..' . '/includes/type/union/class-product-union.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Type_Registry' => __DIR__ . '/../..' . '/includes/class-type-registry.php',
         'WPGraphQL\\Extensions\\WooCommerce\\Utils\\QL_Session_Handler' => __DIR__ . '/../..' . '/includes/utils/class-ql-session-handler.php',
         'WPGraphQL\\Extensions\\WooCommerce\\WooCommerce_Filters' => __DIR__ . '/../..' . '/includes/class-woocommerce-filters.php',

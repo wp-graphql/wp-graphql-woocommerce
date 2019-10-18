@@ -29,11 +29,11 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	// tests
 	public function testOrderQuery() {
-		$id = Relay::toGlobalId( 'shop_order', $this->order );
+		$id    = Relay::toGlobalId( 'shop_order', $this->order );
 
 		$query = '
-			query orderQuery( $id: ID! ) {
-				order( id: $id ) {
+			query ($id: ID!) {
+				order(id: $id) {
 					id
 					orderId
 					currency
@@ -114,8 +114,8 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'orderQuery', $variables );
-		$expected = array( 'data' => array( 'order' => $this->order_helper->print_restricted_query( $this->order ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'order' => $this->order_helper->print_restricted_query( $this->order ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -132,8 +132,8 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'orderQuery', $variables );
-		$expected = array( 'data' => array( 'order' => $this->order_helper->print_query( $this->order ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'order' => $this->order_helper->print_query( $this->order ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -142,11 +142,11 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testOrderByQueryAndArgs() {
-		$id = Relay::toGlobalId( 'shop_order', $this->order );
+		$id    = Relay::toGlobalId( 'shop_order', $this->order );
 
 		$query = '
-			query orderByQuery( $id: ID, $orderId: Int, $orderKey: String ) {
-				orderBy( id: $id, orderId: $orderId, orderKey: $orderKey ) {
+			query ($id: ID, $orderId: Int, $orderKey: String) {
+				orderBy(id: $id, orderId: $orderId, orderKey: $orderKey) {
 					id
 				}
 			}
@@ -158,8 +158,8 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests query and "id" arg
 		 */
 		$variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'orderByQuery', $variables );
-		$expected = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -172,8 +172,8 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests query and "orderId" arg
 		 */
 		$variables = array( 'orderId' => $this->order );
-		$actual = do_graphql_request( $query, 'orderByQuery', $variables );
-		$expected = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -186,8 +186,8 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests query and "orderNumber" arg
 		 */
 		$variables = array( 'orderKey' => $this->order_helper->get_order_key( $this->order ) );
-		$actual = do_graphql_request( $query, 'orderByQuery', $variables );
-		$expected = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -228,14 +228,14 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query ordersQuery( $statuses: [OrderStatusEnum], $customerId: Int, $customersIn: [Int] $productId: Int ) {
-				orders( where: {
+			query ($statuses: [OrderStatusEnum], $customerId: Int, $customersIn: [Int] $productId: Int) {
+				orders(where: {
 					statuses: $statuses,
 					customerId: $customerId,
 					customersIn: $customersIn,
 					productId: $productId,
 					orderby: { field: MENU_ORDER, order: ASC }
-				} ) {
+				}) {
 					nodes {
 						id
 					}
@@ -249,7 +249,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests query with no without required capabilities
 		 */
 		wp_set_current_user( $this->customer );
-		$actual = do_graphql_request( $query, 'ordersQuery' );
+		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array( 'data' => array( 'orders' => array( 'nodes' => array() ) ) );
 
 		// use --debug flag to view.
@@ -263,7 +263,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests query with required capabilities
 		 */
 		wp_set_current_user( $this->shop_manager );
-		$actual = do_graphql_request( $query, 'ordersQuery' );
+		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
 			'data' => array(
 				'orders' => array(
@@ -283,7 +283,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "statuses" where argument
 		 */
 		$variables = array( 'statuses' => array( 'COMPLETED' ) );
-		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'orders' => array(
@@ -311,7 +311,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "customerId" where argument
 		 */
 		$variables = array( 'customerId' => $customer );
-		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'orders' => array(
@@ -339,7 +339,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "customerIn" where argument
 		 */
 		$variables = array( 'customersIn' => array( $customer ) );
-		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'orders' => array(
@@ -367,7 +367,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "productId" where argument
 		 */
 		$variables = array( 'productId' => $product );
-		$actual    = do_graphql_request( $query, 'ordersQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'orders' => array(

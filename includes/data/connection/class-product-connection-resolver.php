@@ -200,7 +200,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['post__in'] = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->cross_sell_ids, $query_args['post__in'] )
 							: $this->source->cross_sell_ids;
-					} elseif ( 'grouped' === $this->info->fieldName ) {
+					} elseif ( 'products' === $this->info->fieldName ) {
 						$query_args['post__in'] = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->grouped_ids, $query_args['post__in'] )
 							: $this->source->grouped_ids;

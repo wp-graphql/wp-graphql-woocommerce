@@ -21,6 +21,7 @@ class Products {
 	public static function register_connections() {
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
+
 		// From Coupon.
 		register_graphql_connection(
 			self::get_connection_config(
@@ -38,27 +39,32 @@ class Products {
 				)
 			)
 		);
-		// From Product.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'related',
+
+		// Connections from all product types.
+		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+
+		foreach ( $product_types as $product_type ) {
+			register_graphql_connection(
+				self::get_connection_config(
+					array(
+						'fromType'      => $product_type,
+						'fromFieldName' => 'related',
+					)
 				)
-			)
-		);
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'upsell',
+			);
+			register_graphql_connection(
+				self::get_connection_config(
+					array(
+						'fromType'      => $product_type,
+						'fromFieldName' => 'upsell',
+					)
 				)
-			)
-		);
+			);
+		}
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
+					'fromType'      => 'SimpleProduct',
 					'fromFieldName' => 'crossSell',
 				)
 			)
@@ -66,17 +72,25 @@ class Products {
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'grouped',
+					'fromType'      => 'VariableProduct',
+					'fromFieldName' => 'crossSell',
+				)
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'GroupProduct',
+					'fromFieldName' => 'products',
 				)
 			)
 		);
 
-		// From Product to ProductVariation.
+		// From VariableProduct to ProductVariation.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
+					'fromType'      => 'VariableProduct',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
 				)
@@ -138,7 +152,7 @@ class Products {
 	public static function get_connection_config( $args = [] ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
-			'toType'         => 'Product',
+			'toType'         => 'ProductUnion',
 			'fromFieldName'  => 'products',
 			'connectionArgs' => self::get_connection_args(),
 			'resolveNode'    => function( $id, $args, $context, $info ) {

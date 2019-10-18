@@ -79,6 +79,9 @@ class Type_Registry {
 		// Object fields.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
 
+		// Unions.
+		\WPGraphQL\Extensions\WooCommerce\Type\WPUnion\Product_Union::register_union();
+
 		// Connections.
 		\WPGraphQL\Extensions\WooCommerce\Connection\Posts::register_connections();
 		\WPGraphQL\Extensions\WooCommerce\Connection\WC_Terms::register_connections();
