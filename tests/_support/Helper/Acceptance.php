@@ -20,7 +20,12 @@ class Acceptance extends \Codeception\Module {
                     cartItem {
                         key
                         product {
-                            id
+                            ... on SimpleProduct {
+                                id
+                            }
+                            ... on VariableProduct {
+                                id
+                            }
                         }
                         variation {
                             id
@@ -94,7 +99,12 @@ class Acceptance extends \Codeception\Module {
                     cartItems {
                         key
                         product {
-                            id
+                            ... on SimpleProduct {
+                                id
+                            }
+                            ... on VariableProduct {
+                                id
+                            }
                         }
                         variation {
                             id
@@ -258,7 +268,12 @@ class Acceptance extends \Codeception\Module {
                                 totalTax
                                 taxStatus
                                 product {
-                                    id
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
                                 }
                                 variation {
                                     id
