@@ -58,6 +58,20 @@ class Core_Schema_Filters {
 			10,
 			5
 		);
+
+		// Add node resolvers.
+		add_filter(
+			'graphql_resolve_node',
+			array( '\WPGraphQL\Extensions\WooCommerce\Data\Factory', 'resolve_node' ),
+			10,
+			4
+		);
+		add_filter(
+			'graphql_resolve_node_type',
+			array( '\WPGraphQL\Extensions\WooCommerce\Data\Factory', 'resolve_node_type' ),
+			10,
+			2
+		);
 	}
 
 	/**

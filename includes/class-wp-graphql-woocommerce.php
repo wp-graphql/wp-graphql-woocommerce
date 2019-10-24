@@ -32,8 +32,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
 				self::$instance = new self();
 				self::$instance->includes();
-				self::$instance->actions();
-				self::$instance->filters();
+				self::$instance->setup();
 			}
 
 			/**
@@ -141,25 +140,20 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
-		 * Sets up actions to run at certain spots throughout WordPress and the WPGraphQL execution cycle
+		 * Sets up WooGraphQL schema.
 		 */
-		private function actions() {
-			/**
-			 * Setup actions
-			 */
-			\WPGraphQL\Extensions\WooCommerce\Type_Registry::add_actions();
-		}
-
-		/**
-		 * Sets up filters to run at certain spots throughout WordPress and the WPGraphQL execution cycle
-		 */
-		private function filters() {
-			/**
-			 * Setup filters
-			 */
-			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
+		private function setup() {
+			// Register WooCommerce filters.
 			\WPGraphQL\Extensions\WooCommerce\WooCommerce_Filters::add_filters();
+
+			// Register WPGraphQL core filters.
+			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
+
+			// Register WPGraphQL JWT Authentication filters.
 			\WPGraphQL\Extensions\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
+
+			$registry = new \WPGraphQL\Extensions\WooCommerce\Type_Registry();
+			add_action( 'graphql_register_types', array( $registry, 'init' ) );
 		}
 	}
 endif;
