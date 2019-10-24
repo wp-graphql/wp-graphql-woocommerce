@@ -47,6 +47,8 @@ matrix:
       env: PHP_VERSION=5.6 WP_VERSION=5.0 DEBUG=1
     - php: 5.6
       env: PHP_VERSION=5.6 WP_VERSION=4.9 DEBUG=1
+    allow_failures:
+    - env: PHP_VERSION=5.6
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
