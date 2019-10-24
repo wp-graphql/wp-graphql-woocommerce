@@ -160,6 +160,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
 			\WPGraphQL\Extensions\WooCommerce\ACF_Schema_Filters::add_filters();
 			\WPGraphQL\Extensions\WooCommerce\WooCommerce_Filters::add_filters();
+			\WPGraphQL\Extensions\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
 		}
 	}
 endif;

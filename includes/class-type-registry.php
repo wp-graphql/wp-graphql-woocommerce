@@ -36,16 +36,17 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Stock_Status::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Class::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Status::register();
-		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\WC_Connection_Orderby_Enum::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Tax_Rate_Connection_Orderby_Enum::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Pricing_Field_Format::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Product_Taxonomy::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Taxonomy_Operator::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Post_Type_Orderby_Enum::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Products_Orderby_Enum::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Orders_Orderby_Enum::register();
 
 		// InputObjects.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Customer_Address_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Attribute_Input::register();
-		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\WC_Connection_Orderby_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Fee_Line_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Line_Item_Input::register();
@@ -55,6 +56,7 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Cart_Item_Quantity_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Relation_Input::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Orderby_Inputs::register();
 
 		// Objects.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type::register();

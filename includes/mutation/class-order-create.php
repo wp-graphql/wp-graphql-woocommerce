@@ -133,7 +133,7 @@ class Order_Create {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			if ( Order_Mutation::authorized( 'create', $input, $context, $info ) ) {
+			if ( ! Order_Mutation::authorized( 'create', $input, $context, $info ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to create an order.', 'wp-graphql-woocommerce' ) );
 			}
 

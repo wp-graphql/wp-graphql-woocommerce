@@ -59,6 +59,17 @@ class WC_Terms_Connection_Resolver {
 			}
 		}
 
+		// NOTE: Temporary fix for querying child categories.
+		// See my(@kidunot89) comments in issues [#140](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/140).
+		if (
+			is_a( $GLOBALS['post'], 'WP_Post' )
+			&& isset( $GLOBALS['post']->ID )
+			&& ( 'product_cat' === $query_args['taxonomy'] || 'product_tag' === $query_args['taxonomy'] )
+			&& $source->ID !== $GLOBALS['post']->ID
+		) {
+			unset( $query_args['object_ids'] );
+		}
+
 		$query_args = apply_filters(
 			'graphql_wc_terms_connection_query_args',
 			$query_args,
