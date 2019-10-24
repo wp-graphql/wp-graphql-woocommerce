@@ -26,12 +26,12 @@ class Shipping_Method_Type {
 	 * Registers shipping method type
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'ShippingMethod',
 			array(
-				'description'       => __( 'A shipping method object', 'wp-graphql-woocommercer' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A shipping method object', 'wp-graphql-woocommercer' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
 					'id'          => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
@@ -49,20 +49,6 @@ class Shipping_Method_Type {
 						'description' => __( 'Shipping method description.', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, AppContext $context ) {
-					if ( 'shipping_method' === $type ) {
-						$node = Factory::resolve_shipping_method( $id );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Shipping_Method::class ) ) {
-						$type = 'ShippingMethod';
-					}
-
-					return $type;
-				},
 			)
 		);
 

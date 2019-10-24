@@ -63,6 +63,20 @@ class Core_Schema_Filters {
 			10,
 			5
 		);
+
+		// Add node resolvers.
+		add_filter(
+			'graphql_resolve_node',
+			array( '\WPGraphQL\Extensions\WooCommerce\Data\Factory', 'resolve_node' ),
+			10,
+			4
+		);
+		add_filter(
+			'graphql_resolve_node_type',
+			array( '\WPGraphQL\Extensions\WooCommerce\Data\Factory', 'resolve_node_type' ),
+			10,
+			2
+		);
 	}
 
 	/**
@@ -153,39 +167,6 @@ class Core_Schema_Filters {
 				]
 			)
 		);
-	}
-
-	/**
-	 * Filters "WPUnionType" resolver to include "Products".
-	 *
-	 * @param mixed|null                  $type    Object type definition.
-	 * @param mixed|null                  $object  Source resolver.
-	 * @param \WPGraphQL\Type\WPUnionType $union   WPUnionType instance.
-	 *
-	 * @return mixed|null
-	 */
-	public static function graphql_union_resolve_type( $type, $object, $union ) {
-		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Coupon ) {
-			return \WPGraphQL\TypeRegistry::get_type( 'Coupon' );
-		}
-
-		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Order ) {
-			return \WPGraphQL\TypeRegistry::get_type( 'Order' );
-		}
-
-		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Product ) {
-			return \WPGraphQL\TypeRegistry::get_type( 'Product' );
-		}
-
-		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\ProductVariation ) {
-			return \WPGraphQL\TypeRegistry::get_type( 'ProductVariation' );
-		}
-
-		if ( $object instanceof \WPGraphQL\Extensions\WooCommerce\Model\Refund ) {
-			return \WPGraphQL\TypeRegistry::get_type( 'Refund' );
-		}
-
-		return $type;
 	}
 
 	/**

@@ -27,12 +27,12 @@ class Product_Variation_Type {
 	 * Register ProductVariation type to the WPGraphQL schema
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'ProductVariation',
 			array(
-				'description'       => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
 					'id'                => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product variation', 'wp-graphql-woocommerce' ),
@@ -241,20 +241,6 @@ class Product_Variation_Type {
 						},
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product_variation' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product_Variation::class ) ) {
-						$type = 'ProductVariation';
-					}
-
-					return $type;
-				},
 			)
 		);
 
