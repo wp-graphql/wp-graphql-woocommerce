@@ -15,9 +15,9 @@ branches:
   only:
     - develop
     - master
-    - release-v0.1.2
     - release-v0.2.0
     - release-v0.2.1
+    - release-v0.2.2
 
 cache:
   apt: true
@@ -44,9 +44,12 @@ matrix:
     - php: 7.0
       env: PHP_VERSION=7.0 WP_VERSION=4.9
     - php: 5.6
-      env: PHP_VERSION=5.6 WP_VERSION=5.0 DEBUG=1
+      env: PHP_VERSION=5.6 WP_VERSION=5.0
     - php: 5.6
-      env: PHP_VERSION=5.6 WP_VERSION=4.9 DEBUG=1
+      env: PHP_VERSION=5.6 WP_VERSION=4.9
+  allow_failures:
+    - env: PHP_VERSION=5.6 WP_VERSION=5.0
+    - env: PHP_VERSION=5.6 WP_VERSION=4.9
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
