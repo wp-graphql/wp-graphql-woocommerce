@@ -30,7 +30,7 @@ class Refund_Type {
 			'Refund',
 			array(
 				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ WPObjectType::node_interface() ],
+				'interfaces'  => array('Node'),
 				'fields'      => array(
 					'id'         => array(
 						'type'        => array( 'non_null' => 'ID' ),

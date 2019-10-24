@@ -30,7 +30,7 @@ class Shipping_Method_Type {
 			'ShippingMethod',
 			array(
 				'description' => __( 'A shipping method object', 'wp-graphql-woocommercer' ),
-				'interfaces'  => [ WPObjectType::node_interface() ],
+				'interfaces'  => array('Node'),
 				'fields'      => array(
 					'id'          => array(
 						'type'        => array( 'non_null' => 'ID' ),

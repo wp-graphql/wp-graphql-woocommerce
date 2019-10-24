@@ -153,7 +153,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			\WPGraphQL\Extensions\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
 
 			$registry = new \WPGraphQL\Extensions\WooCommerce\Type_Registry();
-			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
+			add_action( 'graphql_register_types', array( $registry, 'init' ) );
 		}
 	}
 endif;

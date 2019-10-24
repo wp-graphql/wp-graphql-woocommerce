@@ -30,7 +30,7 @@ class Tax_Rate_Type {
 			'TaxRate',
 			array(
 				'description' => __( 'A Tax rate object', 'wp-graphql-woocommercer' ),
-				'interfaces'  => [ WPObjectType::node_interface() ],
+				'interfaces'  => array('Node'),
 				'fields'      => array(
 					'id'       => array(
 						'type'        => array( 'non_null' => 'ID' ),

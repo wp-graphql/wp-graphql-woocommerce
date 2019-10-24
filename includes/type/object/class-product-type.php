@@ -31,7 +31,7 @@ class Product_Type {
 			'Product',
 			array(
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ WPObjectType::node_interface() ],
+				'interfaces'  => array('Node'),
 				'fields'      => array(
 					'id'                   => array(
 						'type'        => array( 'non_null' => 'ID' ),
