@@ -13,17 +13,11 @@ namespace WPGraphQL\Extensions\WooCommerce;
  */
 class Type_Registry {
 	/**
-	 * Registers actions related to type registry.
+	 * Registers WooGraphQL types, connections, unions, and mutations to GraphQL schema
+	 *
+	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  Instance of the WPGraphQL TypeRegistry.
 	 */
-	public static function add_actions() {
-		// Register types.
-		add_action( 'graphql_register_types', array( __CLASS__, 'graphql_register_types' ), 10 );
-	}
-
-	/**
-	 * Registers WooGraphQL types, connection, and mutations to GraphQL schema
-	 */
-	public static function graphql_register_types() {
+	public function init( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
 		// Enumerations.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Backorders::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPEnum\Catalog_Visibility::register();

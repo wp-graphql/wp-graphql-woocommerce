@@ -27,12 +27,12 @@ class Customer_Type {
 	 * Registers Customer WPObject type
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'Customer',
 			array(
-				'description'       => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ WPObjectType::node_interface() ],
+				'fields'      => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
@@ -113,20 +113,6 @@ class Customer_Type {
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'customer' === $type ) {
-						$node = Factory::resolve_customer( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Customer::class ) ) {
-						$type = 'Customer';
-					}
-
-					return $type;
-				},
 			)
 		);
 

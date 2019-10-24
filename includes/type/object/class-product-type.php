@@ -27,12 +27,12 @@ class Product_Type {
 	 * Register Product type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'Product',
 			array(
-				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ WPObjectType::node_interface() ],
+				'fields'      => array(
 					'id'                   => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product', 'wp-graphql-woocommerce' ),
@@ -323,20 +323,6 @@ class Product_Type {
 						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product::class ) ) {
-						$type = 'Product';
-					}
-
-					return $type;
-				},
 			)
 		);
 
