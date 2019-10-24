@@ -487,7 +487,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Handle visibility.
 		$post_type_obj = get_post_type_object( $this->post_type );
-		if ( ! empty( $where_args['visibility'] ) && current_user_can( $post_type_obj->cap->read_private_posts ) ) {
+		if ( ! empty( $where_args['visibility'] ) ) {
 			switch ( $where_args['visibility'] ) {
 				case 'search':
 					$tax_query[] = array(

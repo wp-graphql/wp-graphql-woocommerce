@@ -30,7 +30,7 @@ class Coupon_Type {
 			'Coupon',
 			array(
 				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array('Node'),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'                 => array(
 						'type'        => array( 'non_null' => 'ID' ),

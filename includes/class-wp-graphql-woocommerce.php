@@ -149,6 +149,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			// Register WPGraphQL core filters.
 			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
 
+			// Register WPGraphQL ACF filters.
+			\WPGraphQL\Extensions\WooCommerce\ACF_Schema_Filters::add_filters();
+
 			// Register WPGraphQL JWT Authentication filters.
 			\WPGraphQL\Extensions\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
 

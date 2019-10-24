@@ -31,7 +31,7 @@ class Customer_Type {
 			'Customer',
 			array(
 				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array('Node'),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
