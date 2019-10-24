@@ -321,9 +321,9 @@ class Product_Type {
 		wc_register_graphql_object_type(
 			'SimpleProduct',
 			array(
-				'description'       => __( 'A product object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array_merge(
+				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array_merge(
 					self::get_shared_fields(),
 					self::get_non_grouped_fields(),
 					self::get_inventory_fields(),
@@ -355,20 +355,6 @@ class Product_Type {
 						),
 					)
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product::class ) && 'simple' === $node->type ) {
-						$type = 'SimpleProduct';
-					}
-
-					return $type;
-				},
 			)
 		);
 	}
@@ -380,28 +366,14 @@ class Product_Type {
 		wc_register_graphql_object_type(
 			'VariableProduct',
 			array(
-				'description'       => __( 'A variable product object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array_merge(
+				'description' => __( 'A variable product object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array_merge(
 					self::get_shared_fields(),
 					self::get_non_grouped_fields(),
 					self::get_inventory_fields(),
 					self::get_shipping_fields()
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product::class ) && 'variable' === $node->type ) {
-						$type = 'VariableProduct';
-					}
-
-					return $type;
-				},
 			)
 		);
 	}
@@ -413,9 +385,9 @@ class Product_Type {
 		wc_register_graphql_object_type(
 			'ExternalProduct',
 			array(
-				'description'       => __( 'A external product object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array_merge(
+				'description' => __( 'A external product object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array_merge(
 					self::get_shared_fields(),
 					self::get_non_grouped_fields(),
 					array(
@@ -429,20 +401,6 @@ class Product_Type {
 						),
 					)
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product::class ) && 'external' === $node->type ) {
-						$type = 'ExternalProduct';
-					}
-
-					return $type;
-				},
 			)
 		);
 	}
@@ -454,9 +412,9 @@ class Product_Type {
 		wc_register_graphql_object_type(
 			'GroupProduct',
 			array(
-				'description'       => __( 'A group product object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array_merge(
+				'description' => __( 'A group product object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array_merge(
 					self::get_shared_fields(),
 					array(
 						'addToCartText'        => array(
@@ -469,20 +427,6 @@ class Product_Type {
 						),
 					)
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product::class ) && 'grouped' === $node->type ) {
-						$type = 'GroupProduct';
-					}
-
-					return $type;
-				},
 			)
 		);
 	}

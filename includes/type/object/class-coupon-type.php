@@ -26,12 +26,12 @@ class Coupon_Type {
 	 * Register Coupon type and queries to the WPGraphQL schema
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'Coupon',
 			array(
-				'description'       => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
 					'id'                 => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the coupon', 'wp-graphql-woocommerce' ),
@@ -109,20 +109,6 @@ class Coupon_Type {
 						'description' => __( 'Only customers with a matching email address can use the coupon', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'shop_coupon' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Coupon::class ) ) {
-						$type = 'Coupon';
-					}
-
-					return $type;
-				},
 			)
 		);
 

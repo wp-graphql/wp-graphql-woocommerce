@@ -196,6 +196,87 @@ class Factory {
 	}
 
 	/**
+	 * Resolves Relay node for some WooGraphQL types.
+	 *
+	 * @param mixed      $node     Node object.
+	 * @param string     $id       Object unique ID.
+	 * @param string     $type     Node type.
+	 * @param AppContext $context  AppContext instance.
+	 *
+	 * @return mixed
+	 */
+	public static function resolve_node( $node, $id, $type, $context ) {
+		switch ( $type ) {
+			case 'customer':
+				$node = self::resolve_customer( $id, $context );
+				break;
+			case 'shop_coupon':
+			case 'shop_order':
+			case 'shop_order_refund':
+			case 'product':
+			case 'product_variation':
+				$node = self::resolve_crud_object( $id, $context );
+				break;
+			case 'shipping_method':
+				$node = self::resolve_shipping_method( $id );
+				break;
+			case 'tax_rate':
+				$node = self::resolve_tax_rate( $id );
+				break;
+		}
+
+		return $node;
+	}
+
+	/**
+	 * Resolves Relay node type for some WooGraphQL types.
+	 *
+	 * @param string|null $type  Node type.
+	 * @param mixed       $node  Node object.
+	 *
+	 * @return string|null
+	 */
+	public static function resolve_node_type( $type, $node ) {
+		switch ( true ) {
+			case is_a( $node, Coupon::class ):
+				$type = 'Coupon';
+				break;
+			case is_a( $node, Customer::class ):
+				$type = 'Customer';
+				break;
+			case is_a( $node, Order::class ):
+				$type = 'Order';
+				break;
+			case is_a( $node, Product::class ) && 'simple' === $node->type:
+				$type = 'SimpleProduct';
+				break;
+			case is_a( $node, Product::class ) && 'variable' === $node->type:
+				$type = 'VariableProduct';
+				break;
+			case is_a( $node, Product::class ) && 'external' === $node->type:
+				$type = 'ExternalProduct';
+				break;
+			case is_a( $node, Product::class ) && 'grouped' === $node->type:
+				$type = 'GroupProduct';
+				break;
+			case is_a( $node, Product_Variation::class ):
+				$type = 'ProductVariation';
+				break;
+			case is_a( $node, Refund::class ):
+				$type = 'Refund';
+				break;
+			case is_a( $node, Shipping_Method::class ):
+				$type = 'ShippingMethod';
+				break;
+			case is_a( $node, Tax_Rate::class ):
+				$type = 'TaxRate';
+				break;
+		}
+
+		return $type;
+	}
+
+	/**
 	 * Resolves Coupon connections
 	 *
 	 * @param mixed       $source     - Data resolver for connection source.
