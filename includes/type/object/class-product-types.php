@@ -5,7 +5,7 @@
  * Registers product types and queries
  *
  * @package \WPGraphQL\WooCommerce\Type\WPObject
- * @since   0.0.1
+ * @since   0.3.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;

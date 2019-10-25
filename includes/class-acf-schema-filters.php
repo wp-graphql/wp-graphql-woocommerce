@@ -3,7 +3,7 @@
  * Adds filters that modify WPGraphQL ACF schema.
  *
  * @package \WPGraphQL\WooCommerce
- * @since   0.2.2
+ * @since   0.3.0
  */
 
 namespace WPGraphQL\WooCommerce;
