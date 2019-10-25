@@ -21,15 +21,9 @@ class Products {
 	public static function register_connections() {
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
+
 		// From Coupon.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Coupon',
-					'fromFieldName' => 'products',
-				)
-			)
-		);
+		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'Coupon' ) ) );
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
@@ -38,7 +32,8 @@ class Products {
 				)
 			)
 		);
-		// From Product.
+
+		// Connections from all product types to related and upsell.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
@@ -55,10 +50,35 @@ class Products {
 				)
 			)
 		);
+
+		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+		foreach ( $product_types as $product_type ) {
+			register_graphql_connection(
+				self::get_connection_config(
+					array(
+						'fromType'      => $product_type,
+						'fromFieldName' => 'related',
+					)
+				)
+			);
+			register_graphql_connection(
+				self::get_connection_config(
+					array(
+						'fromType'      => $product_type,
+						'fromFieldName' => 'upsell',
+					)
+				)
+			);
+		}
+
+		// Group product children connection.
+		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'GroupProduct' ) ) );
+
+		// Product cross-sell connections.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
+					'fromType'      => 'SimpleProduct',
 					'fromFieldName' => 'crossSell',
 				)
 			)
@@ -66,17 +86,17 @@ class Products {
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'grouped',
+					'fromType'      => 'VariableProduct',
+					'fromFieldName' => 'crossSell',
 				)
 			)
 		);
 
-		// From Product to ProductVariation.
+		// From VariableProduct to ProductVariation.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
+					'fromType'      => 'VariableProduct',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
 				)
@@ -84,34 +104,17 @@ class Products {
 		);
 
 		// From ProductCategory.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'ProductCategory',
-					'fromFieldName' => 'products',
-				)
-			)
-		);
+		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'ProductCategory' ) ) );
 
 		// From ProductTag.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'ProductTag',
-					'fromFieldName' => 'products',
-				)
-			)
-		);
+		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'ProductTag' ) ) );
 
 		// From WooCommerce product attributes.
 		$attributes = \WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
 		foreach ( $attributes as $attribute ) {
 			register_graphql_connection(
 				self::get_connection_config(
-					array(
-						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
-						'fromFieldName' => 'products',
-					)
+					array( 'fromType' => ucfirst( graphql_format_field_name( $attribute ) ) )
 				)
 			);
 			register_graphql_connection(

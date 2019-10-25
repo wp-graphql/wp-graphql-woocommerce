@@ -117,18 +117,20 @@ class Meta_Data_Type {
 		);
 
 		// Register 'metaData' field on WC CRUD types.
-		$types = array(
-			'Coupon',
-			'Customer',
-			'CouponLine',
-			'LineItem',
-			'FeeLine',
-			'Order',
-			'Product',
-			'ProductVariation',
-			'Refund',
-			'ShippingLine',
-			'TaxLine',
+		$types = array_merge(
+			array(
+				'Coupon',
+				'Customer',
+				'CouponLine',
+				'LineItem',
+				'FeeLine',
+				'Order',
+				'ProductVariation',
+				'Refund',
+				'ShippingLine',
+				'TaxLine',
+			),
+			array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
 
 		foreach ( $types as $type ) {

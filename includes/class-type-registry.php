@@ -52,9 +52,12 @@ class Type_Registry {
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Relation_Input::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPInputObject\Orderby_Inputs::register();
 
+		// Interfaces.
+		\WPGraphQL\Extensions\WooCommerce\Type\WPInterface\Product::register_interface( $type_registry );
+
 		// Objects.
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Coupon_Type::register();
-		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Type::register();
+		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Types::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Product_Variation_Type::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Type::register();
 		\WPGraphQL\Extensions\WooCommerce\Type\WPObject\Order_Item_Type::register();

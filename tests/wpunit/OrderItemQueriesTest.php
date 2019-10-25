@@ -34,9 +34,9 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $coupon_lines = $order->get_items( 'coupon' );
         $id           = Relay::toGlobalId( 'shop_order', $this->order );
         
-        $query = '
-            query couponLinesQuery( $id: ID! ) {
-                order( id: $id ) {
+        $query        = '
+            query ($id: ID!) {
+                order(id: $id) {
                     couponLines {
                         nodes {
                             itemId
@@ -60,8 +60,8 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'couponLinesQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'order' => array(
                     'couponLines' => array(
@@ -97,11 +97,11 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->item_helper->add_fee( $this->order );
         $order     = new WC_Order( $this->order );
         $fee_lines = $order->get_items( 'fee' );
-        $id = Relay::toGlobalId( 'shop_order', $this->order );
+        $id        = Relay::toGlobalId( 'shop_order', $this->order );
         
-        $query = '
-            query feeLinesQuery( $id: ID! ) {
-                order( id: $id ) {
+        $query     = '
+            query ($id: ID!) {
+                order(id: $id) {
                     feeLines {
                         nodes {
                             itemId
@@ -125,8 +125,8 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'feeLinesQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'order' => array(
                     'feeLines' => array(
@@ -165,9 +165,9 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $shipping_lines = $order->get_items( 'shipping' );
         $id             = Relay::toGlobalId( 'shop_order', $this->order );
         
-        $query = '
-            query shippingLinesQuery( $id: ID! ) {
-                order( id: $id ) {
+        $query          = '
+            query ($id: ID!) {
+                order(id: $id) {
                     shippingLines {
                         nodes {
                             itemId
@@ -189,7 +189,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'shippingLinesQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'order' => array(
@@ -234,8 +234,8 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $id        = Relay::toGlobalId( 'shop_order', $this->order );
         
         $query     = '
-            query taxLinesQuery( $id: ID! ) {
-                order( id: $id ) {
+            query ($id: ID!) {
+                order(id: $id) {
                     taxLines {
                         nodes {
                             rateCode
@@ -259,7 +259,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'taxLinesQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'order' => array(
@@ -296,8 +296,8 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $id         = Relay::toGlobalId( 'shop_order', $this->order );
         
         $query      = '
-            query lineItemsQuery( $id: ID! ) {
-                order( id: $id ) {
+            query ($id: ID!) {
+                order(id: $id) {
                     lineItems {
                         nodes {
                             productId
@@ -313,7 +313,12 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                             }
                             taxStatus
                             product {
-                                id
+                                ... on SimpleProduct {
+                                    id
+                                }
+                                ... on VariableProduct {
+                                    id
+                                }
                             }
                             variation {
                                 id
@@ -331,7 +336,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
         wp_set_current_user( $this->shop_manager );
         $variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'lineItemsQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'order' => array(

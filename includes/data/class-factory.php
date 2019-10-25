@@ -247,8 +247,17 @@ class Factory {
 			case is_a( $node, Order::class ):
 				$type = 'Order';
 				break;
-			case is_a( $node, Product::class ):
-				$type = 'Product';
+			case is_a( $node, Product::class ) && 'simple' === $node->type:
+				$type = 'SimpleProduct';
+				break;
+			case is_a( $node, Product::class ) && 'variable' === $node->type:
+				$type = 'VariableProduct';
+				break;
+			case is_a( $node, Product::class ) && 'external' === $node->type:
+				$type = 'ExternalProduct';
+				break;
+			case is_a( $node, Product::class ) && 'grouped' === $node->type:
+				$type = 'GroupProduct';
 				break;
 			case is_a( $node, Product_Variation::class ):
 				$type = 'ProductVariation';

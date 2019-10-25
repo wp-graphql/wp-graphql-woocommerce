@@ -38,7 +38,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Fire off init action
 			 *
-			 * @param WPGraphQLWooCommerce $instance The instance of the WPGraphQLWooCommerce class
+			 * @param WP_GraphQL_WooCommerce $instance The instance of the WPGraphQLWooCommerce class
 			 */
 			do_action( 'graphql_woocommerce_init', self::$instance );
 
@@ -62,6 +62,21 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 					'shop_coupon',
 					'shop_order',
 					'shop_order_refund',
+				)
+			);
+		}
+
+		/**
+		 * Returns WooCommerce product types to be exposed to the GraphQL schema.
+		 */
+		public static function get_enabled_product_types() {
+			return apply_filters(
+				'graphql_enabled_wc_product_types',
+				array(
+					'simple'   => 'SimpleProduct',
+					'variable' => 'VariableProduct',
+					'external' => 'ExternalProduct',
+					'grouped'  => 'GroupProduct',
 				)
 			);
 		}
@@ -156,7 +171,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			\WPGraphQL\Extensions\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
 
 			$registry = new \WPGraphQL\Extensions\WooCommerce\Type_Registry();
-			add_action( 'graphql_register_types', array( $registry, 'init' ) );
+			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
 		}
 	}
 endif;

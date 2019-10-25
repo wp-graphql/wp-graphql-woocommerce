@@ -234,7 +234,7 @@ class Product_Variation_Type {
 						},
 					),
 					'parent'            => array(
-						'type'        => 'Product',
+						'type'        => 'VariableProduct',
 						'description' => __( 'Product variation parent product', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source->parent_id, $context );
