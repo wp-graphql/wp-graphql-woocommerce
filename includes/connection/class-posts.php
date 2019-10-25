@@ -4,10 +4,10 @@
  *
  * Registers connections to Posts
  *
- * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @package WPGraphQL\WooCommerce\Connection
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Connection;
+namespace WPGraphQL\WooCommerce\Connection;
 
 use WPGraphQL\Connection\PostObjects;
 

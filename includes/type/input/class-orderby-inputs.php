@@ -5,11 +5,11 @@
  * - ProductsOrderbyInput
  * - OrdersOrderbyInput
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPInputObject
+ * @package \WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPInputObject;
+namespace WPGraphQL\WooCommerce\Type\WPInputObject;
 
 /**
  * Class Orderby_Inputs

@@ -4,18 +4,18 @@
  *
  * Registers TaxRate WPObject type and queries
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\Type\WPObjectType;
 
 /**
@@ -29,8 +29,8 @@ class Tax_Rate_Type {
 		register_graphql_object_type(
 			'TaxRate',
 			array(
-				'description' => __( 'A Tax rate object', 'wp-graphql-woocommercer' ),
-				'interfaces'  => array('Node'),
+				'description' => __( 'A Tax rate object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'       => array(
 						'type'        => array( 'non_null' => 'ID' ),

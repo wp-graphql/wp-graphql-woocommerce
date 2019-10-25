@@ -2,11 +2,11 @@
 /**
  * WPInputObjectType - TaxRateConnectionOrderbyInput
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPInputObject
+ * @package \WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPInputObject;
+namespace WPGraphQL\WooCommerce\Type\WPInputObject;
 
 /**
  * Class Tax_Rate_Connection_Orderby_Input

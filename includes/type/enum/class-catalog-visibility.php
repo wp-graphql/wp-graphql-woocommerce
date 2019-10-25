@@ -2,11 +2,11 @@
 /**
  * WPEnum Type - CatalogVisibilityEnum
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @package \WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 /**
  * Class Catalog_Visibility

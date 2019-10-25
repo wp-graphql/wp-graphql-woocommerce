@@ -4,32 +4,32 @@
  *
  * This class serves as a factory for all the resolvers of queries and mutations.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @package WPGraphQL\WooCommerce\Data
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data;
+namespace WPGraphQL\WooCommerce\Data;
 
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
-use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
-use WPGraphQL\Extensions\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Customer_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Refund_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
+use WPGraphQL\WooCommerce\Model\Order_Item;
+use WPGraphQL\WooCommerce\Model\Tax_Rate;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
 
 /**
  * Class Factory

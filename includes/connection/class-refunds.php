@@ -4,12 +4,12 @@
  *
  * Registers connections to Refund
  *
- * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @package WPGraphQL\WooCommerce\Connection
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Connection;
+namespace WPGraphQL\WooCommerce\Connection;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Refunds

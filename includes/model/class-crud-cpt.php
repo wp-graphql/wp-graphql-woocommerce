@@ -4,11 +4,11 @@
  *
  * Defines share functionality for Crud objects wrapped around WordPress CPTs
  *
- * @package WPGraphQL\Extensions\WooCommerce\Model
+ * @package WPGraphQL\WooCommerce\Model
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Model;
+namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\Model\Model;

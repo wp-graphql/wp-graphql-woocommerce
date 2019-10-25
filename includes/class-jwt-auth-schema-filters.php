@@ -3,11 +3,11 @@
  * Adds filters that modify the WooGraphQL schema to include WPGraphQL JWT Authentication
  * fields in Customer type and mutations.
  *
- * @package \WPGraphQL\Extensions\WooCommerce
+ * @package \WPGraphQL\WooCommerce
  * @since   0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce;
+namespace WPGraphQL\WooCommerce;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;

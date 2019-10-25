@@ -2,14 +2,14 @@
 /**
  * Adds filters that modify core schema.
  *
- * @package \WPGraphQL\Extensions\WooCommerce
+ * @package \WPGraphQL\WooCommerce
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce;
+namespace WPGraphQL\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
 
 /**
  * Class Core_Schema_Filters
@@ -48,7 +48,7 @@ class Core_Schema_Filters {
 		add_filter(
 			'graphql_post_object_connection_query_args',
 			array(
-				'\WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver',
+				'\WPGraphQL\WooCommerce\Data\Connection\Post_Connection_Resolver',
 				'get_query_args',
 			),
 			10,
@@ -57,7 +57,7 @@ class Core_Schema_Filters {
 		add_filter(
 			'graphql_term_object_connection_query_args',
 			array(
-				'\WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver',
+				'\WPGraphQL\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver',
 				'get_query_args',
 			),
 			10,
@@ -67,13 +67,13 @@ class Core_Schema_Filters {
 		// Add node resolvers.
 		add_filter(
 			'graphql_resolve_node',
-			array( '\WPGraphQL\Extensions\WooCommerce\Data\Factory', 'resolve_node' ),
+			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node' ),
 			10,
 			4
 		);
 		add_filter(
 			'graphql_resolve_node_type',
-			array( '\WPGraphQL\Extensions\WooCommerce\Data\Factory', 'resolve_node_type' ),
+			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node_type' ),
 			10,
 			2
 		);

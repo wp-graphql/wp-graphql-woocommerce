@@ -4,13 +4,13 @@
  *
  * Registers connections to TaxRate
  *
- * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @package WPGraphQL\WooCommerce\Connection
  * @since 0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Connection;
+namespace WPGraphQL\WooCommerce\Connection;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Tax_Rates

@@ -4,18 +4,18 @@
  *
  * Registers Refund WPObject type and queries
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\Type\WPObjectType;
 
 /**

@@ -4,13 +4,13 @@
  *
  * Registers connections to CartItem
  *
- * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @package WPGraphQL\WooCommerce\Connection
  * @since   0.0.3
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Connection;
+namespace WPGraphQL\WooCommerce\Connection;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Cart_Items

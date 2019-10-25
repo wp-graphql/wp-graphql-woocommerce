@@ -4,11 +4,11 @@
  *
  * Registers connections to ProductTags
  *
- * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @package WPGraphQL\WooCommerce\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Connection;
+namespace WPGraphQL\WooCommerce\Connection;
 
 use WPGraphQL\Connection\TermObjects;
 

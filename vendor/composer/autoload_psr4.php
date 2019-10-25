@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'WPGraphQL\\Extensions\\WooCommerce\\' => array($baseDir . '/includes'),
+    'WPGraphQL\\WooCommerce\\' => array($baseDir . '/includes'),
 );

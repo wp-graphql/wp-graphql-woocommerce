@@ -2,11 +2,11 @@
 /**
  * Adds filters that modify WPGraphQL ACF schema.
  *
- * @package \WPGraphQL\Extensions\WooCommerce
+ * @package \WPGraphQL\WooCommerce
  * @since   0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce;
+namespace WPGraphQL\WooCommerce;
 
 /**
  * Class ACF_Schema_Filters
@@ -31,7 +31,7 @@ class ACF_Schema_Filters {
 	 */
 	public static function resolve_crud_root_id( $id, $root ) {
 		switch ( true ) {
-			case $root instanceof \WPGraphQL\Extensions\WooCommerce\Model\CRUD_CPT:
+			case $root instanceof \WPGraphQL\WooCommerce\Model\CRUD_CPT:
 				$id = absint( $root->ID );
 				break;
 		}

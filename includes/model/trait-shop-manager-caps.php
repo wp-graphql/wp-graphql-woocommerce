@@ -2,11 +2,11 @@
 /**
  * Defines Admin only restriction caps.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Model
+ * @package WPGraphQL\WooCommerce\Model
  * @since 0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Model;
+namespace WPGraphQL\WooCommerce\Model;
 
 /**
  * Trait Shop_Manager_Capabilities

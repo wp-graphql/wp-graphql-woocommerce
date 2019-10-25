@@ -4,18 +4,18 @@
  *
  * Registers Product interface.
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.3.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPInterface;
+namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Product

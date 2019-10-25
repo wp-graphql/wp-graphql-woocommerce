@@ -4,7 +4,7 @@
  *
  * Initializes a singleton instance of WP_GraphQL_WooCommerce
  *
- * @package WPGraphQL\Extensions\WooCommerce
+ * @package WPGraphQL\WooCommerce
  * @since 0.0.1
  */
 
@@ -159,18 +159,18 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private function setup() {
 			// Register WooCommerce filters.
-			\WPGraphQL\Extensions\WooCommerce\WooCommerce_Filters::add_filters();
+			\WPGraphQL\WooCommerce\WooCommerce_Filters::add_filters();
 
 			// Register WPGraphQL core filters.
-			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
+			\WPGraphQL\WooCommerce\Core_Schema_Filters::add_filters();
 
 			// Register WPGraphQL ACF filters.
-			\WPGraphQL\Extensions\WooCommerce\ACF_Schema_Filters::add_filters();
+			\WPGraphQL\WooCommerce\ACF_Schema_Filters::add_filters();
 
 			// Register WPGraphQL JWT Authentication filters.
-			\WPGraphQL\Extensions\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
+			\WPGraphQL\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
 
-			$registry = new \WPGraphQL\Extensions\WooCommerce\Type_Registry();
+			$registry = new \WPGraphQL\WooCommerce\Type_Registry();
 			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
 		}
 	}

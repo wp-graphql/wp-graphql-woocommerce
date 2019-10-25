@@ -3,11 +3,11 @@
  * WPEnum type - Post_Type_Orderby_Enum
  * Defines common post-type ordering fields
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @package \WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 /**
  * Class Post_Type_Orderby_Enum
