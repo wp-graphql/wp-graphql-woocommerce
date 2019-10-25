@@ -4,11 +4,11 @@
  *
  * Resolves model for order item crud objects
  *
- * @package WPGraphQL\Extensions\WooCommerce\Model
+ * @package WPGraphQL\WooCommerce\Model
  * @since 0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Model;
+namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
 use WPGraphQL\Model\Model;

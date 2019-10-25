@@ -2,11 +2,11 @@
 /**
  * WPEnum Type - ProductTaxonomyEnum
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @package \WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.2.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 use WPGraphQL\Type\WPEnumType;
 

@@ -2,11 +2,11 @@
 /**
  * Defines functions for processing customer mutations.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Mutation
+ * @package WPGraphQL\WooCommerce\Data\Mutation
  * @since 0.1.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Mutation;
+namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;

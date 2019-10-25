@@ -2,11 +2,11 @@
 /**
  * WPEnum Type - TaxRateConnectionOrderbyInput
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @package \WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 /**
  * Class Tax_Rate_Connection_Orderby_Enum

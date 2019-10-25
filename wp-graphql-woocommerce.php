@@ -11,7 +11,7 @@
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
- * @package     WPGraphQL\Extensions\WooCommerce
+ * @package     WPGraphQL\WooCommerce
  * @author      kidunot89
  * @license     GPL-3
  */

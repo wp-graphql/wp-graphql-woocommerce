@@ -4,15 +4,15 @@
  *
  * Resolves connections to Customers
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Coupon;
 
 /**
  * Class Customer_Connection_Resolver

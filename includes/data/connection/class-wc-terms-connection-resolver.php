@@ -4,16 +4,16 @@
  *
  * Resolvers connections to WooCommerce Terms (ProductCategory & ProductTags)
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class WC_Terms_Connection_Resolver

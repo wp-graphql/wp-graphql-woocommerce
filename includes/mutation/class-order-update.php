@@ -4,18 +4,18 @@
  *
  * Registers mutation for updating an existing order.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Mutation
+ * @package WPGraphQL\WooCommerce\Mutation
  * @since 0.2.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Mutation;
+namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Order_Mutation;
-use WPGraphQL\Extensions\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
+use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Order_Update

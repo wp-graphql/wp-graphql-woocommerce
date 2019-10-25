@@ -4,21 +4,21 @@
  *
  * Loads Models for WooCommerce CRUD objects
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Loader
+ * @package WPGraphQL\WooCommerce\Data\Loader
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Loader;
+namespace WPGraphQL\WooCommerce\Data\Loader;
 
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Model\Product;
-use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
-use WPGraphQL\Extensions\WooCommerce\Model\Order;
-use WPGraphQL\Extensions\WooCommerce\Model\Refund;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Product_Variation;
+use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Model\Refund;
 
 /**
  * Class WC_Post_Crud_Loader

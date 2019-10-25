@@ -4,11 +4,11 @@
  *
  * Registers proper ProductDownload type and queries
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 /**
  * Class Product_Download_Type

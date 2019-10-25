@@ -4,18 +4,18 @@
  *
  * Registers ShippingMethod WPObject type and queries
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
 use WPGraphQL\Type\WPObjectType;
 
 /**

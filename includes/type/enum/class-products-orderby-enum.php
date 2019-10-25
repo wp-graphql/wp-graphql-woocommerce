@@ -2,11 +2,11 @@
 /**
  * WPEnum Type - ProductsOrderbyEnum
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @package \WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 /**
  * Class Products_Orderby_Enum
