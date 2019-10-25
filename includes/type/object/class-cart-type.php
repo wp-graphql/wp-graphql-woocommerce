@@ -251,7 +251,7 @@ class Cart_Type {
 						},
 					),
 					'product'     => array(
-						'type'        => 'ProductUnion',
+						'type'        => 'Product',
 						'description' => __( 'A product in the cart', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							return ! empty( $source['product_id'] )

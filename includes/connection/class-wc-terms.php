@@ -42,10 +42,31 @@ class WC_Terms extends TermObjects {
 			)
 		);
 
-		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+		// From Products.
+		register_graphql_connection(
+			self::get_connection_config(
+				get_taxonomy( 'product_cat' ),
+				array(
+					'fromType'      => 'Product',
+					'toType'        => 'ProductCategory',
+					'fromFieldName' => 'categories',
+				)
+			)
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				get_taxonomy( 'product_tag' ),
+				array(
+					'fromType'      => 'Product',
+					'toType'        => 'ProductTag',
+					'fromFieldName' => 'tags',
+				)
+			)
+		);
 
+		// From Product child types.
+		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
 		foreach ( $product_types as $product_type ) {
-			// From Products.
 			register_graphql_connection(
 				self::get_connection_config(
 					get_taxonomy( 'product_cat' ),

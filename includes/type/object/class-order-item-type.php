@@ -201,7 +201,7 @@ class Order_Item_Type {
 						'description' => __( 'Line item\'s taxes', 'wp-graphql-woocommerce' ),
 					),
 					'product'       => array(
-						'type'        => 'ProductUnion',
+						'type'        => 'Product',
 						'description' => 'Line item\'s product object',
 						'resolve'     => function( $item, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreStart
