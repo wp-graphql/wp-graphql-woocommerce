@@ -112,7 +112,7 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 - (Alternative) You can also try delete and cloning the repository again. The latest release should have fixed the issue.
 
 ## Support this extension
-**@kidunot89** :point_right: **[Github Sponsors](https://github.com/sponsors/kidunot89)**
+**@kidunot89(Developer of this extension)** :point_right: **[Github Sponsors](https://github.com/sponsors/kidunot89)**
 
 **WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
 
