@@ -1,6 +1,6 @@
 <img src="./logo.svg" width="250px">
 
-# WPGraphQL WooCommerce
+# WPGraphQL WooCommerce (WooGraphQL)
 [![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=develop)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop)
 
 ## Quick Install
@@ -112,7 +112,7 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 - (Alternative) You can also try delete and cloning the repository again. The latest release should have fixed the issue.
 
 ## Support this extension
-**@kidunot89(Developer of this extension)** :point_right: **[Github Sponsors](https://github.com/sponsors/kidunot89)**
+**@kidunot89** *(WooGraphQL Creator)* :point_right: **[Github Sponsors](https://github.com/sponsors/kidunot89)**
 
 **WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
 
