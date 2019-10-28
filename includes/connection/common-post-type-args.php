@@ -2,11 +2,11 @@
 /**
  * Define common arguments for post-type connections.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Connection
+ * @package WPGraphQL\WooCommerce\Connection
  * @since 0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Connection;
+namespace WPGraphQL\WooCommerce\Connection;
 
 /**
  * Returns argument definitions for argument common on all post-type connections.

@@ -2,11 +2,11 @@
 /**
  * WPInputObjectType - ProductTaxonomyFilterRelationInput
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPInputObject
+ * @package \WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.2.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPInputObject;
+namespace WPGraphQL\WooCommerce\Type\WPInputObject;
 
 /**
  * Class Product_Taxonomy_Filter_Relation_Input

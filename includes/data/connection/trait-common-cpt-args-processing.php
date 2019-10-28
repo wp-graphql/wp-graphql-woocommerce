@@ -2,11 +2,11 @@
 /**
  * Defines reusable function for sanitizing user input for post-type connections.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.2.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 /**
  * Trait Common_CPT_Input_Sanitize_Functions

@@ -4,11 +4,11 @@
  *
  * Registers mutation for removing coupon(s) from cart.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Mutation
+ * @package WPGraphQL\WooCommerce\Mutation
  * @since 0.1.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Mutation;
+namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;

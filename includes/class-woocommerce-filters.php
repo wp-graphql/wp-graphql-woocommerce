@@ -2,13 +2,13 @@
 /**
  * Adds filters that modify woocommerce functionality on GraphQL requests.
  *
- * @package \WPGraphQL\Extensions\WooCommerce
+ * @package \WPGraphQL\WooCommerce
  * @since   0.2.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce;
+namespace WPGraphQL\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Utils\QL_Session_Handler;
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 /**
  * Class WooCommerce_Filters

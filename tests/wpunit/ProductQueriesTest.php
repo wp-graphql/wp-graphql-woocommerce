@@ -53,53 +53,55 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	// tests
-	public function testProductQuery() {
+	public function testSimpleProductQuery() {
 		$query = '
 			query ( $id: ID!, $format: PostObjectFieldFormatEnum ) {
 				product(id: $id) {
-					id
-					productId
-					name
-					slug
-					date
-					modified
-					status
-					featured
-					catalogVisibility
-					description(format: $format)
-					shortDescription(format: $format)
-					sku
-					price
-					regularPrice
-					salePrice
-					dateOnSaleFrom
-					dateOnSaleTo
-					totalSales
-					taxStatus
-					taxClass
-					manageStock
-					stockQuantity
-					stockStatus
-					backorders
-					soldIndividually
-					weight
-					length
-					width
-					height
-					reviewsAllowed
-					purchaseNote
-					menuOrder
-					virtual
-					downloadable
-					downloadLimit
-					downloadExpiry
-					averageRating
-					reviewCount
-					backordersAllowed
-					onSale
-					purchasable
-					shippingRequired
-					shippingTaxable
+					... on SimpleProduct {
+						id
+						productId
+						name
+						slug
+						date
+						modified
+						status
+						featured
+						catalogVisibility
+						description(format: $format)
+						shortDescription(format: $format)
+						sku
+						price
+						regularPrice
+						salePrice
+						dateOnSaleFrom
+						dateOnSaleTo
+						totalSales
+						taxStatus
+						taxClass
+						manageStock
+						stockQuantity
+						stockStatus
+						backorders
+						soldIndividually
+						weight
+						length
+						width
+						height
+						reviewsAllowed
+						purchaseNote
+						menuOrder
+						virtual
+						downloadable
+						downloadLimit
+						downloadExpiry
+						averageRating
+						reviewCount
+						backordersAllowed
+						onSale
+						purchasable
+						shippingRequired
+						shippingTaxable
+					}
 				}
 			}
 		';
@@ -178,25 +180,27 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query productQuery( $id: ID, $productId: Int, $slug: String, $sku: String ) {
+			query ( $id: ID, $productId: Int, $slug: String, $sku: String ) {
 				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
-					id
-					image {
+					... on SimpleProduct {
 						id
-					}
-					categories {
-						nodes {
-							name
-							children {
-								nodes {
-									name
+						image {
+							id
+						}
+						categories {
+							nodes {
+								name
+								children {
+									nodes {
+										name
+									}
 								}
 							}
 						}
-					}
-					tags {
-						nodes {
-							name
+						tags {
+							nodes {
+								name
+							}
 						}
 					}
 				}
@@ -209,7 +213,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test querying product with "productId" argument.
 		 */
 		$variables = array( 'productId' => $product );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'productBy' => array(
@@ -247,9 +251,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testProductByQueryAndArgs() {
 		$id = $this->helper->to_relay_id( $this->product );
 		$query = '
-			query productQuery( $id: ID, $productId: Int, $slug: String, $sku: String ) {
+			query ( $id: ID, $productId: Int, $slug: String, $sku: String ) {
 				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
-					id
+					... on SimpleProduct {
+						id
+					}
 				}
 			}
 		';
@@ -260,7 +266,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test querying product with "productId" argument.
 		 */
 		$variables = array( 'productId' => $this->product );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -274,7 +280,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test querying product with "id" argument.
 		 */
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -288,7 +294,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test querying product with "slug" argument.
 		 */
 		$variables = array( 'slug' => 'product-slug' );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -302,7 +308,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test querying product with "sku" argument.
 		 */
 		$variables = array( 'sku' => 'product-sku' );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -333,7 +339,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query ProductsQuery(
+			query (
 				$slug: String,
 				$status: String,
 				$category: String,
@@ -349,7 +355,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				$maxPrice: Float,
 				$orderby: [ProductsOrderbyInput]
 				$taxonomyFilter: [ProductTaxonomyFilterRelationInput]
-			){
+			) {
 				products( where: {
 					slug: $slug,
 					status: $status,
@@ -368,7 +374,12 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					taxonomyFilter: $taxonomyFilter
 				} ) {
 					nodes {
-						id
+						... on SimpleProduct {
+							id
+						}
+						... on ExternalProduct {
+							id
+						}
 					}
 				}
 			}
@@ -379,7 +390,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * tests query with no arguments
 		 */
-		$actual = do_graphql_request( $query, 'ProductsQuery' );
+		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
 			'data' => array(
 				'products' => array(
@@ -399,8 +410,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "slug" where argument
 		 */
 		$variables = array( 'slug' => 'test-product-1' );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -427,8 +438,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "status" where argument
 		 */
 		$variables = array( 'status' => 'pending' );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array( 'data' => array( 'products' => array( 'nodes' => array() ) ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array( 'data' => array( 'products' => array( 'nodes' => array() ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -441,8 +452,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "type" where argument
 		 */
 		$variables = array( 'type' => 'SIMPLE' );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -469,8 +480,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "typeIn" where argument
 		 */
 		$variables = array( 'typeIn' => array( 'SIMPLE' ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -497,8 +508,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "typeNotIn" where argument
 		 */
 		$variables = array( 'typeNotIn' => array( 'SIMPLE' ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -525,8 +536,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "featured" where argument
 		 */
 		$variables = array( 'featured' => true );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -553,8 +564,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "maxPrice" where argument
 		 */
 		$variables = array( 'maxPrice' => 10.00 );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -581,8 +592,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "orderby" where argument
 		 */
 		$variables = array( 'orderby' => array( array( 'field' => 'PRICE', 'order' => 'DESC' ) ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -614,8 +625,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "category" where argument
 		 */
 		$variables = array( 'category' => 'category-three' );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -642,8 +653,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "categoryIn" where argument
 		 */
 		$variables = array( 'categoryIn' => array( 'category-three' ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -670,8 +681,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "categoryNotIn" where argument
 		 */
 		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -698,8 +709,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "categoryId" where argument
 		 */
 		$variables = array( 'categoryId' => $category_3 );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -726,8 +737,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "categoryIdIn" where argument
 		 */
 		$variables = array( 'categoryIdIn' => array( $category_3 ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -754,8 +765,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * tests "categoryIdNotIn" where argument
 		 */
 		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'products' => array(
 					'nodes' => $this->helper->print_nodes(
@@ -798,7 +809,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				)
 			),
 		);
-		$actual = do_graphql_request( $query, 'ProductsQuery', $variables );
+		$actual   = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected = array(
 			'data' => array(
 				'products' => array(
@@ -825,17 +836,19 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testProductToTermConnection() {
 		$id = Relay::toGlobalId( 'product', $this->product );
 		$query = '
-			query productQuery($id: ID!) {
+			query ($id: ID!) {
 				product(id: $id) {
-					id
-					tags {
-						nodes {
-						  	name
+					... on SimpleProduct {
+						id
+						tags {
+							nodes {
+								name
+							}
 						}
-					}
-					categories {
-						nodes {
-						  	name
+						categories {
+							nodes {
+								name
+							}
 						}
 					}
 				}
@@ -843,7 +856,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'product' => array(
@@ -869,15 +882,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testTermToProductConnection() {
-		$id = Relay::toGlobalId( 'product', $this->product );
+		$id    = Relay::toGlobalId( 'product', $this->product );
 		$query = '
-			query tagAndCategoryQuery {
+			query {
 				productTags( where: { hideEmpty: true } ) {
 					nodes {
 						name
 						products {
 							nodes {
-								id
+								... on SimpleProduct {
+									id
+								}
 							}
 						}
 					}
@@ -890,7 +905,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						}
 						products {
 							nodes {
-								id
+								... on SimpleProduct {
+									id
+								}
 							}
 						}
 					}
@@ -898,7 +915,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$actual    = do_graphql_request( $query, 'tagAndCategoryQuery' );
+		$actual    = graphql( array( 'query' => $query ) );
 		$expected  = array(
 			'data' => array(
 				'productTags' => array(
@@ -944,17 +961,18 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testProductToMediaItemConnections() {
 		$id       = Relay::toGlobalId( 'product', $this->product );
 		$image_id = Relay::toGlobalId( 'attachment', $this->image_id );
-
-		$query = '
-			query productQuery( $id: ID! ) {
+		$query    = '
+			query ( $id: ID! ) {
 				product( id: $id ) {
-					id
-					image {
+					... on SimpleProduct {
 						id
-					}
-					galleryImages {
-						nodes {
+						image {
 							id
+						}
+						galleryImages {
+							nodes {
+								id
+							}
 						}
 					}
 				}
@@ -962,7 +980,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'product' => array(
@@ -986,28 +1004,29 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testProductDownloads() {
-		$id       = $this->helper->to_relay_id( $this->product );
-
+		$id    = $this->helper->to_relay_id( $this->product );
 		$query = '
-			query productQuery( $id: ID! ) {
+			query ( $id: ID! ) {
 				product( id: $id ) {
-					id
-					downloads {
-						name
-						downloadId
-						filePathType
-						fileType
-						fileExt
-						allowedFileType
-						fileExists
-						file
+					... on SimpleProduct {
+						id
+						downloads {
+							name
+							downloadId
+							filePathType
+							fileType
+							fileExt
+							allowedFileType
+							fileExists
+							file
+						}
 					}
 				}
 			}
 		';
 
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'productQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'product' => array(
@@ -1025,19 +1044,21 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testExternalProductQuery() {
 		$product_id = $this->helper->create_external();
-		$query = '
-			query productQuery( $id: ID! ) {
+		$query      = '
+			query ( $id: ID! ) {
 				product(id: $id) {
-					id
-					buttonText
-					externalUrl
+					... on ExternalProduct {
+						id
+						buttonText
+						externalUrl
+					}
 				}
 			}
 		';
 
 		$variables = array( 'id' => $this->helper->to_relay_id( $product_id ) );
-		$actual = do_graphql_request( $query, 'productQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'product' => $this->helper->print_external( $product_id ),
 			),
@@ -1051,16 +1072,22 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testGroupProductConnections() {
 		$grouped_product = $this->helper->create_grouped();
-		$query = '
-			query productQuery( $id: ID! ) {
+		$query           = '
+			query ( $id: ID! ) {
 				product(id: $id) {
-					addToCartText
-					addToCartDescription
-					grouped {
-						nodes {
-							id
-							parent {
-								id
+					... on GroupProduct {
+						addToCartText
+						addToCartDescription
+						products {
+							nodes {
+								... on SimpleProduct {
+									id
+									parent {
+										... on GroupProduct {
+											id
+										}
+									}
+								}
 							}
 						}
 					}
@@ -1069,8 +1096,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = array( 'id' => $this->helper->to_relay_id( $grouped_product['parent'] ) );
-		$actual = do_graphql_request( $query, 'productQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'product' => $this->helper->print_grouped( $grouped_product['parent'] ),
 			),
@@ -1084,22 +1111,30 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testRelatedProductConnections() {
 		$products = $this->helper->create_related();
-		$query = '
-			query productQuery( $id: ID! ) {
+		$query    = '
+			query ($id: ID!) {
 				product(id: $id) {
-					related {
-						nodes {
-							id
+					... on SimpleProduct {
+						related {
+							nodes {
+								... on SimpleProduct {
+									id
+								}
+							}
 						}
-					}
-					crossSell {
-						nodes {
-							id
+						crossSell {
+							nodes {
+								... on SimpleProduct {
+									id
+								}
+							}
 						}
-					}
-					upsell {
-						nodes {
-							id
+						upsell {
+							nodes {
+								... on SimpleProduct {
+									id
+								}
+							}
 						}
 					}
 				}
@@ -1107,8 +1142,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = array( 'id' => $this->helper->to_relay_id( $products['product'] ) );
-		$actual = do_graphql_request( $query, 'productQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
 			'data' => array(
 				'product' => array(
 					'related'   => array(

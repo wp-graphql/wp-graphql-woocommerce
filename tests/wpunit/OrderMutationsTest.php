@@ -182,7 +182,12 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                 totalTax
                                 taxStatus
                                 product {
-                                    id
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
                                 }
                                 variation {
                                     id

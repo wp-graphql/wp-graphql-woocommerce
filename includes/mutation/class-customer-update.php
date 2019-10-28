@@ -2,17 +2,17 @@
 /**
  * Registers "updateCustomer" mutation
  *
- * @package WPGraphQL\Extensions\WooCommerce\Mutation
+ * @package WPGraphQL\WooCommerce\Mutation
  * @since 0.1.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Mutation;
+namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Customer_Mutation;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
+use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\Model\User;
 use WPGraphQL\Mutation\UserUpdate;
 

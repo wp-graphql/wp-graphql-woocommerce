@@ -37,7 +37,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$cart->add_to_cart( $this->product_helper->create_simple(), 1 );
 
 		$query = '
-			query cartQuery {
+			query {
 				cart {
 					subtotal
 					subtotalTax
@@ -61,7 +61,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$actual    = do_graphql_request( $query, 'cartQuery' );
+		$actual    = graphql( array( 'query' => $query ) );
 		$expected  = array( 'data' => array( 'cart' => $this->helper->print_query() ) );
 
 		// use --debug flag to view.
@@ -80,12 +80,14 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query cartItemQuery( $key: ID! ) {
-				cartItem( key: $key ) {
+			query ($key: ID!) {
+				cartItem(key: $key) {
 					key
 					product {
-						id
-						productId
+						... on VariableProduct {
+							id
+							productId
+						}
 					}
 					variation {
 						id
@@ -104,7 +106,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Assertion One
 		 */
 		$variables = array( 'key' => $key );
-		$actual    = do_graphql_request( $query, 'cartItemQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'cartItem' => $this->helper->print_item_query( $key ) ) );
 
 		// use --debug flag to view.
@@ -130,7 +132,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$cart->apply_coupon( $code );
 
 		$query = '
-			query cartItemConnection {
+			query {
 				cart {
 					contents {
 						nodes {
@@ -144,7 +146,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$actual    = do_graphql_request( $query, 'cartItemConnection' );
+		$actual    = graphql( array( 'query' => $query ) );
 		$expected  = array(
 			'data' => array(
 				'cart' => array(
@@ -167,9 +169,9 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		WC()->cart->add_fee( 'Test fee', 30.50 );
 		$fee_ids = array_keys( WC()->cart->get_fees() );
 
-		$query = '
-			query cartFeeQuery( $id: ID! ) {
-				cartFee( id: $id ) {
+		$query   = '
+			query ($id: ID!) {
+				cartFee(id: $id) {
 					id
 					name
 					taxClass
@@ -184,7 +186,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Assertion One
 		 */
 		$variables = array( 'id' => $fee_ids[0] );
-		$actual    = do_graphql_request( $query, 'cartFeeQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'cartFee' => $this->helper->print_fee_query( $fee_ids[0] ) ) );
 
 		// use --debug flag to view.
@@ -199,7 +201,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		WC()->cart->add_fee( 'Test fee', 30.50 );
 
 		$query = '
-			query cartQuery {
+			query {
 				cart {
 					fees {
 						id
@@ -211,7 +213,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$actual    = do_graphql_request( $query, 'cartFeeQuery' );
+		$actual    = graphql( array( 'query' => $query ) );
 		$expected  = array(
 			'data' => array(
 				'cart' => array(

@@ -15,14 +15,13 @@ branches:
   only:
     - develop
     - master
-    - release-v0.2.0
-    - release-v0.2.1
+    - release-v0.1.2
     - release-v0.2.2
+    - release-v0.3.0
 
 cache:
   apt: true
   directories:
-    - vendor
     - $HOME/.composer/cache
 
 matrix:

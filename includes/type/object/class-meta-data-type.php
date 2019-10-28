@@ -4,14 +4,14 @@
  *
  * Registers MetaData type and queries
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Meta_Data_Type
@@ -117,18 +117,20 @@ class Meta_Data_Type {
 		);
 
 		// Register 'metaData' field on WC CRUD types.
-		$types = array(
-			'Coupon',
-			'Customer',
-			'CouponLine',
-			'LineItem',
-			'FeeLine',
-			'Order',
-			'Product',
-			'ProductVariation',
-			'Refund',
-			'ShippingLine',
-			'TaxLine',
+		$types = array_merge(
+			array(
+				'Coupon',
+				'Customer',
+				'CouponLine',
+				'LineItem',
+				'FeeLine',
+				'Order',
+				'ProductVariation',
+				'Refund',
+				'ShippingLine',
+				'TaxLine',
+			),
+			array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
 
 		foreach ( $types as $type ) {

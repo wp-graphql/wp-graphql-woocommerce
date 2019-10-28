@@ -4,11 +4,11 @@
  *
  * Resolves connections to PaymentGateway
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.2.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;

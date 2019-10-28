@@ -30,9 +30,9 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	// tests
 	public function testCouponQuery() {
-		$query     = '
-			query couponQuery( $id: ID! ){
-				coupon( id: $id ) {
+		$query = '
+			query ($id: ID!){
+				coupon(id: $id) {
 					id
 					couponId
 					code
@@ -54,12 +54,16 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 					emailRestrictions
 					products {
 						nodes {
-							productId
+							... on SimpleProduct {
+								productId
+							}
 						}
 					}
 					excludedProducts {
 						nodes {
-							productId
+							... on SimpleProduct {
+								productId
+							}
 						}
 					}
 					productCategories {
@@ -86,7 +90,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => Relay::toGlobalId( 'shop_coupon', $this->coupon ) );
-		$actual    = do_graphql_request( $query, 'couponQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'coupon' => $this->helper->print_query( $this->coupon ) ) );
 
 		// use --debug flag to view.
@@ -100,8 +104,8 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$id = Relay::toGlobalId( 'shop_coupon', $this->coupon );
 		$coupon = new WC_Coupon( $this->coupon );
 		$query = '
-			query CouponBy( $id: ID, $couponId: Int, $code: String ) {
-				couponBy( id: $id, couponId: $couponId, code: $code ) {
+			query ($id: ID, $couponId: Int, $code: String) {
+				couponBy(id: $id, couponId: $couponId, code: $code) {
 					id
 				}
 			}
@@ -113,7 +117,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Testing "id" query argument
 		 */
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -127,7 +131,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Testing "couponId" query argument
 		 */
 		$variables = array( 'couponId' => $coupon->get_id() );
-		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -141,7 +145,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Testing "couponId" query argument
 		 */
 		$variables = array( 'code' => $coupon->get_code() );
-		$actual    = do_graphql_request( $query, 'CouponBy', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -170,8 +174,8 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query CouponsQuery( $code: String, $include: [Int], $exclude: [Int] ) {
-				coupons( where: { code: $code, include: $include, exclude: $exclude } ) {
+			query ($code: String, $include: [Int], $exclude: [Int]) {
+				coupons(where: { code: $code, include: $include, exclude: $exclude }) {
 					nodes {
 						id
 					}
@@ -185,7 +189,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Should return null due to lack of required capabilities
 		 */
 		wp_set_current_user( $this->customer );
-		$actual    = do_graphql_request( $query ,'CouponsQuery' );
+		$actual    = graphql( array( 'query' => $query ) );
 		$expected  = array( 'data' => array( 'coupons' => array ( 'nodes' => array() ) ) );
 
 		// use --debug flag to view.
@@ -200,7 +204,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Should return data because user has required capabilities
 		 */
 		wp_set_current_user( $this->shop_manager );
-		$actual    = do_graphql_request( $query, 'CouponsQuery' );
+		$actual    = graphql( array( 'query' => $query ) );
 		$expected  = array( 'data' => array( 'coupons' => array( 'nodes' => $this->helper->print_nodes( $coupons ) ) ) );
 
 		// use --debug flag to view.
@@ -215,7 +219,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'code' => '10off' );
-		$actual    = do_graphql_request( $query, 'CouponsQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'coupons' => array(
@@ -244,7 +248,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'include' => $coupons[0] );
-		$actual    = do_graphql_request( $query, 'CouponsQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'coupons' => array(
@@ -272,7 +276,7 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'exclude' => $coupons[0] );
-		$actual    = do_graphql_request( $query, 'CouponsQuery', $variables );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'coupons' => array(

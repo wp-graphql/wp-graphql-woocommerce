@@ -4,18 +4,18 @@
  *
  * Registers TaxRate WPObject type and queries
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\Type\WPObjectType;
 
 /**
@@ -26,12 +26,12 @@ class Tax_Rate_Type {
 	 * Registers tax rate type
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'TaxRate',
 			array(
-				'description'       => __( 'A Tax rate object', 'wp-graphql-woocommercer' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A Tax rate object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
 					'id'       => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
@@ -85,20 +85,6 @@ class Tax_Rate_Type {
 						'description' => __( 'Tax class. Default is standard.', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, AppContext $context ) {
-					if ( 'tax_rate' === $type ) {
-						$node = Factory::resolve_tax_rate( $id );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Tax_Rate::class ) ) {
-						$type = 'TaxRate';
-					}
-
-					return $type;
-				},
 			)
 		);
 

@@ -50,8 +50,8 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * test query and results
 		 */
 		$variables = array( 'id' => $this->variation->to_relay_id( $this->variation_id ) );
-		$actual = do_graphql_request( $query, 'fromVariationQuery', $variables );
-		$expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
             'data' => array(
                 'productVariation' => array(
                     'id'         => $this->variation->to_relay_id( $this->variation_id ),
@@ -68,15 +68,17 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function testProductToVariationAttributeQuery() {
         $query = '
-            query fromProductQuery( $id: ID! ) {
+            query ( $id: ID! ) {
                 product( id: $id ) {
-                    id
-                    defaultAttributes {
-                        nodes {
-                            id
-                            attributeId
-                            name
-                            value
+                    ... on VariableProduct {
+                        id
+                        defaultAttributes {
+                            nodes {
+                                id
+                                attributeId
+                                name
+                                value
+                            }
                         }
                     }
                 }
@@ -89,8 +91,8 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * test query and results
 		 */
 		$variables = array( 'id' => $this->product->to_relay_id( $this->product_id ) );
-		$actual = do_graphql_request( $query, 'fromProductQuery', $variables );
-        $expected = array(
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+        $expected  = array(
             'data' => array(
                 'product' => array(
                     'id'                => $this->product->to_relay_id( $this->product_id ),
