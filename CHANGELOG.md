@@ -1,8 +1,8 @@
 # Change Log
 
-## [Unreleased](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/HEAD)
+## [v0.3.0-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.0-beta) (2019-10-25)
 
-[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.2.2-beta...HEAD)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.2.2-beta...v0.3.0-beta)
 
 **Merged pull requests:**
 
