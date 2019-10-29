@@ -60,7 +60,9 @@ class QLSessionHandlerCest {
                     cartItem {
                         key
                         product {
-                            id
+                            ... on SimpleProduct {
+                                id
+                            }
                         }
                         variation {
                             id

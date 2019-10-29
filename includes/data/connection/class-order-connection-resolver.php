@@ -4,24 +4,22 @@
  *
  * Resolves connections to Orders
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Order_Connection_Resolver
  */
 class Order_Connection_Resolver extends AbstractConnectionResolver {
-	use WC_Connection_Resolver {
-		sanitize_input_fields as sanitize_shared_input_fields;
-	}
+	use Common_CPT_Input_Sanitize_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -170,6 +168,22 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Returns meta keys to be used for connection ordering.
+	 *
+	 * @return array
+	 */
+	public function ordering_meta() {
+		return array(
+			'_order_key',
+			'_cart_discount',
+			'_order_total',
+			'_order_tax',
+			'_date_paid',
+			'_date_completed',
+		);
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -181,7 +195,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function sanitize_input_fields( array $where_args ) {
 		global $wpdb;
-		$args = $this->sanitize_shared_input_fields( $where_args );
+		$args = $this->sanitize_common_inputs( $where_args );
 
 		$key_mapping = array(
 			'post_parent'         => 'parent',

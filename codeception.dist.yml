@@ -72,6 +72,6 @@ modules:
             domain: '%WP_DOMAIN%'
             adminEmail: '%ADMIN_EMAIL%'
             title: 'Test'        
-            plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
-            activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
             configFile: 'tests/_data/config.php'

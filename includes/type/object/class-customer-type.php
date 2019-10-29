@@ -4,19 +4,20 @@
  *
  * Registers WPObject type for WooCommerce customers
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Type\WPObjectType;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Customer;
+use WPGraphQL\Model\User;
 
 /**
  * Class Customer_Type
@@ -26,12 +27,12 @@ class Customer_Type {
 	 * Registers Customer WPObject type
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'Customer',
 			array(
-				'description'       => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
@@ -112,20 +113,6 @@ class Customer_Type {
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'customer' === $type ) {
-						$node = Factory::resolve_customer( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Customer::class ) ) {
-						$type = 'Customer';
-					}
-
-					return $type;
-				},
 			)
 		);
 
@@ -183,33 +170,5 @@ class Customer_Type {
 				},
 			)
 		);
-
-		// Registers JWT Auth fields if WPGraphQL-JWT-Authentication is installed and activated.
-		if ( class_exists( '\WPGraphQL\JWT_Authentication\ManageTokens' ) ) {
-			$customer_fields = array();
-
-			// Retrieve Auth fields.
-			$fields = \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields( array() );
-
-			// Wrapper field resolvers in a lambda that retrieves the WP_User object for the corresponding customer.
-			foreach ( $fields as $field_name => $field ) {
-				$root_resolver                  = $field['resolve'];
-				$customer_fields[ $field_name ] = array_merge(
-					$field,
-					array(
-						'resolve' => function( $source, array $args, AppContext $content, ResolveInfo $info ) use ( $root_resolver ) {
-							$user = get_user_by( 'id', $source->ID );
-							if ( $user ) {
-								return $root_resolver( $user, $args, $context, $info );
-							}
-
-							return false;
-						},
-					)
-				);
-			}
-
-			register_graphql_fields( 'Customer', $customer_fields );
-		}
 	}
 }

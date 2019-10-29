@@ -4,16 +4,16 @@
  *
  * Resolvers connections to WooCommerce Terms (ProductCategory & ProductTags)
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class WC_Terms_Connection_Resolver
@@ -57,6 +57,17 @@ class WC_Terms_Connection_Resolver {
 				default:
 					break;
 			}
+		}
+
+		// NOTE: Temporary fix for querying child categories.
+		// See my(@kidunot89) comments in issues [#140](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/140).
+		if (
+			is_a( $GLOBALS['post'], 'WP_Post' )
+			&& isset( $GLOBALS['post']->ID )
+			&& ( 'product_cat' === $query_args['taxonomy'] || 'product_tag' === $query_args['taxonomy'] )
+			&& $source->ID !== $GLOBALS['post']->ID
+		) {
+			unset( $query_args['object_ids'] );
 		}
 
 		$query_args = apply_filters(

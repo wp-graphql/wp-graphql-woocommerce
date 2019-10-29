@@ -4,11 +4,11 @@
  *
  * Resolves connections to CartItem
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.3
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;

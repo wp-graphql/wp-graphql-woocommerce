@@ -2,11 +2,11 @@
 /**
  * Defines helper functions for user checkout.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Mutation
+ * @package WPGraphQL\WooCommerce\Data\Mutation
  * @since 0.2.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Mutation;
+namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
 use function WC;

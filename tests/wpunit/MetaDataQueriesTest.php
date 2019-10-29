@@ -518,10 +518,12 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         $query = '
             query ($id: ID!) {
                 product(id: $id) {
-                    id
-                    metaData {
-                        key
-                        value
+                    ... on VariableProduct {
+                        id
+                        metaData {
+                            key
+                            value
+                        }
                     }
                 }
             }

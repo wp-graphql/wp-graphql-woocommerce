@@ -32,6 +32,8 @@ class Wpunit extends \Codeception\Module {
 		$helper->create_attribute( 'size', array( 'small', 'medium', 'large' ) );
 		$helper->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
 		codecept_debug( 'ATTRIBUTES_LOADED' );
+		add_action( 'init_graphql_request', array( __CLASS__, 'shortcode_test_init' ) );
+		codecept_debug( 'SHORTCODE_INITIALIZED' );
 	}
 
 	public function cart() {
@@ -86,5 +88,14 @@ class Wpunit extends \Codeception\Module {
 	public function clear_loader_cache( $loader_name ) {
 		$loader = \WPGraphQL::get_app_context()->getLoader( $loader_name );
 		$loader->clearAll();
+	}
+
+	public static function shortcode_test_init() {
+		add_shortcode( 'shortcode_test', array( __CLASS__, 'shortcode_test_handler' ) );
+		codecept_debug( 'shortcode created' );
+	}
+
+	public static function shortcode_test_handler( $atts ) {
+		return '<p>This is the product description.</p>';
 	}
 }

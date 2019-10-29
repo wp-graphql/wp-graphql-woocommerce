@@ -2,7 +2,7 @@
 
 use WPGraphQL\Type\WPEnumType;
 
-class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
+class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
     public function setUp() {
         // before
         parent::setUp();
@@ -209,7 +209,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 totalTax
                                 taxStatus
                                 product {
-                                    id
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
                                 }
                                 variation {
                                     id

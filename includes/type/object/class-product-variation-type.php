@@ -4,19 +4,19 @@
  *
  * Registers ProductVariation WPObject type
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPObject;
+namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
-use WPGraphQL\Extensions\WooCommerce\Data\Factory;
-use WPGraphQL\Extensions\WooCommerce\Model\Product_Variation;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Product_Variation;
 use WPGraphQL\Type\WPObjectType;
 
 /**
@@ -27,12 +27,12 @@ class Product_Variation_Type {
 	 * Register ProductVariation type to the WPGraphQL schema
 	 */
 	public static function register() {
-		wc_register_graphql_object_type(
+		register_graphql_object_type(
 			'ProductVariation',
 			array(
-				'description'       => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'interfaces'        => [ WPObjectType::node_interface() ],
-				'fields'            => array(
+				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
 					'id'                => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product variation', 'wp-graphql-woocommerce' ),
@@ -234,27 +234,13 @@ class Product_Variation_Type {
 						},
 					),
 					'parent'            => array(
-						'type'        => 'Product',
+						'type'        => 'VariableProduct',
 						'description' => __( 'Product variation parent product', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source->parent_id, $context );
 						},
 					),
 				),
-				'resolve_node'      => function( $node, $id, $type, $context ) {
-					if ( 'product_variation' === $type ) {
-						$node = Factory::resolve_crud_object( $id, $context );
-					}
-
-					return $node;
-				},
-				'resolve_node_type' => function( $type, $node ) {
-					if ( is_a( $node, Product_Variation::class ) ) {
-						$type = 'ProductVariation';
-					}
-
-					return $type;
-				},
 			)
 		);
 

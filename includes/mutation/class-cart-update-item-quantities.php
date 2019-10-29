@@ -4,16 +4,16 @@
  *
  * Registers mutation for updating cart item quantities.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Mutation
+ * @package WPGraphQL\WooCommerce\Mutation
  * @since 0.1.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Mutation;
+namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Cart_Mutation;
+use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 
 /**
  * Class - Cart_Update_Item_Quantities

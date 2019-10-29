@@ -4,11 +4,11 @@
  *
  * Resolves connections to Coupons
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
@@ -19,9 +19,7 @@ use WPGraphQL\Extension\WooCommerce\Model\Order;
  * Class Coupon_Connection_Resolver
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
-	use WC_Connection_Resolver {
-		sanitize_input_fields as sanitize_shared_input_fields;
-	}
+	use Common_CPT_Input_Sanitize_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -169,6 +167,15 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Returns meta keys to be used for connection ordering.
+	 *
+	 * @return array
+	 */
+	public function ordering_meta() {
+		return array();
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -179,7 +186,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = $this->sanitize_shared_input_fields( $where_args );
+		$args = $this->sanitize_common_inputs( $where_args );
 
 		if ( ! empty( $where_args['code'] ) ) {
 			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );

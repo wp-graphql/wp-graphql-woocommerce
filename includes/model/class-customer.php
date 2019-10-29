@@ -4,11 +4,11 @@
  *
  * Models WooCommerce post-type data
  *
- * @package WPGraphQL\Extensions\WooCommerce\Model
+ * @package WPGraphQL\WooCommerce\Model
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Model;
+namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
 use WPGraphQL\Model\Model;
@@ -71,19 +71,19 @@ class Customer extends Model {
 					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : null;
 				},
 				'isVatExempt'           => function() {
-					return ( ! empty( $this->data->get_is_vat_exempt() ) ) ? $this->data->get_is_vat_exempt() : null;
+					return ! is_null( $this->data->get_is_vat_exempt() ) ? $this->data->get_is_vat_exempt() : null;
 				},
 				'hasCalculatedShipping' => function() {
-					return ( ! empty( $this->data->has_calculated_shipping() ) ) ? $this->data->has_calculated_shipping() : null;
+					return ! is_null( $this->data->has_calculated_shipping() ) ? $this->data->has_calculated_shipping() : null;
 				},
 				'calculatedShipping'    => function() {
-					return ( ! empty( $this->data->get_calculated_shipping() ) ) ? $this->data->get_calculated_shipping() : null;
+					return ! is_null( $this->data->get_calculated_shipping() ) ? $this->data->get_calculated_shipping() : null;
 				},
 				'orderCount'            => function() {
-					return ( ! empty( $this->data->get_order_count() ) ) ? $this->data->get_order_count() : null;
+					return ! is_null( $this->data->get_order_count() ) ? $this->data->get_order_count() : null;
 				},
 				'totalSpent'            => function() {
-					return ( ! empty( $this->data->get_total_spent() ) ) ? $this->data->get_total_spent() : null;
+					return ! is_null( $this->data->get_total_spent() ) ? $this->data->get_total_spent() : null;
 				},
 				'username'              => function() {
 					return ( ! empty( $this->data->get_username() ) ) ? $this->data->get_username() : null;

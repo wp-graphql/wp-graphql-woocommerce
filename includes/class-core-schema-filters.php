@@ -2,16 +2,14 @@
 /**
  * Adds filters that modify core schema.
  *
- * @package \WPGraphQL\Extensions\WooCommerce
+ * @package \WPGraphQL\WooCommerce
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce;
+namespace WPGraphQL\WooCommerce;
 
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Post_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\Extensions\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
 
 /**
  * Class Core_Schema_Filters
@@ -35,6 +33,11 @@ class Core_Schema_Filters {
 	 * Register filters
 	 */
 	public static function add_filters() {
+		// Registers WooCommerce CPTs.
+		add_filter( 'register_post_type_args', array( __CLASS__, 'register_post_types' ), 10, 2 );
+		add_filter( 'graphql_post_entities_allowed_post_types', array( __CLASS__, 'skip_type_registry' ), 10 );
+		add_filter( 'graphql_union_resolve_type', array( __CLASS__, 'graphql_union_resolve_type' ), 10, 3 );
+
 		// Registers WooCommerce taxonomies.
 		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );
 
@@ -44,15 +47,35 @@ class Core_Schema_Filters {
 		// Adds connection resolutions for WooGraphQL type to WPGraphQL type connections.
 		add_filter(
 			'graphql_post_object_connection_query_args',
-			array( __CLASS__, 'graphql_post_object_connection_query_args' ),
+			array(
+				'\WPGraphQL\WooCommerce\Data\Connection\Post_Connection_Resolver',
+				'get_query_args',
+			),
 			10,
 			5
 		);
 		add_filter(
 			'graphql_term_object_connection_query_args',
-			array( __CLASS__, 'graphql_term_object_connection_query_args' ),
+			array(
+				'\WPGraphQL\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver',
+				'get_query_args',
+			),
 			10,
 			5
+		);
+
+		// Add node resolvers.
+		add_filter(
+			'graphql_resolve_node',
+			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node' ),
+			10,
+			4
+		);
+		add_filter(
+			'graphql_resolve_node_type',
+			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node_type' ),
+			10,
+			2
 		);
 	}
 
@@ -85,9 +108,71 @@ class Core_Schema_Filters {
 	}
 
 	/**
+	 * Registers WooCommerce post-types to be used in GraphQL schema
+	 *
+	 * @param array  $args      - allowed post-types.
+	 * @param string $post_type - name of taxonomy being checked.
+	 *
+	 * @return array
+	 */
+	public static function register_post_types( $args, $post_type ) {
+		if ( 'product' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Product';
+			$args['graphql_plural_name']        = 'Products';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'product_variation' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'ProductVariation';
+			$args['graphql_plural_name']        = 'ProductVariations';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'shop_coupon' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Coupon';
+			$args['graphql_plural_name']        = 'Coupons';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'shop_order' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Order';
+			$args['graphql_plural_name']        = 'Orders';
+			$args['skip_graphql_type_registry'] = true;
+		}
+		if ( 'shop_order_refund' === $post_type ) {
+			$args['show_in_graphql']            = true;
+			$args['graphql_single_name']        = 'Refund';
+			$args['graphql_plural_name']        = 'Refunds';
+			$args['skip_graphql_type_registry'] = true;
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Filters "allowed_post_types" and removed Woocommerce CPTs.
+	 *
+	 * @param array $post_types  Post types registered in GraphQL schema.
+	 *
+	 * @return array
+	 */
+	public static function skip_type_registry( $post_types ) {
+		return array_diff(
+			$post_types,
+			get_post_types(
+				[
+					'show_in_graphql'            => true,
+					'skip_graphql_type_registry' => true,
+				]
+			)
+		);
+	}
+
+	/**
 	 * Registers WooCommerce taxonomies to be used in GraphQL schema
 	 *
-	 * @param array  $args     - allowed post-types.
+	 * @param array  $args     - allowed taxonomies.
 	 * @param string $taxonomy - name of taxonomy being checked.
 	 *
 	 * @return array
@@ -153,35 +238,5 @@ class Core_Schema_Filters {
 		$loaders['wc_post_crud'] = &$post_crud_loader;
 
 		return $loaders;
-	}
-
-	/**
-	 * Filter PostObjectConnectionResolver's query_args and adds args to used when querying WooCommerce post-types
-	 *
-	 * @param array       $query_args - WP_Query args.
-	 * @param mixed       $source     - Connection parent resolver.
-	 * @param array       $args       - Connection arguments.
-	 * @param AppContext  $context    - AppContext object.
-	 * @param ResolveInfo $info       - ResolveInfo object.
-	 *
-	 * @return mixed
-	 */
-	public static function graphql_post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return Post_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
-	}
-
-	/**
-	 * Filter TermObjectConnectionResolver's query_args and adds args to used when querying WooCommerce taxonomies
-	 *
-	 * @param array       $query_args - WP_Term_Query args.
-	 * @param mixed       $source     - Connection parent resolver.
-	 * @param array       $args       - Connection arguments.
-	 * @param AppContext  $context    - AppContext object.
-	 * @param ResolveInfo $info       - ResolveInfo object.
-	 *
-	 * @return mixed
-	 */
-	public static function graphql_term_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		return WC_Terms_Connection_Resolver::get_query_args( $query_args, $source, $args, $context, $info );
 	}
 }

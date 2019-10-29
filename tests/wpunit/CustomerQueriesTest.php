@@ -72,6 +72,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 						country
 					}
 					isPayingCustomer
+					jwtAuthToken
+					jwtRefreshToken
 				}
 			}
 		';
@@ -114,7 +116,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Three
 		 * 
-		 * Query should return requested data because has sufficient permissions.
+		 * Query should return requested data because has sufficient permissions,
+		 * but should not have access to JWT fields.
 		 */
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
@@ -124,7 +127,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEqualSets( $expected['data'], $actual['data'] );
+		$this->assertArrayHasKey('errors', $actual );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -192,6 +196,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 						country
 					}
 					isPayingCustomer
+					jwtAuthToken
+					jwtRefreshToken
 				}
 			}
 		';

@@ -2,11 +2,11 @@
 /**
  * WPEnum Type - CountriesEnum
  *
- * @package \WPGraphQL\Extensions\WooCommerce\Type\WPEnum
+ * @package \WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.1.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 /**
  * Class Countries

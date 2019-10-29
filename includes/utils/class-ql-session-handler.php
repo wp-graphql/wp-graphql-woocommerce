@@ -2,11 +2,11 @@
 /**
  * Handles data for the current customers session.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Utils
+ * @package WPGraphQL\WooCommerce\Utils
  * @since 0.1.2
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Utils;
+namespace WPGraphQL\WooCommerce\Utils;
 
 use WC_Session_Handler;
 

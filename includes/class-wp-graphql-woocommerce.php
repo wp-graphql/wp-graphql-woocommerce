@@ -4,7 +4,7 @@
  *
  * Initializes a singleton instance of WP_GraphQL_WooCommerce
  *
- * @package WPGraphQL\Extensions\WooCommerce
+ * @package WPGraphQL\WooCommerce
  * @since 0.0.1
  */
 
@@ -32,14 +32,13 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
 				self::$instance = new self();
 				self::$instance->includes();
-				self::$instance->actions();
-				self::$instance->filters();
+				self::$instance->setup();
 			}
 
 			/**
 			 * Fire off init action
 			 *
-			 * @param WPGraphQLWooCommerce $instance The instance of the WPGraphQLWooCommerce class
+			 * @param WP_GraphQL_WooCommerce $instance The instance of the WPGraphQLWooCommerce class
 			 */
 			do_action( 'graphql_woocommerce_init', self::$instance );
 
@@ -63,6 +62,21 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 					'shop_coupon',
 					'shop_order',
 					'shop_order_refund',
+				)
+			);
+		}
+
+		/**
+		 * Returns WooCommerce product types to be exposed to the GraphQL schema.
+		 */
+		public static function get_enabled_product_types() {
+			return apply_filters(
+				'graphql_enabled_wc_product_types',
+				array(
+					'simple'   => 'SimpleProduct',
+					'variable' => 'VariableProduct',
+					'external' => 'ExternalProduct',
+					'grouped'  => 'GroupProduct',
 				)
 			);
 		}
@@ -141,24 +155,23 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
-		 * Sets up actions to run at certain spots throughout WordPress and the WPGraphQL execution cycle
+		 * Sets up WooGraphQL schema.
 		 */
-		private function actions() {
-			/**
-			 * Setup actions
-			 */
-			\WPGraphQL\Extensions\WooCommerce\Type_Registry::add_actions();
-		}
+		private function setup() {
+			// Register WooCommerce filters.
+			\WPGraphQL\WooCommerce\WooCommerce_Filters::add_filters();
 
-		/**
-		 * Sets up filters to run at certain spots throughout WordPress and the WPGraphQL execution cycle
-		 */
-		private function filters() {
-			/**
-			 * Setup filters
-			 */
-			\WPGraphQL\Extensions\WooCommerce\Core_Schema_Filters::add_filters();
-			\WPGraphQL\Extensions\WooCommerce\WooCommerce_Filters::add_filters();
+			// Register WPGraphQL core filters.
+			\WPGraphQL\WooCommerce\Core_Schema_Filters::add_filters();
+
+			// Register WPGraphQL ACF filters.
+			\WPGraphQL\WooCommerce\ACF_Schema_Filters::add_filters();
+
+			// Register WPGraphQL JWT Authentication filters.
+			\WPGraphQL\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
+
+			$registry = new \WPGraphQL\WooCommerce\Type_Registry();
+			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
 		}
 	}
 endif;

@@ -2,11 +2,11 @@
 /**
  * Defines helper functions for executing mutations related to the orders.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Mutation
+ * @package WPGraphQL\WooCommerce\Data\Mutation
  * @since 0.2.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Mutation;
+namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
 
@@ -29,7 +29,11 @@ class Order_Mutation {
 
 		return apply_filters(
 			"authorized_to_{$mutation}_orders",
-			! current_user_can( $post_type_object->cap->create_posts ),
+			current_user_can(
+				'delete' === $mutation
+					? $post_type_object->cap->delete_posts
+					: $post_type_object->cap->edit_posts
+			),
 			$input,
 			$context,
 			$info

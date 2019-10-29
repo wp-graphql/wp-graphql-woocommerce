@@ -4,14 +4,14 @@
  *
  * Loads Customer Model
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Loader
+ * @package WPGraphQL\WooCommerce\Data\Loader
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Loader;
+namespace WPGraphQL\WooCommerce\Data\Loader;
 
 use WPGraphQL\Data\Loader\AbstractDataLoader;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class WC_Customer_Loader

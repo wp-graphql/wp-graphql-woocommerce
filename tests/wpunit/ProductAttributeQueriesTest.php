@@ -29,16 +29,18 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $query = '
             query attributeQuery( $id: ID! ) {
                 product( id: $id ) {
-                    id
-                    attributes {
-                        nodes {
-                            id
-                            attributeId
-                            name
-                            options
-                            position
-                            visible
-                            variation
+                    ... on VariableProduct {
+                        id
+                        attributes {
+                            nodes {
+                                id
+                                attributeId
+                                name
+                                options
+                                position
+                                visible
+                                variation
+                            }
                         }
                     }
                 }
@@ -75,7 +77,9 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                     nodes {
                         products {
                             nodes {
-                                id
+                                ... on VariableProduct {
+                                    id
+                                }
                             }
                         }
                     }

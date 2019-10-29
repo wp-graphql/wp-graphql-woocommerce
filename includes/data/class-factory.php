@@ -4,32 +4,32 @@
  *
  * This class serves as a factory for all the resolvers of queries and mutations.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data
+ * @package WPGraphQL\WooCommerce\Data
  * @since   0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data;
+namespace WPGraphQL\WooCommerce\Data;
 
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Customer_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Refund_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
-use WPGraphQL\Extensions\WooCommerce\Model\Order_Item;
-use WPGraphQL\Extensions\WooCommerce\Model\Tax_Rate;
-use WPGraphQL\Extensions\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Customer_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Download_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Refund_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
+use WPGraphQL\WooCommerce\Model\Order_Item;
+use WPGraphQL\WooCommerce\Model\Tax_Rate;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
 
 /**
  * Class Factory
@@ -193,6 +193,87 @@ class Factory {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Resolves Relay node for some WooGraphQL types.
+	 *
+	 * @param mixed      $node     Node object.
+	 * @param string     $id       Object unique ID.
+	 * @param string     $type     Node type.
+	 * @param AppContext $context  AppContext instance.
+	 *
+	 * @return mixed
+	 */
+	public static function resolve_node( $node, $id, $type, $context ) {
+		switch ( $type ) {
+			case 'customer':
+				$node = self::resolve_customer( $id, $context );
+				break;
+			case 'shop_coupon':
+			case 'shop_order':
+			case 'shop_order_refund':
+			case 'product':
+			case 'product_variation':
+				$node = self::resolve_crud_object( $id, $context );
+				break;
+			case 'shipping_method':
+				$node = self::resolve_shipping_method( $id );
+				break;
+			case 'tax_rate':
+				$node = self::resolve_tax_rate( $id );
+				break;
+		}
+
+		return $node;
+	}
+
+	/**
+	 * Resolves Relay node type for some WooGraphQL types.
+	 *
+	 * @param string|null $type  Node type.
+	 * @param mixed       $node  Node object.
+	 *
+	 * @return string|null
+	 */
+	public static function resolve_node_type( $type, $node ) {
+		switch ( true ) {
+			case is_a( $node, Coupon::class ):
+				$type = 'Coupon';
+				break;
+			case is_a( $node, Customer::class ):
+				$type = 'Customer';
+				break;
+			case is_a( $node, Order::class ):
+				$type = 'Order';
+				break;
+			case is_a( $node, Product::class ) && 'simple' === $node->type:
+				$type = 'SimpleProduct';
+				break;
+			case is_a( $node, Product::class ) && 'variable' === $node->type:
+				$type = 'VariableProduct';
+				break;
+			case is_a( $node, Product::class ) && 'external' === $node->type:
+				$type = 'ExternalProduct';
+				break;
+			case is_a( $node, Product::class ) && 'grouped' === $node->type:
+				$type = 'GroupProduct';
+				break;
+			case is_a( $node, Product_Variation::class ):
+				$type = 'ProductVariation';
+				break;
+			case is_a( $node, Refund::class ):
+				$type = 'Refund';
+				break;
+			case is_a( $node, Shipping_Method::class ):
+				$type = 'ShippingMethod';
+				break;
+			case is_a( $node, Tax_Rate::class ):
+				$type = 'TaxRate';
+				break;
+		}
+
+		return $type;
 	}
 
 	/**

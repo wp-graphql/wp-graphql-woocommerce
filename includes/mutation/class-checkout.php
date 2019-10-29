@@ -4,19 +4,19 @@
  *
  * Registers mutation for checking out.
  *
- * @package WPGraphQL\Extensions\WooCommerce\Mutation
+ * @package WPGraphQL\WooCommerce\Mutation
  * @since 0.2.0
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Mutation;
+namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Checkout_Mutation;
-use WPGraphQL\Extensions\WooCommerce\Data\Mutation\Order_Mutation;
-use WPGraphQL\Extensions\WooCommerce\Model\Order;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Data\Mutation\Checkout_Mutation;
+use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
+use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Checkout

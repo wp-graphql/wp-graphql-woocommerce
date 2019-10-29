@@ -4,16 +4,16 @@
  *
  * Resolves connections to VariationAttributes
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.4
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class Variation_Attribute_Connection_Resolver

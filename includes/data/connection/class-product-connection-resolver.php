@@ -4,27 +4,25 @@
  *
  * Resolves connections to Products
  *
- * @package WPGraphQL\Extensions\WooCommerce\Data\Connection
+ * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
  */
 
-namespace WPGraphQL\Extensions\WooCommerce\Data\Connection;
+namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Extensions\WooCommerce\Model\Coupon;
-use WPGraphQL\Extensions\WooCommerce\Model\Customer;
-use WPGraphQL\Extensions\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\Model\Term;
 
 /**
  * Class Product_Connection_Resolver
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
-	use WC_Connection_Resolver {
-		sanitize_input_fields as sanitize_shared_input_fields;
-	}
+	use Common_CPT_Input_Sanitize_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -32,6 +30,18 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @var string|array
 	 */
 	protected $post_type;
+
+	/**
+	 * Holds default catalog visibility tax query.
+	 *
+	 * @var array
+	 */
+	public static $default_visibility = array(
+		'taxonomy' => 'product_visibility',
+		'field'    => 'slug',
+		'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+		'operator' => 'NOT IN',
+	);
 
 	/**
 	 * Refund_Connection_Resolver constructor.
@@ -154,6 +164,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['graphql_cursor_offset']  = $cursor_offset;
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
+		/**
+		 * Pass the graphql $args to the WP_Query
+		 */
+		$query_args['graphql_args'] = $this->args;
+
 		// Determine where we're at in the Graph and adjust the query context appropriately.
 		if ( true === is_object( $this->source ) ) {
 			switch ( true ) {
@@ -185,7 +200,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$query_args['post__in'] = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->cross_sell_ids, $query_args['post__in'] )
 							: $this->source->cross_sell_ids;
-					} elseif ( 'grouped' === $this->info->fieldName ) {
+					} elseif ( 'products' === $this->info->fieldName ) {
 						$query_args['post__in'] = isset( $query_args['post__in'] )
 							? array_intersect( $this->source->grouped_ids, $query_args['post__in'] )
 							: $this->source->grouped_ids;
@@ -232,11 +247,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		/**
-		 * Pass the graphql $args to the WP_Query
-		 */
-		$query_args['graphql_args'] = $this->args;
-
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
 		}
@@ -245,12 +255,30 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			if ( empty( $query_args['tax_query'] ) ) {
 				$query_args['tax_query'] = array(); // WPCS: slow query ok.
 			}
-			$query_args['tax_query'][] = array(
-				'taxonomy' => 'product_visibility',
-				'field'    => 'slug',
-				'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
-				'operator' => 'NOT IN',
+
+			/**
+			 * Filters the default catalog visibility tax query for non-adminstrator requests.
+			 *
+			 * @param array       $default_visibility  Default catalog visibility tax query.
+			 * @param array       $query_args          The args that will be passed to the WP_Query.
+			 * @param mixed       $source              The source that's passed down the GraphQL queries.
+			 * @param array       $args                The inputArgs on the field.
+			 * @param AppContext  $context             The AppContext passed down the GraphQL tree.
+			 * @param ResolveInfo $info                The ResolveInfo passed down the GraphQL tree.
+			 */
+			$catalog_visibility = apply_filters(
+				'graphql_product_connection_catalog_visibility',
+				self::$default_visibility,
+				$query_args,
+				$this->source,
+				$this->args,
+				$this->context,
+				$this->info
 			);
+
+			if ( ! empty( $catalog_visibility ) ) {
+				$query_args['tax_query'][] = $catalog_visibility;
+			}
 		}
 
 		/**
@@ -270,13 +298,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		/**
-		 * Filter the $query args to allow folks to customize queries programmatically
+		 * Filter the $query_args to allow folks to customize queries programmatically.
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param array       $query_args The args that will be passed to the WP_Query.
+		 * @param mixed       $source     The source that's passed down the GraphQL queries.
+		 * @param array       $args       The inputArgs on the field.
+		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_product_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -302,6 +330,24 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Returns meta keys to be used for connection ordering.
+	 *
+	 * @return array
+	 */
+	public function ordering_meta() {
+		return array(
+			'_price',
+			'_regular_price',
+			'_sale_price',
+			'_wc_rating_count',
+			'_wc_average_rating',
+			'_sale_price_dates_from',
+			'_sale_price_dates_to',
+			'total_sales',
+		);
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -312,7 +358,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = $this->sanitize_shared_input_fields( $where_args );
+		$args = $this->sanitize_common_inputs( $where_args );
 
 		if ( ! empty( $where_args['slug'] ) ) {
 			$args['name'] = $where_args['slug'];
@@ -441,7 +487,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Handle visibility.
 		$post_type_obj = get_post_type_object( $this->post_type );
-		if ( ! empty( $where_args['visibility'] ) && current_user_can( $post_type_obj->cap->read_private_posts ) ) {
+		if ( ! empty( $where_args['visibility'] ) ) {
 			switch ( $where_args['visibility'] ) {
 				case 'search':
 					$tax_query[] = array(
