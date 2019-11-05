@@ -101,6 +101,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						purchasable
 						shippingRequired
 						shippingTaxable
+						link
 					}
 				}
 			}

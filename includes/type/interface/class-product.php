@@ -270,6 +270,10 @@ class Product {
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
 			),
+			'link'              => array(
+				'type'        => 'String',
+				'description' => __( 'The permalink of the post', 'wp-graphql' ),
+			),
 		);
 	}
 }

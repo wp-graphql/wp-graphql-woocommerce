@@ -135,9 +135,7 @@ class Product extends Crud_CPT {
 					return $this->data->get_id();
 				},
 				'id'                  => function() {
-					return ! empty( $this->data->get_id() )
-						? Relay::toGlobalId( 'product', $this->data->get_id() )
-						: null;
+					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'product', $this->data->get_id() ) : null;
 				},
 				'productId'           => function() {
 					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
@@ -179,12 +177,12 @@ class Product extends Crud_CPT {
 				),
 				'shortDescription'    => function() {
 					$short_description = ! empty( $this->data->get_short_description() )
-						? apply_filters(
-							'get_the_excerpt',
-							$this->data->get_short_description(),
-							get_post( $this->data->get_id() )
-						)
-						: null;
+					? apply_filters(
+						'get_the_excerpt',
+						$this->data->get_short_description(),
+						get_post( $this->data->get_id() )
+					)
+					: null;
 					return apply_filters( 'the_excerpt', $short_description );
 				},
 				'shortDescriptionRaw' => array(
@@ -225,6 +223,10 @@ class Product extends Crud_CPT {
 				},
 				'purchasable'         => function () {
 					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
+				},
+				'link'                => function () {
+					$link = get_permalink( $this->data->ID );
+					return ! empty( $link ) ? $link : null;
 				},
 				/**
 				 * Connection resolvers fields
