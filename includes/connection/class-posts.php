@@ -29,21 +29,21 @@ class Posts extends PostObjects {
 				)
 			)
 		);
-		/**
-		 * From product types to MediaItem
-		 */
-		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
-		foreach ( $product_types as $product_type ) {
-			register_graphql_connection(
-				self::get_connection_config(
-					get_post_type_object( 'attachment' ),
-					array(
-						'fromType'      => $product_type,
-						'toType'        => 'MediaItem',
-						'fromFieldName' => 'galleryImages',
-					)
-				)
-			);
-		}
+//		/**
+//		 * From product types to MediaItem
+//		 */
+//		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+//		foreach ( $product_types as $product_type ) {
+//			register_graphql_connection(
+//				self::get_connection_config(
+//					get_post_type_object( 'attachment' ),
+//					array(
+//						'fromType'      => $product_type,
+//						'toType'        => 'MediaItem',
+//						'fromFieldName' => 'galleryImages',
+//					)
+//				)
+//			);
+//		}
 	}
 }
