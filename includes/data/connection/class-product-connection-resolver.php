@@ -165,14 +165,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
 		/**
-		 * If the starting offset is not 0 sticky posts will not be queried as the automatic checks in wp-query don't
-		 * trigger due to the page parameter not being set in the query_vars, fixes #732
-		 */
-		if ( 0 !== $cursor_offset ) {
-			$query_args['ignore_sticky_posts'] = true;
-		}
-
-		/**
 		 * Pass the graphql $args to the WP_Query
 		 */
 		$query_args['graphql_args'] = $this->args;

@@ -22,25 +22,19 @@ class WooCommerce_Filters {
 	private static $session_header;
 
 	/**
-	 * Initializes hooks for WooCommerce-related utilities.
+	 * Register filters
 	 */
-	public static function setup() {
-		self::$session_header = apply_filters( 'woocommerce_graphql_session_header_name', 'woocommerce-session' );
+	public static function add_filters() {
+		// Setup QL session handler.
 		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
-			add_action( 'init_graphql_request', array( __CLASS__, 'init_graphql_request' ) );
+			// Check if request is a GraphQL POST request.
+			self::$session_header = apply_filters( 'woocommerce_graphql_session_header_name', 'woocommerce-session' );
+			if ( self::is_graphql_post_request() ) {
+				add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
+				add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
+			}
 			add_filter( 'graphql_response_headers_to_send', array( __CLASS__, 'add_session_header_to_expose_headers' ) );
 			add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
-		}
-	}
-
-	/**
-	 *  Setup QL session handler.
-	 */
-	public static function init_graphql_request() {
-		// Check if request is a GraphQL POST request.
-		if ( \WPGraphQL\Router::is_graphql_request() ) {
-			add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
-			add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
 		}
 	}
 
@@ -93,5 +87,26 @@ class WooCommerce_Filters {
 	public static function add_session_header_to_allow_headers( array $allowed_headers ) {
 		$allowed_headers[] = self::$session_header;
 		return $allowed_headers;
+	}
+
+	/**
+	 * Confirm that the current uri is the GraphQL endpoint.
+	 *
+	 * @return bool
+	 */
+	private static function is_graphql_post_request() {
+		global $wp;
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$haystack = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			$needle   = apply_filters( 'graphql_endpoint', 'graphql' );
+			$length   = strlen( $needle );
+			if ( 0 === $length ) {
+				return true;
+			}
+
+			return ( substr( $haystack, -$length ) === $needle );
+		}
+
+		return false;
 	}
 }
