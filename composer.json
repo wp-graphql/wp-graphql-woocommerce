@@ -44,9 +44,9 @@
     "scripts": {
         "install-wp-tests": "bash bin/install-wp-tests.sh",
         "test": "vendor/bin/codecept run",
-        "functional": "vendor/bin/codecept run functional",
-        "acceptance": "vendor/bin/codecept run acceptance",
-        "wpunit": "vendor/bin/codecept run wpunit"
+        "functional-test": "vendor/bin/codecept run functional",
+        "acceptance-test": "vendor/bin/codecept run acceptance",
+        "wpunit-test": "vendor/bin/codecept run wpunit"
     },
     "support"    : {
 		"issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
