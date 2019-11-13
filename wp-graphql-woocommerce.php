@@ -61,7 +61,7 @@ function wp_graphql_woocommerce_constants() {
  * Checks if WPGraphQL WooCommerce required plugins are installed and activated
  */
 function wp_graphql_woocommerce_dependencies_not_ready() {
-	$deps = [];
+	$deps = array();
 	if ( ! class_exists( '\WPGraphQL' ) ) {
 		$deps[] = 'WPGraphQL';
 	}

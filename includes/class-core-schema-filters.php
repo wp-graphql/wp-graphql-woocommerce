@@ -161,10 +161,10 @@ class Core_Schema_Filters {
 		return array_diff(
 			$post_types,
 			get_post_types(
-				[
+				array(
 					'show_in_graphql'            => true,
 					'skip_graphql_type_registry' => true,
-				]
+				)
 			)
 		);
 	}
