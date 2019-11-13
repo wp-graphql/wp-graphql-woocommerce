@@ -23,18 +23,14 @@ class Variation_Attributes {
 		// From ProductVariation.
 		register_graphql_connection( self::get_connection_config() );
 
-		// From product types.
-		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
-		foreach ( $product_types as $product_type ) {
-			register_graphql_connection(
-				self::get_connection_config(
-					array(
-						'fromType'      => $product_type,
-						'fromFieldName' => 'defaultAttributes',
-					)
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'      => 'Product',
+					'fromFieldName' => 'defaultAttributes',
 				)
-			);
-		}
+			)
+		);
 	}
 
 	/**
