@@ -86,7 +86,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         $this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
 
@@ -102,7 +102,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
     public function testVariationsQueryAndWhereArgs() {
@@ -173,7 +173,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         
         /**
 		 * Assertion Two
@@ -206,7 +206,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testProductVariationToMediaItemConnections() {

@@ -45,10 +45,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown() {
-		// your tear down methods here
-		$product = \WC()->product_factory->get_product( $this->product );
-		$product->delete( true );
-
 		parent::tearDown();
 	}
 
@@ -127,7 +123,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear cache
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
@@ -156,7 +152,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testProductTaxonomies() {
@@ -1068,7 +1064,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testGroupProductConnections() {
@@ -1107,7 +1103,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRelatedProductConnections() {
@@ -1161,6 +1157,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 }

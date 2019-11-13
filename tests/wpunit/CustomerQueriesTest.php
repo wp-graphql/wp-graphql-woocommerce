@@ -91,7 +91,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -108,7 +108,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -127,7 +127,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected['data'], $actual['data'] );
+		$this->assertEquals( $expected['data'], $actual['data'] );
 		$this->assertArrayHasKey('errors', $actual );
 
 		// Clear customer cache.
@@ -145,7 +145,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testCustomerByQuery() {
@@ -215,7 +215,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -233,7 +233,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testCustomersQueryAndWhereArgs() {
@@ -288,7 +288,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -311,7 +311,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Three
@@ -339,7 +339,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Four
@@ -366,7 +366,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Five
@@ -393,7 +393,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Six
@@ -421,7 +421,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Seven
@@ -449,7 +449,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Eight
@@ -477,7 +477,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Nine
@@ -505,7 +505,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Ten
@@ -539,6 +539,6 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 }
