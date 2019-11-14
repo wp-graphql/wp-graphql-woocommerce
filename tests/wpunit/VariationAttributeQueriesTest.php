@@ -63,7 +63,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
     public function testProductToVariationAttributeQuery() {
@@ -104,7 +104,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
 }

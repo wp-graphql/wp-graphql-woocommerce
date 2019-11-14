@@ -20,27 +20,17 @@ if [[ -z "$TEST_DB_USER" ]]; then
 else
 	DB_USER=$TEST_DB_USER
 fi
-if [[ -z "$TEST_DB_PASSWORD" ]]; then 
-	DB_PASS=""
-else
-	DB_PASS=$TEST_DB_PASSWORD
-fi
-if [[ -z "$TEST_DB_HOST" ]]; then 
-	DB_HOST=localhost
-else
-	DB_HOST=$TEST_DB_HOST
-fi
-if [ -z "$SKIP_DB_CREATE" ]; then 
-	SKIP_DB_CREATE=false
-fi
 
+DB_HOST=${TEST_DB_HOST-localhost}
+DB_PASS=${TEST_DB_PASSWORD-""}
 WP_VERSION=${WP_VERSION-latest}
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
-WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
+WP_CORE_DIR=${TEST_WP_ROOT_FOLDER-$TMPDIR/wordpress/}
 PLUGIN_DIR=$(pwd)
 DB_SERVE_NAME=${DB_SERVE_NAME-woographql_serve}
+SKIP_DB_CREATE=${SKIP_DB_CREATE-false}
 
 download() {
     if [ `which curl` ]; then
@@ -193,14 +183,14 @@ setup_woocommerce() {
 setup_wpgraphql() {
 	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql ]; then
 		echo "Cloning WPGraphQL"
-		wp plugin install https://github.com/wp-graphql/wp-graphql/archive/master.zip
+		wp plugin install https://github.com/wp-graphql/wp-graphql/archive/${CORE_BRANCH-master}.zip
 	fi
 	echo "Activating WPGraphQL"
 	wp plugin activate wp-graphql
 
 	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication ]; then
 		echo "Cloning WPGraphQL-JWT-Authentication"
-		wp plugin install https://github.com/wp-graphql/wp-graphql-jwt-authentication/archive/master.zip
+		wp plugin install https://github.com/wp-graphql/wp-graphql-jwt-authentication/archive/${JWT_AUTH_BRANCH-master}.zip
 	fi
 	echo "Activating WPGraphQL-JWT-Authentication"
 	wp plugin activate wp-graphql-jwt-authentication

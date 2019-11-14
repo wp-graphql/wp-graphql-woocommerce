@@ -247,7 +247,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			),
 		);
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRegisterMutationWithBillingInfo() {
@@ -296,7 +296,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			),
 		);
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRegisterMutationWithShippingSameAsBillingInfo() {
@@ -349,7 +349,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			),
 		);
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRegisterMutationWithBillingAndShippingInfo() {
@@ -399,7 +399,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			),
 		);
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testUpdateMutation() {
@@ -458,7 +458,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			),
 		);
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testUpdateMutationWithShippingSameAsBilling() {
@@ -516,6 +516,6 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			),
 		);
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 }

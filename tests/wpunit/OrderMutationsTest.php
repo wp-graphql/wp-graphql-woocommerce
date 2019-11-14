@@ -450,7 +450,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testUpdateOrderMutation() {
