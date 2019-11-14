@@ -35,23 +35,30 @@ echo "Setting Codeception output directory permissions"
 chmod 777 ${TESTS_OUTPUT}
 
 if [[ -z "$SUITES" ]]; then
-    echo 'A target testing suite(s) must be selected.'
-    echo 'Using the environment variable "$SUITES" set on the "testing" service.'
-    exit 1
+    if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
+        vendor/bin/codecept run --debug --coverage --coverage-xml
+    elif [ "$COVERAGE" == "1" ]; then
+        vendor/bin/codecept run --coverage --coverage-xml
+    elif [ "$DEBUG" == "1" ]; then
+        vendor/bin/codecept run --debug
+    else
+        vendor/bin/codecept run
+    fi
+else 
+    IFS=';' read -ra target_suites <<< "$SUITES"
+    for suite in "${target_suites[@]}"; do
+        if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
+            vendor/bin/codecept run ${suite} --debug --coverage --coverage-xml
+        elif [ "$COVERAGE" == "1" ]; then
+            vendor/bin/codecept run ${suite} --coverage --coverage-xml
+        elif [ "$DEBUG" == "1" ]; then
+            vendor/bin/codecept run ${suite} --debug
+        else
+            vendor/bin/codecept run ${suite}
+        fi
+    done
 fi
 
-IFS=';' read -ra target_suites <<< "$SUITES"
-for suite in "${target_suites[@]}"; do
-    if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
-        vendor/bin/codecept run ${suite} --debug --coverage --coverage-xml
-    elif [ "$COVERAGE" == "1" ]; then
-        vendor/bin/codecept run ${suite} --coverage --coverage-xml
-    elif [ "$DEBUG" == "1" ]; then
-        vendor/bin/codecept run ${suite} --debug
-    else
-        vendor/bin/codecept run ${suite}
-    fi
-done
 
 if [ -f "${TESTS_OUTPUT}" ]; then
     echo 'Setting "coverage.xml" permissions'.
