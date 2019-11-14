@@ -45,6 +45,10 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown() {
+		// your tear down methods here
+		$product = \WC()->product_factory->get_product( $this->product );
+		$product->delete( true );
+
 		parent::tearDown();
 	}
 
