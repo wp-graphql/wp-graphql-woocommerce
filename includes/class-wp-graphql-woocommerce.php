@@ -156,6 +156,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 * Sets up WooGraphQL schema.
 		 */
 		private function setup() {
+			// Setup minor integrations.
+			\WPGraphQL\WooCommerce\Functions\setup_minor_integrations();
+
 			// Register WooCommerce filters.
 			\WPGraphQL\WooCommerce\WooCommerce_Filters::add_filters();
 

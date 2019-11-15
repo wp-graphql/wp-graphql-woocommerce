@@ -32,7 +32,8 @@
     },
     "autoload": {
         "files":[
-            "includes/connection/common-post-type-args.php"
+            "includes/connection/common-post-type-args.php",
+            "includes/functions.php"
         ],
         "psr-4": {
             "WPGraphQL\\WooCommerce\\": "includes/"
