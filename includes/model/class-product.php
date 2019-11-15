@@ -224,10 +224,6 @@ class Product extends Crud_CPT {
 				'purchasable'         => function () {
 					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
 				},
-				'link'                => function () {
-					$link = get_permalink( $this->data->ID );
-					return ! empty( $link ) ? $link : null;
-				},
 				/**
 				 * Connection resolvers fields
 				 *
@@ -263,6 +259,9 @@ class Product extends Crud_CPT {
 				},
 				'parent_id'           => function() {
 					return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
+				},
+				'post'                => function() {
+					return ! empty( $this->data->post ) ? $this->data->post : null;
 				},
 			);
 

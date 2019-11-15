@@ -36,7 +36,6 @@ class Core_Schema_Filters {
 		// Registers WooCommerce CPTs.
 		add_filter( 'register_post_type_args', array( __CLASS__, 'register_post_types' ), 10, 2 );
 		add_filter( 'graphql_post_entities_allowed_post_types', array( __CLASS__, 'skip_type_registry' ), 10 );
-		add_filter( 'graphql_union_resolve_type', array( __CLASS__, 'graphql_union_resolve_type' ), 10, 3 );
 
 		// Registers WooCommerce taxonomies.
 		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );

@@ -273,6 +273,10 @@ class Product {
 			'link'              => array(
 				'type'        => 'String',
 				'description' => __( 'The permalink of the post', 'wp-graphql' ),
+				'resolve'     => function( $source ) {
+					$permalink = get_post_permalink( $source->ID );
+					return ! empty( $permalink ) ? $permalink : null;
+				},
 			),
 		);
 	}

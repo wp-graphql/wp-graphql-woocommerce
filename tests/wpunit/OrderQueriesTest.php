@@ -120,7 +120,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear loader cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
@@ -138,7 +138,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testOrderByQueryAndArgs() {
@@ -164,7 +164,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Two
@@ -178,7 +178,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Three
@@ -192,7 +192,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testOrdersQueryAndWhereArgs() {
