@@ -316,9 +316,11 @@ class Acceptance extends \Codeception\Module {
             $rest->haveHttpHeader( 'woocommerce-session', $session_header );
         }
 
+        $wp_url = getenv( 'WP_URL' );
+
         // Send request.
         $rest->sendPOST(
-            '/graphql',
+            "{$wp_url}/graphql",
             json_encode(
                 array(
                     'query'     => $mutation,
