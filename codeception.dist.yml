@@ -22,6 +22,9 @@ coverage:
         - access-functions.php
         - class-inflect.php
         - includes/*.php
+    remote_context_options:
+        http:
+            timeout: 90
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
@@ -54,7 +57,7 @@ modules:
             adminPassword: '%ADMIN_PASSWORD%'
             adminPath: '/wp-admin'
             curl: 
-                CURLOPT_TIMEOUT: 300
+                CURLOPT_TIMEOUT: 60000
         REST:
             depends: WPBrowser
             url: '%WP_URL%'
