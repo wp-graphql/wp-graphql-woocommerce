@@ -10,3 +10,4 @@ modules:
     disabled:
         - WPDb
         - WPBrowser
+bootstrap: bootstrap.php

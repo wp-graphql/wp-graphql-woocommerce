@@ -53,9 +53,12 @@ modules:
             adminUsername: '%ADMIN_USERNAME%'
             adminPassword: '%ADMIN_PASSWORD%'
             adminPath: '/wp-admin'
+            curl: 
+                CURLOPT_TIMEOUT: 300
         REST:
             depends: WPBrowser
             url: '%WP_URL%'
+            timeout: 90
         WPFilesystem:
             wpRootFolder: '%WP_ROOT_FOLDER%'
             plugins: '/wp-content/plugins'
@@ -72,6 +75,14 @@ modules:
             domain: '%WP_DOMAIN%'
             adminEmail: '%ADMIN_EMAIL%'
             title: 'Test'        
-            plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
-            activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            plugins:
+                - woocommerce/woocommerce.php
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+            activatePlugins:
+                - woocommerce/woocommerce.php
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
             configFile: 'tests/_data/config.php'
