@@ -21,10 +21,12 @@ ARG DESIRED_PHP_VERSION
 RUN docker-php-ext-install pdo_mysql
 
 # Install Xdebug
-RUN if [ "$DESIRED_PHP_VERSION" == "5.6" ]; then yes | pecl install xdebug-2.5.5; else yes | pecl install xdebug;  fi \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+RUN if [ "$DESIRED_PHP_VERSION" != "5.6" ] || [ "$DESIRED_PHP_VERSION" != "7.0" ]; then \
+    apt-get install zip unzip -y && \
+    pecl install pcov && \
+    docker-php-ext-enable pcov && \
+    rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+    fi 
 
 # Install composer
 ENV COMPOSER_ALLOW_SUPERUSER=1

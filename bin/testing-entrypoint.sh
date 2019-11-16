@@ -30,37 +30,43 @@ fi
 # Install dependencies
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
+if [ "$DESIRED_PHP_VERSION" != "5.6" ] || [ "$DESIRED_PHP_VERSION" != "7.0" ] && [ "$COVERAGE" == "1" ]; then
+    COMPOSER_MEMORY_LIMIT=-1 composer require --dev pcov/clobber
+    vendor/bin/pcov clobber
+fi
+
 # Set output permission
 echo "Setting Codeception output directory permissions"
 chmod 777 ${TESTS_OUTPUT}
 
-if [[ -z "$SUITES" ]]; then
-    if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
-        vendor/bin/codecept run --debug --coverage --coverage-xml
-    elif [ "$COVERAGE" == "1" ]; then
-        vendor/bin/codecept run --coverage --coverage-xml
-    elif [ "$DEBUG" == "1" ]; then
-        vendor/bin/codecept run --debug
-    else
-        vendor/bin/codecept run
-    fi
-else 
-    IFS=';' read -ra target_suites <<< "$SUITES"
+run_tests() {
+    local suites=${1:-" ;"}
+    IFS=';' read -ra target_suites <<< "$suites"
     for suite in "${target_suites[@]}"; do
         if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
-            vendor/bin/codecept run ${suite} --debug --coverage --coverage-xml
+            php -d pcov.enabled=1 vendor/bin/codecept run \
+                -c codeception.dist.yml ${suite} --debug --coverage --coverage-xml
         elif [ "$COVERAGE" == "1" ]; then
-            vendor/bin/codecept run ${suite} --coverage --coverage-xml
+            php -d pcov.enabled=1 vendor/bin/codecept run \
+                -c codeception.dist.yml ${suite} --coverage --coverage-xml
         elif [ "$DEBUG" == "1" ]; then
-            vendor/bin/codecept run ${suite} --debug
+            vendor/bin/codecept run -c codeception.dist.yml ${suite} --debug
         else
-            vendor/bin/codecept run ${suite}
+            vendor/bin/codecept run -c codeception.dist.yml ${suite}
         fi
     done
-fi
+}
+
+run_tests ${SUITES}
 
 
 if [ -f "${TESTS_OUTPUT}" ]; then
     echo 'Setting "coverage.xml" permissions'.
     chmod 777 -R ${TESTS_OUTPUT}/coverage.xml
+fi
+
+if [ "$COVERAGE" == "1" ]; then
+    echo 'Removing pcov/clobber.'
+    vendor/bin/pcov unclobber
+    COMPOSER_MEMORY_LIMIT=-1 composer remove --dev pcov/clobber
 fi

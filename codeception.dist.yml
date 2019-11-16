@@ -14,8 +14,8 @@ settings:
 coverage:
     enabled: true
     remote: false
-    work_dir: /var/www/html/wp-content/plugins/wp-graphql-woocommerce
-    c3_url: http://localhost/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php
+    work_dir: '%WP_ROOT_FOLDER%/wp-content/plugins/wp-graphql-woocommerce'
+    c3_url: '%WP_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
     whitelist:
       include:
         - wp-graphql-woocommerce.php
