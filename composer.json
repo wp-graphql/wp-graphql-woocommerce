@@ -25,8 +25,7 @@
         "php": ">=5.6.0"
     },
     "require-dev": {
-        "lucatume/wp-browser": ">=2.2.1 <2.2.8",
-        "pcov/clobber": "^2.0"
+        "lucatume/wp-browser": ">=2.2.1 <2.2.8"
     },
     "config": {
         "optimize-autoloader": true
