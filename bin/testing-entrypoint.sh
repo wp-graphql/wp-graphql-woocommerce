@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# Processes parameters and runs Codeception.
+run_tests() {
+    echo "Running Tests"
+    if [ "$COVERAGE" == "1" ]; then
+        local coverage="--coverage --coverage-xml"
+    fi
+    if [ "$DEBUG" == "1" ]; then
+        local debug="--debug"
+    fi
+
+    local suites=${1:-" ;"}
+    IFS=';' read -ra target_suites <<< "$suites"
+    for suite in "${target_suites[@]}"; do
+        vendor/bin/codecept run -c codeception.dist.yml ${suite} ${coverage:-} ${debug:-} --no-exit
+    done
+}
+
+# Exits with a status of 0 (true) if provided version number is higher than proceeding numbers.
+function version_gt() {
+    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+}
+
 # Move to WordPress root folder
 workdir="$PWD"
 echo "Moving to WordPress root directory."
@@ -30,43 +52,43 @@ fi
 # Install dependencies
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
-if [ "$DESIRED_PHP_VERSION" != "5.6" ] || [ "$DESIRED_PHP_VERSION" != "7.0" ] && [ "$COVERAGE" == "1" ]; then
+# Install pcov/clobber if PHP7.1+
+if version_gt $PHP_VERSION 7.0 && [[ "$COVERAGE" == "1" ]]; then
+    echo "Installing pcov/clobber"
     COMPOSER_MEMORY_LIMIT=-1 composer require --dev pcov/clobber
     vendor/bin/pcov clobber
+elif [ "$COVERAGE" == "1" ]; then
+    echo "Sorry, there is no PCOV support for this PHP ${PHP_VERSION} at this time"
 fi
 
 # Set output permission
 echo "Setting Codeception output directory permissions"
 chmod 777 ${TESTS_OUTPUT}
 
-run_tests() {
-    local suites=${1:-" ;"}
-    IFS=';' read -ra target_suites <<< "$suites"
-    for suite in "${target_suites[@]}"; do
-        if [ "$COVERAGE" == "1" -a "$DEBUG" == "1" ]; then
-            php -d pcov.enabled=1 vendor/bin/codecept run \
-                -c codeception.dist.yml ${suite} --debug --coverage --coverage-xml
-        elif [ "$COVERAGE" == "1" ]; then
-            php -d pcov.enabled=1 vendor/bin/codecept run \
-                -c codeception.dist.yml ${suite} --coverage --coverage-xml
-        elif [ "$DEBUG" == "1" ]; then
-            vendor/bin/codecept run -c codeception.dist.yml ${suite} --debug
-        else
-            vendor/bin/codecept run -c codeception.dist.yml ${suite}
-        fi
-    done
-}
-
+# Run tests
 run_tests ${SUITES}
 
-
-if [ -f "${TESTS_OUTPUT}" ]; then
+# Fix codecoverage permissions and clean coverage.xml
+if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
     echo 'Setting "coverage.xml" permissions'.
-    chmod 777 -R ${TESTS_OUTPUT}/coverage.xml
+    chmod 777 -R "$TESTS_OUTPUT"/coverage.xml
+
+    echo 'Cleaning coverage.xml for deployment'.
+    pattern="$PROJECT_DIR/"
+    sed -i "s~$pattern~~g" "$TESTS_OUTPUT"/coverage.xml
+
+    # Remove pcov/clobber
+    if version_gt $PHP_VERSION 7.0; then
+        echo 'Removing pcov/clobber.'
+        vendor/bin/pcov unclobber
+        COMPOSER_MEMORY_LIMIT=-1 composer remove --dev pcov/clobber
+    fi
 fi
 
-if [ "$COVERAGE" == "1" ]; then
-    echo 'Removing pcov/clobber.'
-    vendor/bin/pcov unclobber
-    COMPOSER_MEMORY_LIMIT=-1 composer remove --dev pcov/clobber
+if [ -f "${TESTS_OUTPUT}/failed" ]; then
+    echo "Uh oh, some went wrong."
+    exit 1
+else 
+    echo "Woohoo! It's working!"
+    exit 0
 fi

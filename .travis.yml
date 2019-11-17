@@ -113,6 +113,5 @@ after_success:
       wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
       chmod +x php-coveralls.phar
 
-      sed -i 's/\/var\/www\/html\/wp-content\/plugins\/wp-graphql-woocommerce\///g' tests/_output/coverage.xml
       travis_retry php php-coveralls.phar -v
     fi

@@ -14,18 +14,26 @@ LABEL author_uri=https://github.com/kidunot89
 
 SHELL [ "/bin/bash", "-c" ]
 
+# Redeclare ARGs and set as environmental variables for reuse.
 ARG DESIRED_WP_VERSION
 ARG DESIRED_PHP_VERSION
+ENV WP_VERSION=${DESIRED_WP_VERSION}
+ENV PHP_VERSION=${DESIRED_PHP_VERSION}
 
 # Install php extensions
 RUN docker-php-ext-install pdo_mysql
 
-# Install Xdebug
-RUN if [ "$DESIRED_PHP_VERSION" != "5.6" ] || [ "$DESIRED_PHP_VERSION" != "7.0" ]; then \
-    apt-get install zip unzip -y && \
-    pecl install pcov && \
-    docker-php-ext-enable pcov && \
-    rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+# Install PCOV and XDebug
+RUN if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "7.0" ]; then \
+        apt-get install zip unzip -y && \
+        pecl install pcov && \
+        docker-php-ext-enable pcov && \
+        rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        echo "pcov.enabled=1" >> /usr/local/etc/php/php.ini ;\
+    elif  [ "$PHP_VERSION" == "5.6" ]; then \
+        yes | pecl install xdebug-2.5.5; \
+    else \
+        yes | pecl install xdebug; \
     fi 
 
 # Install composer
