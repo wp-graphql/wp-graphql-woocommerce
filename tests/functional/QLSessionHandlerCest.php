@@ -52,7 +52,7 @@ class QLSessionHandlerCest {
     }
 
     // tests
-    public function test_session_update( FunctionalTester $I ) {
+    public function testCartSessionToken( FunctionalTester $I ) {
         $mutation = '
             mutation addToCart( $input: AddToCartInput! ) {
                 addToCart( input: $input ) {
@@ -97,7 +97,7 @@ class QLSessionHandlerCest {
 
         $I->seeResponseCodeIs( 200 );
         $I->seeHttpHeaderOnce('woocommerce-session');
-        $wc_session_header = $I->grabHttpHeader( 'woocommerce-session' );
+        $wc_session_header = 'Session ' . $I->grabHttpHeader( 'woocommerce-session' );
         $I->seeResponseIsJson();
         $mutation_response = $I->grabResponse();
         $mutation_data     = json_decode( $mutation_response, true );

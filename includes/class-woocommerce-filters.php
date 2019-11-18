@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce;
 
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
-
 /**
  * Class WooCommerce_Filters
  */
@@ -25,45 +23,20 @@ class WooCommerce_Filters {
 	 * Initializes hooks for WooCommerce-related utilities.
 	 */
 	public static function setup() {
-		self::$session_header = apply_filters( 'woocommerce_graphql_session_header_name', 'woocommerce-session' );
-		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
-			add_action( 'init_graphql_request', array( __CLASS__, 'init_graphql_request' ) );
+		self::$session_header = apply_filters( 'graphql_woo_cart_session_http_header', 'woocommerce-session' );
+		// Check if request is a GraphQL POST request.
+		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) && self::is_graphql_request() ) {
+			// Set session handler.
+			add_filter(
+				'woocommerce_session_handler',
+				function() {
+					return '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
+				}
+			);
+
 			add_filter( 'graphql_response_headers_to_send', array( __CLASS__, 'add_session_header_to_expose_headers' ) );
 			add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
 		}
-	}
-
-	/**
-	 *  Setup QL session handler.
-	 */
-	public static function init_graphql_request() {
-		// Check if request is a GraphQL POST request.
-		if ( \WPGraphQL\Router::is_graphql_request() ) {
-			add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
-			add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
-		}
-	}
-
-	/**
-	 * Filters WooCommerce cookie key to be used as a HTTP Header on GraphQL HTTP requests
-	 *
-	 * @param string $cookie WooCommerce cookie key.
-	 *
-	 * @return string
-	 */
-	public static function woocommerce_cookie( $cookie ) {
-		return self::$session_header;
-	}
-
-	/**
-	 * Filters WooCommerce session handler class on GraphQL HTTP requests
-	 *
-	 * @param string $session_class Classname of the current session handler class.
-	 *
-	 * @return string
-	 */
-	public static function init_ql_session_handler( $session_class ) {
-		return QL_Session_Handler::class;
 	}
 
 	/**
@@ -75,9 +48,9 @@ class WooCommerce_Filters {
 	 */
 	public static function add_session_header_to_expose_headers( $headers ) {
 		if ( empty( $headers['Access-Control-Expose-Headers'] ) ) {
-			$headers['Access-Control-Expose-Headers'] = apply_filters( 'woocommerce_cookie', self::$session_header );
+			$headers['Access-Control-Expose-Headers'] = self::$session_header;
 		} else {
-			$headers['Access-Control-Expose-Headers'] .= ', ' . apply_filters( 'woocommerce_cookie', self::$session_header );
+			$headers['Access-Control-Expose-Headers'] .= ', ' . self::$session_header;
 		}
 
 		return $headers;
@@ -93,5 +66,23 @@ class WooCommerce_Filters {
 	public static function add_session_header_to_allow_headers( array $allowed_headers ) {
 		$allowed_headers[] = self::$session_header;
 		return $allowed_headers;
+	}
+
+	/**
+	 * Confirm that the current request is being made to the GraphQL endpoint.
+	 *
+	 * @return bool
+	 */
+	private static function is_graphql_request() {
+		// If before 'init' check $_SERVER.
+		if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
+			$haystack = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) )
+				. esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			$needle   = \home_url( \WPGraphQL\Router::$route );
+			$len      = strlen( $needle );
+			return ( substr( $haystack, 0, $len ) === $needle );
+		}
+
+		return false;
 	}
 }

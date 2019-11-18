@@ -339,7 +339,7 @@ class Acceptance extends \Codeception\Module {
         if ( $update_header ) {
             // Update session header.
             $rest->seeHttpHeaderOnce('woocommerce-session');
-            $response['session_header'] = $rest->grabHttpHeader( 'woocommerce-session' );
+            $response['session_header'] = 'Session ' . $rest->grabHttpHeader( 'woocommerce-session' );
         }
 
         return $response;

@@ -22,7 +22,8 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
         "lucatume/wp-browser": ">=2.2.1 <2.2.8"

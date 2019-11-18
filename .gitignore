@@ -17,6 +17,7 @@ node_modules/
 vendor/*
 !vendor/autoload.php
 !vendor/composer
+!vendor/firebase
 vendor/composer/installed.json
 vendor/composer/*/
 !tests
