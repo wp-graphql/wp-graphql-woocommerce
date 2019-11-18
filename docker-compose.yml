@@ -7,6 +7,7 @@ services:
     image: "kidunot89/woographql-app:wp${WP_VERSION:-5.2.2}-php${PHP_VERSION:-7.2}"
     volumes:
       - '.:/var/www/html/wp-content/plugins/wp-graphql-woocommerce'
+      - './codeception.dist.yml:/var/www/html/wp-content/plugins/wp-graphql-woocommerce/codeception.yml'
       - './.log/app:/var/log/apache2'
     env_file: .env.dist
     environment:
