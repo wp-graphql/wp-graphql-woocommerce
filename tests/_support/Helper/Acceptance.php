@@ -320,7 +320,7 @@ class Acceptance extends \Codeception\Module {
 
         // Send request.
         $rest->sendPOST(
-            "{$wp_url}/graphql",
+            '/graphql',
             json_encode(
                 array(
                     'query'     => $mutation,

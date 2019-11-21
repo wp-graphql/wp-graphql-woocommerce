@@ -9,6 +9,7 @@
 namespace WPGraphQL\WooCommerce\Utils;
 
 use Firebase\JWT\JWT;
+use GraphQL\Error\UserError;
 
 /**
  * Class - QL_Session_Handler
@@ -17,30 +18,37 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	/**
 	 * Stores the name of the HTTP header used to pass the session token.
 	 *
-	 * @var string
+	 * @var string $_token
 	 */
-	protected $_token;
+	protected $_token; // @codingStandardsIgnoreLine
 
 	/**
 	 * Stores Timestamp of when the session token was issued.
 	 *
-	 * @var string
+	 * @var string $_session_issued
 	 */
-	protected $_session_issued;
+	protected $_session_issued; // @codingStandardsIgnoreLine
 
 	/**
 	 * True when the token exists.
 	 *
-	 * @var bool
+	 * @var bool $_has_token
 	 */
-	protected $_has_token = false;
+	protected $_has_token = false; // @codingStandardsIgnoreLine
 
 	/**
 	 * Stores JWT token to be sent through session header.
 	 *
-	 * @var string
+	 * @var string $_token_to_be_sent
 	 */
-	private $_token_to_be_sent = false;
+	protected $_token_to_be_sent = false; // @codingStandardsIgnoreLine
+
+	/**
+	 * Stores the error message of any errors thrown validating the session token
+	 *
+	 * @var string $_token_invalid
+	 */
+	public $_token_invalid; // @codingStandardsIgnoreLine
 
 	/**
 	 * Constructor for the session class.
@@ -74,14 +82,12 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		// Use the defined secret key, if it exists.
 		$secret_key = defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) && ! empty( GRAPHQL_WOOCOMMERCE_SECRET_KEY )
 			? GRAPHQL_WOOCOMMERCE_SECRET_KEY :
-			'graphql-jwt-auth';
+			'graphql-woo-cart-session';
 		return apply_filters( 'graphql_woocommerce_secret_key', $secret_key );
 	}
 
 	/**
 	 * Init hooks and session data.
-	 *
-	 * @since 3.3.0
 	 */
 	public function init() {
 		$this->init_session_token();
@@ -100,16 +106,16 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	/**
 	 * Setup token and customer ID.
 	 *
-	 * @since 3.6.0
+	 * @throws UserError Invalid token.
 	 */
 	public function init_session_token() {
 		$token = $this->get_session_token();
 
-		if ( $token ) {
-			$this->_customer_id        = $token->data->customer->id;
+		if ( $token && ! is_wp_error( $token ) ) {
+			$this->_customer_id        = $token->data->customer_id;
 			$this->_session_issued     = $token->iat;
 			$this->_session_expiration = $token->exp;
-			$this->_session_expiring   = $token->exp - ( 60 * 60 * 1 );
+			$this->_session_expiring   = $token->exp - ( 60 * 60 );
 			$this->_has_token          = true;
 			$this->_data               = $this->get_session_data();
 
@@ -128,6 +134,10 @@ class QL_Session_Handler extends \WC_Session_Handler {
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
 		} else {
+			if ( is_wp_error( $token ) ) {
+				wp_send_json( $token );
+				$this->_token_invalid = $token->get_error_message();
+			}
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
 			$this->_data        = $this->get_session_data();
@@ -159,7 +169,12 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			JWT::$leeway = 60;
 
 			$secret = $this->get_secret_key();
-			$token  = ! empty( $token ) ? JWT::decode( $token, $secret, [ 'HS256' ] ) : null;
+			$token  = ! empty( $token ) ? JWT::decode( $token, $secret, array( 'HS256' ) ) : null;
+
+			// Check if token was successful decoded.
+			if ( ! $token ) {
+				throw new \Exception( __( 'Failed to decode session token', 'wp-graphql-woocommerce' ) );
+			}
 
 			// The Token is decoded now validate the iss.
 			if ( ! isset( $token->iss ) || get_bloginfo( 'url' ) !== $token->iss ) {
@@ -167,14 +182,11 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			}
 
 			// Validate the customer id in the token.
-			if ( ! isset( $token->data->customer->id ) ) {
+			if ( ! isset( $token->data->customer_id ) ) {
 				throw new \Exception( __( 'Customer ID not found in the token', 'wp-graphql-woocommerce' ) );
 			}
 		} catch ( \Exception $error ) {
-			return new \WP_Error(
-				'invalid_token',
-				__( 'The WooCommerce Cart Session Token is invalid', 'wp-graphql-woocommerce' )
-			);
+			return new \WP_Error( 'invalid_token', $error->getMessage() );
 		}
 
 		return $token;
@@ -190,7 +202,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 
 		// Looking for the cart session header.
 		$session_header = isset( $_SERVER[ $session_header_key ] )
-			? esc_url_raw( wp_unslash( $_SERVER[ $session_header_key ] ) )
+			? $_SERVER[ $session_header_key ] //@codingStandardsIgnoreLine
 			: false;
 
 		/**
@@ -219,19 +231,19 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			 */
 			$not_before = apply_filters(
 				'graphql_woo_cart_session_not_before',
-				$this->session_issued,
-				$this->customer_id,
+				$this->_session_issued,
+				$this->_customer_id,
 				$this->_data
 			);
 
 			// Configure the token array, which will be encoded.
 			$token = array(
 				'iss'  => get_bloginfo( 'url' ),
-				'iat'  => $this->session_issued,
+				'iat'  => $this->_session_issued,
 				'nbf'  => $not_before,
-				'exp'  => $this->session_expiration,
+				'exp'  => $this->_session_expiration,
 				'data' => array(
-					'customer_id' => $this->customer_id,
+					'customer_id' => $this->_customer_id,
 				),
 			);
 
@@ -245,13 +257,11 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			$token = apply_filters(
 				'graphql_woo_cart_session_before_token_sign',
 				$token,
-				$this->customer_id,
+				$this->_customer_id,
 				$this->_data
 			);
 
-			/**
-			 * Encode the token
-			 */
+			// Encode the token.
 			JWT::$leeway = 60;
 			$token       = JWT::encode( $token, $this->get_secret_key() );
 
@@ -267,7 +277,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			$token = apply_filters(
 				'graphql_woo_cart_session_signed_token',
 				$token,
-				$this->customer_id,
+				$this->_customer_id,
 				$this->_data
 			);
 

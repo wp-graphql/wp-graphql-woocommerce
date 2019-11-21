@@ -55,6 +55,8 @@ class Cart_Empty {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
+			Cart_Mutation::check_session_token();
+
 			// Get WC_Cart instance.
 			$cloned_cart = clone \WC()->cart;
 
