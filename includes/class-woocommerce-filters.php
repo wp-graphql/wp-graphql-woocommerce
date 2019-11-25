@@ -25,18 +25,26 @@ class WooCommerce_Filters {
 	public static function setup() {
 		self::$session_header = apply_filters( 'graphql_woo_cart_session_http_header', 'woocommerce-session' );
 		// Check if request is a GraphQL POST request.
-		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) && self::is_graphql_request() ) {
-			// Set session handler.
-			add_filter(
-				'woocommerce_session_handler',
-				function() {
-					return '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
-				}
-			);
-
+		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
+			add_filter( 'woocommerce_session_handler', array( __CLASS__, 'woocommerce_session_handler' ) );
 			add_filter( 'graphql_response_headers_to_send', array( __CLASS__, 'add_session_header_to_expose_headers' ) );
 			add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
 		}
+	}
+
+	/**
+	 * WooCommerce Session Handler callback
+	 *
+	 * @param string $session_class  Class name of WooCommerce Session Handler.
+	 *
+	 * @return string
+	 */
+	public static function woocommerce_session_handler( $session_class ) {
+		if ( self::is_graphql_request() ) {
+			$session_class = '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
+		}
+
+		return $session_class;
 	}
 
 	/**
@@ -79,6 +87,10 @@ class WooCommerce_Filters {
 			$haystack = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) )
 				. esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			$needle   = \home_url( \WPGraphQL\Router::$route );
+
+			// Strip protocol.
+			$haystack = preg_replace( '#^(http(s)?://)#', '', $haystack );
+			$needle   = preg_replace( '#^(http(s)?://)#', '', $needle );
 			$len      = strlen( $needle );
 			return ( substr( $haystack, 0, $len ) === $needle );
 		}

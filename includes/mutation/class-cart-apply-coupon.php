@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 
 /**
  * Class - Cart_Apply_Coupon

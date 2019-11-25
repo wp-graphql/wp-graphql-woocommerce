@@ -3,15 +3,38 @@ namespace Helper;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
-class Acceptance extends \Codeception\Module {
+class GraphQLE2E extends \Codeception\Module {
+    /**
+     * Asserts existence of and returns an array of HTTP response headers
+     * 
+     * @param string|array $headers  Headers to be evaluated and returned.
+     * 
+     * @return array
+     */
+    public function wantHTTPResponseHeaders( $headers ) {
+        $rest = $this->getModule( 'REST' );
+
+        if ( $headers && ! is_array( $headers ) ) {
+            $rest->seeHttpHeaderOnce( $headers );
+            return $rest->grabHttpHeader( $headers );
+        }
+
+        $response_headers = array();
+        foreach ( $headers as $header ) {
+            $rest->seeHttpHeaderOnce( $header );
+            $response_headers[] = $rest->grabHttpHeader( $header );
+        }
+    }
+
     /**
      * Adds item to cart.
      *
      * @param array  $input
      * @param string $session_header
+     *
      * @return array
      */
-    public function addToCart( $input, $session_header = null ) {
+    public function addToCart( $input, $request_headers = array() ) {
         // Add to cart mutation
         $mutation = '
             mutation ( $input: AddToCartInput! ) {
@@ -40,8 +63,8 @@ class Acceptance extends \Codeception\Module {
             }
         ';
 
-        // Execute query.
-        $response = $this->executeQuery( $mutation, $input, $session_header, true );
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 
         // Return response.
         return $response;
@@ -52,9 +75,10 @@ class Acceptance extends \Codeception\Module {
      *
      * @param array  $input
      * @param string $session_header
+     *
      * @return array
      */
-    public function updateQuantity( $input, $session_header = null ) {
+    public function updateQuantity( $input, $request_headers = array() ) {
         // Update cart items mutation
         $mutation = '
             mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
@@ -76,8 +100,8 @@ class Acceptance extends \Codeception\Module {
             }
         ';
 
-        // Execute query.
-        $response = $this->executeQuery( $mutation, $input, $session_header );
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 
         // Return response.
         return $response;
@@ -90,7 +114,7 @@ class Acceptance extends \Codeception\Module {
      * @param string $session_header
      * @return array
      */
-    public function removeFromCart( $input, $session_header = null ) {
+    public function removeFromCart( $input, $request_headers = array() ) {
         // Remove item from cart mutation
         $mutation = '
             mutation ( $input: RemoveItemsFromCartInput! ) {
@@ -119,8 +143,8 @@ class Acceptance extends \Codeception\Module {
             }
         ';
 
-        // Execute query.
-        $response = $this->executeQuery( $mutation, $input, $session_header );
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 
         // Return response.
         return $response;
@@ -134,7 +158,7 @@ class Acceptance extends \Codeception\Module {
      * 
      * @return array
      */
-    public function checkout( $input, $session_header = null ) {
+    public function checkout( $input, $request_headers = array() ) {
         // Checkout mutation.
         $mutation = '
             mutation checkout( $input: CheckoutInput! ) {
@@ -290,15 +314,15 @@ class Acceptance extends \Codeception\Module {
             }
         ';
 
-        // Execute query.
-        $response = $this->executeQuery( $mutation, $input, $session_header );
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 
         // Return response.
         return $response;
     }
 
     /**
-     * Executes GraphQL query and returns a response
+     * Sends GraphQL and returns a response
      * 
      * @param string      $mutation
      * @param array       $input
@@ -307,23 +331,24 @@ class Acceptance extends \Codeception\Module {
      * 
      * @return array
      */
-    public function executeQuery( $mutation, $input, $session_header = null, $update_header = false ) {
+    public function sendGraphQLRequest( $query, $input, $request_headers = array() ) {
         $rest = $this->getModule( 'REST' );
 
         // Add item to cart.
         $rest->haveHttpHeader( 'Content-Type', 'application/json' );
-        if ( ! empty( $session_header ) ) {
-            $rest->haveHttpHeader( 'woocommerce-session', $session_header );
+
+        // Set request headers
+        foreach( $request_headers as $header => $value ) {
+            $rest->haveHttpHeader( $header, $value );
         }
 
-        $wp_url = getenv( 'WP_URL' );
-
         // Send request.
+        $wp_url = getenv( 'WP_URL' );
         $rest->sendPOST(
-            '/graphql',
+            "{$wp_url}/graphql",
             json_encode(
                 array(
-                    'query'     => $mutation,
+                    'query'     => $query,
                     'variables' => array( 'input' => $input ),
                 )
             )
@@ -335,12 +360,6 @@ class Acceptance extends \Codeception\Module {
 
         // Get response.
         $response = json_decode( $rest->grabResponse(), true );
-
-        if ( $update_header ) {
-            // Update session header.
-            $rest->seeHttpHeaderOnce('woocommerce-session');
-            $response['session_header'] = 'Session ' . $rest->grabHttpHeader( 'woocommerce-session' );
-        }
 
         return $response;
     }

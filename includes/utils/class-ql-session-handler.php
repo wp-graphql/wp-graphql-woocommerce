@@ -115,7 +115,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			$this->_customer_id        = $token->data->customer_id;
 			$this->_session_issued     = $token->iat;
 			$this->_session_expiration = $token->exp;
-			$this->_session_expiring   = $token->exp - ( 60 * 60 );
+			$this->_session_expiring   = $token->exp - ( 3600 );
 			$this->_has_token          = true;
 			$this->_data               = $this->get_session_data();
 
@@ -125,7 +125,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 				$this->_customer_id = strval( get_current_user_id() );
 				$this->_dirty       = true;
 				$this->save_data( $guest_session_id );
-				$this->set_customer_session_cookie( true );
+				$this->set_customer_session_token( true );
 			}
 
 			// Update session if its close to expiring.
@@ -135,7 +135,6 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			}
 		} else {
 			if ( is_wp_error( $token ) ) {
-				wp_send_json( $token );
 				$this->_token_invalid = $token->get_error_message();
 			}
 			$this->set_session_expiration();
@@ -312,7 +311,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	 */
 	public function has_session() {
 		// @codingStandardsIgnoreLine.
-		return isset( $_SERVER[ $this->get_server_key() ] ) || $this->_has_token || is_user_logged_in();
+		return $this->get_session_header() || $this->_has_token || is_user_logged_in();
 	}
 
 	/**
@@ -323,12 +322,12 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		// 47 Hours.
 		$this->_session_expiring = apply_filters(
 			'graphql_woo_cart_session_expire',
-			time() + ( 60 * 60 * 47 )
+			time() + ( 3600 * 47 )
 		);
 		// 48 Hours.
 		$this->_session_expiration = apply_filters(
 			'graphql_woo_cart_session_expire',
-			time() + ( 60 * 60 * 48 )
+			time() + ( 3600 * 48 )
 		);
 	}
 

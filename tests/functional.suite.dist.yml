@@ -8,8 +8,8 @@ modules:
     enabled:
         - REST
         - WPDb
+        - WPLoader
         - WPBrowser
         - Asserts
-        - \Helper\Functional
-    disabled:
-        - WPLoader
+        - \Helper\GraphQLE2E
+        

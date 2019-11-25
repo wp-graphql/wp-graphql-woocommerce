@@ -45,7 +45,7 @@ modules:
             populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
             dump: 'tests/_data/dump.sql'
             populate: true
-            cleanup: true
+            cleanup: false
             waitlock: 0
             url: '%WP_URL%'
             urlReplacement: true
