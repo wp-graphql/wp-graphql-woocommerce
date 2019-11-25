@@ -6,10 +6,13 @@
 actor: FunctionalTester
 modules:
     enabled:
+        - Asserts
         - REST
+        - WPBrowser
         - WPDb
         - WPLoader
-        - WPBrowser
-        - Asserts
         - \Helper\GraphQLE2E
+    config:
+        WPDb:
+            cleanup: false
         

@@ -37,18 +37,11 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	protected $_has_token = false; // @codingStandardsIgnoreLine
 
 	/**
-	 * Stores JWT token to be sent through session header.
+	 * True when a new session token has been issued.
 	 *
-	 * @var string $_token_to_be_sent
+	 * @var bool $_issuing_new_token
 	 */
-	protected $_token_to_be_sent = false; // @codingStandardsIgnoreLine
-
-	/**
-	 * Stores the error message of any errors thrown validating the session token
-	 *
-	 * @var string $_token_invalid
-	 */
-	public $_token_invalid; // @codingStandardsIgnoreLine
+	protected $_issuing_new_token = false; // @codingStandardsIgnoreLine
 
 	/**
 	 * Constructor for the session class.
@@ -93,7 +86,6 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		$this->init_session_token();
 
 		add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
-		add_filter( 'graphql_response_headers_to_send', array( $this, 'set_session_header' ), 10 );
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 
@@ -135,7 +127,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			}
 		} else {
 			if ( is_wp_error( $token ) ) {
-				$this->_token_invalid = $token->get_error_message();
+				add_filter( 'woo_session_token_errors', $token->get_error_message() );
 			}
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
@@ -284,24 +276,20 @@ class QL_Session_Handler extends \WC_Session_Handler {
 				return;
 			}
 
-			$this->_token_to_be_sent = $token;
-		}
-	}
+			/**
+			 * Sets session token HTTP response header.
+			 */
+			add_filter(
+				'graphql_response_headers_to_send',
+				function( $headers ) use ( $token ) {
+					$headers[ $this->_token ] = $token;
+					return $headers;
+				},
+				10
+			);
 
-	/**
-	 * Checks if there is a new token to be sent, sets the header and deletes the token.
-	 *
-	 * @param array $headers  The HTTP response headers for the current GraphQL request.
-	 *
-	 * @return array
-	 */
-	public function set_session_header( $headers ) {
-		if ( ! empty( $this->_token_to_be_sent ) ) {
-			$headers[ $this->_token ] = $this->_token_to_be_sent;
-			unset( $this->_token_to_be_sent );
+			$this->_issuing_new_token = true;
 		}
-
-		return $headers;
 	}
 
 	/**
@@ -311,7 +299,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	 */
 	public function has_session() {
 		// @codingStandardsIgnoreLine.
-		return $this->get_session_header() || $this->_has_token || is_user_logged_in();
+		return $this->_issuing_new_token || $this->_has_token || is_user_logged_in();
 	}
 
 	/**
@@ -319,16 +307,13 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	 */
 	public function set_session_expiration() {
 		$this->_session_issued = time();
-		// 47 Hours.
-		$this->_session_expiring = apply_filters(
-			'graphql_woo_cart_session_expire',
-			time() + ( 3600 * 47 )
-		);
 		// 48 Hours.
 		$this->_session_expiration = apply_filters(
 			'graphql_woo_cart_session_expire',
 			time() + ( 3600 * 48 )
 		);
+		// 47 Hours.
+		$this->_session_expiring = $this->_session_expiration - ( 3600 );
 	}
 
 	/**

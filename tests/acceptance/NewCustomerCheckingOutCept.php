@@ -26,9 +26,6 @@ $add_to_cart_input = array(
 
 $success = $I->addToCart( $add_to_cart_input );
 
-// use --debug flag to view
-codecept_debug( $success );
-
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
@@ -49,9 +46,6 @@ $success = $I->addToCart(
     $add_to_cart_input,
     $request_headers()
 );
-
-// use --debug flag to view
-codecept_debug( $success );
 
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
@@ -74,9 +68,6 @@ $success = $I->addToCart(
     $request_headers()
 );
 
-// use --debug flag to view
-codecept_debug( $success );
-
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
@@ -98,9 +89,6 @@ $success = $I->addToCart(
     $request_headers()
 );
 
-// use --debug flag to view
-codecept_debug( $success );
-
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
@@ -118,13 +106,10 @@ $remove_from_cart_input = array(
     'keys'             => $socks_key,
 );
 
-$success = $I->removeFromCart(
+$success = $I->removeItemsFromCart(
     $remove_from_cart_input,
     $request_headers()
 );
-
-// use --debug flag to view
-codecept_debug( $success );
 
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );
@@ -147,7 +132,7 @@ $update_quantity_input = array(
     ),
 );
 
-$success = $I->updateQuantity(
+$success = $I->updateItemQuantities(
     $update_quantity_input,
     /**
      * "removeItemsFromCart" mutation does not update the session token so we can
@@ -155,9 +140,6 @@ $success = $I->updateQuantity(
      */
     $last_request_headers 
 );
-
-// use --debug flag to view
-codecept_debug( $success );
 
 $I->assertArrayNotHasKey( 'error', $success );
 $I->assertArrayHasKey('data', $success );

@@ -34,11 +34,12 @@ class Cart_Type {
 				'type'        => 'Cart',
 				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$cart = WC()->cart;
-					if ( WC()->session->_token_invalid ) {
+					$token_invalid = apply_filters( 'woo_session_token_errors', null );
+					if ( $token_invalid ) {
 						throw new UserError( WC()->session->_token_invalid );
 					}
-					return $cart;
+
+					return WC()->cart;
 				},
 			)
 		);

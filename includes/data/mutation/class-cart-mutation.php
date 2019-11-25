@@ -109,9 +109,10 @@ class Cart_Mutation {
 	 * @throws UserError If GRAPHQL_DEBUG is set to true and errors found.
 	 */
 	public static function check_session_token() {
-		if ( WC()->session->_token_invalid ) {
+		$token_invalid = apply_filters( 'woo_session_token_errors', null );
+		if ( $token_invalid ) {
 			if ( defined( 'GRAPHQL_DEBUG' ) && true === GRAPHQL_DEBUG ) {
-				throw new UserError( WC()->session->_token_invalid );
+				throw new UserError( $token_invalid );
 			}
 		}
 	}

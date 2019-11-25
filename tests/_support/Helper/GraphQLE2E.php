@@ -78,7 +78,7 @@ class GraphQLE2E extends \Codeception\Module {
      *
      * @return array
      */
-    public function updateQuantity( $input, $request_headers = array() ) {
+    public function updateItemQuantities( $input, $request_headers = array() ) {
         // Update cart items mutation
         $mutation = '
             mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
@@ -114,11 +114,53 @@ class GraphQLE2E extends \Codeception\Module {
      * @param string $session_header
      * @return array
      */
-    public function removeFromCart( $input, $request_headers = array() ) {
+    public function removeItemsFromCart( $input, $request_headers = array() ) {
         // Remove item from cart mutation
         $mutation = '
             mutation ( $input: RemoveItemsFromCartInput! ) {
                 removeItemsFromCart( input: $input ) {
+                    clientMutationId
+                    cartItems {
+                        key
+                        product {
+                            ... on SimpleProduct {
+                                id
+                            }
+                            ... on VariableProduct {
+                                id
+                            }
+                        }
+                        variation {
+                            id
+                        }
+                        quantity
+                        subtotal
+                        subtotalTax
+                        total
+                        tax
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
+     * Restores items removed from the cart.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function restoreCartItems( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation restoreCartItems( $input: RestoreCartItemsInput! ) {
+                restoreCartItems( input: $input ) {
                     clientMutationId
                     cartItems {
                         key
@@ -361,6 +403,9 @@ class GraphQLE2E extends \Codeception\Module {
         // Get response.
         $response = json_decode( $rest->grabResponse(), true );
 
+        // use --debug flag to view
+        codecept_debug( $response );
+
         return $response;
     }
 
@@ -375,35 +420,35 @@ class GraphQLE2E extends \Codeception\Module {
         $product_catalog = array();
         $products = array(
             array(
-                'post_name'  => 't-shirt',
+                'post_title'  => 't-shirt',
                 'meta_input' => array(
                     '_price'         => 45,
                     '_regular_price' => 45,
                 )
             ),
             array(
-                'post_name'  => 'jeans',
+                'post_title'  => 'jeans',
                 'meta_input' => array(
                     '_price'         => 60,
                     '_regular_price' => 60,
                 )
             ),
             array(
-                'post_name'  => 'belt',
+                'post_title'  => 'belt',
                 'meta_input' => array(
                     '_price'         => 45,
                     '_regular_price' => 45,
                 )
             ),
             array(
-                'post_name'  => 'shoes',
+                'post_title'  => 'shoes',
                 'meta_input' => array(
                     '_price'         => 115,
                     '_regular_price' => 115,
                 )
             ),
             array(
-                'post_name'  => 'socks',
+                'post_title'  => 'socks',
                 'meta_input' => array(
                     '_price'         => 20,
                     '_regular_price' => 20,
@@ -412,7 +457,7 @@ class GraphQLE2E extends \Codeception\Module {
         );
         foreach ( $products as $product ) {
             $this->haveAProductInTheDatabase( $product, $product_id );
-            $product_catalog[ $product['post_name'] ] = $product_id;
+            $product_catalog[ $product['post_title'] ] = $product_id;
         }
 
         return $product_catalog;
@@ -472,7 +517,7 @@ class GraphQLE2E extends \Codeception\Module {
             array_replace_recursive(
                 array(
                     'post_type'  => 'product',
-                    'post_name' => 't-shirt',
+                    'post_title' => 't-shirt',
                     'meta_input' => array(
                         '_visibility'             => 'visible',
                         '_sku'                    => '',
