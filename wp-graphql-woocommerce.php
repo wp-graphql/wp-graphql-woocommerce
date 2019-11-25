@@ -39,7 +39,7 @@ if ( file_exists( __DIR__ . '/c3.php' ) ) {
 function wp_graphql_woocommerce_constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
-		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.2.1' );
+		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.3.1' );
 	}
 	// Plugin Folder Path.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR' ) ) {

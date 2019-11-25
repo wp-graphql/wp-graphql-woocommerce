@@ -90,6 +90,8 @@ class Cart_Add_Item {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
+			Cart_Mutation::check_session_token();
+
 			// Retrieve product database ID if relay ID provided.
 			if ( empty( $input['productId'] ) ) {
 				throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );

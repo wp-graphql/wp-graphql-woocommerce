@@ -78,7 +78,7 @@ if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
     sed -i "s~$pattern~~g" "$TESTS_OUTPUT"/coverage.xml
 
     # Remove pcov/clobber
-    if version_gt $PHP_VERSION 7.0; then
+    if version_gt $PHP_VERSION 7.0 && [ ${SKIP_PCOV_CLOBBER_CLEANUP} != "true" ]; then
         echo 'Removing pcov/clobber.'
         vendor/bin/pcov unclobber
         COMPOSER_MEMORY_LIMIT=-1 composer remove --dev pcov/clobber

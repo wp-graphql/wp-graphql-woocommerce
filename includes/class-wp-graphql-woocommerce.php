@@ -160,7 +160,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			\WPGraphQL\WooCommerce\Functions\setup_minor_integrations();
 
 			// Register WooCommerce filters.
-			\WPGraphQL\WooCommerce\WooCommerce_Filters::add_filters();
+			\WPGraphQL\WooCommerce\WooCommerce_Filters::setup();
 
 			// Register WPGraphQL core filters.
 			\WPGraphQL\WooCommerce\Core_Schema_Filters::add_filters();

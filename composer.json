@@ -22,7 +22,8 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
         "lucatume/wp-browser": ">=2.2.1 <2.2.8"
@@ -45,9 +46,9 @@
     "scripts": {
         "install-wp-tests": "bash bin/install-wp-tests.sh",
         "test": "vendor/bin/codecept run",
-        "functional": "vendor/bin/codecept run functional",
-        "acceptance": "vendor/bin/codecept run acceptance",
-        "wpunit": "vendor/bin/codecept run wpunit"
+        "functional-test": "vendor/bin/codecept run functional",
+        "acceptance-test": "vendor/bin/codecept run acceptance",
+        "wpunit-test": "vendor/bin/codecept run wpunit"
     },
     "support"    : {
 		"issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",

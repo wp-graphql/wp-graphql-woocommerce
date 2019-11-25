@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce;
 
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
-
 /**
  * Class WooCommerce_Filters
  */
@@ -22,42 +20,31 @@ class WooCommerce_Filters {
 	private static $session_header;
 
 	/**
-	 * Register filters
+	 * Initializes hooks for WooCommerce-related utilities.
 	 */
-	public static function add_filters() {
-		// Setup QL session handler.
+	public static function setup() {
+		self::$session_header = apply_filters( 'graphql_woo_cart_session_http_header', 'woocommerce-session' );
+		// Check if request is a GraphQL POST request.
 		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
-			// Check if request is a GraphQL POST request.
-			self::$session_header = apply_filters( 'woocommerce_graphql_session_header_name', 'woocommerce-session' );
-			if ( self::is_graphql_post_request() ) {
-				add_filter( 'woocommerce_cookie', array( __CLASS__, 'woocommerce_cookie' ) );
-				add_filter( 'woocommerce_session_handler', array( __CLASS__, 'init_ql_session_handler' ) );
-			}
+			add_filter( 'woocommerce_session_handler', array( __CLASS__, 'woocommerce_session_handler' ) );
 			add_filter( 'graphql_response_headers_to_send', array( __CLASS__, 'add_session_header_to_expose_headers' ) );
 			add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
 		}
 	}
 
 	/**
-	 * Filters WooCommerce cookie key to be used as a HTTP Header on GraphQL HTTP requests
+	 * WooCommerce Session Handler callback
 	 *
-	 * @param string $cookie WooCommerce cookie key.
+	 * @param string $session_class  Class name of WooCommerce Session Handler.
 	 *
 	 * @return string
 	 */
-	public static function woocommerce_cookie( $cookie ) {
-		return self::$session_header;
-	}
+	public static function woocommerce_session_handler( $session_class ) {
+		if ( self::is_graphql_request() ) {
+			$session_class = '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
+		}
 
-	/**
-	 * Filters WooCommerce session handler class on GraphQL HTTP requests
-	 *
-	 * @param string $session_class Classname of the current session handler class.
-	 *
-	 * @return string
-	 */
-	public static function init_ql_session_handler( $session_class ) {
-		return QL_Session_Handler::class;
+		return $session_class;
 	}
 
 	/**
@@ -69,9 +56,9 @@ class WooCommerce_Filters {
 	 */
 	public static function add_session_header_to_expose_headers( $headers ) {
 		if ( empty( $headers['Access-Control-Expose-Headers'] ) ) {
-			$headers['Access-Control-Expose-Headers'] = apply_filters( 'woocommerce_cookie', self::$session_header );
+			$headers['Access-Control-Expose-Headers'] = self::$session_header;
 		} else {
-			$headers['Access-Control-Expose-Headers'] .= ', ' . apply_filters( 'woocommerce_cookie', self::$session_header );
+			$headers['Access-Control-Expose-Headers'] .= ', ' . self::$session_header;
 		}
 
 		return $headers;
@@ -90,21 +77,22 @@ class WooCommerce_Filters {
 	}
 
 	/**
-	 * Confirm that the current uri is the GraphQL endpoint.
+	 * Confirm that the current request is being made to the GraphQL endpoint.
 	 *
 	 * @return bool
 	 */
-	private static function is_graphql_post_request() {
-		global $wp;
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			$haystack = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-			$needle   = apply_filters( 'graphql_endpoint', 'graphql' );
-			$length   = strlen( $needle );
-			if ( 0 === $length ) {
-				return true;
-			}
+	private static function is_graphql_request() {
+		// If before 'init' check $_SERVER.
+		if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
+			$haystack = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) )
+				. esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			$needle   = \home_url( \WPGraphQL\Router::$route );
 
-			return ( substr( $haystack, -$length ) === $needle );
+			// Strip protocol.
+			$haystack = preg_replace( '#^(http(s)?://)#', '', $haystack );
+			$needle   = preg_replace( '#^(http(s)?://)#', '', $needle );
+			$len      = strlen( $needle );
+			return ( substr( $haystack, 0, $len ) === $needle );
 		}
 
 		return false;

@@ -20,7 +20,15 @@ class Product_Attributes {
 	 * Registers the various connections from other Types to ProductAttribute
 	 */
 	public static function register_connections() {
-		register_graphql_connection( self::get_connection_config() );
+		// From product types.
+		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+		foreach ( $product_types as $product_type ) {
+			register_graphql_connection(
+				self::get_connection_config(
+					array( 'fromType' => $product_type )
+				)
+			);
+		}
 	}
 
 	/**
@@ -34,7 +42,7 @@ class Product_Attributes {
 	 */
 	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
-			'fromType'       => 'Product',
+			'fromType'       => 'SimpleProduct',
 			'toType'         => 'ProductAttribute',
 			'fromFieldName'  => 'attributes',
 			'connectionArgs' => array(),
