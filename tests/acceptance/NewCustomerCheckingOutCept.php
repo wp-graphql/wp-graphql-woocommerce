@@ -26,7 +26,7 @@ $add_to_cart_input = array(
 
 $success = $I->addToCart( $add_to_cart_input );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
 $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
@@ -47,7 +47,7 @@ $success = $I->addToCart(
     $request_headers()
 );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
 $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
@@ -68,7 +68,7 @@ $success = $I->addToCart(
     $request_headers()
 );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
 $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
@@ -89,7 +89,7 @@ $success = $I->addToCart(
     $request_headers()
 );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('addToCart', $success['data'] );
 $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
@@ -111,7 +111,7 @@ $success = $I->removeItemsFromCart(
     $request_headers()
 );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('removeItemsFromCart', $success['data'] );
 $I->assertArrayHasKey('cartItems', $success['data']['removeItemsFromCart'] );
@@ -141,7 +141,7 @@ $success = $I->updateItemQuantities(
     $last_request_headers 
 );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('updateItemQuantities', $success['data'] );
 $I->assertArrayHasKey('removed', $success['data']['updateItemQuantities'] );
@@ -194,7 +194,7 @@ $success = $I->checkout(
 // use --debug flag to view
 codecept_debug( $success );
 
-$I->assertArrayNotHasKey( 'error', $success );
+$I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
 $I->assertArrayHasKey('checkout', $success['data'] );
 $I->assertArrayHasKey('order', $success['data']['checkout'] );
