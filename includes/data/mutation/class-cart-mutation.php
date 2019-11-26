@@ -111,9 +111,7 @@ class Cart_Mutation {
 	public static function check_session_token() {
 		$token_invalid = apply_filters( 'woo_session_token_errors', null );
 		if ( $token_invalid ) {
-			if ( defined( 'GRAPHQL_DEBUG' ) && true === GRAPHQL_DEBUG ) {
-				throw new UserError( $token_invalid );
-			}
+			throw new UserError( $token_invalid );
 		}
 	}
 }

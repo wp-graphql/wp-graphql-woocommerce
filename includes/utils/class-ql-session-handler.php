@@ -127,7 +127,13 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			}
 		} else {
 			if ( is_wp_error( $token ) ) {
-				add_filter( 'woo_session_token_errors', $token->get_error_message() );
+				add_filter(
+					'woo_session_token_errors',
+					function( $errors ) use ( $token ) {
+						$errors = $token->get_error_message();
+						return $errors;
+					}
+				);
 			}
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
@@ -168,12 +174,12 @@ class QL_Session_Handler extends \WC_Session_Handler {
 			}
 
 			// The Token is decoded now validate the iss.
-			if ( ! isset( $token->iss ) || get_bloginfo( 'url' ) !== $token->iss ) {
+			if ( empty( $token->iss ) || get_bloginfo( 'url' ) !== $token->iss ) {
 				throw new \Exception( __( 'The iss do not match with this server', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Validate the customer id in the token.
-			if ( ! isset( $token->data->customer_id ) ) {
+			if ( empty( $token->data ) || empty( $token->data->customer_id ) ) {
 				throw new \Exception( __( 'Customer ID not found in the token', 'wp-graphql-woocommerce' ) );
 			}
 		} catch ( \Exception $error ) {

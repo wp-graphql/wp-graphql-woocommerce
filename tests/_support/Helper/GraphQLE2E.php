@@ -193,6 +193,179 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
     /**
+     * Removes all items from the cart.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function emptyCart( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation emptyCart( $input: EmptyCartInput! ) {
+                emptyCart( input: $input ) {
+                    clientMutationId
+                    cart {
+                        contents {
+                            nodes {
+                                key
+                                product {
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
+                                }
+                                variation {
+                                    id
+                                }
+                                quantity
+                                subtotal
+                                subtotalTax
+                                total
+                                tax
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
+     * Adds fee on cart.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function addFee( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation addFee( $input: AddFeeInput! ) {
+                addFee( input: $input ) {
+                    clientMutationId
+                    cartFee {
+                        id
+                        name
+                        taxClass
+                        taxable
+                        amount
+                        total
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
+     * Applies coupon to the cart.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function applyCoupon( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation applyCoupon( $input: ApplyCouponInput! ) {
+                applyCoupon( input: $input ) {
+                    clientMutationId
+                    cart {
+                        appliedCoupons {
+                            nodes {
+                                code
+                            }
+                        }
+                        contents {
+                            nodes {
+                                key
+                                product {
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
+                                }
+                                quantity
+                                subtotal
+                                subtotalTax
+                                total
+                                tax
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
+     * Removes coupons on the cart.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function removeCoupons( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation removeCoupons( $input: RemoveCouponsInput! ) {
+                removeCoupons( input: $input ) {
+                    clientMutationId
+                    cart {
+                        appliedCoupons {
+                            nodes {
+                                code
+                            }
+                        }
+                        contents {
+                            nodes {
+                                key
+                                product {
+                                    ... on SimpleProduct {
+                                        id
+                                    }
+                                    ... on VariableProduct {
+                                        id
+                                    }
+                                }
+                                quantity
+                                subtotal
+                                subtotalTax
+                                total
+                                tax
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
      * Place customer order.
      *
      * @param array  $input
@@ -405,6 +578,11 @@ class GraphQLE2E extends \Codeception\Module {
 
         // use --debug flag to view
         codecept_debug( $response );
+
+        // Delete request headers
+        foreach( $request_headers as $header => $value ) {
+            $rest->deleteHeader( $header );
+        }
 
         return $response;
     }
