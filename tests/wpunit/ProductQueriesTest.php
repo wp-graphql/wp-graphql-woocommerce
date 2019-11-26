@@ -101,6 +101,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						purchasable
 						shippingRequired
 						shippingTaxable
+						link
 					}
 				}
 			}
@@ -126,7 +127,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 
 		// Clear cache
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
@@ -155,7 +156,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testProductTaxonomies() {
@@ -1067,7 +1068,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testGroupProductConnections() {
@@ -1106,7 +1107,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRelatedProductConnections() {
@@ -1160,6 +1161,6 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
 	}
 }

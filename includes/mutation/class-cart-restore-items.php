@@ -65,6 +65,8 @@ class Cart_Restore_Items {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
+			Cart_Mutation::check_session_token();
+
 			if ( empty( $input['keys'] ) ) {
 				throw new UserError( __( 'No cart item keys provided', 'wp-graphql-woocommerce' ) );
 			}

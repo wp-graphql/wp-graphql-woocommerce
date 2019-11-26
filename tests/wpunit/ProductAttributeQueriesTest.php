@@ -67,7 +67,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
     public function testProductAttributeToProductConnectionQuery() {
@@ -116,7 +116,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
     public function testProductAttributeToVariationConnectionQuery() {
@@ -173,6 +173,6 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 }

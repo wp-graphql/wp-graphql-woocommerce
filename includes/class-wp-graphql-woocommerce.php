@@ -1,7 +1,5 @@
 <?php
 /**
- * WP_GraphQL_WooCommerce
- *
  * Initializes a singleton instance of WP_GraphQL_WooCommerce
  *
  * @package WPGraphQL\WooCommerce
@@ -18,9 +16,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 	final class WP_GraphQL_WooCommerce {
 
 		/**
-		 * Stores the instance of the WPGraphQL\Extensions\WPGraphQLWooCommerce class
+		 * Stores the instance of the WP_GraphQL_WooCommerce class
 		 *
-		 * @var WP_GraphQL_WooCommerce The one true WPGraphQL\Extensions\WP_GraphQL_WooCommerce
+		 * @var WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
 		 * @access private
 		 */
 		private static $instance;
@@ -38,7 +36,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Fire off init action
 			 *
-			 * @param WP_GraphQL_WooCommerce $instance The instance of the WPGraphQLWooCommerce class
+			 * @param WP_GraphQL_WooCommerce $instance The instance of the WP_GraphQL_WooCommerce class
 			 */
 			do_action( 'graphql_woocommerce_init', self::$instance );
 
@@ -158,8 +156,11 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 * Sets up WooGraphQL schema.
 		 */
 		private function setup() {
+			// Setup minor integrations.
+			\WPGraphQL\WooCommerce\Functions\setup_minor_integrations();
+
 			// Register WooCommerce filters.
-			\WPGraphQL\WooCommerce\WooCommerce_Filters::add_filters();
+			\WPGraphQL\WooCommerce\WooCommerce_Filters::setup();
 
 			// Register WPGraphQL core filters.
 			\WPGraphQL\WooCommerce\Core_Schema_Filters::add_filters();

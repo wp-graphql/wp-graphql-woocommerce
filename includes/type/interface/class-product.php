@@ -270,6 +270,14 @@ class Product {
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
 			),
+			'link'              => array(
+				'type'        => 'String',
+				'description' => __( 'The permalink of the post', 'wp-graphql' ),
+				'resolve'     => function( $source ) {
+					$permalink = get_post_permalink( $source->ID );
+					return ! empty( $permalink ) ? $permalink : null;
+				},
+			),
 		);
 	}
 }

@@ -14,14 +14,17 @@ settings:
 coverage:
     enabled: true
     remote: false
-    work_dir: /var/www/html/wp-content/plugins/wp-graphql-woocommerce
-    c3_url: http://localhost/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php
+    work_dir: '%WP_ROOT_FOLDER%/wp-content/plugins/wp-graphql-woocommerce'
+    c3_url: '%WP_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
     whitelist:
       include:
         - wp-graphql-woocommerce.php
         - access-functions.php
         - class-inflect.php
         - includes/*.php
+    remote_context_options:
+        http:
+            timeout: 90
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
@@ -53,9 +56,12 @@ modules:
             adminUsername: '%ADMIN_USERNAME%'
             adminPassword: '%ADMIN_PASSWORD%'
             adminPath: '/wp-admin'
+            curl: 
+                CURLOPT_TIMEOUT: 60000
         REST:
             depends: WPBrowser
             url: '%WP_URL%'
+            timeout: 90
         WPFilesystem:
             wpRootFolder: '%WP_ROOT_FOLDER%'
             plugins: '/wp-content/plugins'
@@ -72,6 +78,14 @@ modules:
             domain: '%WP_DOMAIN%'
             adminEmail: '%ADMIN_EMAIL%'
             title: 'Test'        
-            plugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
-            activatePlugins: ['woocommerce/woocommerce.php', 'wp-graphql/wp-graphql.php', 'wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php', 'wp-graphql-woocommerce/wp-graphql-woocommerce.php']
+            plugins:
+                - woocommerce/woocommerce.php
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+            activatePlugins:
+                - woocommerce/woocommerce.php
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
             configFile: 'tests/_data/config.php'

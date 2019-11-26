@@ -191,7 +191,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 				),
 			),
 		);
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
     public function testAddToCartMutationWithProductVariation() {
@@ -241,7 +241,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 ),
             ),
         );
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testUpdateCartItemQuantitiesMutation() {
@@ -340,7 +340,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 				),
 			),
 		);
-		$this->assertEqualSets( $expected, $actual );
+		$this->assertEquals( $expected, $actual );
     }
 
     public function testRemoveItemsFromCartMutation() {
@@ -380,7 +380,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         $this->assertEmpty( \WC()->cart->get_cart_item( $key ) );
     }
 
@@ -440,7 +440,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         $this->assertEmpty( \WC()->cart->get_cart_item( $key1 ) );
         $this->assertEmpty( \WC()->cart->get_cart_item( $key2 ) );
     }
@@ -501,7 +501,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         $this->assertTrue( \WC()->cart->is_empty() );
     }
 
@@ -552,7 +552,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         $this->assertNotEmpty( \WC()->cart->get_cart_item( $key ) );
     }
 
@@ -619,7 +619,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         $this->assertNotEmpty( \WC()->cart->get_cart_item( $key1 ) );
         $this->assertNotEmpty( \WC()->cart->get_cart_item( $key2 ) );
     }
@@ -708,7 +708,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
         $this->assertTrue( \WC()->cart->is_empty() );
     }
 
@@ -815,7 +815,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
 
         $new_total = \WC()->cart->get_cart_contents_total();
@@ -922,7 +922,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testAddFeeMutation() {
@@ -997,6 +997,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             ),
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 }

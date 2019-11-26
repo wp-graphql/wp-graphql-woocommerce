@@ -28,6 +28,7 @@ use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
 use WPGraphQL\WooCommerce\Model\Order_Item;
+use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
 
