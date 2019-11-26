@@ -135,7 +135,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Two
@@ -167,7 +167,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Three
@@ -199,7 +199,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testCouponMetaDataQueries() {
@@ -250,7 +250,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Two
@@ -276,7 +276,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Three
@@ -302,7 +302,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Four
@@ -332,7 +332,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Five
@@ -362,7 +362,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
 
         /**
          * Assertion Six
@@ -396,7 +396,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testCustomerMetaDataQueries() {
@@ -438,7 +438,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testOrderMetaDataQueries() {
@@ -510,7 +510,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testProductMetaDataQueries() {
@@ -560,7 +560,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testProductVariationMetaDataQueries() {
@@ -608,7 +608,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testRefundMetaDataQueries() {
@@ -656,6 +656,6 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         // use --debug flag to view.
         codecept_debug( $actual );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 }

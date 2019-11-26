@@ -17,7 +17,7 @@ branches:
     - master
     - release-v0.1.2
     - release-v0.2.2
-    - release-v0.3.0
+    - release-v0.3.1
 
 cache:
   apt: true
@@ -27,17 +27,13 @@ cache:
 matrix:
   include:
     - php: 7.3
-      env: PHP_VERSION=7.3 WP_VERSION=5.2 COVERAGE=1
+      env: PHP_VERSION=7.3 WP_VERSION=5.3
     - php: 7.3
       env: PHP_VERSION=7.3 PHPCS=1
     - php: 7.2
-      env: PHP_VERSION=7.2 WP_VERSION=5.2
+      env: PHP_VERSION=7.2 WP_VERSION=5.3
     - php: 7.2
       env: PHP_VERSION=7.2 WP_VERSION=4.9
-    - php: 7.1
-      env: PHP_VERSION=7.1 WP_VERSION=5.2
-    - php: 7.1
-      env: PHP_VERSION=7.1 WP_VERSION=4.9
     - php: 7.0
       env: PHP_VERSION=7.0 WP_VERSION=5.0
     - php: 7.0
@@ -46,6 +42,10 @@ matrix:
       env: PHP_VERSION=5.6 WP_VERSION=5.0
     - php: 5.6
       env: PHP_VERSION=5.6 WP_VERSION=4.9
+    - php: 7.1
+      env: PHP_VERSION=7.1 WP_VERSION=5.3
+    - php: 7.1
+      env: PHP_VERSION=7.1 WP_VERSION=4.9 COVERAGE=1
   allow_failures:
     - env: PHP_VERSION=5.6 WP_VERSION=5.0
     - env: PHP_VERSION=5.6 WP_VERSION=4.9
@@ -93,8 +93,7 @@ script:
   # Execute unit tests with coverage if specified, otherwise without coverage
   - |
     if [ ! -z "$WP_VERSION" ]; then
-      docker-compose run --rm \
-        -e SUITES='acceptance;functional;wpunit' \
+       docker-compose run --rm \
         -e COVERAGE=${COVERAGE:-0} \
         -e DEBUG=${DEBUG:-0} \
         testing --scale app=0
@@ -114,7 +113,5 @@ after_success:
       wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
       chmod +x php-coveralls.phar
 
-      sed -i 's/\/var\/www\/html\/wp-content\/plugins\/wp-graphql-woocommerce\///g' tests/_output/coverage.xml
       travis_retry php php-coveralls.phar -v
     fi
-  

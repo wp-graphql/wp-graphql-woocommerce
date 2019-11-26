@@ -4,16 +4,21 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868
+class ComposerStaticInita7d96941276fe45d32bb0c52e40163df
 {
     public static $files = array (
         '914b07b8cf678ed0b81bfdb5d23b4f2b' => __DIR__ . '/../..' . '/includes/connection/common-post-type-args.php',
+        '45a15019e901000ab8608c03ebff44fb' => __DIR__ . '/../..' . '/includes/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
             'WPGraphQL\\WooCommerce\\' => 22,
+        ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
         ),
     );
 
@@ -22,9 +27,17 @@ class ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868
         array (
             0 => __DIR__ . '/../..' . '/includes',
         ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
     );
 
     public static $classMap = array (
+        'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
+        'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
+        'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
+        'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'WPGraphQL\\WooCommerce\\ACF_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-acf-schema-filters.php',
         'WPGraphQL\\WooCommerce\\Connection\\Cart_Items' => __DIR__ . '/../..' . '/includes/connection/class-cart-items.php',
         'WPGraphQL\\WooCommerce\\Connection\\Coupons' => __DIR__ . '/../..' . '/includes/connection/class-coupons.php',
@@ -147,9 +160,9 @@ class ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit71eeabde6fbf0f089c103ca7b0ed7868::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita7d96941276fe45d32bb0c52e40163df::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita7d96941276fe45d32bb0c52e40163df::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita7d96941276fe45d32bb0c52e40163df::$classMap;
 
         }, null, ClassLoader::class);
     }

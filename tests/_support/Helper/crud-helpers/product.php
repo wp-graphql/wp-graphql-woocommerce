@@ -366,6 +366,7 @@ class ProductHelper extends WCG_Helper {
 			'purchasable'       => $data->is_purchasable(),
 			'shippingRequired'  => $data->needs_shipping(),
 			'shippingTaxable'   => $data->is_shipping_taxable(),
+			'link'              => get_post_permalink( $id ),
 		);
 	}
 

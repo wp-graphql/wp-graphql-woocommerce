@@ -102,4 +102,16 @@ class Cart_Mutation {
 		}
 		return true;
 	}
+
+	/**
+	 * Checks for errors thrown by the QL_Session_Handler during session token validation.
+	 *
+	 * @throws UserError If GRAPHQL_DEBUG is set to true and errors found.
+	 */
+	public static function check_session_token() {
+		$token_invalid = apply_filters( 'woo_session_token_errors', null );
+		if ( $token_invalid ) {
+			throw new UserError( $token_invalid );
+		}
+	}
 }

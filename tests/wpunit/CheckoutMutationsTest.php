@@ -431,7 +431,7 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testCheckoutOrderMutationWithNewAccount() {
@@ -616,7 +616,7 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 
     public function testCheckoutOrderMutationWithNoAccount() {
@@ -805,6 +805,6 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        $this->assertEqualSets( $expected, $actual );
+        $this->assertEquals( $expected, $actual );
     }
 }

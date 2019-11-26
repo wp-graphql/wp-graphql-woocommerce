@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 
 /**
  * Class - Cart_Apply_Coupon
@@ -71,6 +72,8 @@ class Cart_Apply_Coupon {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
+			Cart_Mutation::check_session_token();
+
 			// Retrieve product database ID if relay ID provided.
 			if ( empty( $input['code'] ) ) {
 				throw new UserError( __( 'No coupon code provided', 'wp-graphql-woocommerce' ) );

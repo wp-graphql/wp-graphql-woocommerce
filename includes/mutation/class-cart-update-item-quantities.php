@@ -92,6 +92,8 @@ class Cart_Update_Item_Quantities {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
+			Cart_Mutation::check_session_token();
+
 			// Confirm "items" exists.
 			if ( empty( $input['items'] ) ) {
 				throw new UserError( __( 'No item data provided', 'wp-graphql-woocommerce' ) );
