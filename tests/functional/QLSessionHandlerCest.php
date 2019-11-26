@@ -340,5 +340,29 @@ class QLSessionHandlerCest {
         );
         
         $I->assertArrayHasKey( 'errors', $failed );
+
+        /**
+         * Attempt to query cart with invalid session token.
+         * GraphQL should throw an error and query will fail.
+         */
+        $query = '
+            query {
+                cart {
+                    contents {
+                        nodes {
+                            key
+                        }
+                    }
+                }
+            }
+        ';
+
+        $failed = $I->sendGraphQLRequest(
+            $query,
+            null,
+            array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
+        );
+
+        $I->assertArrayHasKey( 'errors', $failed );
     }
 }
