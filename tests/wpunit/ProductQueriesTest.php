@@ -188,7 +188,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						image {
 							id
 						}
-						categories {
+						productCategories {
 							nodes {
 								name
 								children {
@@ -198,7 +198,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 								}
 							}
 						}
-						tags {
+						productTags {
 							nodes {
 								name
 							}
@@ -222,7 +222,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'image'      => array(
 						'id' => \GraphQLRelay\Relay::toGlobalId( 'attachment', $attachment_id ),
 					),
-					'categories' => array(
+					'productCategories' => array(
 						'nodes' => array(
 							array(
 								'name'     => 'category-five',
@@ -234,7 +234,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 							),
 						),
 					),
-					'tags'       => array(
+					'productTags'       => array(
 						'nodes' => array(
 							array( 'name' => 'tag-two' ),
 						),
@@ -841,12 +841,12 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				product(id: $id) {
 					... on SimpleProduct {
 						id
-						tags {
+						productTags {
 							nodes {
 								name
 							}
 						}
-						categories {
+						productCategories {
 							nodes {
 								name
 							}
@@ -862,12 +862,12 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'product' => array(
 					'id'         => $id,
-					'tags'       => array(
+					'productTags'       => array(
 						'nodes' => array(
 							array( 'name' => $this->product_tag ),
 						),
 					),
-					'categories' => array(
+					'productCategories' => array(
 						'nodes' => array(
 							array( 'name' => $this->product_cat ),
 						),

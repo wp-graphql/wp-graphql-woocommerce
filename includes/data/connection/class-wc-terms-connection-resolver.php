@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Model\Coupon;
 use WPGraphQL\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Crud_CPT;
 
 /**
  * Class WC_Terms_Connection_Resolver
@@ -35,7 +36,7 @@ class WC_Terms_Connection_Resolver {
 		/**
 		 * Determine where we're at in the Graph and adjust the query context appropriately.
 		 */
-		if ( true === is_object( $source ) ) {
+		if ( is_a( $source, Crud_CPT::class ) ) {
 			switch ( true ) {
 				case is_a( $source, Coupon::class ):
 					// @codingStandardsIgnoreLine
@@ -56,6 +57,14 @@ class WC_Terms_Connection_Resolver {
 					break;
 				default:
 					break;
+			}
+			if ( empty( $query_args['term_taxonomy_id'] ) ) {
+				$connected_items_only     = isset( $input_fields['shouldOnlyIncludeConnectedItems'] ) ? $input_fields['shouldOnlyIncludeConnectedItems'] : true;
+				$query_args['object_ids'] = $source->ID;
+			}
+
+			if ( isset( $connected_items_only ) && false === $connected_items_only ) {
+				unset( $query_args['object_ids'] );
 			}
 		}
 
