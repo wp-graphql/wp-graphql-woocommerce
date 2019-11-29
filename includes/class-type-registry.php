@@ -72,6 +72,8 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Variation_Attribute_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Payment_Gateway_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Package_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Rate_Type::register();
 
 		// Object fields.
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
@@ -103,6 +105,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Cart_Apply_Coupon::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Remove_Coupons::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Fee::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Cart_Update_Shipping_Method::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Create::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Update::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Delete::register_mutation();

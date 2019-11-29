@@ -130,7 +130,34 @@ class Cart_Type {
 							return \wc_graphql_price( $price );
 						},
 					),
-					'shippingTotal'           => array(
+					'availableShippingMethods' => array(
+						'type'        => array( 'list_of' => 'ShippingPackage' ),
+						'description' => __( 'Available shipping methods for this order.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$packages = array();
+							foreach ( \WC()->shipping()->get_packages() as $index => $package ) {
+								$package['index'] = $index;
+								$packages[] = $package;
+							}
+
+							return $packages;
+						},
+					),
+					'chosenShippingMethod'     => array(
+						'type'        => 'String',
+						'description' => __( 'Shipping method chosen for this order.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$packages = \WC()->shipping()->get_packages();
+							foreach ( $packages as $i => $package ) {
+								if ( isset( \WC()->session->chosen_shipping_methods[ $i ] ) ) {
+									return \WC()->session->chosen_shipping_methods[ $i ];
+								}
+							}
+
+							return null;
+						},
+					),
+					'shippingTotal'            => array(
 						'type'        => 'String',
 						'description' => __( 'Cart shipping total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
