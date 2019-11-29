@@ -90,8 +90,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertNotEmpty( $actual['data'] )
-		$this->assertNotEmpty( $actual['errors'] )
+		$this->assertNotEmpty( $actual['data'] );
+		$this->assertNotEmpty( $actual['errors'] );
 		$this->assertNull( $actual['data']['customer'] );
 
 		// Clear customer cache.
@@ -178,8 +178,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertNotEmpty( $actual['data'] )
-		$this->assertNotEmpty( $actual['errors'] )
+		$this->assertNotEmpty( $actual['data'] );
+		$this->assertNotEmpty( $actual['errors'] );
 		$this->assertNull( $actual['data']['customer'] );
 	}
 
