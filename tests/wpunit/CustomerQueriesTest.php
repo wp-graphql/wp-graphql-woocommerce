@@ -26,8 +26,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 	// tests
 	public function testCustomerQueryAndArgs() {
 		$query = '
-			query customerQuery( $id: ID ) {
-				customer( id: $id ) {
+			query customerQuery( $id: ID, $customerId: Int ) {
+				customer( id: $id, customerId: $customerId ) {
 					id
 					customerId
 					isVatExempt
@@ -86,12 +86,13 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
 		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
-		$expected = array( 'data' => array( 'customer' => $this->helper->print_failed_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertNotEmpty( $actual['data'] )
+		$this->assertNotEmpty( $actual['errors'] )
+		$this->assertNull( $actual['data']['customer'] );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -128,7 +129,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected['data'], $actual['data'] );
-		$this->assertArrayHasKey('errors', $actual );
+		$this->assertNotEmpty( $actual['errors'] );
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
@@ -146,71 +147,16 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
-	}
-
-	public function testCustomerByQuery() {
-		$query = '
-			query customerByQuery( $id: Int! ) {
-				customerBy( customerId: $id ) {
-					id
-					customerId
-					isVatExempt
-					hasCalculatedShipping
-					calculatedShipping
-					orderCount
-					totalSpent
-					username
-					email
-					firstName
-					lastName
-					displayName
-					role
-					date
-					modified
-					lastOrder {
-						id
-						orderId
-					}
-					billing {
-						firstName
-						lastName
-						company
-						address1
-						address2
-						city
-						state
-						postcode
-						country
-						email
-						phone
-					}
-					shipping {
-						firstName
-						lastName
-						company
-						address1
-						address2
-						city
-						state
-						postcode
-						country
-					}
-					isPayingCustomer
-					jwtAuthToken
-					jwtRefreshToken
-				}
-			}
-		';
-
+		
 		/**
-		 * Assertion One
+		 * Assertion Five
 		 * 
 		 * Query should return requested data because user queried themselves.
 		 */
 		wp_set_current_user( $this->new_customer );
-		$variables = array( 'id' => $this->new_customer );
-		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
-		$expected  = array( 'data' => array( 'customerBy' => $this->helper->print_query( $this->new_customer ) ) );
+		$variables = array( 'customerId' => $this->new_customer );
+		$actual    = do_graphql_request( $query, 'customerQuery', $variables );
+		$expected  = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -221,19 +167,20 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
 
 		/**
-		 * Assertion Two
+		 * Assertion Six
 		 * 
 		 * Query should return null value due to lack of permissions..
 		 */
 		wp_set_current_user( $this->customer );
-		$variables = array( 'id' => $this->new_customer );
+		$variables = array( 'customerId' => $this->new_customer );
 		$actual    = do_graphql_request( $query, 'customerByQuery', $variables );
-		$expected  = array( 'data' => array( 'customerBy' => $this->helper->print_failed_query( $this->new_customer ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertNotEmpty( $actual['data'] )
+		$this->assertNotEmpty( $actual['errors'] )
+		$this->assertNull( $actual['data']['customer'] );
 	}
 
 	public function testCustomersQueryAndWhereArgs() {
