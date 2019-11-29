@@ -56,7 +56,9 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$post_type_obj = get_post_type_object( 'shop_order' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):
-			case is_a( $this->source, Customer::class ) && 'orders' === $this->info->fieldName:
+			case is_a( $this->source, Customer::class )
+				&& 'orders' === $this->info->fieldName
+				&& get_current_user_id() === $this->source->ID:
 				return true;
 			default:
 				return false;
