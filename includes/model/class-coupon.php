@@ -26,13 +26,13 @@ class Coupon extends Crud_CPT {
 	 */
 	public function __construct( $id ) {
 		$this->data                = new \WC_Coupon( $id );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'couponId',
-		];
+		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_coupon', $id );
 	}

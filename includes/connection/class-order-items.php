@@ -49,7 +49,6 @@ class Order_Items {
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'toType'        => 'FeeLine',
 					'toType'        => 'CouponLine',
 					'fromFieldName' => 'couponLines',
 				)
@@ -69,7 +68,7 @@ class Order_Items {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ) {
+	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
 			'fromType'       => 'Order',
 			'toType'         => 'LineItem',
