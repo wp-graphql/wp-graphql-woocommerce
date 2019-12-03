@@ -92,7 +92,6 @@ class Wpunit extends \Codeception\Module {
 
 	public static function shortcode_test_init() {
 		add_shortcode( 'shortcode_test', array( __CLASS__, 'shortcode_test_handler' ) );
-		codecept_debug( 'shortcode created' );
 	}
 
 	public static function shortcode_test_handler( $atts ) {

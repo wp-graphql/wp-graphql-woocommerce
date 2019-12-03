@@ -123,8 +123,13 @@ class Customer_Type {
 				'type'        => 'Customer',
 				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
-					'id' => array(
-						'type' => 'ID',
+					'id'         => array(
+						'type'        => 'ID',
+						'description' => __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' ),
+					),
+					'customerId' => array(
+						'type'        => 'Int',
+						'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -136,6 +141,8 @@ class Customer_Type {
 						}
 
 						$customer_id = absint( $id_components['id'] );
+					} elseif ( ! empty( $args['customerId'] ) ) {
+						$customer_id = absint( $args['customerId'] );
 					} elseif ( isset( $context->viewer->ID ) && ! empty( $context->viewer->ID ) ) {
 						$customer_id = $context->viewer->ID;
 					}
@@ -143,29 +150,10 @@ class Customer_Type {
 					if ( ! $customer_id ) {
 						throw new UserError( __( 'You must be logged in to access customer fields', 'wp-graphql-woocommerce' ) );
 					}
-
-					return Factory::resolve_customer( $customer_id, $context );
-				},
-			)
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'customerBy',
-			array(
-				'type'        => 'Customer',
-				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'customerId' => array(
-						'type'        => array( 'non_null' => 'Int' ),
-						'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
-					),
-				),
-				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					if ( empty( $args['customerId'] ) ) {
-						throw new UserError( __( 'customerId must be provided and it must be an integer value', 'wp-graphql-woocommerce' ) );
+					if ( ! current_user_can( 'list_users' ) && get_current_user_id() !== $customer_id ) {
+						throw new UserError( __( 'Not authorized to access this customer', 'wp-graphql-woocommerce' ) );
 					}
-					$customer_id = absint( $args['customerId'] );
+
 					return Factory::resolve_customer( $customer_id, $context );
 				},
 			)
