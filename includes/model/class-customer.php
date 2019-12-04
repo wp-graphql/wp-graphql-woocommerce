@@ -27,14 +27,14 @@ class Customer extends Model {
 	 */
 	public function __construct( $id ) {
 		$this->data                = new \WC_Customer( $id );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'customerId',
 			'displayName',
-		];
+		);
 
 		$restricted_cap = apply_filters( 'customer_restricted_cap', 'list_users' );
 

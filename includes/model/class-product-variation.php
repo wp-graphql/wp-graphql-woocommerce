@@ -26,13 +26,13 @@ class Product_Variation extends Crud_CPT {
 	 */
 	public function __construct( $id ) {
 		$this->data                = new \WC_Product_Variation( $id );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'variationId',
-		];
+		);
 
 		parent::__construct( $allowed_restricted_fields, 'product_variation', $id );
 	}

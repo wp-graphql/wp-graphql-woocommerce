@@ -3,11 +3,15 @@
 use Firebase\JWT\JWT;
 
 class QLSessionHandlerCest {
-    private $product_id;
+    private $product_catalog;
 
     public function _before( FunctionalTester $I ) {
         // Create Product
         $this->product_catalog = $I->getCatalog();
+    }
+
+    public function _after( FunctionalTester $I ) {
+        $I->delete_shipping_methods();
     }
 
     // tests
@@ -342,6 +346,23 @@ class QLSessionHandlerCest {
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
+         * Attempt to restore item to the cart with invalid session token.
+         * GraphQL should throw an error and mutation will fail.
+         * 
+         * @Note: No items have been removed from the cart in this session, 
+         * but mutation should failed before that becomes a factor.
+         */
+        $failed = $I->updateShippingMethod(
+            array(
+                'clientMutationId' => 'someId',
+                'shippingMethods'  => array( 'legacy_flat_rate' ),
+            ),
+            array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
+        );
+        
+        $I->assertArrayHasKey( 'errors', $failed );
+
+        /**
          * Attempt to query cart with invalid session token.
          * GraphQL should throw an error and query will fail.
          */
@@ -364,5 +385,154 @@ class QLSessionHandlerCest {
         );
 
         $I->assertArrayHasKey( 'errors', $failed );
+    }
+
+    public function testCartSessionDataMutations( FunctionalTester $I ) {
+        /**
+         * Add item to the cart
+         */
+        $success = $I->addToCart(
+            array(
+                'clientMutationId' => 'someId',
+                'productId'        => $this->product_catalog['socks'],
+                'quantity'         => 2,
+            )
+        );
+        
+        $I->assertArrayNotHasKey( 'errors', $success );
+        $I->assertArrayHasKey('data', $success );
+        $I->assertArrayHasKey('addToCart', $success['data'] );
+        $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
+        $I->assertArrayHasKey('key', $success['data']['addToCart']['cartItem'] );
+        $cart_item_key = $success['data']['addToCart']['cartItem']['key'];
+
+        /**
+         * Assert existence and validity of "woocommerce-session" HTTP header.
+         */
+        $I->seeHttpHeaderOnce( 'woocommerce-session' );
+        $session_token = $I->grabHttpHeader( 'woocommerce-session' );
+
+        // Decode token
+        JWT::$leeway = 60;
+        $token_data  = ! empty( $session_token )
+            ? JWT::decode( $session_token, 'graphql-woo-cart-session', array( 'HS256' ) )
+            : null;
+
+        $I->assertNotEmpty( $token_data );
+        $I->assertNotEmpty( $token_data->iss );
+        $I->assertNotEmpty( $token_data->iat );
+        $I->assertNotEmpty( $token_data->nbf );
+        $I->assertNotEmpty( $token_data->exp );
+        $I->assertNotEmpty( $token_data->data );
+        $I->assertNotEmpty( $token_data->data->customer_id );
+
+        $wp_url = getenv( 'WP_URL' );
+        $I->assertEquals( $token_data->iss, $wp_url );
+
+        /**
+         * Make a cart query request with "woocommerce-session" HTTP Header and confirm
+         * correct cart contents and chosen and available shipping methods. 
+         */
+        $query = '
+            query {
+                cart {
+                    contents {
+                        nodes {
+                            key
+                        }
+                    }
+                    availableShippingMethods {
+                        packageDetails
+                        supportsShippingCalculator
+                        rates {
+                            id
+                            cost
+                            label
+                        }
+                    }
+                    chosenShippingMethod
+                }
+            }
+        ';
+
+        $actual = $I->sendGraphQLRequest( $query, null, array( 'woocommerce-session' => "Session {$session_token}" ) );
+        $expected = array(
+            'data' => array(
+                'cart' => array(
+                    'contents'                 => array(
+                        'nodes' => array(
+                            array(
+                                'key' => $cart_item_key,
+                            ),
+                        ),
+                    ),
+                    'availableShippingMethods' => array(
+                        array(
+                            'packageDetails'             => 'socks &times;2',
+                            'supportsShippingCalculator' => true,
+                            'rates'                      => array(
+                                array(
+                                    'id'    => 'legacy_flat_rate',
+                                    'cost'  => 10.00,
+                                    'label' => 'Flat rate'
+                                ),
+                                array(
+                                    'id'    => 'legacy_free_shipping',
+                                    'cost'  => 0,
+                                    'label' => 'Free shipping'
+                                ),
+                            )
+                        )
+                    ),
+                    'chosenShippingMethod'     => 'legacy_flat_rate'
+                ),
+            ),
+        );
+
+        $I->assertEquals( $expected, $actual );
+
+        /**
+         * Update shipping method to 'legacy_flat_rate' shipping. 
+         */
+        $mutation = '
+            mutation ($input: UpdateShippingMethodInput!){
+                updateShippingMethod(input: $input) {
+                    cart {
+                        availableShippingMethods {
+                            packageDetails
+                            supportsShippingCalculator
+                            rates {
+                                id
+                                cost
+                                label
+                            }
+                        }
+                        chosenShippingMethod
+                        shippingTotal
+                        shippingTax
+                        subtotal
+                        subtotalTax
+                        total
+                    }
+                }
+            }
+        ';
+
+        $success = $I->sendGraphQLRequest(
+            $mutation,
+            array(
+                'clientMutationId' => 'someId',
+                'shippingMethods'  => array( 'legacy_free_shipping' ),
+            ),
+            array( 'woocommerce-session' => "Session {$session_token}" )
+        );
+
+        $I->assertArrayNotHasKey( 'errors', $success );
+        $I->assertNotEmpty( $success['data'] );
+        $I->assertNotEmpty( $success['data']['updateShippingMethod'] );
+        $I->assertNotEmpty( $success['data']['updateShippingMethod']['cart'] );
+        $cart = $success['data']['updateShippingMethod']['cart'];
+        $I->assertNotEmpty( $cart['availableShippingMethods'] );
+        $I->assertEquals( 'legacy_free_shipping', $cart['chosenShippingMethod'] );
     }
 }

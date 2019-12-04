@@ -68,11 +68,8 @@ chmod 777 ${TESTS_OUTPUT}
 # Run tests
 run_tests ${SUITES}
 
-# Fix codecoverage permissions and clean coverage.xml
+# Clean coverage.xml and clean up PCOV configurations.
 if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
-    echo 'Setting "coverage.xml" permissions'.
-    chmod 777 -R "$TESTS_OUTPUT"/coverage.xml
-
     echo 'Cleaning coverage.xml for deployment'.
     pattern="$PROJECT_DIR/"
     sed -i "s~$pattern~~g" "$TESTS_OUTPUT"/coverage.xml
@@ -85,6 +82,14 @@ if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
     fi
 fi
 
+# Set public test result files permissions.
+if [ -n "$(ls "$TESTS_OUTPUT")" ]; then
+    echo 'Setting result files permissions'.
+    chmod 777 -R "$TESTS_OUTPUT"/*
+fi
+
+
+# Check results and exit accordingly.
 if [ -f "${TESTS_OUTPUT}/failed" ]; then
     echo "Uh oh, some went wrong."
     exit 1

@@ -33,13 +33,13 @@ class Refund extends Crud_CPT {
 	 */
 	public function __construct( $id ) {
 		$this->data                = new \WC_Order_Refund( $id );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'refundId',
-		];
+		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_order_refund', $id );
 	}

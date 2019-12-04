@@ -25,6 +25,13 @@ class Product extends Crud_CPT {
 	protected $product_type;
 
 	/**
+	 * Stores product factory
+	 *
+	 * @var \WC_Product_Factory
+	 */
+	protected static $product_factory = null;
+
+	/**
 	 * Product constructor
 	 *
 	 * @param int $id - product post-type ID.
@@ -33,17 +40,30 @@ class Product extends Crud_CPT {
 	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->product_type        = \WC()->product_factory->get_product_type( $id );
+		$this->product_type        = $this->product_factory()->get_product_type( $id );
 		$this->data                = $this->get_object( $id );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'productId',
-		];
+		);
 
 		parent::__construct( $allowed_restricted_fields, 'product', $id );
+	}
+
+	/**
+	 * Returns product factory instance
+	 *
+	 * @return \WC_Product_Factory
+	 */
+	public function product_factory() {
+		if ( null === self::$product_factory ) {
+			self::$product_factory = new \WC_Product_Factory();
+		}
+
+		return self::$product_factory;
 	}
 
 	/**

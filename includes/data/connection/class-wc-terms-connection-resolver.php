@@ -48,10 +48,10 @@ class WC_Terms_Connection_Resolver {
 					break;
 				case is_a( $source, Product::class ):
 					// @codingStandardsIgnoreLine
-					if ( 'categories' === $info->fieldName ) {
+					if ( 'productCategories' === $info->fieldName ) {
 						$query_args['term_taxonomy_id'] = $source->category_ids;
 					// @codingStandardsIgnoreLine
-					} elseif ( 'tags' === $info->fieldName ) {
+					} elseif ( 'productTags' === $info->fieldName ) {
 						$query_args['term_taxonomy_id'] = $source->tag_ids;
 					}
 					break;
