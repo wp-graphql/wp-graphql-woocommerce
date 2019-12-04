@@ -51,7 +51,7 @@ class Factory {
 		}
 		$customer_id = absint( $id );
 		$loader      = $context->getLoader( 'wc_customer' );
-		$loader->buffer( [ $customer_id ] );
+		$loader->buffer( array( $customer_id ) );
 		return new Deferred(
 			function () use ( $loader, $customer_id ) {
 				return $loader->load( $customer_id );
@@ -74,7 +74,7 @@ class Factory {
 		}
 		$object_id = absint( $id );
 		$loader    = $context->getLoader( 'wc_post_crud' );
-		$loader->buffer( [ $object_id ] );
+		$loader->buffer( array( $object_id ) );
 		return new Deferred(
 			function () use ( $loader, $object_id ) {
 				return $loader->load( $object_id );
