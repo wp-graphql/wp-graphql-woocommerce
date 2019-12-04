@@ -34,9 +34,7 @@ class Product_Taxonomy {
 			'ProductTaxonomyEnum',
 			array(
 				'description' => __( 'Product taxonomies', 'wp-graphql-woocommerce' ),
-				'values'      => array_merge(
-					$taxonomy_values,
-				),
+				'values'      => $taxonomy_values,
 			)
 		);
 	}
