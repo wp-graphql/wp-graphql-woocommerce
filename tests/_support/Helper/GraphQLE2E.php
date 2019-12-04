@@ -366,6 +366,46 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
     /**
+     * Updates customers chosen shipping method.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function updateShippingMethod( $input, $request_headers = array() ) {
+        // updateShippingMethod mutation.
+        $mutation = '
+            mutation ($input: UpdateShippingMethodInput!){
+                updateShippingMethod(input: $input) {
+                    cart {
+                        availableShippingMethods {
+                            packageDetails
+                            supportsShippingCalculator
+                            rates {
+                                id
+                                cost
+                                label
+                            }
+                        }
+                        chosenShippingMethod
+                        shippingTotal
+                        shippingTax
+                        subtotal
+                        subtotalTax
+                        total
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
      * Place customer order.
      *
      * @param array  $input
@@ -672,10 +712,66 @@ class GraphQLE2E extends \Codeception\Module {
             'woocommerce_cart_calculate_fees',
             function() {
                 $percentage = 0.01;
-                $surcharge = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;	
-                WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
+                $surcharge = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;	
+                \WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
             }
         );
+
+        // Create legacy flat rate shipping method.
+		update_option(
+            'woocommerce_flat_rate_settings',
+            array(
+                'enabled'      => 'yes',
+                'title'        => 'Flat rate',
+                'availability' => 'all',
+                'countries'    => '',
+                'tax_status'   => 'taxable',
+                'cost'         => '10',
+            )
+        );
+        update_option( 'woocommerce_flat_rate', array() );
+        
+        // Create legacy free shipping method.
+		update_option(
+            'woocommerce_free_shipping_settings',
+            array(
+                'enabled'      => 'yes',
+                'title'        => 'Free shipping',
+                'availability' => 'all',
+                'countries'    => '',
+            )
+        );
+        update_option( 'woocommerce_free_shipping', array() );
+        
+        // Load shipping methods.
+        \WC_Cache_Helper::get_transient_version( 'shipping', true );
+        \WC()->shipping()->load_shipping_methods();
+        
+        // Create Shipping Zones.
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'Local' );
+		$zone->set_zone_order( 1 );
+		$zone->add_location( 'GB', 'country' );
+		$zone->add_location( 'CB*', 'postcode' );
+		$zone->save();
+
+        $zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'Europe' );
+		$zone->set_zone_order( 2 );
+		$zone->add_location( 'EU', 'continent' );
+		$zone->save();
+
+        $zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'California' );
+		$zone->set_zone_order( 3 );
+		$zone->add_location( 'US:CA', 'state' );
+		$zone->save();
+
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'US' );
+		$zone->set_zone_order( 4 );
+		$zone->add_location( 'US', 'country' );
+		$zone->save();
     }
 
     /**

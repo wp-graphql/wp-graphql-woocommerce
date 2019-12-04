@@ -798,11 +798,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				array(
 					'and' => array(
 						array(
-							'taxonomy' => 'CATEGORY',
+							'taxonomy' => 'PRODUCTCATEGORY',
 							'terms'    => array( 'category-three' ),
 						),
 						array(
-							'taxonomy' => 'CATEGORY',
+							'taxonomy' => 'PRODUCTCATEGORY',
 							'terms'    => array( 'category-four' ),
 							'operator' => 'NOT_IN'
 						),
