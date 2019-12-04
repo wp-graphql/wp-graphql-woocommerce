@@ -83,8 +83,11 @@ if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
 fi
 
 # Set public test result files permissions.
-echo 'Setting output permissions'.
-chmod 777 -R "$TESTS_OUTPUT"/*
+if [ -n "$(ls "$TESTS_OUTPUT")" ]; then
+    echo 'Setting result files permissions'.
+    chmod 777 -R "$TESTS_OUTPUT"/*
+fi
+
 
 # Check results and exit accordingly.
 if [ -f "${TESTS_OUTPUT}/failed" ]; then
