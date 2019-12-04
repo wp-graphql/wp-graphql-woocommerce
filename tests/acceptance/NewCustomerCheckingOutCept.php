@@ -203,3 +203,8 @@ $I->assertArrayHasKey('result', $success['data']['checkout'] );
 $I->assertEquals( 'success', $success['data']['checkout']['result'] );
 $I->assertArrayHasKey('redirect', $success['data']['checkout'] );
 $I->assertArrayHasKey('id', $success['data']['checkout']['order'] );
+
+/**
+ * TearDown
+ */
+$I->delete_shipping_methods();

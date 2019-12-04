@@ -775,6 +775,21 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
     /**
+     * Deletes shipping method settings, updates the "shipping" group transient
+     * and unregisters all shipping methods. 
+     * 
+     * Should be done after have tests.
+     */
+    public function delete_shipping_methods() {
+        delete_option( 'woocommerce_flat_rate_settings' );
+        delete_option( 'woocommerce_flat_rate' );
+        delete_option( 'woocommerce_free_shipping_settings' );
+		delete_option( 'woocommerce_free_shipping' );
+		\WC_Cache_Helper::get_transient_version( 'shipping', true );
+		\WC()->shipping()->unregister_shipping_methods();
+    }
+
+    /**
      * Adds Product in database
      *
      * @param AcceptanceTester $I

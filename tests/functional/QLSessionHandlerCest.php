@@ -3,11 +3,15 @@
 use Firebase\JWT\JWT;
 
 class QLSessionHandlerCest {
-    private $product_id;
+    private $product_catalog;
 
     public function _before( FunctionalTester $I ) {
         // Create Product
         $this->product_catalog = $I->getCatalog();
+    }
+
+    public function _after( FunctionalTester $I ) {
+        $I->delete_shipping_methods();
     }
 
     // tests
