@@ -42,7 +42,7 @@ class Coupons {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ) {
+	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
 			'fromType'       => 'RootQuery',
 			'toType'         => 'Coupon',
@@ -67,9 +67,13 @@ class Coupons {
 		return array_merge(
 			get_common_post_type_args(),
 			array(
-				'code' => array(
+				'code'    => array(
 					'type'        => 'String',
 					'description' => __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' ),
+				),
+				'orderby' => array(
+					'type'        => array( 'list_of' => 'CouponsOrderbyInput' ),
+					'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
 				),
 			)
 		);

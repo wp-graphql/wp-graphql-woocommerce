@@ -66,7 +66,7 @@ trait Common_CPT_Input_Sanitize_Functions {
 
 					// Handle meta fields.
 				} elseif ( in_array( $orderby_input['field'], $this->ordering_meta(), true ) ) {
-					$args['orderby']  = array( 'meta_value_num' => $orderby_input['order'] );
+					$args['orderby']  = array( 'meta_value' => $orderby_input['order'] );
 					$args['meta_key'] = esc_sql( $orderby_input['field'] ); // WPCS: slow query ok.
 
 					// Handle post object fields.

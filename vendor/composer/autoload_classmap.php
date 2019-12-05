@@ -79,6 +79,7 @@ return array(
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/includes/type/enum/class-backorders.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/includes/type/enum/class-catalog-visibility.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Countries' => $baseDir . '/includes/type/enum/class-countries.php',
+    'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Coupons_Orderby_Enum' => $baseDir . '/includes/type/enum/class-coupons-orderby-enum.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => $baseDir . '/includes/type/enum/class-customer-connection-orderby-enum.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Discount_Type' => $baseDir . '/includes/type/enum/class-discount-type.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => $baseDir . '/includes/type/enum/class-manage-stock.php',

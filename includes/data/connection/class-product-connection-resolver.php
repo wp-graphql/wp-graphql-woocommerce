@@ -335,15 +335,18 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function ordering_meta() {
-		return array(
-			'_price',
-			'_regular_price',
-			'_sale_price',
-			'_wc_rating_count',
-			'_wc_average_rating',
-			'_sale_price_dates_from',
-			'_sale_price_dates_to',
-			'total_sales',
+		return apply_filters(
+			'graphql_product_connection_ordering_meta',
+			array(
+				'_price',
+				'_regular_price',
+				'_sale_price',
+				'_wc_rating_count',
+				'_wc_average_rating',
+				'_sale_price_dates_from',
+				'_sale_price_dates_to',
+				'total_sales',
+			)
 		);
 	}
 

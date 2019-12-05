@@ -35,6 +35,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Taxonomy::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Taxonomy_Operator::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Post_Type_Orderby_Enum::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Coupons_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Products_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Orders_Orderby_Enum::register();
 

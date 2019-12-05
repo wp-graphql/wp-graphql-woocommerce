@@ -44,6 +44,7 @@ class Orderby_Inputs {
 	public static function register() {
 		$input_types = array(
 			'PostType',
+			'Coupons',
 			'Products',
 			'Orders',
 		);

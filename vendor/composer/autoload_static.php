@@ -107,6 +107,7 @@ class ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/includes/type/enum/class-backorders.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/includes/type/enum/class-catalog-visibility.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Countries' => __DIR__ . '/../..' . '/includes/type/enum/class-countries.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Coupons_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-coupons-orderby-enum.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-customer-connection-orderby-enum.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/includes/type/enum/class-discount-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => __DIR__ . '/../..' . '/includes/type/enum/class-manage-stock.php',

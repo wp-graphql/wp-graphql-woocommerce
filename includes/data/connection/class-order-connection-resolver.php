@@ -168,13 +168,16 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function ordering_meta() {
-		return array(
-			'_order_key',
-			'_cart_discount',
-			'_order_total',
-			'_order_tax',
-			'_date_paid',
-			'_date_completed',
+		return apply_filters(
+			'graphql_order_connection_ordering_meta',
+			array(
+				'_order_key',
+				'_cart_discount',
+				'_order_total',
+				'_order_tax',
+				'_date_paid',
+				'_date_completed',
+			)
 		);
 	}
 
