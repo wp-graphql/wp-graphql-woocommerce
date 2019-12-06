@@ -50,7 +50,7 @@ class Order_Create {
 				'description' => __( 'Currency the order was created with, in ISO format.', 'wp-graphql-woocommerce' ),
 			),
 			'customerId'         => array(
-				'type'        => array( 'non_null' => 'Int' ),
+				'type'        => 'Int',
 				'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
 			),
 			'customerNote'       => array(
@@ -154,10 +154,8 @@ class Order_Create {
 				// Make sure gateways are loaded so hooks from gateways fire on save/create.
 				WC()->payment_gateways();
 
-				// Validate customer ID.
-				if ( empty( $input['customerId'] ) ) {
-					throw new UserError( __( 'No customer ID provided.', 'wp-graphql-woocommerce' ) );
-				} elseif ( ! Order_Mutation::validate_customer( $input ) ) {
+				// Validate customer ID, if set.
+				if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input ) ) {
 					throw new UserError( __( 'Customer ID is invalid.', 'wp-graphql-woocommerce' ) );
 				}
 
