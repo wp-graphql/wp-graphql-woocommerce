@@ -29,6 +29,7 @@ use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
 use WPGraphQL\WooCommerce\Model\Order_Item;
 use WPGraphQL\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
 
@@ -36,6 +37,16 @@ use WPGraphQL\WooCommerce\Model\Shipping_Method;
  * Class Factory
  */
 class Factory {
+	/**
+	 * Returns the current woocommerce customer object tied to the current session.
+	 *
+	 * @return Customer
+	 * @access public
+	 */
+	public static function resolve_session_customer() {
+		return new Customer();
+	}
+
 	/**
 	 * Returns the Customer store object for the provided user ID
 	 *

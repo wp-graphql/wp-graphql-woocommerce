@@ -25,8 +25,8 @@ class Customer extends Model {
 	 * @access public
 	 * @return void
 	 */
-	public function __construct( $id ) {
-		$this->data                = new \WC_Customer( $id );
+	public function __construct( $id = 'session' ) {
+		$this->data                = 'session' === $id ? \WC()->customer : new \WC_Customer( $id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
@@ -36,7 +36,7 @@ class Customer extends Model {
 			'displayName',
 		);
 
-		$restricted_cap = apply_filters( 'customer_restricted_cap', 'list_users' );
+		$restricted_cap = apply_filters( 'customer_restricted_cap', 'session' === $id ? '' : 'list_users' );
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, $id );
 	}
@@ -62,10 +62,12 @@ class Customer extends Model {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
 				'ID'                    => function() {
-					return $this->data->get_id();
+					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : \WC()->session->_customer_id;
 				},
 				'id'                    => function() {
-					return ( ! empty( $this->data ) ) ? Relay::toGlobalId( 'customer', $this->data->get_id() ) : null;
+					return ( ! empty( $this->data->get_id() ) )
+						? Relay::toGlobalId( 'customer', $this->data->get_id() )
+						: 'new_customer';
 				},
 				'customerId'            => function() {
 					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : null;

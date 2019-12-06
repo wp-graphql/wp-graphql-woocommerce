@@ -14,6 +14,7 @@ use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\Model\User;
+use WPGraphQL\Mutation\UserCreate;
 use WPGraphQL\Mutation\UserUpdate;
 
 /**
@@ -41,8 +42,12 @@ class Customer_Update {
 	 */
 	public static function get_input_fields() {
 		$input_fields = array_merge(
-			UserUpdate::get_input_fields(),
+			UserCreate::get_input_fields(),
 			array(
+				'id'                    => array(
+					'type'        => 'ID',
+					'description' => __( 'The ID of the user', 'wp-graphql' ),
+				),
 				'billing'               => array(
 					'type'        => 'CustomerAddressInput',
 					'description' => __( 'Customer billing information', 'wp-graphql-woocommerce' ),
@@ -84,21 +89,26 @@ class Customer_Update {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			// Get closure from "UserRegister::mutate_and_get_payload".
-			$update_user = UserUpdate::mutate_and_get_payload();
+			$session_only = empty( $input['id'] );
+			$payload      = null;
 
-			// Update customer with core UserUpdate closure.
-			$payload = $update_user( $input, $context, $info );
+			if ( ! $session_only ) {
+				// Get closure from "UserRegister::mutate_and_get_payload".
+				$update_user = UserUpdate::mutate_and_get_payload();
 
-			if ( empty( $payload ) ) {
-				throw new UserError( __( 'Failed to update customer.', 'wp-graphql-woocommerce' ) );
+				// Update customer with core UserUpdate closure.
+				$payload = $update_user( $input, $context, $info );
+
+				if ( empty( $payload ) ) {
+					throw new UserError( __( 'Failed to update customer.', 'wp-graphql-woocommerce' ) );
+				}
 			}
 
 			// Map all of the args from GQL to WC friendly.
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'update' );
 
 			// Create customer object.
-			$customer = new \WC_Customer( $payload['id'] );
+			$customer = ! $session_only ? new \WC_Customer( $payload['id'] ) : \WC()->customer;
 
 			// Set billing address.
 			if ( ! empty( $customer_args['billing'] ) ) {
@@ -128,7 +138,7 @@ class Customer_Update {
 			$customer->save();
 
 			// Return payload.
-			return $payload;
+			return ! empty( $payload ) ? $payload : array( 'id' => 'session' );
 		};
 	}
 }
