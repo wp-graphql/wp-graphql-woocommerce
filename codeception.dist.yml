@@ -54,12 +54,9 @@ modules:
             adminUsername: '%ADMIN_USERNAME%'
             adminPassword: '%ADMIN_PASSWORD%'
             adminPath: '/wp-admin'
-            curl: 
-                CURLOPT_TIMEOUT: 60000
         REST:
             depends: WPBrowser
             url: '%WP_URL%'
-            timeout: 90
         WPFilesystem:
             wpRootFolder: '%WP_ROOT_FOLDER%'
             plugins: '/wp-content/plugins'
