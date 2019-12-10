@@ -302,12 +302,15 @@ class Core_Schema_Filters {
 	 * @param \WPGraphQL\Type\WPUnionType  $wp_union  WPUnion object.
 	 */
 	public static function inject_union_type_resolver( $type, $value, $wp_union ) {
-		if ( 'product' === $value->post_type ) {
-			$node     = new \WPGraphQL\WooCommerce\Model\Product( $value->ID );
-			$new_type = Factory::resolve_node_type( '', $node );
-			if ( $new_type ) {
-				$type = $wp_union->type_registry->get_type( $new_type );
-			}
+		switch ( get_class( $value ) ) {
+			case 'WPGraphQL\WooCommerce\Model\Product':
+			case 'WPGraphQL\WooCommerce\Model\Coupon':
+			case 'WPGraphQL\WooCommerce\Model\Order':
+				$new_type = Factory::resolve_node_type( $type, $value );
+				if ( $new_type ) {
+					$type = $wp_union->type_registry->get_type( $new_type );
+				}
+				break;
 		}
 
 		return $type;

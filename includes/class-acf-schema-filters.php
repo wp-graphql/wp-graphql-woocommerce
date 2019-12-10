@@ -8,6 +8,10 @@
 
 namespace WPGraphQL\WooCommerce;
 
+use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Model\Product;
+
 /**
  * Class ACF_Schema_Filters
  */
@@ -19,6 +23,7 @@ class ACF_Schema_Filters {
 	public static function add_filters() {
 		// Registers WooCommerce CPTs && taxonomies.
 		add_filter( 'graphql_acf_get_root_id', array( __CLASS__, 'resolve_crud_root_id' ), 10, 2 );
+		add_filter( 'graphql_acf_post_object_source', array( __CLASS__, 'resolve_post_object_source' ), 10, 2 );
 	}
 
 	/**
@@ -37,5 +42,33 @@ class ACF_Schema_Filters {
 		}
 
 		return $id;
+	}
+
+	/**
+	 * Filters ACF "post_object" field type resolver to ensure that
+	 * the proper Type source is provided for WooCommerce CPTs.
+	 *
+	 * @param mixed|null $source  source of the data being provided.
+	 * @param mixed|null $value  Post ID.
+	 *
+	 * @return mixed|null
+	 */
+	public static function resolve_post_object_source( $source, $value ) {
+		$post = get_post( $value );
+		if ( $post instanceof \WP_Post ) {
+			switch ( $post->post_type ) {
+				case 'shop_coupon':
+					$source = new Coupon( $post->ID );
+					break;
+				case 'shop_order':
+					$source = new Order( $post->ID );
+					break;
+				case 'product':
+					$source = new Product( $post->ID );
+					break;
+			}
+		}
+
+		return $source;
 	}
 }
