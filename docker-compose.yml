@@ -49,6 +49,7 @@ services:
       - './.log/testing:/var/log/apache2'
     env_file: .env.dist
     environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1
       WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
       DB_HOST: app_db
       WP_URL: 'http://localhost'

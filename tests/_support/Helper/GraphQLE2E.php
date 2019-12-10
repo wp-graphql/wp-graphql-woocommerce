@@ -598,9 +598,8 @@ class GraphQLE2E extends \Codeception\Module {
         }
 
         // Send request.
-        $wp_url = getenv( 'WP_URL' );
         $rest->sendPOST(
-            "{$wp_url}/graphql",
+            "/graphql",
             json_encode(
                 array(
                     'query'     => $query,

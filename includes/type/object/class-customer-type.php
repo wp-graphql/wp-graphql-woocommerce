@@ -143,18 +143,22 @@ class Customer_Type {
 						$customer_id = absint( $id_components['id'] );
 					} elseif ( ! empty( $args['customerId'] ) ) {
 						$customer_id = absint( $args['customerId'] );
-					} elseif ( isset( $context->viewer->ID ) && ! empty( $context->viewer->ID ) ) {
-						$customer_id = $context->viewer->ID;
+					} else {
+						$customer_id = get_current_user_id();
 					}
 
-					if ( ! $customer_id ) {
-						throw new UserError( __( 'You must be logged in to access customer fields', 'wp-graphql-woocommerce' ) );
-					}
-					if ( ! current_user_can( 'list_users' ) && get_current_user_id() !== $customer_id ) {
+					$authorized = ! empty( $customer_id )
+						&& ! current_user_can( 'list_users' )
+						&& get_current_user_id() !== $customer_id;
+					if ( $authorized ) {
 						throw new UserError( __( 'Not authorized to access this customer', 'wp-graphql-woocommerce' ) );
 					}
 
-					return Factory::resolve_customer( $customer_id, $context );
+					if ( $customer_id ) {
+						return Factory::resolve_customer( $customer_id, $context );
+					}
+
+					return Factory::resolve_session_customer();
 				},
 			)
 		);

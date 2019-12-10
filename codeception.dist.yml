@@ -14,17 +14,15 @@ settings:
 coverage:
     enabled: true
     remote: false
-    work_dir: '%WP_ROOT_FOLDER%/wp-content/plugins/wp-graphql-woocommerce'
     c3_url: '%WP_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
-    whitelist:
-      include:
+    include:
+        - includes/*
+    exclude:
         - wp-graphql-woocommerce.php
         - access-functions.php
         - class-inflect.php
-        - includes/*.php
-    remote_context_options:
-        http:
-            timeout: 90
+        - vendor/*
+    show_only_summary: false
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
@@ -56,12 +54,9 @@ modules:
             adminUsername: '%ADMIN_USERNAME%'
             adminPassword: '%ADMIN_PASSWORD%'
             adminPath: '/wp-admin'
-            curl: 
-                CURLOPT_TIMEOUT: 60000
         REST:
             depends: WPBrowser
             url: '%WP_URL%'
-            timeout: 90
         WPFilesystem:
             wpRootFolder: '%WP_ROOT_FOLDER%'
             plugins: '/wp-content/plugins'
