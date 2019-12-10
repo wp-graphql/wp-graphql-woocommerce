@@ -37,7 +37,7 @@ matrix:
     - php: 7.1
       env: PHP_VERSION=7.1 WP_VERSION=5.3
     - php: 7.1
-      env: PHP_VERSION=7.1 WP_VERSION=4.9 COVERAGE=1
+      env: PHP_VERSION=7.1 WP_VERSION=4.9
     - php: 7.0
       env: PHP_VERSION=7.0 WP_VERSION=5.0 COVERAGE=1
     - php: 7.0
