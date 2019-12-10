@@ -10,6 +10,7 @@ namespace WPGraphQL\WooCommerce;
 
 use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Core_Schema_Filters
@@ -75,6 +76,21 @@ class Core_Schema_Filters {
 			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node_type' ),
 			10,
 			2
+		);
+
+		// Filter Unions.
+		add_filter(
+			'graphql_wp_union_type_config',
+			array( __CLASS__, 'inject_union_types' ),
+			10,
+			2
+		);
+
+		add_filter(
+			'graphql_union_resolve_type',
+			array( __CLASS__, 'inject_union_type_resolver' ),
+			10,
+			3
 		);
 	}
 
@@ -237,5 +253,63 @@ class Core_Schema_Filters {
 		$loaders['wc_post_crud'] = &$post_crud_loader;
 
 		return $loaders;
+	}
+
+	/**
+	 * Inject Union types that resolve to Product with Product types
+	 *
+	 * @param array                       $config    WPUnion config.
+	 * @param \WPGraphQL\Type\WPUnionType $wp_union  WPUnion object.
+	 */
+	public static function inject_union_types( $config, $wp_union ) {
+		$refresh_callback = false;
+		if ( in_array( 'Product', $config['typeNames'], true ) ) {
+			// Strip 'Product' from config and child product types.
+			$config['typeNames'] = array_merge(
+				array_filter(
+					$config['typeNames'],
+					function( $type ) {
+						return 'Product' !== $type;
+					}
+				),
+				array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
+			);
+			$refresh_callback    = true;
+		}
+
+		// Update 'types' callback.
+		if ( $refresh_callback ) {
+			$config['types'] = function () use ( $config, $wp_union ) {
+				$prepared_types = array();
+				if ( ! empty( $config['typeNames'] ) && is_array( $config['typeNames'] ) ) {
+					$prepared_types = array();
+					foreach ( $config['typeNames'] as $type_name ) {
+						$prepared_types[] = $wp_union->type_registry->get_type( $type_name );
+					}
+				}
+				return $prepared_types;
+			};
+		}
+
+		return $config;
+	}
+
+	/**
+	 * Inject Union type resolver that resolve to Product with Product types
+	 *
+	 * @param \WPGraphQL\Type\WPObjectType $type      Type be resolve to.
+	 * @param mixed                        $value     Object for which the type is being resolve config.
+	 * @param \WPGraphQL\Type\WPUnionType  $wp_union  WPUnion object.
+	 */
+	public static function inject_union_type_resolver( $type, $value, $wp_union ) {
+		if ( 'product' === $value->post_type ) {
+			$node     = new \WPGraphQL\WooCommerce\Model\Product( $value->ID );
+			$new_type = Factory::resolve_node_type( '', $node );
+			if ( $new_type ) {
+				$type = $wp_union->type_registry->get_type( $new_type );
+			}
+		}
+
+		return $type;
 	}
 }
