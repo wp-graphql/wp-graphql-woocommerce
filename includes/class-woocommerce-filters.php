@@ -40,7 +40,7 @@ class WooCommerce_Filters {
 	 * @return string
 	 */
 	public static function woocommerce_session_handler( $session_class ) {
-		if ( self::is_graphql_request() ) {
+		if ( \WPGraphQL\Router::is_graphql_request() ) {
 			$session_class = '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
 		}
 
@@ -74,27 +74,5 @@ class WooCommerce_Filters {
 	public static function add_session_header_to_allow_headers( array $allowed_headers ) {
 		$allowed_headers[] = self::$session_header;
 		return $allowed_headers;
-	}
-
-	/**
-	 * Confirm that the current request is being made to the GraphQL endpoint.
-	 *
-	 * @return bool
-	 */
-	private static function is_graphql_request() {
-		// If before 'init' check $_SERVER.
-		if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
-			$haystack = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) )
-				. esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-			$needle   = \home_url( \WPGraphQL\Router::$route );
-
-			// Strip protocol.
-			$haystack = preg_replace( '#^(http(s)?://)#', '', $haystack );
-			$needle   = preg_replace( '#^(http(s)?://)#', '', $needle );
-			$len      = strlen( $needle );
-			return ( substr( $haystack, 0, $len ) === $needle );
-		}
-
-		return false;
 	}
 }
