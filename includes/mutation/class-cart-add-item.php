@@ -80,6 +80,7 @@ class Cart_Add_Item {
 					return $item;
 				},
 			),
+			'cart'     => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 

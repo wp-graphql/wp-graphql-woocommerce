@@ -15,6 +15,25 @@ use GraphQL\Error\UserError;
  */
 class Cart_Mutation {
 	/**
+	 * Retrieve `cart` output field defintion
+	 *
+	 * @param bool $fallback  Should cart be retrieved, if not provided in payload.
+	 * @return array
+	 */
+	public static function get_cart_field( $fallback = false ) {
+		return array(
+			'type'    => 'Cart',
+			'resolve' => function ( $payload ) use ( $fallback ) {
+				$cart = ! empty( $payload['cart'] ) ? $payload['cart'] : null;
+				if ( is_null( $cart ) && $fallback ) {
+					$cart = \WC()->cart;
+				}
+				return $cart;
+			},
+		);
+	}
+
+	/**
 	 * Returns a cart item.
 	 *
 	 * @param array       $input   Input data describing cart item.

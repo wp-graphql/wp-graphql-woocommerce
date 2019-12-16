@@ -66,6 +66,7 @@ class Cart_Remove_Items {
 					return $payload['items'];
 				},
 			),
+			'cart'      => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 

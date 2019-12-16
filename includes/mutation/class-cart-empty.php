@@ -40,12 +40,7 @@ class Cart_Empty {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'cart' => array(
-				'type'    => 'Cart',
-				'resolve' => function ( $payload ) {
-					return $payload['cart'];
-				},
-			),
+			'cart' => Cart_Mutation::get_cart_field(),
 		);
 	}
 

@@ -82,6 +82,7 @@ class Cart_Update_Item_Quantities {
 					return array_merge( $updated, $payload['removed'] );
 				},
 			),
+			'cart'    => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 

@@ -75,6 +75,7 @@ class Cart_Add_Fee {
 					return $fees[ $payload['id'] ];
 				},
 			),
+			'cart'    => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 

@@ -53,12 +53,7 @@ class Cart_Update_Shipping_Method {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'cart' => array(
-				'type'    => 'Cart',
-				'resolve' => function () {
-					return \WC()->cart;
-				},
-			),
+			'cart' => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 
