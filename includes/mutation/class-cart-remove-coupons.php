@@ -56,12 +56,7 @@ class Cart_Remove_Coupons {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'cart' => array(
-				'type'    => 'Cart',
-				'resolve' => function ( $payload ) {
-					return $payload['cart'];
-				},
-			),
+			'cart' => Cart_Mutation::get_cart_field(),
 		);
 	}
 
