@@ -1163,4 +1163,56 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( $expected, $actual );
 	}
+
+	public function testProductToReviewConnections() {
+		$reviews = array(
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+		);
+
+		$query = '
+			query ($id: ID!) {
+				product(id: $id) {
+					id
+					reviews(last: 5, where: {order: DESC}) {
+						averageRating
+						edges {
+							rating
+							node {
+								id
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $this->product ) );
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables
+			)
+		);
+		$product = WC()->product_factory->get_product( $this->product );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'id'      => $this->helper->to_relay_id( $this->product ),
+					'reviews' => array(
+						'averageRating' => $product->get_average_rating(),
+						'edges'         => $this->helper->print_review_edges( $reviews ),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
 }
