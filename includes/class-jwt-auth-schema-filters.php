@@ -23,7 +23,7 @@ class JWT_Auth_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is install and activated.
-		if ( class_exists( '\WPGraphQL\JWT_Authentication\JWT_Authentication' ) ) {
+		if ( defined( 'WPGRAPHQL_JWT_AUTHENTICATION_VERSION' ) ) {
 			add_filter( 'graphql_customer_fields', array( __CLASS__, 'add_jwt_token_fields' ), 10 );
 			add_filter( 'graphql_registerCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 1 );
 			add_filter( 'graphql_updateCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 1 );
@@ -34,13 +34,16 @@ class JWT_Auth_Schema_Filters {
 	/**
 	 * Adds all JWT related fields to the Customer type.
 	 *
-	 * @param array $fields  Customer type field definitions.
+	 * @param array                            $fields  Customer type field definitions.
+	 * @param \WPGraphQL\Type\WPObjectType     $object         The WPObjectType the fields are be added to.
+	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  TypeRegistry instance.
 	 */
-	public static function add_jwt_token_fields( $fields ) {
+	public static function add_jwt_token_fields( $fields, $object, $type_registry ) {
 		$jwt_token_fields = array();
 
 		// Wrapper field resolvers in a lambda that retrieves the WP_User object for the corresponding customer.
-		foreach ( \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields( array() ) as $field_name => $field ) {
+		$raw_jwt_fields = \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields( array(), $object, $type_registry );
+		foreach ( $raw_jwt_fields as $field_name => $field ) {
 			$root_resolver                   = $field['resolve'];
 			$jwt_token_fields[ $field_name ] = array_merge(
 				$field,
@@ -66,14 +69,16 @@ class JWT_Auth_Schema_Filters {
 	/**
 	 * Adds all JWT related fields to the Customer mutation output.
 	 *
-	 * @param array $fields  mutation output field definitions.
+	 * @param array                             $fields         Mutation output field definitions.
+	 * @param \WPGraphQL\Type\WPInputObjectType $object         The WPInputObjectType the fields are be added to.
+	 * @param \WPGraphQL\Registry\TypeRegistry  $type_registry  TypeRegistry instance.
 	 */
-	public static function add_jwt_output_fields( $fields ) {
+	public static function add_jwt_output_fields( $fields, $object, $type_registry ) {
 		$fields = array_merge(
 			$fields,
 			array(
 				'authToken'    => array(
-					'type'        => \WPGraphQL\Types::string(),
+					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
@@ -87,7 +92,7 @@ class JWT_Auth_Schema_Filters {
 					},
 				),
 				'refreshToken' => array(
-					'type'        => \WPGraphQL\Types::string(),
+					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
