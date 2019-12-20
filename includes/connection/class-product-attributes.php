@@ -22,26 +22,6 @@ class Product_Attributes {
 	public static function register_connections() {
 		// From Product to ProductAttribute.
 		register_graphql_connection( self::get_connection_config() );
-
-		// From Product to LocalProductAttribute.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'toType'        => 'LocalProductAttribute',
-					'fromFieldName' => 'localAttributes',
-				)
-			)
-		);
-
-		// From Product to GlobalProductAttribute.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'toType'        => 'GlobalProductAttribute',
-					'fromFieldName' => 'globalAttributes',
-				)
-			)
-		);
 	}
 
 	/**
@@ -65,19 +45,5 @@ class Product_Attributes {
 		);
 
 		return array_merge( $defaults, $args );
-	}
-
-	/**
-	 * Returns array of where args
-	 *
-	 * @return array
-	 */
-	public static function get_connection_args() {
-		return array(
-			'type' => array(
-				'type'        => 'ProductAttributeTypesEnum',
-				'description' => __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' ),
-			),
-		);
 	}
 }
