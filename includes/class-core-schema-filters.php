@@ -57,7 +57,17 @@ class Core_Schema_Filters {
 		add_filter(
 			'graphql_term_object_connection_query_args',
 			array(
-				'\WPGraphQL\WooCommerce\Data\Connection\WC_Terms_Connection_Resolver',
+				'\WPGraphQL\WooCommerce\Data\Connection\WC_Term_Connection_Resolver',
+				'get_query_args',
+			),
+			10,
+			5
+		);
+
+		add_filter(
+			'graphql_comment_connection_query_args',
+			array(
+				'\WPGraphQL\WooCommerce\Data\Connection\Product_Review_Connection_Resolver',
 				'get_query_args',
 			),
 			10,

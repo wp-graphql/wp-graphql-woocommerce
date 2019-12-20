@@ -1,8 +1,6 @@
 <?php
 /**
- * ConnectionResolver - WC_Terms_Connection_Resolver
- *
- * Resolvers connections to WooCommerce Terms (ProductCategory & ProductTags)
+ * Resolvers connections to WooCommerce Terms.
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
  * @since 0.0.1
@@ -17,9 +15,9 @@ use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Crud_CPT;
 
 /**
- * Class WC_Terms_Connection_Resolver
+ * Class WC_Term_Connection_Resolver
  */
-class WC_Terms_Connection_Resolver {
+class WC_Term_Connection_Resolver {
 	/**
 	 * This prepares the $query_args for use in the connection query. This is where default $args are set, where dynamic
 	 * $args from the $this->source get set, and where mapping the input $args to the actual $query_args occurs.
