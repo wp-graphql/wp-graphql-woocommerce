@@ -38,7 +38,7 @@ class Product_Attributes {
 			'fromType'       => 'Product',
 			'toType'         => 'ProductAttribute',
 			'fromFieldName'  => 'attributes',
-			'connectionArgs' => self::get_connection_args(),
+			'connectionArgs' => array(),
 			'resolve'        => function ( $root, $args, $context, $info ) {
 				return Factory::resolve_product_attribute_connection( $root, $args, $context, $info );
 			},
