@@ -37,7 +37,13 @@ class Product {
 					if ( isset( $possible_types[ $value->type ] ) ) {
 						return $type_registry->get_type( $possible_types[ $value->type ] );
 					}
-					return null;
+					throw new UserError(
+						sprintf(
+							/* translators: %s: Product type */
+							__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+							$value->type
+						)
+					);
 				},
 			)
 		);
