@@ -1,7 +1,6 @@
 {
     "name": "wp-graphql/wp-graphql-woocommerce",
     "description": "WooCommerce bindings for WPGraphQL",
-    "version": "0.3.2",
     "type": "wordpress-plugin",
     "keywords": [
         "wordpress",
@@ -13,7 +12,7 @@
         "api",
         "woographql"
     ],
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Geoff Taylor",
