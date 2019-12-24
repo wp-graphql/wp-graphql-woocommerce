@@ -182,7 +182,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	public function transaction_ready_to_begin() {
 		$transactions = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
 
-		return WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transactions[0];
+		return WOOGRAPHQL_SESSION_TRANSACTION_ID === $transactions[0];
 	}
 
 	/**
