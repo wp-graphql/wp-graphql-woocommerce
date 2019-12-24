@@ -88,9 +88,6 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 
-		// Define Transaction ID.
-		define( 'WOOGRAPHQL_SESSION_TRANSACTION_ID', \uniqid() );
-
 		add_action( 'graphql_before_resolve_field', array( $this, 'check_session_lock' ), 10, 8 );
 		add_action( 'graphql_execute', array( $this, 'pop_transaction_queue' ) );
 		// add_action(
@@ -138,6 +135,11 @@ class QL_Session_Handler extends \WC_Session_Handler {
 
 		if ( ! in_array( $info->fieldName, $session_mutations, true ) ) { // @codingStandardsIgnoreLine
 			return;
+		}
+
+		// Define Transaction ID.
+		if ( ! defined( WOOGRAPHQL_SESSION_TRANSACTION_ID ) ) {
+			define( 'WOOGRAPHQL_SESSION_TRANSACTION_ID', \uniqid() );
 		}
 
 		// Update transaction queue.
@@ -190,11 +192,15 @@ class QL_Session_Handler extends \WC_Session_Handler {
 	 * @throws UserError If Transaction ID is not on the top of the queue.
 	 */
 	public function pop_transaction_queue() {
+		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
+			return;
+		}
+
 		$transactions = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
 
 		// Throw if transaction ID not on top.
 		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transactions[0] ) {
-			throw new UserError( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' );
+			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
 		} else {
 
 			// Remove Transaction ID and update queue.
