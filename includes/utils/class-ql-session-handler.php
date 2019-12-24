@@ -147,7 +147,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 
 		// Wait until our Transaction ID is at the top of the queue before continuing.
 		if ( ! $this->transaction_ready_to_begin() ) {
-			usleep( 5000000 );
+			usleep( 500000 );
 			$this->check_session_lock( $source, $args, $context, $info );
 		}
 	}
