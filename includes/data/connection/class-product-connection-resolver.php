@@ -453,11 +453,16 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		if ( ! empty( $where_args['type'] ) ) {
+		if ( empty( $where_args['type'] ) && empty( $where_args['typeIn'] ) && ! empty( $where_args['supportedTypesOnly'] )
+			&& true === $where_args['supportedTypesOnly'] ) {
+				$supported_types = array_keys( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+				$terms           = ! empty( $where_args['typeNotIn'] )
+					? array_diff( $supported_types, $where_args['typeNotIn'] )
+					: $supported_types;
 			$tax_query[] = array(
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
-				'terms'    => $where_args['type'],
+				'terms'    => $terms,
 			);
 		}
 
