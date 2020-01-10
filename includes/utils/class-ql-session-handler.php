@@ -132,7 +132,7 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		}
 
 		// Initialize transaction ID.
-		if ( ! defined( WOOGRAPHQL_SESSION_TRANSACTION_ID ) ) {
+		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
 			define( 'WOOGRAPHQL_SESSION_TRANSACTION_ID', \uniqid() );
 		}
 
