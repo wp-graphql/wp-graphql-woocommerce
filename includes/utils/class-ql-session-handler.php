@@ -86,11 +86,10 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		$this->init_session_token();
 
 		add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
-		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
-		add_action( 'graphql_execute', array( $this, 'save_data' ), 10 );
+		add_action( 'shutdown', array( $this, 'save_data' ) );
 
 		add_action( 'graphql_before_resolve_field', array( $this, 'update_transaction_queue' ), 10, 8 );
-		add_action( 'graphql_execute', array( $this, 'pop_transaction_id' ), 20 );
+		add_action( 'shutdown', array( $this, 'pop_transaction_id' ), 20 );
 
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 
