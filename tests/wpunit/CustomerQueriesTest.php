@@ -493,9 +493,9 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->order_2 = $this->order_helper->create( array( 'customer_id' => $this->new_customer ) );
 		
 		$query = '
-			query ($customerId: Int) {
+			query {
 				customer {
-					orders(where: { customerId: $customerId }) {
+					orders {
 						nodes {
 							id
 						}
@@ -517,29 +517,6 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'orders' => array(
 						'nodes' => array(
 							array( 'id' => $this->order_helper->to_relay_id( $this->order_1 ) ),
-						)
-					)
-				)
-			)
-		);
-
-		$this->assertEquals( $expected, $actual );
-
-		/**
-		 * Assertion Two
-		 * 
-		 * Query for authenticated customer's orders and other customer's orders, but query
-		 * should only return authenticated customer's orders.
-		 */
-		wp_set_current_user( $this->new_customer );
-		$variables = array( 'customerId' => $this->customer );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'customer' => array(
-					'orders' => array(
-						'nodes' => array(
-							array( 'id' => $this->order_helper->to_relay_id( $this->order_2 ) ),
 						)
 					)
 				)

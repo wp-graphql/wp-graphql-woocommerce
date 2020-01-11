@@ -171,6 +171,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			// Register WPGraphQL JWT Authentication filters.
 			\WPGraphQL\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
 
+			// Initialize WooGraphQL TypeRegistry.
 			$registry = new \WPGraphQL\WooCommerce\Type_Registry();
 			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
 		}

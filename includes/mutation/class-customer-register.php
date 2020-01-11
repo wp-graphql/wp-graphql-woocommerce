@@ -11,6 +11,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Data\UserMutation;
 use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\Model\User;
@@ -91,24 +92,52 @@ class Customer_Register {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			// Get closure from "UserRegister::mutate_and_get_payload".
-			$register_user = UserRegister::mutate_and_get_payload();
-
-			// Register customer with core UserRegister closure.
-			$payload = $register_user( $input, $context, $info );
-
-			if ( empty( $payload ) ) {
-				throw new UserError( __( 'Failed to update customer.', 'wp-graphql-woocommerce' ) );
+			// Validate input.
+			if ( empty( $input['username'] ) ) {
+				throw new UserError( __( 'Please enter a valid account username.', 'wp-graphql-woocommerce' ) );
 			}
+			if ( empty( $input['email'] ) ) {
+				throw new UserError( __( 'Please provide a valid email address.', 'wp-graphql-woocommerce' ) );
+			}
+			if ( empty( $input['password'] ) ) {
+				throw new UserError( __( 'Please enter an account password.', 'wp-graphql-woocommerce' ) );
+			}
+
+			// Map all of the args from GQL to WP friendly.
+			$user_args = UserMutation::prepare_user_object( $input, 'registerCustomer' );
+
+			// Create the user using native WooCommerce function.
+			$user_id = wc_create_new_customer(
+				$user_args['user_email'],
+				$user_args['user_login'],
+				$user_args['user_pass'],
+				$user_args
+			);
+
+			// Throw an exception if the user failed to register.
+			if ( is_wp_error( $user_id ) ) {
+				if ( ! empty( $user_id->get_error_message() ) ) {
+					throw new UserError( $user_id->get_error_message() );
+				}
+
+				throw new UserError(
+					__( 'Sorry, an unknown error occured while trying to register customer', 'wp-graphql-woocommerce' )
+				);
+			}
+
+			// If the $post_id is empty, we should throw an exception.
+			if ( empty( $user_id ) ) {
+				throw new UserError( __( 'The object failed to create', 'wp-graphql-woocommerce' ) );
+			}
+
+			// Update additional user data.
+			UserMutation::update_additional_user_object_data( $user_id, $input, 'registerCustomer', $context, $info );
 
 			// Map all of the args from GQL to WC friendly.
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'register' );
 
 			// Create customer object.
-			$customer = new \WC_Customer( get_current_user_id() );
-
-			// Set role to customer.
-			$customer->set_role( 'customer' );
+			$customer = new \WC_Customer( $user_id );
 
 			// Set billing address.
 			if ( ! empty( $customer_args['billing'] ) ) {
@@ -137,8 +166,13 @@ class Customer_Register {
 			// Save customer and get customer ID.
 			$customer->save();
 
+			// Update current user.
+			if ( ! is_user_logged_in() ) {
+				wp_set_current_user( $user_id );
+			}
+
 			// Return payload.
-			return $payload;
+			return array( 'id' => $user_id );
 		};
 	}
 }

@@ -37,8 +37,6 @@ class Customer_Mutation {
 			$customer_args['shipping'] = self::address_input_mapping( 'shipping', $input['shipping'] );
 		}
 
-		$customer_args['role'] = 'customer';
-
 		/**
 		 * Filters the mappings for input to arguments
 		 *
