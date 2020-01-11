@@ -86,7 +86,11 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		$this->init_session_token();
 
 		add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
-		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
+		add_action( 'shutdown', array( $this, 'save_data' ) );
+
+		add_action( 'graphql_before_resolve_field', array( $this, 'update_transaction_queue' ), 10, 8 );
+		add_action( 'shutdown', array( $this, 'pop_transaction_id' ), 20 );
+
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 
 		if ( ! is_user_logged_in() ) {
@@ -94,6 +98,110 @@ class QL_Session_Handler extends \WC_Session_Handler {
 		}
 	}
 
+	/**
+	 * Transaction queue workhorse.
+	 *
+	 * Creates an transaction ID if executing mutations that alter the session data, and stales
+	 * execution until the transaction ID is at the top of the queue.
+	 *
+	 * @param mixed                 $source   Operation root object.
+	 * @param array                 $args     Operation arguments.
+	 * @param \WPGraphQL\AppContext $context  AppContext instance.
+	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
+	 */
+	public function update_transaction_queue( $source, $args, $context, $info ) {
+		// All mutations that alter the session data.
+		$session_mutations = array(
+			'cart',
+			'addToCart',
+			'updateItemQuantities',
+			'addFee',
+			'applyCoupon',
+			'removeCoupons',
+			'emptyCart',
+			'removeItemsFromCart',
+			'restoreCartItems',
+			'updateItemQuantities',
+			'updateShippingMethod',
+			'updateCustomer',
+		);
+
+		// Bail early, if not one of the session mutations.
+		if ( ! in_array( $info->fieldName, $session_mutations, true ) ) { // @codingStandardsIgnoreLine
+			return;
+		}
+
+		// Initialize transaction ID.
+		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
+			define( 'WOOGRAPHQL_SESSION_TRANSACTION_ID', \uniqid() );
+		}
+
+		// Update transaction queue.
+		$transaction_queue = $this->get_transaction_queue();
+
+		// Wait until our transaction ID is at the top of the queue before continuing.
+		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0] ) {
+			usleep( 500000 );
+			$this->update_transaction_queue( $source, $args, $context, $info );
+		}
+	}
+
+	/**
+	 * Adds transaction ID to the end of the queue, officially starting the transaction,
+	 * and returns the transaction queue.
+	 *
+	 * @return array
+	 */
+	public function get_transaction_queue() {
+		// Get transaction queue.
+		$transaction_queue = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
+		if ( ! $transaction_queue ) {
+			$transaction_queue = array();
+		}
+
+		// If transaction ID not in queue, add it, and start transaction.
+		if ( ! in_array( WOOGRAPHQL_SESSION_TRANSACTION_ID, $transaction_queue, true ) ) {
+			$transaction_queue[] = WOOGRAPHQL_SESSION_TRANSACTION_ID;
+
+			// Update queue.
+			wp_cache_add(
+				$this->_customer_id,
+				$transaction_queue,
+				'woo_session_transactions_queue'
+			);
+		}
+
+		return $transaction_queue;
+	}
+
+	/**
+	 * Pop transaction ID off the top of the queue, ending the transaction.
+	 *
+	 * @throws UserError If transaction ID is not on the top of the queue.
+	 */
+	public function pop_transaction_id() {
+		// Bail if not transaction started.
+		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
+			return;
+		}
+
+		// Get transaction queue.
+		$transaction_queue = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
+
+		// Throw if transaction ID not on top.
+		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0] ) {
+			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
+		} else {
+
+			// Remove Transaction ID and update queue.
+			array_shift( $transaction_queue );
+			wp_cache_add(
+				$this->_customer_id,
+				$transaction_queue,
+				'woo_session_transactions_queue'
+			);
+		}
+	}
 
 	/**
 	 * Setup token and customer ID.
