@@ -181,20 +181,11 @@ class Product extends Crud_CPT {
 				'featured'            => function() {
 					return ! is_null( $this->data->get_featured() ) ? $this->data->get_featured() : null;
 				},
-				'catalogVisibility'   => function() {
-					return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
-				},
 				'description'         => function() {
 					return ! empty( $this->data->get_description() )
 						? apply_filters( 'the_content', $this->data->get_description() )
 						: null;
 				},
-				'descriptionRaw'      => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
 				'shortDescription'    => function() {
 					$short_description = ! empty( $this->data->get_short_description() )
 					? apply_filters(
@@ -205,12 +196,6 @@ class Product extends Crud_CPT {
 					: null;
 					return apply_filters( 'the_excerpt', $short_description );
 				},
-				'shortDescriptionRaw' => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
 				'sku'                 => function() {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
 				},
@@ -219,9 +204,6 @@ class Product extends Crud_CPT {
 				},
 				'dateOnSaleTo'        => function() {
 					return ! empty( $this->data->get_date_on_sale_to() ) ? $this->data->get_date_on_sale_to() : null;
-				},
-				'totalSales'          => function() {
-					return ! is_null( $this->data->get_total_sales() ) ? $this->data->get_total_sales() : null;
 				},
 				'reviewsAllowed'      => function() {
 					return ! empty( $this->data->get_reviews_allowed() ) ? $this->data->get_reviews_allowed() : null;
@@ -244,6 +226,35 @@ class Product extends Crud_CPT {
 				'purchasable'         => function () {
 					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
 				},
+
+				/**
+				 * Editor/Shop Manager only fields
+				 */
+				'descriptionRaw'      => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+				'shortDescriptionRaw' => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+				'catalogVisibility'   => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+				'totalSales'          => array(
+					'callback'   => function() {
+						return ! is_null( $this->data->get_total_sales() ) ? $this->data->get_total_sales() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+
 				/**
 				 * Connection resolvers fields
 				 *
@@ -286,45 +297,49 @@ class Product extends Crud_CPT {
 			);
 
 			if ( 'grouped' !== $this->data->get_type() ) {
-				$shared_fields['price']           = function() {
+				$shared_fields['price']        = function() {
 					return ! empty( $this->data->get_price() )
 						? \wc_graphql_price( $this->data->get_price() )
 						: null;
 				};
+				$shared_fields['regularPrice'] = function() {
+					return ! empty( $this->data->get_regular_price() )
+						? \wc_graphql_price( $this->data->get_regular_price() )
+						: null;
+				};
+				$shared_fields['salePrice']    = function() {
+					return ! empty( $this->data->get_sale_price() )
+						? \wc_graphql_price( $this->data->get_sale_price() )
+						: null;
+				};
+				$shared_fields['taxStatus']    = function() {
+					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
+				};
+				$shared_fields['taxClass']     = function() {
+					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
+				};
+
+				/**
+				 * Editor/Shop Manager only fields
+				 */
 				$shared_fields['priceRaw']        = array(
 					'callback'   => function() {
 						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				);
-				$shared_fields['regularPrice']    = function() {
-					return ! empty( $this->data->get_regular_price() )
-						? \wc_graphql_price( $this->data->get_regular_price() )
-						: null;
-				};
 				$shared_fields['regularPriceRaw'] = array(
 					'callback'   => function() {
 						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				);
-				$shared_fields['salePrice']       = function() {
-					return ! empty( $this->data->get_sale_price() )
-						? \wc_graphql_price( $this->data->get_sale_price() )
-						: null;
-				};
 				$shared_fields['salePriceRaw']    = array(
 					'callback'   => function() {
 						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				);
-				$shared_fields['taxStatus']       = function() {
-					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
-				};
-				$shared_fields['taxClass']        = function() {
-					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
-				};
 			}
 
 			if ( 'simple' === $this->data->get_type() || 'variable' === $this->data->get_type() ) {
@@ -400,35 +415,39 @@ class Product extends Crud_CPT {
 						'price'           => function() {
 							return $this->get_variation_price();
 						},
+						'regularPrice'    => function() {
+							return $this->get_variation_price( 'regular' );
+						},
+						'salePrice'       => function() {
+							return $this->get_variation_price( 'sale' );
+						},
+						'variation_ids'   => function() {
+							return ! empty( $this->data->get_children() )
+								? array_map( 'absint', $this->data->get_children() )
+								: array( '0' );
+						},
+
+						/**
+						 * Editor/Shop Manager only fields
+						 */
 						'priceRaw'        => array(
 							'callback'   => function() {
 								return $this->get_variation_price( '', true );
 							},
 							'capability' => $this->post_type_object->cap->edit_posts,
 						),
-						'regularPrice'    => function() {
-							return $this->get_variation_price( 'regular' );
-						},
 						'regularPriceRaw' => array(
 							'callback'   => function() {
 								return $this->get_variation_price( 'regular', true );
 							},
 							'capability' => $this->post_type_object->cap->edit_posts,
 						),
-						'salePrice'       => function() {
-							return $this->get_variation_price( 'sale' );
-						},
 						'salePriceRaw'    => array(
 							'callback'   => function() {
 								return $this->get_variation_price( 'sale', true );
 							},
 							'capability' => $this->post_type_object->cap->edit_posts,
 						),
-						'variation_ids'   => function() {
-							return ! empty( $this->data->get_children() )
-								? array_map( 'absint', $this->data->get_children() )
-								: array( '0' );
-						},
 					);
 					break;
 				case 'external':

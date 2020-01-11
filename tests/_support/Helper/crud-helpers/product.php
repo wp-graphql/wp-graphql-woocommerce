@@ -300,6 +300,11 @@ class ProductHelper extends WCG_Helper {
 
 	public function print_query( $id, $raw = false ) {
 		$data = wc_get_product( $id );
+		$is_shop_manager = false;
+		$user = wp_get_current_user();
+		if ( $user && in_array( 'shop_manager', (array) $user->roles ) ) {
+			$is_shop_manager = true;
+		}
 
 		return array(
 			'id'                => $this->to_relay_id( $id ),
@@ -310,7 +315,6 @@ class ProductHelper extends WCG_Helper {
 			'modified'          => $data->get_date_modified()->__toString(),
 			'status'            => $data->get_status(),
 			'featured'          => $data->get_featured(),
-			'catalogVisibility' => strtoupper( $data->get_catalog_visibility() ),
 			'description'       => ! empty( $data->get_description() )
 				? $raw
 					? $data->get_description()
@@ -336,7 +340,6 @@ class ProductHelper extends WCG_Helper {
 				: null,
 			'dateOnSaleFrom'    => $data->get_date_on_sale_from(),
 			'dateOnSaleTo'      => $data->get_date_on_sale_to(),
-			'totalSales'        => $data->get_total_sales(),
 			'taxStatus'         => strtoupper( $data->get_tax_status() ),
 			'taxClass'          => ! empty( $data->get_tax_class() )
 				? $data->get_tax_class()
@@ -367,6 +370,8 @@ class ProductHelper extends WCG_Helper {
 			'shippingRequired'  => $data->needs_shipping(),
 			'shippingTaxable'   => $data->is_shipping_taxable(),
 			'link'              => get_post_permalink( $id ),
+			'totalSales'        => $is_shop_manager ? $data->get_total_sales() : null,
+			'catalogVisibility' => $is_shop_manager ? strtoupper( $data->get_catalog_visibility() ) :null,
 		);
 	}
 

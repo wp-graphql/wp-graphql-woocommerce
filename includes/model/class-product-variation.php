@@ -98,34 +98,16 @@ class Product_Variation extends Crud_CPT {
 						? \wc_graphql_price( $this->data->get_price() )
 						: null;
 				},
-				'priceRaw'          => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
-				'salePrice'         => function() {
-					return ! empty( $this->data->get_sale_price() )
-						? \wc_graphql_price( $this->data->get_sale_price() )
-						: null;
-				},
-				'salePriceRaw'      => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
 				'regularPrice'      => function() {
 					return ! empty( $this->data->get_regular_price() ) ?
 						\wc_graphql_price( $this->data->get_regular_price() )
 						: null;
 				},
-				'regularPriceRaw'   => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				'salePrice'         => function() {
+					return ! empty( $this->data->get_sale_price() )
+						? \wc_graphql_price( $this->data->get_sale_price() )
+						: null;
+				},
 				'dateOnSaleFrom'    => function() {
 					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
 				},
@@ -204,10 +186,33 @@ class Product_Variation extends Crud_CPT {
 				'type'              => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
 				},
+
+				/**
+				 * Editor/Shop Manager only fields
+				 */
+				'priceRaw'          => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+				'regularPriceRaw'   => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+				'salePriceRaw'      => array(
+					'callback'   => function() {
+						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+					},
+					'capability' => $this->post_type_object->cap->edit_posts,
+				),
+
 				/**
 				 * Connection resolvers fields
 				 *
-				 * These field resolvers are used in connection resolvers to define WP_Query argument
+				 * These field resolvers are used in connection resolvers to define WP_Query argument.
 				 * Note: underscore naming style is used as a quick identifier
 				 */
 				'parent_id'         => function() {
