@@ -99,9 +99,15 @@ class Customer_Register {
 			if ( empty( $input['email'] ) ) {
 				throw new UserError( __( 'Please provide a valid email address.', 'wp-graphql-woocommerce' ) );
 			}
-			// make sure they pass in password if password generation is off
-			if ('no' === get_option('woocommerce_registration_generate_password') && empty($input['password'])) {
-				throw new UserError(__('A password was not provided and WooCommerce does not automatically generate one for you.', 'wp-graphql-woocommerce'));
+
+			// Validate password input.
+			if ( 'no' === get_option( 'woocommerce_registration_generate_password' ) && empty( $input['password'] ) ) {
+				throw new UserError(
+					__(
+						'A password was not provided and WooCommerce does not automatically generate one for you.',
+						'wp-graphql-woocommerce'
+					)
+				);
 			}
 
 			// Map all of the args from GQL to WP friendly.
