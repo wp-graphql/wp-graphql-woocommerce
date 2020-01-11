@@ -101,27 +101,25 @@ class Orders {
 			case 'public':
 			default:
 				return array(
-					array(
-						'statuses'  => array(
-							'type'        => array( 'list_of' => 'OrderStatusEnum' ),
-							'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
-						),
-						'productId' => array(
-							'type'        => 'Int',
-							'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
-						),
-						'orderby'   => array(
-							'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
-							'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-						),
-						'search'    => array(
-							'type'        => 'String',
-							'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-						),
-						'dateQuery' => array(
-							'type'        => 'DateQueryInput',
-							'description' => __( 'Filter the connection based on dates', 'wp-graphql-woocommerce' ),
-						),
+					'statuses'  => array(
+						'type'        => array( 'list_of' => 'OrderStatusEnum' ),
+						'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
+					),
+					'productId' => array(
+						'type'        => 'Int',
+						'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
+					),
+					'orderby'   => array(
+						'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
+						'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
+					),
+					'search'    => array(
+						'type'        => 'String',
+						'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
+					),
+					'dateQuery' => array(
+						'type'        => 'DateQueryInput',
+						'description' => __( 'Filter the connection based on dates', 'wp-graphql-woocommerce' ),
 					),
 				);
 		}

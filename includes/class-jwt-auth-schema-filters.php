@@ -13,7 +13,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Model\User;
-
+use WPGraphQL\WooCommerce\Model\Customer;
 /**
  * Class JWT_Auth_Schema_Filters
  */
@@ -23,10 +23,11 @@ class JWT_Auth_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is install and activated.
-		if ( defined( 'WPGRAPHQL_JWT_AUTHENTICATION_VERSION' ) ) {
+		if ( class_exists( '\WPGraphQL\JWT_Authentication\JWT_Authentication' ) ) {
 			add_filter( 'graphql_customer_fields', array( __CLASS__, 'add_jwt_token_fields' ), 10 );
 			add_filter( 'graphql_registerCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 1 );
 			add_filter( 'graphql_updateCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 1 );
+			add_action( 'graphql_register_types', array( __CLASS__, 'add_customer_to_login_payload' ), 10 );
 		}
 	}
 
@@ -103,5 +104,23 @@ class JWT_Auth_Schema_Filters {
 		);
 
 		return $fields;
+	}
+
+	/**
+	 * Adds "customer" field to "login" mutation payload
+	 */
+	public static function add_customer_to_login_payload() {
+		register_graphql_field(
+			'LoginPayload',
+			'customer',
+			array(
+				'type'        => 'Customer',
+				'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $payload ) {
+					$id = $payload['id'];
+					return new Customer( $id );
+				},
+			)
+		);
 	}
 }
