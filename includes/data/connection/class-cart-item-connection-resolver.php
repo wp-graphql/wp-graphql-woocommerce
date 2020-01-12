@@ -35,17 +35,14 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_query_args() {
-		$query_args = array();
+		$query_args = array( 'filters' => array() );
 		if ( ! empty( $this->args['where'] ) ) {
 			$where_args = $this->args['where'];
 			if ( isset( $where_args['needsShipping'] ) ) {
 				$needs_shipping          = $where_args['needsShipping'];
-				$query_args['filters']   = array();
 				$query_args['filters'][] = function( $cart_item ) use ( $needs_shipping ) {
 					$product = \WC()->product_factory->get_product( $cart_item['product_id'] );
-					if ( $product ) {
-						return $needs_shipping === (bool) $product->needs_shipping();
-					}
+					return $needs_shipping === (bool) $product->needs_shipping();
 				};
 			}
 		}
@@ -72,13 +69,9 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_query() {
 		$cart_items = array_values( $this->source->get_cart() );
 
-		if ( ! empty( $this->query_args['filters'] ) ) {
-			if ( is_array( $this->query_args['filters'] ) ) {
-				foreach ( $this->query_args['filters'] as $filter ) {
-					$cart_items = array_filter( $cart_items, $filter );
-				}
-			} else {
-				$cart_items = array_filter( $cart_items, $this->query_args['filters'] );
+		if ( ! empty( $this->query_args['filters'] ) && is_array( $this->query_args['filters'] ) ) {
+			foreach ( $this->query_args['filters'] as $filter ) {
+				$cart_items = array_filter( $cart_items, $filter );
 			}
 		}
 

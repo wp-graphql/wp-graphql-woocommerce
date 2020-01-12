@@ -331,45 +331,19 @@ class Order_Type {
 				'type'        => 'Order',
 				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
-					'id' => array(
-						'type' => array(
-							'non_null' => 'ID',
-						),
+					'id'       => array(
+						'type'        => 'ID',
+						'description' => __( 'Get the order by its global ID', 'wp-graphql-woocommerce' ),
+					),
+					'orderId'  => array(
+						'type'        => 'Int',
+						'description' => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
+					),
+					'orderKey' => array(
+						'type'        => 'String',
+						'description' => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$id_components = Relay::fromGlobalId( $args['id'] );
-					if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
-						throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
-					}
-					$order_id = absint( $id_components['id'] );
-					return Factory::resolve_crud_object( $order_id, $context );
-				},
-			)
-		);
-
-		$post_by_args = array(
-			'id'       => array(
-				'type'        => 'ID',
-				'description' => __( 'Get the order by its global ID', 'wp-graphql-woocommerce' ),
-			),
-			'orderId'  => array(
-				'type'        => 'Int',
-				'description' => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
-			),
-			'orderKey' => array(
-				'type'        => 'String',
-				'description' => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
-			),
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'orderBy',
-			array(
-				'type'        => 'Order',
-				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-				'args'        => $post_by_args,
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$order_id = 0;
 					if ( ! empty( $args['id'] ) ) {
@@ -384,11 +358,15 @@ class Order_Type {
 						$order_id = \wc_get_order_id_by_order_key( $args['orderKey'] );
 					}
 
-					$order = Factory::resolve_crud_object( $order_id, $context );
-					if ( get_post( $order_id )->post_type !== 'shop_order' ) {
-						/* translators: not order found error message */
-						throw new UserError( sprintf( __( 'No order exists with this id: %1$s' ), $order_id ) );
+					if ( empty( $order_id ) ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s' ), $id_type, $product_id ) );
+					} elseif ( get_post( $order_id )->post_type !== 'shop_order' ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s' ), $id_type, $product_id ) );
 					}
+
+					$order = Factory::resolve_crud_object( $order_id, $context );
 
 					return $order;
 				},

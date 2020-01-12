@@ -142,12 +142,14 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 					// Resolve post author for future capability checks.
 					if ( 'shop_order' === $post_type ) {
 						$customer_id = get_post_meta( $key, '_customer_user', true );
-						$customer    = Factory::resolve_customer( $customer_id, $this->context );
-						return $customer->then(
-							function () use ( $post_type, $key ) {
-								return $this->resolve_model( $post_type, $key );
-							}
-						);
+						if ( ! empty( $customer_id ) ) {
+							$customer = Factory::resolve_customer( $customer_id, $this->context );
+							return $customer->then(
+								function () use ( $post_type, $key ) {
+									return $this->resolve_model( $post_type, $key );
+								}
+							);
+						}
 					} elseif ( 'product_variation' === $post_type || 'shop_refund' === $post_type ) {
 						$parent_id = get_post_field( 'post_parent', $key );
 						$parent    = Factory::resolve_crud_object( $parent_id, $this->context );
