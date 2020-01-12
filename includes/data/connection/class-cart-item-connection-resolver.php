@@ -30,22 +30,36 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Creates query arguments array
+	 * Creates cart item filters.
+	 *
+	 * @return array
 	 */
 	public function get_query_args() {
 		$query_args = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$where_args = $this->args['where'];
-			if ( ! empty( $where_args['needShipping'] ) ) {
+			if ( isset( $where_args['needsShipping'] ) ) {
+				$needs_shipping          = $where_args['needsShipping'];
 				$query_args['filters']   = array();
-				$query_args['filters'][] = function( $cart_item ) {
+				$query_args['filters'][] = function( $cart_item ) use ( $needs_shipping ) {
 					$product = \WC()->product_factory->get_product( $cart_item['product_id'] );
 					if ( $product ) {
-						return $product->needs_shipping();
+						return $needs_shipping === (bool) $product->needs_shipping();
 					}
 				};
 			}
 		}
+
+		/**
+		 * Filter the $query_args to allow folks to customize queries programmatically.
+		 *
+		 * @param array       $query_args The args that will be passed to the WP_Query.
+		 * @param mixed       $source     The source that's passed down the GraphQL queries.
+		 * @param array       $args       The inputArgs on the field.
+		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+		 */
+		$query_args = apply_filters( 'graphql_cart_item_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
 		return $query_args;
 	}

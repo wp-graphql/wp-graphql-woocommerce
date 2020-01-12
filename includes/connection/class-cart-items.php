@@ -84,7 +84,7 @@ class Cart_Items {
 	 */
 	public static function get_connection_args() {
 		return array(
-			'needShipping' => array(
+			'needsShipping' => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Limit results to cart items that require shipping', 'wp-graphql-woocommerce' ),
 			),
