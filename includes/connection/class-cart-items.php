@@ -42,7 +42,7 @@ class Cart_Items {
 			'connectionFields' => array(
 				'itemCount'    => array(
 					'type'        => 'Int',
-					'description' => __( 'Review rating', 'wp-graphql-woocommerce' ),
+					'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source ) {
 						if ( empty( $source['edges'] ) ) {
 							return 0;
@@ -59,7 +59,7 @@ class Cart_Items {
 				),
 				'productCount' => array(
 					'type'        => 'Int',
-					'description' => __( 'Review rating', 'wp-graphql-woocommerce' ),
+					'description' => __( 'Total number of different products in the cart', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source ) {
 						if ( empty( $source['edges'] ) ) {
 							return 0;
