@@ -100,7 +100,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Confirms the uses has the privileges to query Products
+	 * Confirms the user has the privileges to query the products
 	 *
 	 * @return bool
 	 */

@@ -68,13 +68,10 @@ class CartHelper extends WCG_Helper {
 
 	public function print_nodes( $processors = array(), $_ = null ) {
 		$cart = WC()->cart;
-		$ids = array_keys( $cart->get_cart_contents() );
+		$ids = array_keys( $cart->get_cart() );
 		$default_processors = array(
 			'mapper' => function( $key ) {
 				return array( 'key' => $key ); 
-			},
-			'sorter' => function( $key_a, $key_b ) {
-				return strcmp( $key_a, $key_b );
 			},
 			'filter' => function( $key ) {
 				return true;
@@ -84,9 +81,6 @@ class CartHelper extends WCG_Helper {
 		$processors = array_merge( $default_processors, $processors );
 
 		$results = array_filter( $ids, $processors['filter'] );
-		if( ! empty( $results ) ) {
-			usort( $results, $processors['sorter'] );
-		}
 
 		return array_values( array_map( $processors['mapper'], $results ) );
 	}

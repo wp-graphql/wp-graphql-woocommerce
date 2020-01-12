@@ -35,11 +35,42 @@ class Cart_Items {
 	 */
 	public static function get_connection_config( $args = array() ) {
 		$defaults = array(
-			'fromType'       => 'Cart',
-			'toType'         => 'CartItem',
-			'fromFieldName'  => 'contents',
-			'connectionArgs' => self::get_connection_args(),
-			'resolve'        => function ( $source, $args, $context, $info ) {
+			'fromType'         => 'Cart',
+			'toType'           => 'CartItem',
+			'fromFieldName'    => 'contents',
+			'connectionArgs'   => self::get_connection_args(),
+			'connectionFields' => array(
+				'itemCount'    => array(
+					'type'        => 'Int',
+					'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( empty( $source['edges'] ) ) {
+							return 0;
+						}
+
+						$items = array_values( $source['edges'][0]['source']->get_cart() );
+						$count = 0;
+						foreach ( $items as $item ) {
+							$count += $item['quantity'];
+						}
+
+						return $count;
+					},
+				),
+				'productCount' => array(
+					'type'        => 'Int',
+					'description' => __( 'Total number of different products in the cart', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( empty( $source['edges'] ) ) {
+							return 0;
+						}
+
+						$items = array_values( $source['edges'][0]['source']->get_cart() );
+						return count( $items );
+					},
+				),
+			),
+			'resolve'          => function ( $source, $args, $context, $info ) {
 				return Factory::resolve_cart_item_connection( $source, $args, $context, $info );
 			},
 		);
@@ -55,7 +86,7 @@ class Cart_Items {
 		return array(
 			'needShipping' => array(
 				'type'        => 'Boolean',
-				'description' => __( 'Limit results to cart item that require shipping', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Limit results to cart items that require shipping', 'wp-graphql-woocommerce' ),
 			),
 		);
 	}
