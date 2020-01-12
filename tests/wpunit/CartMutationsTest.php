@@ -826,6 +826,119 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->assertTrue( $old_total > $new_total );
     }
 
+    public function testApplyCouponMutationWithInvalidCoupons() {
+        $cart = WC()->cart;
+
+        // Create products.
+        $product_id = $this->product->create_simple();
+
+        // Create invalid coupon codes.
+        $coupon_id           = $this->coupon->create(
+            array( 'product_ids' => array( $product_id ) )
+        );
+        $expired_coupon_code = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array(
+                    'product_ids'  => array( $product_id ),
+                    'date_expires' => time() - 20,
+                )
+            )
+        );
+        $applied_coupon_code = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array( 'product_ids' => array( $product_id ) )
+            )
+        );
+
+        // Add items to carts.
+        $cart_item_key = $cart->add_to_cart( $product_id, 1 );
+        $cart->apply_coupon( $applied_coupon_code );
+
+        $old_total = \WC()->cart->get_cart_contents_total();
+
+        $mutation = '
+            mutation ( $input: ApplyCouponInput! ) {
+                applyCoupon( input: $input ) {
+                    clientMutationId
+                }
+            }
+        ';
+
+        /**
+         * Assertion One
+         * 
+         * Can't pass coupon ID as coupon "code". Mutation should fail.
+         */
+        $variables = array(
+            'input' => array(
+                'clientMutationId' => 'someId',
+                'code'             => $coupon_id,
+            ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertNotEmpty( $actual['errors'] );
+        $this->assertEmpty( $actual['data']['applyCoupon'] );
+
+        /**
+         * Assertion Two
+         * 
+         * Can't pass expired coupon code. Mutation should fail.
+         */
+        $variables = array(
+            'input' => array(
+                'clientMutationId' => 'someId',
+                'code'             => $expired_coupon_code,
+            ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertNotEmpty( $actual['errors'] );
+        $this->assertEmpty( $actual['data']['applyCoupon'] );
+
+        /**
+         * Assertion Three
+         * 
+         * Can't pass coupon already applied to the cart. Mutation should fail.
+         */
+        $variables = array(
+            'input' => array(
+                'clientMutationId' => 'someId',
+                'code'             => $applied_coupon_code,
+            ),
+        );
+        $actual    = graphql(
+            array(
+                'query'          => $mutation,
+                'variables'      => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $this->assertNotEmpty( $actual['errors'] );
+        $this->assertEmpty( $actual['data']['applyCoupon'] );
+
+        $this->assertEquals( $old_total, \WC()->cart->get_cart_contents_total() );
+    }
+
     public function testRemoveCouponMutation() {
         $cart = WC()->cart;
 
