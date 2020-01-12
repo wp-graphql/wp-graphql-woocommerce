@@ -487,8 +487,8 @@ class Factory {
 	 * @access public
 	 */
 	public static function resolve_cart_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
-		$resolver = new Cart_Item_Connection_Resolver();
-		return $resolver->resolve( $source, $args, $context, $info );
+		$resolver = new Cart_Item_Connection_Resolver( $source, $args, $context, $info );
+		return $resolver->get_connection();
 	}
 
 	/**

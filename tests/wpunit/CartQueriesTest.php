@@ -227,4 +227,182 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( $expected, $actual );
 	}
+
+	public function testCartItemPagination() {
+		$cart = WC()->cart;
+		$cart_items = array(
+			$cart->add_to_cart( $this->product_helper->create_simple(), 2 ),
+			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
+			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
+			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
+			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
+		);
+
+		codecept_debug( $cart_items );
+
+		$query = '
+			query ($first: Int, $last: Int, $before: String, $after: String) {
+				cart {
+					contents(first: $first, last: $last, before: $before, after: $after) {
+					  	itemCount
+					  	productCount
+					  	edges {
+							cursor
+							node {
+						  		key
+							}
+					  	}
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 * 
+		 * Tests "first" parameter.
+		 */
+		$variables = array( 'first' => 2 );
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'contents' => array(
+						'itemCount'    => 6,
+						'productCount' => 5,
+						'edges' => array_map(
+							function( $item ) {
+								return array(
+									'cursor' => $item,
+									'node'   => array( 'key' => $item ),
+								);
+							},
+							array_slice( $cart_items, 0, 2 )
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Tests "after" parameter.
+		 */
+		$variables = array( 'first' => 2, 'after' => $cart_items[1] );
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'contents' => array(
+						'itemCount'    => 6,
+						'productCount' => 5,
+						'edges' => array_map(
+							function( $item ) {
+								return array(
+									'cursor' => $item,
+									'node'   => array( 'key' => $item ),
+								);
+							},
+							array_slice( $cart_items, 2, 2 )
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Tests "last" parameter.
+		 */
+		$variables = array( 'last' => 2 );
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'contents' => array(
+						'itemCount'    => 6,
+						'productCount' => 5,
+						'edges' => array_map(
+							function( $item ) {
+								return array(
+									'cursor' => $item,
+									'node'   => array( 'key' => $item ),
+								);
+							},
+							array_reverse( array_slice( $cart_items, 0, 2 ) )
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Four
+		 * 
+		 * Tests "before" parameter.
+		 */
+		$variables = array( 'last' => 4, 'before' => $cart_items[4] );
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'contents' => array(
+						'itemCount'    => 6,
+						'productCount' => 5,
+						'edges' => array_map(
+							function( $item ) {
+								return array(
+									'cursor' => $item,
+									'node'   => array( 'key' => $item ),
+								);
+							},
+							array_reverse( array_slice( $cart_items, 0, 4 ) )
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
 }
