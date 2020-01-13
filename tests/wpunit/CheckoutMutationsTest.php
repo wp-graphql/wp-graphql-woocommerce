@@ -151,6 +151,10 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
                         }
                         needsPayment
                         needsProcessing
+                        metaData {
+                            key
+                            value
+                        }
                         couponLines {
                             nodes {
                                 itemId
@@ -283,6 +287,12 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'postcode'  => '12345',
                 'country'   => 'US',
             ),
+            'metaData'           => array(
+                array( 
+                    'key'   => 'test_key',
+                    'value' => 'test value',
+                ),
+            )
         );
 
         /**
@@ -311,6 +321,16 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
                     'order'            => array_merge(
                         $this->order->print_query( $order->get_id() ),
                         array(
+                            'metaData'      => array(
+                                array( 
+                                    'key'   => 'is_vat_exempt',
+                                    'value' => 'no',
+                                ),
+                                array( 
+                                    'key'   => 'test_key',
+                                    'value' => 'test value',
+                                ), 
+                            ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
                                     array_map(
@@ -496,6 +516,12 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
                     'order'            => array_merge(
                         $this->order->print_query( $order->get_id() ),
                         array(
+                            'metaData'      => array(
+                                array( 
+                                    'key'   => 'is_vat_exempt',
+                                    'value' => 'no',
+                                ),
+                            ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
                                     array_map(
@@ -687,6 +713,12 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
                     'order'            => array_merge(
                         $this->order->print_restricted_query( $order->get_id() ),
                         array(
+                            'metaData'      => array(
+                                array( 
+                                    'key'   => 'is_vat_exempt',
+                                    'value' => 'no',
+                                ), 
+                            ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
                                     array_map(

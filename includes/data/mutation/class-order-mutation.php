@@ -47,7 +47,7 @@ class Order_Mutation {
 	 * @param AppContext  $context  AppContext instance.
 	 * @param ResolveInfo $info     ResolveInfo instance.
 	 *
-	 * @return WC_Order
+	 * @return integer
 	 *
 	 * @throws UserError  Error creating order.
 	 */

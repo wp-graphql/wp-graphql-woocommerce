@@ -619,6 +619,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function is_valid_offset( $offset ) {
-		return $this->$this->is_valid_post_offset( $offset );
+		return $this->is_valid_post_offset( $offset );
 	}
 }
