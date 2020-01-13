@@ -19,6 +19,11 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  */
 class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	/**
+	 * Include shared connection functions.
+	 */
+	use WC_Connection_Functions;
+
+	/**
 	 * Confirms the uses has the privileges to query Customers
 	 *
 	 * @return bool
@@ -149,5 +154,16 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Wrapper for "WC_Connection_Functions::is_valid_user_offset()"
+	 *
+	 * @param integer $offset User ID.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_offset( $offset ) {
+		return $this->is_valid_user_offset( $offset );
 	}
 }

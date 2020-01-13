@@ -21,6 +21,11 @@ use WPGraphQL\Data\Connection\AbstractConnectionResolver;
  */
 class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
+	 * Include shared connection functions.
+	 */
+	use WC_Connection_Functions;
+
+	/**
 	 * Confirms if cart items should be retrieved.
 	 *
 	 * @return bool
@@ -128,5 +133,16 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_items() {
 		return ! empty( $this->query ) ? $this->query : array();
+	}
+
+	/**
+	 * Wrapper for "WC_Connection_Functions::is_valid_cart_item_offset()"
+	 *
+	 * @param integer $offset Post ID.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_offset( $offset ) {
+		return $this->is_valid_cart_item_offset( $offset );
 	}
 }
