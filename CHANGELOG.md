@@ -1,39 +1,69 @@
 # Changelog
 
-## [Unreleased](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/HEAD)
+## [v0.3.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.3) (2020-01-14)
 
-[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.2-beta...HEAD)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.2-beta...v0.3.3)
 
-### Release v0.3.2
-#### Checklist
-- [x] Improved handling of unsupported product types #199 
-- [x] Adds `cart` field to cart mutations output. #194 
-- [x] Better guest customer support #187 
-- [x] WPUnion injector added for Product types. #188 
+### Release v0.3.3
+Minor bugfixes, security patches, and enhancements.
+- Extra layer of security on some product fields #213 
+- Cart to CartItem connection enhanced #215 
+- Customer functionality improved #212 #214 
+- `orderBy` query removed, and it's parameters have added to `order` query.
+- Fixed `Order` to `Refund` connection and `Customer` to `Refund` connection. 
+- Fixed bug concerning guest customer order resolution. 
+- Connection patch for **[WPGraphQL #1111](https://github.com/wp-graphql/wp-graphql/pull/1111)**
+- `metaData` field added to `checkout` mutation.
+- Extra layer of security added to `order` model
+- Pagination testing implemented for connections that support pagination.
 
+Updated tests
+- ProductQueriesTest #213 
+- RefundQueriesTest 
+- OrderQueriesTest
+- CartQueriesTest #215 
+- ConnectionPaginationTest
+
+**Special Thanks to @jasonbahl & @saleebm for contributing**
 
 **Enhancements:**
 
 - Cart mutations should return updated `cart` object. [\#192](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/192)
 - Shipping Method Queries and Mutators for Cart [\#167](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/167)
 - ShippingZone and ShippingMethodInstance type [\#26](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/26)
+- Cart to CartItem connection enhanced. [\#215](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/215) ([kidunot89](https://github.com/kidunot89))
+- allow optional password creation for registerCustomer [\#214](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/214) ([saleebm](https://github.com/saleebm))
+- Updates some product fields' access levels [\#213](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/213) ([kidunot89](https://github.com/kidunot89))
+- More customer improvements. [\#212](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/212) ([kidunot89](https://github.com/kidunot89))
+- Better cart mutation support/unsupported type error handling [\#211](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/211) ([kidunot89](https://github.com/kidunot89))
+- Update composer.json [\#203](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/203) ([jasonbahl](https://github.com/jasonbahl))
+- Release v0.3.2 [\#200](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/200) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
 
+- Make package available through composer [\#202](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/202)
 - WooCommerce Subscriptions plugin throws Internal server error [\#185](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/185)
 - Improve createOrder mutation to enable creating order as a guest, without the need of creating new customer account. [\#168](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/168)
+
+**Closed issues:**
+
+- Sensitive API endpoints are exposed publicly and endpoints throughout do not mirror access priviliges of WooCommerce REST API [\#210](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/210)
+- addToCart mutation returns error on multiple calls when variationId is set. [\#209](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/209)
+- Trouble with QL Session Handler [\#208](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/208)
+- Need price in main products nodes [\#206](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/206)
+- Total cart item count in cart mutation return data [\#205](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/205)
+- Hook into WC customer created on registration [\#204](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/204)
+
+**Merged pull requests:**
+
+- Master to Release v0.3.1 [\#178](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/178) ([kidunot89](https://github.com/kidunot89))
+- Master to v0.3.0 [\#161](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/161) ([kidunot89](https://github.com/kidunot89))
+- v0.2.1 hotfix to master [\#134](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/134) ([kidunot89](https://github.com/kidunot89))
+- Master to v0.2.1 [\#133](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/133) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.3.2-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.2-beta) (2019-12-21)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.1-beta...v0.3.2-beta)
-
-### Release v0.3.1
-#### Checklist
-- [x] Fixed connections from `Product` #165  
-- [x] Remove problem **WPGraphQL ACF** integration hook #163 
-- [x] QL Search support added #172 
-- [x] Switched to PCOV for codecoverage in Docker testing environment #173 
-- [x]  `QL_Session_Handler` the WC custom session handler class refactored #174 
 
 **Enhancements:**
 
@@ -44,6 +74,8 @@
 - Better guest customer support [\#187](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/187) ([kidunot89](https://github.com/kidunot89))
 - Bugfix/customer security patch [\#184](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/184) ([kidunot89](https://github.com/kidunot89))
 - Improved shipping support [\#182](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/182) ([kidunot89](https://github.com/kidunot89))
+- Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
+- Namespaces refactored. [\#160](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/160) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
 
@@ -63,6 +95,33 @@
 **Merged pull requests:**
 
 - More support provided for WPGraphQL ACF [\#189](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/189) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.3.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.1-beta) (2019-11-26)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.0-beta...v0.3.1-beta)
+
+**Enhancements:**
+
+- Product post\_type should be set to `show\_in\_graphql` [\#85](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/85)
+- QL Session Handler 2.0 [\#174](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/174) ([kidunot89](https://github.com/kidunot89))
+- Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
+- QL Search support added. [\#172](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/172) ([kidunot89](https://github.com/kidunot89))
+- Release v0.3.0 [\#155](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/155) ([kidunot89](https://github.com/kidunot89))
+- Release-v0.2.2 [\#154](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/154) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- Pagination with orderby when fetching Products causes products to be skipped [\#153](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/153)
+- Unneeded "register\_graphql\_connection\(\)" calls removed. [\#165](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/165) ([kidunot89](https://github.com/kidunot89))
+- Removes potential trouble filter [\#163](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/163) ([kidunot89](https://github.com/kidunot89))
+
+**Closed issues:**
+
+- Price not showing on products query [\#176](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/176)
+
+**Merged pull requests:**
+
+- Codecoverage boost [\#177](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/177) ([kidunot89](https://github.com/kidunot89))
 
 
 
