@@ -15,9 +15,7 @@ branches:
   only:
     - develop
     - master
-    - release-v0.1.2
-    - release-v0.2.2
-    - release-v0.3.3
+    - release/v0.4.0
 
 cache:
   apt: true
