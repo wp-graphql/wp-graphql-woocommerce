@@ -24,46 +24,24 @@ class JWT_Auth_Schema_Filters {
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is install and activated.
 		if ( defined( 'WPGRAPHQL_JWT_AUTHENTICATION_VERSION' ) ) {
-			add_filter( 'graphql_customer_fields', array( __CLASS__, 'add_jwt_token_fields' ), 10 );
-			add_filter( 'graphql_registerCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 1 );
-			add_filter( 'graphql_updateCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 1 );
+			add_filter( 'graphql_jwt_user_types', array( __CLASS__, 'add_customer_to_jwt_user_types' ), 10 );
+			add_filter( 'graphql_registerCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 3 );
+			add_filter( 'graphql_updateCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 3 );
 			add_action( 'graphql_register_types', array( __CLASS__, 'add_customer_to_login_payload' ), 10 );
 		}
 	}
 
 	/**
-	 * Adds all JWT related fields to the Customer type.
+	 * Adds Customer type to the JWT User type list.
 	 *
-	 * @param array                            $fields  Customer type field definitions.
-	 * @param \WPGraphQL\Type\WPObjectType     $object         The WPObjectType the fields are be added to.
-	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  TypeRegistry instance.
+	 * @param array $types  JWT User types.
+	 *
+	 * @return array
 	 */
-	public static function add_jwt_token_fields( $fields, $object, $type_registry ) {
-		$jwt_token_fields = array();
+	public static function add_customer_to_jwt_user_types( $types ) {
+		$types[] = 'Customer';
 
-		// Wrapper field resolvers in a lambda that retrieves the WP_User object for the corresponding customer.
-		$raw_jwt_fields = \WPGraphQL\JWT_Authentication\ManageTokens::add_user_fields( array(), $object, $type_registry );
-		foreach ( $raw_jwt_fields as $field_name => $field ) {
-			$root_resolver                   = $field['resolve'];
-			$jwt_token_fields[ $field_name ] = array_merge(
-				$field,
-				array(
-					'resolve' => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $root_resolver ) {
-						$wp_user = get_user_by( 'id', $source->ID );
-						if ( $wp_user ) {
-							$user = new User( $wp_user );
-							return $root_resolver( $user, $args, $context, $info );
-						}
-
-						return null;
-					},
-				)
-			);
-		}
-
-		$fields = array_merge( $fields, $jwt_token_fields );
-
-		return $fields;
+		return $types;
 	}
 
 	/**
