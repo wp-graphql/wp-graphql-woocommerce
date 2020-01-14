@@ -6,18 +6,20 @@
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
 2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
-3. (Optional) Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
-4. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin
+3. Clone or download the zip of this repository into your WordPress plugin directory & activate the **WP GraphQL WooCommerce** plugin.
+4. (Optional) Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
+5. (Optional) Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) to add an extra layer of security using HTTP CORS and some of WPGraphQL advanced functionality. 
 
 ## What does this plugin do?
 It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [CRUD](https://github.com/woocommerce/woocommerce/wiki/CRUD-Objects-in-3.0) objects.
 
 ## Features
-- Query product, customers, coupons, order, refund, product variations with complex filtering options.
-- Add items to cart and process user store session using HTTP header defined by WooGraphQL's built-in session handler
-- Create/process user checkout with the `checkout` mutation.
+- Query **product**, **product variations**, **customers**, **coupons**, **orders**, **refunds** and **more** with complex filtering options.
+- Manipulate customer session data using customer and cart mutations while managing customer session token using HTTP headers or cookies *(not recommended)*. *[HTTP header example w/ React/Apollo](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/88)*
+- Create orders using the `order` mutations with the `checkout` mutation.
 
 ## Future Features
+- Payment Processing
 - Adminstrator mutations. Eg. Creating and deleting products, coupons, and refunds.
 
 ## Playground
@@ -84,14 +86,16 @@ If you use the command with at least a `suite` specified, **Codeception** will r
 
 To learn more about the usage of Codeception with WordPress view the [Documentation](https://codeception.com/for/wordpress)  
 
-## Functional and Acceptance Tests (Docker/Docker-Compose required)
+## Functional and Acceptance Tests (Docker && Docker-Compose required)
 It's possible to run functional and acceptance tests, but is very limited at the moment. The script docker entrypoint script runs all three suites (acceptance, functional, and wpunit) at once. This will change eventually, however as of right now, this is the limitation.
 
 ### Running tests
-Even though the two suite use a Docker environment to run, the docker environment relies on a few environmental variables defined in `.env.dist` and a volume source provided by the test install script and the configuration `codeception.dist.yml`. If you have created a `codeception.yml` file ensure it is identical to `codeception.dist.yml` or delete it.
+Even though the two suites use a Docker environment to run, the `testing` service in the `docker.compose.yml` file requires the `.env.dist` and `codeception.dist.yml` untouched.
 Run the following in the terminal to run all three suites. Isolating specific suites should be simple to figure out.
 ```
-docker-compose run --rm -e SUITE=acceptance;wpunit;functional -e DEBUG=1 -e COVERAGE=1 testing --scale app=0
+docker-compose run --rm -e \
+SUITE=acceptance;wpunit;functional \
+-e DEBUG=1 -e COVERAGE=1 testing --scale app=0
 ```
 - The `COVERAGE`, and `DEBUG` vars are optional flags for toggle codecoverage and debug output.
 - `--scale app=0` ensures that the service running a local app doesn't create any instances. It must be added or a collision with `mysql` will occur. More on this service in the next section
@@ -118,6 +122,4 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 
 **GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
 
-## Follow
-[![alt text](http://i.imgur.com/tXSoThF.png)](https://twitter.com/woographql)
-[![alt text](http://i.imgur.com/P3YfQoD.png)](https://www.facebook.com/woographql)
+## Follow [![alt text](http://i.imgur.com/tXSoThF.png)](https://twitter.com/woographql)[![alt text](http://i.imgur.com/P3YfQoD.png)](https://www.facebook.com/woographql)

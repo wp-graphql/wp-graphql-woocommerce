@@ -19,7 +19,10 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class Order_Connection_Resolver
  */
 class Order_Connection_Resolver extends AbstractConnectionResolver {
-	use Common_CPT_Input_Sanitize_Functions;
+	/**
+	 * Include shared connection functions.
+	 */
+	use WC_Connection_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -48,21 +51,21 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Confirms the uses has the privileges to query Orders
+	 * Checks if user is authorized to query orders
 	 *
 	 * @return bool
 	 */
 	public function should_execute() {
-		$post_type_obj = get_post_type_object( 'shop_order' );
-		switch ( true ) {
-			case current_user_can( $post_type_obj->cap->edit_posts ):
-			case is_a( $this->source, Customer::class )
-				&& 'orders' === $this->info->fieldName
-				&& get_current_user_id() === $this->source->ID:
-				return true;
-			default:
-				return false;
+		$post_type_obj = get_post_type_object( $this->post_type );
+		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
+			return true;
 		}
+
+		if ( is_a( $this->source, Customer::class ) ) {
+			return 'orders' === $this->info->fieldName && get_current_user_id() === $this->source->ID;
+		}
+
+		return false;
 	}
 
 	/**
@@ -273,5 +276,16 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		);
 
 		return $args;
+	}
+
+	/**
+	 * Wrapper for "WC_Connection_Functions::is_valid_post_offset()"
+	 *
+	 * @param integer $offset Post ID.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_offset( $offset ) {
+		return $this->is_valid_post_offset( $offset );
 	}
 }

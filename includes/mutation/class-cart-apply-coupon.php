@@ -69,11 +69,6 @@ class Cart_Apply_Coupon {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
-			// Retrieve product database ID if relay ID provided.
-			if ( empty( $input['code'] ) ) {
-				throw new UserError( __( 'No coupon code provided', 'wp-graphql-woocommerce' ) );
-			}
-
 			// Get the coupon.
 			$the_coupon = new \WC_Coupon( $input['code'] );
 

@@ -17,14 +17,15 @@ class Order_Mutation {
 	/**
 	 * Filterable authentication function.
 	 *
-	 * @param string      $mutation  Mutation being executed.
-	 * @param array       $input     Input data describing order.
-	 * @param AppContext  $context   AppContext instance.
-	 * @param ResolveInfo $info      ResolveInfo instance.
+	 * @param string       $mutation  Mutation being executed.
+	 * @param integer|null $order_id  Order ID.
+	 * @param array        $input     Input data describing order.
+	 * @param AppContext   $context   AppContext instance.
+	 * @param ResolveInfo  $info      ResolveInfo instance.
 	 *
 	 * @return boolean
 	 */
-	public static function authorized( $mutation = 'create', $input, $context, $info ) {
+	public static function authorized( $mutation = 'create', $order_id = null, $input, $context, $info ) {
 		$post_type_object = get_post_type_object( 'shop_order' );
 
 		return apply_filters(
@@ -34,6 +35,7 @@ class Order_Mutation {
 					? $post_type_object->cap->delete_posts
 					: $post_type_object->cap->edit_posts
 			),
+			$order_id,
 			$input,
 			$context,
 			$info
@@ -47,7 +49,7 @@ class Order_Mutation {
 	 * @param AppContext  $context  AppContext instance.
 	 * @param ResolveInfo $info     ResolveInfo instance.
 	 *
-	 * @return WC_Order
+	 * @return integer
 	 *
 	 * @throws UserError  Error creating order.
 	 */

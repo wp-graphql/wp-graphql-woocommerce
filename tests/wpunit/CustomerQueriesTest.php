@@ -190,7 +190,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 			array (
 				'count_total' => false,
 				'order'       => 'ASC',
-				'fields'      => 'ID'
+				'fields'      => 'ID',
+				'role'        => 'customer',
 			)
 		);
 
@@ -374,22 +375,14 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Seven
 		 * 
-		 * Tests "role" where argument.
+		 * Tests "role" where argument. 
 		 */
 		$variables = array( 'role' => 'SHOP_MANAGER' );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'filter' => function( $id ) {
-								$customer = new \WC_Customer( $id );
-								return 'shop_manager' === $customer->get_role();
-							}
-						)
-					),
+					'nodes' => $this->helper->print_nodes( array ( $this->shop_manager ) ),
 				),
 			),
 		);
@@ -402,22 +395,14 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Eight
 		 * 
-		 * Tests "roleIn" where argument.
+		 * Tests "roleIn" where argument. Should
 		 */
 		$variables = array( 'roleIn' => array( 'SHOP_MANAGER' ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'filter' => function( $id ) {
-								$customer = new \WC_Customer( $id );
-								return 'shop_manager' === $customer->get_role();
-							}
-						)
-					),
+					'nodes' => $this->helper->print_nodes( array ( $this->shop_manager ) ),
 				),
 			),
 		);
@@ -438,7 +423,12 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'customers' => array(
 					'nodes' => $this->helper->print_nodes(
-						$users,
+						get_users(
+							array(
+								'role__not_in' => 'shop_manager',
+								'fields'       => 'ID',	
+							)
+						),
 						array(
 							'filter' => function( $id ) {
 								$customer = new \WC_Customer( $id );

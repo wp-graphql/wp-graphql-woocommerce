@@ -19,6 +19,11 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  */
 class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	/**
+	 * Include shared connection functions.
+	 */
+	use WC_Connection_Functions;
+
+	/**
 	 * Confirms the uses has the privileges to query Customers
 	 *
 	 * @return bool
@@ -37,13 +42,25 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_query_args() {
 		/**
+		 * Prepare for later use
+		 */
+		$last = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
+
+		/**
 		 * Set the $query_args based on various defaults and primary input $args
 		 */
 		$query_args['count_total'] = false;
-		$query_args['offset']      = $this->get_offset();
 		$query_args['orderby']     = 'ID';
 		$query_args['order']       = ! empty( $this->args['last'] ) ? 'ASC' : 'DESC';
-		$query_args['number']      = $this->get_query_amount();
+		$query_args['number']      = $this->get_query_amount() + 1;
+
+		/**
+		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_user_query_cursor_pagination_support
+		 * to filter the WP_User_Query to support cursor pagination
+		 */
+		$cursor_offset                        = $this->get_offset();
+		$query_args['graphql_cursor_offset']  = $cursor_offset;
+		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
 		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
@@ -68,6 +85,51 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		$query_args['fields'] = 'ID';
+
+		/**
+		 * Map the orderby inputArgs to the WP_User_Query
+		 */
+		if ( ! empty( $this->args['where']['orderby'] ) && is_array( $this->args['where']['orderby'] ) ) {
+			$query_args['orderby'] = array();
+			foreach ( $this->args['where']['orderby'] as $orderby_input ) {
+				/**
+				 * These orderby options should not include the order parameter.
+				 */
+				if ( in_array( $orderby_input['field'], array( 'login__in', 'nicename__in' ), true ) ) {
+					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
+				} elseif ( ! empty( $orderby_input['field'] ) ) {
+					$query_args['orderby'] = array(
+						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
+					);
+				}
+			}
+		}
+
+		/**
+		 * Convert meta_value_num to seperate meta_value value field which our
+		 * graphql_wp_term_query_cursor_pagination_support knowns how to handle
+		 */
+		if ( isset( $query_args['orderby'] ) && 'meta_value_num' === $query_args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'meta_value' => empty( $query_args['order'] ) ? 'DESC' : $query_args['order'], // WPCS: slow query OK.
+			);
+			unset( $query_args['order'] );
+			$query_args['meta_type'] = 'NUMERIC';
+		}
+		/**
+		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
+		 */
+		if ( empty( $query_args['orderby'] ) ) {
+			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
+		}
+
+		if (
+			empty( $query_args['role'] ) &&
+			empty( $query_args['role__in'] ) &&
+			empty( $query_args['role__not_in'] )
+		) {
+			$query_args['role'] = 'customer';
+		}
 
 		$query_args = apply_filters(
 			'graphql_customer_connection_query_args',
@@ -149,5 +211,16 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Wrapper for "WC_Connection_Functions::is_valid_user_offset()"
+	 *
+	 * @param integer $offset User ID.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_offset( $offset ) {
+		return $this->is_valid_user_offset( $offset );
 	}
 }

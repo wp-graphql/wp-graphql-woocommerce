@@ -110,12 +110,12 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 * 
-		 * tests query as customer
+		 * tests query as customer, should return "null" because the customer isn't authorized.
 		 */
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => $id );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'order' => $this->order_helper->print_restricted_query( $this->order ) ) );
+		$expected  = array( 'data' => array( 'order' => null ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -141,16 +141,19 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function testOrderByQueryAndArgs() {
+	public function testOrderQueryAndArgs() {
 		$id    = Relay::toGlobalId( 'shop_order', $this->order );
 
 		$query = '
 			query ($id: ID, $orderId: Int, $orderKey: String) {
-				orderBy(id: $id, orderId: $orderId, orderKey: $orderKey) {
+				order(id: $id, orderId: $orderId, orderKey: $orderKey) {
 					id
 				}
 			}
 		';
+
+		// Must be an "shop_manager" or "admin" to query orders not owned by the user.
+		wp_set_current_user( $this->shop_manager );
 
 		/**
 		 * Assertion One
@@ -159,7 +162,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$variables = array( 'id' => $id );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+		$expected  = array( 'data' => array( 'order' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -173,7 +176,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$variables = array( 'orderId' => $this->order );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+		$expected  = array( 'data' => array( 'order' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -187,7 +190,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$variables = array( 'orderKey' => $this->order_helper->get_order_key( $this->order ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'orderBy' => array( 'id' => $id ) ) );
+		$expected  = array( 'data' => array( 'order' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

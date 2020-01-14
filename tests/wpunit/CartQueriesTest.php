@@ -117,7 +117,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testCartItemConnection() {
 		$cart = WC()->cart;
-		$cart->add_to_cart( $this->product_helper->create_simple(), 2 );
+		$cart->add_to_cart( $this->product_helper->create_simple( array( 'virtual' => true ) ), 2 );
 		$cart->add_to_cart( $this->product_helper->create_simple(), 1 );
 		$cart->add_to_cart( $this->product_helper->create_simple(), 10 );
 
@@ -132,9 +132,9 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$cart->apply_coupon( $code );
 
 		$query = '
-			query {
+			query($needsShipping: Boolean) {
 				cart {
-					contents {
+					contents (where: {needsShipping: $needsShipping}) {
 						nodes {
 							key
 						}
@@ -152,6 +152,76 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'cart' => array(
 					'contents' => array(
 						'nodes' => $this->helper->print_nodes(),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Tests "needsShipping" parameter.
+		 */
+		$variables = array( 'needsShipping' => true );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'contents' => array(
+						'nodes' => $this->helper->print_nodes(
+							array(
+								'filter' => function( $key ) {
+									$item = WC()->cart->get_cart_item( $key );
+									$product = WC()->product_factory->get_product( $item['product_id'] );
+									return $product->needs_shipping();
+								}
+							)
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Tests "needsShipping" parameter reversed.
+		 */
+		$variables = array( 'needsShipping' => false );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'cart' => array(
+					'contents' => array(
+						'nodes' => $this->helper->print_nodes(
+							array(
+								'filter' => function( $key ) {
+									$item = WC()->cart->get_cart_item( $key );
+									$product = WC()->product_factory->get_product( $item['product_id'] );
+									return ! $product->needs_shipping();
+								}
+							)
+						),
 					),
 				),
 			),

@@ -568,4 +568,36 @@ class Checkout_Mutation {
 		}
 		return apply_filters( 'default_checkout_' . $input, $value, $input );
 	}
+
+	/**
+	 * Add meta data not set in WC_Checkout::create_order().
+	 *
+	 * @param int         $order_id   Order ID.
+	 * @param array       $meta_data  Order meta data.
+	 * @param array       $input      Order properties.
+	 * @param AppContext  $context    AppContext instance.
+	 * @param ResolveInfo $info       ResolveInfo instance.
+	 */
+	public static function add_order_meta( $order_id, $meta_data, $input, $context, $info ) {
+		$order = \WC_Order_Factory::get_order( $order_id );
+
+		if ( $meta_data ) {
+			foreach ( $meta_data as $meta ) {
+				$order->update_meta_data( $meta['key'], $meta['value'], isset( $meta['id'] ) ? $meta['id'] : '' );
+			}
+		}
+
+		/**
+		 * Action called before changes to order meta are saved.
+		 *
+		 * @param WC_Order    $order      WC_Order instance.
+		 * @param array       $meta_data  Order meta data.
+		 * @param array       $props      Order props array.
+		 * @param AppContext  $context    Request AppContext instance.
+		 * @param ResolveInfo $info       Request ResolveInfo instance.
+		 */
+		do_action( 'woocommerce_graphql_before_checkout_meta_save', $order, $meta_data, $input, $context, $info );
+
+		$order->save();
+	}
 }

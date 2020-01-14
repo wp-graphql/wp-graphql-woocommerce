@@ -19,7 +19,10 @@ use WPGraphQL\Extension\WooCommerce\Model\Order;
  * Class Coupon_Connection_Resolver
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
-	use Common_CPT_Input_Sanitize_Functions;
+	/**
+	 * Include shared connection functions.
+	 */
+	use WC_Connection_Functions;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -105,7 +108,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = [];
+		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -163,7 +166,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_items() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+		return ! empty( $this->query->posts ) ? $this->query->posts : array();
 	}
 
 	/**
@@ -221,5 +224,16 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		);
 
 		return $args;
+	}
+
+	/**
+	 * Wrapper for "WC_Connection_Functions::is_valid_post_offset()"
+	 *
+	 * @param integer $offset Post ID.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_offset( $offset ) {
+		return $this->is_valid_post_offset( $offset );
 	}
 }

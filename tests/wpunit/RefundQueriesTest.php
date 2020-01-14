@@ -16,6 +16,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->customer        = $this->factory->user->create( array( 'role' => 'customer' ) );
 		$this->order_helper    = $this->getModule('\Helper\Wpunit')->order();
 		$this->refund_helper   = $this->getModule('\Helper\Wpunit')->refund();
+		$this->customer_helper = $this->getModule('\Helper\Wpunit')->refund();
 		$this->order           = $this->order_helper->create();
 		$this->refund          = $this->refund_helper->create( $this->order );
 	}
@@ -31,7 +32,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$id    = Relay::toGlobalId( 'shop_order_refund', $this->refund );
 
 		$query = '
-			query refundQuery( $id: ID! ) {
+			query ( $id: ID! ) {
 				refund( id: $id ) {
 					id
 					refundId
@@ -52,7 +53,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'refundQuery', $variables );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
 		$expected  = array(
 			'data' => array(
 				'refund' => $this->refund_helper->print_failed_query( $this->refund )
@@ -74,7 +80,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		wp_set_current_user( $this->shop_manager );
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'refundQuery', $variables );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
 		$expected  = array(
 			'data' => array(
 				'refund' => $this->refund_helper->print_query( $this->refund )
@@ -91,7 +102,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$id    = Relay::toGlobalId( 'shop_order_refund', $this->refund );
 
 		$query = '
-			query refundByQuery( $id: ID, $refundId: Int ) {
+			query ( $id: ID, $refundId: Int ) {
 				refundBy( id: $id, refundId: $refundId ) {
 					id
 				}
@@ -104,7 +115,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test query and "id" argument
 		 */
 		$variables = array( 'id' => $id );
-		$actual    = do_graphql_request( $query, 'refundByQuery', $variables );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
 		$expected  = array( 'data' => array( 'refundBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -118,7 +134,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test query and "refundId" argument
 		 */
 		$variables = array( 'refundId' => $this->refund );
-		$actual    = do_graphql_request( $query, 'refundByQuery', $variables );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
 		$expected  = array( 'data' => array( 'refundBy' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -136,7 +157,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query refundsQuery( $statuses: [String], $orderIn: [Int] ) {
+			query ( $statuses: [String], $orderIn: [Int] ) {
 				refunds( where: {
 					statuses: $statuses,
 					orderIn: $orderIn,
@@ -154,8 +175,8 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test query and failed results for users lacking required caps
 		 */
 		wp_set_current_user( $this->customer );
-		$actual    = do_graphql_request( $query, 'refundsQuery' );
-		$expected  = array( 'data' => array( 'refunds' => array( 'nodes' => array() ) ) );
+		$actual   = graphql( array( 'query' => $query ) );
+		$expected = array( 'data' => array( 'refunds' => array( 'nodes' => array() ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -168,8 +189,8 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test query and results for users with required caps
 		 */
 		wp_set_current_user( $this->shop_manager );
-		$actual    = do_graphql_request( $query, 'refundsQuery' );
-		$expected  = array(
+		$actual   = graphql( array( 'query' => $query ) );
+		$expected = array(
 			'data' => array(
 				'refunds' => array(
 					'nodes' => $this->refund_helper->print_nodes( $refunds )
@@ -189,7 +210,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Note: This argument is functionally useless Refunds' "post_status" is always set to "completed".
 		 */
 		$variables = array( 'statuses' => array( 'completed' ) );
-		$actual    = do_graphql_request( $query, 'refundsQuery', $variables );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
 		$expected  = array(
 			'data' => array(
 				'refunds' => array(
@@ -217,7 +243,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test "orderIn" where argument
 		 */
 		$variables = array( 'orderIn' => array( $this->order ) );
-		$actual    = do_graphql_request( $query, 'refundsQuery', $variables );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
 		$expected  = array(
 			'data' => array(
 				'refunds' => array(
@@ -229,6 +260,94 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 								return $refund->get_parent_id() === $this->order;
 							},
 						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testOrderToRefundsConnection() {
+		$order   = $this->order_helper->create();
+		$refunds = array(
+			$this->refund_helper->create( $order, array( 'amount' => 0.5 ) ),
+			$this->refund_helper->create( $order, array( 'status' => 'pending', 'amount' => 0.5 ) ),
+		);
+
+		$query   = '
+			query ( $id: ID! ) {
+				order(id: $id) {
+					refunds {
+						nodes {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		wp_set_current_user( $this->shop_manager );
+		$variables = array( 'id' => $this->order_helper->to_relay_id( $order ) );
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array(
+			'data' => array(
+				'order' => array(
+					'refunds' => array(
+						'nodes' => $this->refund_helper->print_nodes(
+							$refunds,
+							array(
+								'filter' => function( $id ) use( $order ) {
+									$refund = new WC_Order_Refund( $id );
+									return $refund->get_parent_id() === $order;
+								},
+							)
+						),
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testCustomerToRefundsConnection() {
+		$order   = $this->order_helper->create( array( 'customer_id' => $this->customer ) );
+		$refunds = array(
+			$this->refund_helper->create( $order, array( 'amount' => 0.5 ) ),
+			$this->refund_helper->create( $order, array( 'status' => 'pending', 'amount' => 0.5 ) ),
+		);
+
+		$query   = '
+			query {
+				customer {
+					refunds {
+						nodes {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		wp_set_current_user( $this->customer );
+		$actual   = graphql( array( 'query' => $query ) );
+		$expected = array(
+			'data' => array(
+				'customer' => array(
+					'refunds' => array(
+						'nodes' => $this->refund_helper->print_nodes( $refunds ),
 					),
 				),
 			),
