@@ -267,4 +267,18 @@ class Order extends Crud_CPT {
 
 		parent::prepare_fields();
 	}
+
+	/**
+	 * Determines if the data object should be considered private
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	protected function is_private() {
+		if ( current_user_can( $this->post_type_object->cap->edit_others_posts ) ) {
+			return true;
+		}
+
+		return $this->owner_matches_current_user();
+	}
 }
