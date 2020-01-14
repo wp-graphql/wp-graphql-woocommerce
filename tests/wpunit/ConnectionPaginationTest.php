@@ -15,7 +15,6 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 
         // Create users.
         $this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-        $this->simple_customer = $this->factory->user->create( array( 'role' => 'customer' ) );
 
         // Setup helpers.
         $this->coupons   = $this->getModule('\Helper\Wpunit')->coupon();
@@ -127,7 +126,6 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    // tests
     public function testProductsPagination() {
         $products = array(
             $this->products->create_simple(),
@@ -220,7 +218,6 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    // tests
     public function testOrdersPagination() {
         $orders = array(
             $this->orders->create(),
@@ -315,7 +312,6 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertEquals( $expected, $actual );
     }
 
-    // tests
     public function testRefundsPagination() {
         $order   = $this->orders->create();
         $refunds = array(
@@ -407,6 +403,100 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         // Check refunds.
         $actual   = $results['data']['refunds']['nodes'];
         $expected = $this->refunds->print_nodes( array_slice( $refunds, 2, 3 ) );
+
+        $this->assertEquals( $expected, $actual );
+    }
+
+    public function testCustomersPagination() {
+        $customers = array(
+            $this->customers->create(),
+            $this->customers->create(),
+            $this->customers->create(),
+            $this->customers->create(),
+            $this->customers->create(),
+        );
+        
+        usort(
+            $customers,
+            function( $key_a, $key_b ) {
+                return $key_a < $key_b;
+            }
+        );
+
+        $query = '
+            query ($first: Int, $last: Int, $after: String, $before: String) {
+                customers(first: $first, last: $last, after: $after, before: $before) {
+                    nodes {
+                        id
+                    }
+                    pageInfo {
+                        hasPreviousPage
+                        hasNextPage
+                        startCursor
+                        endCursor
+                    }
+                }
+            }
+        ';
+        
+        wp_set_current_user( $this->shop_manager );
+
+        /**
+         * Assertion One
+         * 
+         * Test "first" parameter.
+         */
+        $variables = array( 'first' => 2 );
+        $results   = graphql(
+            array(
+                'query'     => $query,
+                'variables' => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $results );
+
+        // Check pageInfo.
+        $this->assertNotEmpty( $results['data'] );
+        $this->assertNotEmpty( $results['data']['customers'] );
+        $this->assertNotEmpty( $results['data']['customers']['pageInfo'] );
+        $this->assertTrue( $results['data']['customers']['pageInfo']['hasNextPage'] );
+        $this->assertNotEmpty( $results['data']['customers']['pageInfo']['endCursor'] );
+        $end_cursor = $results['data']['customers']['pageInfo']['endCursor'];
+
+        // Check customers.
+        $actual   = $results['data']['customers']['nodes'];
+        $expected = $this->customers->print_nodes( array_slice( $customers, 0, 2 ) );
+
+        $this->assertEquals( $expected, $actual );
+        
+        /**
+         * Assertion Two
+         * 
+         * Test "after" parameter.
+         */
+        $variables = array( 'first' => 3, 'after' => $end_cursor );
+        $results    = graphql(
+            array(
+                'query'     => $query,
+                'variables' => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $results );
+
+        // Check pageInfo.
+        $this->assertNotEmpty( $results['data'] );
+        $this->assertNotEmpty( $results['data']['customers'] );
+        $this->assertNotEmpty( $results['data']['customers']['pageInfo'] );
+        $this->assertFalse( $results['data']['customers']['pageInfo']['hasNextPage'] );
+        $this->assertNotEmpty( $results['data']['customers']['pageInfo']['endCursor'] );
+
+        // Check customers.
+        $actual   = $results['data']['customers']['nodes'];
+        $expected = $this->customers->print_nodes( array_slice( $customers, 2, 3 ) );
 
         $this->assertEquals( $expected, $actual );
     }

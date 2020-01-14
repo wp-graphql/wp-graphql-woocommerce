@@ -84,10 +84,6 @@ class Order_Delete {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-			if ( ! Order_Mutation::authorized( 'delete', $input, $context, $info ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
-			}
-
 			// Retrieve order ID.
 			$order_id = null;
 			if ( ! empty( $input['id'] ) ) {
@@ -100,6 +96,11 @@ class Order_Delete {
 				$order_id = absint( $input['orderId'] );
 			} else {
 				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
+			}
+
+			// Check if authorized to delete this order.
+			if ( ! Order_Mutation::authorized( 'delete', $order_id, $input, $context, $info ) ) {
+				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
 			}
 
 			$force_delete = false;
