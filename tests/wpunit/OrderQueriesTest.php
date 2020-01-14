@@ -110,12 +110,12 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 * 
-		 * tests query as customer
+		 * tests query as customer, should return "null" because the customer isn't authorized.
 		 */
 		wp_set_current_user( $this->customer );
 		$variables = array( 'id' => $id );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'order' => $this->order_helper->print_restricted_query( $this->order ) ) );
+		$expected  = array( 'data' => array( 'order' => null ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -151,6 +151,9 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
+
+		// Must be an "shop_manager" or "admin" to query orders not owned by the user.
+		wp_set_current_user( $this->shop_manager );
 
 		/**
 		 * Assertion One

@@ -366,7 +366,26 @@ class Order_Type {
 						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s' ), $id_type, $product_id ) );
 					}
 
-					$order = Factory::resolve_crud_object( $order_id, $context );
+					// Check if user authorized to view order.
+					$post_type = get_post_type_object( 'shop_order' );
+					$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
+					if ( get_current_user_id() ) {
+						$orders = wc_get_orders(
+							array(
+								'type'          => 'shop_order',
+								'post__in'      => array( $order_id ),
+								'customer_id'   => get_current_user_id(),
+								'no_rows_found' => true,
+								'return'        => 'ids',
+							)
+						);
+
+						if ( in_array( $order_id, $orders, true ) ) {
+							$is_authorized = true;
+						}
+					}
+
+					$order = $is_authorized ? Factory::resolve_crud_object( $order_id, $context ) : null;
 
 					return $order;
 				},

@@ -462,6 +462,9 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
+
+        // Must be an "shop_manager" or "admin" to query orders not owned by the user.
+        wp_set_current_user( $this->shop_manager );
         
         /**
          * Assertion One
