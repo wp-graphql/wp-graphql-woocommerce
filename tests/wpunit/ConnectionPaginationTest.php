@@ -46,7 +46,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $coupons,
             function( $key_a, $key_b ) {
 				return $key_a < $key_b;
-			},
+			}
         );
 
 		$query = '
@@ -141,7 +141,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $products,
             function( $key_a, $key_b ) {
 				return $key_a < $key_b;
-			},
+			}
         );
 
 		$query = '
@@ -234,7 +234,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $orders,
             function( $key_a, $key_b ) {
 				return $key_a < $key_b;
-			},
+			}
         );
 
 		$query = '
@@ -330,7 +330,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $refunds,
             function( $key_a, $key_b ) {
 				return $key_a < $key_b;
-			},
+			}
         );
 
 		$query = '
