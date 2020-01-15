@@ -1,8 +1,8 @@
 <?php
 /**
- * Connection type - ProductTags
+ * Connection type - WC taxonomies.
  *
- * Registers connections to ProductTags
+ * Registers connections to WC taxonomy types.
  *
  * @package WPGraphQL\WooCommerce\Connection
  * @since 0.0.1
