@@ -27,6 +27,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Manage_Stock::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Order_Status::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Types::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Attribute_Types::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Stock_Status::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Tax_Class::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Tax_Status::register();
@@ -54,15 +55,16 @@ class Type_Registry {
 
 		// Interfaces.
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product::register_interface( $type_registry );
+		\WPGraphQL\WooCommerce\Type\WPInterface\Product_Attribute::register_interface( $type_registry );
 
 		// Objects.
 		\WPGraphQL\WooCommerce\Type\WPObject\Coupon_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Types::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Product_Attribute_Types::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Variation_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Order_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Order_Item_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Refund_Type::register();
-		\WPGraphQL\WooCommerce\Type\WPObject\Product_Attribute_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Download_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Customer_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Customer_Address_Type::register();

@@ -383,7 +383,7 @@ class ProductHelper extends WCG_Helper {
 
 		foreach( $attributes as $attribute_name => $attribute ) {
 			$results[] = array(
-				'id'          => base64_encode( $attribute_name . '||' . $id . '||' . $attribute->get_id() ),
+				'id'          => base64_encode( $attribute_name . ':' . $id . ':' . $attribute->get_name() ),
 				'attributeId' => $attribute->get_id(),
 				'name'        => $attribute->get_name(),
 				'options'     => $attribute->get_slugs(),
@@ -456,5 +456,46 @@ class ProductHelper extends WCG_Helper {
 		}
 
 		return null;
+	}
+
+	public function create_review( $product_id, $args = array() ) {
+		$firstName = $this->dummy->firstname();
+		$data = array_merge(
+			array(
+				'comment_post_ID'      => $product_id,
+				'comment_author'       => $firstName,
+				'comment_author_email' => "{$firstName}@example.com",
+				'comment_author_url'   => '',
+				'comment_content'      => $this->dummy->text(),
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			),
+			$args
+		);
+
+		$comment_id = wp_insert_comment( $data );
+
+		$rating = ! empty( $args['rating'] ) ? $args['rating'] : $this->dummy->number( 0, 5 );
+		update_comment_meta( $comment_id, 'rating', $rating );
+
+		return $comment_id;
+	}
+
+	public function print_review_edges( $ids ) {
+		if ( empty( $ids ) ) {
+			return array();
+		}
+
+		$reviews = array();
+		foreach ( $ids as $review_id ) {
+			$reviews[] = array(
+				'rating' => get_comment_meta( $review_id, 'rating', true ), 
+				'node'   => array(
+					'id' => Relay::toGlobalId( 'comment', $review_id )
+				),
+			);
+		}
+	
+		return $reviews;
 	}
 }
