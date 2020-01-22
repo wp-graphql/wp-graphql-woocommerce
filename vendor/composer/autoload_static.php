@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0
+class ComposerStaticInit4127ab9804a522d85e48188e585a812c
 {
     public static $files = array (
         '914b07b8cf678ed0b81bfdb5d23b4f2b' => __DIR__ . '/../..' . '/includes/connection/common-post-type-args.php',
@@ -42,6 +42,7 @@ class ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0
         'WPGraphQL\\WooCommerce\\Connection\\Cart_Items' => __DIR__ . '/../..' . '/includes/connection/class-cart-items.php',
         'WPGraphQL\\WooCommerce\\Connection\\Coupons' => __DIR__ . '/../..' . '/includes/connection/class-coupons.php',
         'WPGraphQL\\WooCommerce\\Connection\\Customers' => __DIR__ . '/../..' . '/includes/connection/class-customers.php',
+        'WPGraphQL\\WooCommerce\\Connection\\Downloadable_Items' => __DIR__ . '/../..' . '/includes/connection/class-downloadable-items.php',
         'WPGraphQL\\WooCommerce\\Connection\\Order_Items' => __DIR__ . '/../..' . '/includes/connection/class-order-items.php',
         'WPGraphQL\\WooCommerce\\Connection\\Orders' => __DIR__ . '/../..' . '/includes/connection/class-orders.php',
         'WPGraphQL\\WooCommerce\\Connection\\Payment_Gateways' => __DIR__ . '/../..' . '/includes/connection/class-payment-gateways.php',
@@ -58,6 +59,7 @@ class ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Cart_Item_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-cart-item-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Coupon_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-coupon-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Customer_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-customer-connection-resolver.php',
+        'WPGraphQL\\WooCommerce\\Data\\Connection\\Downloadable_Item_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-downloadable-item-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Order_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-order-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Order_Item_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-order-item-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Payment_Gateway_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-payment-gateway-connection-resolver.php',
@@ -143,6 +145,7 @@ class ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Coupon_Type' => __DIR__ . '/../..' . '/includes/type/object/class-coupon-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Customer_Address_Type' => __DIR__ . '/../..' . '/includes/type/object/class-customer-address-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Customer_Type' => __DIR__ . '/../..' . '/includes/type/object/class-customer-type.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPObject\\Downloadable_Item_Type' => __DIR__ . '/../..' . '/includes/type/object/class-downloadable-item-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Meta_Data_Type' => __DIR__ . '/../..' . '/includes/type/object/class-meta-data-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Order_Item_Type' => __DIR__ . '/../..' . '/includes/type/object/class-order-item-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Order_Type' => __DIR__ . '/../..' . '/includes/type/object/class-order-type.php',
@@ -167,9 +170,9 @@ class ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit8ad1f343d0cd8163c5fbabd591f04ce0::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4127ab9804a522d85e48188e585a812c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4127ab9804a522d85e48188e585a812c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4127ab9804a522d85e48188e585a812c::$classMap;
 
         }, null, ClassLoader::class);
     }
