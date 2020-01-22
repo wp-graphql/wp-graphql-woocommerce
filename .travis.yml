@@ -15,9 +15,7 @@ branches:
   only:
     - develop
     - master
-    - release-v0.1.2
-    - release-v0.2.2
-    - release-v0.3.3
+    - release/v0.4.0
 
 cache:
   apt: true
@@ -77,6 +75,7 @@ before_script:
       docker-compose build \
         --build-arg DESIRED_PHP_VERSION=${PHP_VERSION} \
         --build-arg DESIRED_WP_VERSION=${WP_VERSION} \
+        --build-arg USE_XDEBUG=${USE_XDEBUG} \
         testing
     fi   
   # Install PHP CodeSniffer and WPCS.

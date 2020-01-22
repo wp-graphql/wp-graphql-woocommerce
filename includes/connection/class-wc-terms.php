@@ -1,8 +1,8 @@
 <?php
 /**
- * Connection type - ProductTags
+ * Connection type - WC taxonomies.
  *
- * Registers connections to ProductTags
+ * Registers connections to WC taxonomy types.
  *
  * @package WPGraphQL\WooCommerce\Connection
  * @since 0.0.1
@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Error\UserError;
 use WPGraphQL\Connection\TermObjects;
 
 /**
@@ -71,6 +72,34 @@ class WC_Terms extends TermObjects {
 					'toType'        => 'ProductCategory',
 					'fromFieldName' => 'excludedProductCategories',
 				)
+			)
+		);
+
+		register_graphql_connection(
+			array(
+				'fromType'       => 'GlobalProductAttribute',
+				'toType'         => 'TermNode',
+				'queryClass'     => 'WP_Term_Query',
+				'resolveNode'    => function( $id, $args, $context, $info ) {
+					return \WPGraphQL\Data\DataSource::resolve_term_object( $id, $context );
+				},
+				'fromFieldName'  => 'terms',
+				'connectionArgs' => self::get_connection_args(),
+				'resolve'        => function ( $source, $args, $context, $info ) {
+					if ( ! $source->is_taxonomy() ) {
+						throw new UserError( __( 'Invalid product attribute', 'wp-graphql-woocommerce' ) );
+					}
+					$taxonomies = array( $source->get_name() );
+					$resolver   = new \WPGraphQL\Data\Connection\TermObjectConnectionResolver(
+						$source,
+						$args,
+						$context,
+						$info,
+						$taxonomies
+					);
+					$connection = $resolver->get_connection();
+					return $connection;
+				},
 			)
 		);
 	}

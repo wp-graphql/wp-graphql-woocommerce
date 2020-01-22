@@ -147,7 +147,19 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
                         needsShippingAddress
                         hasDownloadableItem
                         downloadableItems {
-                            downloadId
+                            nodes {
+                                url
+                                accessExpires
+                                downloadId
+                                downloadsRemaining
+                                name
+                                product {
+                                    productId
+                                }
+                                download {
+                                    downloadId
+                                }
+                            }
                         }
                         needsPayment
                         needsProcessing

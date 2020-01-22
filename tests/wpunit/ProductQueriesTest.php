@@ -36,7 +36,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'category_ids'      => array( $category_id ),
 				'image_id'          => $this->image_id,
 				'gallery_image_ids' => array( $this->image_id ),
-				'downloads'         => array( ProductHelper::create_download() ),
+                'downloadable'      => true,
+				'downloads'         => array( $this->helper->create_download() ),
 				'slug'              => 'product-slug',
 				'sku'               => 'product-sku',
 			)
@@ -1154,6 +1155,58 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					),
 					'crossSell' => array( 'nodes' => $this->helper->print_nodes( $products['cross_sell'] ) ),
 					'upsell'    => array( 'nodes' => $this->helper->print_nodes( $products['upsell'] ) ),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductToReviewConnections() {
+		$reviews = array(
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+			$this->helper->create_review( $this->product ),
+		);
+
+		$query = '
+			query ($id: ID!) {
+				product(id: $id) {
+					id
+					reviews(last: 5, where: {order: DESC}) {
+						averageRating
+						edges {
+							rating
+							node {
+								id
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $this->product ) );
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables
+			)
+		);
+		$product = WC()->product_factory->get_product( $this->product );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'id'      => $this->helper->to_relay_id( $this->product ),
+					'reviews' => array(
+						'averageRating' => $product->get_average_rating(),
+						'edges'         => $this->helper->print_review_edges( $reviews ),
+					),
 				),
 			),
 		);

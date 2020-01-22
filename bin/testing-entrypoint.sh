@@ -53,12 +53,12 @@ fi
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
 # Install pcov/clobber if PHP7.1+
-if version_gt $PHP_VERSION 7.0 && [[ "$COVERAGE" == "1" ]]; then
+if version_gt $PHP_VERSION 7.0 && [[ "$COVERAGE" == "1" ]] && [[ -z "$USING_XDEBUG" ]]; then
     echo "Installing pcov/clobber"
     COMPOSER_MEMORY_LIMIT=-1 composer require --dev pcov/clobber
     vendor/bin/pcov clobber
 elif [ "$COVERAGE" == "1" ]; then
-    echo "Sorry, there is no PCOV support for this PHP ${PHP_VERSION} at this time"
+    echo "Using XDebug for codecoverage"
 fi
 
 # Set output permission
@@ -81,10 +81,21 @@ if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
     sed -i "s~$pattern~~g" "$TESTS_OUTPUT"/coverage.xml
 
     # Remove pcov/clobber
-    if version_gt $PHP_VERSION 7.0 && [ "$SKIP_TESTS_CLEANUP" != "1" ]; then
+    if version_gt $PHP_VERSION 7.0 && [ "$SKIP_TESTS_CLEANUP" != "1" ] && [[ -z "$USING_XDEBUG" ]]; then
         echo 'Removing pcov/clobber.'
         vendor/bin/pcov unclobber
         COMPOSER_MEMORY_LIMIT=-1 composer remove --dev pcov/clobber
+    fi
+
+    if [ "$SKIP_TESTS_CLEANUP" != "1" ]; then
+        echo 'Changing composer configuration in container.'
+        composer config --global discard-changes true
+
+        echo 'Removing devDependencies.'
+        composer install --no-dev -n
+
+        echo 'Removing composer.lock'
+        rm composer.lock
     fi
 fi
 

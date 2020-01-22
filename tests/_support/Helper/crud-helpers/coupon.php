@@ -32,8 +32,6 @@ class CouponHelper extends WCG_Helper {
 			)
 		);
 
-		codecept_debug( $coupon );
-
 		// Set meta data.
 		if ( ! empty( $args['meta_data'] ) ) {
 			$coupon->set_meta_data( $args['meta_data'] );

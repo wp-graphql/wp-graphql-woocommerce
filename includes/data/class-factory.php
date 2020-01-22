@@ -27,6 +27,7 @@ use WPGraphQL\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Downloadable_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Model\Order_Item;
 use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Customer;
@@ -488,6 +489,22 @@ class Factory {
 	 */
 	public static function resolve_cart_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Cart_Item_Connection_Resolver( $source, $args, $context, $info );
+		return $resolver->get_connection();
+	}
+
+	/**
+	 * Resolves DownloadableItem connections
+	 *
+	 * @param mixed       $source     - Data resolver for connection source.
+	 * @param array       $args       - Connection arguments.
+	 * @param AppContext  $context    - AppContext object.
+	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public static function resolve_downloadable_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Downloadable_Item_Connection_Resolver( $source, $args, $context, $info );
 		return $resolver->get_connection();
 	}
 

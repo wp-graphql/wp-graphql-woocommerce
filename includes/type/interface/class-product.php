@@ -4,7 +4,7 @@
  *
  * Registers Product interface.
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package \WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.3.0
  */
 
@@ -22,7 +22,7 @@ use WPGraphQL\WooCommerce\Data\Factory;
  */
 class Product {
 	/**
-	 * Registers ProductUnion.
+	 * Registers the "Product" interface.
 	 *
 	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  Instance of the WPGraphQL TypeRegistry.
 	 */
