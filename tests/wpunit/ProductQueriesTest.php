@@ -36,7 +36,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'category_ids'      => array( $category_id ),
 				'image_id'          => $this->image_id,
 				'gallery_image_ids' => array( $this->image_id ),
-				'downloads'         => array( ProductHelper::create_download() ),
+                'downloadable'      => true,
+				'downloads'         => array( $this->helper->create_download() ),
 				'slug'              => 'product-slug',
 				'sku'               => 'product-sku',
 			)

@@ -17,14 +17,16 @@ SHELL [ "/bin/bash", "-c" ]
 # Redeclare ARGs and set as environmental variables for reuse.
 ARG DESIRED_WP_VERSION
 ARG DESIRED_PHP_VERSION
+ARG USE_XDEBUG
 ENV WP_VERSION=${DESIRED_WP_VERSION}
 ENV PHP_VERSION=${DESIRED_PHP_VERSION}
+ENV USING_XDEBUG=${USE_XDEBUG}
 
 # Install php extensions
 RUN docker-php-ext-install pdo_mysql
 
 # Install PCOV and XDebug
-RUN if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "7.0" ]; then \
+RUN if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "7.0" ] && [[ -z "$USING_XDEBUG" ]]; then \
         apt-get install zip unzip -y && \
         pecl install pcov && \
         docker-php-ext-enable pcov && \
@@ -32,6 +34,11 @@ RUN if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "7.0" ]; then \
         echo "pcov.enabled=1" >> /usr/local/etc/php/php.ini ;\
     elif  [ "$PHP_VERSION" == "5.6" ]; then \
         yes | pecl install xdebug-2.5.5 \
+        && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+        && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+        && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    elif  [ "$PHP_VERSION" == "7.0" ]; then \
+        yes | pecl install xdebug-2.6.1 \
         && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini; \

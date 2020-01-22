@@ -305,14 +305,11 @@ class OrderHelper extends WCG_Helper {
 			'isDownloadPermitted'   => $data->is_download_permitted(),
 			'needsShippingAddress'  => $data->needs_shipping_address(),
 			'hasDownloadableItem'   => $data->has_downloadable_item(),
-			'downloadableItems'     => ! empty( $data->get_downloadable_items() )
-				? array_map(
-					function( $download ) {
-						return array( 'downloadId' => $download->get_id() );
-					},
-					$data->get_downloadable_items()
-				)
-				: null,
+			'downloadableItems'     => array(
+				'nodes' => ! empty( $data->get_downloadable_items() )
+					? $this->print_downloadables( $data->get_id() )
+					: array(),
+			),
 			'needsPayment'          => $data->needs_payment(),
 			'needsProcessing'       => $data->needs_processing(),
 		);
@@ -435,16 +432,38 @@ class OrderHelper extends WCG_Helper {
 			'isDownloadPermitted'   => $data->is_download_permitted(),
 			'needsShippingAddress'  => $data->needs_shipping_address(),
 			'hasDownloadableItem'   => $data->has_downloadable_item(),
-			'downloadableItems'     => ! empty( $data->get_downloadable_items() )
-				? array_map(
-					function( $download ) {
-						return array( 'downloadId' => $download->get_id() );
-					},
-					$data->get_downloadable_items()
-				)
-				: null,
+			'downloadableItems'     => array(
+				'nodes' => ! empty( $data->get_downloadable_items() )
+					? $this->print_downloadables( $data->get_id() )
+					: array(),
+			),
 			'needsPayment'          => $data->needs_payment(),
 			'needsProcessing'       => $data->needs_processing(),
 		);
+	}
+
+	public function print_downloadables( $id ) {
+		$data = new WC_Order( $id );
+
+		if ( ! $data->get_id() ) {
+			return null;
+		}
+		
+		$nodes = array();
+		foreach ( $data->get_downloadable_items() as $item ) {
+			$nodes[] = array(
+				'url'                => $item['download_url'],
+				'accessExpires'      => $item['access_expires'],
+				'downloadId'         => $item['download_id'],
+				'downloadsRemaining' => isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
+					? $item['downloads_remaining']
+					: null,
+				'name'               => $item['download_name'],
+				'product'            => array( 'productId' => $item['product_id'] ),
+				'download'           => array( 'downloadId' => $item['download_id'] ),
+			);
+		}
+
+		return $nodes;
 	}
 }

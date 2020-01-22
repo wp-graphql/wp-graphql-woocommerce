@@ -247,9 +247,6 @@ class Order extends Crud_CPT {
 				'needsProcessing'       => function() {
 					return ! is_null( $this->data->needs_processing() ) ? $this->data->needs_processing() : null;
 				},
-				'downloadableItems'     => function() {
-					return ! empty( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
-				},
 				/**
 				 * Connection resolvers fields
 				 *
@@ -261,6 +258,9 @@ class Order extends Crud_CPT {
 				},
 				'parent_id'             => function() {
 					return ! empty( $this->data ) ? $this->data->get_parent_id() : null;
+				},
+				'downloadable_items'    => function() {
+					return ! empty( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
 				},
 			);
 		}

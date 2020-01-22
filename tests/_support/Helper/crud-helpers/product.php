@@ -210,7 +210,7 @@ class ProductHelper extends WCG_Helper {
 
 		// Make sure caches are clean.
 		delete_transient( 'wc_attribute_taxonomies' );
-		WC_Cache_Helper::incr_cache_prefix( 'woocommerce-attributes' );
+		WC_Cache_Helper::invalidate_cache_group( 'woocommerce-attributes' );
 
 		// These are exported as labels, so convert the label to a name if possible first.
 		$attribute_labels = wp_list_pluck( wc_get_attribute_taxonomies(), 'attribute_label', 'attribute_name' );
@@ -285,7 +285,7 @@ class ProductHelper extends WCG_Helper {
 
 	public function create_download( $id = 0 ) {
 		$download = new WC_Product_Download();
-		$download->set_id( 'testid' );
+		$download->set_id( wp_generate_uuid4() );
 		$download->set_name( 'Test Name' );
 		$download->set_file( 'http://example.com/file.jpg' );
 

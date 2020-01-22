@@ -14,7 +14,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         parent::setUp();
 
         // Create users.
-        $this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+        $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
 
         // Setup helpers.
         $this->coupons   = $this->getModule('\Helper\Wpunit')->coupon();
@@ -497,6 +497,167 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         // Check customers.
         $actual   = $results['data']['customers']['nodes'];
         $expected = $this->customers->print_nodes( array_slice( $customers, 2, 3 ) );
+
+        $this->assertEquals( $expected, $actual );
+    }
+
+    public function testDownloadableItemsPagination() {
+        $customer_id = $this->customers->create();
+        $downloable_products = array(
+            $this->products->create_simple(
+                array(
+                    'downloadable' => true,
+                    'downloads'    => array( $this->products->create_download() )
+                )
+            ),
+            $this->products->create_simple(
+                array(
+                    'downloadable' => true,
+                    'downloads'    => array( $this->products->create_download() )
+                )
+            ),
+            $this->products->create_simple(
+                array(
+                    'downloadable' => true,
+                    'downloads'    => array( $this->products->create_download() )
+                )
+            ),
+            $this->products->create_simple(
+                array(
+                    'downloadable' => true,
+                    'downloads'    => array( $this->products->create_download() )
+                )
+            ),
+            $this->products->create_simple(
+                array(
+                    'downloadable' => true,
+                    'downloads'    => array( $this->products->create_download() )
+                )
+            ),
+        );
+
+        $order_id = $this->orders->create(
+            array(
+                'status'      => 'completed',
+                'customer_id' => $customer_id,
+            ),
+            array(
+                'line_items' => array_map(
+                    function( $product_id ) {
+                        return array(
+                            'product' => $product_id,
+                            'qty'     => 1,
+                        );
+                    },
+                    $downloable_products
+                ),
+            )
+        );
+
+        // Force download permission updated.
+        wc_downloadable_product_permissions( $order_id, true );
+
+        $query = '
+            query ($first: Int, $last: Int, $after: String, $before: String) {
+                customer {
+                    orders {
+                        nodes {
+                            downloadableItems(first: $first, last: $last, after: $after, before: $before) {
+                                nodes {
+                                    product {
+                                        productId
+                                    }
+                                }
+                                pageInfo {
+                                    hasPreviousPage
+                                    hasNextPage
+                                    startCursor
+                                    endCursor
+                                }
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        ';
+        
+        wp_set_current_user( $customer_id );
+
+        /**
+         * Assertion One
+         * 
+         * Test "first" parameter.
+         */
+        $variables = array( 'first' => 2 );
+        $results   = graphql(
+            array(
+                'query'     => $query,
+                'variables' => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $results );
+
+        // Check pageInfo.
+        $this->assertNotEmpty( $results['data'] );
+        $this->assertNotEmpty( $results['data']['customer'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo'] );
+        $this->assertTrue( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['hasNextPage'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['endCursor'] );
+        $end_cursor = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['endCursor'];
+
+        // Check downloadable items.
+        $actual   = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['nodes'];
+        $expected = array_map(
+            function( $product_id ) {
+                return array( 'product' => array( 'productId' => $product_id ) );
+            },
+            array_slice( $downloable_products, 0, 2 )
+        );
+
+        $this->assertEquals( $expected, $actual );
+        
+        /**
+         * Assertion Two
+         * 
+         * Test "after" parameter.
+         */
+        $variables = array( 'first' => 3, 'after' => $end_cursor );
+        $results    = graphql(
+            array(
+                'query'     => $query,
+                'variables' => $variables,
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $results );
+
+        // Check pageInfo.
+        $this->assertNotEmpty( $results['data'] );
+        $this->assertNotEmpty( $results['data']['customer'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo'] );
+        $this->assertFalse( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['hasNextPage'] );
+        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['endCursor'] );
+
+        // Check downloadable items.
+        $actual   = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['nodes'];
+        $expected = array_map(
+            function( $product_id ) {
+                return array( 'product' => array( 'productId' => $product_id ) );
+            },
+            array_slice( $downloable_products, 2, 3 )
+        );
 
         $this->assertEquals( $expected, $actual );
     }

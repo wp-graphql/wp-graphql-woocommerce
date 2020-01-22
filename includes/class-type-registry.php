@@ -64,6 +64,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Variation_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Order_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Order_Item_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Downloadable_Item_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Refund_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Download_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Customer_Type::register();
@@ -88,6 +89,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Connection\Products::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Orders::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Order_Items::register_connections();
+		\WPGraphQL\WooCommerce\Connection\Downloadable_Items::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Refunds::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Product_Attributes::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Variation_Attributes::register_connections();
