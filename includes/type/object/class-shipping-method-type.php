@@ -61,26 +61,49 @@ class Shipping_Method_Type {
 				'args'        => array(
 					'id'       => array(
 						'type'        => 'ID',
-						'description' => __( 'Get the shipping method by its global ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' ),
+					),
+					'idType'   => array(
+						'type'        => 'ShippingMethodIdTypeEnum',
+						'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 					),
 					'methodId' => array(
-						'type'        => 'ID',
-						'description' => __( 'Get the shipping method by its database ID', 'wp-graphql-woocommerce' ),
+						'type'              => 'ID',
+						'description'       => __( 'Get the shipping method by its database ID', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => __(
+							'This argument has been deprecation, and will be removed in v0.5.x. Please use "shippingMethod(id: value, idType: DATABASE_ID)" instead.',
+							'wp-graphql-woocommerce'
+						),
 					),
 				),
 				'resolve'     => function ( $source, array $args ) {
-					$method_id = 0;
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-						}
+					$id = isset( $args['id'] ) ? $args['id'] : null;
+					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
-						$arg          = 'ID';
-						$method_id = $id_components['id'];
-					} elseif ( ! empty( $args['methodId'] ) ) {
-						$arg          = 'database ID';
-						$method_id = $args['methodId'];
+					/**
+					 * Process deprecated arguments
+					 *
+					 * Will be removed in v0.5.x.
+					 */
+					if ( ! empty( $args['methodId'] ) ) {
+						$id = $args['methodId'];
+						$id_type = 'database_id';
+					}
+
+					$method_id = null;
+					switch ( $id_type ) {
+						case 'database_id':
+							$method_id = $id;
+							break;
+						case 'global_id':
+						default:
+							$id_components = Relay::fromGlobalId( $id );
+							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+							}
+							$method_id = $id_components['id'];
+							break;
 					}
 
 					return Factory::resolve_shipping_method( $method_id );

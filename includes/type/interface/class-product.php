@@ -56,7 +56,8 @@ class Product {
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'id'     => array(
-						'type' => array( 'non_null' => 'ID' ),
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'The ID for identifying the product', 'wp-graphql-woocommerce' ),
 					),
 					'idType' => array(
 						'type'        => 'ProductIdTypeEnum',

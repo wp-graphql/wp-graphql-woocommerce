@@ -253,15 +253,15 @@ class Product_Variation_Type {
 				'args'        => array(
 					'id'          => array(
 						'type'        => 'ID',
-						'description' => __( 'Get the product variation by its global ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' ),
 					),
 					'idType'      => array(
 						'type'        => 'ProductVariationIdTypeEnum',
 						'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 					),
 					'variationId' => array(
-						'type'        => 'Int',
-						'description' => __( 'Get the product variation by its database ID', 'wp-graphql-woocommerce' ),
+						'type'              => 'Int',
+						'description'       => __( 'Get the product variation by its database ID', 'wp-graphql-woocommerce' ),
 						'isDeprecated'      => true,
 						'deprecationReason' => __(
 							'This argument has been deprecation, and will be removed in v0.5.x. Please use "productVariation(id: value, idType: DATABASE_ID)" instead',

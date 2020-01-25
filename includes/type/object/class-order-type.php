@@ -329,7 +329,7 @@ class Order_Type {
 				'args'        => array(
 					'id'       => array(
 						'type'        => 'ID',
-						'description' => __( 'Get the order by its global ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID for identifying the order', 'wp-graphql-woocommerce' ),
 					),
 					'idType'   => array(
 						'type'        => 'OrderIdTypeEnum',

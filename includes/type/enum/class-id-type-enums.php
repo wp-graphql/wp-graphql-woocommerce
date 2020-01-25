@@ -23,7 +23,7 @@ class Id_Type_Enums {
 		register_graphql_enum_type(
 			'CouponIdTypeEnum',
 			array(
-				'description' => __( 'The Type of Identifier used to fetch a single resource. Default is ID.', 'wp-graphql' ),
+				'description' => __( 'The Type of Identifier used to fetch a single Coupon. Default is ID.', 'wp-graphql' ),
 				'values'      => array(
 					'id'          => self::get_value( 'id' ),
 					'database_id' => self::get_value( 'database_id' ),
@@ -39,7 +39,7 @@ class Id_Type_Enums {
 		register_graphql_enum_type(
 			'OrderIdTypeEnum',
 			array(
-				'description' => __( 'The Type of Identifier used to fetch a single resource. Default is ID.', 'wp-graphql' ),
+				'description' => __( 'The Type of Identifier used to fetch a single Order. Default is ID.', 'wp-graphql' ),
 				'values'      => array(
 					'id'           => self::get_value( 'id' ),
 					'database_id'  => self::get_value( 'database_id' ),
@@ -55,7 +55,7 @@ class Id_Type_Enums {
 		register_graphql_enum_type(
 			'ProductIdTypeEnum',
 			array(
-				'description' => __( 'The Type of Identifier used to fetch a single resource. Default is ID.', 'wp-graphql' ),
+				'description' => __( 'The Type of Identifier used to fetch a single Product. Default is ID.', 'wp-graphql' ),
 				'values'      => array(
 					'id'          => self::get_value( 'id' ),
 					'database_id' => self::get_value( 'database_id' ),
@@ -72,7 +72,7 @@ class Id_Type_Enums {
 		register_graphql_enum_type(
 			'ProductVariationIdTypeEnum',
 			array(
-				'description' => __( 'The Type of Identifier used to fetch a single resource. Default is ID.', 'wp-graphql' ),
+				'description' => __( 'The Type of Identifier used to fetch a single ProductVariation. Default is ID.', 'wp-graphql' ),
 				'values'      => array(
 					'id'          => self::get_value( 'id' ),
 					'database_id' => self::get_value( 'database_id' ),
@@ -83,7 +83,18 @@ class Id_Type_Enums {
 		register_graphql_enum_type(
 			'RefundIdTypeEnum',
 			array(
-				'description' => __( 'The Type of Identifier used to fetch a single resource. Default is ID.', 'wp-graphql' ),
+				'description' => __( 'The Type of Identifier used to fetch a single Refund. Default is ID.', 'wp-graphql' ),
+				'values'      => array(
+					'id'          => self::get_value( 'id' ),
+					'database_id' => self::get_value( 'database_id' ),
+				),
+			)
+		);
+
+		register_graphql_enum_type(
+			'ShippingMethodIdTypeEnum',
+			array(
+				'description' => __( 'The Type of Identifier used to fetch a single Shipping Method. Default is ID.', 'wp-graphql' ),
 				'values'      => array(
 					'id'          => self::get_value( 'id' ),
 					'database_id' => self::get_value( 'database_id' ),

@@ -315,7 +315,11 @@ class Product_Types {
 				'args'        => array(
 					'id'        => array(
 						'type'        => 'ID',
-						'description' => __( 'ID to identify product with', 'wp-graphql-woocommerce' ),
+						'description' => sprintf(
+							/* translators: %s: product type */
+							__( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ),
+							$type
+						),
 					),
 					'idType'    => array(
 						'type'        => 'ProductIdTypeEnum',

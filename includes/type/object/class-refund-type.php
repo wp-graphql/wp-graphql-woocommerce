@@ -71,9 +71,8 @@ class Refund_Type {
 				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'id'     => array(
-						'type' => array(
-							'non_null' => 'ID',
-						),
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' ),
 					),
 					'idType' => array(
 						'type'        => 'RefundIdTypeEnum',
