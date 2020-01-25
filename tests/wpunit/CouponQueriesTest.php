@@ -99,13 +99,13 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function testCouponByQueryAndArgs() {
+	public function testCouponQueryAndIds() {
 		wp_set_current_user( $this->customer );
 		$id = Relay::toGlobalId( 'shop_coupon', $this->coupon );
 		$coupon = new WC_Coupon( $this->coupon );
 		$query = '
-			query ($id: ID, $couponId: Int, $code: String) {
-				couponBy(id: $id, couponId: $couponId, code: $code) {
+			query ($id: ID!, $idType: CouponIdTypeEnum) {
+				coupon(id: $id, idType: $idType) {
 					id
 				}
 			}
@@ -114,11 +114,19 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 * 
-		 * Testing "id" query argument
+		 * Testing "ID" ID type.
 		 */
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => $id,
+			'idType' => 'ID',
+		);
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array( 'data' => array( 'coupon' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -128,11 +136,19 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Two
 		 * 
-		 * Testing "couponId" query argument
+		 * Testing "DATABASE_ID" ID type
 		 */
-		$variables = array( 'couponId' => $coupon->get_id() );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => $coupon->get_id(),
+			'idType' => 'DATABASE_ID',
+		);
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array( 'data' => array( 'coupon' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -142,11 +158,19 @@ class CouponQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Three
 		 * 
-		 * Testing "couponId" query argument
+		 * Testing "CODE" ID type.
 		 */
-		$variables = array( 'code' => $coupon->get_code() );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'couponBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => $coupon->get_code(),
+			'idType' => 'CODE',
+		);
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables,
+			)
+		);
+		$expected  = array( 'data' => array( 'coupon' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

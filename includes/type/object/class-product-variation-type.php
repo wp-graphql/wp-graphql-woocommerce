@@ -255,33 +255,58 @@ class Product_Variation_Type {
 						'type'        => 'ID',
 						'description' => __( 'Get the product variation by its global ID', 'wp-graphql-woocommerce' ),
 					),
+					'idType'      => array(
+						'type'        => 'ProductVariationIdTypeEnum',
+						'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
+					),
 					'variationId' => array(
 						'type'        => 'Int',
 						'description' => __( 'Get the product variation by its database ID', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => __(
+							'This argument has been deprecation, and will be removed in v0.5.x. Please use "productVariation(id: value, idType: DATABASE_ID)" instead',
+							'wp-graphql-woocommerce'
+						),
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$variation_id = 0;
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-						}
+					$id = isset( $args['id'] ) ? $args['id'] : null;
+					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
-						$arg          = 'ID';
-						$variation_id = absint( $id_components['id'] );
-					} elseif ( ! empty( $args['variationId'] ) ) {
-						$arg          = 'database ID';
-						$variation_id = absint( $args['variationId'] );
+					/**
+					 * Process deprecated arguments
+					 *
+					 * Will be removed in v0.5.x.
+					 */
+					if ( ! empty( $args['variationId'] ) ) {
+						$id = $args['variationId'];
+						$id_type = 'database_id';
 					}
 
-					$variation = Factory::resolve_crud_object( $variation_id, $context );
-					if ( get_post( $variation_id )->post_type !== 'product_variation' ) {
-						/* translators: no product variation found error message */
-						throw new UserError( sprintf( __( 'No product variation exists with this %1$s: %2$s' ), $arg, $args['id'] ) );
+					$variation_id = null;
+					switch ( $id_type ) {
+						case 'database_id':
+							$variation_id = absint( $id );
+							break;
+						case 'global_id':
+						default:
+							$id_components = Relay::fromGlobalId( $id );
+							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+							}
+							$variation_id = absint( $id_components['id'] );
+							break;
 					}
 
-					return $variation;
+					if ( empty( $variation_id ) ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s' ), $id_type, $id ) );
+					} elseif ( get_post( $variation_id )->post_type !== 'product_variation' ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s' ), $id_type, $id ) );
+					}
+
+					return Factory::resolve_crud_object( $variation_id, $context );
 				},
 			)
 		);

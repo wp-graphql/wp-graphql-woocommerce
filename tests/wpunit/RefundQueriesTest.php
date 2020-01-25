@@ -17,7 +17,9 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->order_helper    = $this->getModule('\Helper\Wpunit')->order();
 		$this->refund_helper   = $this->getModule('\Helper\Wpunit')->refund();
 		$this->customer_helper = $this->getModule('\Helper\Wpunit')->refund();
-		$this->order           = $this->order_helper->create();
+		$this->order           = $this->order_helper->create(
+			array( 'customer_id' => $this->customer )
+		);
 		$this->refund          = $this->refund_helper->create( $this->order );
 	}
 
@@ -98,12 +100,12 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function testRefundByQueryAndArgs() {
+	public function testRefundQueryAndIds() {
 		$id    = Relay::toGlobalId( 'shop_order_refund', $this->refund );
 
 		$query = '
-			query ( $id: ID, $refundId: Int ) {
-				refundBy( id: $id, refundId: $refundId ) {
+			query ( $id: ID!, $idType: RefundIdTypeEnum ) {
+				refund( id: $id, idType: $idType ) {
 					id
 				}
 			}
@@ -114,14 +116,18 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test query and "id" argument
 		 */
-		$variables = array( 'id' => $id );
+		wp_set_current_user( $this->customer );
+		$variables = array(
+			'id'     => $id,
+			'idType' => 'ID',
+		);
 		$actual    = graphql(
 			array(
 				'query'     => $query,
 				'variables' => $variables,
 			)
 		);
-		$expected  = array( 'data' => array( 'refundBy' => array( 'id' => $id ) ) );
+		$expected  = array( 'data' => array( 'refund' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -133,14 +139,17 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test query and "refundId" argument
 		 */
-		$variables = array( 'refundId' => $this->refund );
+		$variables = array(
+			'id'     => $this->refund,
+			'idType' => 'DATABASE_ID',
+		);
 		$actual    = graphql(
 			array(
 				'query'     => $query,
 				'variables' => $variables,
 			)
 		);
-		$expected  = array( 'data' => array( 'refundBy' => array( 'id' => $id ) ) );
+		$expected  = array( 'data' => array( 'refund' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -325,6 +334,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testCustomerToRefundsConnection() {
 		$order   = $this->order_helper->create( array( 'customer_id' => $this->customer ) );
 		$refunds = array(
+			$this->refund,
 			$this->refund_helper->create( $order, array( 'amount' => 0.5 ) ),
 			$this->refund_helper->create( $order, array( 'status' => 'pending', 'amount' => 0.5 ) ),
 		);

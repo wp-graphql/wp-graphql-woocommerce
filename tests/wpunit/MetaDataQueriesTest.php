@@ -62,7 +62,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->customer_id = $this->customers->create( $data );
 
         // Create Order and Refund with meta data.
-        $this->order_id = $this->orders->create( $data );
+        $this->order_id = $this->orders->create( array_merge( $data, array( 'customer_id' => $this->customer ) ) );
         $this->order_items->add_fee( $this->order_id, $data );
         $this->refund_id = $this->refunds->create( $this->order_id, $data );
 
@@ -631,6 +631,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         /**
          * Assertion One
          */
+        wp_set_current_user( $this->customer );
         $variables = array( 'id' => $id );
         $actual    = graphql(
             array(

@@ -29,8 +29,8 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $variation_id = $this->products['variations'][0];
         $id           = $this->helper->to_relay_id( $variation_id );
         $query        = '
-            query ($id: ID, $variationId: Int) {
-                productVariation(id: $id, variationId: $variationId) {
+            query ($id: ID, $idType: ProductVariationIdTypeEnum) {
+                productVariation(id: $id, idType: $idType) {
                     id
                     variationId
                     name
@@ -77,10 +77,18 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         /**
 		 * Assertion One
 		 * 
-		 * test query and "id" query argument
+		 * test "ID" ID type.
 		 */
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array(
+            'id'     => $id,
+            'idType' => 'ID',
+        );
+		$actual    = graphql(
+            array(
+                'query' => $query,
+                'variables' => $variables,
+            )
+        );
 		$expected  = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
 
 		// use --debug flag to view.
@@ -93,10 +101,19 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Two
 		 * 
-		 * test query and "methodId" query argument
+		 * test "DATABASE_ID" ID type.
 		 */
-		$variables = array( 'variationId' => $variation_id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array(
+            'id'     => $variation_id,
+            'idType' => 'DATABASE_ID',
+            
+        );
+		$actual    = graphql(
+            array(
+                'query' => $query,
+                'variables' => $variables,
+            )
+        );
 		$expected  = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
 
 		// use --debug flag to view.

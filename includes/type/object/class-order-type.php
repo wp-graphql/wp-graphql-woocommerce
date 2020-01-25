@@ -331,35 +331,70 @@ class Order_Type {
 						'type'        => 'ID',
 						'description' => __( 'Get the order by its global ID', 'wp-graphql-woocommerce' ),
 					),
+					'idType'   => array(
+						'type'        => 'OrderIdTypeEnum',
+						'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
+					),
 					'orderId'  => array(
-						'type'        => 'Int',
-						'description' => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
+						'type'              => 'Int',
+						'description'       => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => __(
+							'This argument has been deprecation, and will be removed in v0.5.x. Please use "order(id: value, idType: value)" instead',
+							'wp-graphql-woocommerce'
+						),
 					),
 					'orderKey' => array(
-						'type'        => 'String',
-						'description' => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
+						'type'              => 'String',
+						'description'       => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => __(
+							'This argument has been deprecation, and will be removed in v0.5.x. Please use "order(id: value, idType: value)" instead',
+							'wp-graphql-woocommerce'
+						),
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$order_id = 0;
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-						}
-						$order_id = absint( $id_components['id'] );
-					} elseif ( ! empty( $args['orderId'] ) ) {
-						$order_id = absint( $args['orderId'] );
+					$id = isset( $args['id'] ) ? $args['id'] : null;
+					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
+
+					/**
+					 * Process deprecated arguments
+					 *
+					 * Will be removed in v0.5.x.
+					 */
+					if ( ! empty( $args['orderId'] ) ) {
+						$id = $args['orderId'];
+						$id_type = 'database_id';
 					} elseif ( ! empty( $args['orderKey'] ) ) {
-						$order_id = \wc_get_order_id_by_order_key( $args['orderKey'] );
+						$id = $args['orderKey'];
+						$id_type = 'order_number';
+					}
+
+					$order_id = null;
+					switch ( $id_type ) {
+						case 'order_number':
+							$order_id = \wc_get_order_id_by_order_key( $id );
+							break;
+						case 'database_id':
+							$order_id = absint( $id );
+							break;
+						case 'global_id':
+						default:
+							$id_components = Relay::fromGlobalId( $id );
+							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+							}
+							$order_id = absint( $id_components['id'] );
+							break;
 					}
 
 					if ( empty( $order_id ) ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s' ), $id_type, $product_id ) );
+						throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s' ), $id_type, $id ) );
 					} elseif ( get_post( $order_id )->post_type !== 'shop_order' ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s' ), $id_type, $product_id ) );
+						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s' ), $id_type, $id ) );
 					}
 
 					// Check if user authorized to view order.
