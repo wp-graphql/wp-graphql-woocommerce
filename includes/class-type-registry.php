@@ -38,6 +38,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Post_Type_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Products_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Orders_Orderby_Enum::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Id_Type_Enums::register();
 
 		// InputObjects.
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Customer_Address_Input::register();

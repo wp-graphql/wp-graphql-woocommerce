@@ -250,11 +250,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function testProductByQueryAndArgs() {
+	public function testProductQueryAndIds() {
 		$id = $this->helper->to_relay_id( $this->product );
 		$query = '
-			query ( $id: ID, $productId: Int, $slug: String, $sku: String ) {
-				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
+			query ( $id: ID!, $idType: ProductIdTypeEnum ) {
+				product( id: $id, idType: $idType ) {
 					... on SimpleProduct {
 						id
 					}
@@ -267,9 +267,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test querying product with "productId" argument.
 		 */
-		$variables = array( 'productId' => $this->product );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => $this->product,
+			'idType' => 'DATABASE_ID',
+		);
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables
+			)
+		);
+		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -281,9 +289,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test querying product with "id" argument.
 		 */
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => $id,
+			'idType' => 'ID',
+		);
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables
+			)
+		);
+		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -295,9 +311,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test querying product with "slug" argument.
 		 */
-		$variables = array( 'slug' => 'product-slug' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => 'product-slug',
+			'idType' => 'SLUG',
+		);
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables
+			)
+		);
+		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -309,9 +333,17 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test querying product with "sku" argument.
 		 */
-		$variables = array( 'sku' => 'product-sku' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'productBy' => array( 'id' => $id ) ) );
+		$variables = array(
+			'id'     => 'product-sku',
+			'idType' => 'SKU',
+		);
+		$actual    = graphql(
+			array(
+				'query' => $query,
+				'variables' => $variables
+			)
+		);
+		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

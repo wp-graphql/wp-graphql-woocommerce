@@ -97,7 +97,7 @@ class Checkout {
 					return is_user_logged_in() ? new Customer( get_current_user_id() ) : null;
 				},
 			),
-			'result'  => array(
+			'result'   => array(
 				'type'    => 'String',
 				'resolve' => function( $payload ) {
 					return $payload['result'];

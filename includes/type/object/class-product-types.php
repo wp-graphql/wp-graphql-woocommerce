@@ -315,41 +315,106 @@ class Product_Types {
 				'args'        => array(
 					'id'        => array(
 						'type'        => 'ID',
-						'description' => __( 'Get the product by its global ID', 'wp-graphql-woocommerce' ),
+						'description' => sprintf(
+							/* translators: %s: product type */
+							__( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ),
+							$type
+						),
 					),
+					'idType'    => array(
+						'type'        => 'ProductIdTypeEnum',
+						'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
+					),
+					/**
+					 * DEPRECATED
+					 *
+					 * Will be removed in v0.5.x.
+					 */
 					'productId' => array(
-						'type'        => 'Int',
-						'description' => __( 'Get the product by its database ID', 'wp-graphql-woocommerce' ),
+						'type'              => 'Int',
+						'description'       => __( 'Get the product by its database ID', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => sprintf(
+							/* translators: %s: product type */
+							__(
+								'This argument has been deprecation, and will be removed in v0.5.x. Please use "%sProduct(id: value, idType: DATABASE_ID)" instead',
+								'wp-graphql-woocommerce'
+							),
+							$type
+						),
 					),
+					/**
+					 * DEPRECATED
+					 *
+					 * Will be removed in v0.5.x.
+					 */
 					'slug'      => array(
-						'type'        => 'String',
-						'description' => __( 'Get the product by its slug', 'wp-graphql-woocommerce' ),
+						'type'              => 'String',
+						'description'       => __( 'Get the product by its slug', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => sprintf(
+							/* translators: %s: product type */
+							__(
+								'This argument has been deprecation, and will be removed in v0.5.x. Please use "%sProduct(id: value, idType: SLUG)" instead',
+								'wp-graphql-woocommerce'
+							),
+							$type
+						),
 					),
 					'sku'       => array(
-						'type'        => 'String',
-						'description' => __( 'Get the product by its sku', 'wp-graphql-woocommerce' ),
+						'type'              => 'String',
+						'description'       => __( 'Get the product by its sku', 'wp-graphql-woocommerce' ),
+						'isDeprecated'      => true,
+						'deprecationReason' => sprintf(
+							/* translators: %s: product type */
+							__(
+								'This argument has been deprecation, and will be removed in v0.5.x. Please use "%sProduct(id: value, idType: SKU)" instead',
+								'wp-graphql-woocommerce'
+							),
+							$type
+						),
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type ) {
-					$product_id = 0;
-					$id_type = '';
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-						}
-						$product_id = absint( $id_components['id'] );
-						$id_type = 'ID';
-					} elseif ( ! empty( $args['productId'] ) ) {
-						$product_id = absint( $args['productId'] );
-						$id_type = 'product ID';
+					$id = isset( $args['id'] ) ? $args['id'] : null;
+					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
+
+					/**
+					 * Process deprecated arguments
+					 *
+					 * Will be removed in v0.5.x.
+					 */
+					if ( ! empty( $args['productId'] ) ) {
+						$id = $args['productId'];
+						$id_type = 'database_id';
 					} elseif ( ! empty( $args['slug'] ) ) {
-						$post = get_page_by_path( $args['slug'], OBJECT, 'product' );
-						$product_id = ! empty( $post ) ? absint( $post->ID ) : 0;
+						$id = $args['slug'];
 						$id_type = 'slug';
 					} elseif ( ! empty( $args['sku'] ) ) {
-						$product_id = \wc_get_product_id_by_sku( $args['sku'] );
+						$id = $args['sku'];
 						$id_type = 'sku';
+					}
+
+					$product_id = null;
+					switch ( $id_type ) {
+						case 'sku':
+							$product_id = \wc_get_product_id_by_sku( $id );
+							break;
+						case 'slug':
+							$post = get_page_by_path( $id, OBJECT, 'product' );
+							$product_id = ! empty( $post ) ? absint( $post->ID ) : 0;
+							break;
+						case 'database_id':
+							$product_id = absint( $id );
+							break;
+						case 'global_id':
+						default:
+							$id_components = Relay::fromGlobalId( $id );
+							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+							}
+							$product_id = absint( $id_components['id'] );
+							break;
 					}
 
 					if ( empty( $product_id ) ) {

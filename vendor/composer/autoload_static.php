@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4127ab9804a522d85e48188e585a812c
+class ComposerStaticInitcab7a6a7239ac8af7f5a764eb6b56ee1
 {
     public static $files = array (
         '914b07b8cf678ed0b81bfdb5d23b4f2b' => __DIR__ . '/../..' . '/includes/connection/common-post-type-args.php',
@@ -113,6 +113,7 @@ class ComposerStaticInit4127ab9804a522d85e48188e585a812c
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Countries' => __DIR__ . '/../..' . '/includes/type/enum/class-countries.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Customer_Connection_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-customer-connection-orderby-enum.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Discount_Type' => __DIR__ . '/../..' . '/includes/type/enum/class-discount-type.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Id_Type_Enums' => __DIR__ . '/../..' . '/includes/type/enum/class-id-type-enums.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Manage_Stock' => __DIR__ . '/../..' . '/includes/type/enum/class-manage-stock.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Order_Status' => __DIR__ . '/../..' . '/includes/type/enum/class-order-status.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Orders_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-orders-orderby-enum.php',
@@ -170,9 +171,9 @@ class ComposerStaticInit4127ab9804a522d85e48188e585a812c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4127ab9804a522d85e48188e585a812c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4127ab9804a522d85e48188e585a812c::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4127ab9804a522d85e48188e585a812c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitcab7a6a7239ac8af7f5a764eb6b56ee1::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitcab7a6a7239ac8af7f5a764eb6b56ee1::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitcab7a6a7239ac8af7f5a764eb6b56ee1::$classMap;
 
         }, null, ClassLoader::class);
     }

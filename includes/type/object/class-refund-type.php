@@ -70,58 +70,64 @@ class Refund_Type {
 				'type'        => 'Refund',
 				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
-					'id' => array(
-						'type' => array(
-							'non_null' => 'ID',
-						),
+					'id'     => array(
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' ),
+					),
+					'idType' => array(
+						'type'        => 'RefundIdTypeEnum',
+						'description' => __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' ),
 					),
 				),
 				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$id_components = Relay::fromGlobalId( $args['id'] );
-					if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
-						throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+					$id = isset( $args['id'] ) ? $args['id'] : null;
+					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
+
+					$refund_id = null;
+					switch ( $id_type ) {
+						case 'database_id':
+							$refund_id = absint( $id );
+							break;
+						case 'global_id':
+						default:
+							$id_components = Relay::fromGlobalId( $id );
+							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+							}
+							$refund_id = absint( $id_components['id'] );
+							break;
 					}
-					$refund_id = absint( $id_components['id'] );
-					return Factory::resolve_crud_object( $refund_id, $context );
-				},
-			)
-		);
 
-		$post_by_args = array(
-			'id'       => array(
-				'type'        => 'ID',
-				'description' => __( 'Get the refund by its global ID', 'wp-graphql-woocommerce' ),
-			),
-			'refundId' => array(
-				'type'        => 'Int',
-				'description' => __( 'Get the refund by its database ID', 'wp-graphql-woocommerce' ),
-			),
-		);
+					if ( empty( $refund_id ) ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s' ), $id_type, $id ) );
+					} elseif ( get_post( $refund_id )->post_type !== 'shop_order_refund' ) {
+						/* translators: %1$s: ID type, %2$s: ID value */
+						throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s' ), $id_type, $id ) );
+					}
 
-		register_graphql_field(
-			'RootQuery',
-			'refundBy',
-			array(
-				'type'        => 'Refund',
-				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
-				'args'        => $post_by_args,
-				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$refund_id = 0;
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-							throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+					// Check if user authorized to view order.
+					$post_type = get_post_type_object( 'shop_order_refund' );
+					$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
+					if ( get_current_user_id() ) {
+						$refund   = \wc_get_order( $refund_id );
+						$order_id = $refund->get_parent_id();
+						$orders   = wc_get_orders(
+							array(
+								'type'          => 'shop_order',
+								'post__in'      => array( $order_id ),
+								'customer_id'   => get_current_user_id(),
+								'no_rows_found' => true,
+								'return'        => 'ids',
+							)
+						);
+
+						if ( in_array( $order_id, $orders, true ) ) {
+							$is_authorized = true;
 						}
-						$refund_id = absint( $id_components['id'] );
-					} elseif ( ! empty( $args['refundId'] ) ) {
-						$refund_id = absint( $args['refundId'] );
 					}
 
-					$refund = Factory::resolve_crud_object( $refund_id, $context );
-					if ( get_post( $refund_id )->post_type !== 'shop_order_refund' ) {
-						/* translators: not refund found error message */
-						throw new UserError( sprintf( __( 'No refund exists with this id: %1$s' ), $refund_id ) );
-					}
+					$refund = $is_authorized ? Factory::resolve_crud_object( $refund_id, $context ) : null;
 
 					return $refund;
 				},

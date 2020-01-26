@@ -153,12 +153,12 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function testOrderQueryAndArgs() {
+	public function testOrderQueryAndIds() {
 		$id    = Relay::toGlobalId( 'shop_order', $this->order );
 
 		$query = '
-			query ($id: ID, $orderId: Int, $orderKey: String) {
-				order(id: $id, orderId: $orderId, orderKey: $orderKey) {
+			query ($id: ID!, $idType: OrderIdTypeEnum ) {
+				order(id: $id, idType: $idType) {
 					id
 				}
 			}
@@ -170,10 +170,18 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 * 
-		 * tests query and "id" arg
+		 * tests "ID" ID type.
 		 */
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array(
+			'id'     => $id,
+			'idType' => 'ID',
+		);
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables
+			)
+		);
 		$expected  = array( 'data' => array( 'order' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -184,10 +192,18 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Two
 		 * 
-		 * tests query and "orderId" arg
+		 * tests "DATABASE_ID" ID type.
 		 */
-		$variables = array( 'orderId' => $this->order );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array(
+			'id'     => $this->order,
+			'idType' => 'DATABASE_ID',
+		);
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables
+			)
+		);
 		$expected  = array( 'data' => array( 'order' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
@@ -198,10 +214,18 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Three
 		 * 
-		 * tests query and "orderNumber" arg
+		 * tests "ORDER_NUMBER" ID type
 		 */
-		$variables = array( 'orderKey' => $this->order_helper->get_order_key( $this->order ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array(
+			'id'     => $this->order_helper->get_order_key( $this->order ),
+			'idType' => 'ORDER_NUMBER',
+		);
+		$actual    = graphql(
+			array(
+				'query'     => $query,
+				'variables' => $variables
+			)
+		);
 		$expected  = array( 'data' => array( 'order' => array( 'id' => $id ) ) );
 
 		// use --debug flag to view.
