@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.4.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.1) (2020-01-25)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.0...v0.4.1)
+
+#### Checklist
+- [x] Improve support for **WPGraphQL [v0.6.0](https://github.com/wp-graphql/wp-graphql/releases/tag/v0.6.0)**
+  - [x] Implement `idType` in WC CRUD object queries
+     - `coupon(id: value, idType: ID|DATABASE_ID|CODE)`. *Note: The `couponBy` query has been deprecated. Will be removed in `v0.5.x`*.
+     - `order(id: value, idType: ID|DATABASE_ID|ORDER_NUMBER)`. *Note: The `orderId` and `orderKey` arguments have been deprecated. Will be removed in `v0.5.x`*.
+     - `product(id: value, idType: ID|DATABASE_ID|SLUG|SKU)`. *Note: The `productBy` query has been deprecated. Will be removed in `v0.5.x`*.
+     - `productVariation(id: value, idType: ID|DATABASE_ID)`. *Note: The `variationId` argument has been deprecated. Will be removed in `v0.5.x`*.
+     - `refund(id: value, idType: ID|DATABASE_ID)`. *Note: The `refundBy` query has been removed. Will be removed in `v0.5.x`*.
+     - `shippingMethod(id: value, idType: ID|DATABASE_ID)`. *Note: The `methodId` argument has been deprecated. Will be removed in `v0.5.x`*.
+     - `taxRate(id: value, idType: ID|DATABASE_ID)`. *Note: The `rateId` argument has been deprecated. Will be removed in `v0.5.x`*.
+
 ## [v0.4.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.0) (2020-01-22)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.3...v0.4.0)
@@ -99,7 +114,6 @@ Updated tests
 - Better guest customer support [\#187](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/187) ([kidunot89](https://github.com/kidunot89))
 - Bugfix/customer security patch [\#184](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/184) ([kidunot89](https://github.com/kidunot89))
 - Improved shipping support [\#182](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/182) ([kidunot89](https://github.com/kidunot89))
-- Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
 
@@ -130,6 +144,7 @@ Updated tests
 - QL Session Handler 2.0 [\#174](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/174) ([kidunot89](https://github.com/kidunot89))
 - Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
 - QL Search support added. [\#172](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/172) ([kidunot89](https://github.com/kidunot89))
+- Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
 - Release v0.3.0 [\#155](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/155) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
