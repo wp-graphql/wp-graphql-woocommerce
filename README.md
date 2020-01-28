@@ -116,10 +116,10 @@ If you get HTTP 500 error upon activation or accessing the `endpoint` and have *
 - (Alternative) You can also try delete and cloning the repository again. The latest release should have fixed the issue.
 
 ## Support this extension
-**@kidunot89** *(WooGraphQL Creator/Developer)* :point_right: **[Github Sponsors](https://github.com/sponsors/kidunot89)**
+**@kidunot89** *(WooGraphQL Creator/Developer)* [Github Sponsors](https://github.com/sponsors/kidunot89)
 
-**WPGraphQL** :point_right: **[OpenCollective](http://opencollective.com/wp-graphql)**
+**WPGraphQL** [OpenCollective](http://opencollective.com/wp-graphql)
 
-**GraphQL-PHP** :point_right: **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
+**GraphQL-PHP** [OpenCollective](https://opencollective.com/webonyx-graphql-php)
 
 ## Follow [![alt text](http://i.imgur.com/tXSoThF.png)](https://twitter.com/woographql)[![alt text](http://i.imgur.com/P3YfQoD.png)](https://www.facebook.com/woographql)
