@@ -101,6 +101,17 @@ class Id_Type_Enums {
 				),
 			)
 		);
+
+		register_graphql_enum_type(
+			'TaxRateIdTypeEnum',
+			array(
+				'description' => __( 'The Type of Identifier used to fetch a single Tax rate. Default is ID.', 'wp-graphql' ),
+				'values'      => array(
+					'id'          => self::get_value( 'id' ),
+					'database_id' => self::get_value( 'database_id' ),
+				),
+			)
+		);
 	}
 
 	/**
