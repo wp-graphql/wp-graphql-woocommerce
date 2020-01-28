@@ -135,6 +135,7 @@
 - sales tax query: add postal code to where clause [\#105](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/105)
 - TaxRate connection improvements [\#231](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/231) ([kidunot89](https://github.com/kidunot89))
 - Checkout mutation updates [\#229](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/229) ([kidunot89](https://github.com/kidunot89))
+- Fixes introspection query [\#221](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/221) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
 
@@ -149,10 +150,6 @@
 ## [v0.4.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.2) (2020-01-28)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.1...v0.4.2)
-
-**Enhancements:**
-
-- Fixes introspection query [\#221](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/221) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.4.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.1) (2020-01-26)
 
@@ -251,7 +248,6 @@ Updated tests
 **Merged pull requests:**
 
 - Master to Release v0.3.1 [\#178](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/178) ([kidunot89](https://github.com/kidunot89))
-- Master to v0.3.0 [\#161](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/161) ([kidunot89](https://github.com/kidunot89))
 - v0.2.1 hotfix to master [\#134](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/134) ([kidunot89](https://github.com/kidunot89))
 - Master to v0.2.1 [\#133](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/133) ([kidunot89](https://github.com/kidunot89))
 
@@ -268,7 +264,6 @@ Updated tests
 - Better guest customer support [\#187](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/187) ([kidunot89](https://github.com/kidunot89))
 - Bugfix/customer security patch [\#184](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/184) ([kidunot89](https://github.com/kidunot89))
 - Improved shipping support [\#182](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/182) ([kidunot89](https://github.com/kidunot89))
-- Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
 
@@ -299,6 +294,7 @@ Updated tests
 - QL Session Handler 2.0 [\#174](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/174) ([kidunot89](https://github.com/kidunot89))
 - Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
 - QL Search support added. [\#172](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/172) ([kidunot89](https://github.com/kidunot89))
+- Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
 - Release v0.3.0 [\#155](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/155) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
@@ -314,6 +310,7 @@ Updated tests
 **Merged pull requests:**
 
 - Codecoverage boost [\#177](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/177) ([kidunot89](https://github.com/kidunot89))
+- Master to v0.3.0 [\#161](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/161) ([kidunot89](https://github.com/kidunot89))
 
 
 
