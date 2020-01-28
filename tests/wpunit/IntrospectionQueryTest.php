@@ -20,8 +20,8 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase
     // Validate schema.
     public function testSchema() {
         try {
-            $schema = \WPGraphQL::get_schema();
-            $schema->assertValid();
+            $request = new \WPGraphQL\Request();
+            $request->schema->assertValid();
 
             // Assert true upon success.
             $this->assertTrue( true );
