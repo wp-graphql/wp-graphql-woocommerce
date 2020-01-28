@@ -119,11 +119,7 @@ class Coupon_Type {
 				'type'        => 'Coupon',
 				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
 				'args'        => array(
-					'id'     => array(
-						'type' => array(
-							'non_null' => 'ID',
-						),
-					),
+					'id'     => array( 'type' => array( 'non_null' => 'ID' ) ),
 					'idType' => array(
 						'type'        => 'CouponIdTypeEnum',
 						'description' => __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' ),
