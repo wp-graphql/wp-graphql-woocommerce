@@ -1,4 +1,4 @@
-<img src="./logo.svg" width="250px">
+<img src="./logo.svg" width="250px" />
 
 # WPGraphQL WooCommerce (WooGraphQL)
 [![Build Status](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce.svg?branch=develop)](https://travis-ci.org/wp-graphql/wp-graphql-woocommerce) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop)
