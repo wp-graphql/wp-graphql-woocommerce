@@ -480,13 +480,14 @@ class Checkout_Mutation {
 	 * Process the checkout.
 	 *
 	 * @param array       $data     Order data.
+	 * @param array       $input    Input data describing order.
 	 * @param AppContext  $context  AppContext instance.
 	 * @param ResolveInfo $info     ResolveInfo instance.
 	 * @param array       $results  Order status.
 	 *
 	 * @throws UserError When validation fails.
 	 */
-	public static function process_checkout( $data, $context, $info, &$results = null ) {
+	public static function process_checkout( $data, $input, $context, $info, &$results = null ) {
 		wc_maybe_define_constant( 'WOOCOMMERCE_CHECKOUT', true );
 		wc_set_time_limit( 0 );
 
@@ -519,7 +520,37 @@ class Checkout_Mutation {
 		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
 		if ( WC()->cart->needs_payment() ) {
-			$results = self::process_order_payment( $order_id, $data['payment_method'] );
+			if ( ! empty( $input['isPaid'] ) && true === $input['isPaid'] ) {
+				$transaction_id = ! empty( $input['transactionId'] ) ? $input['transactionId'] : null;
+
+				/**
+				 * Use this to do some last minute transaction ID validation.
+				 *
+				 * @param bool        $is_valid        Is transaction ID valid.
+				 * @param WC_Order    $order           Order being processed.
+				 * @param String|null $transaction_id  Order payment transaction ID.
+				 * @param array       $data            Order data.
+				 * @param array       $input           Order raw input data.
+				 * @param AppContext  $context         Request's AppContext instance.
+				 * @param ResolveInfo $info            Request's ResolveInfo instance.
+				 */
+				$valid = apply_filters(
+					'graphql_checkout_prepaid_order_validation',
+					! empty( $input['transactionId'] ),
+					$order,
+					$transaction_id,
+					$data,
+					$input,
+					$context,
+					$info
+				);
+
+				if ( $valid ) {
+					$order->payment_complete( $input['transactionId'] );
+				}
+			} else {
+				$results = self::process_order_payment( $order_id, $data['payment_method'] );
+			}
 		} else {
 			$results = self::process_order_without_payment( $order_id );
 		}

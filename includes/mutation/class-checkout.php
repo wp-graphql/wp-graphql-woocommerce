@@ -71,6 +71,14 @@ class Checkout {
 				'type'        => 'CreateAccountInput',
 				'description' => __( 'Create new customer account', 'wp-graphql-woocommerce' ),
 			),
+			'transactionId'          => array(
+				'type'        => 'String',
+				'description' => __( 'Order transaction ID', 'wp-graphql-woocommerce' ),
+			),
+			'isPaid'                 => array(
+				'type'        => 'Boolean',
+				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
+			),
 			'metaData'               => array(
 				'type'        => array( 'list_of' => 'MetaDataInput' ),
 				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
@@ -134,7 +142,7 @@ class Checkout {
 				 */
 				do_action( 'woocommerce_graphql_before_checkout', $args, $input, $context, $info );
 
-				$order_id = Checkout_Mutation::process_checkout( $args, $context, $info, $results );
+				$order_id = Checkout_Mutation::process_checkout( $args, $input, $context, $info, $results );
 
 				if ( is_wp_error( $order_id ) ) {
 					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
