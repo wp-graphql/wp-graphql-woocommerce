@@ -55,10 +55,6 @@ class Checkout {
 				'type'        => 'Boolean',
 				'description' => __( 'Ship to a separate address', 'wp-graphql-woocommerce' ),
 			),
-			'paymentMethodTitle'     => array(
-				'type'        => 'String',
-				'description' => __( 'Payment method title.', 'woocommerce' ),
-			),
 			'billing'                => array(
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order billing address', 'wp-graphql-woocommerce' ),
