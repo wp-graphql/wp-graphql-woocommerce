@@ -463,11 +463,14 @@ class Checkout_Mutation {
 	 * Process an order that doesn't require payment.
 	 *
 	 * @since 3.0.0
-	 * @param int $order_id Order ID.
+	 * @param int    $order_id        Order ID.
+	 * @param string $transaction_id  Payment transaction ID.
+	 *
+	 * @return array
 	 */
-	protected function process_order_without_payment( $order_id ) {
+	protected function process_order_without_payment( $order_id, $transaction_id = '' ) {
 		$order = wc_get_order( $order_id );
-		$order->payment_complete();
+		$order->payment_complete( $transaction_id );
 		wc_empty_cart();
 
 		return array(
@@ -519,40 +522,47 @@ class Checkout_Mutation {
 
 		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
-		if ( WC()->cart->needs_payment() ) {
-			if ( ! empty( $input['isPaid'] ) && true === $input['isPaid'] ) {
-				$transaction_id = ! empty( $input['transactionId'] ) ? $input['transactionId'] : null;
-
-				/**
-				 * Use this to do some last minute transaction ID validation.
-				 *
-				 * @param bool        $is_valid        Is transaction ID valid.
-				 * @param WC_Order    $order           Order being processed.
-				 * @param String|null $transaction_id  Order payment transaction ID.
-				 * @param array       $data            Order data.
-				 * @param array       $input           Order raw input data.
-				 * @param AppContext  $context         Request's AppContext instance.
-				 * @param ResolveInfo $info            Request's ResolveInfo instance.
-				 */
-				$valid = apply_filters(
-					'graphql_checkout_prepaid_order_validation',
-					! empty( $input['transactionId'] ),
-					$order,
-					$transaction_id,
-					$data,
-					$input,
-					$context,
-					$info
-				);
-
-				if ( $valid ) {
-					$order->payment_complete( $input['transactionId'] );
-				}
-			} else {
-				$results = self::process_order_payment( $order_id, $data['payment_method'] );
-			}
+		if ( WC()->cart->needs_payment() && ( empty( $input['isPaid'] ) || false === $input['isPaid'] ) ) {
+			$results = self::process_order_payment( $order_id, $data['payment_method'] );
 		} else {
-			$results = self::process_order_without_payment( $order_id );
+			$transaction_id = ! empty( $input['transactionId'] ) ? $input['transactionId'] : '';
+
+			/**
+			 * Use this to do some last minute transaction ID validation.
+			 *
+			 * @param bool        $is_valid        Is transaction ID valid.
+			 * @param WC_Order    $order           Order being processed.
+			 * @param String|null $transaction_id  Order payment transaction ID.
+			 * @param array       $data            Order data.
+			 * @param array       $input           Order raw input data.
+			 * @param AppContext  $context         Request's AppContext instance.
+			 * @param ResolveInfo $info            Request's ResolveInfo instance.
+			 */
+			$valid = apply_filters(
+				'graphql_checkout_prepaid_order_validation',
+				true,
+				$order,
+				$transaction_id,
+				$data,
+				$input,
+				$context,
+				$info
+			);
+
+			if ( $valid ) {
+				$results = self::process_order_without_payment( $order_id, $transaction_id );
+			} else {
+				$results = array(
+					'result'   => 'failed',
+					'redirect' => apply_filters(
+						'graphql_woocommerce_checkout_payment_failed_redirect',
+						$order->get_checkout_payment_url(),
+						$order,
+						$order_id,
+						$transaction_id
+					),
+				);
+			}
 		}
 
 		return $order_id;
