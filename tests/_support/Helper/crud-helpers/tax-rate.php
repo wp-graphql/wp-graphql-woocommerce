@@ -73,7 +73,7 @@ class TaxRateHelper extends WCG_Helper {
 				"SELECT location_code, location_type
 				FROM {$wpdb->prefix}woocommerce_tax_rate_locations
 				WHERE tax_rate_id = %d",
-				$rate->tax_rate_id
+				$id
 			)
 		);
 
