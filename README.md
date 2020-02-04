@@ -109,6 +109,8 @@ You can view the configuration for the installation in the `docker-compose.yml`.
 **NOTE: if you get redirected to `http://localhost` run `docker-compose down` to remove any existing containers related to the project, then re-run Step 1.**
 - For more information about the docker-image uses in the service, it's on [Docker Hub](https://hub.docker.com/r/kidunot89/woographql-app). 
 
+### You found a vulnerability or security flaw?
+**Do not report potential security vulnerabilities here. Email them privately to our security team at [support@axistaylor.com](mailto:support@axistaylor.com)__**
 
 ## HTTP Error 500 :construction: 
 If you get HTTP 500 error upon activation or accessing the `endpoint` and have **CMD/Terminal** access with **Composer** installed. 
