@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.4.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.3) (2020-02-04)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.2...v0.4.3)
+
+**Enhancements:**
+
+- sales tax query: add postal code to where clause [\#105](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/105)
+- TaxRate connection improvements [\#231](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/231) ([kidunot89](https://github.com/kidunot89))
+- Checkout mutation updates [\#229](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/229) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- Need `transactionId` for checkout mutation [\#226](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/226)
+
+**Closed issues:**
+
+- Ignore this. ¯\\_\(ツ\)\_/¯ [\#230](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/230)
+- Problem with union query on some products. [\#227](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/227)
+- Version number not updated [\#225](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/225)
+
 ## [v0.4.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.2) (2020-01-28)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.1...v0.4.2)
@@ -159,7 +179,6 @@ Updated tests
 
 - Pagination with orderby when fetching Products causes products to be skipped [\#153](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/153)
 - Unneeded "register\_graphql\_connection\(\)" calls removed. [\#165](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/165) ([kidunot89](https://github.com/kidunot89))
-- Removes potential trouble filter [\#163](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/163) ([kidunot89](https://github.com/kidunot89))
 
 **Closed issues:**
 
