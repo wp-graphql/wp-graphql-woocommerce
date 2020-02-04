@@ -96,21 +96,24 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_query() {
 		global $wpdb;
 
-		if ( ! empty( $this->query_args['column'] ) ) {
-			$results = $wpdb->get_results(
+		if ( ! empty( $this->query_args['where'] ) ) {
+			$sql_where = $this->query_args['where'];
+
+			$results = $wpdb->get_results( // @codingStandardsIgnoreStart
 				$wpdb->prepare(
-					"SELECT tax_rate_id
-					FROM {$wpdb->prefix}woocommerce_tax_rates
-					WHERE %1s = %s
+					"SELECT rates.tax_rate_id
+					FROM {$wpdb->prefix}woocommerce_tax_rates AS rates
+					LEFT JOIN {$wpdb->prefix}woocommerce_tax_rate_locations AS locations
+					ON rates.tax_rate_id = locations.tax_rate_id
+					WHERE {$sql_where}
+					GROUP BY rates.tax_rate_id
 					ORDER BY %s %s",
-					$this->query_args['column'],
-					$this->query_args['column_value'],
 					$this->query_args['orderby'],
 					$this->query_args['order']
 				)
-			);
+			); // @codingStandardsIgnoreEnd
 		} else {
-			$results = $wpdb->get_results(
+			$results = $wpdb->get_results( // @codingStandardsIgnoreStart
 				$wpdb->prepare(
 					"SELECT tax_rate_id
 					FROM {$wpdb->prefix}woocommerce_tax_rates
@@ -118,7 +121,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 					$this->query_args['orderby'],
 					$this->query_args['order']
 				)
-			);
+			); // @codingStandardsIgnoreEnd
 		}
 
 		$results = array_map(
@@ -165,9 +168,46 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		if ( ! empty( $where_args['class'] ) ) {
-			$args['column']       = 'tax_rate_class';
-			$args['column_value'] = 'standard' !== $where_args['class'] ? $where_args['class'] : '';
+		if (
+			isset( $where_args['class'] )
+			|| ! empty( $where_args['postCode'] )
+			|| ! empty( $where_args['postCodeIn'] )
+		) {
+			$args['where'] = '';
+		}
+
+		if ( isset( $where_args['class'] ) ) {
+			if ( empty( $where_args['class'] ) ) {
+				$args['where'] .= 'tax_rate_class = ""';
+			} else {
+				$rate_class     = $where_args['class'];
+				$args['where'] .= "tax_rate_class = '{$rate_class}'";
+			}
+		}
+
+		if ( ! empty( $where_args['postCode'] ) ) {
+			if ( ! empty( $args['where'] ) ) {
+				$args['where'] .= ' AND ';
+			}
+
+			$post_code      = $where_args['postCode'];
+			$args['where'] .= "location_code = '{$post_code}'";
+		}
+
+		if ( ! empty( $where_args['postCodeIn'] ) ) {
+			if ( ! empty( $args['where'] ) ) {
+				$args['where'] .= ' AND ';
+			}
+
+			$args['where'] .= ' (';
+			foreach ( $where_args['postCodeIn'] as $i => $post_code ) {
+				if ( 0 === $i ) {
+					$args['where'] .= "location_code = '{$post_code}' ";
+				} else {
+					$args['where'] .= "OR location_code = '{$post_code}' ";
+				}
+			}
+			$args['where'] .= ') ';
 		}
 
 		return $args;

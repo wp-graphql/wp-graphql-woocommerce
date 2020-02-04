@@ -56,11 +56,19 @@ class Tax_Rates {
 	 */
 	public static function get_connection_args() {
 		return array(
-			'class'   => array(
-				'type'        => 'String',
+			'class'      => array(
+				'type'        => 'TaxClassEnum',
 				'description' => __( 'Sort by tax class', 'wp-graphql-woocommerce' ),
 			),
-			'orderby' => array(
+			'postCode'   => array(
+				'type'        => 'String',
+				'description' => __( 'Filter results by a post code.', 'wp-graphql-woocommerce' ),
+			),
+			'postCodeIn' => array(
+				'type'        => array( 'list_of' => 'String' ),
+				'description' => __( 'Filter results by a group of post codes', 'wp-graphql-woocommerce' ),
+			),
+			'orderby'    => array(
 				'type'        => array( 'list_of' => 'TaxRateConnectionOrderbyInput' ),
 				'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
 			),
