@@ -38,6 +38,7 @@ class Order extends Crud_CPT {
 			'id',
 			'orderId',
 			'orderNumber',
+			'status',
 			'date',
 			'modified',
 			'datePaid',

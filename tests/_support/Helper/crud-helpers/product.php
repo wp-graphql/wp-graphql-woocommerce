@@ -140,16 +140,20 @@ class ProductHelper extends WCG_Helper {
 
 	public function create_variable( $args = array() ) {
 		$product = new WC_Product_Variable();
-		$product->set_props(
-			array_merge(
-				array(
-					'name' => $this->dummy->product(),
-					'slug' => $this->next_slug(),
-					'sku'  => 'DUMMY VARIABLE SKU ' . $this->index,
-				),
-				$args
-			)
+		$props = array_merge(
+			array(
+				'name' => $this->dummy->product(),
+				'slug' => $this->next_slug(),
+				'sku'  => 'DUMMY VARIABLE SKU ' . $this->index,
+			),
+			$args
 		);
+
+		foreach ( $props as $key => $value ) {
+			if ( is_callable( array( $product, "set_{$key}" ) ) ) {
+				$product->{"set_{$key}"}( $value );
+			}
+		}
 
 		if ( ! empty( $args['meta_data'] ) ) {
 			$product->set_meta_data( $args['meta_data'] );
