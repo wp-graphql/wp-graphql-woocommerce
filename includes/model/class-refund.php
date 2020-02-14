@@ -11,28 +11,25 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\Model\Model;
+use WC_Order_Refund;
 
 /**
- * Class Refund
+ * Class Refund.
  */
 class Refund extends Crud_CPT {
+
 	/**
-	 * Defines get_restricted_cap
+	 * Defines get_restricted_cap.
 	 */
 	use Shop_Manager_Caps;
 
 	/**
-	 * Refund constructor
+	 * Refund constructor.
 	 *
 	 * @param int $id - shop_order_refund post-type ID.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->data                = new \WC_Order_Refund( $id );
+		$this->data                = new WC_Order_Refund( $id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
@@ -45,9 +42,7 @@ class Refund extends Crud_CPT {
 	}
 
 	/**
-	 * Initializes the Refund field resolvers
-	 *
-	 * @access protected
+	 * Initializes the Refund field resolvers.
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
