@@ -17,8 +17,3 @@
     - Local Testing -:construction:
     - Development w/ Docker -:construction:
     - Testing w/ Docker -:construction:
-
-## ☁️ Deploy
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/kidunot89/woographql-docs)
-
