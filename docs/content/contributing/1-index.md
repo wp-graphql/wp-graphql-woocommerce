@@ -1,6 +1,6 @@
 ---
 title: "Testing (Quick-Start Guide)"
-metaTitle: "WooGraphQL quick-start guide"
+metaTitle: "WooGraphQL Testing Quick-Start Guide | WooGraphQL Docs | AxisTaylor"
 metaDescription: "A simple guide to get started testing with WooGraphQL."
 ---
 

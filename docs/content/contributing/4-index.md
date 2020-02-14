@@ -1,6 +1,6 @@
 ---
 title: "Testing w/ Docker"
-metaTitle: "Using Docker for WooGraphQL testing"
+metaTitle: "Using Docker for WooGraphQL Testing | WooGraphQL Docs | AxisTaylor"
 metaDescription: "An extensive guide on testing w/ WooGraphQL + Docker."
 ---
 

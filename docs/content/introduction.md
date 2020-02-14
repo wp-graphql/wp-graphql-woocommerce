@@ -4,6 +4,8 @@ metaTitle: "WooGraphQL Docs Introduction"
 metaDescription: "What is WooGraphQL and why use it?"
 ---
 
+import Link from '../src/components/link'
+
 # What is WooGraphQL?
 
 WPGraphQL WooCommerce, WooGraphQL for short, is a WPGraphQL/WooCommerce extension that exposes WooCommerce along with it’s functionality to the GraphQL server created by WPGraphQL, making it possible to create better written and performing client-side application.
@@ -97,8 +99,8 @@ WPGraphQL WooCommerce (WooGraphQL) is a both WPGraphQL extension and a WooCommer
 4. Set your GraphQL client endpoint to the GraphQL endpoint of your site. Typically, this is `your-store.domain/graphql`.
 
 ## What next?
-- If you’re looking to develop a client-side application, take a look at the [Guides](/guides). They walk through the process of developing some common components in a React /Apollo application using data provided by WooGraphQL.
-- If you wish to customize the WooGraphQL schema to fit your particular store, try the [Contributing](/contributing) section. You can find tools/utilities for setting a development environment and testing locally and with Docker, as well as tips for extending and change the behavior of the WooGraphQL schema.
+- If you’re looking to develop a client-side application, take a look at the <Link to="/guides">Guides</Link>. They walk through the process of developing some common components in a React /Apollo application using data provided by WooGraphQL.
+- If you wish to customize the WooGraphQL schema to fit your particular store, try the <Link to="/contributing">Contributing</Link> section. You can find tools/utilities for setting a development environment and testing locally and with Docker, as well as tips for extending and change the behavior of the WooGraphQL schema.
 
 > ### A Quick Tip
 > Use **[WPGraphiQL](https://github.com/wp-graphql/wp-graphiql)**  to build your queries during development. WPGraphiQL come  equipped with an Explorer component for quick query building and a Schema Viewer component so individual types’ information can be searched.

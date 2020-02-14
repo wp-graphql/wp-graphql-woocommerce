@@ -4,9 +4,11 @@ metaTitle: "WooGraphQL Guides and Tips"
 metaDescription: "Guides and tips that ease the WooGraphQL development process"
 ---
 
+import Link from '../src/components/link'
+
 # React + Apollo Tutorials
-1. [Creating the Product List](guides/react-apollo/1-index)
-2. [Creating the Product Page](guides/react-apollo/2-index)
-3. [Creating the Cart](guides/react-apollo/3-index)
-4. [Advanced Cart Mutation Tips](guides/react-apollo/4-index)
-5. [Creating the Checkout Page](guides/react-apollo/5-index)
+1. <Link to="/guides/react-apollo/01-index">Creating the Product List</Link>
+2. <Link to="/guides/react-apollo/02-index">Creating the Product Page</Link>
+3. <Link to="/guides/react-apollo/03-index">Creating the Cart</Link>
+4. <Link to="/guides/react-apollo/04-index">Advanced Cart Mutation Tips</Link>
+5. <Link to="/guides/react-apollo/05-index">Creating the Checkout Page</Link>
