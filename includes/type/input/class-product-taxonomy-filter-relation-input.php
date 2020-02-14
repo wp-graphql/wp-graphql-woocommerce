@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Product_Taxonomy_Filter_Relation_Input
  */
 class Product_Taxonomy_Filter_Relation_Input {
+
 	/**
 	 * Registers type
 	 */

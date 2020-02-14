@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
  * Class Product_Attribute
  */
 class Product_Attribute {
+
 	/**
 	 * Registers the "Product" interface.
 	 *
