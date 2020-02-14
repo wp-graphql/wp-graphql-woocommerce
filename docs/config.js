@@ -5,7 +5,7 @@ const config = {
 		"gaTrackingId": null
 	},
 	"header": {
-		"logo": "https://woographql.axistaylor.com/wp-content/uploads/2020/02/woographql-v3.svg.png",
+		"logo": "https://docs.axistaylor.com/wp-content/uploads/2020/02/woographql-v3.svg.png",
 		"logoLink": "https://woographql.axistaylor.com",
 		"title": "WooGraphQL Documentation",
 		"githubUrl": "https://github.com/wp-graphql/wp-graphql-woocommerce",
@@ -45,7 +45,7 @@ const config = {
 		"description": "The official WPGraphQL WooCommerce (WooGraphQL) documentation",
 		"ogImage": null,
 		"docsLocation": "https://github.com/kidunot89/woographql-docs/tree/master/content",
-		"favicon": "https://woographql.axistaylor.com/wp-content/uploads/2020/02/woographql-v2-optimized.png",
+		"favicon": "https://docs.axistaylor.com/wp-content/uploads/2020/02/woographql-v3.svg.png",
 		"twitterHandle": "woographql"
 	},
 	"pwa": {
