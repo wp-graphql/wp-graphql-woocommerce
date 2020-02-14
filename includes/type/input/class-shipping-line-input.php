@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Shipping_Line_Input
  */
 class Shipping_Line_Input {
+
 	/**
 	 * Registers type
 	 */

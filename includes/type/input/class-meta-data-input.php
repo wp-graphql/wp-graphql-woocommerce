@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Meta_Data_Input
  */
 class Meta_Data_Input {
+
 	/**
 	 * Registers type
 	 */

@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Tax_Rate_Connection_Orderby_Input
  */
 class Tax_Rate_Connection_Orderby_Input {
+
 	/**
 	 * Registers type
 	 */
