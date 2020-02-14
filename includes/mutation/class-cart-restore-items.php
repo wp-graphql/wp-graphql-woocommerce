@@ -78,6 +78,7 @@ class Cart_Restore_Items {
 					throw new UserError( sprintf( __( 'Failed to restore cart item with the key: %s', 'wp-graphql-woocommerce' ), $key ) );
 				}
 			}
+
 			$cart_items = Cart_Mutation::retrieve_cart_items( $input, $context, $info, 'restore' );
 
 			// Return payload.

@@ -24,7 +24,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		private static $instance;
 
 		/**
-		 * WP_GraphQL_WooCommerce Constructor
+		 * Returns a WP_GraphQL_WooCommerce Instance.
+		 *
+		 * @return WP_GraphQL_WooCommerce
 		 */
 		public static function instance() {
 			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
@@ -40,7 +42,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			 */
 			do_action( 'graphql_woocommerce_init', self::$instance );
 
-			// Return the WPGraphQLWooCommerce Instance
+			// Return the WPGraphQLWooCommerce Instance.
 			return self::$instance;
 		}
 
@@ -135,7 +137,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private function includes() {
 
-			// Autoload Required Classes
+			// Autoload Required Classes.
 			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && false !== WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
 				require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
 			}
