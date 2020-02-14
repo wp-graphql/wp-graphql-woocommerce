@@ -4,25 +4,19 @@
  *
  * Registers ShippingPackage WPObject type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.3.2
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\Type\WPObjectType;
-
 /**
  * Class Shipping_Package_Type
  */
 class Shipping_Package_Type {
+
 	/**
-	 * Registers type
+	 * Registers type.
 	 */
 	public static function register() {
 		register_graphql_object_type(

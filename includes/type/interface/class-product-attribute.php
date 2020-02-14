@@ -2,7 +2,7 @@
 /**
  * WPInterface Type - Product_Attribute_Type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInterface
+ * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.3.2
  */
 

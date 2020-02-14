@@ -4,7 +4,7 @@
  *
  * Registers WPObject type for WooCommerce customers address object
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
@@ -14,6 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Customer_Address_Type
  */
 class Customer_Address_Type {
+
 	/**
 	 * Registers Customer WPObject type
 	 */

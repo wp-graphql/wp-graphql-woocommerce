@@ -4,25 +4,23 @@
  *
  * Registers ProductVariation WPObject type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Product_Variation;
-use WPGraphQL\Type\WPObjectType;
 
 /**
  * Class Product_Variation_Type
  */
 class Product_Variation_Type {
+
 	/**
 	 * Register ProductVariation type to the WPGraphQL schema
 	 */
@@ -269,7 +267,7 @@ class Product_Variation_Type {
 						),
 					),
 				),
-				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'     => function ( $source, array $args, AppContext $context ) {
 					$id = isset( $args['id'] ) ? $args['id'] : null;
 					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 

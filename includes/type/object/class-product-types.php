@@ -4,7 +4,7 @@
  *
  * Registers product types and queries
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.3.0
  */
 
@@ -14,8 +14,6 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Type\WPObjectType;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Type\WPInterface\Product;
 
@@ -23,6 +21,7 @@ use WPGraphQL\WooCommerce\Type\WPInterface\Product;
  * Class Product_Types
  */
 class Product_Types {
+
 	/**
 	 * Registers product types to the WPGraphQL schema
 	 */

@@ -4,25 +4,22 @@
  *
  * Registers WPObject type for WooCommerce customers
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Type\WPObjectType;
 use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Customer;
-use WPGraphQL\Model\User;
 
 /**
  * Class Customer_Type
  */
 class Customer_Type {
+
 	/**
 	 * Registers Customer WPObject type
 	 */
@@ -132,7 +129,7 @@ class Customer_Type {
 						'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
 					),
 				),
-				'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'     => function ( $source, array $args, AppContext $context ) {
 					$customer_id = 0;
 					if ( ! empty( $args['id'] ) ) {
 						$id_components = Relay::fromGlobalId( $args['id'] );

@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - PricingFieldFormatEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.1.1
  */
 

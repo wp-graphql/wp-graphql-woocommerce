@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - OrderStatusEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.0.1
  */
 

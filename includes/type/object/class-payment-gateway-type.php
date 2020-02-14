@@ -4,7 +4,7 @@
  *
  * Registers PaymentGateway WPObject type.
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.2.1
  */
 
@@ -14,6 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Payment_Gateway_Type
  */
 class Payment_Gateway_Type {
+
 	/**
 	 * Registers type
 	 */

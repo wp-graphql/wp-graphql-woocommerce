@@ -4,7 +4,7 @@
  *
  * Registers the "DownloadableItem" type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.4.0
  */
 
@@ -12,11 +12,13 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WC_Product_Download;
 
 /**
  * Class Downloadable_Item_Type
  */
 class Downloadable_Item_Type {
+
 	/**
 	 * Registers type
 	 */
@@ -86,7 +88,7 @@ class Downloadable_Item_Type {
 							}
 
 							$download_data = $files[ $download_id ];
-							$download = new \WC_Product_Download();
+							$download = new WC_Product_Download();
 							$download->set_id( $download_id );
 							$download->set_name(
 								$download_data['name']

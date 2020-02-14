@@ -4,7 +4,7 @@
  *
  * Registers proper ProductDownload type and queries
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.1
  */
 
@@ -14,6 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Product_Download_Type
  */
 class Product_Download_Type {
+
 	/**
 	 * Register ProductDownload type
 	 */
