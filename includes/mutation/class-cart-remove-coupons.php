@@ -11,14 +11,13 @@
 namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 
 /**
  * Class - Cart_Remove_Coupons
  */
 class Cart_Remove_Coupons {
+
 	/**
 	 * Registers mutation
 	 */
@@ -34,19 +33,17 @@ class Cart_Remove_Coupons {
 	}
 
 	/**
-	 * Defines the mutation input field configuration
+	 * Defines the mutation input field configuration.
 	 *
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array(
+		return array(
 			'codes' => array(
 				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
 			),
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -66,7 +63,7 @@ class Cart_Remove_Coupons {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return function( $input ) {
 			Cart_Mutation::check_session_token();
 
 			// Retrieve product database ID if relay ID provided.
@@ -75,8 +72,6 @@ class Cart_Remove_Coupons {
 			}
 
 			foreach ( $input['codes'] as $code ) {
-				// Get the coupon.
-				$the_coupon = new \WC_Coupon( $code );
 
 				// Check if applied.
 				if ( ! \WC()->cart->has_discount( $code ) ) {

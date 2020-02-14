@@ -19,7 +19,7 @@ class Tax_Status {
 		register_graphql_enum_type(
 			'TaxStatusEnum',
 			array(
-				'description' => __( 'Product tax status enumeration', 'wp-graphql' ),
+				'description' => __( 'Product tax status enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => array(
 					'TAXABLE'  => array( 'value' => 'taxable' ),
 					'SHIPPING' => array( 'value' => 'shipping' ),

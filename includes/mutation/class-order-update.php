@@ -16,11 +16,13 @@ use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
+use WC_Order_Factory;
 
 /**
  * Class Order_Update
  */
 class Order_Update {
+
 	/**
 	 * Registers mutation
 	 */
@@ -41,7 +43,7 @@ class Order_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array_merge(
+		return array_merge(
 			Order_Create::get_input_fields(),
 			array(
 				'id'         => array(
@@ -58,8 +60,6 @@ class Order_Update {
 				),
 			)
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Order_Update {
 				Order_Mutation::apply_coupons( $order_id, $input['coupons'] );
 			}
 
-			$order = \WC_Order_Factory::get_order( $order_id );
+			$order = WC_Order_Factory::get_order( $order_id );
 
 			// Make sure gateways are loaded so hooks from gateways fire on save/create.
 			WC()->payment_gateways();

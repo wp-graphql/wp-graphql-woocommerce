@@ -23,11 +23,10 @@ function setup_minor_integrations() {
 /**
  * QL Search integration - Adds to product types to the SWPResult possible types
  *
- * @param array $type_names  SWPResults possible types.
- *
+ * @param array $type_names SWPResults possible types.
  * @return array
  */
-function woographql_swp_result_possible_types( $type_names ) {
+function woographql_swp_result_possible_types( array $type_names ) {
 	if ( in_array( 'Product', $type_names, true ) ) {
 		$type_names = array_merge(
 			array_filter(

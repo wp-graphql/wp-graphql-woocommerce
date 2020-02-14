@@ -11,14 +11,13 @@
 namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 
 /**
  * Class - Cart_Update_Shipping_Method
  */
 class Cart_Update_Shipping_Method {
+
 	/**
 	 * Registers mutation
 	 */
@@ -63,12 +62,13 @@ class Cart_Update_Shipping_Method {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return function( $input ) {
 			Cart_Mutation::check_session_token();
 
 			if ( empty( $input['shippingMethods'] ) ) {
 				throw new UserError( __( 'No shipping method provided', 'wp-graphql-woocommerce' ) );
 			}
+
 			$posted_shipping_methods = $input['shippingMethods'];
 
 			// Get current shipping methods.

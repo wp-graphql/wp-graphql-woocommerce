@@ -21,6 +21,7 @@ use WPGraphQL\WooCommerce\Model\Order;
  * Class Order_Delete_Items
  */
 class Order_Delete_Items {
+
 	/**
 	 * Registers mutation
 	 */
@@ -41,7 +42,7 @@ class Order_Delete_Items {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array_merge(
+		return array_merge(
 			array(
 				'id'      => array(
 					'type'        => 'ID',
@@ -57,8 +58,6 @@ class Order_Delete_Items {
 				),
 			)
 		);
-
-		return $input_fields;
 	}
 
 	/**
