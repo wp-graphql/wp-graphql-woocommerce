@@ -9,13 +9,13 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 /**
- * Trait Shop_Manager_Capabilities
+ * Trait Shop_Manager_Capabilities.
  */
 trait Shop_Manager_Caps {
+
 	/**
 	 * Retrieve the cap to check if the data should be restricted for the order
 	 *
-	 * @access protected
 	 * @return string
 	 */
 	public function get_restricted_cap() {
@@ -37,10 +37,9 @@ trait Shop_Manager_Caps {
 	}
 
 	/**
-	 * Whether or not the owner of the data matches the current user
+	 * Whether or not the owner of the data matches the current user.
 	 *
 	 * @return bool
-	 * @access protected
 	 */
 	protected function owner_matches_current_user() {
 		// Get Customer ID.

@@ -12,21 +12,20 @@ namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
 use WPGraphQL\Model\Model;
+use WC_Customer;
 
 /**
  * Class Customer
  */
 class Customer extends Model {
+
 	/**
 	 * Customer constructor
 	 *
-	 * @param \WC_Customer|int $id - User ID.
-	 *
-	 * @access public
-	 * @return void
+	 * @param WC_Customer|int $id - User ID.
 	 */
 	public function __construct( $id = 'session' ) {
-		$this->data                = 'session' === $id ? \WC()->customer : new \WC_Customer( $id );
+		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( $id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
@@ -46,7 +45,6 @@ class Customer extends Model {
 	 *
 	 * @param string $method - function name.
 	 * @param array  $args  - function call arguments.
-	 *
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
@@ -54,9 +52,7 @@ class Customer extends Model {
 	}
 
 	/**
-	 * Initializes the Customer field resolvers
-	 *
-	 * @access protected
+	 * Initializes the Customer field resolvers.
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
