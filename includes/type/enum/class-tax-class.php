@@ -37,7 +37,7 @@ class Tax_Class {
 		register_graphql_enum_type(
 			'TaxClassEnum',
 			array(
-				'description' => __( 'Tax class enumeration', 'wp-graphql' ),
+				'description' => __( 'Tax class enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
 			)
 		);

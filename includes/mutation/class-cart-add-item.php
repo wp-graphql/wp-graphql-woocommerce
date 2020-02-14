@@ -19,6 +19,7 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Add_Item
  */
 class Cart_Add_Item {
+
 	/**
 	 * Registers mutation
 	 */
@@ -97,6 +98,7 @@ class Cart_Add_Item {
 			if ( empty( $input['productId'] ) ) {
 				throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
 			}
+
 			if ( ! \wc_get_product( $input['productId'] ) ) {
 				throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
 			}

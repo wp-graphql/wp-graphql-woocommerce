@@ -13,14 +13,15 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
-use WPGraphQL\Model\User;
 use WPGraphQL\Mutation\UserCreate;
 use WPGraphQL\Mutation\UserUpdate;
+use WC_Customer;
 
 /**
  * Class - Customer_Update
  */
 class Customer_Update {
+
 	/**
 	 * Registers mutation
 	 */
@@ -41,12 +42,12 @@ class Customer_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array_merge(
+		return array_merge(
 			UserCreate::get_input_fields(),
 			array(
 				'id'                    => array(
 					'type'        => 'ID',
-					'description' => __( 'The ID of the user', 'wp-graphql' ),
+					'description' => __( 'The ID of the user', 'wp-graphql-woocommerce' ),
 				),
 				'billing'               => array(
 					'type'        => 'CustomerAddressInput',
@@ -62,8 +63,6 @@ class Customer_Update {
 				),
 			)
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -108,7 +107,7 @@ class Customer_Update {
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'update' );
 
 			// Create customer object.
-			$customer = ! $session_only ? new \WC_Customer( $payload['id'] ) : \WC()->customer;
+			$customer = ! $session_only ? new WC_Customer( $payload['id'] ) : \WC()->customer;
 
 			// Set billing address.
 			if ( ! empty( $customer_args['billing'] ) ) {

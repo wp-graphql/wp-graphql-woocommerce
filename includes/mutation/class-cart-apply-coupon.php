@@ -11,14 +11,14 @@
 namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
+use WC_Coupon;
 
 /**
  * Class - Cart_Apply_Coupon
  */
 class Cart_Apply_Coupon {
+
 	/**
 	 * Registers mutation
 	 */
@@ -39,14 +39,12 @@ class Cart_Apply_Coupon {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array(
+		return array(
 			'code' => array(
 				'type'        => array( 'non_null' => 'String' ),
 				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
 			),
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -66,11 +64,11 @@ class Cart_Apply_Coupon {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return function( $input ) {
 			Cart_Mutation::check_session_token();
 
 			// Get the coupon.
-			$the_coupon = new \WC_Coupon( $input['code'] );
+			$the_coupon = new WC_Coupon( $input['code'] );
 
 			// Prevent adding coupons by post ID.
 			if ( $the_coupon->get_code() !== $input['code'] ) {

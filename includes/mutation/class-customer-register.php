@@ -16,11 +16,13 @@ use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\Model\User;
 use WPGraphQL\Mutation\UserRegister;
+use WC_Customer;
 
 /**
  * Class - Customer_Register
  */
 class Customer_Register {
+
 	/**
 	 * Registers mutation
 	 */
@@ -41,7 +43,7 @@ class Customer_Register {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array_merge(
+		return array_merge(
 			UserRegister::get_input_fields(),
 			array(
 				'billing'               => array(
@@ -58,8 +60,6 @@ class Customer_Register {
 				),
 			)
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -144,7 +144,7 @@ class Customer_Register {
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'register' );
 
 			// Create customer object.
-			$customer = new \WC_Customer( $user_id );
+			$customer = new WC_Customer( $user_id );
 
 			// Set billing address.
 			if ( ! empty( $customer_args['billing'] ) ) {
