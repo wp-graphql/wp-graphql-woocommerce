@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - CountriesEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.1.0
  */
 

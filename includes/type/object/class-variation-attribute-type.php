@@ -4,24 +4,17 @@
  *
  * Registers VariationAttribute WPObject type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.4
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\Type\WPObjectType;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Product_Variation;
-
 /**
  * Class Variation_Attribute_Type
  */
 class Variation_Attribute_Type {
+
 	/**
 	 * Register VariationAttribute type to the WPGraphQL schema
 	 */

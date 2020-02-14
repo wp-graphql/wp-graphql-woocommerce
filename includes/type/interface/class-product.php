@@ -4,7 +4,7 @@
  *
  * Registers Product interface.
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInterface
+ * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.3.0
  */
 

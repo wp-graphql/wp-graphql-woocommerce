@@ -4,19 +4,19 @@
  *
  * Registers MetaData type and queries
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.2
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WP_GraphQL_WooCommerce;
 
 /**
  * Class Meta_Data_Type
  */
 class Meta_Data_Type {
+
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
 	 */
@@ -130,7 +130,7 @@ class Meta_Data_Type {
 				'ShippingLine',
 				'TaxLine',
 			),
-			array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
+			array_values( WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
 
 		foreach ( $types as $type ) {

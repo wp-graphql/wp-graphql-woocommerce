@@ -2,7 +2,7 @@
 /**
  * WPInputObjectType - LineItemInput
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInputObject
+ * @package WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.2.0
  */
 

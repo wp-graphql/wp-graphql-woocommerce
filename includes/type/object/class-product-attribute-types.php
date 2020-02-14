@@ -2,7 +2,7 @@
 /**
  * WPObject Types - LocalProductAttribute && GlobalProductAttribute
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.3.2
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Product_Attribute_Types
  */
 class Product_Attribute_Types {
+
 	/**
 	 * Registers ProductAttribute types
 	 */
@@ -26,7 +27,7 @@ class Product_Attribute_Types {
 					'scope'       => array(
 						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => function () {
 							return 'local';
 						},
 					),
@@ -44,7 +45,7 @@ class Product_Attribute_Types {
 					'scope'       => array(
 						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => function () {
 							return 'global';
 						},
 					),
