@@ -45,7 +45,7 @@ class Order_Create {
 	public static function get_input_fields() {
 		$input_fields = array(
 			'parentId'           => array(
-				'type'        => 'Integer',
+				'type'        => 'Int',
 				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
 			),
 			'currency'           => array(

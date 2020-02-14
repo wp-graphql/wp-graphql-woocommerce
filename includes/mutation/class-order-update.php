@@ -125,7 +125,7 @@ class Order_Update {
 			$order = WC_Order_Factory::get_order( $order_id );
 
 			// Make sure gateways are loaded so hooks from gateways fire on save/create.
-			WC()->payment_gateways();
+			\WC()->payment_gateways();
 
 			// Validate customer ID.
 			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input ) ) {
