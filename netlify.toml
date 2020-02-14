@@ -1,3 +1,4 @@
 [build]
   base = "docs"
-  publish = "docs/public"
+  command = "npm run build"
+  publish = "public"
