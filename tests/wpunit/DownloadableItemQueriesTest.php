@@ -320,4 +320,72 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		$this->assertEquals( $expected, $actual );
     }
 
+    public function testCustomerToDownloadableItemsQuery() {
+        $downloadable_product = $this->products->create_simple(
+            array(
+                'downloadable' => true,
+                'downloads'    => array( $this->products->create_download() )
+            )
+        );
+        $order_id = $this->orders->create(
+            array(
+                'status'      => 'completed',
+                'customer_id' => $this->customer,
+            ),
+            array(
+                'line_items' => array(
+                    array(
+                        'product' => $downloadable_product,
+                        'qty'     => 1,
+                    ),
+                ),
+            )
+        );
+
+        // Force download permission updated.
+        wc_downloadable_product_permissions( $order_id, true );
+        
+        $query = '
+            query {
+                customer {
+                    downloadableItems(first: 1) {
+                        nodes {
+                            url
+                            accessExpires
+                            downloadId
+                            downloadsRemaining
+                            name
+                            product {
+                                productId
+                            }
+                            download {
+                                downloadId
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+        /**
+		 * Assertion One
+		 * 
+		 * tests query results
+		 */
+		wp_set_current_user( $this->customer );
+		$actual   = graphql( array( 'query' => $query ) );
+		$expected = array(
+            'data' => array(
+                'customer' => array(
+                    'downloadableItems' => array( 'nodes' => $this->customers->print_downloadables( $this->customer ) ),
+                ),
+            ),
+        );
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+    }
+
 }

@@ -22,6 +22,13 @@ class Downloadable_Items {
 	public static function register_connections() {
 		// From Order.
 		register_graphql_connection( self::get_connection_config() );
+
+		// From Customer.
+		register_graphql_connection(
+			self::get_connection_config(
+				array( 'fromType' => 'Customer' )
+			)
+		);
 	}
 
 	/**
