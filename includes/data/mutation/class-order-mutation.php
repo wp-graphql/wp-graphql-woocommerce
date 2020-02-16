@@ -29,7 +29,7 @@ class Order_Mutation {
 		$post_type_object = get_post_type_object( 'shop_order' );
 
 		return apply_filters(
-			"authorized_to_{$mutation}_orders",
+			"graphql_woocommerce_authorized_to_{$mutation}_orders",
 			current_user_can(
 				'delete' === $mutation
 					? $post_type_object->cap->delete_posts
@@ -78,7 +78,7 @@ class Order_Mutation {
 		 * @param AppContext  $context Request AppContext instance.
 		 * @param ResolveInfo $info    Request ResolveInfo instance.
 		 */
-		do_action( 'woocommerce_graphql_before_order_create', $input, $context, $info );
+		do_action( 'graphql_woocommerce_before_order_create', $input, $context, $info );
 
 		$order = \wc_create_order( $args );
 		if ( is_wp_error( $order ) ) {
@@ -93,7 +93,7 @@ class Order_Mutation {
 		 * @param AppContext  $context Request AppContext instance.
 		 * @param ResolveInfo $info    Request ResolveInfo instance.
 		 */
-		do_action( 'woocommerce_graphql_after_order_create', $order, $input, $context, $info );
+		do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 
 		return $order->get_id();
 	}
@@ -126,7 +126,7 @@ class Order_Mutation {
 				 * @param AppContext  $context   Request AppContext instance.
 				 * @param ResolveInfo $info      Request ResolveInfo instance.
 				 */
-				do_action( "woocommerce_graphql_before_{$type}s_added_to_order", $items, $order_id, $context, $info );
+				do_action( "graphql_woocommerce_before_{$type}s_added_to_order", $items, $order_id, $context, $info );
 
 				foreach ( $items as $item_data ) {
 					// Create Order item.
@@ -152,7 +152,7 @@ class Order_Mutation {
 				 * @param AppContext  $context   Request AppContext instance.
 				 * @param ResolveInfo $info      Request ResolveInfo instance.
 				 */
-				do_action( "woocommerce_graphql_after_{$type}s_added_to_order", $items, $order_id, $context, $info );
+				do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $items, $order_id, $context, $info );
 			}
 		}
 	}
@@ -331,7 +331,7 @@ class Order_Mutation {
 		 * @param AppContext  $context Request AppContext instance.
 		 * @param ResolveInfo $info    Request ResolveInfo instance.
 		 */
-		do_action( 'woocommerce_graphql_before_order_meta_save', $order, $input, $context, $info );
+		do_action( 'graphql_woocommerce_before_order_meta_save', $order, $input, $context, $info );
 
 		$order->save();
 	}
@@ -372,7 +372,7 @@ class Order_Mutation {
 		foreach ( $coupons as $code ) {
 			$results = $order->apply_coupon( wc_clean( $code ) );
 			if ( is_wp_error( $results ) ) {
-				do_action( 'woocommerce_graphql_' . $results->get_error_code(), $results, $code, $coupons, $order );
+				do_action( 'graphql_woocommerce_' . $results->get_error_code(), $results, $code, $coupons, $order );
 			}
 		}
 

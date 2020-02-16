@@ -97,6 +97,7 @@ class Downloadable_Item_Type {
 							);
 							$download->set_file(
 								apply_filters(
+									// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 									'woocommerce_file_download_path',
 									$download_data['file'],
 									\WC()->product_factory->get_product( $product_id ),

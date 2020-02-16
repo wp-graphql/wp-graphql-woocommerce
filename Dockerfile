@@ -3,10 +3,10 @@
 ############################################################################
 
 # Using the 'DESIRED_' prefix to avoid confusion with environment variables of the same name.
-ARG DESIRED_WP_VERSION
-ARG DESIRED_PHP_VERSION
+ARG WP_VERSION
+ARG PHP_VERSION
 
-FROM kidunot89/woographql-app:wp${DESIRED_WP_VERSION}-php${DESIRED_PHP_VERSION}
+FROM kidunot89/woographql-app:wp${WP_VERSION}-php${PHP_VERSION}
 
 
 LABEL author=kidunot89
@@ -15,11 +15,11 @@ LABEL author_uri=https://github.com/kidunot89
 SHELL [ "/bin/bash", "-c" ]
 
 # Redeclare ARGs and set as environmental variables for reuse.
-ARG DESIRED_WP_VERSION
-ARG DESIRED_PHP_VERSION
+ARG WP_VERSION
+ARG PHP_VERSION
 ARG USE_XDEBUG
-ENV WP_VERSION=${DESIRED_WP_VERSION}
-ENV PHP_VERSION=${DESIRED_PHP_VERSION}
+ENV WP_VERSION=${WP_VERSION}
+ENV PHP_VERSION=${PHP_VERSION}
 ENV USING_XDEBUG=${USE_XDEBUG}
 
 # Install php extensions
@@ -37,7 +37,7 @@ RUN if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "7.0" ] && [[ -z "$USI
         && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    elif  [ "$PHP_VERSION" == "7.0" ]; then \
+    elif  [ "$PHP_VERSION" == "7.0" ] || [ ! -z "$USING_XDEBUG" ]; then \
         yes | pecl install xdebug-2.6.1 \
         && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \

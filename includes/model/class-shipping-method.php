@@ -32,7 +32,8 @@ class Shipping_Method extends Model {
 			'id',
 			'rateId',
 		);
-
+		
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'shipping_method_restricted_cap', '' );
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );

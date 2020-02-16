@@ -26,7 +26,7 @@ class Shipping_Method_Type {
 		register_graphql_object_type(
 			'ShippingMethod',
 			array(
-				'description' => __( 'A shipping method object', 'wp-graphql-woocommercer' ),
+				'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'          => array(

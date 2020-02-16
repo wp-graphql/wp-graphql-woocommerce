@@ -33,6 +33,7 @@ class Tax_Rate extends Model {
 			'rateId',
 		);
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'tax_rate_restricted_cap', '' );
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );

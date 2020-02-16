@@ -184,17 +184,21 @@ class Product extends Crud_CPT {
 				},
 				'description'         => function() {
 					return ! empty( $this->data->get_description() )
+						// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 						? apply_filters( 'the_content', $this->data->get_description() )
 						: null;
 				},
 				'shortDescription'    => function() {
 					$short_description = ! empty( $this->data->get_short_description() )
 					? apply_filters(
+						// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 						'get_the_excerpt',
 						$this->data->get_short_description(),
 						get_post( $this->data->get_id() )
 					)
 					: null;
+
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 					return apply_filters( 'the_excerpt', $short_description );
 				},
 				'sku'                 => function() {

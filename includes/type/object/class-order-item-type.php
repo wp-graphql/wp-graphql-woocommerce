@@ -242,7 +242,7 @@ class Order_Item_Type {
 		register_graphql_object_type(
 			'OrderItemTax',
 			array(
-				'description' => __( 'Order item tax statement', 'wp-graphql-woocommercer' ),
+				'description' => __( 'Order item tax statement', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'taxLineId' => array(
 						'type'        => array( 'non_null' => 'Int' ),

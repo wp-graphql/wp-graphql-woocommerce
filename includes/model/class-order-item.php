@@ -50,6 +50,7 @@ class Order_Item extends Model {
 			'orderItemId',
 		);
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );

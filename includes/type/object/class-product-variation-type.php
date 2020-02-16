@@ -298,10 +298,10 @@ class Product_Variation_Type {
 
 					if ( empty( $variation_id ) ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s' ), $id_type, $id ) );
+						throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					} elseif ( get_post( $variation_id )->post_type !== 'product_variation' ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s' ), $id_type, $id ) );
+						throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					}
 
 					return Factory::resolve_crud_object( $variation_id, $context );

@@ -94,7 +94,7 @@ function wc_graphql_get_order_statuses() {
  */
 function wc_graphql_price( $price, $args = array() ) {
 	$args = apply_filters(
-		'wc_price_args',
+		'wc_price_args', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		wp_parse_args(
 			$args,
 			array(
@@ -109,13 +109,32 @@ function wc_graphql_price( $price, $args = array() ) {
 
 	$unformatted_price = $price;
 	$negative          = $price < 0;
-	$price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) );
-	$price             = apply_filters( 'formatted_woocommerce_price', number_format( $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] ), $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] );
 
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+	$price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) ); 
+
+
+	$price             = apply_filters(
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		'formatted_woocommerce_price',
+		number_format(
+			$price,
+			$args['decimals'],
+			$args['decimal_separator'],
+			$args['thousand_separator']
+		),
+		$price,
+		$args['decimals'],
+		$args['decimal_separator'],
+		$args['thousand_separator']
+	);
+
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 	if ( apply_filters( 'woocommerce_price_trim_zeros', false ) && $args['decimals'] > 0 ) {
 		$price = wc_trim_zeros( $price );
 	}
 
+	// phpcs:ignore PHPCompatibility.ParameterValues.NewHTMLEntitiesEncodingDefault.NotSet
 	$symbol = html_entity_decode( get_woocommerce_currency_symbol( $args['currency'] ) );
 	$return = ( $negative ? '-' : '' ) . sprintf( $args['price_format'], $symbol, $price );
 
@@ -127,7 +146,7 @@ function wc_graphql_price( $price, $args = array() ) {
 	 * @param array  $args              Pass on the args.
 	 * @param float  $unformatted_price Price as float to allow plugins custom formatting. Since 3.2.0.
 	 */
-	return apply_filters( 'wc_graphql_price', $return, $price, $args, $unformatted_price, $symbol );
+	return apply_filters( 'graphql_woocommerce_price', $return, $price, $args, $unformatted_price, $symbol );
 }
 
 /**
@@ -142,9 +161,9 @@ function wc_graphql_price_range( $from, $to ) {
 		/* translators: 1: price from 2: price to */
 		_x( '%1$s %2$s %3$s', 'Price range: from-to', 'wp-graphql-woocommerce' ),
 		is_numeric( $from ) ? wc_graphql_price( $from ) : $from,
-		apply_filters( 'graphql_format_price_range_separator', '-', $from, $to ),
+		apply_filters( 'graphql_woocommerce_format_price_range_separator', '-', $from, $to ),
 		is_numeric( $to ) ? wc_graphql_price( $to ) : $to
 	);
 
-	return apply_filters( 'graphql_format_price_range', $price, $from, $to );
+	return apply_filters( 'graphql_woocommerce_format_price_range', $price, $from, $to );
 }

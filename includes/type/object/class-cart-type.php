@@ -35,7 +35,7 @@ class Cart_Type {
 				'type'        => 'Cart',
 				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 				'resolve'     => function() {
-					$token_invalid = apply_filters( 'woo_session_token_errors', null );
+					$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
 					if ( $token_invalid ) {
 						throw new UserError( $token_invalid );
 					}
@@ -216,7 +216,7 @@ class Cart_Type {
 						'resolve'     => function( $source ) {
 							$source->calculate_totals();
 							$price = isset( $source->get_totals()['total'] )
-								? apply_filters( 'woocommerce_cart_get_total', $source->get_totals()['total'] )
+								? apply_filters( 'graphql_woocommerce_cart_get_total', $source->get_totals()['total'] )
 								: null;
 							return \wc_graphql_price( $price );
 						},

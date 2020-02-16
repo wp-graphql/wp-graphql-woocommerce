@@ -112,7 +112,7 @@ class Order_Update {
 			 * @param AppContext  $context   Request AppContext instance.
 			 * @param ResolveInfo $info      Request ResolveInfo instance.
 			 */
-			do_action( 'woocommerce_graphql_before_order_update', $order_id, $input, $context, $info );
+			do_action( 'graphql_woocommerce_before_order_update', $order_id, $input, $context, $info );
 
 			Order_Mutation::add_order_meta( $order_id, $input, $context, $info );
 			Order_Mutation::add_items( $input, $order_id, $context, $info );
@@ -158,7 +158,7 @@ class Order_Update {
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.
 			 */
-			do_action( 'woocommerce_graphql_after_order_update', $order, $input, $context, $info );
+			do_action( 'graphql_woocommerce_after_order_update', $order, $input, $context, $info );
 
 			return array( 'id' => $order->get_id() );
 		};
