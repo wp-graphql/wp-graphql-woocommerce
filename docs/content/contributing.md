@@ -1,5 +1,5 @@
 ---
-title: "Contributing Guides and Tips"
+title: "Contributing"
 metaTitle: "Contributing | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Guides and tips for helping extend and maintain WooGraphQL"
 ---

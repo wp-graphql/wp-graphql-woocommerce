@@ -1,5 +1,5 @@
 ---
-title: "WooGraphQL Playground"
+title: "Playground"
 metaTitle: "WooGraphQL Playground | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Tests the queries and mutation using the WooGraphQL playground."
 ---

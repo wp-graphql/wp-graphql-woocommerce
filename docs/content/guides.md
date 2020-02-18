@@ -1,5 +1,5 @@
 ---
-title: "WooGraphQL Guides"
+title: "Guides"
 metaTitle: "WooGraphQL Guides/Tutorials | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Guides and tips that ease the WooGraphQL development process"
 ---
