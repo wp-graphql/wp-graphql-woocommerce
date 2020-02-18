@@ -4,7 +4,7 @@ metaTitle: "WooGraphQL + Apollo + React product list tutorial"
 metaDescription: "A tutorial on implementing a product list in with WooGraphQL + Apollo + React."
 ---
 
-import Link from '../src/components/link'
+import Link from '../../../src/components/link'
 
 # Creating a product list
 A product list is the most common element found on any online shop/marketplace regardless of how it’s built, but it is also the hardest to element to create without some any flaws. There are serious guidelines that a developer must follow or the performance of very common component, that may appear multiple times on one page, could tank your application’s speed and UX.
