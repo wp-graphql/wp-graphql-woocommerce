@@ -37,7 +37,7 @@ const config = {
 			{ "text": "WPGraphQL", "link": "https://wpgraphql.com"},
 			{ "text": "WPGraphQL Documentation", "link": "https://wpgraphql.com/docs"},
 		],
-		"frontline": false,
+		"frontline": true,
 		"ignoreIndex": true,
 	},
 	"siteMetadata": {

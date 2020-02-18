@@ -1,6 +1,6 @@
 ---
-title: "Playground"
-metaTitle: "WooGraphQL Playground"
+title: "WooGraphQL Playground"
+metaTitle: "WooGraphQL Playground | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Tests the queries and mutation using the WooGraphQL playground."
 ---
 
@@ -9,7 +9,7 @@ import GraphiQL from '../src/components/graphiql'
 Test queries and mutations as well as view the WooGraphQL schema, using the playground below :point_down:.
 
 <GraphiQL
-  endpoint="https://woographql.axistaylor.com/graphql"
+  endpoint="https://docs.axistaylor.com/graphql"
   authButtons={{
     Customer: ['customer', 'graphql_rocks'],
     ShopManager: ['shop_manager', 'graphql_rocks'],

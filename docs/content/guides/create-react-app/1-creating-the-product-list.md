@@ -1,6 +1,6 @@
 ---
 title: "1. Creating the Product List"
-metaTitle: "WooGraphQL + Apollo + React product list tutorial"
+metaTitle: "CRA WooGraphQL Product List Tutorial"
 metaDescription: "A tutorial on implementing a product list in with WooGraphQL + Apollo + React."
 ---
 

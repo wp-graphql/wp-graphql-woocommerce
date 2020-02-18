@@ -1,6 +1,6 @@
 ---
 title: "5. Creating the Checkout Page"
-metaTitle: "WooGraphQL + Apollo + React checkout page tutorial"
+metaTitle: "CRA WooGraphQL checkout page tutorial | WooGraphQL Docs | AxisTaylor"
 metaDescription: "A tutorial on implementing a checkout page in with WooGraphQL + Apollo + React."
 ---
 

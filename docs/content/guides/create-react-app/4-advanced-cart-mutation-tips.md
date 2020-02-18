@@ -1,6 +1,6 @@
 ---
 title: "4. Advanced Cart Mutation Tips"
-metaTitle: "WooGraphQL + Apollo + React advanced cart mutation tips/trick"
+metaTitle: "CRA WooGraphQL Advanced Cart Mutations | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Tips/tricks of working with WooGraphQL's cart mutations"
 ---
 

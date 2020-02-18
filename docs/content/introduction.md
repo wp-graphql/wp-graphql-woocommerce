@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-metaTitle: "WooGraphQL Docs Introduction"
+metaTitle: "Introduction | WooGraphQL Docs | AxisTaylor"
 metaDescription: "What is WooGraphQL and why use it?"
 ---
 

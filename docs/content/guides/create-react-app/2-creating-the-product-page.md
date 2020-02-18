@@ -1,6 +1,6 @@
 ---
 title: "2. Creating the Product Page"
-metaTitle: "WooGraphQL + Apollo + React product page tutorial"
+metaTitle: "CRA WooGraphQL Product Page Tutorial | WooGraphQL Docs | AxisTaylor"
 metaDescription: "A tutorial on implementing a product page in with WooGraphQL + Apollo + React."
 ---
 

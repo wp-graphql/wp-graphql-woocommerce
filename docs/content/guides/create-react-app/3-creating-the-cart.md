@@ -1,6 +1,6 @@
 ---
 title: "3. Creating the Cart"
-metaTitle: "WooGraphQL + Apollo + React Cart tutorial"
+metaTitle: "CRA WooGraphQL Cart Tutorial | WooGraphQL Docs | AxisTaylor"
 metaDescription: "A tutorial on implementing a cart component in with WooGraphQL + Apollo + React."
 ---
 
