@@ -29,10 +29,9 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 Feel free to test out the extension using the [playground](https://docs.wpgraphql.com/extensions/wpgraphql-woocommerce/). The playground allows you to execute queries and mutations, as well as view the schema.
 
 ## Support this extension
-**@kidunot89** *(WooGraphQL Creator/Developer)* [Github Sponsors](https://github.com/sponsors/kidunot89)
-
-**WPGraphQL** [OpenCollective](http://opencollective.com/wp-graphql)
-
-**GraphQL-PHP** [OpenCollective](https://opencollective.com/webonyx-graphql-php)
+- **@kidunot89** *(WooGraphQL Creator/Developer)* [Github Sponsors](https://github.com/sponsors/kidunot89)
+- **WooGraphQL's OpenCollective** [OpenCollective](https://opencollective.com/woographql)
+- **WPGraphQL** [OpenCollective](http://opencollective.com/wp-graphql)
+- **GraphQL-PHP** [OpenCollective](https://opencollective.com/webonyx-graphql-php)
 
 ## Follow [![alt text](http://i.imgur.com/tXSoThF.png)](https://twitter.com/woographql)[![alt text](http://i.imgur.com/P3YfQoD.png)](https://www.facebook.com/woographql)
