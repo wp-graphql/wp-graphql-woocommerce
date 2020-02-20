@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
-use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
@@ -19,6 +18,7 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Empty
  */
 class Cart_Empty {
+
 	/**
 	 * Registers mutation
 	 */
@@ -53,14 +53,30 @@ class Cart_Empty {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
-			// Get WC_Cart instance.
+			// Get/Clone WC_Cart instance.
 			$cloned_cart = clone \WC()->cart;
 
+			/**
+			 * Action fired before cart was cleared/emptied.
+			 *
+			 * @param object      $cloned_cart Cloned cart.
+			 * @param array       $input       Input info.
+			 * @param AppContext  $context     Context passed.
+			 * @param ResolveInfo $info        Resolver info passed.
+			 */
 			do_action( 'woocommerce_graphql_before_empty_cart', $cloned_cart, $input, $context, $info );
 
 			// Empty cart.
 			\WC()->cart->empty_cart();
 
+			/**
+			 * Action fired after cart was cleared/emptied.
+			 *
+			 * @param object      $cloned_cart Cloned cart.
+			 * @param array       $input       Input info.
+			 * @param AppContext  $context     Context passed.
+			 * @param ResolveInfo $info        Resolver info passed.
+			 */
 			do_action( 'woocommerce_graphql_after_empty_cart', $cloned_cart, $input, $context, $info );
 
 			return array( 'cart' => $cloned_cart );

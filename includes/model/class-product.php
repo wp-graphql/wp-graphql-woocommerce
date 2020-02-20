@@ -11,33 +11,35 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
+use WC_Product_Factory;
+use WC_Product_External;
+use WC_Product_Grouped;
+use WC_Product_Variable;
+use WC_Product_Simple;
 
 /**
  * Class Product
  */
 class Product extends Crud_CPT {
+
 	/**
-	 * Stores the product type: external, grouped, simple, variable
+	 * Stores the product type: external, grouped, simple, variable.
 	 *
-	 * @var string $product_type
-	 * @access protected
+	 * @var string
 	 */
 	protected $product_type;
 
 	/**
-	 * Stores product factory
+	 * Stores product factory.
 	 *
-	 * @var \WC_Product_Factory
+	 * @var WC_Product_Factory|null
 	 */
 	protected static $product_factory = null;
 
 	/**
-	 * Product constructor
+	 * Product constructor.
 	 *
 	 * @param int $id - product post-type ID.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function __construct( $id ) {
 		$this->product_type        = $this->product_factory()->get_product_type( $id );
@@ -54,22 +56,21 @@ class Product extends Crud_CPT {
 	}
 
 	/**
-	 * Returns product factory instance
+	 * Returns product factory instance.
 	 *
-	 * @return \WC_Product_Factory
+	 * @return WC_Product_Factory
 	 */
 	public function product_factory() {
 		if ( null === self::$product_factory ) {
-			self::$product_factory = new \WC_Product_Factory();
+			self::$product_factory = new WC_Product_Factory();
 		}
 
 		return self::$product_factory;
 	}
 
 	/**
-	 * Retrieve the cap to check if the data should be restricted for the coupon
+	 * Retrieve the cap to check if the data should be restricted for the coupon.
 	 *
-	 * @access protected
 	 * @return string
 	 */
 	public function get_restricted_cap() {
@@ -95,18 +96,18 @@ class Product extends Crud_CPT {
 	 * or WC_Product_Variable; based upon the product type
 	 *
 	 * @param int $id - ID of the product.
-	 * @return \WC_Product_External|\WC_Product_Simple|\WC_Product_Grouped|\WC_Product_Variable
+	 * @return WC_Product_External|WC_Product_Simple|WC_Product_Grouped|WC_Product_Variable
 	 */
 	private function get_object( $id ) {
 		switch ( $this->product_type ) {
 			case 'external':
-				return new \WC_Product_External( $id );
+				return new WC_Product_External( $id );
 			case 'grouped':
-				return new \WC_Product_Grouped( $id );
+				return new WC_Product_Grouped( $id );
 			case 'variable':
-				return new \WC_Product_Variable( $id );
+				return new WC_Product_Variable( $id );
 			case 'simple':
-				return new \WC_Product_Simple( $id );
+				return new WC_Product_Simple( $id );
 			default:
 				return \wc_get_product( $id );
 		}

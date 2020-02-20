@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - DiscountTypeEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.0.1
  */
 
@@ -25,7 +25,7 @@ class Discount_Type {
 		register_graphql_enum_type(
 			'DiscountTypeEnum',
 			array(
-				'description' => __( 'Coupon discount type enumeration', 'wp-graphql' ),
+				'description' => __( 'Coupon discount type enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
 			)
 		);

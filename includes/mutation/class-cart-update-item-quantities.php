@@ -14,11 +14,13 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
+use Exception;
 
 /**
  * Class - Cart_Update_Item_Quantities
  */
 class Cart_Update_Item_Quantities {
+
 	/**
 	 * Registers mutation
 	 */
@@ -140,7 +142,7 @@ class Cart_Update_Item_Quantities {
 					)
 				);
 				if ( 0 < count( $errors ) ) {
-					throw new \Exception(
+					throw new Exception(
 						sprintf(
 							/* translators: %s: Cart item keys */
 							__( 'Cart items identified with keys %s failed to update', 'wp-graphql-woocommerce' ),
@@ -148,7 +150,7 @@ class Cart_Update_Item_Quantities {
 						)
 					);
 				}
-			} catch ( \Exception $e ) {
+			} catch ( Exception $e ) {
 				throw new UserError( $e->getMessage() );
 			}
 

@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - ProductTaxonomyEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.2.1
  */
 

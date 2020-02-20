@@ -15,11 +15,14 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
+use WC_Order_Factory;
+use Exception;
 
 /**
  * Class Order_Create
  */
 class Order_Create {
+
 	/**
 	 * Registers mutation
 	 */
@@ -42,7 +45,7 @@ class Order_Create {
 	public static function get_input_fields() {
 		$input_fields = array(
 			'parentId'           => array(
-				'type'        => 'Integer',
+				'type'        => 'Int',
 				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
 			),
 			'currency'           => array(
@@ -150,7 +153,7 @@ class Order_Create {
 					Order_Mutation::apply_coupons( $order_id, $input['coupons'] );
 				}
 
-				$order = \WC_Order_Factory::get_order( $order_id );
+				$order = WC_Order_Factory::get_order( $order_id );
 
 				// Make sure gateways are loaded so hooks from gateways fire on save/create.
 				WC()->payment_gateways();
@@ -189,7 +192,7 @@ class Order_Create {
 				do_action( 'woocommerce_graphql_after_order_create', $order, $input, $context, $info );
 
 				return array( 'id' => $order->get_id() );
-			} catch ( \Exception $e ) {
+			} catch ( Exception $e ) {
 				Order_Mutation::purge( $order );
 				throw new UserError( $e->getMessage() );
 			}

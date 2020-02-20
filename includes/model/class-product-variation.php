@@ -11,21 +11,20 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
+use WC_Product_Variation;
 
 /**
  * Class Product_Variation
  */
 class Product_Variation extends Crud_CPT {
+
 	/**
 	 * Product_Variation constructor
 	 *
 	 * @param int $id - product_variation post-type ID.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function __construct( $id ) {
-		$this->data                = new \WC_Product_Variation( $id );
+		$this->data                = new WC_Product_Variation( $id );
 		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
@@ -40,7 +39,6 @@ class Product_Variation extends Crud_CPT {
 	/**
 	 * Retrieve the cap to check if the data should be restricted for the coupon
 	 *
-	 * @access protected
 	 * @return string
 	 */
 	public function get_restricted_cap() {
@@ -62,9 +60,7 @@ class Product_Variation extends Crud_CPT {
 	}
 
 	/**
-	 * Initializes the ProductVariation field resolvers
-	 *
-	 * @access protected
+	 * Initializes the ProductVariation field resolvers.
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {

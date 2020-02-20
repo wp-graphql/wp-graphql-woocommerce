@@ -4,7 +4,7 @@
  *
  * Registers fields for the ProductCategory type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.2.0
  */
 
@@ -17,8 +17,9 @@ use WPGraphQL\Data\DataSource;
  * Class - Product_Category_Type
  */
 class Product_Category_Type {
+
 	/**
-	 * Registers fields to ProductCategory
+	 * Registers fields to ProductCategory.
 	 */
 	public static function register_fields() {
 		register_graphql_field(

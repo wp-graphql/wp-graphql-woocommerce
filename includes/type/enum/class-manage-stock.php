@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - ManageStockEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.0.1
  */
 
@@ -25,7 +25,7 @@ class Manage_Stock {
 		register_graphql_enum_type(
 			'ManageStockEnum',
 			array(
-				'description' => __( 'Product manage stock enumeration', 'wp-graphql' ),
+				'description' => __( 'Product manage stock enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
 			)
 		);

@@ -19,6 +19,7 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Add_Item
  */
 class Cart_Add_Item {
+
 	/**
 	 * Registers mutation
 	 */
@@ -39,7 +40,7 @@ class Cart_Add_Item {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array(
+		return array(
 			'productId'   => array(
 				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' ),
@@ -61,8 +62,6 @@ class Cart_Add_Item {
 				'description' => __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' ),
 			),
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -97,6 +96,7 @@ class Cart_Add_Item {
 			if ( empty( $input['productId'] ) ) {
 				throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
 			}
+
 			if ( ! \wc_get_product( $input['productId'] ) ) {
 				throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
 			}

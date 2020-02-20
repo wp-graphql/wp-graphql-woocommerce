@@ -2,7 +2,7 @@
 /**
  * WPInterface Type - Product_Attribute_Type
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInterface
+ * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.3.2
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
  * Class Product_Attribute
  */
 class Product_Attribute {
+
 	/**
 	 * Registers the "Product" interface.
 	 *

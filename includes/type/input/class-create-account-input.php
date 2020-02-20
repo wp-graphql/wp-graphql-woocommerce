@@ -2,7 +2,7 @@
 /**
  * WPInputObjectType - CreateAccountInput
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInputObject
+ * @package WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.2.0
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Create_Account_Input
  */
 class Create_Account_Input {
+
 	/**
 	 * Registers type
 	 */

@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - TaxonomyOperatorEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.2.1
  */
 
@@ -19,7 +19,7 @@ class Taxonomy_Operator {
 		register_graphql_enum_type(
 			'TaxonomyOperatorEnum',
 			array(
-				'description' => __( 'Taxonomy query operators', 'wp-graphql' ),
+				'description' => __( 'Taxonomy query operators', 'wp-graphql-woocommerce' ),
 				'values'      => array(
 					'IN'         => array( 'value' => 'IN' ),
 					'NOT_IN'     => array( 'value' => 'NOT IN' ),

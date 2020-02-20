@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce;
  * Class Type_Registry
  */
 class Type_Registry {
+
 	/**
 	 * Registers WooGraphQL types, connections, unions, and mutations to GraphQL schema
 	 *

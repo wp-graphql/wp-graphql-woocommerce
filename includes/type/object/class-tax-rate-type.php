@@ -4,24 +4,21 @@
  *
  * Registers TaxRate WPObject type and queries
  *
- * @package \WPGraphQL\WooCommerce\Type\WPObject
+ * @package WPGraphQL\WooCommerce\Type\WPObject
  * @since   0.0.2
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Tax_Rate;
-use WPGraphQL\Type\WPObjectType;
 
 /**
  * Class Tax_Rate_Type
  */
 class Tax_Rate_Type {
+
 	/**
 	 * Registers tax rate type
 	 */

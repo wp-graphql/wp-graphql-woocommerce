@@ -2,7 +2,7 @@
 /**
  * WPInputObjectType - TaxRateConnectionOrderbyInput
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInputObject
+ * @package WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.0.2
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Tax_Rate_Connection_Orderby_Input
  */
 class Tax_Rate_Connection_Orderby_Input {
+
 	/**
 	 * Registers type
 	 */

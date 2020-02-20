@@ -2,7 +2,7 @@
 /**
  * WPEnum Type - StockStatusEnum
  *
- * @package \WPGraphQL\WooCommerce\Type\WPEnum
+ * @package WPGraphQL\WooCommerce\Type\WPEnum
  * @since   0.0.1
  */
 
@@ -25,7 +25,7 @@ class Stock_Status {
 		register_graphql_enum_type(
 			'StockStatusEnum',
 			array(
-				'description' => __( 'Product stock status enumeration', 'wp-graphql' ),
+				'description' => __( 'Product stock status enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
 			)
 		);

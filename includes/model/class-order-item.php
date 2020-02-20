@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Model;
 
-use GraphQLRelay\Relay;
 use WPGraphQL\Model\Model;
 
 /**
@@ -19,10 +18,9 @@ use WPGraphQL\Model\Model;
 class Order_Item extends Model {
 
 	/**
-	 * Stores order item type
+	 * Stores order item type.
 	 *
-	 * @var int $item_type
-	 * @access protected
+	 * @var int
 	 */
 	protected $item_type;
 
@@ -37,9 +35,6 @@ class Order_Item extends Model {
 	 * Order_Item constructor
 	 *
 	 * @param int $item - order item crud object.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function __construct( $item ) {
 		$this->data                = $item;
@@ -65,7 +60,6 @@ class Order_Item extends Model {
 	 *
 	 * @param string $method - function name.
 	 * @param array  $args  - function call arguments.
-	 *
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
@@ -74,8 +68,6 @@ class Order_Item extends Model {
 
 	/**
 	 * Initializes the Order field resolvers
-	 *
-	 * @access protected
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
@@ -268,9 +260,9 @@ class Order_Item extends Model {
 	/**
 	 * Determines if the order item should be considered private
 	 *
-	 * @access public
-	 * @return bool
 	 * @since 0.2.0
+	 *
+	 * @return bool
 	 */
 	protected function is_private() {
 		return $this->order->is_private();
@@ -279,9 +271,9 @@ class Order_Item extends Model {
 	/**
 	 * Retrieve the cap to check if the data should be restricted for the order
 	 *
-	 * @access protected
-	 * @return string
 	 * @since 0.2.0
+	 *
+	 * @return string
 	 */
 	protected function get_restricted_cap() {
 		return $this->order->get_restricted_cap();

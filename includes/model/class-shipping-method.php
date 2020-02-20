@@ -17,13 +17,11 @@ use WPGraphQL\Model\Model;
  * Class Shipping_Method
  */
 class Shipping_Method extends Model {
+
 	/**
 	 * Shipping_Method constructor
 	 *
 	 * @param int $method - Shipping method object.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function __construct( $method ) {
 		$this->data                = $method;
@@ -41,9 +39,8 @@ class Shipping_Method extends Model {
 	}
 
 	/**
-	 * Determines if the order item should be considered private
+	 * Determines if the order item should be considered private.
 	 *
-	 * @access public
 	 * @return bool
 	 */
 	protected function is_private() {
@@ -51,9 +48,7 @@ class Shipping_Method extends Model {
 	}
 
 	/**
-	 * Initializes the Order field resolvers
-	 *
-	 * @access protected
+	 * Initializes the Order field resolvers.
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {

@@ -10,11 +10,13 @@ namespace WPGraphQL\WooCommerce\Utils;
 
 use Firebase\JWT\JWT;
 use GraphQL\Error\UserError;
+use WC_Session_Handler;
 
 /**
  * Class - QL_Session_Handler
  */
-class QL_Session_Handler extends \WC_Session_Handler {
+class QL_Session_Handler extends WC_Session_Handler {
+
 	/**
 	 * Stores the name of the HTTP header used to pass the session token.
 	 *

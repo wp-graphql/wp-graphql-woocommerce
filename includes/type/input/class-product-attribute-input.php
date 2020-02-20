@@ -2,7 +2,7 @@
 /**
  * WPInputObjectType - ProductAttributeInput
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInputObject
+ * @package WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.1.0
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Product_Attribute_Input
  */
 class Product_Attribute_Input {
+
 	/**
 	 * Registers type
 	 */

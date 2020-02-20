@@ -19,6 +19,7 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Restore_Items
  */
 class Cart_Restore_Items {
+
 	/**
 	 * Registers mutation
 	 */
@@ -39,14 +40,12 @@ class Cart_Restore_Items {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array(
+		return array(
 			'keys' => array(
 				'type'        => array( 'list_of' => 'ID' ),
 				'description' => __( 'Cart item key of the item being removed', 'wp-graphql-woocommerce' ),
 			),
 		);
-
-		return $input_fields;
 	}
 
 	/**
@@ -79,6 +78,7 @@ class Cart_Restore_Items {
 					throw new UserError( sprintf( __( 'Failed to restore cart item with the key: %s', 'wp-graphql-woocommerce' ), $key ) );
 				}
 			}
+
 			$cart_items = Cart_Mutation::retrieve_cart_items( $input, $context, $info, 'restore' );
 
 			// Return payload.

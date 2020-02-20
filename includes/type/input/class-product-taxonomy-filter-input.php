@@ -2,7 +2,7 @@
 /**
  * WPInputObjectType - ProductTaxonomyFilterInput
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInputObject
+ * @package WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.2.1
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Product_Taxonomy_Filter_Input
  */
 class Product_Taxonomy_Filter_Input {
+
 	/**
 	 * Registers type
 	 */

@@ -2,7 +2,7 @@
 /**
  * WPInputObjectType - FeeLineInput
  *
- * @package \WPGraphQL\WooCommerce\Type\WPInputObject
+ * @package WPGraphQL\WooCommerce\Type\WPInputObject
  * @since   0.2.0
  */
 
@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Fee_Line_Input
  */
 class Fee_Line_Input {
+
 	/**
 	 * Registers type
 	 */
