@@ -36,6 +36,7 @@ class Checkout_Mutation {
 	 * @return boolean
 	 */
 	public static function is_registration_required() {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		return apply_filters( 'woocommerce_checkout_registration_required', 'yes' !== get_option( 'woocommerce_enable_guest_checkout' ) );
 	}
 
@@ -103,6 +104,7 @@ class Checkout_Mutation {
 			}
 		}
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		return apply_filters( 'woocommerce_checkout_posted_data', $data, $input, $context, $info );
 	}
 
@@ -210,6 +212,7 @@ class Checkout_Mutation {
 	 * @throws UserError When not able to create customer.
 	 */
 	protected static function process_customer( $data ) {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$customer_id = apply_filters( 'woocommerce_checkout_customer_id', get_current_user_id() );
 
 		if ( ! is_user_logged_in() && ( self::is_registration_required() || ! empty( $data['createaccount'] ) ) ) {
@@ -244,6 +247,7 @@ class Checkout_Mutation {
 		}
 
 		// Add customer info from other fields.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		if ( $customer_id && apply_filters( 'woocommerce_checkout_update_customer_data', true, WC()->checkout() ) ) {
 			$customer = new \WC_Customer( $customer_id );
 
@@ -271,16 +275,14 @@ class Checkout_Mutation {
 				}
 			}
 
-			/**
-			 * Action hook to adjust customer before save.
-			 *
-			 * @since 3.0.0
-			 */
+			// Action hook to adjust customer before save.
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			do_action( 'woocommerce_checkout_update_customer', $customer, $data );
 
 			$customer->save();
 		}
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_checkout_update_user_meta', $customer_id, $data );
 	}
 
@@ -345,6 +347,7 @@ class Checkout_Mutation {
 								/* translators: %s: field name */
 								$postcode_validation_notice = sprintf( __( '%s is not a valid postcode / ZIP.', 'wp-graphql-woocommerce' ), $field_label );
 						}
+						// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 						throw new UserError( apply_filters( 'woocommerce_checkout_postcode_validation_notice', $postcode_validation_notice, $country, $data[ $key ] ) );
 					}
 				}
@@ -434,6 +437,7 @@ class Checkout_Mutation {
 			}
 		}
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_after_checkout_validation', $data );
 	}
 
@@ -475,6 +479,7 @@ class Checkout_Mutation {
 
 		return array(
 			'result'   => 'success',
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			'redirect' => apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', $order->get_checkout_order_received_url(), $order ),
 		);
 	}
@@ -494,13 +499,13 @@ class Checkout_Mutation {
 		wc_maybe_define_constant( 'WOOCOMMERCE_CHECKOUT', true );
 		wc_set_time_limit( 0 );
 
-		do_action( 'woocommerce_before_checkout_process' );
+		do_action( 'woocommerce_before_checkout_process' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		if ( WC()->cart->is_empty() ) {
 			throw new UserError( __( 'Sorry, your session has expired.', 'wp-graphql-woocommerce' ) );
 		}
 
-		do_action( 'woocommerce_checkout_process', $data, $context, $info );
+		do_action( 'woocommerce_checkout_process', $data, $context, $info ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		// Update session for customer and totals.
 		self::update_session( $data );
@@ -520,6 +525,7 @@ class Checkout_Mutation {
 			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
 		}
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
 		if ( WC()->cart->needs_payment() && ( empty( $input['isPaid'] ) || false === $input['isPaid'] ) ) {
@@ -576,6 +582,7 @@ class Checkout_Mutation {
 	 */
 	public static function get_value( $input ) {
 		// Allow 3rd parties to short circuit the logic and return their own default value.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$value = apply_filters( 'woocommerce_checkout_get_value', null, $input );
 		if ( ! is_null( $value ) ) {
 			return $value;
@@ -607,6 +614,8 @@ class Checkout_Mutation {
 		if ( '' === $value ) {
 			$value = null;
 		}
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		return apply_filters( 'default_checkout_' . $input, $value, $input );
 	}
 
@@ -637,7 +646,7 @@ class Checkout_Mutation {
 		 * @param AppContext  $context    Request AppContext instance.
 		 * @param ResolveInfo $info       Request ResolveInfo instance.
 		 */
-		do_action( 'woocommerce_graphql_before_checkout_meta_save', $order, $meta_data, $input, $context, $info );
+		do_action( 'graphql_woocommerce_before_checkout_meta_save', $order, $meta_data, $input, $context, $info );
 
 		$order->save();
 	}

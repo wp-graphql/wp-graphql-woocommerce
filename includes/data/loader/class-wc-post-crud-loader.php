@@ -53,7 +53,7 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			case 'shop_order_refund':
 				return new Refund( $id );
 			default:
-				$model = apply_filters( 'wc_post_crud_loader_model', null, $post_type );
+				$model = apply_filters( 'graphql_woocommerce_crud_loader_model', null, $post_type );
 				if ( ! empty( $model ) ) {
 					return new $model( $id );
 				}

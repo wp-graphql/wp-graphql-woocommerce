@@ -35,6 +35,7 @@ class Customer extends Model {
 			'displayName',
 		);
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'customer_restricted_cap', 'session' === $id ? '' : 'list_users' );
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, $id );

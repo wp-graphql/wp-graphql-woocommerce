@@ -99,10 +99,10 @@ class Refund_Type {
 
 					if ( empty( $refund_id ) ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s' ), $id_type, $id ) );
+						throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					} elseif ( get_post( $refund_id )->post_type !== 'shop_order_refund' ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s' ), $id_type, $id ) );
+						throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					}
 
 					// Check if user authorized to view order.

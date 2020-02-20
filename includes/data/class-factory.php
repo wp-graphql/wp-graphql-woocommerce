@@ -184,10 +184,12 @@ class Factory {
 	 * @return \WC_Cart
 	 */
 	public static function resolve_cart() {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_before_calculate_totals', \WC()->cart );
 
 		new \WC_Cart_Totals( \WC()->cart );
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_after_calculate_totals', \WC()->cart );
 
 		return \WC()->cart;

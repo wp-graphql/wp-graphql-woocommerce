@@ -1,0 +1,66 @@
+name: Testing Integration
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      coverage: 0
+      debug: 0
+    strategy:
+      matrix:
+        php: ['7.3', '7.2', '7.1', '7.0']
+        wordpress: ['5.3', '5.0', '4.9']
+        include:
+          - php: '7.0'
+            use_xdebug: 1
+          - php: '7.0'
+            wordpress: '5.0'
+            coverage: 1
+
+        exclude: 
+          - php: '7.3'
+            wordpress: '4.9'
+          - php: '7.2'
+            wordpress: '4.9'
+          - php: '7.0'
+            wordpress: '5.3'
+      fail-fast: false
+    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Build "testing" Docker Image
+        run: |
+          docker-compose build \
+          --build-arg PHP_VERSION=${{ matrix.php }} \
+          --build-arg WP_VERSION=${{ matrix.wordpress }} \
+          --build-arg USE_XDEBUG=${{ matrix.use_xdebug }} \
+          testing
+
+      - name: Run Tests w/ Docker.
+        run: |
+          docker-compose run --rm \
+          -e COVERAGE=${{ matrix.coverage }} \
+          -e DEBUG=${{ matrix.debug }} \
+          testing --scale app=0
+      
+      - name: Push Codecoverage to Coveralls.io
+        if: matrix.coverage == 1
+        env:
+          COVERALLS_RUN_LOCALLY: 1
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+          chmod +x php-coveralls.phar
+    
+          php php-coveralls.phar -v

@@ -49,7 +49,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
-		$this->_token = apply_filters( 'graphql_woo_cart_session_http_header', 'woocommerce-session' );
+		$this->_token = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
 		$this->_table = $GLOBALS['wpdb']->prefix . 'woocommerce_sessions';
 	}
 
@@ -238,7 +238,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		} else {
 			if ( is_wp_error( $token ) ) {
 				add_filter(
-					'woo_session_token_errors',
+					'graphql_woocommerce_session_token_errors',
 					function( $errors ) use ( $token ) {
 						$errors = $token->get_error_message();
 						return $errors;
@@ -317,7 +317,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		 *
 		 * @param string $session_header  The header used to identify a user's cart session token.
 		 */
-		return apply_filters( 'graphql_woo_cart_session_header', $session_header );
+		return apply_filters( 'graphql_woocommerce_cart_session_header', $session_header );
 	}
 
 	/**
@@ -362,7 +362,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			 * @param array   $session_data  Session data associated with token.
 			 */
 			$token = apply_filters(
-				'graphql_woo_cart_session_before_token_sign',
+				'graphql_woocommerce_cart_session_before_token_sign',
 				$token,
 				$this->_customer_id,
 				$this->_data
@@ -382,7 +382,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			 * @param array   $session_data  Session data associated with token.
 			 */
 			$token = apply_filters(
-				'graphql_woo_cart_session_signed_token',
+				'graphql_woocommerce_cart_session_signed_token',
 				$token,
 				$this->_customer_id,
 				$this->_data
@@ -425,7 +425,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->_session_issued = time();
 		// 48 Hours.
 		$this->_session_expiration = apply_filters(
-			'graphql_woo_cart_session_expire',
+			'graphql_woocommerce_cart_session_expire',
 			time() + ( 3600 * 48 )
 		);
 		// 47 Hours.

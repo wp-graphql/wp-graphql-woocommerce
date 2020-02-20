@@ -30,15 +30,19 @@ defined( 'ABSPATH' ) || exit;
  */
 if ( file_exists( __DIR__ . '/c3.php' ) ) {
 	// Get tests output directory.
-	$test_dir = __DIR__ . '/tests/output';
-	define( 'C3_CODECOVERAGE_ERROR_LOG_FILE', $test_dir . '/c3_error.log' );
+	$woographql_test_dir = __DIR__ . '/tests/output';
+
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+	define( 'C3_CODECOVERAGE_ERROR_LOG_FILE', $woographql_test_dir . '/c3_error.log' );
+
+	// Import c3 file.
 	require_once __DIR__ . '/c3.php';
 }
 
 /**
  * Setups WPGraphQL WooCommerce constants
  */
-function wp_graphql_woocommerce_constants() {
+function woographql_constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
 		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.4.3' );
@@ -64,7 +68,7 @@ function wp_graphql_woocommerce_constants() {
 /**
  * Checks if WPGraphQL WooCommerce required plugins are installed and activated
  */
-function wp_graphql_woocommerce_dependencies_not_ready() {
+function woographql_dependencies_not_ready() {
 	$deps = array();
 	if ( ! class_exists( '\WPGraphQL' ) ) {
 		$deps[] = 'WPGraphQL';
@@ -79,10 +83,10 @@ function wp_graphql_woocommerce_dependencies_not_ready() {
 /**
  * Initializes WPGraphQL WooCommerce
  */
-function wp_graphql_woocommerce_init() {
-	wp_graphql_woocommerce_constants();
+function woographql_init() {
+	woographql_constants();
 
-	$not_ready = wp_graphql_woocommerce_dependencies_not_ready();
+	$not_ready = woographql_dependencies_not_ready();
 	if ( empty( $not_ready ) ) {
 		require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'includes/class-wp-graphql-woocommerce.php';
 		return WP_GraphQL_WooCommerce::instance();
@@ -111,4 +115,4 @@ function wp_graphql_woocommerce_init() {
 
 	return false;
 }
-add_action( 'graphql_init', 'wp_graphql_woocommerce_init' );
+add_action( 'graphql_init', 'woographql_init' );

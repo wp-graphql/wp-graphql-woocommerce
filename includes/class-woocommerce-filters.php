@@ -24,7 +24,7 @@ class WooCommerce_Filters {
 	 * Initializes hooks for WooCommerce-related utilities.
 	 */
 	public static function setup() {
-		self::$session_header = apply_filters( 'graphql_woo_cart_session_http_header', 'woocommerce-session' );
+		self::$session_header = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
 
 		// Check if request is a GraphQL POST request.
 		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {

@@ -64,7 +64,7 @@ class Cart_Empty {
 			 * @param AppContext  $context     Context passed.
 			 * @param ResolveInfo $info        Resolver info passed.
 			 */
-			do_action( 'woocommerce_graphql_before_empty_cart', $cloned_cart, $input, $context, $info );
+			do_action( 'graphql_woocommerce_before_empty_cart', $cloned_cart, $input, $context, $info );
 
 			// Empty cart.
 			\WC()->cart->empty_cart();
@@ -77,7 +77,7 @@ class Cart_Empty {
 			 * @param AppContext  $context     Context passed.
 			 * @param ResolveInfo $info        Resolver info passed.
 			 */
-			do_action( 'woocommerce_graphql_after_empty_cart', $cloned_cart, $input, $context, $info );
+			do_action( 'graphql_woocommerce_after_empty_cart', $cloned_cart, $input, $context, $info );
 
 			return array( 'cart' => $cloned_cart );
 		};

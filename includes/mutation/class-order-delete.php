@@ -129,7 +129,7 @@ class Order_Delete {
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.
 			 */
-			do_action( 'woocommerce_graphql_before_order_delete', $order, $input, $context, $info );
+			do_action( 'graphql_woocommerce_before_order_delete', $order, $input, $context, $info );
 
 			// Delete order.
 			$success = Order_Mutation::purge( WC_Order_Factory::get_order( $order->ID ), $force_delete );
@@ -152,7 +152,7 @@ class Order_Delete {
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.
 			 */
-			do_action( 'woocommerce_graphql_after_order_delete', $order, $input, $context, $info );
+			do_action( 'graphql_woocommerce_after_order_delete', $order, $input, $context, $info );
 
 			return array( 'order' => $order );
 		};

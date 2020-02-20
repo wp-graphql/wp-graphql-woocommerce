@@ -66,15 +66,15 @@ class Order_Create {
 			),
 			'status'             => array(
 				'type'        => 'OrderStatusEnum',
-				'description' => __( 'Order status' ),
+				'description' => __( 'Order status', 'wp-graphql-woocommerce' ),
 			),
 			'paymentMethod'      => array(
 				'type'        => 'String',
-				'description' => __( 'Payment method ID.', 'woocommerce' ),
+				'description' => __( 'Payment method ID.', 'wp-graphql-woocommerce' ),
 			),
 			'paymentMethodTitle' => array(
 				'type'        => 'String',
-				'description' => __( 'Payment method title.', 'woocommerce' ),
+				'description' => __( 'Payment method title.', 'wp-graphql-woocommerce' ),
 			),
 			'transactionId'      => array(
 				'type'        => 'String',
@@ -189,7 +189,7 @@ class Order_Create {
 				 * @param AppContext  $context Request AppContext instance.
 				 * @param ResolveInfo $info    Request ResolveInfo instance.
 				 */
-				do_action( 'woocommerce_graphql_after_order_create', $order, $input, $context, $info );
+				do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 
 				return array( 'id' => $order->get_id() );
 			} catch ( Exception $e ) {

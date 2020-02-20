@@ -44,7 +44,7 @@ class Customer_Mutation {
 		 * @var array  $input         Input data from the GraphQL mutation
 		 * @var string $mutation      What customer mutation is being performed for context
 		 */
-		$customer_args = apply_filters( 'woocommerce_new_customer_data', $customer_args, $input, $mutation );
+		$customer_args = apply_filters( 'woocommerce_new_customer_data', $customer_args, $input, $mutation ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		return $customer_args;
 	}
@@ -66,7 +66,7 @@ class Customer_Mutation {
 			'address2'  => 'address_2',
 		);
 
-		$skip = apply_filters( 'customer_address_input_mapping_skipped', array( 'overwrite' ) );
+		$skip = apply_filters( 'graphql_woocommerce_customer_address_input_mapping_skipped', array( 'overwrite' ) );
 
 		$type    = 'empty_' . $type;
 		$address = ! empty( $input['overwrite'] ) && true === $input['overwrite']

@@ -51,7 +51,7 @@ class Cart_Mutation {
 			? json_decode( $input['extraData'], true )
 			: array();
 
-		return apply_filters( 'woocommerce_new_cart_item_data', $cart_item_args, $input, $context, $info );
+		return apply_filters( 'graphql_woocommerce_new_cart_item_data', $cart_item_args, $input, $context, $info );
 	}
 
 	/**
@@ -82,7 +82,7 @@ class Cart_Mutation {
 			}
 		}
 
-		return apply_filters( 'retrieve_cart_items', $items, $input, $context, $info, $mutation );
+		return apply_filters( 'graphql_woocommerce_retrieve_cart_items', $items, $input, $context, $info, $mutation );
 	}
 
 	/**
@@ -102,7 +102,7 @@ class Cart_Mutation {
 			! empty( $input['taxClass'] ) ? $input['taxClass'] : '',
 		);
 
-		return apply_filters( 'woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
+		return apply_filters( 'graphql_woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
 
 	/**
@@ -128,7 +128,7 @@ class Cart_Mutation {
 	 * @throws UserError If GRAPHQL_DEBUG is set to true and errors found.
 	 */
 	public static function check_session_token() {
-		$token_invalid = apply_filters( 'woo_session_token_errors', null );
+		$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
 		if ( $token_invalid ) {
 			throw new UserError( $token_invalid );
 		}

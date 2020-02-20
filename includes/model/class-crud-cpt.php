@@ -48,6 +48,7 @@ abstract class Crud_CPT extends Model {
 		setup_postdata( $post );
 
 		$restricted_cap = apply_filters(
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 			$this->post_type_object->name . '_restricted_cap',
 			$this->get_restricted_cap()
 		);

@@ -385,10 +385,10 @@ class Order_Type {
 
 					if ( empty( $order_id ) ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s' ), $id_type, $id ) );
+						throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					} elseif ( get_post( $order_id )->post_type !== 'shop_order' ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s' ), $id_type, $id ) );
+						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					}
 
 					// Check if user authorized to view order.

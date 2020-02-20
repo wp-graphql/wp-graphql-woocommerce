@@ -53,7 +53,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public static function get_post_types() {
 			return apply_filters(
-				'register_graphql_wc_post_types',
+				'graphql_woocommerce_post_types',
 				array(
 					'product',
 					'product_variation',
@@ -71,7 +71,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public static function get_enabled_product_types() {
 			return apply_filters(
-				'graphql_enabled_wc_product_types',
+				'graphql_woocommerce_product_types',
 				array(
 					'simple'   => 'SimpleProduct',
 					'variable' => 'VariableProduct',
@@ -102,7 +102,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			 * @param array $attributes Product attributes being passed.
 			 */
 			return apply_filters(
-				'register_graphql_wc_product_attributes_taxonomies',
+				'graphql_woocommerce_product_attributes_taxonomies',
 				$attributes
 			);
 		}

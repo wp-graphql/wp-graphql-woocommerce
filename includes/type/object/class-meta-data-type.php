@@ -99,7 +99,7 @@ class Meta_Data_Type {
 						);
 					}
 					// Create meta ID prefix.
-					$id_prefix = apply_filters( 'cart_meta_id_prefix', 'cart_' );
+					$id_prefix = apply_filters( 'graphql_woocommerce_cart_meta_id_prefix', 'cart_' );
 
 					// Format meta data for resolution.
 					$data = array();

@@ -134,7 +134,7 @@ class Order_Delete_Items {
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.
 			 */
-			do_action( 'woocommerce_graphql_before_order_items_delete', $ids, $working_order, $input, $context, $info );
+			do_action( 'graphql_woocommerce_before_order_items_delete', $ids, $working_order, $input, $context, $info );
 
 			// Delete order.
 			$errors = '';
@@ -151,7 +151,7 @@ class Order_Delete_Items {
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.
 			 */
-			do_action( 'woocommerce_graphql_after_order_delete', $ids, $working_order, $input, $context, $info );
+			do_action( 'graphql_woocommerce_after_order_delete', $ids, $working_order, $input, $context, $info );
 
 			return array( 'order' => $order );
 		};

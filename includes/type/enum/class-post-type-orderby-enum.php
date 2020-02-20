@@ -80,6 +80,7 @@ class Post_Type_Orderby_Enum {
 					__( 'Fields to order the %s connection by', 'wp-graphql-woocommerce' ),
 					$name
 				),
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 				'values'      => apply_filters( "{$name}_orderby_enum_values", static::values() ),
 			)
 		);
