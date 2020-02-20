@@ -205,4 +205,29 @@ class CustomerHelper extends WCG_Helper {
 			'jwtRefreshToken'       => null,
 		);
 	}
+
+	public function print_downloadables( $id ) {
+		$items = wc_get_customer_available_downloads( $id );
+
+		if ( empty( $items ) ) {
+			return array();
+		}
+		
+		$nodes = array();
+		foreach ( $items as $item ) {
+			$nodes[] = array(
+				'url'                => $item['download_url'],
+				'accessExpires'      => $item['access_expires'],
+				'downloadId'         => $item['download_id'],
+				'downloadsRemaining' => isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
+					? $item['downloads_remaining']
+					: null,
+				'name'               => $item['download_name'],
+				'product'            => array( 'productId' => $item['product_id'] ),
+				'download'           => array( 'downloadId' => $item['download_id'] ),
+			);
+		}
+
+		return $nodes;
+	}
 }

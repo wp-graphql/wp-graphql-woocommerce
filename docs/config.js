@@ -10,9 +10,12 @@ const config = {
 		"title": "WooGraphQL Documentation",
 		"githubUrl": "https://github.com/wp-graphql/wp-graphql-woocommerce",
 		"helpUrl": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
-		"tweetText": "",
+		"tweetText": "Take a look at the amazing Docs Site for @woographql https://woographql.axistaylor.com",
 		"links": [
-			{ "text": "", "link": ""}
+			{
+				"text": "AxisTaylor",
+				"link": "https://axistaylor.com"
+			}
 		],
 		"search": {
 			"enabled": false,
