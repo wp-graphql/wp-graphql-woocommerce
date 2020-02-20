@@ -4,7 +4,7 @@
 
 <a href="https://woographql.axistaylor.com/" target="_blank">Docs</a> • <a href="https://www.axistaylor.com" target="_blank">AxisTaylor</a> • <a href="https://wpgql-slack.herokuapp.com/" target="_blank">Join Slack</a>
 
-[![Actions Status](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Testing%20Integration/badge.svg)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) 
+[![Actions Status](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Testing%20Integration/badge.svg)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Testing+Integration%22) [![Actions Status](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/WordPress%20Coding%20Standards/badge.svg)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22WordPress+Coding+Standards%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) 
 
 ## Quick Install
 1. Install & activate [WooCommerce](https://woocommerce.com/)
