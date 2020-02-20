@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.4.4](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.4) (2020-02-20)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.3...v0.4.4)
+
+**Enhancements:**
+
+- Proper PHP Documentation Standards [\#240](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/240)
+- Adds Customer to DownloadableItems connection [\#238](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/238) ([kidunot89](https://github.com/kidunot89))
+- Code Improvements [\#235](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/235) ([renatonascalves](https://github.com/renatonascalves))
+- Adds Documentation [\#234](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/234) ([kidunot89](https://github.com/kidunot89))
+
+**Closed issues:**
+
+- Address and Userinfo [\#232](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/232)
+- Guest Account Checkout - Status 405 Not Allowed [\#222](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/222)
+
+**Merged pull requests:**
+
+- Adds Two New Workflows [\#239](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/239) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.4.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.3) (2020-02-04)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.2...v0.4.3)
@@ -179,6 +199,7 @@ Updated tests
 
 - Pagination with orderby when fetching Products causes products to be skipped [\#153](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/153)
 - Unneeded "register\_graphql\_connection\(\)" calls removed. [\#165](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/165) ([kidunot89](https://github.com/kidunot89))
+- Removes potential trouble filter [\#163](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/163) ([kidunot89](https://github.com/kidunot89))
 
 **Closed issues:**
 
