@@ -2,7 +2,7 @@
 /**
  * Connection - Cart_Items
  *
- * Registers connections to CartIte
+ * Registers connections to CartItem
  *
  * @package WPGraphQL\WooCommerce\Connection
  * @since   0.0.3
