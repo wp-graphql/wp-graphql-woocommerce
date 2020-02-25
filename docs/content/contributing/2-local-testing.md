@@ -12,14 +12,51 @@ Don't let this discourage you though, it's possible simplify the WPGraphQL devel
 - **[Codeception](https://codeception.com/docs/01-Introduction)**
 - **[wp-browser](https://wpbrowser.wptestkit.dev/)**
 
-# Setting up WP installation for testing.
+# Setting up WordPress for testing.
+Before we can begin testing we need a local WordPress installation. If you already have a local installation of WordPress for development, you can use that if you wish skip to **[Configuring Codeception Environmental](#Configuring Codeception Environmental)**. If you don't have a local installation or simply don't want to use your local installation, you can use the **[WP-CLI](https://wp-cli.org/)** plugin test environment.
 
-# Installing Composer dependencies
+## Prerequisties
+Have install **PHP**, **MySQL** or **PostgreSQL**, **Composer**, and **[WP-CLI](https://wp-cli.org/)** installed as well as terminal or shell access.
+1. Start by cloning **[WooGraphQL](https://github.com/wp-graphql/wp-graphql-woocommerce)**.
+2. Open your terminal .
+3. Copy the `.env.dist` to `.env` by execute the following in your terminal in the **WooGraphQL** root directory.
+```
+cp .env.dist .env
+```
+4. Open the .env and update the highlighted environmental variables to match your machine setup.
+![.env example](2-local-testing/image-01.png)
+5. Last thing to do is run the WordPress testing environment install script in the terminal
+```
+composer install-wp-tests
+```
 
-# WPUnit Tests.
+This will create and configure a WordPress installation in a temporary directory for the purpose of testing.
 
-# Creating a new test
+# Setting up Codeception.
+Now that we have setup our testing environment lets run the tests. To do this will need to install the **Codeception** and the rest of our **devDependencies**
+1. First run `composer install` in the terminal.
+2. Next copy the `codeception.dist.yml` to `codeception.yml`
+```
+cp codeception.dist.yml codeception.yml
+```
+3. Open `codeception.yml` and make the following changes.
+![codeception.yml params config](2-local-testing/image-02.png)
+![codeception.yml WPLoader config](2-local-testing/image-03.png)
 
-# setUp/tearDown functions
+Now you all set to run the tests.
 
-# Write your test
+# Running the tests.
+Now we're ready to get started with testing. There is a small issue you may have with our testing environment. The WordPress installation we created doesn't support **end-to-end (*e2e*)** testing, however this won't be a problem. **WPGraphQL** is an API and most of the time you can get away with just ensuring that your query is works, and **WPGraphQL** provides a few functions that will always us to do just that.
+
+Well let's get started by running all the unit tests. Back in your terminal run the following
+```
+vendor/bin/codecept run wpunit
+```
+If everything is how it should be you should get all passing tests.
+![WPUnit test results](2-local-testing/image-04.png)
+
+# Creating a new WPUnit test file
+
+## setUp/tearDown functions
+
+## Writing your first test
