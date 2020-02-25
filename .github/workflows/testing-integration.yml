@@ -10,7 +10,10 @@ on:
   pull_request:
     branches:
       - develop
-      - release/v0.5.1
+    paths:
+      - '**.php'
+    paths-ignore:
+      - 'docs/**'
 
 jobs:
   run:
