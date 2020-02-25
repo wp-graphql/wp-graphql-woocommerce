@@ -34,8 +34,7 @@ composer install-wp-tests
 This will create and configure a WordPress installation in a temporary directory for the purpose of testing.
 
 # Setting up Codeception.
-Now that we have setup our testing environment lets run the tests. To do this will need to install the **Codeception** and the rest of our **devDependencies**
-
+Now that we have setup our testing environment, let's run the tests. To do this we will need to install the **Codeception** and the rest of our **devDependencies**
 1. First run `composer install` in the terminal.
 2. Next copy the `codeception.dist.yml` to `codeception.yml`
 ```
@@ -223,4 +222,8 @@ $actual = graphql( array( 'query' => $query ) );
 
 ## Run test expecting success
 
+<<<<<<< HEAD
 # Going Forward
+=======
+## Writing your first test
+>>>>>>> Update docs/content/contributing/2-local-testing.md
