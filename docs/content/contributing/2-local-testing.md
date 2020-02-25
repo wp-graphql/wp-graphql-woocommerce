@@ -47,7 +47,7 @@ cp codeception.dist.yml codeception.yml
 Now you all set to run the tests.
 
 # Running the tests.
-Now we're ready to get started with testing. There is a small issue you may have with our testing environment. The WordPress installation we created doesn't support **end-to-end (*e2e*)** testing, however this won't be a problem. **WPGraphQL** is an API and most of the time you can get away with just ensuring that your query is works, and **WPGraphQL** provides a few functions that will always us to do just that.
+Now we're ready to get started with testing. There is a small issue you may have with our testing environment. The WordPress installation we created doesn't support **end-to-end (*e2e*)** testing, however this won't be a problem. **WPGraphQL** is an API and most of the time you can get away with just ensuring that your query works, and **WPGraphQL** provides a few functions that will allow us to do just that.
 
 Well let's get started by running all the unit tests. Back in your terminal run the following
 ```
