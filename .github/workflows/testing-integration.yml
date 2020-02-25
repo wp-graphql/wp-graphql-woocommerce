@@ -12,8 +12,7 @@ on:
       - develop
     paths:
       - '**.php'
-    paths-ignore:
-      - 'docs/**'
+      - '!docs/**'
 
 jobs:
   run:
