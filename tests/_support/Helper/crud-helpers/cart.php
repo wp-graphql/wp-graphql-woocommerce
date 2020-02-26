@@ -7,6 +7,28 @@ class CartHelper extends WCG_Helper {
 		return null;
 	}
 
+	public function add( ...$products ) {
+		foreach( $products as $product ) {
+			if( gettype($product) === 'array' ) {
+				if( empty( $product['product_id'] ) ) {
+					codecept_debug( $product );
+					codecept_debug( 'IS AN INVALID CART ITEM' );
+					continue;
+				}
+
+				WC()->cart->add_to_cart(
+					$product,
+					! empty( $product['quantity'] ) ? $product['quantity'] : 1,
+					! empty( $product['variation_id'] ) ? $product['variation_id'] : 0,
+					! empty( $product['variation'] ) ? $product['variation'] : array(),
+					! empty( $product['cart_item_data'] ) ? $product['cart_item_data'] : array(),
+				);
+			} else {
+				WC()->cart->add_to_cart( $product, 1 );
+			}
+		}
+	}
+
 	public function print_query( $id = 0 ) {
 		$cart = WC()->cart;
 		return array(
