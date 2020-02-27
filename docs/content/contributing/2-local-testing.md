@@ -72,7 +72,7 @@ The PHP testing suite used by WPGraphQL and WooGraphQL is Codeception, but they 
 
 So having done everything above, and finally being ready for development, begin by generating the **ItemCountTest** test file with Codeception `generate` command. Run the following in your terminal from the project root directory
 ```
-./vendor/bin/codecept generate:wpunit wpunit "ItemCount"
+vendor/bin/codecept generate:wpunit wpunit "ItemCount"
 ```
 This will generate a new test file at `tests/wpunit/ItemCountTest.php`. The `generate` is an easy-to-use tool of convience. You learn more about [here](https://codeception.com/for/wordpress).
 
@@ -124,15 +124,10 @@ Make changes to GraphQL API is always a rather top-down after, meaning you'll ha
 cart {
     contents {
         nodes {
-            key
             quantity
-            subtotal
-            total
         }
     }
     itemCount
-    subtotal
-    total
 }
 ```
 In the next section we'll be taking this query and creating our test around it.
@@ -158,15 +153,15 @@ public function setUp()
     // before
     parent::setUp();
 
-    $this->product = $this->getModule('\Helper\Wpunit')->product();
-    $this->cart    = $this->getModule('\Helper\Wpunit')->cart();
-    $products      = array(
-        array( 'product_id' => $this->product->create_simple() ),
-        array( 'product_id' => $this->product->create_simple() ),
+    $this->product  = $this->getModule('\Helper\Wpunit')->product();
+    $this->cart     = $this->getModule('\Helper\Wpunit')->cart();
+    $this->products = array(
+        array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
+        array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
         array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 ),
         array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ),
     );
-    $this->cart->add(...$products);
+    $this->cart->add(...$this->products);
 }
 ```
 And that's it, scenario created. You maybe confused, but we'll break it down.
@@ -176,15 +171,16 @@ $this->cart    = $this->getModule('\Helper\Wpunit')->cart();
 ```
 This just assigned the `product` and `cart` helpers to simple reusable class member for later use in the coming test and the rest of the `setUp()`.
 ```
-$products      = array(
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 )
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 )
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ) 
+$this->products      = array(
+    array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
+    array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
+    array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 ),
+    array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ),
 );
 ```
 The `$product` array holds the `product_id`s and `quantity`s of products being add to our cart. `create_simple( $args = array() )` creates a new product with a random name and price and return the `product_id` of the product. There are `create_external( $args = array() )`, `create_grouped( $args = array() )` and `create_variable( $args = array() )`, as well as many more create functions for creating other objects related to products.
 ```
-$this->cart->add(...$products);
+$this->cart->add(...$this->products);
 ```
 And finally, you have probably figured out that this adds the products in `$products` to the cart. `cart` helper functions as a glorified wrapper for the `WC()->cart` instance with a extra features for testing.
 
@@ -197,26 +193,110 @@ public function testItemCountField()
             cart {
                 contents {
                     nodes {
-                        key
                         quantity
-                        subtotal
-                        total
                     }
                 }
                 itemCount
-                subtotal
-                total
             }
         }
     ';
 }
-
-Simple enough, next we'll run our query through WPGraphQL using the `graphql( $request_data = [] )`. After the `$query` initialization add the following
 ```
-$actual = graphql( array( 'query' => $query ) );
+Simple enough, next we'll run our query through WPGraphQL using `graphql( $request_data = [] )`. 
+```
+public function testItemCountField()
+{
+    ...
+
+    $actual = graphql( array( 'query' => $query ) );
+
+    // use --debug flag to view.
+    codecept_debug( $actual );
+}
+```
+`graphql()` is a function provided by WPGraphQL. It will process a GraphQL request and return the results as an associative array. This makes it a great tool for testing our queries.
+
+```
+// use --debug flag to view.
+codecept_debug( $actual );
+```
+If you've taken a look at any of the other tests in WooGraphQL you may have noticed this snippet of code every always every `graphql()` call. `codecept_debug( $data )` is a debug function that dumps the value of `$data` to console. This dump information can viewed by using the `--debug` flag when using Codeception's `run` command. Its use here is great because when we run our test later in debug mode we'll know exactly what WPGraphQL is returning for our query.
+
+The last step in our test is to confirm the we received the correct values for our `itemCount` field.
+```
+public function testItemCountField()
+{
+    ...
+
+    $expected = array_sum( array_column( $this->products, 'quantity' ) );
+    $this->assertEquals( $expected, $actual['data']['cart']['itemCount'] );
+}
+```
+And that's our test.
+
+```
+<?php
+
+class ItemCountTest extends \Codeception\TestCase\WPTestCase
+{
+
+    public function setUp()
+    {
+        // before
+        parent::setUp();
+
+        $this->product  = $this->getModule('\Helper\Wpunit')->product();
+        $this->cart     = $this->getModule('\Helper\Wpunit')->cart();
+        $this->products = array(
+            array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
+            array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
+            array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 ),
+            array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ),
+        );
+        $this->cart->add(...$this->products);
+    }
+
+    public function tearDown()
+    {
+        // your tear down methods here
+
+        // then
+        parent::tearDown();
+    }
+
+    // tests
+    public function testItemCountField()
+    {
+        $query = '
+            query {
+                cart {
+                    contents {
+                        nodes {
+                            quantity
+                        }
+                    }
+                    itemCount
+                }
+            }
+        ';
+
+        $actual = graphql( array( 'query' => $query ) );
+
+        // use --debug flag to view.
+        codecept_debug( $actual );
+
+        $expected = array_sum( array_column( $this->products, 'quantity' ) );
+        $this->assertEquals( $expected, $actual['data']['cart']['itemCount'] );
+    }
+}
 ```
 
 ## Run the test expecting failure
+Now that the test is created, we will run it expecting failure and using the `--debug` flag.
+```
+vendor/bin/codecept run wpunit ItemCountTest --debug
+```
+Run this statement in the terminal will make Codeception run just the `ItemCountTest` in debug mode. This way we can see exactly WPGraphQL returns for our query.
 
 ## Implementing our changes
 
