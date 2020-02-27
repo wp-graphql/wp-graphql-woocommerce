@@ -12,8 +12,8 @@ Don't let this discourage you though, it's possible simplify the WPGraphQL devel
 - **[Codeception](https://codeception.com/docs/01-Introduction)**
 - **[wp-browser](https://wpbrowser.wptestkit.dev/)**
 
-# Setting up WordPress for testing.
-Before we can begin testing we need a local WordPress installation. If you already have a local installation of WordPress for development, you can use that if you wish skip to **[Configuring Codeception Environmental](#Configuring Codeception Environmental)**. If you don't have a local installation or simply don't want to use your local installation, you can use the **[WP-CLI](https://wp-cli.org/)** plugin test environment.
+# Setting up WordPress for testing
+Before we can begin testing we need a local WordPress installation. If you already have a local installation of WordPress for development, you can use that if you wish skip to **[Setting up Codeception](#settingupcodeception)**. If you don't have a local installation or simply don't want to use your local installation, you can use the **[WP-CLI](https://wp-cli.org/)** plugin test environment.
 
 ## Prerequisties
 Have install **PHP**, **MySQL** or **PostgreSQL**, **Composer**, and **[WP-CLI](https://wp-cli.org/)** installed as well as terminal or shell access.
@@ -33,7 +33,7 @@ composer install-wp-tests
 
 This will create and configure a WordPress installation in a temporary directory for the purpose of testing.
 
-# Setting up Codeception.
+# Setting up Codeception
 Now that we have setup our testing environment, let's run the tests. To do this we will need to install the **Codeception** and the rest of our **devDependencies**
 1. First run `composer install` in the terminal.
 2. Next copy the `codeception.dist.yml` to `codeception.yml`
@@ -46,7 +46,7 @@ cp codeception.dist.yml codeception.yml
 
 Now you all set to run the tests.
 
-# Running the tests.
+# Running the tests
 Now we're ready to get started with testing. There is a small issue you may have with our testing environment. The WordPress installation we created doesn't support **end-to-end (*e2e*)** testing, however this won't be a problem. **WPGraphQL** is an API and most of the time you can get away with just ensuring that your query works, and **WPGraphQL** provides a few functions that will allow us to do just that.
 
 Well, let's get started by running all the unit tests. Back in your terminal run the following:
@@ -56,7 +56,7 @@ vendor/bin/codecept run wpunit
 If everything is how it should be you should get all passing tests.
 ![WPUnit test results](2-local-testing/image-04.png)
 
-# Writing your first WooGraphQL and WPGraphQL WPUnit test.
+# Writing your first WooGraphQL and WPGraphQL WPUnit test
 This rest of this guide walk through creating a competent WPUnit test and implemented the functionality needed to ensure that test passed. For the most part everything used here can be used when making changes to WPGraphQL as well as many of the WPGraphQL extensions created by @jasonbahl, myself and the WPGraphQL community.
 
 The functionality we'll be adding in the coming steps will be to add the **Integer** field `itemCount` on the **Cart** object type. To do this we'll be.
