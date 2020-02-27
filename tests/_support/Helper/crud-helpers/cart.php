@@ -21,7 +21,7 @@ class CartHelper extends WCG_Helper {
 					! empty( $product['quantity'] ) ? $product['quantity'] : 1,
 					! empty( $product['variation_id'] ) ? $product['variation_id'] : 0,
 					! empty( $product['variation'] ) ? $product['variation'] : array(),
-					! empty( $product['cart_item_data'] ) ? $product['cart_item_data'] : array(),
+					! empty( $product['cart_item_data'] ) ? $product['cart_item_data'] : array()
 				);
 			} else {
 				WC()->cart->add_to_cart( $product, 1 );
