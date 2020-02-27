@@ -222,8 +222,6 @@ $actual = graphql( array( 'query' => $query ) );
 
 ## Run test expecting success
 
-<<<<<<< HEAD
 # Going Forward
-=======
 ## Writing your first test
->>>>>>> Update docs/content/contributing/2-local-testing.md
+
