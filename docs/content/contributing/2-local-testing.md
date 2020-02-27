@@ -112,7 +112,7 @@ This functions execute before and after every function. The `setUp()` in particu
 
 There's also the `wpSetUpBeforeClass( $factory )` and `wpTearDownAfterClass( $factory )` that are run before all the tests, however their use-case is even move rare then `tearDown()` on account that these methods are static and don't have access to the same `$this` context as the `setUp()`, `tearDown()` or `test*()` function.
 
-### test*() function
+### test*() functions
 Class functions that are prefix with `test` are tests. These functions are run on isolation for the most part. Test function must be `public` access. The purpose of the test function is to confirm the correct data is provided by when requested. This is done using the `Assert` library provided by PHPUnit and used by will everything on top of it.
 ```
 $this->assertEquals( array( 5 ), [ 5 ] );
@@ -297,6 +297,9 @@ Now that the test is created, we will run it expecting failure and using the `--
 vendor/bin/codecept run wpunit ItemCountTest --debug
 ```
 Run this statement in the terminal will make Codeception run just the `ItemCountTest` in debug mode. This way we can see exactly WPGraphQL returns for our query.
+
+![test failure results](2-local-testing/image-05.png)
+Run the test will result in the error above. **Cannot query field "itemCount" on type "Cart".** The error is quite easy to understand. We cannot query a field that doesn't exist and it doesn't exist because we haven't created it yet.
 
 ## Implementing our changes
 
