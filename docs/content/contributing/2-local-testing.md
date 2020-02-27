@@ -299,7 +299,7 @@ vendor/bin/codecept run wpunit ItemCountTest --debug
 Run this statement in the terminal will make Codeception run just the `ItemCountTest` in debug mode. This way we can see exactly WPGraphQL returns for our query.
 
 ![test failure results](2-local-testing/image-05.png)
-Run the test will result in the error above. **Cannot query field "itemCount" on type "Cart".** The error is quite easy to understand. We cannot query a field that doesn't exist and it doesn't exist because we haven't created it yet.
+Running the test will result in the error above. **Cannot query field "itemCount" on type "Cart".** The error is quite easy to understand. We cannot query a field that doesn't yet exist.
 
 ## Implementing our changes
 
