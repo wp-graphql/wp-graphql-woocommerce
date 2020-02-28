@@ -13,7 +13,7 @@ namespace WPGraphQL\WooCommerce\Connection;
  *
  * @return array
  */
-function get_common_post_type_args() {
+function get_common_post_type_args(): array {
 	return array(
 		'search'      => array(
 			'type'        => 'String',
@@ -33,19 +33,19 @@ function get_common_post_type_args() {
 		),
 		'dateQuery'   => array(
 			'type'        => 'DateQueryInput',
-			'description' => __( 'Filter the connection based on dates', 'wp-graphql-woocommerce' ),
+			'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
 		),
 		'parent'      => array(
 			'type'        => 'Int',
-			'description' => __( 'Use ID to return only children. Use 0 to return only top-level items', 'wp-graphql-woocommerce' ),
+			'description' => __( 'Use ID to return only children. Use 0 to return only top-level items.', 'wp-graphql-woocommerce' ),
 		),
 		'parentIn'    => array(
 			'type'        => array( 'list_of' => 'Int' ),
-			'description' => __( 'Specify objects whose parent is in an array', 'wp-graphql-woocommerce' ),
+			'description' => __( 'Specify objects whose parent is in an array.', 'wp-graphql-woocommerce' ),
 		),
 		'parentNotIn' => array(
 			'type'        => array( 'list_of' => 'Int' ),
-			'description' => __( 'Specify objects whose parent is not in an array', 'wp-graphql-woocommerce' ),
+			'description' => __( 'Specify objects whose parent is not in an array.', 'wp-graphql-woocommerce' ),
 		),
 	);
 }

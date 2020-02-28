@@ -10,14 +10,17 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Product_Attributes
  */
 class Product_Attributes {
+
 	/**
-	 * Registers the various connections from other Types to ProductAttribute
+	 * Registers the various connections from other Types to ProductAttribute.
 	 */
 	public static function register_connections() {
 		// From Product to ProductAttribute.
@@ -46,33 +49,32 @@ class Product_Attributes {
 
 	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
-	 * with the defaults
+	 * with the defaults.
 	 *
-	 * @access public
 	 * @param array $args - Connection configuration.
-	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
-		$defaults = array(
-			'fromType'       => 'Product',
-			'toType'         => 'ProductAttribute',
-			'fromFieldName'  => 'attributes',
-			'connectionArgs' => self::get_connection_args(),
-			'resolve'        => function ( $root, $args, $context, $info ) {
-				return Factory::resolve_product_attribute_connection( $root, $args, $context, $info );
-			},
+	public static function get_connection_config( $args = array() ): array {
+		return array_merge(
+			array(
+				'fromType'       => 'Product',
+				'toType'         => 'ProductAttribute',
+				'fromFieldName'  => 'attributes',
+				'connectionArgs' => self::get_connection_args(),
+				'resolve'        => function ( $root, array $args, AppContext $context, ResolveInfo $info ) {
+					return Factory::resolve_product_attribute_connection( $root, $args, $context, $info );
+				},
+			),
+			$args
 		);
-
-		return array_merge( $defaults, $args );
 	}
 
 	/**
-	 * Returns array of where args
+	 * Returns array of where args.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_args() {
+	public static function get_connection_args(): array {
 		return array(
 			'type' => array(
 				'type'        => 'ProductAttributeTypesEnum',

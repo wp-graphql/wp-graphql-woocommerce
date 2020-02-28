@@ -9,12 +9,15 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Customers
  */
 class Customers {
+
 	/**
 	 * Registers the various connections from other Types to Customer
 	 */
@@ -28,6 +31,7 @@ class Customers {
 				)
 			)
 		);
+
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
@@ -43,30 +47,30 @@ class Customers {
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults
 	 *
-	 * @access public
 	 * @param array $args - Connection configuration.
-	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args ) {
-		$defaults = array(
-			'connectionArgs' => self::get_connection_args(),
-			'resolveNode'    => function( $id, $args, $context, $info ) {
-				return Factory::resolve_customer( $id, $context );
-			},
-			'resolve'        => function ( $source, $args, $context, $info ) {
-				return Factory::resolve_customer_connection( $source, $args, $context, $info );
-			},
+	public static function get_connection_config( $args ): array {
+		return array_merge(
+			array(
+				'connectionArgs' => self::get_connection_args(),
+				'resolveNode'    => function( $id, array $args, AppContext $context ) {
+					return Factory::resolve_customer( $id, $context );
+				},
+				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					return Factory::resolve_customer_connection( $source, $args, $context, $info );
+				},
+			),
+			$args
 		);
-		return array_merge( $defaults, $args );
 	}
 
 	/**
-	 * Returns array of where args
+	 * Returns array of where args.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_args() {
+	public static function get_connection_args(): array {
 		return array(
 			'search'    => array(
 				'type'        => 'String',

@@ -15,8 +15,9 @@ use WPGraphQL\Connection\PostObjects;
  * Class - Posts
  */
 class Posts extends PostObjects {
+
 	/**
-	 * Registers the various connections from other WooCommerce Types to other WordPress post-types
+	 * Registers the various connections from other WooCommerce Types to other WordPress post-types.
 	 */
 	public static function register_connections() {
 		register_graphql_connection(
