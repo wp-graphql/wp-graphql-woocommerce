@@ -10,12 +10,15 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Product_Attributes
  */
 class Variation_Attributes {
+
 	/**
 	 * Registers the various connections from other Types to VariationAttribute
 	 */
@@ -39,24 +42,23 @@ class Variation_Attributes {
 
 	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
-	 * with the defaults
+	 * with the defaults.
 	 *
-	 * @access public
 	 * @param array $args - Connection configuration.
-	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
-		$defaults = array(
-			'fromType'       => 'ProductVariation',
-			'toType'         => 'VariationAttribute',
-			'fromFieldName'  => 'attributes',
-			'connectionArgs' => array(),
-			'resolve'        => function ( $root, $args, $context, $info ) {
-				return Factory::resolve_variation_attribute_connection( $root, $args, $context, $info );
-			},
+	public static function get_connection_config( $args = array() ): array {
+		return array_merge(
+			array(
+				'fromType'       => 'ProductVariation',
+				'toType'         => 'VariationAttribute',
+				'fromFieldName'  => 'attributes',
+				'connectionArgs' => array(),
+				'resolve'        => function( $root, array $args, AppContext $context, ResolveInfo $info ) {
+					return Factory::resolve_variation_attribute_connection( $root, $args, $context, $info );
+				},
+			),
+			$args
 		);
-
-		return array_merge( $defaults, $args );
 	}
 }
