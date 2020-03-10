@@ -10,12 +10,15 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Shipping_Methods
  */
 class Shipping_Methods {
+
 	/**
 	 * Registers the various connections from other Types to TaxRate
 	 */
@@ -26,26 +29,26 @@ class Shipping_Methods {
 
 	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
-	 * with the defaults
+	 * with the defaults.
 	 *
-	 * @access public
 	 * @param array $args - Connection configuration.
-	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
-		$defaults = array(
-			'fromType'       => 'RootQuery',
-			'toType'         => 'ShippingMethod',
-			'fromFieldName'  => 'shippingMethods',
-			'connectionArgs' => array(),
-			'resolveNode'    => function( $id, $args, $context, $info ) {
-				return Factory::resolve_shipping_method( $id );
-			},
-			'resolve'        => function ( $source, $args, $context, $info ) {
-				return Factory::resolve_shipping_method_connection( $source, $args, $context, $info );
-			},
+	public static function get_connection_config( $args = array() ): array {
+		return array_merge(
+			array(
+				'fromType'       => 'RootQuery',
+				'toType'         => 'ShippingMethod',
+				'fromFieldName'  => 'shippingMethods',
+				'connectionArgs' => array(),
+				'resolveNode'    => function( $id ) {
+					return Factory::resolve_shipping_method( $id );
+				},
+				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					return Factory::resolve_shipping_method_connection( $source, $args, $context, $info );
+				},
+			),
+			$args
 		);
-		return array_merge( $defaults, $args );
 	}
 }

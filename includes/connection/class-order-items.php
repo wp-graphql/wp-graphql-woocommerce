@@ -10,14 +10,17 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Order_Items
  */
 class Order_Items {
+
 	/**
-	 * Registers connection
+	 * Registers connections.
 	 */
 	public static function register_connections() {
 		// From Order.
@@ -63,24 +66,23 @@ class Order_Items {
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults
 	 *
-	 * @access public
 	 * @param array $args - Connection configuration.
-	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
+	public static function get_connection_config( $args = array() ): array {
 		$defaults = array(
 			'fromType'       => 'Order',
 			'toType'         => 'LineItem',
 			'fromFieldName'  => 'lineItems',
 			'connectionArgs' => array(),
-			'resolveNode'    => function( $item, $args, $context, $info ) {
+			'resolveNode'    => function( $item ) {
 				return Factory::resolve_order_item( $item );
 			},
-			'resolve'        => function ( $source, $args, $context, $info ) {
+			'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 				return Factory::resolve_order_item_connection( $source, $args, $context, $info );
 			},
 		);
+
 		return array_merge( $defaults, $args );
 	}
 }

@@ -16,6 +16,7 @@ use WPGraphQL\Connection\Comments;
  * Class - Product_Reviews
  */
 class Product_Reviews extends Comments {
+
 	/**
 	 * Registers connection.
 	 */

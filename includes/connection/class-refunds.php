@@ -9,12 +9,15 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Refunds
  */
 class Refunds {
+
 	/**
 	 * Registers the various connections from other Types to Refund
 	 */
@@ -36,35 +39,35 @@ class Refunds {
 
 	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
-	 * with the defaults
+	 * with the defaults.
 	 *
-	 * @access public
 	 * @param array $args - Connection configuration.
-	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ) {
-		$defaults = array(
-			'fromType'       => 'RootQuery',
-			'toType'         => 'Refund',
-			'fromFieldName'  => 'refunds',
-			'connectionArgs' => self::get_connection_args(),
-			'resolveNode'    => function( $id, $args, $context, $info ) {
-				return Factory::resolve_crud_object( $id, $context );
-			},
-			'resolve'        => function ( $source, $args, $context, $info ) {
-				return Factory::resolve_refund_connection( $source, $args, $context, $info );
-			},
+	public static function get_connection_config( $args = array() ): array {
+		return array_merge(
+			array(
+				'fromType'       => 'RootQuery',
+				'toType'         => 'Refund',
+				'fromFieldName'  => 'refunds',
+				'connectionArgs' => self::get_connection_args(),
+				'resolveNode'    => function( $id, array $args, AppContext $context ) {
+					return Factory::resolve_crud_object( $id, $context );
+				},
+				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					return Factory::resolve_refund_connection( $source, $args, $context, $info );
+				},
+			),
+			$args
 		);
-		return array_merge( $defaults, $args );
 	}
 
 	/**
-	 * Returns array of where args
+	 * Returns array of where args.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_args() {
+	public static function get_connection_args(): array {
 		return array_merge(
 			get_common_post_type_args(),
 			array(
