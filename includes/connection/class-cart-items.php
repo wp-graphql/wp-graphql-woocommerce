@@ -55,12 +55,7 @@ class Cart_Items {
 								return 0;
 							}
 
-							$count = 0;
-							foreach ( $items as $item ) {
-								$count += $item['quantity'];
-							}
-
-							return $count;
+							return array_sum( array_column( $items, 'quantity' ) );
 						},
 					),
 					'productCount' => array(

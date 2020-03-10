@@ -1,5 +1,31 @@
 # Changelog
 
+## [v0.5.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.5.0) (2020-03-27)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/list...v0.5.0)
+
+### Release Checklist
+---------------------------------------------------
+- [x] Support for **WPGraphQL** v0.8.0 added.
+- [x] Deprecated queries removed.
+  - `productBy`
+  - `couponBy`
+
+**Closed issues:**
+
+- Can't query all products [\#248](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/248)
+- Show color in product attributes [\#245](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/245)
+- Finalize the checkout process - payment service \(stripe\) [\#241](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/241)
+- Price RAW format returns null [\#207](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/207)
+
+**Merged pull requests:**
+
+- Updates to the Connection Classes [\#243](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/243) ([renatonascalves](https://github.com/renatonascalves))
+
+## [list](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/list) (2020-02-20)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.4...list)
+
 ## [v0.4.4](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.4) (2020-02-20)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.3...v0.4.4)
