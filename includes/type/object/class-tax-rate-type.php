@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
 use GraphQLRelay\Relay;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -110,7 +111,7 @@ class Tax_Rate_Type {
 						),
 					),
 				),
-				'resolve'     => function ( $source, array $args ) {
+				'resolve'     => function ( $source, array $args, AppContext $context ) {
 					$id = isset( $args['id'] ) ? $args['id'] : null;
 					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -139,7 +140,7 @@ class Tax_Rate_Type {
 							break;
 					}
 
-					return Factory::resolve_tax_rate( $rate_id );
+					return Factory::resolve_tax_rate( $rate_id, $context );
 				},
 			)
 		);

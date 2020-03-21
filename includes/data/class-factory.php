@@ -85,7 +85,7 @@ class Factory {
 			return null;
 		}
 		$object_id = absint( $id );
-		$loader    = $context->getLoader( 'wc_post_crud' );
+		$loader    = $context->getLoader( 'wc_cpt' );
 		$loader->buffer( array( $object_id ) );
 		return new Deferred(
 			function () use ( $loader, $object_id ) {
@@ -117,41 +117,24 @@ class Factory {
 	/**
 	 * Returns the tax rate Model for the tax rate ID.
 	 *
-	 * @param int $id - Tax rate ID.
-	 *
-	 * @return Tax_Rate
-	 * @access public
-	 * @throws UserError Invalid object.
+	 * @param string $id - Tax rate ID.
+	 * @param AppContext $context - AppContext object.
+	 * 
+	 * @return Deferred object
 	 */
-	public static function resolve_tax_rate( $id ) {
-		global $wpdb;
-
-		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
-		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
-			// Get locales from a tax rate.
-			$locales = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT location_code, location_type
-					FROM {$wpdb->prefix}woocommerce_tax_rate_locations
-					WHERE tax_rate_id = %d",
-					$rate->tax_rate_id
-				)
-			);
-
-			foreach ( $locales as $locale ) {
-				if ( empty( $rate->{'tax_rate_' . $locale->location_type} ) ) {
-					$rate->{'tax_rate_' . $locale->location_type} = array();
-				}
-				$rate->{'tax_rate_' . $locale->location_type}[] = $locale->location_code;
-			}
-
-			return new Tax_Rate( $rate );
-		} else {
-			throw new UserError(
-				/* translators: %s: Tax rate ID */
-				sprintf( __( 'No Tax Rate assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
-			);
+	public static function resolve_tax_rate( $id, AppContext $context ) {
+		if ( empty( $id ) || ! is_numeric( $id ) ) {
+			return null;
 		}
+
+		$id = absint( $id );
+		$loader    = $context->getLoader( 'tax_rate' );
+		$loader->buffer( array( $id ) );
+		return new Deferred(
+			function () use ( $loader, $id ) {
+				return $loader->load( $id );
+			}
+		);
 	}
 
 	/**
@@ -198,12 +181,23 @@ class Factory {
 	/**
 	 * Resolves a cart item by key.
 	 *
-	 * @param string $id cart item key.
-	 *
-	 * @return object
+	 * @param string     $key      Cart item key.
+	 * @param AppContext $context  AppContext object.
+	 * 
+	 * @return Deferred object
 	 */
-	public static function resolve_cart_item( $id ) {
-		return self::resolve_cart()->get_cart_item( $id );
+	public static function resolve_cart_item( $key, AppContext $context ) {
+		if ( empty( $key ) ) {
+			return null;
+		}
+
+		$loader    = $context->getLoader( 'cart_item' );
+		$loader->buffer( array( $key ) );
+		return new Deferred(
+			function () use ( $loader, $key ) {
+				return $loader->load( $key );
+			}
+		);
 	}
 
 	/**
@@ -219,6 +213,28 @@ class Factory {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Resolves a downloadable item by ID.
+	 *
+	 * @param int        $id       Downloadable item ID.
+	 * @param AppContext $context  AppContext object.
+	 * 
+	 * @return Deferred object
+	 */
+	public static function resolve_downloadable_item( $id, AppContext $context ) {
+		if ( empty( $id ) || ! absint( $id ) ) {
+			return null;
+		}
+		$object_id = absint( $id );
+		$loader    = $context->getLoader( 'downloadable_item' );
+		$loader->buffer( array( $object_id ) );
+		return new Deferred(
+			function () use ( $loader, $object_id ) {
+				return $loader->load( $object_id );
+			}
+		);
 	}
 
 	/**
@@ -247,7 +263,7 @@ class Factory {
 				$node = self::resolve_shipping_method( $id );
 				break;
 			case 'tax_rate':
-				$node = self::resolve_tax_rate( $id );
+				$node = self::resolve_tax_rate( $id, $context );
 				break;
 		}
 

@@ -13,11 +13,37 @@ namespace WPGraphQL\WooCommerce\Data\Connection;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Tax_Rate_Connection_Resolver
  */
 class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
+	/**
+	 * get_loader_name
+	 *
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'tax_rate';
+	}
+
+	/**
+	 * Given an ID, return the model for the entity or null
+	 *
+	 * @param $id
+	 *
+	 * @return 
+	 *
+	 * @throws \Exception
+	 */
+	public function get_node_by_id( $id ) {
+		return $this->getLoader()->load_tax_rate_from_id( $id );
+	}
+
 	/**
 	 * Confirms the uses has the privileges to query Tax Rates
 	 *
@@ -138,7 +164,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		return ! empty( $this->query ) ? $this->query : array();
 	}
 

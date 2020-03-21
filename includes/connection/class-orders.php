@@ -54,9 +54,6 @@ class Orders {
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $id, $context );
-				},
 				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_order_connection( $source, $args, $context, $info );
 				},

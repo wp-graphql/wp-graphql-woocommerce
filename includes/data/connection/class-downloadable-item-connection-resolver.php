@@ -27,6 +27,30 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	use WC_Connection_Functions;
 
 	/**
+	 * get_loader_name
+	 *
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'downloadable_item';
+	}
+
+	/**
+	 * Given an ID, return the model for the entity or null
+	 *
+	 * @param $id
+	 *
+	 * @return 
+	 *
+	 * @throws \Exception
+	 */
+	public function get_node_by_id( $id ) {
+		return $this->getLoader()->load_downloadable_item_from_id( $id );
+	}
+
+	/**
 	 * Confirms if downloadable items should be retrieved.
 	 *
 	 * @return bool
@@ -122,15 +146,15 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		$cursor_key    = $this->get_offset();
-		$cursor_offset = array_search( $cursor_key, \array_column( $items, 'download_id' ), true );
+		$cursor_offset = array_search( $cursor_key, array_column( $items, 'download_id' ), true );
 
 		if ( ! empty( $this->args['after'] ) ) {
 			$items = array_splice( $items, $cursor_offset + 1 );
 		} elseif ( $cursor_offset ) {
 			$items = array_splice( $items, 0, $cursor_offset );
 		}
-
-		return $items;
+		
+		return array_column( $items, 'download_id' );
 	}
 
 	/**
@@ -172,7 +196,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		return ! empty( $this->query ) ? $this->query : array();
 	}
 

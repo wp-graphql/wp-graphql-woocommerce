@@ -493,7 +493,7 @@ class ProductHelper extends WCG_Helper {
 		$reviews = array();
 		foreach ( $ids as $review_id ) {
 			$reviews[] = array(
-				'rating' => get_comment_meta( $review_id, 'rating', true ), 
+				'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ), 
 				'node'   => array(
 					'id' => Relay::toGlobalId( 'comment', $review_id )
 				),

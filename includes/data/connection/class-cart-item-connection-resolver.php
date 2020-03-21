@@ -15,6 +15,7 @@ use GraphQLRelay\Relay;
 use GraphQLRelay\Connection\ArrayConnection;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Cart_Item_Connection_Resolver
@@ -24,6 +25,28 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * Include shared connection functions.
 	 */
 	use WC_Connection_Functions;
+
+	/**
+	 * get_loader_name
+	 *
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'cart_item';
+	}
+
+	/**
+	 * Given an ID, return the model for the entity or null
+	 *
+	 * @param $id
+	 *
+	 * @return array|null
+	 */
+	public function get_node_by_id( $id ) {
+		return $this->getLoader()->load_cart_item_from_key( $id );
+	}
 
 	/**
 	 * Confirms if cart items should be retrieved.
@@ -89,7 +112,8 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$cart_items = array_splice( $cart_items, 0, $cursor_offset );
 		}
 
-		return array_values( $cart_items );
+		// Return cart item keys.
+		return array_values( array_column( $cart_items, 'key' ) );
 	}
 
 	/**
@@ -131,7 +155,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		return ! empty( $this->query ) ? $this->query : array();
 	}
 

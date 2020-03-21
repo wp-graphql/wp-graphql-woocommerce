@@ -51,9 +51,6 @@ class Refunds {
 				'toType'         => 'Refund',
 				'fromFieldName'  => 'refunds',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, array $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $id, $context );
-				},
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_refund_connection( $source, $args, $context, $info );
 				},

@@ -24,6 +24,17 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	use WC_Connection_Functions;
 
 	/**
+	 * get_loader_name
+	 *
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'wc_customer';
+	}
+
+	/**
 	 * Confirms the uses has the privileges to query Customers
 	 *
 	 * @return bool
@@ -158,9 +169,22 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		$results = $this->get_query()->get_results();
 		return ! empty( $results ) ? $results : array();
+	}
+
+	/**
+	 * Given an ID, return the model for the entity or null
+	 *
+	 * @param $id
+	 *
+	 * @return 
+	 *
+	 * @throws \Exception
+	 */
+	public function get_node_by_id( $id ) {
+		
 	}
 
 	/**

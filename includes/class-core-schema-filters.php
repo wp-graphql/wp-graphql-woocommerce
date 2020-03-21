@@ -9,7 +9,8 @@
 namespace WPGraphQL\WooCommerce;
 
 use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -24,11 +25,18 @@ class Core_Schema_Filters {
 	private static $customer_loader;
 
 	/**
-	 * Stores instance WC_Post_Crud_Loader
+	 * Stores instance WC_CPT_Loader
 	 *
-	 * @var WC_Post_Crud_Loader
+	 * @var WC_CPT_Loader
 	 */
-	private static $post_crud_loader;
+	private static $cpt_loader;
+
+	/**
+	 * Stores instance of WC_Db_Loader
+	 * 
+	 * @var WC_Db_Loader
+	 */
+	private static $db_loader;
 
 	/**
 	 * Register filters
@@ -109,17 +117,17 @@ class Core_Schema_Filters {
 	 *
 	 * @param AppContext $context - AppContext.
 	 *
-	 * @return WC_Post_Crud_Loader
+	 * @return WC_CPT_Loader
 	 */
-	public static function post_crud_loader( $context ) {
-		if ( is_null( self::$post_crud_loader ) ) {
-			self::$post_crud_loader = new WC_Post_Crud_Loader( $context );
+	public static function cpt_loader( $context ) {
+		if ( is_null( self::$cpt_loader ) ) {
+			self::$cpt_loader = new WC_CPT_Loader( $context );
 		}
-		return self::$post_crud_loader;
+		return self::$cpt_loader;
 	}
 
 	/**
-	 * Initializes Customer_Loader instance
+	 * Initializes WC_Customer_Loader instance
 	 *
 	 * @param AppContext $context - AppContext.
 	 *
@@ -258,9 +266,17 @@ class Core_Schema_Filters {
 		$customer_loader        = self::customer_loader( $context );
 		$loaders['wc_customer'] = &$customer_loader;
 
-		// WooCommerce crud object loader.
-		$post_crud_loader        = self::post_crud_loader( $context );
-		$loaders['wc_post_crud'] = &$post_crud_loader;
+		// WooCommerce CPT loader.
+		$cpt_loader  = self::cpt_loader( $context );
+		$loaders['wc_cpt'] = &$cpt_loader;
+
+		// WooCommerce DB loaders.
+		$cart_item_loader         = new WC_Db_Loader( $context, 'CART_ITEM' );
+		$loaders['cart_item']     = &$cart_item_loader;
+		$downloadable_item_loader = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
+		$loaders['downloadable_item']     = &$downloadable_item_loader;
+		$tax_rate_loader          = new WC_Db_Loader( $context, 'TAX_RATE' );
+		$loaders['tax_rate']     = &$tax_rate_loader;
 
 		return $loaders;
 	}

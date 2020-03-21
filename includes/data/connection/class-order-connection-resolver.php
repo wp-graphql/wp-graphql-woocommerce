@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Order_Connection_Resolver
@@ -48,6 +49,31 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		 * Call the parent construct to setup class data
 		 */
 		parent::__construct( $source, $args, $context, $info );
+	}
+
+	/**
+	 * get_loader_name
+	 *
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'wc_cpt';
+	}
+
+	/**
+	 * Given an ID, return the model for the entity or null
+	 *
+	 * @param $id
+	 *
+	 * @return 
+	 *
+	 * @throws \Exception
+	 */
+	public function get_node_by_id( $id ) {
+		$post = get_post( $id );
+		return ! empty( $post ) && ! is_wp_error( $post ) ? new Order( $id ) : null;
 	}
 
 	/**
@@ -161,7 +187,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
 	}
 
