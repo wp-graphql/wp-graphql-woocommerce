@@ -131,7 +131,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 
 		// Clear cache
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
 
 		/**
 		 * Assertion Two
@@ -1236,7 +1236,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'product' => array(
 					'id'      => $this->helper->to_relay_id( $this->product ),
 					'reviews' => array(
-						'averageRating' => $product->get_average_rating(),
+						'averageRating' => floatval( $product->get_average_rating() ),
 						'edges'         => $this->helper->print_review_edges( $reviews ),
 					),
 				),

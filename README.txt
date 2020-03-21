@@ -5,7 +5,7 @@ Requires at least: 4.9
 Tested up to: 5.2
 Requires PHP: 7.0
 Requires WooCommerce: 3.0.0
-Requires WPGraphQL: 0.6.0+
+Requires WPGraphQL: 0.8.0+
 Works with WPGraphQL-JWT-Authentication: 0.4.0+
 Stable tag: 0.4.4
 License: GPL-3

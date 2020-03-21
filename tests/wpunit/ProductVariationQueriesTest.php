@@ -96,7 +96,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         $this->assertEquals( $expected, $actual );
 
-        $this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
+        $this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
 
 		/**
 		 * Assertion Two

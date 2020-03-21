@@ -43,7 +43,7 @@
         ]
     },
     "scripts": {
-        "install-wp-tests": "bash bin/install-wp-tests.sh",
+        "install-test-env": "bash bin/install-test-env.sh",
         "test": "vendor/bin/codecept run",
         "functional-test": "vendor/bin/codecept run functional",
         "acceptance-test": "vendor/bin/codecept run acceptance",

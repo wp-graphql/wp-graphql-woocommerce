@@ -1,8 +1,8 @@
 <?php
 /**
- * DataLoader - WC_Post_Crud_Loader
+ * DataLoader - WC_CPT_Loader
  *
- * Loads Models for WooCommerce CRUD objects
+ * Loads Models for WooCommerce CPTs
  *
  * @package WPGraphQL\WooCommerce\Data\Loader
  * @since 0.0.1
@@ -21,18 +21,18 @@ use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Refund;
 
 /**
- * Class WC_Post_Crud_Loader
+ * Class WC_CPT_Loader
  */
-class WC_Post_Crud_Loader extends AbstractDataLoader {
+class WC_CPT_Loader extends AbstractDataLoader {
 	/**
-	 * Stores loaded CRUD objects.
+	 * Stores loaded CPTs.
 	 *
 	 * @var array
 	 */
 	protected $loaded_objects;
 
 	/**
-	 * Returns CRUD Model
+	 * Returns the Model for a given post-type and ID.
 	 *
 	 * @param string $post_type - WordPress post-type.
 	 * @param int    $id        - Post ID.
@@ -53,17 +53,18 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			case 'shop_order_refund':
 				return new Refund( $id );
 			default:
-				$model = apply_filters( 'graphql_woocommerce_crud_loader_model', null, $post_type );
+				$model = apply_filters( 'graphql_woocommerce_cpt_loader_model', null, $post_type );
 				if ( ! empty( $model ) ) {
 					return new $model( $id );
 				}
 				/* translators: no model assigned error message */
-				throw new UserError( sprintf( __( 'No Model is register to the post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
+				throw new UserError( sprintf( __( 'No Model is register to the custom post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
 		}
 	}
 
 	/**
-	 * Returns CRUD object for provided IDs
+	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
+	 * posts as the values
 	 *
 	 * @param array $keys - array of IDs.
 	 *
