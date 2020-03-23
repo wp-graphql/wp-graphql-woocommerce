@@ -26,7 +26,7 @@ cp .env.dist .env
 ```
 4. Open the .env and update the highlighted environmental variables to match your machine setup.
 ![.env example](2-local-testing/image-01.png)
-5. Last thing to do is run the WordPress testing environment install script in the terminal
+5. Last thing to do is run the WordPress testing environment install script in the terminal.
 ```
 composer install-wp-tests
 ```
