@@ -19,7 +19,7 @@ Before we can begin testing we need a local WordPress installation. If you alrea
 Have install **PHP**, **MySQL** or **PostgreSQL**, **Composer**, and **[WP-CLI](https://wp-cli.org/)** installed as well as terminal or shell access.
 
 1. Start by cloning **[WooGraphQL](https://github.com/wp-graphql/wp-graphql-woocommerce)**.
-2. Open your terminal .
+2. Open your terminal.
 3. Copy the `.env.dist` to `.env` by execute the following in your terminal in the **WooGraphQL** root directory.
 ```
 cp .env.dist .env
