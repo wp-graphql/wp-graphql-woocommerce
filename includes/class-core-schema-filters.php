@@ -18,27 +18,6 @@ use WPGraphQL\WooCommerce\Data\Factory;
  */
 class Core_Schema_Filters {
 	/**
-	 * Stores instance WC_Customer_Loader
-	 *
-	 * @var WC_Customer_Loader
-	 */
-	private static $customer_loader;
-
-	/**
-	 * Stores instance WC_CPT_Loader
-	 *
-	 * @var WC_CPT_Loader
-	 */
-	private static $cpt_loader;
-
-	/**
-	 * Stores instance of WC_Db_Loader
-	 * 
-	 * @var WC_Db_Loader
-	 */
-	private static $db_loader;
-
-	/**
 	 * Register filters
 	 */
 	public static function add_filters() {
@@ -110,34 +89,6 @@ class Core_Schema_Filters {
 			10,
 			3
 		);
-	}
-
-	/**
-	 * Initializes WC_Loader instance
-	 *
-	 * @param AppContext $context - AppContext.
-	 *
-	 * @return WC_CPT_Loader
-	 */
-	public static function cpt_loader( $context ) {
-		if ( is_null( self::$cpt_loader ) ) {
-			self::$cpt_loader = new WC_CPT_Loader( $context );
-		}
-		return self::$cpt_loader;
-	}
-
-	/**
-	 * Initializes WC_Customer_Loader instance
-	 *
-	 * @param AppContext $context - AppContext.
-	 *
-	 * @return WC_Customer_Loader
-	 */
-	public static function customer_loader( $context ) {
-		if ( is_null( self::$customer_loader ) ) {
-			self::$customer_loader = new WC_Customer_Loader( $context );
-		}
-		return self::$customer_loader;
 	}
 
 	/**
@@ -263,20 +214,20 @@ class Core_Schema_Filters {
 	 */
 	public static function graphql_data_loaders( $loaders, $context ) {
 		// WooCommerce customer loader.
-		$customer_loader        = self::customer_loader( $context );
+		$customer_loader        = new WC_Customer_Loader( $context );
 		$loaders['wc_customer'] = &$customer_loader;
 
 		// WooCommerce CPT loader.
-		$cpt_loader  = self::cpt_loader( $context );
+		$cpt_loader        = new WC_CPT_Loader( $context );
 		$loaders['wc_cpt'] = &$cpt_loader;
 
 		// WooCommerce DB loaders.
-		$cart_item_loader         = new WC_Db_Loader( $context, 'CART_ITEM' );
-		$loaders['cart_item']     = &$cart_item_loader;
-		$downloadable_item_loader = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
-		$loaders['downloadable_item']     = &$downloadable_item_loader;
-		$tax_rate_loader          = new WC_Db_Loader( $context, 'TAX_RATE' );
-		$loaders['tax_rate']     = &$tax_rate_loader;
+		$cart_item_loader             = new WC_Db_Loader( $context, 'CART_ITEM' );
+		$loaders['cart_item']         = &$cart_item_loader;
+		$downloadable_item_loader     = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
+		$loaders['downloadable_item'] = &$downloadable_item_loader;
+		$tax_rate_loader              = new WC_Db_Loader( $context, 'TAX_RATE' );
+		$loaders['tax_rate']          = &$tax_rate_loader;
 
 		return $loaders;
 	}

@@ -30,6 +30,10 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+	private function key_to_cursor( $key ) {
+		return base64_encode( "CI:{$key}" );
+	}
+
 	// tests
 	public function testCartQuery() {
 		$cart = WC()->cart;
@@ -321,7 +325,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 							node {
 						  		key
 							}
-					  	}
+						}
 					}
 				}
 			}
@@ -348,7 +352,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 						'edges' => array_map(
 							function( $item ) {
 								return array(
-									'cursor' => $item,
+									'cursor' => $this->key_to_cursor( $item ),
 									'node'   => array( 'key' => $item ),
 								);
 							},
@@ -369,7 +373,10 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Tests "after" parameter.
 		 */
-		$variables = array( 'first' => 2, 'after' => $cart_items[1] );
+		$variables = array(
+			'first' => 2,
+			'after' => $this->key_to_cursor( $cart_items[1] )
+		);
 		$actual    = graphql(
 			array(
 				'query' => $query,
@@ -385,7 +392,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 						'edges' => array_map(
 							function( $item ) {
 								return array(
-									'cursor' => $item,
+									'cursor' => $this->key_to_cursor( $item ),
 									'node'   => array( 'key' => $item ),
 								);
 							},
@@ -422,7 +429,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 						'edges' => array_map(
 							function( $item ) {
 								return array(
-									'cursor' => $item,
+									'cursor' => $this->key_to_cursor( $item ),
 									'node'   => array( 'key' => $item ),
 								);
 							},
@@ -459,7 +466,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 						'edges' => array_map(
 							function( $item ) {
 								return array(
-									'cursor' => $item,
+									'cursor' => $this->key_to_cursor( $item ),
 									'node'   => array( 'key' => $item ),
 								);
 							},

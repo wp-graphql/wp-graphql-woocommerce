@@ -8,6 +8,8 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use WPGraphQL\WooCommerce\Data\Factory;
+
 /**
  * Trait WC_Connection_Functions
  */
@@ -41,7 +43,7 @@ trait WC_Connection_Functions {
 	 * @return bool
 	 */
 	public function is_valid_cart_item_offset( $offset ) {
-		return ! empty( WC()->cart->get_cart_item( $offset ) );
+		return ! empty( $this->source->get_cart_item( $offset ) );
 	}
 
 	/**
@@ -134,5 +136,40 @@ trait WC_Connection_Functions {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Return WooCommerce CPT models by ID.
+	 * 
+	 * @param int $id ID.
+	 * 
+	 * @return mixed|null
+	 */
+	public function get_cpt_model_by_id( $id ) {
+		return $this->loader->resolve_model( get_post_type( $id ), $id );
+	}
+
+	/**
+	 * Given an offset and prefix, a cursor is returned
+	 *
+	 * @param string         $prefix Salt.
+	 * @param string|integer $offset Connection offset.
+	 *
+	 * @return string
+	 */
+	protected function offset_to_cursor( $prefix, $offset ) {
+		return base64_encode( "{$prefix}:{$offset}" );
+	}
+
+	/**
+	 * Given a valid cursor and prefix, the offset is returned
+	 *
+	 * @param string $prefix Salt.
+	 * @param string $cursor Cursor.
+	 *
+	 * @return string|integer
+	 */
+	protected function cursor_to_offset( $prefix, $cursor ) {
+		return substr( base64_decode( $cursor ), strlen( $prefix . ':' ) );
 	}
 }
