@@ -26,6 +26,8 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	use WC_Connection_Functions;
 
+	const PREFIX = 'CI';
+
 	/**
 	 * get_loader_name
 	 *
@@ -35,17 +37,6 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_loader_name() {
 		return 'cart_item';
-	}
-
-	/**
-	 * Given an ID, return the model for the entity or null
-	 *
-	 * @param $id
-	 *
-	 * @return array|null
-	 */
-	public function get_node_by_id( $id ) {
-		return $this->getLoader()->load_cart_item_from_key( $id );
 	}
 
 	/**
@@ -112,8 +103,13 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$cart_items = array_splice( $cart_items, 0, $cursor_offset );
 		}
 
+		// Cache cart items for later.
+		foreach ( $cart_items as $item ) {
+			$this->loader->prime( $item['key'], $item );
+		}
+
 		// Return cart item keys.
-		return array_values( array_column( $cart_items, 'key' ) );
+		return array_column( $cart_items, 'key' );
 	}
 
 	/**
@@ -127,27 +123,24 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Get the offset.
 		if ( ! empty( $this->args['after'] ) ) {
-			$offset = $this->args['after'];
+			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['after'] );
 		} elseif ( ! empty( $this->args['before'] ) ) {
-			$offset = $this->args['before'];
+			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['before'] );
 		}
 
-		/**
-		 * Return the higher of the two values
-		 */
 		return $offset;
 	}
 
 	/**
-	 * Create cursor for cart item node.
+	 * Create cursor for downloadable item node.
 	 *
 	 * @param array  $node  Cart item.
 	 * @param string $key   Cart item key.
 	 *
 	 * @return string
 	 */
-	protected function get_cursor_for_node( $node, $key = null ) {
-		return $node['key'];
+	protected function get_cursor_for_node( $id ) {
+		return $this->offset_to_cursor( self::PREFIX, $id );
 	}
 
 	/**
@@ -168,5 +161,16 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function is_valid_offset( $offset ) {
 		return $this->is_valid_cart_item_offset( $offset );
+	}
+
+	/**
+	 * Validates cart item model.
+	 * 
+	 * @param array $model Cart item model.
+	 * 
+	 * @return bool
+	 */
+	protected function is_valid_model( $model ) {
+		return ! empty( $model ) && ! empty( $model['key'] ) && ! empty( $model['product_id'] );
 	}
 }

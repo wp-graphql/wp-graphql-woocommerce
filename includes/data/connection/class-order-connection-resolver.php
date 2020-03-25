@@ -52,8 +52,6 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * get_loader_name
-	 *
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string
@@ -67,13 +65,10 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @param $id
 	 *
-	 * @return 
-	 *
-	 * @throws \Exception
+	 * @return mixed|Order|null
 	 */
 	public function get_node_by_id( $id ) {
-		$post = get_post( $id );
-		return ! empty( $post ) && ! is_wp_error( $post ) ? new Order( $id ) : null;
+		return $this->get_cpt_model_by_id( $id );
 	}
 
 	/**

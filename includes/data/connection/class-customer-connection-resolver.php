@@ -175,19 +175,6 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Given an ID, return the model for the entity or null
-	 *
-	 * @param $id
-	 *
-	 * @return 
-	 *
-	 * @throws \Exception
-	 */
-	public function get_node_by_id( $id ) {
-		
-	}
-
-	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for

@@ -32,19 +32,6 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Given an ID, return the model for the entity or null
-	 *
-	 * @param $id
-	 *
-	 * @return 
-	 *
-	 * @throws \Exception
-	 */
-	public function get_node_by_id( $id ) {
-		return $this->getLoader()->load_tax_rate_from_id( $id );
-	}
-
-	/**
 	 * Confirms the uses has the privileges to query Tax Rates
 	 *
 	 * @return bool

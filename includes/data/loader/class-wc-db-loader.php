@@ -44,7 +44,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		$this->loader_type = $loader_type;
 		parent::__construct( $context );
 	}
-    
+
     /**
 	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
 	 * posts as the values
@@ -82,15 +82,10 @@ class WC_Db_Loader extends AbstractDataLoader {
 		 * Loop over the keys and return an array of cart items,
 		 */
 		foreach ( $keys as $key ) {
-			$loaded_items[ $key ] = new Deferred(
-				function() use( $loader, $key ) {
-					return call_user_func( $loader, $key );
-				}
-			);
+			$loaded_items[ $key ] = call_user_func( $loader, $key );
 		}
 
-		return ! empty( $loaded_items ) ? $loaded_items : [];
-		
+		return ! empty( $loaded_items ) ? $loaded_items : array();
 	}
 	
 	/**
@@ -101,6 +96,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 * @return array
 	 */
 	public function load_cart_item_from_key( $key ) {
+		// Add the cart item's product and product variation to WC-CPT buffer.
 		return Factory::resolve_cart()->get_cart_item( $key );
 	}
 

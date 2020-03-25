@@ -67,13 +67,10 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @param $id
 	 *
-	 * @return 
-	 *
-	 * @throws \Exception
+	 * @return mixed|Coupon|null
 	 */
 	public function get_node_by_id( $id ) {
-		$post = get_post( $id );
-		return ! empty( $post ) && ! is_wp_error( $post ) ? new Coupon( $id ) : null;
+		return $this->get_cpt_model_by_id( $id );
 	}
 
 	/**

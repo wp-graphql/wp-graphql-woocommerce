@@ -84,12 +84,11 @@ class Factory {
 		if ( empty( $id ) || ! absint( $id ) ) {
 			return null;
 		}
-		$object_id = absint( $id );
-		$loader    = $context->getLoader( 'wc_cpt' );
-		$loader->buffer( array( $object_id ) );
+		
+		$context->getLoader( 'wc_cpt' )->buffer( array( $id ) );
 		return new Deferred(
-			function () use ( $loader, $object_id ) {
-				return $loader->load( $object_id );
+			function () use ( $id, $context ) {
+				return $context->getLoader( 'wc_cpt' )->load( $id );
 			}
 		);
 	}
@@ -191,11 +190,10 @@ class Factory {
 			return null;
 		}
 
-		$loader    = $context->getLoader( 'cart_item' );
-		$loader->buffer( array( $key ) );
+		$context->getLoader( 'cart_item' )->buffer( array( $key ) );
 		return new Deferred(
-			function () use ( $loader, $key ) {
-				return $loader->load( $key );
+			function () use ( $key, $context ) {
+				return $context->getLoader( 'cart_item' )->load( $key );
 			}
 		);
 	}

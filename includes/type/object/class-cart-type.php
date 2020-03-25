@@ -56,8 +56,8 @@ class Cart_Type {
 					),
 				),
 				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source, array $args ) {
-					$item = Factory::resolve_cart_item( $args['key'] );
+				'resolve'     => function( $source, array $args, AppContext $context ) {
+					$item = Factory::resolve_cart_item( $args['key'], $context );
 					if ( empty( $item ) ) {
 						throw new UserError( __( 'The key input is invalid', 'wp-graphql-woocommerce' ) );
 					}
