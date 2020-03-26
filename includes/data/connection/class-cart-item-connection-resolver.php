@@ -29,8 +29,6 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	const PREFIX = 'CI';
 
 	/**
-	 * get_loader_name
-	 *
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string

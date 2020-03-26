@@ -63,7 +63,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Given an ID, return the model for the entity or null
 	 *
-	 * @param $id
+	 * @param integer $id
 	 *
 	 * @return mixed|Order|null
 	 */
