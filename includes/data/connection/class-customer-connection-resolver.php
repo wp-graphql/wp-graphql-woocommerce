@@ -24,8 +24,6 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	use WC_Connection_Functions;
 
 	/**
-	 * get_loader_name
-	 *
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string

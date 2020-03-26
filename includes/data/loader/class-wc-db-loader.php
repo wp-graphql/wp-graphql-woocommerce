@@ -79,7 +79,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		$loaded_items = array();
 
 		/**
-		 * Loop over the keys and return an array of cart items,
+		 * Loop over the keys and return an array of items.
 		 */
 		foreach ( $keys as $key ) {
 			$loaded_items[ $key ] = call_user_func( $loader, $key );

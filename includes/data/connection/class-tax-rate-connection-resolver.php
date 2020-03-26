@@ -21,8 +21,6 @@ use WPGraphQL\WooCommerce\Model\Tax_Rate;
  */
 class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * get_loader_name
-	 *
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string

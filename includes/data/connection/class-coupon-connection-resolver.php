@@ -52,8 +52,6 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * get_loader_name
-	 *
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string
@@ -65,7 +63,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Given an ID, return the model for the entity or null
 	 *
-	 * @param $id
+	 * @param integer $id
 	 *
 	 * @return mixed|Coupon|null
 	 */

@@ -30,27 +30,12 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	const PREFIX = 'DI';
 
 	/**
-	 * get_loader_name
-	 *
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string
 	 */
 	public function get_loader_name() {
 		return 'downloadable_item';
-	}
-
-	/**
-	 * Given an ID, return the model for the entity or null
-	 *
-	 * @param $id
-	 *
-	 * @return 
-	 *
-	 * @throws \Exception
-	 */
-	public function get_node_by_id( $id ) {
-		return $this->loader->load( $id );
 	}
 
 	/**
@@ -226,7 +211,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return bool
 	 */
-	protected function is_valid_model( $model ) {
+	protected function is_valid_model( array $model ) {
 		return isset( $model ) && ! empty( $model['download_id'] );
 	}
 }
