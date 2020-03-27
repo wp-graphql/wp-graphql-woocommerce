@@ -23,9 +23,9 @@ use WPGraphQL\WooCommerce\Model\Customer;
  */
 class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
+	 * Include Db Loader connection common functions.
 	 */
-	use WC_Connection_Functions;
+	use WC_Db_Loader_Common;
 
 	const PREFIX = 'DI';
 
@@ -172,8 +172,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Create cursor for downloadable item node.
 	 *
-	 * @param array  $node  Cart item.
-	 * @param string $key   Cart item key.
+	 * @param string $id  Downloadable item ID.
 	 *
 	 * @return string
 	 */
@@ -211,7 +210,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return bool
 	 */
-	protected function is_valid_model( array $model ) {
+	protected function is_valid_model( $model ) {
 		return isset( $model ) && ! empty( $model['download_id'] );
 	}
 }

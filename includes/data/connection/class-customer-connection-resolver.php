@@ -19,11 +19,6 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  */
 class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
-	 */
-	use WC_Connection_Functions;
-
-	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string
@@ -224,13 +219,21 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Wrapper for "WC_Connection_Functions::is_valid_user_offset()"
+	 * Determine whether or not the the offset is valid, i.e the user corresponding to the offset exists.
+	 * Offset is equivalent to user_id. So this function is equivalent
+	 * to checking if the user with the given ID exists.
 	 *
-	 * @param integer $offset User ID.
+	 * @param integer $offset  User ID.
 	 *
 	 * @return bool
 	 */
 	public function is_valid_offset( $offset ) {
-		return $this->is_valid_user_offset( $offset );
+		global $wpdb;
+
+		if ( ! empty( wp_cache_get( $offset, 'users' ) ) ) {
+			return true;
+		}
+
+		return $wpdb->get_var( $wpdb->prepare( "SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $offset ) );
 	}
 }

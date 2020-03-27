@@ -32,7 +32,7 @@
     },
     "autoload": {
         "files":[
-            "includes/connection/common-post-type-args.php",
+            "includes/connection/wc-cpt-connection-args.php",
             "includes/functions.php"
         ],
         "psr-4": {

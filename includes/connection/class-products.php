@@ -274,6 +274,6 @@ class Products {
 			);
 		}
 
-		return array_merge( get_common_post_type_args(), $args );
+		return array_merge( get_wc_cpt_connection_args(), $args );
 	}
 }

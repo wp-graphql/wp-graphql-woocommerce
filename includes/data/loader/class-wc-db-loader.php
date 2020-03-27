@@ -143,10 +143,6 @@ class WC_Db_Loader extends AbstractDataLoader {
 			return new Tax_Rate( $rate );
 		} else {
 			return null;
-			// throw new UserError(
-			// 	/* translators: %s: Tax rate ID */
-			// 	sprintf( __( 'No Tax Rate assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
-			// );
 		}
 	}
 }
