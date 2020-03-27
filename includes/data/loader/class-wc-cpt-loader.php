@@ -1,8 +1,8 @@
 <?php
 /**
- * DataLoader - WC_Post_Crud_Loader
+ * DataLoader - WC_CPT_Loader
  *
- * Loads Models for WooCommerce CRUD objects
+ * Loads Models for WooCommerce CPTs
  *
  * @package WPGraphQL\WooCommerce\Data\Loader
  * @since 0.0.1
@@ -21,18 +21,18 @@ use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Refund;
 
 /**
- * Class WC_Post_Crud_Loader
+ * Class WC_CPT_Loader
  */
-class WC_Post_Crud_Loader extends AbstractDataLoader {
+class WC_CPT_Loader extends AbstractDataLoader {
 	/**
-	 * Stores loaded CRUD objects.
+	 * Stores loaded CPTs.
 	 *
 	 * @var array
 	 */
 	protected $loaded_objects;
 
 	/**
-	 * Returns CRUD Model
+	 * Returns the Model for a given post-type and ID.
 	 *
 	 * @param string $post_type - WordPress post-type.
 	 * @param int    $id        - Post ID.
@@ -40,7 +40,7 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 	 * @return mixed
 	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
 	 */
-	private function resolve_model( $post_type, $id ) {
+	public function resolve_model( $post_type, $id ) {
 		switch ( $post_type ) {
 			case 'product':
 				return new Product( $id );
@@ -53,17 +53,18 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			case 'shop_order_refund':
 				return new Refund( $id );
 			default:
-				$model = apply_filters( 'graphql_woocommerce_crud_loader_model', null, $post_type );
+				$model = apply_filters( 'graphql_woocommerce_cpt_loader_model', null, $post_type );
 				if ( ! empty( $model ) ) {
 					return new $model( $id );
 				}
 				/* translators: no model assigned error message */
-				throw new UserError( sprintf( __( 'No Model is register to the post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
+				throw new UserError( sprintf( __( 'No Model is register to the custom post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
 		}
 	}
 
 	/**
-	 * Returns CRUD object for provided IDs
+	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
+	 * posts as the values
 	 *
 	 * @param array $keys - array of IDs.
 	 *
@@ -110,6 +111,9 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			2
 		);
 		new \WP_Query( $args );
+
+		$loaded_posts = [];
+
 		/**
 		 * Loop over the posts and return an array of all_posts,
 		 * where the key is the ID and the value is the Post passed through
@@ -122,10 +126,9 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			 * and if they don't exist or aren't a valid post-type we can throw an error, otherwise
 			 * we can proceed to resolve the object via the Model layer.
 			 */
-			$post_type = get_post_type( (int) $key );
+			$post_type = get_post_type( $key );
 			if ( ! $post_type ) {
-				/* translators: invalid id error message */
-				throw new UserError( sprintf( __( 'No item was found with ID %s', 'wp-graphql-woocommerce' ), $key ) );
+				$loaded_posts[ $key ] = null;
 			}
 
 			if ( ! in_array( $post_type, $wc_post_types, true ) ) {
@@ -134,35 +137,66 @@ class WC_Post_Crud_Loader extends AbstractDataLoader {
 			}
 
 			/**
-			 * Return the instance through the Model to ensure we only
-			 * return fields the consumer has access to.
+			 * If there's a customer connected to the order, we need to resolve the
+			 * customer
 			 */
-			$this->loaded_objects[ $key ] = new Deferred(
-				function() use ( $post_type, $key ) {
-					// Resolve post author for future capability checks.
-					if ( 'shop_order' === $post_type ) {
-						$customer_id = get_post_meta( $key, '_customer_user', true );
-						if ( ! empty( $customer_id ) ) {
-							$customer = Factory::resolve_customer( $customer_id, $this->context );
-							return $customer->then(
-								function () use ( $post_type, $key ) {
-									return $this->resolve_model( $post_type, $key );
-								}
-							);
-						}
-					} elseif ( 'product_variation' === $post_type || 'shop_refund' === $post_type ) {
-						$parent_id = get_post_field( 'post_parent', $key );
-						$parent    = Factory::resolve_crud_object( $parent_id, $this->context );
-						return $parent->then(
-							function () use ( $post_type, $key ) {
-								return $this->resolve_model( $post_type, $key );
-							}
-						);
+			$context     = $this->context;
+			$customer_id = null;
+			$parent_id   = null;
+			
+			// Resolve post author for future capability checks.
+			switch ( $post_type ) {
+				case 'shop_order':
+					$customer_id = get_post_meta( $key, '_customer_user', true );
+					if ( ! empty( $customer_id ) ) {
+						$this->context->getLoader( 'wc_customer' )->buffer( [ $customer_id ] );
 					}
+					break;
+				case 'product_variation':
+				case 'shop_refund':
+					$parent_id = get_post_field( 'post_parent', $key );
+					$this->buffer( [ $parent_id ] );
+					break;
+			}
+
+			/**
+			 * This is a deferred function that allows us to do batch loading
+			 * of dependant resources. When the Model Layer attempts to determine
+			 * access control of a Post, it needs to know the owner of it, and
+			 * if it's a revision, it needs the Parent.
+			 *
+			 * This deferred function allows for the objects to be loaded all at once
+			 * instead of loading once per entity, thus reducing the n+1 problem.
+			 */
+			$load_dependencies = new Deferred(
+				function() use ( $key, $post_type, $customer_id, $parent_id, $context ) {
+					if ( ! empty( $customer_id ) ) {
+						$context->getLoader( 'wc_customer' )->load( $customer_id );
+					}
+					if ( ! empty( $parent_id ) ) {
+						$this->load( $parent_id );
+					}
+
+					/**
+					 * Run an action when the dependencies are being loaded for
+					 * Post Objects
+					 */
+					do_action( 'woographql_cpt_loader_load_dependencies', $this, $key, $post_type );
+
+					return;
+				}
+			);
+
+			/**
+			 * Once dependencies are loaded, return the Post Object
+			 */
+			$loaded_posts[ $key ] = $load_dependencies->then(
+				function() use ( $post_type, $key ) {
 					return $this->resolve_model( $post_type, $key );
 				}
 			);
 		}
-		return ! empty( $this->loaded_objects ) ? $this->loaded_objects : array();
+
+		return ! empty( $loaded_posts ) ? $loaded_posts : [];
 	}
 }

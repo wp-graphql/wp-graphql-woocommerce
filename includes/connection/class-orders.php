@@ -54,9 +54,6 @@ class Orders {
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $id, $context );
-				},
 				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_order_connection( $source, $args, $context, $info );
 				},
@@ -75,7 +72,7 @@ class Orders {
 		switch ( $access ) {
 			case 'private':
 				return array_merge(
-					get_common_post_type_args(),
+					get_wc_cpt_connection_args(),
 					array(
 						'statuses'    => array(
 							'type'        => array( 'list_of' => 'OrderStatusEnum' ),

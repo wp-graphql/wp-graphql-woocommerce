@@ -1,6 +1,8 @@
 name: Testing Integration
 
 on:
+  schedule:
+    - cron:  '* * */7 * *'
   push:
     branches:
       - develop

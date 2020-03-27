@@ -54,9 +54,6 @@ class Customers {
 		return array_merge(
 			array(
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, array $args, AppContext $context ) {
-					return Factory::resolve_customer( $id, $context );
-				},
 				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_customer_connection( $source, $args, $context, $info );
 				},

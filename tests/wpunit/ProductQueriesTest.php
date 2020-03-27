@@ -131,7 +131,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 
 		// Clear cache
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post_crud' );
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
 
 		/**
 		 * Assertion Two
@@ -182,8 +182,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$query = '
-			query ( $id: ID, $productId: Int, $slug: String, $sku: String ) {
-				productBy( id: $id, productId: $productId, slug: $slug, sku: $sku ) {
+			query ( $id: ID!, $idType: ProductIdTypeEnum ) {
+				product( id: $id, idType: $idType ) {
 					... on SimpleProduct {
 						id
 						image {
@@ -214,11 +214,14 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Test querying product with "productId" argument.
 		 */
-		$variables = array( 'productId' => $product );
+		$variables = array(
+			'id'     => $product,
+			'idType' => 'DATABASE_ID'
+		);
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
-				'productBy' => array(
+				'product' => array(
 					'id'         => $this->helper->to_relay_id( $product ),
 					'image'      => array(
 						'id' => \GraphQLRelay\Relay::toGlobalId( 'attachment', $attachment_id ),
@@ -1236,7 +1239,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'product' => array(
 					'id'      => $this->helper->to_relay_id( $this->product ),
 					'reviews' => array(
-						'averageRating' => $product->get_average_rating(),
+						'averageRating' => floatval( $product->get_average_rating() ),
 						'edges'         => $this->helper->print_review_edges( $reviews ),
 					),
 				),

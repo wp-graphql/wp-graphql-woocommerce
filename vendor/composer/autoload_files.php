@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    '914b07b8cf678ed0b81bfdb5d23b4f2b' => $baseDir . '/includes/connection/common-post-type-args.php',
+    '944484f100dc1864a5320474d49ebd5a' => $baseDir . '/includes/connection/wc-cpt-connection-args.php',
     '45a15019e901000ab8608c03ebff44fb' => $baseDir . '/includes/functions.php',
 );

@@ -19,9 +19,13 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  */
 class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
 	 */
-	use WC_Connection_Functions;
+	public function get_loader_name() {
+		return 'wc_customer';
+	}
 
 	/**
 	 * Confirms the uses has the privileges to query Customers
@@ -158,7 +162,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		$results = $this->get_query()->get_results();
 		return ! empty( $results ) ? $results : array();
 	}
@@ -215,13 +219,21 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Wrapper for "WC_Connection_Functions::is_valid_user_offset()"
+	 * Determine whether or not the the offset is valid, i.e the user corresponding to the offset exists.
+	 * Offset is equivalent to user_id. So this function is equivalent
+	 * to checking if the user with the given ID exists.
 	 *
-	 * @param integer $offset User ID.
+	 * @param integer $offset  User ID.
 	 *
 	 * @return bool
 	 */
 	public function is_valid_offset( $offset ) {
-		return $this->is_valid_user_offset( $offset );
+		global $wpdb;
+
+		if ( ! empty( wp_cache_get( $offset, 'users' ) ) ) {
+			return true;
+		}
+
+		return $wpdb->get_var( $wpdb->prepare( "SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $offset ) );
 	}
 }

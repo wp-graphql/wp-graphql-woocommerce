@@ -50,10 +50,7 @@ class Coupons {
 				'toType'         => 'Coupon',
 				'fromFieldName'  => 'coupons',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, array $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $id, $context );
-				},
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => function ( $source, $args, $context, $info ) {
 					return Factory::resolve_coupon_connection( $source, $args, $context, $info );
 				},
 			),
@@ -68,7 +65,7 @@ class Coupons {
 	 */
 	public static function get_connection_args(): array {
 		return array_merge(
-			get_common_post_type_args(),
+			get_wc_cpt_connection_args(),
 			array(
 				'code' => array(
 					'type'        => 'String',

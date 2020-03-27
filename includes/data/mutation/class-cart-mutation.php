@@ -9,6 +9,7 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Cart_Mutation
@@ -26,7 +27,7 @@ class Cart_Mutation {
 			'resolve' => function ( $payload ) use ( $fallback ) {
 				$cart = ! empty( $payload['cart'] ) ? $payload['cart'] : null;
 				if ( is_null( $cart ) && $fallback ) {
-					$cart = \WC()->cart;
+					$cart = Factory::resolve_cart();
 				}
 				return $cart;
 			},

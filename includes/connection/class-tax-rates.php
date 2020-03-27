@@ -41,9 +41,6 @@ class Tax_Rates {
 				'toType'         => 'TaxRate',
 				'fromFieldName'  => 'taxRates',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id ) {
-					return Factory::resolve_tax_rate( $id );
-				},
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_tax_rate_connection( $source, $args, $context, $info );
 				},
