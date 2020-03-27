@@ -21,9 +21,9 @@ use WPGraphQL\Extension\WooCommerce\Model\Coupon;
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
+	 * Include CPT Loader connection common functions.
 	 */
-	use WC_Connection_Functions;
+	use WC_CPT_Loader_Common;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for

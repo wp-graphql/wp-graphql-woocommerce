@@ -145,14 +145,18 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			$parent_id   = null;
 			
 			// Resolve post author for future capability checks.
-			if ( 'shop_order' === $post_type ) {
-				$customer_id = get_post_meta( $key, '_customer_user', true );
-				if ( ! empty( $customer_id ) ) {
-					$this->context->getLoader( 'wc_customer' )->buffer( [ $customer_id ] );
-				}
-			} elseif ( 'product_variation' === $post_type || 'shop_refund' === $post_type ) {
-				$parent_id = get_post_field( 'post_parent', $key );
-				$this->buffer( [ $parent_id ] );
+			switch ( $post_type ) {
+				case 'shop_order':
+					$customer_id = get_post_meta( $key, '_customer_user', true );
+					if ( ! empty( $customer_id ) ) {
+						$this->context->getLoader( 'wc_customer' )->buffer( [ $customer_id ] );
+					}
+					break;
+				case 'product_variation':
+				case 'shop_refund':
+					$parent_id = get_post_field( 'post_parent', $key );
+					$this->buffer( [ $parent_id ] );
+					break;
 			}
 
 			/**

@@ -66,7 +66,7 @@ class Refunds {
 	 */
 	public static function get_connection_args(): array {
 		return array_merge(
-			get_common_post_type_args(),
+			get_wc_cpt_connection_args(),
 			array(
 				'statuses' => array(
 					'type'        => array( 'list_of' => 'String' ),

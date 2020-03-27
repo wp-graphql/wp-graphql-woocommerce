@@ -22,9 +22,9 @@ use WPGraphQL\WooCommerce\Data\Factory;
  */
 class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
+	 * Include Db Loader connection common functions.
 	 */
-	use WC_Connection_Functions;
+	use WC_Db_Loader_Common;
 
 	const PREFIX = 'CI';
 
@@ -132,8 +132,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Create cursor for downloadable item node.
 	 *
-	 * @param array  $node  Cart item.
-	 * @param string $key   Cart item key.
+	 * @param string $id  Cart item key.
 	 *
 	 * @return string
 	 */
@@ -151,14 +150,15 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Wrapper for "WC_Connection_Functions::is_valid_cart_item_offset()"
+	 * Check if cart item key is valid by confirming the validity of 
+	 * the cart item in the cart encoded into cart item key.
 	 *
-	 * @param integer $offset Post ID.
+	 * @param string $offset  Cart item key.
 	 *
 	 * @return bool
 	 */
 	public function is_valid_offset( $offset ) {
-		return $this->is_valid_cart_item_offset( $offset );
+		return ! empty( $this->source->get_cart_item( $offset ) );
 	}
 
 	/**

@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
 {
     public static $files = array (
-        '914b07b8cf678ed0b81bfdb5d23b4f2b' => __DIR__ . '/../..' . '/includes/connection/common-post-type-args.php',
+        '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
         '45a15019e901000ab8608c03ebff44fb' => __DIR__ . '/../..' . '/includes/functions.php',
     );
 
@@ -71,7 +71,8 @@ class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Shipping_Method_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-shipping-method-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Tax_Rate_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-tax-rate-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Variation_Attribute_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-variation-attribute-connection-resolver.php',
-        'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Connection_Functions' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-connection-functions.php',
+        'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_CPT_Loader_Common' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-cpt-loader-common.php',
+        'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Db_Loader_Common' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-db-loader-common.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Term_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-wc-term-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/includes/data/class-factory.php',
         'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_CPT_Loader' => __DIR__ . '/../..' . '/includes/data/loader/class-wc-cpt-loader.php',
