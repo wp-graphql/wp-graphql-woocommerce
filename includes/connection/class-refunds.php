@@ -51,9 +51,6 @@ class Refunds {
 				'toType'         => 'Refund',
 				'fromFieldName'  => 'refunds',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, array $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $id, $context );
-				},
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_refund_connection( $source, $args, $context, $info );
 				},
@@ -69,7 +66,7 @@ class Refunds {
 	 */
 	public static function get_connection_args(): array {
 		return array_merge(
-			get_common_post_type_args(),
+			get_wc_cpt_connection_args(),
 			array(
 				'statuses' => array(
 					'type'        => array( 'list_of' => 'String' ),

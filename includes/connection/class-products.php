@@ -126,9 +126,6 @@ class Products {
 				'toType'         => 'Product',
 				'fromFieldName'  => 'products',
 				'connectionArgs' => self::get_connection_args(),
-				'resolveNode'    => function( $id, array $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $id, $context );
-				},
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					return Factory::resolve_product_connection( $source, $args, $context, $info );
 				},
@@ -277,6 +274,6 @@ class Products {
 			);
 		}
 
-		return array_merge( get_common_post_type_args(), $args );
+		return array_merge( get_wc_cpt_connection_args(), $args );
 	}
 }

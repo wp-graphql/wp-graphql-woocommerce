@@ -15,15 +15,16 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Model\Refund;
 
 /**
  * Class Refund_Connection_Resolver
  */
 class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
+	 * Include CPT Loader connection common functions.
 	 */
-	use WC_Connection_Functions;
+	use WC_CPT_Loader_Common;
 
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
@@ -49,6 +50,26 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 		 * Call the parent construct to setup class data
 		 */
 		parent::__construct( $source, $args, $context, $info );
+	}
+
+	/**
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'wc_cpt';
+	}
+
+	/**
+	 * Given an ID, return the model for the entity or null
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed|Refund|null
+	 */
+	public function get_node_by_id( $id ) {
+		return $this->get_cpt_model_by_id( $id );
 	}
 
 	/**
@@ -173,7 +194,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
 	}
 

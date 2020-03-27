@@ -9,27 +9,14 @@
 namespace WPGraphQL\WooCommerce;
 
 use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Post_Crud_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Core_Schema_Filters
  */
 class Core_Schema_Filters {
-	/**
-	 * Stores instance WC_Customer_Loader
-	 *
-	 * @var WC_Customer_Loader
-	 */
-	private static $customer_loader;
-
-	/**
-	 * Stores instance WC_Post_Crud_Loader
-	 *
-	 * @var WC_Post_Crud_Loader
-	 */
-	private static $post_crud_loader;
-
 	/**
 	 * Register filters
 	 */
@@ -102,34 +89,6 @@ class Core_Schema_Filters {
 			10,
 			3
 		);
-	}
-
-	/**
-	 * Initializes WC_Loader instance
-	 *
-	 * @param AppContext $context - AppContext.
-	 *
-	 * @return WC_Post_Crud_Loader
-	 */
-	public static function post_crud_loader( $context ) {
-		if ( is_null( self::$post_crud_loader ) ) {
-			self::$post_crud_loader = new WC_Post_Crud_Loader( $context );
-		}
-		return self::$post_crud_loader;
-	}
-
-	/**
-	 * Initializes Customer_Loader instance
-	 *
-	 * @param AppContext $context - AppContext.
-	 *
-	 * @return WC_Customer_Loader
-	 */
-	public static function customer_loader( $context ) {
-		if ( is_null( self::$customer_loader ) ) {
-			self::$customer_loader = new WC_Customer_Loader( $context );
-		}
-		return self::$customer_loader;
 	}
 
 	/**
@@ -255,12 +214,20 @@ class Core_Schema_Filters {
 	 */
 	public static function graphql_data_loaders( $loaders, $context ) {
 		// WooCommerce customer loader.
-		$customer_loader        = self::customer_loader( $context );
+		$customer_loader        = new WC_Customer_Loader( $context );
 		$loaders['wc_customer'] = &$customer_loader;
 
-		// WooCommerce crud object loader.
-		$post_crud_loader        = self::post_crud_loader( $context );
-		$loaders['wc_post_crud'] = &$post_crud_loader;
+		// WooCommerce CPT loader.
+		$cpt_loader        = new WC_CPT_Loader( $context );
+		$loaders['wc_cpt'] = &$cpt_loader;
+
+		// WooCommerce DB loaders.
+		$cart_item_loader             = new WC_Db_Loader( $context, 'CART_ITEM' );
+		$loaders['cart_item']         = &$cart_item_loader;
+		$downloadable_item_loader     = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
+		$loaders['downloadable_item'] = &$downloadable_item_loader;
+		$tax_rate_loader              = new WC_Db_Loader( $context, 'TAX_RATE' );
+		$loaders['tax_rate']          = &$tax_rate_loader;
 
 		return $loaders;
 	}

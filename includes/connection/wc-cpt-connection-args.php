@@ -1,6 +1,6 @@
 <?php
 /**
- * Define common arguments for post-type connections.
+ * Define common connection arguments for CPT connections.
  *
  * @package WPGraphQL\WooCommerce\Connection
  * @since 0.2.2
@@ -9,11 +9,11 @@
 namespace WPGraphQL\WooCommerce\Connection;
 
 /**
- * Returns argument definitions for argument common on all post-type connections.
+ * Returns argument definitions for argument common on CPT connections.
  *
  * @return array
  */
-function get_common_post_type_args(): array {
+function get_wc_cpt_connection_args(): array {
 	return array(
 		'search'      => array(
 			'type'        => 'String',

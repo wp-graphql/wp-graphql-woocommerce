@@ -1,17 +1,19 @@
 <?php
 /**
- * Defines reusable functions for all connection.
+ * Defines generic functions for to be used in connections that process creates using the CPT Loader.
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
- * @since 0.3.3
+ * @since 0.5.0
  */
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use WPGraphQL\WooCommerce\Data\Factory;
+
 /**
- * Trait WC_Connection_Functions
+ * Trait WC_CPT_Loader_Common
  */
-trait WC_Connection_Functions {
+trait WC_CPT_Loader_Common {
 	/**
 	 * Determine whether or not the the offset is valid, i.e the post corresponding to the offset exists.
 	 * Offset is equivalent to post_id. So this function is equivalent
@@ -29,38 +31,6 @@ trait WC_Connection_Functions {
 		}
 
 		return $wpdb->get_var( $wpdb->prepare( "SELECT EXISTS (SELECT 1 FROM $wpdb->posts WHERE ID = %d)", $offset ) );
-	}
-
-	/**
-	 * Determine whether or not the the offset is valid, i.e the cart item corresponding to the offset exists.
-	 * Offset is equivalent to a cart item key. So this function is equivalent
-	 * to checking if the cart item with the given key exists.
-	 *
-	 * @param string $offset  Cart item key.
-	 *
-	 * @return bool
-	 */
-	public function is_valid_cart_item_offset( $offset ) {
-		return ! empty( WC()->cart->get_cart_item( $offset ) );
-	}
-
-	/**
-	 * Determine whether or not the the offset is valid, i.e the user corresponding to the offset exists.
-	 * Offset is equivalent to user_id. So this function is equivalent
-	 * to checking if the user with the given ID exists.
-	 *
-	 * @param integer $offset  User ID.
-	 *
-	 * @return bool
-	 */
-	public function is_valid_user_offset( $offset ) {
-		global $wpdb;
-
-		if ( ! empty( wp_cache_get( $offset, 'users' ) ) ) {
-			return true;
-		}
-
-		return $wpdb->get_var( $wpdb->prepare( "SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $offset ) );
 	}
 
 	/**
@@ -134,5 +104,16 @@ trait WC_Connection_Functions {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Return WooCommerce CPT models by ID.
+	 * 
+	 * @param int $id ID.
+	 * 
+	 * @return mixed|null
+	 */
+	public function get_cpt_model_by_id( $id ) {
+		return $this->loader->resolve_model( get_post_type( $id ), $id );
 	}
 }

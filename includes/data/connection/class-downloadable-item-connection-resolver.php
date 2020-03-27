@@ -15,6 +15,7 @@ use GraphQLRelay\Relay;
 use GraphQLRelay\Connection\ArrayConnection;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
@@ -22,9 +23,20 @@ use WPGraphQL\WooCommerce\Model\Customer;
  */
 class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
-	 * Include shared connection functions.
+	 * Include Db Loader connection common functions.
 	 */
-	use WC_Connection_Functions;
+	use WC_Db_Loader_Common;
+
+	const PREFIX = 'DI';
+
+	/**
+	 * Return the name of the loader to be used with the connection resolver
+	 *
+	 * @return string
+	 */
+	public function get_loader_name() {
+		return 'downloadable_item';
+	}
 
 	/**
 	 * Confirms if downloadable items should be retrieved.
@@ -122,7 +134,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		$cursor_key    = $this->get_offset();
-		$cursor_offset = array_search( $cursor_key, \array_column( $items, 'download_id' ), true );
+		$cursor_offset = array_search( $cursor_key, array_column( $items, 'download_id' ), true ) ?? null;
 
 		if ( ! empty( $this->args['after'] ) ) {
 			$items = array_splice( $items, $cursor_offset + 1 );
@@ -130,7 +142,12 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$items = array_splice( $items, 0, $cursor_offset );
 		}
 
-		return $items;
+		// Cache items for later.
+		foreach ( $items as $item ) {
+			$this->loader->prime( $item['download_id'], $item );
+		}
+		
+		return array_column( $items, 'download_id' );
 	}
 
 	/**
@@ -144,27 +161,23 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Get the offset.
 		if ( ! empty( $this->args['after'] ) ) {
-			$offset = $this->args['after'];
+			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['after'] );
 		} elseif ( ! empty( $this->args['before'] ) ) {
-			$offset = $this->args['before'];
+			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['before'] );
 		}
 
-		/**
-		 * Return the higher of the two values
-		 */
 		return $offset;
 	}
 
 	/**
 	 * Create cursor for downloadable item node.
 	 *
-	 * @param array  $node  Cart item.
-	 * @param string $key   Cart item key.
+	 * @param string $id  Downloadable item ID.
 	 *
 	 * @return string
 	 */
-	protected function get_cursor_for_node( $node, $key = null ) {
-		return $node['download_id'];
+	protected function get_cursor_for_node( $id ) {
+		return $this->offset_to_cursor( self::PREFIX, $id );
 	}
 
 	/**
@@ -172,7 +185,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @return array
 	 */
-	public function get_items() {
+	public function get_ids() {
 		return ! empty( $this->query ) ? $this->query : array();
 	}
 
@@ -185,5 +198,19 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function is_valid_offset( $offset ) {
 		return 'string' === gettype( $offset );
+	}
+
+	/**
+	 * Validates Model.
+	 *
+	 * If model isn't a class with a `fields` member, this function with have be overridden in
+	 * the Connection class.
+	 *
+	 * @param array $model Downloadable item model.
+	 *
+	 * @return bool
+	 */
+	protected function is_valid_model( $model ) {
+		return isset( $model ) && ! empty( $model['download_id'] );
 	}
 }

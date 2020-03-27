@@ -146,8 +146,8 @@ class Order_Item_Type {
 					'taxRate'          => array(
 						'type'        => 'TaxRate',
 						'description' => __( 'Tax line\'s tax rate', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
-							return Factory::resolve_tax_rate( $source->rate_id );
+						'resolve'     => function( $source, array $args, AppContext $context ) {
+							return Factory::resolve_tax_rate( $source->rate_id, $context );
 						},
 					),
 				),

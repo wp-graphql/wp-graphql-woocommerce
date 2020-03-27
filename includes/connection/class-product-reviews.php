@@ -46,7 +46,8 @@ class Product_Reviews extends Comments {
 							'type'        => 'Float',
 							'description' => __( 'Review rating', 'wp-graphql-woocommerce' ),
 							'resolve'     => function( $source ) {
-								$rating = get_comment_meta( $source['node'], 'rating', true );
+								$review = $source['node'];
+								$rating = get_comment_meta( $review->commentId, 'rating', true );
 								return $rating ? $rating : 0;
 							},
 						),
