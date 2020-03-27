@@ -716,12 +716,17 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $cart = WC()->cart;
 
         // Create products.
-        $product_id = $this->product->create_simple();
+        $product_id = $this->product->create_simple(
+            array( 'regular_price' => 100 )
+        );
 
         // Create coupon.
         $coupon_code = wc_get_coupon_code_by_id(
             $this->coupon->create(
-                array( 'product_ids' => array( $product_id ) )
+                array(
+                    'amount'      => 0.5,
+                    'product_ids' => array( $product_id )
+                )
             )
         );
 
