@@ -56,7 +56,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 */
 	public function loadKeys( array $keys ) {
 		$loader = null;
-		switch( $this->loader_type ) {
+		switch ( $this->loader_type ) {
 			case 'CART_ITEM':
 				$loader = array( $this, 'load_cart_item_from_key' );
 				break;
