@@ -149,6 +149,8 @@ configure_wordpress() {
 setup_woocommerce() {
 	echo "Installing & Activating WooCommerce"
 	wp plugin install woocommerce --activate
+	echo "Installing & Activating WooCommerce-Gateway-Stripe"
+	wp plugin install woocommerce-gateway-stripe --activate
 }
 
 setup_wpgraphql() {
