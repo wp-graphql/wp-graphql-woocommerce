@@ -34,6 +34,7 @@ class Wpunit extends \Codeception\Module {
 		codecept_debug( 'ATTRIBUTES_LOADED' );
 		add_action( 'init_graphql_request', array( __CLASS__, 'shortcode_test_init' ) );
 		codecept_debug( 'SHORTCODE_INITIALIZED' );
+		\Stripe\Stripe::setApiKey( STRIPE_API_SECRET_KEY );
 	}
 
 	public function cart() {
