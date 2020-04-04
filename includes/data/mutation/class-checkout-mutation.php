@@ -459,8 +459,14 @@ class Checkout_Mutation {
 		// Store Order ID in session so it can be re-used after payment failure.
 		WC()->session->set( 'order_awaiting_payment', $order_id );
 
+		$process_payment_args = apply_filters(
+			"graphql_{$payment_method}_process_payment_args",
+			array( $order_id ),
+			$payment_method
+		);
+
 		// Process Payment.
-		return $available_gateways[ $payment_method ]->process_payment( $order_id );
+		return $available_gateways[ $payment_method ]->process_payment( ...$process_payment_args );
 	}
 
 	/**
