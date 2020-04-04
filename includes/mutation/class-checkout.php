@@ -146,11 +146,6 @@ class Checkout {
 					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
 				}
 
-				// Add meta data.
-				if ( ! empty( $input['metaData'] ) ) {
-					Checkout_Mutation::add_order_meta( $order_id, $input['metaData'], $input, $context, $info );
-				}
-
 				/**
 				 * Action called after checking out.
 				 *
