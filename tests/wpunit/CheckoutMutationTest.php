@@ -290,6 +290,44 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         return $actual;
     }
 
+    private function create_stripe_customer( $email ) {
+        $customer = \Stripe\Customer::create( array( 'email' => $email ) );
+
+        // use --debug flag to view.
+        codecept_debug( $customer );
+
+        return $customer;
+    }
+
+    private function create_stripe_source( $customer ) {
+        $source = \Stripe\Customer::createSource(
+            $customer['id'],
+            array( 'source' => 'tok_visa')
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $source );
+
+        return $source;
+    }
+
+    private function create_stripe_payment_intent( $amount, $customer ) {
+        $payment_intent = \Stripe\PaymentIntent::create(
+            array(
+                'amount'               => $amount,
+                'currency'             => 'gbp',
+                'payment_method_types' => ['card'],
+                'customer'             => $customer['id'],
+                'payment_method'       => $customer['invoice_settings']['default_payment_method'],
+            )
+        );
+
+        // use --debug flag to view.
+        codecept_debug( $payment_intent );
+
+        return $payment_intent;
+    }
+
     // tests
     public function testCheckoutMutation() {
         wp_set_current_user( $this->simple_customer );
