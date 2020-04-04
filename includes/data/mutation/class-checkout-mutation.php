@@ -533,7 +533,7 @@ class Checkout_Mutation {
 
 		// Add meta data.
 		if ( ! empty( $input['metaData'] ) ) {
-			self::add_order_meta( $order_id, $input['metaData'], $input, $context );
+			self::add_order_meta( $order_id, $input['metaData'], $input, $context, $info );
 		}
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
