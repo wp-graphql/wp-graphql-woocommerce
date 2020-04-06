@@ -1084,7 +1084,6 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         // use --debug flag to view.
         codecept_debug( $customer );
-
         return $customer;
     }
 
