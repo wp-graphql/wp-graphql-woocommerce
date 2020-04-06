@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
+class ComposerStaticInit42ce487bd54747a5700ee465e69f5212
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -36,6 +36,7 @@ class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
     public static $classMap = array (
         'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
         'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
+        'Firebase\\JWT\\JWK' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWK.php',
         'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
         'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'WPGraphQL\\WooCommerce\\ACF_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-acf-schema-filters.php',
@@ -173,9 +174,9 @@ class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit42ce487bd54747a5700ee465e69f5212::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit42ce487bd54747a5700ee465e69f5212::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit42ce487bd54747a5700ee465e69f5212::$classMap;
 
         }, null, ClassLoader::class);
     }
