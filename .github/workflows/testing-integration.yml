@@ -53,8 +53,8 @@ jobs:
         run: |
           docker-compose run --rm \
           -e WORDPRESS_CONFIG_EXTRA="define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', '${{ secrets.GRAPHQL_JWT_AUTH_SECRET_KEY }}' ); \
-            define( 'STRIPE_API_PUBLISHABLE_KEY', '${{ secrets.STRIPE_API_PUBLISHABLE_KEY }' ); \
-            define( 'STRIPE_API_SECRET_KEY', '${{secrets.STRIPE_API_SECRET_KEY}}' );" \
+            define( 'STRIPE_API_PUBLISHABLE_KEY', '${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}' ); \
+            define( 'STRIPE_API_SECRET_KEY', '${{ secrets.STRIPE_API_SECRET_KEY }}' );" \
           -e COVERAGE=${{ matrix.coverage }} \
           -e DEBUG=${{ matrix.debug }} \
           testing --scale app=0
