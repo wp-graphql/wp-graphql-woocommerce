@@ -27,6 +27,11 @@ workdir="$PWD"
 echo "Moving to WordPress root directory."
 cd ${WP_ROOT_FOLDER}
 
+# Set constants
+echo "define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', '${GRAPHQL_JWT_AUTH_SECRET_KEY}' );" >> wp-config.php
+echo "define( 'STRIPE_API_PUBLISHABLE_KEY', '${STRIPE_API_PUBLISHABLE_KEY}' );" >> wp-config.php
+echo "define( 'STRIPE_API_SECRET_KEY', '${STRIPE_API_SECRET_KEY}' );" >> wp-config.php
+
 # Run app entrypoint script.
 . app-entrypoint.sh
 
