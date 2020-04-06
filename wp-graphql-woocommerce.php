@@ -45,7 +45,11 @@ if ( file_exists( __DIR__ . '/c3.php' ) ) {
 function woographql_constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
+<<<<<<< HEAD
 		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.6.0' );
+=======
+		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.5.1' );
+>>>>>>> version numbers updated.
 	}
 	// Plugin Folder Path.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR' ) ) {
