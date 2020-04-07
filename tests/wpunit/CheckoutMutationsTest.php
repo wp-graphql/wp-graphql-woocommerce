@@ -278,7 +278,7 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
         $input      = array(
             'clientMutationId'   => 'someId',
             'paymentMethod'      => 'bacs',
-            'shippingMethod'     => 'flat rate',
+            'shippingMethod'     => array( 'flat rate' ),
 			'billing'            => array(
                 'firstName' => 'May',
                 'lastName'  => 'Parker',
@@ -484,7 +484,7 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
         $input      = array(
             'clientMutationId'       => 'someId',
             'paymentMethod'          => 'bacs',
-            'shippingMethod'         => 'flat rate',
+            'shippingMethod'         => array( 'flat rate' ),
 			'billing'                => array(
                 'firstName' => 'May',
                 'lastName'  => 'Parker',
@@ -676,7 +676,7 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
         $input      = array(
             'clientMutationId'   => 'someId',
             'paymentMethod'      => 'bacs',
-            'shippingMethod'     => 'flat rate',
+            'shippingMethod'     => array( 'flat rate' ),
 			'billing'            => array(
                 'firstName' => 'May',
                 'lastName'  => 'Parker',
@@ -880,7 +880,7 @@ class CheckoutMutationsTest extends \Codeception\TestCase\WPTestCase {
             'paymentMethod'      => 'bacs',
             'isPaid'             => true,
             'transactionId'      => 'transaction_id',
-            'shippingMethod'     => 'flat rate',
+            'shippingMethod'     => array( 'flat rate' ),
 			'billing'            => array(
                 'firstName' => 'May',
                 'lastName'  => 'Parker',
