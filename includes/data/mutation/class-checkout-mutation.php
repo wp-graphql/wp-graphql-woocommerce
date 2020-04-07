@@ -525,6 +525,11 @@ class Checkout_Mutation {
 			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
 		}
 
+		// Add meta data.
+		if ( ! empty( $input['metaData'] ) ) {
+			self::add_order_meta( $order_id, $input['metaData'], $input, $context );
+		}
+
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
@@ -633,7 +638,7 @@ class Checkout_Mutation {
 
 		if ( $meta_data ) {
 			foreach ( $meta_data as $meta ) {
-				$order->update_meta_data( $meta['key'], $meta['value'], isset( $meta['id'] ) ? $meta['id'] : '' );
+				$order->add_meta_data( $meta['key'], $meta['value'] );
 			}
 		}
 
