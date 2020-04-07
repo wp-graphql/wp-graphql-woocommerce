@@ -50,7 +50,7 @@ class Checkout {
 				'description' => __( 'Payment method ID.', 'wp-graphql-woocommerce' ),
 			),
 			'shippingMethod'         => array(
-				'type'        => 'String',
+				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Order shipping method', 'wp-graphql-woocommerce' ),
 			),
 			'shipToDifferentAddress' => array(

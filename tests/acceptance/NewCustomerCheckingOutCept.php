@@ -159,7 +159,7 @@ $I->wantTo('checkout');
 $checkout_input = array(
     'clientMutationId'   => 'someId',
     'paymentMethod'      => 'bacs',
-    'shippingMethod'     => 'flat rate',
+    'shippingMethod'     => array( 'flat rate' ),
     'billing'            => array(
         'firstName' => 'May',
         'lastName'  => 'Parker',
