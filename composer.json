@@ -25,13 +25,14 @@
         "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
-        "lucatume/wp-browser": ">=2.2.1 <2.2.8"
+        "lucatume/wp-browser": ">=2.2.1 <2.2.8",
+        "stripe/stripe-php": "^7.28"
     },
     "config": {
         "optimize-autoloader": true
     },
     "autoload": {
-        "files":[
+        "files": [
             "includes/connection/wc-cpt-connection-args.php",
             "includes/functions.php"
         ],
@@ -40,6 +41,11 @@
         },
         "classmap": [
             "includes/"
+        ]
+    },
+    "autoload-dev": {
+        "files": [
+            "tests/_data/config.php"
         ]
     },
     "scripts": {

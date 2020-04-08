@@ -27,6 +27,9 @@ jobs:
           - php: '7.0'
             wordpress: '5.0'
             coverage: 1
+          - php: '7.3'
+            wordpress: '5.0'
+            debug: 1
 
         exclude: 
           - php: '7.3'
@@ -52,6 +55,8 @@ jobs:
       - name: Run Tests w/ Docker.
         run: |
           docker-compose run --rm \
+          -e STRIPE_API_PUBLISHABLE_KEY=${{ secrets.STRIPE_API_PUBLISHABLE_KEY }} \
+          -e STRIPE_API_SECRET_KEY=${{ secrets.STRIPE_API_SECRET_KEY }} \
           -e COVERAGE=${{ matrix.coverage }} \
           -e DEBUG=${{ matrix.debug }} \
           testing --scale app=0
