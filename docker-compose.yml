@@ -41,8 +41,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - PHP_VERSION="${PHP_VERSION:-7.3}"
-        - WP_VERSION="${WP_VERSION:-5.2}"
+        - PHP_VERSION=7.3
+        - WP_VERSION=5.2
         - USE_XDEBUG
     image: woographql-testing
     volumes:
