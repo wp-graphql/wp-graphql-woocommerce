@@ -13,7 +13,7 @@ if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) ) {
 }
 
 if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
-    define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', getenv( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) );
+    define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'testingtesting123' );
 }
 
 if ( ! defined( 'STRIPE_API_PUBLISHABLE_KEY' ) ) {
