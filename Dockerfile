@@ -8,7 +8,6 @@ ARG PHP_VERSION
 
 FROM kidunot89/woographql-app:wp${WP_VERSION}-php${PHP_VERSION}
 
-
 LABEL author=kidunot89
 LABEL author_uri=https://github.com/kidunot89
 

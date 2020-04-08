@@ -30,6 +30,9 @@ cd ${WP_ROOT_FOLDER}
 # Run app entrypoint script.
 . app-entrypoint.sh
 
+# Deactivate WP-GraphQL-JWT-Authentication
+wp plugin deactivate wp-graphql-jwt-authentication --allow-root
+
 # Return to PWD.
 echo "Moving back to project working directory."
 cd ${workdir}
