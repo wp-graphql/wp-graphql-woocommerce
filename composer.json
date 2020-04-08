@@ -32,7 +32,7 @@
         "optimize-autoloader": true
     },
     "autoload": {
-        "files":[
+        "files": [
             "includes/connection/wc-cpt-connection-args.php",
             "includes/functions.php"
         ],
@@ -41,6 +41,11 @@
         },
         "classmap": [
             "includes/"
+        ]
+    },
+    "autoload-dev": {
+        "files": [
+            "tests/_data/config.php"
         ]
     },
     "scripts": {
