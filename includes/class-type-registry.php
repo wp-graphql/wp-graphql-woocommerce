@@ -118,5 +118,8 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Order_Delete::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Delete_Items::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Checkout::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Review_Write::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Review_Update::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Review_Delete_Restore::register_mutation();
 	}
 }

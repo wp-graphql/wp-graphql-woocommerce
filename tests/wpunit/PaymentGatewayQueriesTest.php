@@ -42,8 +42,12 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
                 'description'                   => 'Pay with your credit card via Stripe',
                 'webhook'                       => '',
                 'testmode'                      => 'yes',
-                'test_publishable_key'          => STRIPE_API_PUBLISHABLE_KEY,
-                'test_secret_key'               => STRIPE_API_SECRET_KEY,
+                'test_publishable_key'          => defined( 'STRIPE_API_PUBLISHABLE_KEY' )
+                    ? STRIPE_API_PUBLISHABLE_KEY
+                    : getenv( 'STRIPE_API_PUBLISHABLE_KEY' ),
+                'test_secret_key'               => defined( 'STRIPE_API_SECRET_KEY' )
+                    ? STRIPE_API_SECRET_KEY
+                    : getenv( 'STRIPE_API_SECRET_KEY' ),
                 'test_webhook_secret'           => '',
                 'publishable_key'               => '',
                 'secret_key'                    => '',
