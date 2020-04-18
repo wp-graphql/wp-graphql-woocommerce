@@ -85,6 +85,9 @@ class Cart_Remove_Coupons {
 				}
 			}
 
+			// Recalculate totals.
+			\WC()->cart->calculate_totals();
+
 			// Return payload.
 			return array( 'cart' => \WC()->cart );
 		};
