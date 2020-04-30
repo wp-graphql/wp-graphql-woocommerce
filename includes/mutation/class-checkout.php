@@ -81,6 +81,10 @@ class Checkout {
 				'type'        => array( 'list_of' => 'MetaDataInput' ),
 				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
 			),
+			'customerNote'           => array(
+				'type'        => 'String',
+				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
+			)
 		);
 	}
 
