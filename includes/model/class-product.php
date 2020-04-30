@@ -20,7 +20,7 @@ use WC_Product_Simple;
 /**
  * Class Product
  */
-class Product extends Crud_CPT {
+class Product extends WC_Post {
 
 	/**
 	 * Stores the product type: external, grouped, simple, variable.
@@ -42,17 +42,13 @@ class Product extends Crud_CPT {
 	 * @param int $id - product post-type ID.
 	 */
 	public function __construct( $id ) {
-		$this->product_type        = $this->product_factory()->get_product_type( $id );
-		$this->data                = $this->get_object( $id );
-		$allowed_restricted_fields = array(
-			'isRestricted',
-			'isPrivate',
-			'isPublic',
-			'id',
-			'databaseId',
-		);
+		// Get product type.
+		$this->product_type = $this->product_factory()->get_product_type( $id );
 
-		parent::__construct( $allowed_restricted_fields, 'product', $id );
+		// Get WC_Product object.
+		$data = $this->get_object( $id );
+
+		parent::__construct( 'product', $data );
 	}
 
 	/**
@@ -89,6 +85,21 @@ class Product extends Crud_CPT {
 				break;
 		}
 		return $cap;
+	}
+
+	/**
+	 * Return the fields allowed to be displayed even if this entry is restricted.
+	 *
+	 * @return array
+	 */
+	protected function get_allowed_restricted_fields() {
+		return array(
+			'isRestricted',
+			'isPrivate',
+			'isPublic',
+			'id',
+			'databaseId',
+		);
 	}
 
 	/**

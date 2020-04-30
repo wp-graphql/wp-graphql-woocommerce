@@ -1,8 +1,8 @@
 <?php
 /**
- * Abstract Model - Crud_CPT
+ * Abstract Model - WC_Post
  *
- * Defines share functionality for Crud objects wrapped around WordPress CPTs
+ * Defines shared functionality for WooCommerce CPT models.
  *
  * @package WPGraphQL\WooCommerce\Model
  * @since 0.0.1
@@ -11,49 +11,63 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQL\Error\UserError;
-use WPGraphQL\Model\Model;
+use WPGraphQL\Model\Post;
 use WP_Post_Type;
 
 /**
- * Class Crud_CPT
+ * Class WC_Post
  */
-abstract class Crud_CPT extends Model {
+abstract class WC_Post extends Post {
 
 	/**
 	 * Stores the incoming post type object for the post being modeled
 	 *
-	 * @var null|WP_Post_Type $post_type_object
+	 * @var WP_Post_Type $post_type_object
 	 */
 	protected $post_type_object;
 
-	/**
-	 * Crud_CPT constructor
-	 *
-	 * @param array  $allowed_restricted_fields - Fields that can be resolved even if post is restricted.
-	 * @param string $post_type                 - Object post-type.
-	 * @param int    $post_id                   - Post ID.
-	 */
-	public function __construct( $allowed_restricted_fields, $post_type, $post_id ) {
-		$author_id              = get_post_field( 'post_author', $post_id );
-		$this->post_type_object = get_post_type_object( $post_type );
 
+	/**
+	 * Store the WP_Post object connected to the model.
+	 * 
+	 * @var WP_Post $post
+	 */
+	protected $post;
+
+	/**
+	 * Stores the WC_Data object connected to the model.
+	 * 
+	 * @var \WC_Data $data
+	 */
+	protected $data;
+
+	/**
+	 * WC_Post constructor
+	 *
+	 * @param string $post_type  Post type.
+	 * @param int    $data       Data object to be used by the model.
+	 */
+	public function __construct( $post_type, $data, $owner_id = null ) {
+		// Get WP_Post object.
+		$this->post = get_post( $data->get_id() );
+
+		// Execute Post Model constructor.
+		parent::__construct( $data, $owner_id );
+	}
+
+	/**
+	 * Setup the global data for the model to have proper context when resolving
+	 */
+	public function setup() {
 		/**
 		 * Set the resolving post to the global $post. That way any filters that
 		 * might be applied when resolving fields can rely on global post and
 		 * post data being set up.
 		 */
-		$post = get_post( $post_id );
-		// @codingStandardsIgnoreLine
-		$GLOBALS['post'] = $post;
-		setup_postdata( $post );
-
-		$restricted_cap = apply_filters(
-			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
-			$this->post_type_object->name . '_restricted_cap',
-			$this->get_restricted_cap()
-		);
-
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );
+		if ( $this->post && $this->post instanceof \WP_Post ) {
+			$GLOBALS['post'] = $this->post;
+			setup_postdata( $this->post );
+		}
 	}
 
 	/**
@@ -85,13 +99,6 @@ abstract class Crud_CPT extends Model {
 		}
 		return false;
 	}
-
-	/**
-	 * Retrieve the cap to check if the data should be restricted for the crud object
-	 *
-	 * @return string
-	 */
-	abstract public function get_restricted_cap();
 
 	/**
 	 * Wrapper function for deleting

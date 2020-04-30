@@ -71,11 +71,6 @@ class Review_Write {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
                     }
-<<<<<<< HEAD
-
-=======
-
->>>>>>> Product review mutations implemented and tested.
                     return (float) get_comment_meta( $payload['id'], 'rating', true );
                 }
             ),
@@ -86,11 +81,6 @@ class Review_Write {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
                     }
-<<<<<<< HEAD
-
-=======
-
->>>>>>> Product review mutations implemented and tested.
                     $comment = get_comment( $payload['id'] );
 					return new Comment( $comment );
 				},

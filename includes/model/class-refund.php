@@ -16,29 +16,39 @@ use WC_Order_Refund;
 /**
  * Class Refund.
  */
-class Refund extends Crud_CPT {
+class Refund extends Order {
 
 	/**
-	 * Defines get_restricted_cap.
+	 * Hold order post type slug
+	 * 
+	 * @var string $post_type
 	 */
-	use Shop_Manager_Caps;
+	protected $post_type = 'shop_order_refund';
 
 	/**
-	 * Refund constructor.
+	 * Return the data source to be used by the model.
+	 * 
+	 * @param integer $id  Refund ID.
+	 * 
+	 * @return WC_Data
+	 */
+	protected function get_object( $id ) {
+		return new WC_Order_Refund( $id );
+	}
+
+	/**
+	 * Return the fields allowed to be displayed even if this entry is restricted.
 	 *
-	 * @param int $id - shop_order_refund post-type ID.
+	 * @return array
 	 */
-	public function __construct( $id ) {
-		$this->data                = new WC_Order_Refund( $id );
-		$allowed_restricted_fields = array(
+	protected function get_allowed_restricted_fields() {
+		return array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
 		);
-
-		parent::__construct( $allowed_restricted_fields, 'shop_order_refund', $id );
 	}
 
 	/**

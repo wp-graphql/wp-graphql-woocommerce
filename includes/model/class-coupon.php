@@ -9,7 +9,7 @@ use WC_Coupon;
 /**
  * Class Coupon
  */
-class Coupon extends Crud_CPT {
+class Coupon extends WC_Post {
 
 	/**
 	 * Coupon constructor
@@ -17,16 +17,8 @@ class Coupon extends Crud_CPT {
 	 * @param int $id - shop_coupon post-type ID.
 	 */
 	public function __construct( $id ) {
-		$this->data                = new WC_Coupon( $id );
-		$allowed_restricted_fields = array(
-			'isRestricted',
-			'isPrivate',
-			'isPublic',
-			'id',
-			'databaseId',
-		);
-
-		parent::__construct( $allowed_restricted_fields, 'shop_coupon', $id );
+		$this->data = new WC_Coupon( $id );
+		parent::__construct( 'shop_coupon', $data );
 	}
 
 	/**
@@ -50,6 +42,21 @@ class Coupon extends Crud_CPT {
 				break;
 		}
 		return $cap;
+	}
+
+	/**
+	 * Return the fields allowed to be displayed even if this entry is restricted.
+	 *
+	 * @return array
+	 */
+	protected function get_allowed_restricted_fields() {
+		return array(
+			'isRestricted',
+			'isPrivate',
+			'isPublic',
+			'id',
+			'databaseId',
+		);
 	}
 
 	/**

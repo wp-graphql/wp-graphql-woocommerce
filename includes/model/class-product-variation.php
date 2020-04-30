@@ -16,7 +16,7 @@ use WC_Product_Variation;
 /**
  * Class Product_Variation
  */
-class Product_Variation extends Crud_CPT {
+class Product_Variation extends WC_Post {
 
 	/**
 	 * Product_Variation constructor
@@ -24,16 +24,8 @@ class Product_Variation extends Crud_CPT {
 	 * @param int $id - product_variation post-type ID.
 	 */
 	public function __construct( $id ) {
-		$this->data                = new WC_Product_Variation( $id );
-		$allowed_restricted_fields = array(
-			'isRestricted',
-			'isPrivate',
-			'isPublic',
-			'id',
-			'databaseId',
-		);
-
-		parent::__construct( $allowed_restricted_fields, 'product_variation', $id );
+		$data = new WC_Product_Variation( $id );
+		parent::__construct( 'product_variation', $data );
 	}
 
 	/**
@@ -57,6 +49,21 @@ class Product_Variation extends Crud_CPT {
 				break;
 		}
 		return $cap;
+	}
+
+	/**
+	 * Return the fields allowed to be displayed even if this entry is restricted.
+	 *
+	 * @return array
+	 */
+	protected function get_allowed_restricted_fields() {
+		return array(
+			'isRestricted',
+			'isPrivate',
+			'isPublic',
+			'id',
+			'databaseId',
+		);
 	}
 
 	/**
