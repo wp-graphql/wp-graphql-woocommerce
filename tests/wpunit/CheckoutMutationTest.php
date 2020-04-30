@@ -292,7 +292,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
     // tests
     public function testCheckoutMutation() {
-		wp_set_current_user( $this->simple_customer );
+        wp_set_current_user( $this->simple_customer );
+        WC()->customer->set_billing_company( 'Harris Teeter' );
+
         $variable  = $this->variation->create( $this->product->create_variable() );
         $product_ids = array(
             $this->product->create_simple(),
@@ -311,6 +313,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
             'clientMutationId'   => 'someId',
             'paymentMethod'      => 'bacs',
             'shippingMethod'     => array( 'flat rate' ),
+            'customerNote'       => 'Test customer note',
 			'billing'            => array(
                 'firstName' => 'May',
                 'lastName'  => 'Parker',
@@ -321,6 +324,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'country'   => 'US',
                 'email'     => 'superfreak500@gmail.com',
                 'phone'     => '555-555-1234',
+                'overwrite' => true
             ),
 			'shipping'           => array(
                 'firstName' => 'May',
@@ -520,6 +524,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 			'billing'                => array(
                 'firstName' => 'May',
                 'lastName'  => 'Parker',
+                'company'   => 'Harris Teeter',
                 'address1'  => '20 Ingram St',
                 'city'      => 'New York City',
                 'state'     => 'NY',
