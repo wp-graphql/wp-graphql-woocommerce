@@ -87,9 +87,12 @@ class Checkout_Mutation {
 
 			foreach ( $fieldset as $field => $input_key ) {
 				$key   = "{$fieldset_key}_{$field}";
-				$value = ! empty( $input[ $fieldset_key ][ $input_key ] )
-					? $input[ $fieldset_key ][ $input_key ]
-					: null;
+				if ( 'order' === $fieldset_key ) {
+					$value = ! empty( $input[ $input_key ] ) ?  $input[ $input_key ] : null;
+				} else {
+					$value = ! empty( $input[ $fieldset_key ][ $input_key ] ) ? $input[ $fieldset_key ][ $input_key ] : null;
+				}
+				
 				if ( $value ) {
 					$data[ $key ] = $value;
 				} elseif ( 'billing_country' === $key || 'shipping_country' === $key ) {
@@ -121,6 +124,7 @@ class Checkout_Mutation {
 			'billing'  => array(
 				'first_name' => 'firstName',
 				'last_name'  => 'lastName',
+				'company'    => 'company',
 				'address_1'  => 'address1',
 				'address_2'  => 'address2',
 				'city'       => 'city',
@@ -133,6 +137,7 @@ class Checkout_Mutation {
 			'shipping' => array(
 				'first_name' => 'firstName',
 				'last_name'  => 'lastName',
+				'company'    => 'company',
 				'address_1'  => 'address1',
 				'address_2'  => 'address2',
 				'city'       => 'city',
@@ -144,7 +149,9 @@ class Checkout_Mutation {
 				'username' => 'username',
 				'password' => 'password',
 			),
-			'order'    => array(),
+			'order'    => array(
+				'comments' => 'customerNote'
+			),
 		);
 
 		if ( $prefixed ) {
@@ -202,6 +209,48 @@ class Checkout_Mutation {
 
 		// Update cart totals now we have customer address.
 		WC()->cart->calculate_totals();
+	}
+
+	/**
+	 * Clears customer address
+	 *
+	 * @param string $type  Address type.
+	 *
+	 * @return bool
+	 */
+	protected static function clear_customer_address( $type = 'billing' ) {
+		if ( 'billing' !== $type || 'shipping' !== $type ) {
+			return false;
+		}
+
+		$address = array(
+			'first_name' => '',
+			'last_name'  => '',
+			'company'    => '',
+			'address_1'  => '',
+			'address_2'  => '',
+			'city'       => '',
+			'state'      => '',
+			'postcode'   => '',
+			'country'    => '',
+		);
+
+		if ( $type = 'billing' ) {
+			$address = array_merge(
+				$address,
+				array(
+					'email' => '',
+					'phone' => '',
+				)
+			);
+		}
+
+		foreach ( $address as $prop => $value ) {
+			$setter = "set_{$type}_{$prop}";
+			WC()->customer->{$setter}( $value );
+		}
+
+		return true;
 	}
 
 	/**
@@ -508,10 +557,19 @@ class Checkout_Mutation {
 		do_action( 'woocommerce_before_checkout_process' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		if ( WC()->cart->is_empty() ) {
-			throw new UserError( __( 'Sorry, your session has expired.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Sorry, no session found.', 'wp-graphql-woocommerce' ) );
 		}
 
 		do_action( 'woocommerce_checkout_process', $data, $context, $info ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+
+		if ( ! empty( $input['billing']['overwrite'] ) && true === $input['billing']['overwrite'] ) {
+			self::clear_customer_address( 'billing' );
+		}
+
+		if ( ! empty( $input['shipping'] ) && ! empty( $input['shipping']['overwrite'] )
+			&& true === $input['shipping']['overwrite'] ) {
+			self::clear_customer_address( 'shipping' );
+		}
 
 		// Update session for customer and totals.
 		self::update_session( $data );
