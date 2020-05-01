@@ -24,6 +24,11 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+	public function set_user( $user ) {
+		wp_set_current_user( $user );
+		WC()->customer = new WC_Customer( get_current_user_id(), true );
+	}
+
 	// tests
 	public function testCustomerQueryAndArgs() {
 		$query = '
@@ -84,7 +89,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Query should return null value due to lack of permissions.
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 
@@ -121,7 +126,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Query should return requested data because has sufficient permissions,
 		 * but should not have access to JWT fields.
 		 */
-		wp_set_current_user( $this->shop_manager );
+		$this->set_user( $this->shop_manager );
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
@@ -140,21 +145,24 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Query should return data corresponding with current user when no ID is provided.
 		 */
-		wp_set_current_user( $this->new_customer );
+		$this->set_user( $this->new_customer );
 		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
+		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer, true ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
+
+		// Clear customer cache.
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
 		
 		/**
 		 * Assertion Five
 		 * 
 		 * Query should return requested data because user queried themselves.
 		 */
-		wp_set_current_user( $this->new_customer );
+		$this->set_user( $this->new_customer );
 		$variables = array( 'customerId' => $this->new_customer );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
@@ -172,7 +180,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Query should return null value due to lack of permissions..
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$variables = array( 'customerId' => $this->new_customer );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 
@@ -230,7 +238,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Query should return null value due to lack of capabilities...
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array( 'data' => array( 'customers' => array( 'nodes' => array() ) ) );
 
@@ -247,7 +255,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Query should return requested data because user has proper capabilities.
 		 */
-		wp_set_current_user( $this->shop_manager );
+		$this->set_user( $this->shop_manager );
 		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
 			'data' => array(
@@ -499,7 +507,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * 
 		 * Query for authenticated customer's orders.
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
 			'data' => array(
