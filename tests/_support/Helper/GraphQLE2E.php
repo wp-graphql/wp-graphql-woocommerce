@@ -27,6 +27,35 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
     /**
+     * Authenticates User.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function login( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation ( $input: LoginInput! ) {
+                login( input: $input ) {
+                    clientMutationId
+                    authToken
+                    refreshToken
+                    customer {
+                        customerId
+                        username
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
      * Adds item to cart.
      *
      * @param array  $input
@@ -598,7 +627,7 @@ class GraphQLE2E extends \Codeception\Module {
      * 
      * @return array
      */
-    public function sendGraphQLRequest( $query, $input, $request_headers = array() ) {
+    public function sendGraphQLRequest( $query, $input = null, $request_headers = array() ) {
         $rest = $this->getModule( 'REST' );
 
         // Add item to cart.
@@ -615,7 +644,7 @@ class GraphQLE2E extends \Codeception\Module {
             json_encode(
                 array(
                     'query'     => $query,
-                    'variables' => array( 'input' => $input ),
+                    'variables' => ! empty( $input ) ? array( 'input' => $input ) : null,
                 )
             )
         );
@@ -865,4 +894,18 @@ class GraphQLE2E extends \Codeception\Module {
         $wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
     }
 
+
+    public function createOldSession() {
+        $products = $this->getCatalog();
+
+        $wpdb   = $this->getModule( 'WPDb' );
+        $userId = $wpdb->haveUserInDatabase(
+            'jimbo1234',
+            'customer',
+            [
+                'user_pass'  => 'password',
+                'user_email' => 'jimbo1234@example.com',
+            ]
+        );
+    }
 }
