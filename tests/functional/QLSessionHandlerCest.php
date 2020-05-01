@@ -484,7 +484,7 @@ class QLSessionHandlerCest {
                             )
                         )
                     ),
-                    'chosenShippingMethod'     => 'legacy_flat_rate'
+                    'chosenShippingMethod'     => null,
                 ),
             ),
         );
