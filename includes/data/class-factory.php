@@ -45,7 +45,7 @@ class Factory {
 	 * @access public
 	 */
 	public static function resolve_session_customer() {
-		return new Customer();
+		return \WC()->customer;
 	}
 
 	/**
