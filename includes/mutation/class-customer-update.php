@@ -118,7 +118,7 @@ class Customer_Update {
 			}
 
 			// Update customer fields.
-			foreach( $customer_args as $prop => $value ) {
+			foreach ( $customer_args as $prop => $value ) {
 
 				// If field group like 'shipping' or 'billing'.
 				if ( ! empty( $value ) && \is_array( $value ) ) {
