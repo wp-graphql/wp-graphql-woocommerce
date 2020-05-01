@@ -18,8 +18,20 @@ run_tests() {
 }
 
 # Exits with a status of 0 (true) if provided version number is higher than proceeding numbers.
-function version_gt() {
+version_gt() {
     test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+}
+
+write_htaccess() {
+    echo "<IfModule mod_rewrite.c>
+RewriteEngine On
+SetEnvIf Authorization \"(.*)\" HTTP_AUTHORIZATION=\$1
+RewriteBase /wordpress/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>" >> ${WP_ROOT_FOLDER}/.htaccess
 }
 
 # Move to WordPress root folder
@@ -29,6 +41,8 @@ cd ${WP_ROOT_FOLDER}
 
 # Run app entrypoint script.
 . app-entrypoint.sh
+
+write_htaccess
 
 # Deactivate WP-GraphQL-JWT-Authentication
 wp plugin deactivate wp-graphql-jwt-authentication --allow-root

@@ -23,6 +23,11 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
         parent::tearDown();
     }
 
+    public function set_user( $user ) {
+		wp_set_current_user( $user );
+		WC()->customer = new WC_Customer( get_current_user_id(), true );
+	}
+
     // tests
     public function testOrderToDownloadableItemsQuery() {
         $downloadable_product = $this->products->create_simple(
@@ -80,7 +85,7 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		 * 
 		 * tests query results
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
             'data' => array(
@@ -175,7 +180,7 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		 * 
 		 * tests "active" whereArg
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$actual   = graphql(
             array(
                 'query'     => $query,
@@ -372,7 +377,7 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		 * 
 		 * tests query results
 		 */
-		wp_set_current_user( $this->customer );
+		$this->set_user( $this->customer );
 		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
             'data' => array(
