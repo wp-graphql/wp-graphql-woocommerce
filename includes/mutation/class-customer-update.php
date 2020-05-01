@@ -109,14 +109,6 @@ class Customer_Update {
 			// Create customer object.
 			$customer = ! $session_only ? new WC_Customer( $payload['id'] ) : \WC()->customer;
 
-			// Set billing address.
-			if ( ! empty( $customer_args['billing'] ) ) {
-				foreach ( $customer_args['billing'] as $prop => $value ) {
-					$setter = 'set_billing_' . $prop;
-					$customer->{$setter}( $value );
-				}
-			}
-
 			// Copy billing address as shipping address.
 			if ( ! empty( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
 				$customer_args['shipping'] = array_merge(
@@ -125,11 +117,22 @@ class Customer_Update {
 				);
 			}
 
-			// Set shipping address.
-			if ( ! empty( $customer_args['shipping'] ) ) {
-				foreach ( $customer_args['shipping'] as $prop => $value ) {
-					$setter = 'set_shipping_' . $prop;
-					$customer->{$setter}( $value );
+			// Update customer fields.
+			foreach( $customer_args as $prop => $value ) {
+
+				// If field group like 'shipping' or 'billing'.
+				if ( ! empty( $value ) && \is_array( $value ) ) {
+
+					// Check if group field has set function and assigns new value.
+					foreach ( $value as $field => $field_value ) {
+						if ( is_callable( array( $customer, "set_{$prop}_{$field}") ) ) {
+							$customer->{"set_{$prop}_{$field}"}( $field_value );
+						}
+					}
+
+				// If field has set function and assigns new value.
+				} elseif ( is_callable( array( $customer, "set_{$prop}" ) ) ) {
+					$customer->{"set_{$prop}"}( $value );
 				}
 			}
 
