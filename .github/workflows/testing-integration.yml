@@ -47,6 +47,14 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Install PHP
+        if: matrix.coverage == 1
+        uses: shivammathur/setup-php@1.7.0
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+          extensions: json, mbstring
+
       - name: Build "testing" Docker Image
         run: |
           docker-compose build \
@@ -69,8 +77,4 @@ jobs:
         env:
           COVERALLS_RUN_LOCALLY: 1
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: |
-          wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
-          chmod +x php-coveralls.phar
-    
-          php php-coveralls.phar -v
+        run: vendor/bin/php-coveralls -v

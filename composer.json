@@ -26,6 +26,7 @@
     },
     "require-dev": {
         "lucatume/wp-browser": ">=2.2.1 <2.2.8",
+        "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28"
     },
     "config": {

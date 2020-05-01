@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1d218159c651cbc5020beefb5cc5651a
+class ComposerStaticInit19c0191cc8bc59057d45745b3198d15d
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -177,9 +177,9 @@ class ComposerStaticInit1d218159c651cbc5020beefb5cc5651a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1d218159c651cbc5020beefb5cc5651a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1d218159c651cbc5020beefb5cc5651a::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit1d218159c651cbc5020beefb5cc5651a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit19c0191cc8bc59057d45745b3198d15d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit19c0191cc8bc59057d45745b3198d15d::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit19c0191cc8bc59057d45745b3198d15d::$classMap;
 
         }, null, ClassLoader::class);
     }
