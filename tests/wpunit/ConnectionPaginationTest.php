@@ -31,6 +31,11 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         parent::tearDown();
     }
 
+    public function set_user( $user ) {
+		wp_set_current_user( $user );
+		WC()->customer = new WC_Customer( get_current_user_id(), true );
+	}
+
     // tests
     public function testCouponsPagination() {
 		$coupons = array(
@@ -64,7 +69,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			}
         ';
         
-        wp_set_current_user( $this->shop_manager );
+        $this->set_user( $this->shop_manager );
 
         /**
 		 * Assertion One
@@ -582,7 +587,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
         
-        wp_set_current_user( $customer_id );
+        $this->set_user( $customer_id );
 
         /**
          * Assertion One

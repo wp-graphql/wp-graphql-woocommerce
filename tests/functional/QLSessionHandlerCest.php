@@ -10,10 +10,6 @@ class QLSessionHandlerCest {
         $this->product_catalog = $I->getCatalog();
     }
 
-    public function _after( FunctionalTester $I ) {
-        $I->delete_shipping_methods();
-    }
-
     // tests
     public function testCartMutationsWithValidCartSessionToken( FunctionalTester $I ) {
         /**
@@ -430,6 +426,49 @@ class QLSessionHandlerCest {
         $I->assertEquals( $token_data->iss, $wp_url );
 
         /**
+         * Set shipping address, so shipping rates can be calculated
+         */
+        $input = array(
+            'clientMutationId' => 'someId',
+            'shipping'         => array(
+                'state'    => 'New York',
+                'country'  => 'US',
+                'postcode' => '12345',
+            )
+        );
+
+        $mutation = '
+            mutation ( $input: UpdateCustomerInput! ){
+                updateCustomer ( input: $input ) {
+                    customer {
+                        shipping {
+                            state
+                            country
+                            postcode
+                        }
+                    }
+                }
+            }
+        ';
+
+        $actual = $I->sendGraphQLRequest( $mutation, $input, array( 'woocommerce-session' => "Session {$session_token}" ) );
+        $expected = array(
+            'data' => array(
+                'updateCustomer' => array(
+                    'customer' => array(
+                        'shipping' => array(
+                            'state'    => 'New York',
+                            'country'  => 'US',
+                            'postcode' => '12345'
+                        ),
+                    ),
+                ),
+            ),
+        );
+
+        $I->assertEquals( $expected, $actual );
+
+        /**
          * Make a cart query request with "woocommerce-session" HTTP Header and confirm
          * correct cart contents and chosen and available shipping methods. 
          */
@@ -450,7 +489,6 @@ class QLSessionHandlerCest {
                             label
                         }
                     }
-                    chosenShippingMethod
                 }
             }
         ';
@@ -484,7 +522,6 @@ class QLSessionHandlerCest {
                             )
                         )
                     ),
-                    'chosenShippingMethod'     => null,
                 ),
             ),
         );

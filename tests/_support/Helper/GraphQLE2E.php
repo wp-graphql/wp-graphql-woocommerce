@@ -27,6 +27,35 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
     /**
+     * Authenticates User.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function login( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation ( $input: LoginInput! ) {
+                login( input: $input ) {
+                    clientMutationId
+                    authToken
+                    refreshToken
+                    customer {
+                        customerId
+                        username
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
      * Adds item to cart.
      *
      * @param array  $input
@@ -789,7 +818,7 @@ class GraphQLE2E extends \Codeception\Module {
      * Deletes shipping method settings, updates the "shipping" group transient
      * and unregisters all shipping methods. 
      * 
-     * Should be done after have tests.
+     * Should be done after each tests.
      */
     public function delete_shipping_methods() {
         delete_option( 'woocommerce_flat_rate_settings' );
@@ -865,4 +894,18 @@ class GraphQLE2E extends \Codeception\Module {
         $wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
     }
 
+
+    public function createOldSession() {
+        $products = $this->getCatalog();
+
+        $wpdb   = $this->getModule( 'WPDb' );
+        $userId = $wpdb->haveUserInDatabase(
+            'jimbo1234',
+            'customer',
+            [
+                'user_pass'  => 'password',
+                'user_email' => 'jimbo1234@example.com',
+            ]
+        );
+    }
 }

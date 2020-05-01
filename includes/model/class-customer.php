@@ -32,7 +32,6 @@ class Customer extends Model {
 			'isPublic',
 			'id',
 			'customerId',
-			'displayName',
 		);
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound

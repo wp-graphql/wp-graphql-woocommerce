@@ -140,8 +140,6 @@ class Customer_Type {
 						$customer_id = absint( $id_components['id'] );
 					} elseif ( ! empty( $args['customerId'] ) ) {
 						$customer_id = absint( $args['customerId'] );
-					} else {
-						$customer_id = get_current_user_id();
 					}
 
 					$authorized = ! empty( $customer_id )
