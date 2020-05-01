@@ -10,9 +10,7 @@ $login_input = array(
     'password'         => 'password',
 );
 
-$success = $I->login(
-    $login_input,
-);
+$success = $I->login( $login_input );
 
 $I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey('data', $success );
