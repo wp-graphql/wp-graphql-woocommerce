@@ -219,7 +219,7 @@ class Checkout_Mutation {
 	 * @return bool
 	 */
 	protected static function clear_customer_address( $type = 'billing' ) {
-		if ( 'billing' !== $type || 'shipping' !== $type ) {
+		if ( 'billing' !== $type && 'shipping' !== $type ) {
 			return false;
 		}
 
