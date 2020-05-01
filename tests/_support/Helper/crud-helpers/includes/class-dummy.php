@@ -177,7 +177,7 @@ class Dummy {
     }
 
     public function lastname() {
-        $list = explode(",","Smith,Johnson,Williams,Jones,Brown,Davis,Miller,Wilson,Moore,Taylor,Anderson,Thomas,Jackson,White,Harris,Martin,Thompson,Garcia,Martinez,Robinson,Clark,Rodriguez,Lewis,Lee,Walker,Hall,Allen,Young,Hernandez,King,Wright,Lopez,Hill,Scott,Green,Adams,Baker,Gonzalez,Nelson,Carter,Mitchell,Perez,Roberts,Turner,Phillips,Campbell,Parker,Evans,Edwards,Collins");
+        $list = explode(",","Smith,Johnson,Williams,Jones,Brown,Davis,Miller,Wilson,Moore,Taylor,Anderson,Thomas,Jackson,White,Harris,Martin,Thompson,Garcia,Martinez,Robinson,Clark,Rodriguez,Lewis,Lee,Walker,Hall,Allen,Young,Hernandez,King,Wright,Lopez,Hill,Scott,Green,Adams,Baker,Gonzalez,Nelson,Carter,Mitchell,Perez,Roberts,Turner,Phillips,Campbell,Parker,Evans,Edwards,Collins,Dexter,Dennis,Menace,Jesus,Bart,Homer,Dan,Bub,Sparkster,Yanni");
         shuffle($list);
         return(current($list));
     }
@@ -189,11 +189,9 @@ class Dummy {
     }
 
     public function username() {
-        $n = rand(1,50);
+        $n = rand(1,300);
         $f = substr($this->firstname(),0,1);
-        $l = $this->lastname();
-
-        if ($n <= 30) { $l .= $n; }
+        $l = $this->lastname() .$n;
 
         return(strtolower($f.$l));
 
