@@ -627,7 +627,7 @@ class GraphQLE2E extends \Codeception\Module {
      * 
      * @return array
      */
-    public function sendGraphQLRequest( $query, $input = null, $request_headers = array() ) {
+    public function sendGraphQLRequest( $query, $input, $request_headers = array() ) {
         $rest = $this->getModule( 'REST' );
 
         // Add item to cart.
@@ -644,7 +644,7 @@ class GraphQLE2E extends \Codeception\Module {
             json_encode(
                 array(
                     'query'     => $query,
-                    'variables' => ! empty( $input ) ? array( 'input' => $input ) : null,
+                    'variables' => array( 'input' => $input ),
                 )
             )
         );

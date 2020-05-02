@@ -34,7 +34,7 @@ $query = '
 $success = $I->sendGraphQLRequest(
     $query,
     null,
-    array( 'Authorization' => "Bearer {$authToken}" ),
+    array( 'Authorization' => "Bearer {$authToken}" )
 );
 
 $expected_results = array(

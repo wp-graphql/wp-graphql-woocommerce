@@ -430,7 +430,7 @@ class QLSessionHandlerCest {
         $I->assertEquals( $token_data->iss, $wp_url );
 
         /**
-         * Set shipping address
+         * Set shipping address, so shipping rates can be calculated
          */
         $input = array(
             'clientMutationId' => 'someId',
@@ -527,7 +527,7 @@ class QLSessionHandlerCest {
                             )
                         )
                     ),
-                    'chosenShippingMethod'     => null,
+                    'chosenShippingMethod'     => 'legacy_flat_rate',
                 ),
             ),
         );
