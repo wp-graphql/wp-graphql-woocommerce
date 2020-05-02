@@ -493,7 +493,6 @@ class QLSessionHandlerCest {
                             label
                         }
                     }
-                    chosenShippingMethod
                 }
             }
         ';
@@ -527,7 +526,6 @@ class QLSessionHandlerCest {
                             )
                         )
                     ),
-                    'chosenShippingMethod'     => 'legacy_flat_rate',
                 ),
             ),
         );
