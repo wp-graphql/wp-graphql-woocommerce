@@ -462,7 +462,7 @@ class QLSessionHandlerCest {
                     'customer' => array(
                         'shipping' => array(
                             'state'    => 'New York',
-                            'country'  => 'USA',
+                            'country'  => 'US',
                             'postcode' => '12345'
                         ),
                     ),
