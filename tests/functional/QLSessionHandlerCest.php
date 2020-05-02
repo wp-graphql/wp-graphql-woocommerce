@@ -436,7 +436,7 @@ class QLSessionHandlerCest {
             'clientMutationId' => 'someId',
             'shipping'         => array(
                 'state'    => 'New York',
-                'country'  => 'USA',
+                'country'  => 'US',
                 'postcode' => '12345',
             )
         );
