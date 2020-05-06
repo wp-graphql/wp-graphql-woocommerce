@@ -38,14 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
-
-      - name: Install PHP
-        if: matrix.coverage == 1
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: json, mbstring
+          ref: ${{ github.base_ref }}
 
       - name: Build "testing" Docker Image
         run: |
@@ -66,6 +59,13 @@ jobs:
           -e SKIP_TESTS_CLEANUP=${{ matrix.coverage }} \
           testing --scale app=0
       
+      - name: Install PHP
+        if: matrix.coverage == 1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: json, mbstring
+
       - name: Push Codecoverage to Coveralls.io
         if: matrix.coverage == 1
         env:
