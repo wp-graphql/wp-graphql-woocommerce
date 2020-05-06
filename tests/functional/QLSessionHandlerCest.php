@@ -10,10 +10,6 @@ class QLSessionHandlerCest {
         $this->product_catalog = $I->getCatalog();
     }
 
-    public function _after( FunctionalTester $I ) {
-        $I->delete_shipping_methods();
-    }
-
     // tests
     public function testCartMutationsWithValidCartSessionToken( FunctionalTester $I ) {
         /**
