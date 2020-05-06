@@ -49,10 +49,9 @@ jobs:
 
       - name: Install PHP
         if: matrix.coverage == 1
-        uses: shivammathur/setup-php@1.7.0
+        uses: shivammathur/setup-php@2
         with:
           php-version: ${{ matrix.php }}
-          coverage: pcov
           extensions: json, mbstring
 
       - name: Build "testing" Docker Image
@@ -68,8 +67,10 @@ jobs:
           docker-compose run --rm \
           -e STRIPE_API_PUBLISHABLE_KEY=${{ secrets.STRIPE_API_PUBLISHABLE_KEY }} \
           -e STRIPE_API_SECRET_KEY=${{ secrets.STRIPE_API_SECRET_KEY }} \
+          -e SUITES="acceptance;functional;wpunit" \
           -e COVERAGE=${{ matrix.coverage }} \
           -e DEBUG=${{ matrix.debug }} \
+          -e SKIP_TESTS_CLEANUP=${{ matrix.coverage }} \
           testing --scale app=0
       
       - name: Push Codecoverage to Coveralls.io
