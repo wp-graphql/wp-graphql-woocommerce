@@ -20,25 +20,18 @@ jobs:
       debug: 0
     strategy:
       matrix:
-        php: ['7.3', '7.2', '7.1', '7.0']
-        wordpress: ['5.3', '5.0', '4.9']
+        php: ['7.3', '7.2', '7.1']
+        wordpress: ['5.3', '5.0']
         include:
-          - php: '7.0'
+          - php: '7.1'
             use_xdebug: 1
-          - php: '7.0'
+          - php: '7.1'
             wordpress: '5.0'
             coverage: 1
           - php: '7.3'
             wordpress: '5.0'
             debug: 1
 
-        exclude: 
-          - php: '7.3'
-            wordpress: '4.9'
-          - php: '7.2'
-            wordpress: '4.9'
-          - php: '7.0'
-            wordpress: '5.3'
       fail-fast: false
     name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
     steps:
