@@ -49,7 +49,7 @@ jobs:
 
       - name: Install PHP
         if: matrix.coverage == 1
-        uses: shivammathur/setup-php@2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: json, mbstring
