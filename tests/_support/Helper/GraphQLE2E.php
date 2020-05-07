@@ -782,7 +782,10 @@ class GraphQLE2E extends \Codeception\Module {
             )
         );
         update_option( 'woocommerce_free_shipping', array() );
-        
+
+        // Set shipping debug mode
+        update_option( 'woocommerce_shipping_debug_mode', 'yes' );
+
         // Load shipping methods.
         \WC_Cache_Helper::get_transient_version( 'shipping', true );
         \WC()->shipping()->load_shipping_methods();
