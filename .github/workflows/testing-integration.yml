@@ -60,7 +60,6 @@ jobs:
           docker-compose run --rm \
           -e STRIPE_API_PUBLISHABLE_KEY=${{ secrets.STRIPE_API_PUBLISHABLE_KEY }} \
           -e STRIPE_API_SECRET_KEY=${{ secrets.STRIPE_API_SECRET_KEY }} \
-          -e SUITES="acceptance;functional;wpunit" \
           -e COVERAGE=${{ matrix.coverage }} \
           -e DEBUG=${{ matrix.debug }} \
           -e SKIP_TESTS_CLEANUP=${{ matrix.coverage }} \
