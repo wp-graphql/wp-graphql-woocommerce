@@ -39,7 +39,7 @@ class Shipping_Rate_Type {
 						},
 					),
 					'instanceId' => array(
-						'type'        => array( 'non_null' => 'Int' ),
+						'type'        => 'Int',
 						'description' => __( 'Shipping instance ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->get_instance_id() ) ? $source->get_instance_id() : null;
