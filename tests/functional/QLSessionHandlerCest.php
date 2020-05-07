@@ -6,7 +6,7 @@ class QLSessionHandlerCest {
     private $product_catalog;
 
     public function _before( FunctionalTester $I ) {
-        // Create Product
+        // Create Products
         $this->product_catalog = $I->getCatalog();
     }
 

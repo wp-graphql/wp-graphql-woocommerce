@@ -169,24 +169,27 @@ class Factory {
 	 * @return bool  True if (re)initialized.
 	 */
 	public static function maybe_initialize_session() {
-		if ( is_null( WC()->customer ) || get_current_user_id() !== WC()->customer->get_id() ) {
-			if ( is_null( WC()->session ) ) {
-				WC()->initialize_session();
-			} else {
-				WC()->session->init();
-			}
+		switch ( true ) {
+			case is_null( WC()->customer ):
+			case 0 !== get_current_user_id() && get_current_user_id() !== WC()->customer->get_id():
+				if ( is_null( WC()->session ) ) {
+					WC()->initialize_session();
+				} else {
+					WC()->session->init();
+				}
 
-			// Set customer and cart to null just to be safe.
-			WC()->customer = null;
-			WC()->cart     = null;
+				// Set customer and cart to null just to be safe.
+				WC()->customer = null;
+				WC()->cart     = null;
 
-			// (re)initialize cart.
-			WC()->initialize_cart();
+				// (re)initialize cart.
+				WC()->initialize_cart();
 
-			return true;
+				return true;
+
+			default:
+				return false;
 		}
-
-		return false;
 	}
 
 	/**
