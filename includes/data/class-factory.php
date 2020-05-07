@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Data;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use function WC;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Coupon_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Customer_Connection_Resolver;
@@ -45,6 +46,8 @@ class Factory {
 	 * @access public
 	 */
 	public static function resolve_session_customer() {
+		self::maybe_initialize_session();
+
 		return new Customer();
 	}
 
@@ -161,20 +164,40 @@ class Factory {
 	}
 
 	/**
-	 * Resolves woocommerce cart.
+	 * Checks if the WooCommerce Session needs to be (re)initialized.
+	 * 
+	 * @return bool  True if (re)initialized.
+	 */
+	public static function maybe_initialize_session() {
+		if ( is_null( WC()->customer ) || get_current_user_id() !== WC()->customer->get_id() ) {
+			if ( is_null( WC()->session ) ) {
+				WC()->initialize_session();
+			} else {
+				WC()->session->init();
+			}
+
+			// Set customer and cart to null just to be safe.
+			WC()->customer = null;
+			WC()->cart     = null;
+
+			// (re)initialize cart.
+			WC()->initialize_cart();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Resolves the WooCommerce cart instance.
 	 *
 	 * @return \WC_Cart
 	 */
 	public static function resolve_cart() {
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		do_action( 'woocommerce_before_calculate_totals', \WC()->cart );
+		self::maybe_initialize_session();
 
-		new \WC_Cart_Totals( \WC()->cart );
-
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		do_action( 'woocommerce_after_calculate_totals', \WC()->cart );
-
-		return \WC()->cart;
+		return WC()->cart;
 	}
 
 	/**
