@@ -3,10 +3,10 @@
 # Processes parameters and runs Codeception.
 run_tests() {
     echo "Running Tests"
-    if [ "$COVERAGE" == "1" ]; then
+    if [[ -n "$COVERAGE" ]]; then
         local coverage="--coverage --coverage-xml"
     fi
-    if [ "$DEBUG" == "1" ]; then
+    if [[ -n "$DEBUG" ]]; then
         local debug="--debug"
     fi
 
@@ -25,8 +25,8 @@ version_gt() {
 write_htaccess() {
     echo "<IfModule mod_rewrite.c>
 RewriteEngine On
+RewriteBase /
 SetEnvIf Authorization \"(.*)\" HTTP_AUTHORIZATION=\$1
-RewriteBase /wordpress/
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -70,11 +70,11 @@ fi
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
 # Install pcov/clobber if PHP7.1+
-if version_gt $PHP_VERSION 7.0 && [[ "$COVERAGE" == "1" ]] && [[ -z "$USING_XDEBUG" ]]; then
+if version_gt $PHP_VERSION 7.0 && [[ -n "$COVERAGE" ]] && [[ -z "$USING_XDEBUG" ]]; then
     echo "Installing pcov/clobber"
     COMPOSER_MEMORY_LIMIT=-1 composer require --dev pcov/clobber
     vendor/bin/pcov clobber
-elif [ "$COVERAGE" == "1" ]; then
+elif [[ -n "$COVERAGE" ]]; then
     echo "Using XDebug for codecoverage"
 fi
 
@@ -92,28 +92,29 @@ if [ -f "$PROJECT_DIR/c3.php" ] && [ "$SKIP_TESTS_CLEANUP" != "1" ]; then
 fi
 
 # Clean coverage.xml and clean up PCOV configurations.
-if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ "$COVERAGE" == "1" ]]; then
+if [ -f "${TESTS_OUTPUT}/coverage.xml" ] && [[ -n "$COVERAGE" ]]; then
     echo 'Cleaning coverage.xml for deployment'.
     pattern="$PROJECT_DIR/"
     sed -i "s~$pattern~~g" "$TESTS_OUTPUT"/coverage.xml
 
     # Remove pcov/clobber
-    if version_gt $PHP_VERSION 7.0 && [ "$SKIP_TESTS_CLEANUP" != "1" ] && [[ -z "$USING_XDEBUG" ]]; then
+    if version_gt $PHP_VERSION 7.0 && [[ -z "$SKIP_TESTS_CLEANUP" ]] && [[ -z "$USING_XDEBUG" ]]; then
         echo 'Removing pcov/clobber.'
         vendor/bin/pcov unclobber
         COMPOSER_MEMORY_LIMIT=-1 composer remove --dev pcov/clobber
     fi
 
-    if [ "$SKIP_TESTS_CLEANUP" != "1" ]; then
-        echo 'Changing composer configuration in container.'
-        composer config --global discard-changes true
+fi
 
-        echo 'Removing devDependencies.'
-        composer install --no-dev -n
+if [[ -z "$SKIP_TESTS_CLEANUP" ]]; then
+    echo 'Changing composer configuration in container.'
+    composer config --global discard-changes true
 
-        echo 'Removing composer.lock'
-        rm composer.lock
-    fi
+    echo 'Removing devDependencies.'
+    composer install --no-dev -n
+
+    echo 'Removing composer.lock'
+    rm composer.lock
 fi
 
 # Set public test result files permissions.
