@@ -136,6 +136,7 @@ class Cart_Type {
 						'description' => __( 'Available shipping methods for this order.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function() {
 							$packages = array();
+
 							foreach ( \WC()->shipping()->calculate_shipping( \WC()->cart->get_shipping_packages() ) as $index => $package ) {
 								$package['index'] = $index;
 								$packages[] = $package;
