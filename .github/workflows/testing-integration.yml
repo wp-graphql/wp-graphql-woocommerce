@@ -15,9 +15,6 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    env:
-      coverage: 0
-      debug: 0
     strategy:
       matrix:
         php: ['7.3', '7.2', '7.1']
@@ -46,26 +43,23 @@ jobs:
           extensions: json, mbstring
 
       - name: Build "testing" Docker Image
-        run: |
-          docker-compose build \
-          --build-arg PHP_VERSION=${{ matrix.php }} \
-          --build-arg WP_VERSION=${{ matrix.wordpress }} \
-          --build-arg USE_XDEBUG=${{ matrix.use_xdebug }} \
-          testing
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+          WP_VERSION: ${{ matrix.wordpress }}
+          USE_XDEBUG: ${{ matrix.use_xdebug }}
+        run: bin/run-docker.sh build -t
 
       - name: Run Tests w/ Docker.
-        run: |
-          docker-compose run --rm \
-          -e STRIPE_API_PUBLISHABLE_KEY=${{ secrets.STRIPE_API_PUBLISHABLE_KEY }} \
-          -e STRIPE_API_SECRET_KEY=${{ secrets.STRIPE_API_SECRET_KEY }} \
-          -e COVERAGE=${{ matrix.coverage }} \
-          -e DEBUG=${{ matrix.debug }} \
-          -e SKIP_TESTS_CLEANUP=${{ matrix.coverage }} \
-          testing --scale app=0
+        env:
+          STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
+          STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
+          COVERAGE: ${{ matrix.coverage }}
+          DEBUG: ${{ matrix.debug }}
+        run: bin/run-docker.sh run -t
       
       - name: Push Codecoverage to Coveralls.io
         if: matrix.coverage == 1
         env:
           COVERALLS_RUN_LOCALLY: 1
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: vendor/bin/php-coveralls -v
