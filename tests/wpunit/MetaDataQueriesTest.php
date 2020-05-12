@@ -34,6 +34,11 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         parent::tearDown();
     }
 
+    public function set_user( $user ) {
+		wp_set_current_user( $user );
+		WC()->customer = new WC_Customer( get_current_user_id(), true );
+	}
+
     private function createObjects() {
         $data = array(
             'meta_data' => array(
@@ -415,7 +420,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         /**
          * Assertion One
          */
-        wp_set_current_user( $this->customer_id );
+        $this->set_user( $this->customer_id );
         $actual   = graphql( array( 'query' => $query ) );
         $expected = array(
             'data' => array(

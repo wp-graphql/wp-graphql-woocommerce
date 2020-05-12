@@ -10,59 +10,57 @@ on:
   pull_request:
     branches:
       - develop
+      - release/v0.5.1
 
 jobs:
   run:
     runs-on: ubuntu-latest
-    env:
-      coverage: 0
-      debug: 0
     strategy:
       matrix:
-        php: ['7.3', '7.2', '7.1', '7.0']
-        wordpress: ['5.3', '5.0', '4.9']
+        php: ['7.3', '7.2', '7.1']
+        wordpress: ['5.3', '5.0']
         include:
-          - php: '7.0'
+          - php: '7.1'
             use_xdebug: 1
-          - php: '7.0'
+          - php: '7.1'
             wordpress: '5.0'
             coverage: 1
-
-        exclude: 
           - php: '7.3'
-            wordpress: '4.9'
-          - php: '7.2'
-            wordpress: '4.9'
-          - php: '7.0'
-            wordpress: '5.3'
+            wordpress: '5.0'
+            debug: 1
+
       fail-fast: false
     name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        if: matrix.coverage == 1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: json, mbstring
 
       - name: Build "testing" Docker Image
-        run: |
-          docker-compose build \
-          --build-arg PHP_VERSION=${{ matrix.php }} \
-          --build-arg WP_VERSION=${{ matrix.wordpress }} \
-          --build-arg USE_XDEBUG=${{ matrix.use_xdebug }} \
-          testing
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+          WP_VERSION: ${{ matrix.wordpress }}
+          USE_XDEBUG: ${{ matrix.use_xdebug }}
+        run: bin/run-docker.sh build -t
 
       - name: Run Tests w/ Docker.
-        run: |
-          docker-compose run --rm \
-          -e COVERAGE=${{ matrix.coverage }} \
-          -e DEBUG=${{ matrix.debug }} \
-          testing --scale app=0
+        env:
+          STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
+          STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
+          COVERAGE: ${{ matrix.coverage }}
+          DEBUG: ${{ matrix.debug }}
+          SKIP_TESTS_CLEANUP: ${{ matrix.coverage }}
+        run: bin/run-docker.sh run -t
       
       - name: Push Codecoverage to Coveralls.io
         if: matrix.coverage == 1
         env:
           COVERALLS_RUN_LOCALLY: 1
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: |
-          wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
-          chmod +x php-coveralls.phar
-    
-          php php-coveralls.phar -v
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: vendor/bin/php-coveralls -v

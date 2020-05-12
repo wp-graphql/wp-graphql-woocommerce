@@ -76,8 +76,8 @@ class CustomerHelper extends WCG_Helper {
 		return absint( $customer->save() );
 	}
 
-	public function print_query( $id ) {
-		$data = new WC_Customer( $id );
+	public function print_query( $id, $session = false ) {
+		$data = new WC_Customer( $id, $session );
 		$wp_user = get_user_by( 'ID', $data->get_id() );
 
 		return array(

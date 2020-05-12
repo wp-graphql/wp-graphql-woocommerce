@@ -81,6 +81,10 @@ class Checkout {
 				'type'        => array( 'list_of' => 'MetaDataInput' ),
 				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
 			),
+			'customerNote'           => array(
+				'type'        => 'String',
+				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
+			)
 		);
 	}
 
@@ -144,11 +148,6 @@ class Checkout {
 
 				if ( is_wp_error( $order_id ) ) {
 					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
-				}
-
-				// Add meta data.
-				if ( ! empty( $input['metaData'] ) ) {
-					Checkout_Mutation::add_order_meta( $order_id, $input['metaData'], $input, $context, $info );
 				}
 
 				/**

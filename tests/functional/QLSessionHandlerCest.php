@@ -6,12 +6,8 @@ class QLSessionHandlerCest {
     private $product_catalog;
 
     public function _before( FunctionalTester $I ) {
-        // Create Product
+        // Create Products
         $this->product_catalog = $I->getCatalog();
-    }
-
-    public function _after( FunctionalTester $I ) {
-        $I->delete_shipping_methods();
     }
 
     // tests
@@ -430,6 +426,49 @@ class QLSessionHandlerCest {
         $I->assertEquals( $token_data->iss, $wp_url );
 
         /**
+         * Set shipping address, so shipping rates can be calculated
+         */
+        $input = array(
+            'clientMutationId' => 'someId',
+            'shipping'         => array(
+                'state'    => 'New York',
+                'country'  => 'US',
+                'postcode' => '12345',
+            )
+        );
+
+        $mutation = '
+            mutation ( $input: UpdateCustomerInput! ){
+                updateCustomer ( input: $input ) {
+                    customer {
+                        shipping {
+                            state
+                            country
+                            postcode
+                        }
+                    }
+                }
+            }
+        ';
+
+        $actual = $I->sendGraphQLRequest( $mutation, $input, array( 'woocommerce-session' => "Session {$session_token}" ) );
+        $expected = array(
+            'data' => array(
+                'updateCustomer' => array(
+                    'customer' => array(
+                        'shipping' => array(
+                            'state'    => 'New York',
+                            'country'  => 'US',
+                            'postcode' => '12345'
+                        ),
+                    ),
+                ),
+            ),
+        );
+
+        $I->assertEquals( $expected, $actual );
+
+        /**
          * Make a cart query request with "woocommerce-session" HTTP Header and confirm
          * correct cart contents and chosen and available shipping methods. 
          */
@@ -450,7 +489,6 @@ class QLSessionHandlerCest {
                             label
                         }
                     }
-                    chosenShippingMethod
                 }
             }
         ';
@@ -472,19 +510,18 @@ class QLSessionHandlerCest {
                             'supportsShippingCalculator' => true,
                             'rates'                      => array(
                                 array(
-                                    'id'    => 'legacy_flat_rate',
-                                    'cost'  => 10.00,
+                                    'id'    => 'flat_rate:7',
+                                    'cost'  => '0.00',
                                     'label' => 'Flat rate'
                                 ),
                                 array(
-                                    'id'    => 'legacy_free_shipping',
-                                    'cost'  => 0,
+                                    'id'    => 'free_shipping:8',
+                                    'cost'  => '0.00',
                                     'label' => 'Free shipping'
                                 ),
                             )
                         )
                     ),
-                    'chosenShippingMethod'     => 'legacy_flat_rate'
                 ),
             ),
         );
@@ -492,7 +529,7 @@ class QLSessionHandlerCest {
         $I->assertEquals( $expected, $actual );
 
         /**
-         * Update shipping method to 'legacy_flat_rate' shipping. 
+         * Update shipping method to 'flat_rate' shipping. 
          */
         $mutation = '
             mutation ($input: UpdateShippingMethodInput!){
@@ -522,7 +559,7 @@ class QLSessionHandlerCest {
             $mutation,
             array(
                 'clientMutationId' => 'someId',
-                'shippingMethods'  => array( 'legacy_free_shipping' ),
+                'shippingMethods'  => array( 'flat_rate:7' ),
             ),
             array( 'woocommerce-session' => "Session {$session_token}" )
         );
@@ -533,6 +570,6 @@ class QLSessionHandlerCest {
         $I->assertNotEmpty( $success['data']['updateShippingMethod']['cart'] );
         $cart = $success['data']['updateShippingMethod']['cart'];
         $I->assertNotEmpty( $cart['availableShippingMethods'] );
-        $I->assertEquals( 'legacy_free_shipping', $cart['chosenShippingMethod'] );
+        $I->assertEquals( 'flat_rate:7', $cart['chosenShippingMethod'] );
     }
 }

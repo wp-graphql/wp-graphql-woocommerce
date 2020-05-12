@@ -3,11 +3,7 @@
 ############################################################################
 
 # Using the 'DESIRED_' prefix to avoid confusion with environment variables of the same name.
-ARG WP_VERSION
-ARG PHP_VERSION
-
-FROM kidunot89/woographql-app:wp${WP_VERSION}-php${PHP_VERSION}
-
+FROM woographql-app:latest
 
 LABEL author=kidunot89
 LABEL author_uri=https://github.com/kidunot89
@@ -15,11 +11,7 @@ LABEL author_uri=https://github.com/kidunot89
 SHELL [ "/bin/bash", "-c" ]
 
 # Redeclare ARGs and set as environmental variables for reuse.
-ARG WP_VERSION
-ARG PHP_VERSION
 ARG USE_XDEBUG
-ENV WP_VERSION=${WP_VERSION}
-ENV PHP_VERSION=${PHP_VERSION}
 ENV USING_XDEBUG=${USE_XDEBUG}
 
 # Install php extensions
@@ -37,7 +29,7 @@ RUN if [ "$PHP_VERSION" != "5.6" ] && [ "$PHP_VERSION" != "7.0" ] && [[ -z "$USI
         && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    elif  [ "$PHP_VERSION" == "7.0" ] || [ ! -z "$USING_XDEBUG" ]; then \
+    elif  [ "$PHP_VERSION" == "7.0" ] || [ -n "$USING_XDEBUG" ]; then \
         yes | pecl install xdebug-2.6.1 \
         && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
         && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
@@ -67,6 +59,6 @@ RUN sed -i '$d' /usr/local/bin/app-entrypoint.sh
 
 # Set up entrypoint
 WORKDIR    /var/www/html/wp-content/plugins/wp-graphql-woocommerce
-COPY       bin/testing-entrypoint.sh /usr/local/bin/testing-entrypoint.sh
+COPY       docker/testing.entrypoint.sh /usr/local/bin/testing-entrypoint.sh
 RUN        chmod 755 /usr/local/bin/testing-entrypoint.sh
 ENTRYPOINT ["testing-entrypoint.sh"]

@@ -27,6 +27,35 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
     /**
+     * Authenticates User.
+     *
+     * @param array  $input
+     * @param string $session_header
+     * @return array
+     */
+    public function login( $input, $request_headers = array() ) {
+        $mutation = '
+            mutation ( $input: LoginInput! ) {
+                login( input: $input ) {
+                    clientMutationId
+                    authToken
+                    refreshToken
+                    customer {
+                        customerId
+                        username
+                    }
+                }
+            }
+        ';
+
+        // Send GraphQL request and get response.
+        $response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+
+        // Return response.
+        return $response;
+    }
+
+    /**
      * Adds item to cart.
      *
      * @param array  $input
@@ -727,36 +756,6 @@ class GraphQLE2E extends \Codeception\Module {
                 \WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
             }
         );
-
-        // Create legacy flat rate shipping method.
-		update_option(
-            'woocommerce_flat_rate_settings',
-            array(
-                'enabled'      => 'yes',
-                'title'        => 'Flat rate',
-                'availability' => 'all',
-                'countries'    => '',
-                'tax_status'   => 'taxable',
-                'cost'         => '10',
-            )
-        );
-        update_option( 'woocommerce_flat_rate', array() );
-        
-        // Create legacy free shipping method.
-		update_option(
-            'woocommerce_free_shipping_settings',
-            array(
-                'enabled'      => 'yes',
-                'title'        => 'Free shipping',
-                'availability' => 'all',
-                'countries'    => '',
-            )
-        );
-        update_option( 'woocommerce_free_shipping', array() );
-        
-        // Load shipping methods.
-        \WC_Cache_Helper::get_transient_version( 'shipping', true );
-        \WC()->shipping()->load_shipping_methods();
         
         // Create Shipping Zones.
 		$zone = new \WC_Shipping_Zone();
@@ -764,40 +763,33 @@ class GraphQLE2E extends \Codeception\Module {
 		$zone->set_zone_order( 1 );
 		$zone->add_location( 'GB', 'country' );
 		$zone->add_location( 'CB*', 'postcode' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
 
         $zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'Europe' );
 		$zone->set_zone_order( 2 );
 		$zone->add_location( 'EU', 'continent' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
 
         $zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'California' );
 		$zone->set_zone_order( 3 );
 		$zone->add_location( 'US:CA', 'state' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
 
 		$zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'US' );
 		$zone->set_zone_order( 4 );
 		$zone->add_location( 'US', 'country' );
-		$zone->save();
-    }
-
-    /**
-     * Deletes shipping method settings, updates the "shipping" group transient
-     * and unregisters all shipping methods. 
-     * 
-     * Should be done after have tests.
-     */
-    public function delete_shipping_methods() {
-        delete_option( 'woocommerce_flat_rate_settings' );
-        delete_option( 'woocommerce_flat_rate' );
-        delete_option( 'woocommerce_free_shipping_settings' );
-		delete_option( 'woocommerce_free_shipping' );
-		\WC_Cache_Helper::get_transient_version( 'shipping', true );
-		\WC()->shipping()->unregister_shipping_methods();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
     }
 
     /**
@@ -865,4 +857,18 @@ class GraphQLE2E extends \Codeception\Module {
         $wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
     }
 
+
+    public function createOldSession() {
+        $products = $this->getCatalog();
+
+        $wpdb   = $this->getModule( 'WPDb' );
+        $userId = $wpdb->haveUserInDatabase(
+            'jimbo1234',
+            'customer',
+            [
+                'user_pass'  => 'password',
+                'user_email' => 'jimbo1234@example.com',
+            ]
+        );
+    }
 }

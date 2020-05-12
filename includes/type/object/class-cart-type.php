@@ -134,9 +134,14 @@ class Cart_Type {
 					'availableShippingMethods' => array(
 						'type'        => array( 'list_of' => 'ShippingPackage' ),
 						'description' => __( 'Available shipping methods for this order.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function() {
+						'resolve'     => function( $source ) {
 							$packages = array();
-							foreach ( \WC()->shipping->get_packages() as $index => $package ) {
+
+							$shipping_methods = $source->needs_shipping()
+								? \WC()->shipping()->calculate_shipping( $source->get_shipping_packages() )
+								: array();
+
+							foreach ( $shipping_methods as $index => $package ) {
 								$package['index'] = $index;
 								$packages[] = $package;
 							}
@@ -147,9 +152,8 @@ class Cart_Type {
 					'chosenShippingMethod'     => array(
 						'type'        => 'String',
 						'description' => __( 'Shipping method chosen for this order.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function() {
-							$packages = \WC()->shipping->get_packages();
-							foreach ( $packages as $i => $package ) {
+						'resolve'     => function( $source ) {							
+							foreach ( \WC()->shipping()->calculate_shipping( $source->get_shipping_packages() ) as $i => $package ) {
 								if ( isset( \WC()->session->chosen_shipping_methods[ $i ] ) ) {
 									return \WC()->session->chosen_shipping_methods[ $i ];
 								}

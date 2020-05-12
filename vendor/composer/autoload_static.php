@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
+class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -36,6 +36,7 @@ class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
     public static $classMap = array (
         'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
         'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
+        'Firebase\\JWT\\JWK' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWK.php',
         'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
         'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'WPGraphQL\\WooCommerce\\ACF_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-acf-schema-filters.php',
@@ -110,6 +111,9 @@ class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
         'WPGraphQL\\WooCommerce\\Mutation\\Order_Delete' => __DIR__ . '/../..' . '/includes/mutation/class-order-delete.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Order_Delete_Items' => __DIR__ . '/../..' . '/includes/mutation/class-order-delete-items.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Order_Update' => __DIR__ . '/../..' . '/includes/mutation/class-order-update.php',
+        'WPGraphQL\\WooCommerce\\Mutation\\Review_Delete_Restore' => __DIR__ . '/../..' . '/includes/mutation/class-review-delete-restore.php',
+        'WPGraphQL\\WooCommerce\\Mutation\\Review_Update' => __DIR__ . '/../..' . '/includes/mutation/class-review-update.php',
+        'WPGraphQL\\WooCommerce\\Mutation\\Review_Write' => __DIR__ . '/../..' . '/includes/mutation/class-review-write.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Backorders' => __DIR__ . '/../..' . '/includes/type/enum/class-backorders.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => __DIR__ . '/../..' . '/includes/type/enum/class-catalog-visibility.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Countries' => __DIR__ . '/../..' . '/includes/type/enum/class-countries.php',
@@ -173,9 +177,9 @@ class ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit605a02cd7bfd584c6ac9e4f2b4d51817::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2::$classMap;
 
         }, null, ClassLoader::class);
     }

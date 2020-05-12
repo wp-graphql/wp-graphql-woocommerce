@@ -10,4 +10,20 @@ modules:
     disabled:
         - WPDb
         - WPBrowser
+    config:
+        WPDb:
+            cleanup: false
+        WPLoader:
+            plugins: 
+                - woocommerce/woocommerce.php
+                - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+            activatePlugins:
+                - woocommerce/woocommerce.php
+                - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+                - wp-graphql/wp-graphql.php
+                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
 bootstrap: bootstrap.php

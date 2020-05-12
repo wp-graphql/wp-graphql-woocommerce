@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Firebase\\JWT\\BeforeValidException' => $vendorDir . '/firebase/php-jwt/src/BeforeValidException.php',
     'Firebase\\JWT\\ExpiredException' => $vendorDir . '/firebase/php-jwt/src/ExpiredException.php',
+    'Firebase\\JWT\\JWK' => $vendorDir . '/firebase/php-jwt/src/JWK.php',
     'Firebase\\JWT\\JWT' => $vendorDir . '/firebase/php-jwt/src/JWT.php',
     'Firebase\\JWT\\SignatureInvalidException' => $vendorDir . '/firebase/php-jwt/src/SignatureInvalidException.php',
     'WPGraphQL\\WooCommerce\\ACF_Schema_Filters' => $baseDir . '/includes/class-acf-schema-filters.php',
@@ -82,6 +83,9 @@ return array(
     'WPGraphQL\\WooCommerce\\Mutation\\Order_Delete' => $baseDir . '/includes/mutation/class-order-delete.php',
     'WPGraphQL\\WooCommerce\\Mutation\\Order_Delete_Items' => $baseDir . '/includes/mutation/class-order-delete-items.php',
     'WPGraphQL\\WooCommerce\\Mutation\\Order_Update' => $baseDir . '/includes/mutation/class-order-update.php',
+    'WPGraphQL\\WooCommerce\\Mutation\\Review_Delete_Restore' => $baseDir . '/includes/mutation/class-review-delete-restore.php',
+    'WPGraphQL\\WooCommerce\\Mutation\\Review_Update' => $baseDir . '/includes/mutation/class-review-update.php',
+    'WPGraphQL\\WooCommerce\\Mutation\\Review_Write' => $baseDir . '/includes/mutation/class-review-write.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Backorders' => $baseDir . '/includes/type/enum/class-backorders.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Catalog_Visibility' => $baseDir . '/includes/type/enum/class-catalog-visibility.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Countries' => $baseDir . '/includes/type/enum/class-countries.php',
