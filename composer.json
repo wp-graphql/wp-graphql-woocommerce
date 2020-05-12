@@ -33,11 +33,7 @@
         "optimize-autoloader": true
     },
     "autoload": {
-<<<<<<< HEAD
-        "files":[
-=======
         "files": [
->>>>>>> release/v0.5.1
             "includes/connection/wc-cpt-connection-args.php",
             "includes/functions.php"
         ],
