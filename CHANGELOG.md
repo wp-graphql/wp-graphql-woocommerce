@@ -1,8 +1,36 @@
 # Changelog
 
+## [v0.5.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.5.1) (2020-05-11)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.5.0...v0.5.1)
+
+**Enhancements:**
+
+- Add product review mutation using "createComment" is missing ratings input fields. [\#254](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/254)
+- Release v0.5.1 [\#255](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/255) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- customer query without parameters is not working with just an Auth Header  [\#275](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/275)
+- Bugs with Checkout Mutation input variables [\#270](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/270)
+- Update Customer mutation allows for invalid shipping input variables [\#269](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/269)
+- Checkout mutation payload contains WooCommerce error HTML and breaks JSON [\#265](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/265)
+- "shippingMethod" field type changed to \[String\]. [\#257](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/257) ([kidunot89](https://github.com/kidunot89))
+
+**Closed issues:**
+
+- Products with arrow in WP admin are not returned in any products wpgraphql query [\#278](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/278)
+- Payment gateway missing from paymentGateways query [\#263](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/263)
+- addToCart mutation returns Internal server error in response body with HTTP 200 [\#251](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/251)
+
+**Merged pull requests:**
+
+- Changing how we verify the JWT plugin [\#273](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/273) ([renatonascalves](https://github.com/renatonascalves))
+- Activating Open Collective [\#252](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/252) ([monkeywithacupcake](https://github.com/monkeywithacupcake))
+
 ## [v0.5.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.5.0) (2020-03-27)
 
-[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/list...v0.5.0)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.4...v0.5.0)
 
 ### Release Checklist
 ---------------------------------------------------
@@ -21,10 +49,6 @@
 **Merged pull requests:**
 
 - Updates to the Connection Classes [\#243](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/243) ([renatonascalves](https://github.com/renatonascalves))
-
-## [list](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/list) (2020-02-20)
-
-[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.4.4...list)
 
 ## [v0.4.4](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.4.4) (2020-02-20)
 
@@ -212,6 +236,10 @@ Updated tests
 ## [v0.3.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.1-beta) (2019-11-26)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.0-beta...v0.3.1-beta)
+
+**Breaking changes:**
+
+- Product\(Object\) to Product\(Interface\) [\#159](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/159) ([kidunot89](https://github.com/kidunot89))
 
 **Enhancements:**
 
