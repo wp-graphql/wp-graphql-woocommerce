@@ -10,9 +10,6 @@
 namespace WPGraphQL\WooCommerce;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\Model\User;
 use WPGraphQL\WooCommerce\Model\Customer;
 /**
  * Class JWT_Auth_Schema_Filters
@@ -22,8 +19,8 @@ class JWT_Auth_Schema_Filters {
 	 * Register filters
 	 */
 	public static function add_filters() {
-		// Confirm WPGraphQL JWT Authentication is install and activated.
-		if ( defined( 'WPGRAPHQL_JWT_AUTHENTICATION_VERSION' ) ) {
+		// Confirm WPGraphQL JWT Authentication is installed.
+		if ( \class_exists( '\WPGraphQL\JWT_Authentication\Auth') ) {
 			add_filter( 'graphql_jwt_user_types', array( __CLASS__, 'add_customer_to_jwt_user_types' ), 10 );
 			add_filter( 'graphql_registerCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 3 );
 			add_filter( 'graphql_updateCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 3 );
@@ -34,11 +31,10 @@ class JWT_Auth_Schema_Filters {
 	/**
 	 * Adds Customer type to the JWT User type list.
 	 *
-	 * @param array $types  JWT User types.
-	 *
+	 * @param array $types JWT User types.
 	 * @return array
 	 */
-	public static function add_customer_to_jwt_user_types( $types ) {
+	public static function add_customer_to_jwt_user_types( array $types ) {
 		$types[] = 'Customer';
 
 		return $types;
@@ -50,8 +46,9 @@ class JWT_Auth_Schema_Filters {
 	 * @param array                             $fields         Mutation output field definitions.
 	 * @param \WPGraphQL\Type\WPInputObjectType $object         The WPInputObjectType the fields are be added to.
 	 * @param \WPGraphQL\Registry\TypeRegistry  $type_registry  TypeRegistry instance.
+	 * @return array
 	 */
-	public static function add_jwt_output_fields( $fields, $object, $type_registry ) {
+	public static function add_jwt_output_fields( $fields, $object, $type_registry ): array {
 		$fields = array_merge(
 			$fields,
 			array(
@@ -90,7 +87,7 @@ class JWT_Auth_Schema_Filters {
 	}
 
 	/**
-	 * Adds "customer" field to "login" mutation payload
+	 * Adds "customer" field to "login" mutation payload.
 	 */
 	public static function add_customer_to_login_payload() {
 		register_graphql_field(
