@@ -44,8 +44,8 @@ services:
       # Volumes for local in-depth development only
       # Clone the WooCommerce & WPGraphQL repositories into the same directory
       # as this WooGraphQL repository
-      # - '../woocommerce:/var/www/html/wp-content/plugins/woocommerce'
-      # - '../wp-graphql:/var/www/html/wp-content/plugins/wp-graphql'
+      - '../woocommerce:/var/www/html/wp-content/plugins/woocommerce'
+      - '../wp-graphql:/var/www/html/wp-content/plugins/wp-graphql'
     env_file: .env.dist
     environment:
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1

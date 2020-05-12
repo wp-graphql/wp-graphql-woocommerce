@@ -43,7 +43,7 @@ case "$subcommand" in
                     -e SUITES=${SUITES-} \
                     -e COVERAGE=${COVERAGE-} \
                     -e DEBUG=${DEBUG-} \
-                    -e SKIP_TESTS_CLEANUP=${COVERAGE-} \
+                    -e SKIP_TESTS_CLEANUP=${SKIP_TESTS_CLEANUP-} \
                     testing --scale app=0
                     ;;
                 \? ) echo "Usage: $0 run [-a|-t]";;

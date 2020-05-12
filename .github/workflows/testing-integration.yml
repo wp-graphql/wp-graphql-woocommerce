@@ -55,6 +55,7 @@ jobs:
           STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
           COVERAGE: ${{ matrix.coverage }}
           DEBUG: ${{ matrix.debug }}
+          SKIP_TESTS_CLEANUP: ${{ matrix.coverage }}
         run: bin/run-docker.sh run -t
       
       - name: Push Codecoverage to Coveralls.io

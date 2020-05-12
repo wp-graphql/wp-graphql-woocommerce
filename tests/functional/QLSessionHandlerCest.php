@@ -510,13 +510,13 @@ class QLSessionHandlerCest {
                             'supportsShippingCalculator' => true,
                             'rates'                      => array(
                                 array(
-                                    'id'    => 'legacy_flat_rate',
-                                    'cost'  => 10.00,
+                                    'id'    => 'flat_rate:7',
+                                    'cost'  => '0.00',
                                     'label' => 'Flat rate'
                                 ),
                                 array(
-                                    'id'    => 'legacy_free_shipping',
-                                    'cost'  => 0,
+                                    'id'    => 'free_shipping:8',
+                                    'cost'  => '0.00',
                                     'label' => 'Free shipping'
                                 ),
                             )
@@ -529,7 +529,7 @@ class QLSessionHandlerCest {
         $I->assertEquals( $expected, $actual );
 
         /**
-         * Update shipping method to 'legacy_flat_rate' shipping. 
+         * Update shipping method to 'flat_rate' shipping. 
          */
         $mutation = '
             mutation ($input: UpdateShippingMethodInput!){
@@ -559,7 +559,7 @@ class QLSessionHandlerCest {
             $mutation,
             array(
                 'clientMutationId' => 'someId',
-                'shippingMethods'  => array( 'legacy_free_shipping' ),
+                'shippingMethods'  => array( 'flat_rate:7' ),
             ),
             array( 'woocommerce-session' => "Session {$session_token}" )
         );
@@ -570,6 +570,6 @@ class QLSessionHandlerCest {
         $I->assertNotEmpty( $success['data']['updateShippingMethod']['cart'] );
         $cart = $success['data']['updateShippingMethod']['cart'];
         $I->assertNotEmpty( $cart['availableShippingMethods'] );
-        $I->assertEquals( 'legacy_free_shipping', $cart['chosenShippingMethod'] );
+        $I->assertEquals( 'flat_rate:7', $cart['chosenShippingMethod'] );
     }
 }

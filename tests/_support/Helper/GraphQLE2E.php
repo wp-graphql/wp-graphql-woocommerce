@@ -756,39 +756,6 @@ class GraphQLE2E extends \Codeception\Module {
                 \WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
             }
         );
-
-        // Create legacy flat rate shipping method.
-		update_option(
-            'woocommerce_flat_rate_settings',
-            array(
-                'enabled'      => 'yes',
-                'title'        => 'Flat rate',
-                'availability' => 'all',
-                'countries'    => '',
-                'tax_status'   => 'taxable',
-                'cost'         => '10',
-            )
-        );
-        update_option( 'woocommerce_flat_rate', array() );
-        
-        // Create legacy free shipping method.
-		update_option(
-            'woocommerce_free_shipping_settings',
-            array(
-                'enabled'      => 'yes',
-                'title'        => 'Free shipping',
-                'availability' => 'all',
-                'countries'    => '',
-            )
-        );
-        update_option( 'woocommerce_free_shipping', array() );
-
-        // Set shipping debug mode
-        update_option( 'woocommerce_shipping_debug_mode', 'yes' );
-
-        // Load shipping methods.
-        \WC_Cache_Helper::get_transient_version( 'shipping', true );
-        \WC()->shipping()->load_shipping_methods();
         
         // Create Shipping Zones.
 		$zone = new \WC_Shipping_Zone();
@@ -796,25 +763,33 @@ class GraphQLE2E extends \Codeception\Module {
 		$zone->set_zone_order( 1 );
 		$zone->add_location( 'GB', 'country' );
 		$zone->add_location( 'CB*', 'postcode' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
 
         $zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'Europe' );
 		$zone->set_zone_order( 2 );
 		$zone->add_location( 'EU', 'continent' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
 
         $zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'California' );
 		$zone->set_zone_order( 3 );
 		$zone->add_location( 'US:CA', 'state' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
 
 		$zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'US' );
 		$zone->set_zone_order( 4 );
 		$zone->add_location( 'US', 'country' );
-		$zone->save();
+        $zone->save();
+        $zone->add_shipping_method( 'flat_rate' );
+        $zone->add_shipping_method( 'free_shipping' );
     }
 
     /**
