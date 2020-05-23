@@ -143,7 +143,7 @@ class Product {
 				'description' => __( 'Product price', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'format' => array(
-						'type'        => 'PostObjectFieldFormatEnum',
+						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					),
 				),
@@ -160,7 +160,7 @@ class Product {
 				'description' => __( 'Product regular price', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'format' => array(
-						'type'        => 'PostObjectFieldFormatEnum',
+						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					),
 				),
@@ -177,7 +177,7 @@ class Product {
 				'description' => __( 'Product sale price', 'wp-graphql-woocommerce' ),
 				'args'        => array(
 					'format' => array(
-						'type'        => 'PostObjectFieldFormatEnum',
+						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					),
 				),
