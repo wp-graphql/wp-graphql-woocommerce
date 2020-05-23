@@ -138,6 +138,57 @@ class Product {
 				'type'        => 'String',
 				'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
 			),
+			'price'              => array(
+				'type'        => 'String',
+				'description' => __( 'Product price', 'wp-graphql-woocommerce' ),
+				'args'        => array(
+					'format' => array(
+						'type'        => 'PostObjectFieldFormatEnum',
+						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+					),
+				),
+				'resolve'     => function( $source, $args ) {
+					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+						// @codingStandardsIgnoreLine.
+						return $source->priceRaw;
+					}
+					return $source->price;
+				},
+			),
+			'regularPrice'              => array(
+				'type'        => 'String',
+				'description' => __( 'Product regular price', 'wp-graphql-woocommerce' ),
+				'args'        => array(
+					'format' => array(
+						'type'        => 'PostObjectFieldFormatEnum',
+						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+					),
+				),
+				'resolve'     => function( $source, $args ) {
+					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+						// @codingStandardsIgnoreLine.
+						return $source->regularPriceRaw;
+					}
+					return $source->regularPrice;
+				},
+			),
+			'salePrice'              => array(
+				'type'        => 'String',
+				'description' => __( 'Product sale price', 'wp-graphql-woocommerce' ),
+				'args'        => array(
+					'format' => array(
+						'type'        => 'PostObjectFieldFormatEnum',
+						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+					),
+				),
+				'resolve'     => function( $source, $args ) {
+					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+						// @codingStandardsIgnoreLine.
+						return $source->salePriceRaw;
+					}
+					return $source->salePrice;
+				},
+			),
 			'status'            => array(
 				'type'        => 'String',
 				'description' => __( 'Product status', 'wp-graphql-woocommerce' ),
