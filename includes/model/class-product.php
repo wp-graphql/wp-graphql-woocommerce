@@ -170,6 +170,15 @@ class Product extends Crud_CPT {
 				'name'                => function() {
 					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
 				},
+				'price'                => function() {
+					return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+				},
+				'regularPrice'                => function() {
+					return ! empty( $this->data->get_regularPrice() ) ? $this->data->get_regularPrice() : null;
+				},
+				'salePrice'                => function() {
+					return ! empty( $this->data->get_salePrice() ) ? $this->data->get_salePrice() : null;
+				},
 				'date'                => function() {
 					return ! empty( $this->data ) ? $this->data->get_date_created() : null;
 				},
