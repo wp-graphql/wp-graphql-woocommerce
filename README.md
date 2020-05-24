@@ -2,7 +2,7 @@
 
 # WPGraphQL WooCommerce (WooGraphQL)
 
-<a href="https://woographql.axistaylor.com/" target="_blank">Docs</a> • <a href="https://www.axistaylor.com" target="_blank">AxisTaylor</a> • <a href="https://wpgql-slack.herokuapp.com/" target="_blank">Join Slack</a>
+<a href="https://woographql.com/" target="_blank">Docs</a> • <a href="https://www.axistaylor.com" target="_blank">AxisTaylor</a> • <a href="https://wpgql-slack.herokuapp.com/" target="_blank">Join Slack</a>
 
 [![Actions Status](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Testing%20Integration/badge.svg)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Testing+Integration%22+branch%3A%22develop%22) [![Actions Status](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/WordPress%20Coding%20Standards/badge.svg)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22WordPress+Coding+Standards%22+branch%3A%22develop%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
 
@@ -26,7 +26,7 @@ It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [C
 - Adminstrator mutations. Eg. Creating and deleting products, coupons, and refunds.
 
 ## Playground
-Feel free to test out the extension using the [playground](https://docs.wpgraphql.com/extensions/wpgraphql-woocommerce/). The playground allows you to execute queries and mutations, as well as view the schema.
+Feel free to test out the extension using this [GraphiQL Playground](https://woographql.com/playground). The playground allows you to execute queries and mutations, as well as view the schema.
 
 ## Wanna help support WooGraphQL's future.
 - Sponsor **@kidunot89** *(WooGraphQL Creator/Developer)* on **[Github](https://github.com/sponsors/kidunot89)**
