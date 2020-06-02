@@ -107,10 +107,10 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		
+
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Test querying product.
 		 */
 		$actual = graphql(
@@ -135,7 +135,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test querying product with unformatted content (edit-product cap required).
 		 */
 		wp_set_current_user( $this->shop_manager );
@@ -211,7 +211,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Test querying product with "productId" argument.
 		 */
 		$variables = array(
@@ -224,7 +224,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'product' => array(
 					'id'         => $this->helper->to_relay_id( $product ),
 					'image'      => array(
-						'id' => \GraphQLRelay\Relay::toGlobalId( 'attachment', $attachment_id ),
+						'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
 					),
 					'productCategories' => array(
 						'nodes' => array(
@@ -267,7 +267,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Test querying product with "productId" argument.
 		 */
 		$variables = array(
@@ -289,7 +289,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test querying product with "id" argument.
 		 */
 		$variables = array(
@@ -311,7 +311,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * Test querying product with "slug" argument.
 		 */
 		$variables = array(
@@ -333,7 +333,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * Test querying product with "sku" argument.
 		 */
 		$variables = array(
@@ -424,7 +424,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query with no arguments
 		 */
 		$actual   = graphql( array( 'query' => $query ) );
@@ -443,7 +443,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * tests "slug" where argument
 		 */
 		$variables = array( 'slug' => 'test-product-1' );
@@ -471,7 +471,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * tests "status" where argument
 		 */
 		$variables = array( 'status' => 'pending' );
@@ -485,7 +485,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * tests "type" where argument
 		 */
 		$variables = array( 'type' => 'SIMPLE' );
@@ -513,7 +513,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Five
-		 * 
+		 *
 		 * tests "typeIn" where argument
 		 */
 		$variables = array( 'typeIn' => array( 'SIMPLE' ) );
@@ -541,7 +541,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Six
-		 * 
+		 *
 		 * tests "typeNotIn" where argument
 		 */
 		$variables = array( 'typeNotIn' => array( 'SIMPLE' ) );
@@ -569,7 +569,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Seven
-		 * 
+		 *
 		 * tests "featured" where argument
 		 */
 		$variables = array( 'featured' => true );
@@ -597,7 +597,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Eight
-		 * 
+		 *
 		 * tests "maxPrice" where argument
 		 */
 		$variables = array( 'maxPrice' => 10.00 );
@@ -625,7 +625,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Nine
-		 * 
+		 *
 		 * tests "orderby" where argument
 		 */
 		$variables = array( 'orderby' => array( array( 'field' => 'PRICE', 'order' => 'DESC' ) ) );
@@ -658,7 +658,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Ten
-		 * 
+		 *
 		 * tests "category" where argument
 		 */
 		$variables = array( 'category' => 'category-three' );
@@ -686,7 +686,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Eleven
-		 * 
+		 *
 		 * tests "categoryIn" where argument
 		 */
 		$variables = array( 'categoryIn' => array( 'category-three' ) );
@@ -714,7 +714,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Twelve
-		 * 
+		 *
 		 * tests "categoryNotIn" where argument
 		 */
 		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
@@ -742,7 +742,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Thirteen
-		 * 
+		 *
 		 * tests "categoryId" where argument
 		 */
 		$variables = array( 'categoryId' => $category_3 );
@@ -770,7 +770,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Fourteen
-		 * 
+		 *
 		 * tests "categoryIdIn" where argument
 		 */
 		$variables = array( 'categoryIdIn' => array( $category_3 ) );
@@ -798,7 +798,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Fifteen
-		 * 
+		 *
 		 * tests "categoryIdNotIn" where argument
 		 */
 		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
@@ -826,7 +826,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Sixteen
-		 * 
+		 *
 		 * tests "taxonomyFilter" where argument
 		 */
 		$variables = array(
@@ -974,7 +974,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						array(
 							'name'     => $this->product_cat,
 							'image'    => array(
-								'id' => Relay::toGlobalId( 'attachment', $this->image_id ),
+								'id' => Relay::toGlobalId( 'post', $this->image_id ),
 							),
 							'products' => array(
 								'nodes' => array(
@@ -997,7 +997,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testProductToMediaItemConnections() {
 		$id       = Relay::toGlobalId( 'product', $this->product );
-		$image_id = Relay::toGlobalId( 'attachment', $this->image_id );
+		$image_id = Relay::toGlobalId( 'post', $this->image_id );
 		$query    = '
 			query ( $id: ID! ) {
 				product( id: $id ) {
