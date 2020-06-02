@@ -6,7 +6,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $shop_manager;
     private $customer;
     private $products;
-    
+
     public function setUp() {
         parent::setUp();
 
@@ -76,7 +76,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * test "ID" ID type.
 		 */
 		$variables = array(
@@ -100,13 +100,13 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * test "DATABASE_ID" ID type.
 		 */
 		$variables = array(
             'id'     => $variation_id,
             'idType' => 'DATABASE_ID',
-            
+
         );
 		$actual    = graphql(
             array(
@@ -156,7 +156,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test query with no arguments
 		 */
         wp_set_current_user( $this->shop_manager );
@@ -173,7 +173,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                 . \wc_graphql_price( end( $prices['regular_price'] ) ),
             'salePrice'    => null,
         );
-        
+
         $expected  = array(
 			'data' => array(
                 'product' => array_merge(
@@ -191,10 +191,10 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test "minPrice" where argument
 		 */
         $variables = array( 'id' => $id, 'minPrice' => 15 );
@@ -247,7 +247,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'id'            => $id,
 					'image'         => array(
                         'id' => Relay::toGlobalId(
-                            'attachment',
+                            'post',
                             $this->helper->field( $this->products['variations'][1], 'image_id' )
                         ),
 					),
