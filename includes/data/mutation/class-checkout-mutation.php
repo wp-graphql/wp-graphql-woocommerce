@@ -27,7 +27,7 @@ class Checkout_Mutation {
 	 *
 	 * @var WC_Customer
 	 */
-	private $logged_in_customer = null;
+	private static $logged_in_customer = null;
 
 	/**
 	 * Is registration required to checkout?
