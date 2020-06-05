@@ -64,8 +64,8 @@ The functionality we'll be adding in the coming steps will be to add the **Integ
 1. **Generating a WPUnit test file** Now typically for a feature so small it would be enough to update the first test in the **CartQueriesTest** class to include the desired `itemCount` field, however to the purpose of this guide we'll be creating a new test file named **ItemCountTest**.
 2. **Writing our test** The name says it all.
 3. **Run the test expecting failure** The purpose of this step will be used to introduce to **WPGraphQL**'s Error Reporting and the `codecept_debug` function.
-4. **Implementing our changes** This step will do some exploring into how **WooGraphQL** and **WPGraphQL** work behind the scenes, and diving in to some key components. After acquiring a grasp of WPGraphQL execution implementing the desired changes with be trivially. 
-5. **Run test expecting success** The final step will be to the **ItemCountTest** looking for success this time. 
+4. **Implementing our changes** This step will do some exploring into how **WooGraphQL** and **WPGraphQL** work behind the scenes, and diving in to some key components. After acquiring a grasp of WPGraphQL execution implementing the desired changes with be trivially.
+5. **Run test expecting success** The final step will be to the **ItemCountTest** looking for success this time.
 
 ## Generating a WPUnit test file
 The PHP testing suite used by WPGraphQL and WooGraphQL is Codeception, but they don't manage the `codeception/codeception` in **Composer**. That is done by the `lucatume/wp-browser` package. This package, developed and maintained by *[theAverageDev](http://theaveragedev.com/)* [Luca Tumedei](https://github.com/lucatume), **[wp-browser](https://wpbrowser.wptestkit.dev/)** is a suite of Codeception modules that provide tools designed specifically for testing WordPress sites, themes, and plugins on multiple levels. The `lucatume/wp-browser` package functions as a one-stop shop managing Codeception and all it's dependencies for WPGraphQL and many of it's extensions.
@@ -155,13 +155,13 @@ Which shouldn't be surprising, in the next section we'll be taking this query an
 
 
 > If you didn't already know, an `itemCount` field already exist. It just happens to be under the `contents` connection as a field you can access it like this.
-> ```
+>```
 cart {
     contents {
         itemCount
     }
 }
-> ```
+>```
 
 ### WooGraphQL Codeception Helpers
 WooCommerce is a vast WordPress plugin with a lot moving parts and getting them all to play nice can be a daunting task. To address this **WooGraphQL** provides a number of helpers for creating just the right scenario for testing our queries. In this guide you'll be expose to the `cart` and `product` helpers, but there are quite a few. However documentation on them is pretty non-existant at the time of creation for this guide. Until this is rectified, it's recommended that you view helper [files](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/develop/tests/_support/Helper/crud-helpers) directly to get a general idea of what they are and their capabilities.
@@ -223,7 +223,7 @@ public function testItemCountField()
     ';
 }
 ```
-Simple enough, next we'll run our query through WPGraphQL using `graphql( $request_data = [] )`. 
+Simple enough, next we'll run our query through WPGraphQL using `graphql( $request_data = [] )`.
 ```php
 public function testItemCountField()
 {
@@ -326,15 +326,79 @@ Running the test will result in the error above. **Cannot query field "itemCount
 Before when jump into the code, lets discuss how WPGraphQL and WooGraphQL process requests.
 
 ### How WPGraphQL works
-When a request is made to Wordpress, during the `after_setup_theme` action **WPGraphQL** initializes the [`Router`](https://github.com/wp-graphql/wp-graphql/blob/develop/src/Router.php) class which is in-charge of determining whether the request is a GraphQL request and acting accordingly. 
+When a request is made to Wordpress, during the `after_setup_theme` action **WPGraphQL** initializes the [`Router`](https://github.com/wp-graphql/wp-graphql/blob/develop/src/Router.php) class which is in-charge of determining whether the request is a GraphQL request and acting accordingly.
 If the request is a GraphQL request, a [`Request`](https://github.com/wp-graphql/wp-graphql/blob/develop/src/Request.php) class instance is created. It's job is to load the schema and process the request.
 The first part of loading the schema and our focal point for purpose is the initialization of the [`TypeRegistry`](https://github.com/wp-graphql/wp-graphql/blob/develop/src/Registry/TypeRegistry.php) and specific the execution of [`graphql_register_types`](https://github.com/wp-graphql/wp-graphql/blob/develop/src/Registry/TypeRegistry.php#L397) action. This hook serves the purpose of providing a location to register types not defined by **WPGraphQL**.
 
 ### How WooGraphQL works
 WooGraphQL uses `graphql_register_types` to register WooCommerce specific types.
+If you're familiar WordPress, you're most like familiar with Custom Post-types _(CPTs)_ the core data object used by WordPress. If you're not too familiar with WooCommerce, _(or even if you are)_, you maybe wondering why the CPTs in WooCommerce have such a different schema shape the CPTs defined by **WPGraphQL**. This due to the fact the WooCommerce wraps it's CPT objects, _(WP_Post)_, in data stores objects. This data stores provide decorator functionality that is widely used by WooCommerce extension. **WooGraphQL** uses data stores as the source for it CPT schema shapes. All other types like the **cart** and **shipping zones** are sourced by custom data objects saved in custom databases, and accessed using WooCommerce built-in functionality.
+
+### Implementing our changes
+Now to implement our changes we simply need to register our `itemCount` field to the `Cart` object type.
+```php
+register_graphql_field(
+  'Cart',
+  'itemCount',
+  array(
+    'type'        => 'Int',
+    'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
+    'resolve'     => function( \WC_Cart $source ) {
+      $items = $source->get_cart() );
+      if ( empty( $items ) ) {
+        return 0;
+      }
+
+      return array_sum( array_column( $items, 'quantity' ) );
+    },
+  ),
+);
+```
+
+Simple enough, right. Now we can slap this at the end of the `TypeRegistry` and it would fine, however for a pull request that wouldn't work. So let's include this the inside the `register_graphql_object_type()` call for the `Cart` type with the rest of `Cart` fields. This call can be found in `Cart_Type::register_cart()` in `includes/type/object/class-cart-type.php`.
+```php
+	/**
+	 * Registers Cart type
+	 */
+	public static function register_cart() {
+		register_graphql_object_type(
+			'Cart',
+			array(
+				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
+				'fields'      => array(
+          ... // Other cart fields
+          'itemCount' => array(
+            'type'        => 'Int',
+            'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
+            'resolve'     => function( \WC_Cart $source ) {
+              $items = $source->get_cart();
+              if ( empty( $items ) ) {
+                return 0;
+              }
+
+              return array_sum( array_column( $items, 'quantity' ) );
+            },
+          ),
+				),
+			)
+		);
+  }
+```
+And :boom:! Changes made. Let's run our test!!
 
 ## Run test expecting success
+Now if you re-run `vendor/bin/codecept run wpunit ItemCountTest`
+![test successful results](2-local-testing/image-06.png)
 
-## Writing your first test
+And we have passed, and if we want to see our query response use the `--debug` flag
+![test successful query data](2-local-testing/image-07.png)
+
 
 # Going Forward
+If you have already, you should at least take a look at the following
+- Documentation on extending **WPGraphQL**. [Here](https://docs.wpgraphql.com/extending/types/).
+- **WooCommerce** REST API [Docs](https://woocommerce.github.io/woocommerce-rest-api-docs), seeing as it has been and continues to be the base template for the **WooGraphQL** schema.
+
+If you plan on contributing you should see the following as both **WPGraphQL** and **WooGraphQL** uses them.
+- **Codeception** [Docs](https://codeception.com)
+- **wp-browser** [Docs](https://wpbrowser.wptestkit.dev/)

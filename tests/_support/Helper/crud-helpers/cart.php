@@ -9,15 +9,15 @@ class CartHelper extends WCG_Helper {
 
 	public function add( ...$products ) {
 		foreach( $products as $product ) {
-			if( gettype($product) === 'array' ) {
-				if( empty( $product['product_id'] ) ) {
+			if ( gettype( $product ) === 'array' ) {
+				if ( empty( $product['product_id'] ) ) {
 					codecept_debug( $product );
 					codecept_debug( 'IS AN INVALID CART ITEM' );
 					continue;
 				}
 
 				WC()->cart->add_to_cart(
-					$product,
+					$product['product_id'],
 					! empty( $product['quantity'] ) ? $product['quantity'] : 1,
 					! empty( $product['variation_id'] ) ? $product['variation_id'] : 0,
 					! empty( $product['variation'] ) ? $product['variation'] : array(),
@@ -55,7 +55,7 @@ class CartHelper extends WCG_Helper {
 		$item = $cart->get_cart_item( $key );
 		return array(
 			'key'         => $item['key'],
-			'product'     => array( 
+			'product'     => array(
 				'id'        => Relay::toGlobalId( 'product', $item['product_id'] ),
 				'productId' => $item['product_id'],
 			),
@@ -76,7 +76,7 @@ class CartHelper extends WCG_Helper {
 		$fees = $cart->get_fees();
 		$fee  = ! empty( $fees[ $id ] ) ? $fees[ $id ] : null;
 
-		return !empty( $fee ) 
+		return !empty( $fee )
 			? array(
 				'id'       => $fee->id,
 				'name'     => $fee->name,
@@ -93,7 +93,7 @@ class CartHelper extends WCG_Helper {
 		$ids = array_keys( $cart->get_cart() );
 		$default_processors = array(
 			'mapper' => function( $key ) {
-				return array( 'key' => $key ); 
+				return array( 'key' => $key );
 			},
 			'filter' => function( $key ) {
 				return true;
@@ -112,7 +112,7 @@ class CartHelper extends WCG_Helper {
 		$ids = array_keys( $cart->get_fees() );
 		$default_processors = array(
 			'mapper' => function( $id ) {
-				return array( 'id' => $id ); 
+				return array( 'id' => $id );
 			},
 			'sorter' => function( $id_a, $id_b ) {
 				return 0;
