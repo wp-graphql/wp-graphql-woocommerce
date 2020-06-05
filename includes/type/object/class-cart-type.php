@@ -152,7 +152,7 @@ class Cart_Type {
 					'chosenShippingMethod'     => array(
 						'type'        => 'String',
 						'description' => __( 'Shipping method chosen for this order.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {							
+						'resolve'     => function( $source ) {
 							foreach ( \WC()->shipping()->calculate_shipping( $source->get_shipping_packages() ) as $i => $package ) {
 								if ( isset( \WC()->session->chosen_shipping_methods[ $i ] ) ) {
 									return \WC()->session->chosen_shipping_methods[ $i ];
