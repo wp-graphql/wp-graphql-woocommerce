@@ -19,7 +19,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->cart       = $this->getModule('\Helper\Wpunit')->cart();
         $this->tax        = $this->getModule('\Helper\Wpunit')->tax_rate();
         $this->customer   = $this->getModule('\Helper\Wpunit')->customer();
-        
+
         // Turn on tax calculations and store shipping countries. Important!
         update_option( 'woocommerce_ship_to_countries', 'all' );
         update_option( 'woocommerce_prices_include_tax', 'no' );
@@ -73,7 +73,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
             'woocommerce_cart_calculate_fees',
             function() {
                 $percentage = 0.01;
-                $surcharge = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;	
+                $surcharge = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;
                 WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
             }
         );
@@ -303,7 +303,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         );
         $coupon     = new WC_Coupon(
             $this->coupon->create( array( 'product_ids' => $product_ids ) )
-        );
+		);
+
         WC()->cart->add_to_cart( $product_ids[0], 3 );
         WC()->cart->add_to_cart( $product_ids[1], 6 );
         WC()->cart->add_to_cart( $product_ids[2], 2, $variable['variations'][0] );
@@ -336,7 +337,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'country'   => 'US',
             ),
             'metaData'           => array(
-                array( 
+                array(
                     'key'   => 'test_key',
                     'value' => 'test value',
                 ),
@@ -345,7 +346,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test mutation and input.
 		 */
         $actual = $this->checkout( $input );
@@ -370,14 +371,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                         $this->order->print_query( $order->get_id() ),
                         array(
                             'metaData'      => array(
-                                array( 
+                                array(
                                     'key'   => 'is_vat_exempt',
                                     'value' => 'no',
                                 ),
-                                array( 
+                                array(
                                     'key'   => 'test_key',
                                     'value' => 'test value',
-                                ), 
+                                ),
                             ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
@@ -393,7 +394,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                             );
                                         },
                                         $order->get_items( 'coupon' )
-                                    ) 
+                                    )
                                 ),
                             ),
                             'feeLines'      => array(
@@ -408,7 +409,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxStatus' => strtoupper( $item->get_tax_status() ),
                                                 'total'     => $item->get_total(),
                                                 'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() ) 
+                                                'taxClass'  => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -421,7 +422,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 'nodes' => array_reverse(
                                     array_map(
                                         function( $item ) {
-        
+
                                             return array(
                                                 'itemId'         => $item->get_id(),
                                                 'orderId'        => $item->get_order_id(),
@@ -541,7 +542,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test mutation and input.
 		 */
         $actual = $this->checkout( $input );
@@ -566,7 +567,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                         $this->order->print_query( $order->get_id() ),
                         array(
                             'metaData'      => array(
-                                array( 
+                                array(
                                     'key'   => 'is_vat_exempt',
                                     'value' => 'no',
                                 ),
@@ -585,7 +586,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                             );
                                         },
                                         $order->get_items( 'coupon' )
-                                    ) 
+                                    )
                                 ),
                             ),
                             'feeLines'      => array(
@@ -600,7 +601,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxStatus' => strtoupper( $item->get_tax_status() ),
                                                 'total'     => $item->get_total(),
                                                 'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() ) 
+                                                'taxClass'  => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -613,7 +614,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 'nodes' => array_reverse(
                                     array_map(
                                         function( $item ) {
-        
+
                                             return array(
                                                 'itemId'         => $item->get_id(),
                                                 'orderId'        => $item->get_order_id(),
@@ -738,7 +739,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test mutation and input.
 		 */
         $actual = $this->checkout( $input );
@@ -763,10 +764,10 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                         $this->order->print_restricted_query( $order->get_id() ),
                         array(
                             'metaData'      => array(
-                                array( 
+                                array(
                                     'key'   => 'is_vat_exempt',
                                     'value' => 'no',
-                                ), 
+                                ),
                             ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
@@ -782,7 +783,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                             );
                                         },
                                         $order->get_items( 'coupon' )
-                                    ) 
+                                    )
                                 ),
                             ),
                             'feeLines'      => array(
@@ -797,7 +798,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxStatus' => strtoupper( $item->get_tax_status() ),
                                                 'total'     => $item->get_total(),
                                                 'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() ) 
+                                                'taxClass'  => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -810,7 +811,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                 'nodes' => array_reverse(
                                     array_map(
                                         function( $item ) {
-        
+
                                             return array(
                                                 'itemId'         => $item->get_id(),
                                                 'orderId'        => $item->get_order_id(),
@@ -942,7 +943,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test mutation and input.
 		 */
         $actual = $this->checkout( $input );
@@ -968,10 +969,10 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                         $this->order->print_restricted_query( $order->get_id() ),
                         array(
                             'metaData'      => array(
-                                array( 
+                                array(
                                     'key'   => 'is_vat_exempt',
                                     'value' => 'no',
-                                ), 
+                                ),
                             ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(
@@ -987,7 +988,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                             );
                                         },
                                         $order->get_items( 'coupon' )
-                                    ) 
+                                    )
                                 ),
                             ),
                             'feeLines'      => array(
@@ -1002,7 +1003,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxStatus' => strtoupper( $item->get_tax_status() ),
                                                 'total'     => $item->get_total(),
                                                 'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() ) 
+                                                'taxClass'  => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -1073,9 +1074,9 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
     /**
      * Returns a new Stripe Customer object
-     * 
+     *
      * @param string $email  Customer email
-     * 
+     *
      * @return array
      */
     private function create_stripe_customer( $email ) {
@@ -1083,16 +1084,16 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         // use --debug flag to view.
         codecept_debug( $customer );
-        
+
         return $customer;
     }
 
     /**
      * Creates a new Stripe Source object, attaches it to the provided customer,
      * and returns the Source object
-     * 
+     *
      * @param array $customer  Customer object
-     * 
+     *
      * @return array
      */
     private function create_stripe_source( $customer ) {
@@ -1110,12 +1111,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
     /**
      * Creates a new Payment Intent object, assigns an amount and customer,
      * and returns the Payment Intent object
-     * 
+     *
      * This payment intent is meant to be processed by WooCommerce upon validation
      * so do not `confirm=true` must not be passed as a parameter.
-     * 
+     *
      * @param array $customer  Customer object
-     * 
+     *
      * @return array
      */
     private function create_stripe_payment_intent( $amount, $customer ) {
@@ -1146,9 +1147,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         WC()->cart->add_to_cart( $product_ids[1], 6 );
 
         $amount = (int) floatval( WC()->cart->get_cart_contents_total() + WC()->cart->get_cart_contents_tax() ) * 100;
-        $stripe_customer = $this->create_stripe_customer( 'superfreak500@gmail.com' );
-        $stripe_source = $this->create_stripe_source( $stripe_customer );
-        $payment_intent = $this->create_stripe_payment_intent( $amount, $stripe_customer );
+
+		try {
+			$stripe_customer = $this->create_stripe_customer( 'superfreak500@gmail.com' );
+			$stripe_source = $this->create_stripe_source( $stripe_customer );
+			$payment_intent = $this->create_stripe_payment_intent( $amount, $stripe_customer );
+		} catch ( \Stripe\Exception\AuthenticationException $e ) {
+			$this->markTestSkipped( $e->getMessage() );
+		}
 
         $input      = array(
             'clientMutationId'   => 'someId',
@@ -1166,15 +1172,15 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'phone'     => '555-555-1234',
             ),
             'metaData'           => array(
-                array( 
+                array(
                     'key'   => '_stripe_source_id',
                     'value' => $stripe_source['id'],
                 ),
-                array( 
+                array(
                     'key'   => '_stripe_customer_id',
                     'value' => $stripe_customer['id'],
                 ),
-                array( 
+                array(
                     'key'   => '_stripe_intent_id',
                     'value' => $payment_intent['id'],
                 ),
@@ -1221,7 +1227,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test mutation and input.
 		 */
         $actual = $this->checkout( $input, $modified_mutation );
