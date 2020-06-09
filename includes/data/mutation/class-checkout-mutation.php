@@ -27,7 +27,7 @@ class Checkout_Mutation {
 	 *
 	 * @var WC_Customer
 	 */
-	private $logged_in_customer = null;
+	private static $logged_in_customer = null;
 
 	/**
 	 * Is registration required to checkout?
@@ -666,9 +666,9 @@ class Checkout_Mutation {
 		if ( is_user_logged_in() ) {
 			// Load customer object, but keep it cached to avoid reloading it multiple times.
 			if ( is_null( self::$logged_in_customer ) ) {
-				self::$logged_in_customer = new WC_Customer( get_current_user_id(), true );
+				self::$logged_in_customer = new \WC_Customer( get_current_user_id(), true );
 			}
-			$customer_object = new WC_Customer( get_current_user_id(), true );
+			$customer_object = new \WC_Customer( get_current_user_id(), true );
 		}
 
 		if ( ! $customer_object ) {
