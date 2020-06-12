@@ -143,7 +143,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			$context     = $this->context;
 			$customer_id = null;
 			$parent_id   = null;
-			
+
 			// Resolve post author for future capability checks.
 			switch ( $post_type ) {
 				case 'shop_order':

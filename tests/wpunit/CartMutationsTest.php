@@ -17,13 +17,10 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->product      = $this->getModule('\Helper\Wpunit')->product();
         $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
-
-        // Clear cart.
-        WC()->cart->empty_cart( true );
     }
 
     public function tearDown() {
-        \WC()->cart->empty_cart();
+        \WC()->cart->empty_cart( true );
 
         parent::tearDown();
     }
@@ -170,7 +167,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $cart = WC()->cart;
         $cart_item = $cart->get_cart_item( $key );
         $this->assertNotEmpty( $cart_item );
-        
+
         // Check cart item data.
 		$expected = array(
 			'data' => array(
@@ -207,7 +204,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         // use --debug flag to view.
         codecept_debug( $actual );
-        
+
         // Retrieve cart item key.
         $this->assertArrayHasKey('data', $actual );
         $this->assertArrayHasKey('addToCart', $actual['data'] );
@@ -319,7 +316,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         // use --debug flag to view.
         codecept_debug( $actual );
-        
+
         // Check cart item data.
 		$expected = array(
 			'data' => array(
@@ -871,7 +868,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion One
-         * 
+         *
          * Can't pass coupon ID as coupon "code". Mutation should fail.
          */
         $variables = array(
@@ -895,7 +892,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Two
-         * 
+         *
          * Can't pass expired coupon code. Mutation should fail.
          */
         $variables = array(
@@ -919,7 +916,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Three
-         * 
+         *
          * Can't pass coupon already applied to the cart. Mutation should fail.
          */
         $variables = array(
