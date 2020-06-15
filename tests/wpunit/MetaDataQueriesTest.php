@@ -79,14 +79,21 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
         $cart_meta_data = array(
             'meta_1' => 'test_meta_1',
             'meta_2' => 'test_meta_2'
-        );
-        $this->cart_item_key = WC()->cart->add_to_cart(
-            $this->product_id,
-            2,
-            $this->variation_ids['variations'][1],
-            array(),
-            $cart_meta_data
-        );
+		);
+
+		// Clear cart.
+		WC()->cart->empty_cart( true );
+
+		// Add item to cart.
+		$this->cart_item_key = $this->cart->add(
+			array(
+				'product_id'      => $this->variation_ids['product'],
+				'quantity'        => 2,
+				'variation_id'    => $this->variation_ids['variations'][0],
+				'variation'       => array(),
+				'cart_item_data'  => $cart_meta_data
+			)
+		)[0];
     }
 
     // tests
@@ -96,7 +103,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 cart {
                     contents {
                         nodes {
-                            key
+							key
                             extraData(key: $key, keysIn: $keysIn) {
                                 key
                                 value
@@ -109,7 +116,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion One
-         * 
+         *
          * query w/o filter
          */
         $actual   = graphql( array( 'query' => $query ) );
@@ -144,7 +151,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Two
-         * 
+         *
          * query w/ "key" filter
          */
         $variables = array( 'key' => 'meta_2' );
@@ -176,7 +183,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Three
-         * 
+         *
          * query w/ "keysIn" filter
          */
         $variables = array( 'keysIn' => array( 'meta_2' ) );
@@ -220,10 +227,10 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
-        
+
         /**
          * Assertion One
-         * 
+         *
          * query w/o filters
          */
         wp_set_current_user( $this->shop_manager );
@@ -259,7 +266,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Two
-         * 
+         *
          * query w/ "key" filter
          */
         $variables = array( 'id' => $id, 'key' => 'meta_2' );
@@ -285,7 +292,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Three
-         * 
+         *
          * query w/ "keysIn" filter
          */
         $variables = array( 'id' => $id, 'keysIn' => array( 'meta_2' ) );
@@ -311,7 +318,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Four
-         * 
+         *
          * query w/ "key" filter and "multiple" set to true to get non-unique results.
          */
         $variables = array( 'id' => $id, 'key' => 'meta_1', 'multiple' => true );
@@ -341,7 +348,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Five
-         * 
+         *
          * query w/ "keysIn" filter and "multiple" set to true to get non-unique results.
          */
         $variables = array( 'id' => $id, 'keysIn' => array( 'meta_1' ), 'multiple' => true );
@@ -371,7 +378,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
          * Assertion Six
-         * 
+         *
          * query w/o filters and "multiple" set to true to get non-unique results.
          */
         $variables = array( 'id' => $id, 'multiple' => true );
@@ -416,7 +423,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
-        
+
         /**
          * Assertion One
          */
@@ -470,7 +477,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         // Must be an "shop_manager" or "admin" to query orders not owned by the user.
         wp_set_current_user( $this->shop_manager );
-        
+
         /**
          * Assertion One
          */
@@ -536,7 +543,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
-        
+
         /**
          * Assertion One
          */
@@ -584,7 +591,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
-        
+
         /**
          * Assertion One
          */
@@ -632,7 +639,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
         ';
-        
+
         /**
          * Assertion One
          */

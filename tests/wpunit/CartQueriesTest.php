@@ -18,13 +18,10 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
 		$this->coupon_helper    = $this->getModule('\Helper\Wpunit')->coupon();
 		$this->helper           = $this->getModule('\Helper\Wpunit')->cart();
-		
-		// Clear cart.
-		WC()->cart->empty_cart( true );
 	}
 
 	public function tearDown() {
-		// your tear down methods here
+		WC()->cart->empty_cart( true );
 
 		// then
 		parent::tearDown();
@@ -168,7 +165,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Tests "needsShipping" parameter.
 		 */
 		$variables = array( 'needsShipping' => true );
@@ -203,7 +200,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * Tests "needsShipping" parameter reversed.
 		 */
 		$variables = array( 'needsShipping' => false );
@@ -333,7 +330,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests "first" parameter.
 		 */
 		$variables = array( 'first' => 2 );
@@ -370,7 +367,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Tests "after" parameter.
 		 */
 		$variables = array(
@@ -410,7 +407,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * Tests "last" parameter.
 		 */
 		$variables = array( 'last' => 2 );
@@ -447,7 +444,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * Tests "before" parameter.
 		 */
 		$variables = array( 'last' => 4, 'before' => $cart_items[4] );

@@ -87,7 +87,7 @@ class Factory {
 		if ( empty( $id ) || ! absint( $id ) ) {
 			return null;
 		}
-		
+
 		$context->getLoader( 'wc_cpt' )->buffer( array( $id ) );
 		return new Deferred(
 			function () use ( $id, $context ) {
@@ -121,7 +121,7 @@ class Factory {
 	 *
 	 * @param string $id - Tax rate ID.
 	 * @param AppContext $context - AppContext object.
-	 * 
+	 *
 	 * @return Deferred object
 	 */
 	public static function resolve_tax_rate( $id, AppContext $context ) {
@@ -165,7 +165,7 @@ class Factory {
 
 	/**
 	 * Checks if the WooCommerce Session needs to be (re)initialized.
-	 * 
+	 *
 	 * @return bool  True if (re)initialized.
 	 */
 	public static function maybe_initialize_session() {
@@ -208,7 +208,7 @@ class Factory {
 	 *
 	 * @param string     $key      Cart item key.
 	 * @param AppContext $context  AppContext object.
-	 * 
+	 *
 	 * @return Deferred object
 	 */
 	public static function resolve_cart_item( $key, AppContext $context ) {
@@ -244,7 +244,7 @@ class Factory {
 	 *
 	 * @param int        $id       Downloadable item ID.
 	 * @param AppContext $context  AppContext object.
-	 * 
+	 *
 	 * @return Deferred object
 	 */
 	public static function resolve_downloadable_item( $id, AppContext $context ) {

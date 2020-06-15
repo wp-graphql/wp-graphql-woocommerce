@@ -8,6 +8,8 @@ class CartHelper extends WCG_Helper {
 	}
 
 	public function add( ...$products ) {
+		$keys = array();
+
 		foreach( $products as $product ) {
 			if ( gettype( $product ) === 'array' ) {
 				if ( empty( $product['product_id'] ) ) {
@@ -16,7 +18,7 @@ class CartHelper extends WCG_Helper {
 					continue;
 				}
 
-				WC()->cart->add_to_cart(
+				$keys[] = WC()->cart->add_to_cart(
 					$product['product_id'],
 					! empty( $product['quantity'] ) ? $product['quantity'] : 1,
 					! empty( $product['variation_id'] ) ? $product['variation_id'] : 0,
@@ -27,6 +29,8 @@ class CartHelper extends WCG_Helper {
 				WC()->cart->add_to_cart( $product, 1 );
 			}
 		}
+
+		return $keys;
 	}
 
 	public function print_query( $id = 0 ) {
