@@ -16,6 +16,9 @@ on:
 
 jobs:
   run:
+    env:
+      STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
+      STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -53,15 +56,13 @@ jobs:
 
       - name: Run Tests w/ Docker.
         env:
-          STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
-          STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
           COVERAGE: ${{ matrix.coverage }}
           DEBUG: ${{ matrix.debug }}
           SKIP_TESTS_CLEANUP: ${{ matrix.coverage }}
         run: bin/run-docker.sh run -t
 
       - name: Push Codecoverage to Coveralls.io
-        if: ${{ matrix.coverage == 1 && secrets.STRIPE_API_SECRET_KEY != 'unassigned' }}
+        if: ${{ matrix.coverage == 1 && env.STRIPE_API_PUBLISHABLE_KEY != 0 }}
         env:
           COVERALLS_RUN_LOCALLY: 1
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
