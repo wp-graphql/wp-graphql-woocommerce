@@ -59,9 +59,9 @@ jobs:
           DEBUG: ${{ matrix.debug }}
           SKIP_TESTS_CLEANUP: ${{ matrix.coverage }}
         run: bin/run-docker.sh run -t
-      
+
       - name: Push Codecoverage to Coveralls.io
-        if: matrix.coverage == 1
+        if: ${{ matrix.coverage == 1 && secrets.STRIPE_API_SECRET_KEY != 'unassigned' }}
         env:
           COVERALLS_RUN_LOCALLY: 1
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
