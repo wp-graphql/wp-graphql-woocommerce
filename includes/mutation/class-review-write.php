@@ -50,7 +50,7 @@ class Review_Write {
 			$comment_input_fields,
 			array(
 				'rating'         => array(
-					'type'        => array( 'non_null' => 'Float' ),
+					'type'        => array( 'non_null' => 'Int' ),
 					'description' => __( 'Product rating', 'wp-graphql-woocommerce' ),
 				),
 			)
@@ -71,7 +71,7 @@ class Review_Write {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
                     }
-                    
+
                     return (float) get_comment_meta( $payload['id'], 'rating', true );
                 }
             ),
@@ -82,7 +82,7 @@ class Review_Write {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
                     }
-                    
+
                     $comment = get_comment( $payload['id'] );
 					return new Comment( $comment );
 				},
