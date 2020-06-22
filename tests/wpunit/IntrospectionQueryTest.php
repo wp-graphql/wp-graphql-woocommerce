@@ -28,7 +28,7 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase
         } catch (\GraphQL\Error\InvariantViolation $e) {
             // use --debug flag to view.
             codecept_debug( $e->getMessage() );
-            
+
             // Fail upon throwing
             $this->assertTrue( false );
         }
@@ -36,97 +36,7 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase
 
     // Test introspection query.
     public function testIntrospectionQuery() {
-        $query = '
-            query IntrospectionQuery {
-                __schema {
-                    queryType { name }
-                    mutationType { name }
-                    subscriptionType { name }
-                    types {
-                        ...FullType
-                    }
-                    directives {
-                        name
-                        description
-                        locations
-                        args {
-                            ...InputValue
-                        }
-                    }
-                }
-            }
-            fragment FullType on __Type {
-                kind
-                name
-                description
-                fields(includeDeprecated: true) {
-                    name
-                    description
-                    args {
-                        ...InputValue
-                    }
-                    type {
-                        ...TypeRef
-                    }
-                        isDeprecated
-                        deprecationReason
-                    }
-                    inputFields {
-                        ...InputValue
-                    }
-                    interfaces {
-                        ...TypeRef
-                    }
-                    enumValues(includeDeprecated: true) {
-                    name
-                    description
-                    isDeprecated
-                    deprecationReason
-                }
-                possibleTypes {
-                    ...TypeRef
-                }
-            }
-            fragment InputValue on __InputValue {
-                name
-                description
-                type { ...TypeRef }
-                defaultValue
-            }
-            fragment TypeRef on __Type {
-                kind
-                name
-                ofType {
-                    kind
-                    name
-                    ofType {
-                        kind
-                        name
-                        ofType {
-                            kind
-                            name
-                            ofType {
-                                kind
-                                name
-                                ofType {
-                                    kind
-                                    name
-                                    ofType {
-                                        kind
-                                        name
-                                        ofType {
-                                            kind
-                                            name
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        ';
-
+        $query   = \GraphQL\Type\Introspection::getIntrospectionQuery();
         $results = graphql( array( 'query' => $query ) );
 
         $this->assertArrayNotHasKey('errors', $results );

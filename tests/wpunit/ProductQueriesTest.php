@@ -175,7 +175,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			array(
 				'price'         => 10,
 				'regular_price' => 10,
-				'category_ids'  => array( $category_5, $category_6 ),
+				'category_ids'  => array( $category_5 ),
 				'tag_ids'       => array( $tag_2 ),
 				'image_id'      => $attachment_id,
 			)
