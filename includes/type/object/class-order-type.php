@@ -276,7 +276,7 @@ class Order_Type {
 						'type'        => 'Order',
 						'description' => __( 'Parent order', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $order, array $args, AppContext $context ) {
-							return Factory::resolve_crud_object( $order->parent, $context );
+							return Factory::resolve_crud_object( $order->parent_id, $context );
 						},
 					),
 					'customer'              => array(
