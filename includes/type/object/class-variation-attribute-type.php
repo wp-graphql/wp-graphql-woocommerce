@@ -38,6 +38,18 @@ class Variation_Attribute_Type {
 							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
 						},
 					),
+					'label'       => array(
+						'type'        => 'String',
+						'description' => __( 'Label of attribute', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $source ) {
+							if ( ! isset( $source['name'] ) ) {
+								return null;
+							}
+
+							$slug = \wc_attribute_taxonomy_slug( $source['name'] );
+							return ucwords( str_replace( '_', ' ', $slug ) );
+						},
+					),
 					'name'        => array(
 						'type'        => 'String',
 						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
