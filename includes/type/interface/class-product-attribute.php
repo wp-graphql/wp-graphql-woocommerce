@@ -61,6 +61,13 @@ class Product_Attribute {
 					return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 				},
 			),
+			'label'        => array(
+				'type'        => array( 'non_null' => 'String' ),
+				'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
+				'resolve'     => function ( $attribute ) {
+					return ! empty( $attribute->get_name() ) ? ucwords( $attribute->get_name() ) : null;
+				},
+			),
 			'options'     => array(
 				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Attribute options', 'wp-graphql-woocommerce' ),
