@@ -1297,5 +1297,58 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         );
 
         $this->assertEquals( $expected, $actual );
-    }
+	}
+
+	public function testCheckoutMutationCartItemValidation() {
+		add_filter(
+			'woocommerce_hold_stock_for_checkout',
+			function() { return false; }
+		);
+
+		$product_id = $this->product->create_simple(
+			array(
+				'manage_stock'   => true,
+				'stock_quantity' => 5,
+			)
+		);
+
+		WC()->cart->add_to_cart( $product_id, 4 );
+		wc_update_product_stock( $product_id, 3, 'decrease' );
+
+		codecept_debug( WC()->cart->add_to_cart( $product_id, 4 ) );
+
+        $input      = array(
+            'clientMutationId'       => 'someId',
+            'paymentMethod'          => 'bacs',
+            'shippingMethod'         => array( 'flat rate' ),
+			'billing'                => array(
+                'firstName' => 'May',
+                'lastName'  => 'Parker',
+                'company'   => 'Harris Teeter',
+                'address1'  => '20 Ingram St',
+                'city'      => 'New York City',
+                'state'     => 'NY',
+                'postcode'  => '12345',
+                'country'   => 'US',
+                'email'     => 'superfreak500@gmail.com',
+                'phone'     => '555-555-1234',
+            ),
+            'account'                => array(
+                'username' => 'test_user_1',
+                'password' => 'test_pass'
+            )
+        );
+
+        /**
+		 * Assertion One
+		 *
+		 * Ensure that checkout failed when stock is too low.
+		 */
+        $failed = $this->checkout( $input );
+
+        // use --debug flag to view.
+		codecept_debug( $failed );
+
+		$this->assertArrayHasKey( 'errors', $failed );
+	}
 }

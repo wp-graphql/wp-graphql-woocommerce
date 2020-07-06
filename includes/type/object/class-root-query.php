@@ -82,7 +82,7 @@ class Root_Query {
 						),
 					),
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
 						$coupon_id = null;
@@ -166,37 +166,10 @@ class Root_Query {
 							'type'        => 'OrderIdTypeEnum',
 							'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
 						),
-						'orderId'  => array(
-							'type'              => 'Int',
-							'description'       => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => __(
-								'This argument has been deprecation, and will be removed in v0.5.x. Please use "order(id: value, idType: value)" instead',
-								'wp-graphql-woocommerce'
-							),
-						),
-						'orderKey' => array(
-							'type'              => 'String',
-							'description'       => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => __(
-								'This argument has been deprecation, and will be removed in v0.5.x. Please use "order(id: value, idType: value)" instead',
-								'wp-graphql-woocommerce'
-							),
-						),
 					),
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-						// Process deprecated arguments. Will be removed in v0.5.x.
-						if ( ! empty( $args['orderId'] ) ) {
-							$id = $args['orderId'];
-							$id_type = 'database_id';
-						} elseif ( ! empty( $args['orderKey'] ) ) {
-							$id = $args['orderKey'];
-							$id_type = 'order_number';
-						}
 
 						$order_id = null;
 						switch ( $id_type ) {
@@ -260,29 +233,10 @@ class Root_Query {
 							'type'        => 'ProductVariationIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 						),
-						'variationId' => array(
-							'type'              => 'Int',
-							'description'       => __( 'Get the product variation by its database ID', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => __(
-								'This argument has been deprecation, and will be removed in v0.5.x. Please use "productVariation(id: value, idType: DATABASE_ID)" instead',
-								'wp-graphql-woocommerce'
-							),
-						),
 					),
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-						/**
-						 * Process deprecated arguments
-						 *
-						 * Will be removed in v0.5.x.
-						 */
-						if ( ! empty( $args['variationId'] ) ) {
-							$id = $args['variationId'];
-							$id_type = 'database_id';
-						}
 
 						$variation_id = null;
 						switch ( $id_type ) {
@@ -324,7 +278,7 @@ class Root_Query {
 						),
 					),
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
 						$refund_id = null;
@@ -388,29 +342,10 @@ class Root_Query {
 							'type'        => 'ShippingMethodIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 						),
-						'methodId' => array(
-							'type'              => 'ID',
-							'description'       => __( 'Get the shipping method by its database ID', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => __(
-								'This argument has been deprecation, and will be removed in v0.5.x. Please use "shippingMethod(id: value, idType: DATABASE_ID)" instead.',
-								'wp-graphql-woocommerce'
-							),
-						),
 					),
 					'resolve'     => function ( $source, array $args ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-						/**
-						 * Process deprecated arguments
-						 *
-						 * Will be removed in v0.5.x.
-						 */
-						if ( ! empty( $args['methodId'] ) ) {
-							$id = $args['methodId'];
-							$id_type = 'database_id';
-						}
 
 						$method_id = null;
 						switch ( $id_type ) {
@@ -442,29 +377,10 @@ class Root_Query {
 							'type'        => 'TaxRateIdTypeEnum',
 							'description' => __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' ),
 						),
-						'rateId' => array(
-							'type'              => 'Int',
-							'description'       => __( 'Get the tax rate by its database ID', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => __(
-								'This argument has been deprecation, and will be removed in v0.5.x. Please use "taxRate(id: value, idType: DATABASE_ID)" instead.',
-								'wp-graphql-woocommerce'
-							),
-						),
 					),
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-						/**
-						 * Process deprecated arguments
-						 *
-						 * Will be removed in v0.5.x.
-						 */
-						if ( ! empty( $args['rateId'] ) ) {
-							$id = $args['rateId'];
-							$id_type = 'database_id';
-						}
 
 						$rate_id = null;
 						switch ( $id_type ) {
@@ -514,75 +430,10 @@ class Root_Query {
 							'type'        => 'ProductIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						),
-						/**
-						 * DEPRECATED
-						 *
-						 * Will be removed in v0.5.x.
-						 */
-						'productId' => array(
-							'type'              => 'Int',
-							'description'       => __( 'Get the product by its database ID', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => sprintf(
-								/* translators: %s: product type */
-								__(
-									'This argument has been deprecation, and will be removed in v0.5.x. Please use "%sProduct(id: value, idType: DATABASE_ID)" instead',
-									'wp-graphql-woocommerce'
-								),
-								$type
-							),
-						),
-						/**
-						 * DEPRECATED
-						 *
-						 * Will be removed in v0.5.x.
-						 */
-						'slug'      => array(
-							'type'              => 'String',
-							'description'       => __( 'Get the product by its slug', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => sprintf(
-								/* translators: %s: product type */
-								__(
-									'This argument has been deprecation, and will be removed in v0.5.x. Please use "%sProduct(id: value, idType: SLUG)" instead',
-									'wp-graphql-woocommerce'
-								),
-								$type
-							),
-						),
-						'sku'       => array(
-							'type'              => 'String',
-							'description'       => __( 'Get the product by its sku', 'wp-graphql-woocommerce' ),
-							'isDeprecated'      => true,
-							'deprecationReason' => sprintf(
-								/* translators: %s: product type */
-								__(
-									'This argument has been deprecation, and will be removed in v0.5.x. Please use "%sProduct(id: value, idType: SKU)" instead',
-									'wp-graphql-woocommerce'
-								),
-								$type
-							),
-						),
 					),
 					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type ) {
 						$id = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-						/**
-						 * Process deprecated arguments
-						 *
-						 * Will be removed in v0.5.x.
-						 */
-						if ( ! empty( $args['productId'] ) ) {
-							$id = $args['productId'];
-							$id_type = 'database_id';
-						} elseif ( ! empty( $args['slug'] ) ) {
-							$id = $args['slug'];
-							$id_type = 'slug';
-						} elseif ( ! empty( $args['sku'] ) ) {
-							$id = $args['sku'];
-							$id_type = 'sku';
-						}
 
 						$product_id = null;
 						switch ( $id_type ) {
