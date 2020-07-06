@@ -14,10 +14,10 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
         $this->customer         = $this->factory->user->create( array( 'role' => 'customer' ) );
         $this->helper           = $this->getModule('\Helper\Wpunit')->product();
-        $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();        
+        $this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->product_id       = $this->helper->create_variable();
         $this->variation_ids    = $this->variation_helper->create( $this->product_id )['variations'];
-        
+
     }
 
     public function tearDown() {
@@ -35,7 +35,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 id
                                 attributeId
-                                name
+								name
                                 options
                                 position
                                 visible

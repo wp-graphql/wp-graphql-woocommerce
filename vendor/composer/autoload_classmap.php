@@ -6,6 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Firebase\\JWT\\BeforeValidException' => $vendorDir . '/firebase/php-jwt/src/BeforeValidException.php',
+    'Firebase\\JWT\\ExpiredException' => $vendorDir . '/firebase/php-jwt/src/ExpiredException.php',
+    'Firebase\\JWT\\JWK' => $vendorDir . '/firebase/php-jwt/src/JWK.php',
+    'Firebase\\JWT\\JWT' => $vendorDir . '/firebase/php-jwt/src/JWT.php',
+    'Firebase\\JWT\\SignatureInvalidException' => $vendorDir . '/firebase/php-jwt/src/SignatureInvalidException.php',
     'WPGraphQL\\WooCommerce\\ACF_Schema_Filters' => $baseDir . '/includes/class-acf-schema-filters.php',
     'WPGraphQL\\WooCommerce\\Connection\\Cart_Items' => $baseDir . '/includes/connection/class-cart-items.php',
     'WPGraphQL\\WooCommerce\\Connection\\Coupons' => $baseDir . '/includes/connection/class-coupons.php',
