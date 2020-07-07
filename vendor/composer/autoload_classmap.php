@@ -97,6 +97,7 @@ return array(
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Post_Type_Orderby_Enum' => $baseDir . '/includes/type/enum/class-post-type-orderby-enum.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Pricing_Field_Format' => $baseDir . '/includes/type/enum/class-pricing-field-format.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Attribute_Types' => $baseDir . '/includes/type/enum/class-product-attribute-types.php',
+    'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Category_Display' => $baseDir . '/includes/type/enum/class-product-category-display.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Taxonomy' => $baseDir . '/includes/type/enum/class-product-taxonomy.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Types' => $baseDir . '/includes/type/enum/class-product-types.php',
     'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Products_Orderby_Enum' => $baseDir . '/includes/type/enum/class-products-orderby-enum.php',

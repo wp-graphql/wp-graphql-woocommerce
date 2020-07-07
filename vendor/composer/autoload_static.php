@@ -125,6 +125,7 @@ class ComposerStaticInit51f6ef77ec7a78ec4a9df8dd9f5dc45f
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Post_Type_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-post-type-orderby-enum.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Pricing_Field_Format' => __DIR__ . '/../..' . '/includes/type/enum/class-pricing-field-format.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Attribute_Types' => __DIR__ . '/../..' . '/includes/type/enum/class-product-attribute-types.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Category_Display' => __DIR__ . '/../..' . '/includes/type/enum/class-product-category-display.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Taxonomy' => __DIR__ . '/../..' . '/includes/type/enum/class-product-taxonomy.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Types' => __DIR__ . '/../..' . '/includes/type/enum/class-product-types.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Products_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-products-orderby-enum.php',

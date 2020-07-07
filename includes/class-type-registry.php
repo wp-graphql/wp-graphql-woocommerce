@@ -29,6 +29,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Order_Status::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Types::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Attribute_Types::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Category_Display::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Stock_Status::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Tax_Class::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Tax_Status::register();
