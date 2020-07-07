@@ -288,6 +288,39 @@ class Product_Types {
 							'type'        => 'String',
 							'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
 						),
+						'price'                => array(
+							'type'        => 'String',
+							'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
+							'resolve'     => function( $source ) {
+								$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
+								$child_prices     = array();
+								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ), 'wc_products_array_filter_visible_grouped' );
+
+								foreach ( $children as $child ) {
+									if ( '' !== $child->get_price() ) {
+										$child_prices[] = 'incl' === $tax_display_mode ? wc_get_price_including_tax( $child ) : wc_get_price_excluding_tax( $child );
+									}
+								}
+
+								if ( ! empty( $child_prices ) ) {
+									$min_price = min( $child_prices );
+									$max_price = max( $child_prices );
+								} else {
+									$min_price = '';
+									$max_price = '';
+								}
+
+								if ( empty( $min_price ) ) {
+									return null;
+								}
+
+								if ( $min_price !== $max_price ) {
+									return \wc_graphql_price_range( $min_price, $max_price );
+								}
+
+								return \wc_graphql_price( $min_price );
+							},
+						),
 					)
 				),
 			)
