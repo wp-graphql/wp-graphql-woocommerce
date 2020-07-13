@@ -1261,4 +1261,47 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( $expected, $actual );
 	}
+
+	public function testProductGalleryImagesConnection() {
+		$image_id   = $this->factory->post->create(
+			array(
+				'post_type'    => 'attachment',
+				'post_content' => 'Lorem ipsum dolor...',
+			)
+		);
+		$product_id = $this->helper->create_simple(
+			array( 'gallery_image_ids' => array( $image_id ) )
+		);
+
+		$query = '
+			query( $id: ID! ) {
+				product( id: $id ) {
+					galleryImages {
+						nodes {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $product_id ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
+			'data' => array(
+				'product' => array (
+					'galleryImages' => array(
+						'nodes' => array(
+							array( 'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $image_id ) )
+						)
+					)
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
 }
