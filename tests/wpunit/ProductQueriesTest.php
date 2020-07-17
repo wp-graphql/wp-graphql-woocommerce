@@ -1118,7 +1118,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testGroupProductConnections() {
-		$grouped_product = $this->helper->create_grouped();
+		$children        = array(
+			$this->helper->create_simple( array( 'regular_price' => '£1.00' ) ),
+			$this->helper->create_simple( array( 'regular_price' => '£10.00' ) ),
+		);
+		$grouped_product = $this->helper->create_grouped( array(), $children );
 		$query           = '
 			query ( $id: ID! ) {
 				product(id: $id) {
@@ -1154,22 +1158,48 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
+
+		$query           = '
+			query ( $id: ID! ) {
+				product( id: $id ) {
+					... on GroupProduct {
+						price
+					}
+				}
+			}
+		';
+
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'price' => '£1.00 - £10.00',
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRelatedProductConnections() {
-		$products = $this->helper->create_related();
-		$query    = '
+		$related_products = $this->helper->create_related();
+		$product          = wc_get_product( $related_products['product'] );
+
+		$query = '
 			query ($id: ID!) {
 				product(id: $id) {
 					... on SimpleProduct {
-						related {
+						related(first: 1) {
 							nodes {
 								... on SimpleProduct {
 									id
 								}
 							}
 						}
-						crossSell {
+						crossSell{
 							nodes {
 								... on SimpleProduct {
 									id
@@ -1188,18 +1218,35 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $products['product'] ) );
+		$variables = array( 'id' => $this->helper->to_relay_id( $product->get_id() ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
 		$expected  = array(
 			'data' => array(
 				'product' => array(
 					'related'   => array(
-						'nodes' => $this->helper->print_nodes(
-							array_merge( $products['related'], $products['cross_sell'], $products['upsell'] )
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'id' => $this->helper->to_relay_id( $id ) );
+							},
+							array_slice( wc_get_related_products( $product->get_id() ), 0, 1 )
 						),
 					),
-					'crossSell' => array( 'nodes' => $this->helper->print_nodes( $products['cross_sell'] ) ),
-					'upsell'    => array( 'nodes' => $this->helper->print_nodes( $products['upsell'] ) ),
+					'crossSell' => array(
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'id' => $this->helper->to_relay_id( $id ) );
+							},
+							$product->get_cross_sell_ids()
+						),
+					),
+					'upsell'    => array(
+						'nodes' => array_map(
+							function( $id ) {
+								return array( 'id' => $this->helper->to_relay_id( $id ) );
+							},
+							$product->get_upsell_ids()
+						),
+					),
 				),
 			),
 		);

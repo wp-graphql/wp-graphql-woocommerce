@@ -108,23 +108,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Returns the attribute meta for the taxonomy provided
-	 *
-	 * @param string $taxonomy - The taxonomy name.
-	 *
-	 * @return string
-	 */
-	private function get_attribute_meta_key( $taxonomy ) {
-		return 'attribute_' . strtolower(
-			preg_replace( '/([A-Z])/', '_$1', $taxonomy )
-		);
-	}
-
-	/**
 	 * Creates query arguments array
 	 */
 	public function get_query_args() {
-		global $wpdb;
 
 		// Prepare for later use.
 		$last  = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
@@ -134,7 +120,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$post_type_obj = get_post_type_object( $this->post_type );
 		$query_args    = array(
 			'post_type'           => $this->post_type,
-			'post_parent'         => 0,
 			'post_status'         => current_user_can( $post_type_obj->cap->edit_posts ) ? 'any' : 'publish',
 			'perm'                => 'readable',
 			'no_rows_found'       => true,
@@ -169,82 +154,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['graphql_args'] = $this->args;
 
 		// Determine where we're at in the Graph and adjust the query context appropriately.
-		if ( true === is_object( $this->source ) ) {
-			switch ( true ) {
-				case is_a( $this->source, Coupon::class ):
-					if ( 'excludedProducts' === $this->info->fieldName ) {
-						$query_args['post__in'] = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->excluded_product_ids, $query_args['post__in'] )
-							: $this->source->excluded_product_ids;
-					} else {
-						$query_args['post__in'] = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->product_ids, $query_args['post__in'] )
-							: $this->source->product_ids;
-					}
-					break;
-
-				case is_a( $this->source, Customer::class ):
-					break;
-
-				case is_a( $this->source, Product::class ):
-					if ( 'related' === $this->info->fieldName ) {
-						$query_args['post__in'] = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->related_ids, $query_args['post__in'] )
-							: $this->source->related_ids;
-					} elseif ( 'upsell' === $this->info->fieldName ) {
-						$query_args['post__in'] = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->upsell_ids, $query_args['post__in'] )
-							: $this->source->upsell_ids;
-					} elseif ( 'crossSell' === $this->info->fieldName ) {
-						$query_args['post__in'] = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->cross_sell_ids, $query_args['post__in'] )
-							: $this->source->cross_sell_ids;
-					} elseif ( 'products' === $this->info->fieldName ) {
-						$query_args['post__in'] = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->grouped_ids, $query_args['post__in'] )
-							: $this->source->grouped_ids;
-					} elseif ( 'variations' === $this->info->fieldName ) {
-						$query_args['post_parent'] = $this->source->ID;
-						$query_args['post__in']    = isset( $query_args['post__in'] )
-							? array_intersect( $this->source->variation_ids, $query_args['post__in'] )
-							: $this->source->variation_ids;
-						$query_args['post_type']   = 'product_variation';
-					}
-					break;
-
-				case is_a( $this->source, Term::class ):
-					if ( 'variations' === $this->info->fieldName ) {
-						unset( $query_args['post_parent'] );
-						$query_args['post_type'] = 'product_variation';
-						$variation_ids           = $wpdb->get_col(
-							$wpdb->prepare(
-								"SELECT ID
-								FROM {$wpdb->prefix}posts
-								WHERE ID IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = %s AND meta_value = %s)
-								AND post_type = 'product_variation'",
-								$this->get_attribute_meta_key( $this->source->taxonomyName ),
-								$this->source->slug
-							)
-						);
-						if ( ! empty( $variation_ids ) ) {
-							$variation_ids          = array_map( 'absint', $variation_ids );
-							$query_args['post__in'] = isset( $query_args['post__in'] )
-								? array_intersect( $variation_ids, $query_args['post__in'] )
-								: $variation_ids;
-						}
-					} else {
-						if ( empty( $query_args['tax_query'] ) ) {
-							$query_args['tax_query'] = array(); // WPCS: slow query ok.
-						}
-						$query_args['tax_query'][] = array( // WPCS: slow query ok.
-							'taxonomy' => $this->source->taxonomyName,
-							'field'    => 'term_id',
-							'terms'    => $this->source->term_id,
-						);
-					}
-					break;
-			}
-		}
 
 		if ( isset( $query_args['post__in'] ) && empty( $query_args['post__in'] ) ) {
 			$query_args['post__in'] = array( '0' );
@@ -316,7 +225,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WP_Query
 	 */
 	public function get_query() {
-		return new \WP_Query( $this->get_query_args() );
+		$query = new \WP_Query( $this->query_args );
+
+		if ( isset( $query->query_vars['suppress_filters'] ) && true === $query->query_vars['suppress_filters'] ) {
+			throw new InvariantViolation( __( 'WP_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql-woocommerce' ) );
+		}
+
+		return $query;
 	}
 
 	/**
@@ -653,5 +568,28 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function is_valid_offset( $offset ) {
 		return $this->is_valid_post_offset( $offset );
+	}
+
+	/**
+	 * Works like "AbstractConnectionResolver::set_query_arg()" with exception to
+	 * array values. If the query argument already existed and both values are arrays
+	 * the array with "array_intersect()". This behavior can be bypassed using
+	 * the "overwrite" parameter.
+	 *
+	 * @param string  $key        The key of the query arg to set
+	 * @param mixed   $value      The value of the query arg to set
+	 * @param boolean $overwrite  If true, array values are overwritten.
+	 *
+	 * @return Product_Connection_Resolver
+	 */
+	public function set_query_arg( $key, $value, $overwrite = false ) {
+		if ( ! empty( $this->query_args[ $key ] )
+			&& is_array( $this->query_args[ $key ] ) && $overwrite
+		) {
+			$this->query_args[ $key ] = array_intersect( $value, $this->query_args[ $key ] );
+		} else {
+			$this->query_args[ $key ] = $value;
+		}
+		return $this;
 	}
 }
