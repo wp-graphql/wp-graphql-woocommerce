@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "composer/installers": "^1.9",
-        "lucatume/wp-browser": "^2.4",
+        "lucatume/wp-browser": "^2.6.5",
         "codeception/module-asserts": "^1.0",
         "codeception/util-universalframework": "^1.0",
         "simpod/php-coveralls-mirror": "^3.0",
@@ -67,7 +67,10 @@
     "autoload-dev": {
         "files": [
             "tests/_data/config.php"
-        ]
+        ],
+        "psr-4": {
+          "WPGraphQL\\Testing\\": "tests/"
+        }
     },
     "extra": {
         "wordpress-install-dir": "local/public",
