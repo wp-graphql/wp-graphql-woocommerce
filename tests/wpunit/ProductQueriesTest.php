@@ -1013,7 +1013,7 @@ class ProductQueriesTest extends Tests\WPGraphQL\TestCase\WooGraphQLTestCase {
 		foreach( $product->get_children() as $grouped_product_id ) {
 			$expected[] = $this->expectedNode(
 				'product.products.nodes',
-				array( 'id' => $this->toRelayId( 'product', $grouped_product_id ) ),
+				array( 'id' => $this->toRelayId( 'product', $grouped_product_id ) )
 			);
 		}
 
