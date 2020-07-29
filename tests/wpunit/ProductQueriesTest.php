@@ -1,60 +1,110 @@
 <?php
 
 use GraphQLRelay\Relay;
-class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $helper;
-	private $product;
-	private $product_tag;
-	private $product_cat;
+class ProductQueriesTest extends Tests\WPGraphQL\TestCase\WooGraphQLTestCase {
 
-	public function setUp(): void {
-		// before
-		parent::setUp();
+	public function getExpectedProductData( $product_id ) {
+		$product         = \wc_get_product( $product_id );
+		$is_shop_manager = false;
+		$user            = wp_get_current_user();
+		if ( $user && in_array( 'shop_manager', (array) $user->roles ) ) {
+			$is_shop_manager = true;
+		}
 
-		$this->shop_manager  = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer      = $this->factory->user->create( array( 'role' => 'customer' ) );
-		$this->helper        = $this->getModule('\Helper\Wpunit')->product();
-		$this->product_tag   = 'tag-one';
-		$this->product_cat   = 'category-one';
-		$this->image_id     = $this->factory->post->create(
-			array(
-				'post_author'  => $this->shop_manager,
-				'post_content' => '',
-				'post_excerpt' => '',
-				'post_status'  => 'publish',
-				'post_title'   => 'Product Image',
-				'post_type'    => 'attachment',
-				'post_content' => 'product image',
-			)
+		return array(
+			'id'                => $this->toRelayId( 'product', $product_id ),
+			'productId'         => $product->get_id(),
+			'name'              => $product->get_name(),
+			'slug'              => $product->get_slug(),
+			'date'              => $product->get_date_created()->__toString(),
+			'modified'          => $product->get_date_modified()->__toString(),
+			'status'            => $product->get_status(),
+			'featured'          => $product->get_featured(),
+			'description'       => ! empty( $product->get_description() )
+				? apply_filters( 'the_content', $product->get_description() )
+				: null,
+			'shortDescription'  => ! empty( $product->get_short_description() )
+				? apply_filters(
+					'get_the_excerpt',
+					apply_filters( 'the_excerpt', $product->get_short_description() )
+				)
+				: null,
+			'sku'               => $product->get_sku(),
+			'price'             => ! empty( $product->get_price() )
+				? \wc_graphql_price( $product->get_price() )
+				: null,
+			'regularPrice'      => ! empty( $product->get_regular_price() )
+				? \wc_graphql_price( $product->get_regular_price() )
+				: null,
+			'salePrice'         => ! empty( $product->get_sale_price() )
+				? \wc_graphql_price( $product->get_sale_price() )
+				: null,
+			'dateOnSaleFrom'    => $product->get_date_on_sale_from(),
+			'dateOnSaleTo'      => $product->get_date_on_sale_to(),
+			'taxStatus'         => strtoupper( $product->get_tax_status() ),
+			'taxClass'          => ! empty( $product->get_tax_class() )
+				? $product->get_tax_class()
+				: 'STANDARD',
+			'manageStock'       => $product->get_manage_stock(),
+			'stockQuantity'     => $product->get_stock_quantity(),
+			'stockStatus'       => $this->factory->product->getStockStatusEnum( $product->get_stock_status() ),
+			'backorders'        => \WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_backorders() ),
+			'soldIndividually'  => $product->get_sold_individually(),
+			'weight'            => $product->get_weight(),
+			'length'            => $product->get_length(),
+			'width'             => $product->get_width(),
+			'height'            => $product->get_height(),
+			'reviewsAllowed'    => $product->get_reviews_allowed(),
+			'purchaseNote'      => ! empty( $product->get_purchase_note() )
+				? $product->get_purchase_note()
+				: null,
+			'menuOrder'         => $product->get_menu_order(),
+			'virtual'           => $product->get_virtual(),
+			'downloadable'      => $product->get_downloadable(),
+			'downloadLimit'     => $product->get_download_limit(),
+			'downloadExpiry'    => $product->get_download_expiry(),
+			'averageRating'     => (float) $product->get_average_rating(),
+			'reviewCount'       => $product->get_review_count(),
+			'backordersAllowed' => $product->backorders_allowed(),
+			'onSale'            => $product->is_on_sale(),
+			'purchasable'       => $product->is_purchasable(),
+			'shippingRequired'  => $product->needs_shipping(),
+			'shippingTaxable'   => $product->is_shipping_taxable(),
+			'link'              => get_post_permalink( $product_id ),
+			'totalSales'        => $is_shop_manager ? $product->get_total_sales() : null,
+			'catalogVisibility' => $is_shop_manager ? strtoupper( $product->get_catalog_visibility() ) :null,
 		);
-		$category_id         = $this->helper->create_product_category( $this->product_cat );
-		$this->product       = $this->helper->create_simple(
-			array(
-				'tag_ids'           => array( $this->helper->create_product_tag( $this->product_tag ) ),
-				'category_ids'      => array( $category_id ),
-				'image_id'          => $this->image_id,
-				'gallery_image_ids' => array( $this->image_id ),
-                'downloadable'      => true,
-				'downloads'         => array( $this->helper->create_download() ),
-				'slug'              => 'product-slug',
-				'sku'               => 'product-sku',
-			)
-		);
-		update_term_meta( $category_id, 'thumbnail_id', $this->image_id );
 	}
 
-	public function tearDown(): void {
-		// your tear down methods here
-		$product = \WC()->product_factory->get_product( $this->product );
-		$product->delete( true );
+	public function getExpectedProductDownloadData( $product_id ) {
+		$product    = wc_get_product( $product_id );
+		$downloads  = (array) $product->get_downloads();
+		if ( empty( $downloads ) ) {
+			return null;
+		}
 
-		parent::tearDown();
+		$results = array();
+		foreach ( $downloads as $download ) {
+			$results[] = array(
+				'name'            => $download->get_name(),
+				'downloadId'      => $download->get_id(),
+				'filePathType'    => $download->get_type_of_file_path(),
+				'fileType'        => $download->get_file_type(),
+				'fileExt'         => $download->get_file_extension(),
+				'allowedFileType' => $download->is_allowed_filetype(),
+				'fileExists'      => $download->file_exists(),
+				'file'            => $download->get_file(),
+			);
+		}
+
+		return $results;
 	}
 
 	// tests
 	public function testSimpleProductQuery() {
+		$product_id = $this->factory->product->createSimple();
+		$product    = wc_get_product( $product_id );
+
 		$query = '
 			query ( $id: ID!, $format: PostObjectFieldFormatEnum ) {
 				product(id: $id) {
@@ -108,27 +158,19 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
+
 		/**
 		 * Assertion One
 		 *
 		 * Test querying product.
 		 */
-		$actual = graphql(
-			array(
-				'query'     => $query,
-				'variables' => array( 'id' => $this->helper->to_relay_id( $this->product ) ),
-			)
-		);
+		$variables = array( 'id' => $this->toRelayId( 'product', $product_id ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = array(
-			'data' => array(
-				'product' => $this->helper->print_query( $this->product ),
-			),
+			$this->expectedObject( 'product', $this->getExpectedProductData( $product_id ) )
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertIsValidQueryResponse( $response, $expected );
 
 		// Clear cache
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
@@ -138,42 +180,34 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test querying product with unformatted content (edit-product cap required).
 		 */
-		wp_set_current_user( $this->shop_manager );
-		$actual = graphql(
-			array(
-				'query'     => $query,
-				'variables' => array(
-					'id'     => $this->helper->to_relay_id( $this->product ),
-					'format' => 'RAW',
-				),
-			)
+		$this->loginAsShopManager();
+		$variables = array(
+			'id'     => $this->toRelayId( 'product', $product_id ),
+			'format' => 'RAW',
 		);
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = array(
-			'data' => array(
-				'product' => $this->helper->print_query( $this->product, true ),
-			),
+			$this->expectedObject( 'product.description', $product->get_description() ),
+			$this->expectedObject( 'product.shortDescription', $product->get_short_description() ),
+			$this->expectedObject( 'product.totalSales', $product->get_total_sales() ),
+			$this->expectedObject( 'product.catalogVisibility', $product->get_catalog_visibility() ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertIsValidQueryResponse( $response, $expected );
 	}
 
 	public function testProductTaxonomies() {
-		// Create product for first assertion.
-		$category_5    = $this->helper->create_product_category( 'category-five' );;
-		$category_6    = $this->helper->create_product_category( 'category-six', $category_5 );
-		$tag_2         = $this->helper->create_product_tag( 'tag-two' );
-		$attachment_id = $this->factory()->attachment->create(
+		// Create product and properties.
+		$category_5    = $this->factory->product->createProductCategory( 'category-five' );
+		$category_6    = $this->factory->product->createProductCategory( 'category-six', $category_5 );
+		$tag_2         = $this->factory->product->createProductTag( 'tag-two' );
+		$attachment_id = $this->factory->attachment->create(
 			array(
 				'post_mime_type' => 'image/gif',
-				'post_author' => $this->admin
-			 )
+				'post_author' => $this->admin,
+			)
 		);
-		update_term_meta( $category_5, 'thumbnail_id', $attachment_id );
-		update_term_meta( $category_5, 'display_type', 'both' );
-		$product = $this->helper->create_simple(
+		$product_id    = $this->factory->product->createSimple(
 			array(
 				'price'         => 10,
 				'regular_price' => 10,
@@ -220,52 +254,33 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test querying product with "productId" argument.
 		 */
 		$variables = array(
-			'id'     => $product,
+			'id'     => $product_id,
 			'idType' => 'DATABASE_ID'
 		);
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'id'         => $this->helper->to_relay_id( $product ),
-					'image'      => array(
-						'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
-					),
-					'productCategories' => array(
+			$this->expectedObject( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedObject( 'product.image.id', $this->toRelayId( 'post', $attachment_id ) ),
+			$this->expectedNode(
+				'product.productCategories.nodes',
+				array(
+					'name'     => 'category-five',
+					'children' => array(
 						'nodes' => array(
-							array(
-								'name'      => 'category-five',
-								'image'     => array(
-									'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
-								),
-								'display'   => 'BOTH',
-								'menuOrder' => 0,
-								'children'  => array(
-									'nodes' => array(
-										array( 'name' => 'category-six' ),
-									),
-								),
-							),
+							array( 'name' => 'category-six' ),
 						),
 					),
-					'productTags'       => array(
-						'nodes' => array(
-							array( 'name' => 'tag-two' ),
-						),
-					),
-				),
+				)
 			),
+			$this->expectedNode( 'product.productTags.nodes', array( 'name' => 'tag-two' ) ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductQueryAndIds() {
-		$id = $this->helper->to_relay_id( $this->product );
-		$query = '
+		$product_id = $this->factory->product->createSimple();
+		$query      = '
 			query ( $id: ID!, $idType: ProductIdTypeEnum ) {
 				product( id: $id, idType: $idType ) {
 					... on SimpleProduct {
@@ -275,114 +290,84 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
+		// Define expected data for coming assertions.
+		$expected  = array(
+			$this->expectedObject( 'product.id', $this->toRelayId( 'product', $product_id ) )
+		);
+
 		/**
 		 * Assertion One
 		 *
-		 * Test querying product with "productId" argument.
+		 * Test querying product with 'DATABASE_ID' set as the "idType".
 		 */
 		$variables = array(
-			'id'     => $this->product,
+			'id'     => $product_id,
 			'idType' => 'DATABASE_ID',
 		);
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables
-			)
-		);
-		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
 		 *
-		 * Test querying product with "id" argument.
+		 * Test querying product with "ID" set as the "idType".
 		 */
 		$variables = array(
-			'id'     => $id,
+			'id'     => $this->toRelayId( 'product', $product_id ),
 			'idType' => 'ID',
 		);
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables
-			)
-		);
-		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
-		 * Test querying product with "slug" argument.
+		 * Test querying product with "SLUG" set as the "idType".
 		 */
 		$variables = array(
-			'id'     => 'product-slug',
+			'id'     => get_post_field( 'post_name', $product_id ),
 			'idType' => 'SLUG',
 		);
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables
-			)
-		);
-		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
 		 *
-		 * Test querying product with "sku" argument.
+		 * Test querying product with "SKU" set as the "idType".
 		 */
 		$variables = array(
-			'id'     => 'product-sku',
+			'id'     => get_post_meta( $product_id, '_sku', true ),
 			'idType' => 'SKU',
 		);
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables
-			)
-		);
-		$expected  = array( 'data' => array( 'product' => array( 'id' => $id ) ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductsQueryAndWhereArgs() {
-		$category_3 = $this->helper->create_product_category( 'category-three' );
-		$category_4 = $this->helper->create_product_category( 'category-four' );
-		$products = array (
-			$this->product,
-			$this->helper->create_simple(
+		$category_3  = $this->factory->product->createProductCategory( 'category-three' );
+		$category_4  = $this->factory->product->createProductCategory( 'category-four' );
+		$product_ids = array (
+			$this->factory->product->createSimple(
 				array(
-					'price'         => 10,
-					'regular_price' => 10,
+					'price'         => 6000,
+					'regular_price' => 6000
+				)
+			),
+			$this->factory->product->createSimple(
+				array(
+					'price'         => 2,
+					'regular_price' => 2,
 					'category_ids'  => array( $category_3, $category_4 )
 				)
 			),
-			$this->helper->create_simple(
+			$this->factory->product->createSimple(
 				array(
 					'featured'     => 'true',
 					'category_ids' => array( $category_3 ),
 				)
 			),
-			$this->helper->create_external(),
+			$this->factory->product->createExternal(),
 		);
 
 		$query = '
@@ -432,407 +417,261 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
+		$all_expected_product_nodes = array_map(
+			function( $product_id ) {
+				return $this->expectedNode(
+					'products.nodes',
+					array( 'id' => $this->toRelayId( 'product', $product_id ) )
+				);
+			},
+			$product_ids
+		);
+
 		/**
 		 * Assertion One
 		 *
-		 * tests query with no arguments
+		 * Tests query with no arguments, and expect all products to be returned.
 		 */
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes( $products ),
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$response = $this->graphql( compact( 'query' ) );
+		$this->assertQuerySuccessful( $response, $all_expected_product_nodes );
 
 		/**
 		 * Assertion Two
 		 *
-		 * tests "slug" where argument
+		 * Tests query with "slug" where argument, and expect the product with
+		 * the slug "test-product-1" to be returned.
 		 */
 		$variables = array( 'slug' => 'test-product-1' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) {
-								$product = \wc_get_product( $id );
-								return 'test-product-1' === $product->get_slug();
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return 'test-product-1' === $product->get_slug();
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
-		 * tests "status" where argument
+		 * Tests query with "status" where argument, and expect the products with
+		 * a status of "pending" to be returned, which there are none among the test
+		 * product with that status.
 		 */
 		$variables = array( 'status' => 'pending' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'products' => array( 'nodes' => array() ) ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array( $this->expectedObject( 'products.nodes', array() ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
 		 *
-		 * tests "type" where argument
+		 * Tests query with "type" where argument, and expect only "simple" products
+		 * to be returned.
 		 */
 		$variables = array( 'type' => 'SIMPLE' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) {
-								$product = \wc_get_product( $id );
-								return 'simple' === $product->get_type();
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return 'simple' === $product->get_type();
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Five
 		 *
-		 * tests "typeIn" where argument
+		 * Tests query with "typeIn" where argument, and expect only "simple" products
+		 * to be returned.
 		 */
 		$variables = array( 'typeIn' => array( 'SIMPLE' ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) {
-								$product = \wc_get_product( $id );
-								return 'simple' === $product->get_type();
-							},
-						)
-					),
-				),
-			),
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		// No need to reassign the $expected for this assertion.
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Six
 		 *
-		 * tests "typeNotIn" where argument
+		 * Tests query with "typeNotIn" where argument, and expect all types of products
+		 * with except "simple" to be returned.
 		 */
 		$variables = array( 'typeNotIn' => array( 'SIMPLE' ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) {
-								$product = \wc_get_product( $id );
-								return 'simple' !== $product->get_type();
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return 'simple' !== $product->get_type();
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Seven
 		 *
-		 * tests "featured" where argument
+		 * Tests query with "featured" where argument, expect only featured products
+		 * to be returned.
 		 */
 		$variables = array( 'featured' => true );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) {
-								$product = \wc_get_product( $id );
-								return $product->get_featured();
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return $product->get_featured();
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Eight
 		 *
-		 * tests "maxPrice" where argument
+		 * Tests query with "maxPrice" where argument, and expect all product
+		 * with a price of 10.00+ to be returned.
 		 */
 		$variables = array( 'maxPrice' => 10.00 );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) {
-								$product = \wc_get_product( $id );
-								return 10.00 >= floatval( $product->get_price() );
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return 10.00 >= floatval( $product->get_price() );
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Nine
 		 *
-		 * tests "orderby" where argument
+		 * Tests query with "orderby" where argument, and expect products to
+		 * be return in descending order by "price".
 		 */
 		$variables = array( 'orderby' => array( array( 'field' => 'PRICE', 'order' => 'DESC' ) ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'sorter' => function( $id_a, $id_b ) {
-								$product_a = new \WC_Product( $id_a );
-								$product_b = new \WC_Product( $id_b );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-								if ( floatval( $product_a->get_price() ) === floatval( $product_b->get_price() ) ) {
-									return $id_a > $id_b ? -1 : 1;
-								}
-								return floatval( $product_a->get_price() ) > floatval( $product_b->get_price() ) ? -1 : 1;
-							},
-						)
-					),
-				),
+		$expected  = array(
+			$this->expectedNode(
+				'products.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_ids[0] ) ),
+				0
+			),
+			$this->expectedNode(
+				'products.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_ids[1] ) ),
+				3
 			),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Ten
 		 *
-		 * tests "category" where argument
+		 * Tests query with "category" where argument, and expect products in
+		 * the "category-three" category to be returned.
 		 */
 		$variables = array( 'category' => 'category-three' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_3 ) {
-								$product = \wc_get_product( $id );
-								return in_array( $category_3, $product->get_category_ids(), true );
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids, $category_3 ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return in_array( $category_3, $product->get_category_ids(), true );
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Eleven
 		 *
-		 * tests "categoryIn" where argument
+		 * Tests query with "categoryIn" where argument, and expect products in
+		 * the "category-three" category to be returned.
 		 */
 		$variables = array( 'categoryIn' => array( 'category-three' ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_3 ) {
-								$product = \wc_get_product( $id );
-								return in_array( $category_3, $product->get_category_ids(), true );
-							},
-						)
-					),
-				),
-			),
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		// No need to reassign the $expected for this assertion.
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Twelve
 		 *
-		 * tests "categoryNotIn" where argument
+		 * Tests query with "categoryId" where argument, and expect products in
+		 * the "category-three" category to be returned.
 		 */
-		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_4 ) {
-								$product = \wc_get_product( $id );
-								return ! in_array( $category_4, $product->get_category_ids() );
-							},
-						)
-					),
-				),
-			),
-		);
+		$variables = array( 'categoryId' => $category_3 );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		// No need to reassign the $expected for this assertion either.
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Thirteen
 		 *
-		 * tests "categoryId" where argument
+		 * Tests query with "categoryNotIn" where argument, and expect all products
+		 * except products in the "category-four" category to be returned.
 		 */
-		$variables = array( 'categoryId' => $category_3 );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_3 ) {
-								$product = \wc_get_product( $id );
-								return in_array( $category_3, $product->get_category_ids(), true );
-							},
-						)
-					),
-				),
-			),
+		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids, $category_4 ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return ! in_array( $category_4, $product->get_category_ids() );
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Fourteen
 		 *
-		 * tests "categoryIdIn" where argument
+		 * Tests query with "categoryIdNotIn" where argument, and expect all products
+		 * except products in the "category-four" category to be returned.
 		 */
-		$variables = array( 'categoryIdIn' => array( $category_3 ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_3 ) {
-								$product = \wc_get_product( $id );
-								return in_array( $category_3, $product->get_category_ids(), true );
-							},
-						)
-					),
-				),
-			),
-		);
+		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		// No need to reassign the $expected for this assertion.
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
-		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Fifteen
 		 *
-		 * tests "categoryIdNotIn" where argument
+		 * Tests query with "categoryIdIn" where argument, and expect products in
+		 * the "category-four" category to be returned.
 		 */
-		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_4 ) {
-								$product = \wc_get_product( $id );
-								return ! in_array( $category_4, $product->get_category_ids() );;
-							},
-						)
-					),
-				),
-			),
+		$variables = array( 'categoryIdIn' => array( $category_4 ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids, $category_4 ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return in_array( $category_4, $product->get_category_ids(), true );
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Sixteen
@@ -856,32 +695,31 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				)
 			),
 		);
-		$actual   = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected = array(
-			'data' => array(
-				'products' => array(
-					'nodes' => $this->helper->print_nodes(
-						$products,
-						array(
-							'filter' => function( $id ) use ( $category_4, $category_3 ) {
-								$product = \wc_get_product( $id );
-								return ! in_array( $category_4, $product->get_category_ids() )
-									&& in_array( $category_3, $product->get_category_ids() );
-							},
-						)
-					),
-				),
-			),
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			function( $node, $index ) use ( $product_ids, $category_4, $category_3 ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return ! in_array( $category_4, $product->get_category_ids() )
+					&& in_array( $category_3, $product->get_category_ids() );
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductToTermConnection() {
-		$id = Relay::toGlobalId( 'product', $this->product );
+		$test_category = $this->factory->product->createProductCategory( 'test-product-category-1' );
+		$test_tag      = $this->factory->product->createProductTag( 'test-product-tag-1' );
+		$product_id    = $this->factory->product->createSimple(
+			array(
+				'tag_ids'           => array( $test_tag ),
+				'category_ids'      => array( $test_category ),
+			)
+		);
+		$relay_id      = $this->toRelayId( 'product', $product_id );
+
 		$query = '
 			query ($id: ID!) {
 				product(id: $id) {
@@ -902,34 +740,45 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'id' => $relay_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'id'         => $id,
-					'productTags'       => array(
-						'nodes' => array(
-							array( 'name' => $this->product_tag ),
-						),
-					),
-					'productCategories' => array(
-						'nodes' => array(
-							array( 'name' => $this->product_cat ),
-						),
-					),
-				)
-			)
+			$this->expectedObject( 'product.id', $relay_id ),
+			$this->expectedNode(
+				'product.productTags.nodes',
+				array( 'name' => 'test-product-tag-1' ),
+				0
+			),
+			$this->expectedNode(
+				'product.productCategories.nodes',
+				array( 'name' => 'test-product-category-1' ),
+				0
+			),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testTermToProductConnection() {
-		$id    = Relay::toGlobalId( 'product', $this->product );
+		$test_tag   = $this->factory->product->createProductTag( 'test-product-tag-2' );
+		$image_id      = $this->factory->post->create(
+			array(
+				'post_author'  => $this->shop_manager,
+				'post_status'  => 'publish',
+				'post_title'   => 'Product Image',
+				'post_type'    => 'attachment',
+			)
+		);
+		$test_category = $this->factory->product->createProductCategory( 'test-product-category-2' );
+		update_term_meta( $test_category, 'thumbnail_id', $image_id );
+
+		$product_id = $this->factory->product->createSimple(
+			array(
+				'tag_ids'           => array( $test_tag ),
+				'category_ids'      => array( $test_category ),
+			)
+		);
+
 		$query = '
 			query {
 				productTags( where: { hideEmpty: true } ) {
@@ -962,53 +811,58 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$actual    = graphql( array( 'query' => $query ) );
-		$expected  = array(
-			'data' => array(
-				'productTags' => array(
-					'nodes' => array(
-						array(
-							'name'     => $this->product_tag,
-							'products' => array(
-								'nodes' => array(
-									array (
-										'id' => $id
-									),
-								),
-							),
+		$response = graphql( compact( 'query' ) );
+		$expected = array(
+			$this->expectedNode(
+				'productTags.nodes',
+				array(
+					'name'     => 'test-product-tag-2',
+					'products' => array(
+						'nodes' => array(
+							array ( 'id' => $this->toRelayId( 'product', $product_id ) ),
 						),
 					),
 				),
-				'productCategories' => array(
-					'nodes' => array(
-						array(
-							'name'     => $this->product_cat,
-							'image'    => array(
-								'id' => Relay::toGlobalId( 'post', $this->image_id ),
-							),
-							'products' => array(
-								'nodes' => array(
-									array (
-										'id' => $id
-									),
-								),
-							),
+				0
+			),
+			$this->expectedNode(
+				'productCategories.nodes',
+				array(
+					'name'     => 'test-product-category-2',
+					'image'    => array( 'id' => $this->toRelayId( 'post', $image_id ) ),
+					'products' => array(
+						'nodes' => array(
+							array ( 'id' => $this->toRelayId( 'product', $product_id ) ),
 						),
 					),
 				),
+				0
 			),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductToMediaItemConnections() {
-		$id       = Relay::toGlobalId( 'product', $this->product );
-		$image_id = Relay::toGlobalId( 'post', $this->image_id );
-		$query    = '
+		$image_id   = $this->factory->post->create(
+			array(
+				'post_author'  => $this->shop_manager,
+				'post_status'  => 'publish',
+				'post_title'   => 'Product Image',
+				'post_type'    => 'attachment',
+			)
+		);
+		$product_id = $this->factory->product->createSimple(
+			array(
+				'image_id'          => $image_id,
+				'gallery_image_ids' => array( $image_id ),
+			)
+		);
+
+		$product_relay_id = $this->toRelayId( 'product', $product_id );
+		$image_relay_id  = $this->toRelayId( 'post', $image_id );
+
+		$query = '
 			query ( $id: ID! ) {
 				product( id: $id ) {
 					... on SimpleProduct {
@@ -1026,32 +880,27 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'id' => $product_relay_id );
+		$response = graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'id'            => $id,
-					'image'         => array(
-						'id' => $image_id,
-					),
-					'galleryImages' => array(
-						'nodes' => array(
-							array( 'id' => $image_id ),
-						),
-					),
-				),
-			),
+			$this->expectedObject( 'product.id', $product_relay_id ),
+			$this->expectedObject( 'product.image.id', $image_relay_id ),
+			$this->expectedNode( 'product.galleryImages.nodes', array( 'id' => $image_relay_id ) ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductDownloads() {
-		$id    = $this->helper->to_relay_id( $this->product );
+		$product_id = $this->factory->product->createSimple(
+			array(
+				'downloadable'      => true,
+				'downloads'         => array( $this->factory->product->createDownload() ),
+			)
+		);
+
+		$relay_id    = $this->toRelayId( 'product', $product_id );
+
 		$query = '
 			query ( $id: ID! ) {
 				product( id: $id ) {
@@ -1072,25 +921,25 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $id );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'id' => $relay_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'id'            => $id,
-					'downloads'     => $this->helper->print_downloads($this->product),
-				),
-			),
+			$this->expectedObject( 'product.id', $relay_id ),
+			$this->expectedObject( 'product.downloads', $this->getExpectedProductDownloadData( $product_id ) ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testExternalProductQuery() {
-		$product_id = $this->helper->create_external();
+		$product_id = $this->factory->product->createExternal(
+			array(
+				'product_url' => 'http://woographql.com',
+				'button_text' => 'Buy a external product',
+			)
+		);
+		$relay_id   = $this->toRelayId( 'product', $product_id );
+
 		$query      = '
 			query ( $id: ID! ) {
 				product(id: $id) {
@@ -1103,90 +952,76 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $product_id ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'id' => $relay_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => $this->helper->print_external( $product_id ),
-			),
+			$this->expectedObject( 'product.id', $relay_id ),
+			$this->expectedObject( 'product.buttonText', 'Buy a external product' ),
+			$this->expectedObject( 'product.externalUrl', 'http://woographql.com' ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testGroupProductConnections() {
-		$children        = array(
-			$this->helper->create_simple( array( 'regular_price' => '£1.00' ) ),
-			$this->helper->create_simple( array( 'regular_price' => '£10.00' ) ),
+		$product_id          = $this->factory->product->createGrouped(
+			array(
+				'name'     => 'Test Group',
+				'children' => array()
+			)
 		);
-		$grouped_product = $this->helper->create_grouped( array(), $children );
-		$query           = '
+		$grouped_product_ids = array(
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+		);
+
+		$product = \wc_get_product( $product_id );
+		$this->factory->product->update_object(
+			$product,
+			array( 'children' => $grouped_product_ids )
+		);
+
+		$relay_id = $this->toRelayId( 'product', $product_id );
+
+		$query = '
 			query ( $id: ID! ) {
 				product(id: $id) {
+					id
 					... on GroupProduct {
 						addToCartText
 						addToCartDescription
 						products {
-							nodes {
-								... on SimpleProduct {
-									id
-									parent {
-										... on GroupProduct {
-											id
-										}
-									}
-								}
-							}
+							nodes { id }
 						}
 					}
 				}
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $grouped_product['parent'] ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'id' => $relay_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => $this->helper->print_grouped( $grouped_product['parent'] ),
+			$this->expectedObject( 'product.id', $relay_id ),
+			$this->expectedObject( 'product.addToCartText', 'View products' ),
+			$this->expectedObject(
+				'product.addToCartDescription',
+				sprintf( __( 'View products in the &ldquo;%s&rdquo; group', 'woocommerce' ), 'Test Group' )
 			),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		foreach( $product->get_children() as $grouped_product_id ) {
+			$expected[] = $this->expectedNode(
+				'product.products.nodes',
+				array( 'id' => $this->toRelayId( 'product', $grouped_product_id ) ),
+			);
+		}
 
-		$this->assertEquals( $expected, $actual );
-
-		$query           = '
-			query ( $id: ID! ) {
-				product( id: $id ) {
-					... on GroupProduct {
-						price
-					}
-				}
-			}
-		';
-
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'price' => '£1.00 - £10.00',
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testRelatedProductConnections() {
-		$related_products = $this->helper->create_related();
-		$product          = wc_get_product( $related_products['product'] );
+		$products = $this->factory->product->createRelated();
 
 		$query = '
 			query ($id: ID!) {
@@ -1218,61 +1053,42 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $product->get_id() ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$related    = $actual['data']['product']['related']['nodes'];
-		$cross_sell = $actual['data']['product']['crossSell']['nodes'];
-		$upsell     = $actual['data']['product']['upsell']['nodes'];
-
-		// Assert that related products are valid.
-		foreach( wc_get_related_products( $product->get_id() ) as $pid ) {
-			$this->assertTrue(
-				in_array(
-					array( 'id' => $this->helper->to_relay_id( $pid ) ),
-					$related,
-					true
-				),
-				$this->helper->to_relay_id( $pid ) . ' not a related product of ' . $product->get_name()
+		$variables = array( 'id' => $this->toRelayId( 'product', $products['product'] ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array();
+		foreach( $products['related'] + $products['cross_sell'] + $products['upsell'] as $product_id ) {
+			$expected[] = $this->expectedNode(
+				'product.related.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_id ) )
+			);
+		}
+		foreach( $products['cross_sell'] as $product_id ) {
+			$expected[] = $this->expectedNode(
+				'product.crossSell.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_id ) )
+			);
+		}
+		foreach( $products['upsell'] as $product_id ) {
+			$expected[] = $this->expectedNode(
+				'product.upsell.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_id ) )
 			);
 		}
 
-		// Assert that cross sell products are valid.
-		foreach( $product->get_cross_sell_ids() as $pid ) {
-			$this->assertTrue(
-				in_array(
-					array( 'id' => $this->helper->to_relay_id( $pid ) ),
-					$cross_sell,
-					true
-				),
-				$this->helper->to_relay_id( $pid ) . ' not being cross selling by ' . $product->get_name()
-			);
-		}
-
-		// Assert that upsell products are valid.
-		foreach( $product->get_upsell_ids() as $pid ) {
-			$this->assertTrue(
-				in_array(
-					array( 'id' => $this->helper->to_relay_id( $pid ) ),
-					$upsell,
-					true
-				),
-				$this->helper->to_relay_id( $pid ) . ' not a upsold product of ' . $product->get_name()
-			);
-		}
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductToReviewConnections() {
-		$reviews = array(
-			$this->helper->create_review( $this->product ),
-			$this->helper->create_review( $this->product ),
-			$this->helper->create_review( $this->product ),
-			$this->helper->create_review( $this->product ),
-			$this->helper->create_review( $this->product ),
+		$product_id = $this->factory->product->createSimple();
+		$reviews    = array(
+			$this->factory->product->createReview( $product_id ),
+			$this->factory->product->createReview( $product_id ),
+			$this->factory->product->createReview( $product_id ),
+			$this->factory->product->createReview( $product_id ),
+			$this->factory->product->createReview( $product_id ),
 		);
+		$relay_id   = $this->toRelayId( 'product', $product_id );
+		$product    = \wc_get_product( $product_id );
 
 		$query = '
 			query ($id: ID!) {
@@ -1291,30 +1107,24 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $this->product ) );
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables
-			)
-		);
-		$product = WC()->product_factory->get_product( $this->product );
+		$variables = array( 'id' => $relay_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'id'      => $this->helper->to_relay_id( $this->product ),
-					'reviews' => array(
-						'averageRating' => floatval( $product->get_average_rating() ),
-						'edges'         => $this->helper->print_review_edges( $reviews ),
-					),
-				),
-			),
+			$this->expectedObject( 'product.id', $relay_id ),
+			$this->expectedObject( 'product.reviews.averageRating', floatval( $product->get_average_rating() ) ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		foreach( $reviews as $review_id ) {
+			$expected[] = $this->expectedEdge(
+				'product.reviews.edges',
+				array(
+					'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ),
+					'node'   => array( 'id' => $this->toRelayId( 'comment', $review_id ) ),
+				)
+			);
+		}
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductGalleryImagesConnection() {
