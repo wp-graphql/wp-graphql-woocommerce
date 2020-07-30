@@ -87,7 +87,7 @@ WooGraphQL has neither the team or the development hours that WooCommerce (WC) R
 
 ## It comes with a Cart.
 - WC REST doesn’t include any cart endpoints for manipulating the cart, meaning a cart has be implemented client-side, which is no small task. Cart-specific utilities are provided so you can rely on WooCommerce’s built-in cart to continue managing the end-user cart session data.
-- Although WC REST doesn’t provide any support for managing the user session alternative options for doing this task do existed like **[Co-Cart](https://cocart.xyz/)**, however their usage can be limited due to applications within the same origin as the WordPress installation. This is due to WooCommerce using cookies to store user session token. WooGraphQL provides a utility that changes this behavior during GraphQL request by passing the token to HTTP Header to be cached client-side and used like a HTTP Authorization header.
+- Although WC REST doesn’t provide any support for managing the user session alternative options for doing this task do exist, however their usage can be limited to applications within the same origin as the WordPress installation. This is due to WooCommerce using cookies to store user session token. WooGraphQL provides a utility that changes this behavior during GraphQL request by passing the token to HTTP Header to be cached client-side and used like a HTTP Authorization header.
 
 # Getting Started
 
