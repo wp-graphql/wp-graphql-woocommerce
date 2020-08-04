@@ -13,13 +13,7 @@ node_modules/
 .idea
 .vscode
 .github_changelog_generator
-!vendor/
-vendor/*
-!vendor/autoload.php
-!vendor/composer
-!vendor/firebase
-vendor/composer/installed.json
-vendor/composer/*/
+vendor/
 !tests
 tests/*.suite.yml
 build/
