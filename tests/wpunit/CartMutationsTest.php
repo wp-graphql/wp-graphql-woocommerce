@@ -23,7 +23,17 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         \WC()->cart->empty_cart( true );
 
         parent::tearDown();
-    }
+	}
+
+	private function graphql( $query, $operation_name = null, $variables = null ) {
+		// Run GraphQL request.
+		$results = graphql( compact( 'query', 'operation_name', 'variables' ) );
+
+		// use --debug flag to view.
+		codecept_debug( $results );
+
+        return $results;
+	}
 
     private function addToCart( $input ) {
         $mutation = '
@@ -53,15 +63,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-        $actual = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'addToCart',
-                'variables'      => array( 'input' => $input  ),
-            )
-        );
-
-        return $actual;
+        return $this->graphql( $mutation, 'addToCart', compact( 'input' ) );
     }
 
     private function removeItemsFromCart( $input ) {
@@ -92,15 +94,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-        $actual = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'removeItemsFromCart',
-                'variables'      => array( 'input' => $input  ),
-            )
-        );
-
-        return $actual;
+		return $this->graphql( $mutation, 'removeItemsFromCart', compact( 'input' ) );
     }
 
     private function restoreItems( $input ) {
@@ -129,17 +123,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     }
                 }
             }
-        ';
+		';
 
-        $actual = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'restoreCartItems',
-                'variables'      => array( 'input' => $input  ),
-            )
-        );
-
-        return $actual;
+		return $this->graphql( $mutation, 'restoreCartItems', compact( 'input' ) );
     }
 
     // tests
@@ -152,9 +138,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'quantity'         => 2,
             )
         );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
 
         // Retrieve cart item key.
         $this->assertArrayHasKey('data', $actual );
@@ -201,9 +184,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'variationId'      => $ids['variations'][0],
             )
         );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
 
         // Retrieve cart item key.
         $this->assertArrayHasKey('data', $actual );
@@ -297,25 +277,20 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-        $actual = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'updateItemQuantities',
-                'variables'      => array(
-                    'input' => array(
-                        'clientMutationId' => 'someId',
-                        'items'            => array(
-                            array( 'key' => $key_1, 'quantity' => 4 ),
-                            array( 'key' => $key_2, 'quantity' => 2 ),
-                            array( 'key' => $key_3, 'quantity' => 0 ),
-                        ),
-                    ),
-                ),
-            )
+        $actual = $this->graphql(
+			$mutation,
+			'updateItemQuantities',
+			array(
+				'input' => array(
+					'clientMutationId' => 'someId',
+					'items'            => array(
+						array( 'key' => $key_1, 'quantity' => 4 ),
+						array( 'key' => $key_2, 'quantity' => 2 ),
+						array( 'key' => $key_3, 'quantity' => 0 ),
+					),
+				),
+			)
         );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
 
         // Check cart item data.
 		$expected = array(
@@ -364,9 +339,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'keys'             => array( $key ),
             )
         );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
 
         $expected = array(
             'data' => array(
@@ -424,9 +396,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'keys'             => array( $key1, $key2 ),
             )
         );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
 
         $expected = array(
             'data' => array(
@@ -486,9 +455,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        // use --debug flag to view.
-        codecept_debug( $actual );
-
         $expected = array(
             'data' => array(
                 'removeItemsFromCart' => array(
@@ -536,9 +502,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'keys'             => array( $key ),
             )
         );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
 
         $expected = array(
             'data' => array(
@@ -604,9 +567,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-        // use --debug flag to view.
-        codecept_debug( $actual );
-
         $expected = array(
             'data' => array(
                 'restoreCartItems' => array(
@@ -666,16 +626,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $variables = array(
             'input' => array( 'clientMutationId' => 'someId' ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'emptyCart',
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, 'emptyCart', $variables );
 
         $expected = array(
             'data' => array(
@@ -771,16 +722,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'code'             => $coupon_code,
             ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'applyCoupon',
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, 'applyCoupon', $variables );
 
         // Get updated cart item.
         $cart_item = WC()->cart->get_cart_item( $cart_item_key );
@@ -877,15 +819,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'code'             => $coupon_id,
             ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, null, $variables );
 
         $this->assertNotEmpty( $actual['errors'] );
         $this->assertEmpty( $actual['data']['applyCoupon'] );
@@ -901,15 +835,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'code'             => $expired_coupon_code,
             ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, null, $variables );
 
         $this->assertNotEmpty( $actual['errors'] );
         $this->assertEmpty( $actual['data']['applyCoupon'] );
@@ -925,15 +851,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'code'             => $applied_coupon_code,
             ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, null, $variables );
 
         $this->assertNotEmpty( $actual['errors'] );
         $this->assertEmpty( $actual['data']['applyCoupon'] );
@@ -995,16 +913,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'codes'            => array( $coupon_code ),
             ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'removeCoupons',
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, 'removeCoupons', $variables );
 
         // Get updated cart item.
         $cart_item = \WC()->cart->get_cart_item( $cart_item_key );
@@ -1078,30 +987,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'amount'           => 49.99,
             ),
         );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'addFee',
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual    = $this->graphql( $mutation, 'addFee', $variables );
 
         $this->assertArrayHasKey('errors', $actual );
 
         wp_set_current_user( $this->shop_manager );
-        $actual    = graphql(
-            array(
-                'query'          => $mutation,
-                'operation_name' => 'addFee',
-                'variables'      => $variables,
-            )
-        );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
+        $actual = $this->graphql( $mutation, 'addFee', $variables );
 
         $expected = array(
             'data' => array(
@@ -1113,5 +1004,25 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         );
 
         $this->assertEquals( $expected, $actual );
-    }
+	}
+
+	public function testAddToCartMutationErrors() {
+		// Create products.
+        $product_id = $this->product->create_simple(
+			array(
+				'manage_stock'   => true,
+				'stock_quantity' => 1,
+			)
+		);
+
+		$failed = $this->addToCart(
+            array(
+                'clientMutationId' => 'someId',
+                'productId'        => $product_id,
+                'quantity'         => 5,
+            )
+		);
+
+		$this->assertArrayHasKey( 'errors', $failed );
+	}
 }
