@@ -106,17 +106,18 @@ class Cart_Add_Item {
 		// Add item to cart and get item key.
 		$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
 
-		if ( false ===  $cart_item_key ) {
-			$notices = \WC()->session->get( 'wc_notices' );
-			if ( ! empty( $notices['error'] ) ) {
-				$cart_error_messages = implode( ' ', array_column( $notices['error'], 'notice' ) );
-				throw new UserError( $cart_error_messages );
-			} else {
-				throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
-			}
+		// If cart item key valid return payload.
+		if ( false !==  $cart_item_key ) {
+			return array( 'key' => $cart_item_key );
 		}
 
-		// Return payload.
-		return array( 'key' => $cart_item_key );
+		// Process errors.
+		$notices = \WC()->session->get( 'wc_notices' );
+		if ( ! empty( $notices['error'] ) ) {
+			$cart_error_messages = implode( ' ', array_column( $notices['error'], 'notice' ) );
+			throw new UserError( $cart_error_messages );
+		} else {
+			throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
+		}
 	}
 }
