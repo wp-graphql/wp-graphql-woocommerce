@@ -9,7 +9,10 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\Connection\PostObjects;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 /**
  * Class - Posts
@@ -27,6 +30,18 @@ class Posts extends PostObjects {
 					'fromType'      => 'Product',
 					'toType'        => 'MediaItem',
 					'fromFieldName' => 'galleryImages',
+					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'attachment' );
+						$resolver->set_query_arg( 'post_type', 'attachment' );
+						$resolver->set_query_arg( 'post__in', $source->gallery_image_ids );
+
+						// Change default ordering
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);

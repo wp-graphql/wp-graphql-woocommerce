@@ -64,7 +64,6 @@ class ComposerStaticInit51f6ef77ec7a78ec4a9df8dd9f5dc45f
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Order_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-order-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Order_Item_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-order-item-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Payment_Gateway_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-payment-gateway-connection-resolver.php',
-        'WPGraphQL\\WooCommerce\\Data\\Connection\\Post_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-post-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Attribute_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-product-attribute-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-product-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Review_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-product-review-connection-resolver.php',

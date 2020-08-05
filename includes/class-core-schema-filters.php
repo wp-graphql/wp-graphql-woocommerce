@@ -33,15 +33,6 @@ class Core_Schema_Filters {
 
 		// Adds connection resolutions for WooGraphQL type to WPGraphQL type connections.
 		add_filter(
-			'graphql_post_object_connection_query_args',
-			array(
-				'\WPGraphQL\WooCommerce\Data\Connection\Post_Connection_Resolver',
-				'get_query_args',
-			),
-			10,
-			5
-		);
-		add_filter(
 			'graphql_term_object_connection_query_args',
 			array(
 				'\WPGraphQL\WooCommerce\Data\Connection\WC_Term_Connection_Resolver',
