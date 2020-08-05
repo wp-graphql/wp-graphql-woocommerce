@@ -17,7 +17,7 @@ on:
       - '!docs/**'
 
 jobs:
-  run:
+  continuous_integration:
     env:
       STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
       STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
@@ -48,6 +48,13 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: json, mbstring
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Install dependencies
+        run: composer install --no-dev
 
       - name: Build "testing" Docker Image
         env:

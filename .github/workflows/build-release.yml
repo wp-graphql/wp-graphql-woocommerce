@@ -1,13 +1,14 @@
 name: build_release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
 jobs:
-  run:
-    runs-on: ubuntu-latest
+  build_release:
     name: "Build Release"
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -22,12 +23,27 @@ jobs:
       - name: Install dependencies
         run: composer install --no-dev
 
-      - name: Remove unneeded files
-        run: |
-          rm -rf composer.json composer.lock tests \
-          coveralls.yml netlify.toml docker docs vendor \
-          bin .github .env.dist phpcs.xml .dockerignore \
-          codeception.dist.yml .editorconfig .gitignore .git
-
       - name: List files
         run: ls -laR
+
+      - name: Generate draft release
+        uses: meeDamian/github-release@2.0
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          draft: true
+          title: "Release {{ github.ref }}"
+          gzip: true
+          files: >
+            includes/
+            vendor/
+            .distignore
+            access-functions.php
+            CHANGELOG.md
+            class-inflect.php
+            LICENSE
+            logo.svg
+            README.md
+            README.txt
+            SECURITY.md
+            wp-graphql-woocommerce.php
