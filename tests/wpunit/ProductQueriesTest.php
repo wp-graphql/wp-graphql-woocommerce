@@ -162,7 +162,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testProductTaxonomies() {
 		// Create product for first assertion.
-		$category_5    = $this->helper->create_product_category( 'category-five' );
+		$category_5    = $this->helper->create_product_category( 'category-five' );;
 		$category_6    = $this->helper->create_product_category( 'category-six', $category_5 );
 		$tag_2         = $this->helper->create_product_tag( 'tag-two' );
 		$attachment_id = $this->factory()->attachment->create(
@@ -171,6 +171,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'post_author' => $this->admin
 			 )
 		);
+		update_term_meta( $category_5, 'thumbnail_id', $attachment_id );
+		update_term_meta( $category_5, 'display_type', 'both' );
 		$product = $this->helper->create_simple(
 			array(
 				'price'         => 10,
@@ -192,6 +194,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						productCategories {
 							nodes {
 								name
+								image { id }
+								display
+								menuOrder
 								children {
 									nodes {
 										name
@@ -229,8 +234,13 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'productCategories' => array(
 						'nodes' => array(
 							array(
-								'name'     => 'category-five',
-								'children' => array(
+								'name'      => 'category-five',
+								'image'     => array(
+									'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
+								),
+								'display'   => 'BOTH',
+								'menuOrder' => 0,
+								'children'  => array(
 									'nodes' => array(
 										array( 'name' => 'category-six' ),
 									),
