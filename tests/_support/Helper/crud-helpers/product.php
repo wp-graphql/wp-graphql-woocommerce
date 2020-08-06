@@ -192,7 +192,7 @@ class ProductHelper extends WCG_Helper {
 			$this->create_simple(),
 			$this->create_simple(),
 		);
-		$tag_ids            = array( $this->create_product_tag( 'related' ) ); 
+		$tag_ids            = array( $this->create_product_tag( 'related' ) );
 		$related_product_id = $this->create_simple( array( 'tag_ids' => $tag_ids ) );
 
 		return array(
@@ -389,7 +389,10 @@ class ProductHelper extends WCG_Helper {
 			$results[] = array(
 				'id'          => base64_encode( $attribute_name . ':' . $id . ':' . $attribute->get_name() ),
 				'attributeId' => $attribute->get_id(),
-				'name'        => $attribute->get_name(),
+				'name'        => str_replace( 'pa_', '', $attribute->get_name() ),
+				'label'       => $attribute->is_taxonomy()
+					? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
+					: null,
 				'options'     => $attribute->get_slugs(),
 				'position'    => $attribute->get_position(),
 				'visible'     => $attribute->get_visible(),
@@ -406,7 +409,7 @@ class ProductHelper extends WCG_Helper {
 		if ( empty( $downloads ) ) {
 			return null;
 		}
-		
+
 		$results = array();
 		foreach ( $downloads as $download ) {
 			$results[] = array(
@@ -420,7 +423,7 @@ class ProductHelper extends WCG_Helper {
 				'file'            => $download->get_file(),
 			);
 		}
-		
+
 		return $results;
 	}
 
@@ -493,13 +496,13 @@ class ProductHelper extends WCG_Helper {
 		$reviews = array();
 		foreach ( $ids as $review_id ) {
 			$reviews[] = array(
-				'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ), 
+				'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ),
 				'node'   => array(
 					'id' => Relay::toGlobalId( 'comment', $review_id )
 				),
 			);
 		}
-	
+
 		return $reviews;
 	}
 }

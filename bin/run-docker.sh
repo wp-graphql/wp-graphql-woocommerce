@@ -2,6 +2,15 @@
 
 set -eu
 
+print_usage_instructions() {
+	echo "Usage: $0 build|run [-a|-t]";
+	exit 1
+}
+
+if [ -z "$1" ]; then
+	print_usage_instructions
+fi
+
 subcommand=$1; shift
 case "$subcommand" in
     "build" )
@@ -20,7 +29,7 @@ case "$subcommand" in
                     --build-arg WP_VERSION=${WP_VERSION-5.4} \
                     --build-arg PHP_VERSION=${PHP_VERSION-7.4} \
                     .
-                
+
                 docker build -f docker/testing.Dockerfile \
                     -t woographql-testing:latest \
                     --build-arg USE_XDEBUG=${USE_XDEBUG-} \
@@ -33,9 +42,9 @@ case "$subcommand" in
         shift $((OPTIND -1))
         ;;
     "run" )
-        while getopts ":a:t" opt; do
+        while getopts ":at" opt; do
             case ${opt} in
-                a ) docker-compose up -d --scale testing=0 --build;;
+                a ) docker-compose up --scale testing=0 --build;;
                 t )
                 docker-compose run --rm \
                     -e STRIPE_API_PUBLISHABLE_KEY=${STRIPE_API_PUBLISHABLE_KEY-} \
