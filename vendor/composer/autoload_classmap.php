@@ -45,7 +45,6 @@ return array(
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Variation_Attribute_Connection_Resolver' => $baseDir . '/includes/data/connection/class-variation-attribute-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_CPT_Loader_Common' => $baseDir . '/includes/data/connection/trait-wc-cpt-loader-common.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Db_Loader_Common' => $baseDir . '/includes/data/connection/trait-wc-db-loader-common.php',
-    'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Term_Connection_Resolver' => $baseDir . '/includes/data/connection/class-wc-term-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Factory' => $baseDir . '/includes/data/class-factory.php',
     'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_CPT_Loader' => $baseDir . '/includes/data/loader/class-wc-cpt-loader.php',
     'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_Customer_Loader' => $baseDir . '/includes/data/loader/class-wc-customer-loader.php',

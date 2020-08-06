@@ -43,7 +43,7 @@ class Product_Category_Type {
 						return ! empty( $display ) ? $display : 'default';
 					},
 				),
-				'order'   => array(
+				'menuOrder'   => array(
 					'type'        => 'Integer',
 					'description' => __( 'Product category menu order', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {

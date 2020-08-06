@@ -73,7 +73,6 @@ class ComposerStaticInit51f6ef77ec7a78ec4a9df8dd9f5dc45f
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Variation_Attribute_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-variation-attribute-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_CPT_Loader_Common' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-cpt-loader-common.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Db_Loader_Common' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-db-loader-common.php',
-        'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Term_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-wc-term-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/includes/data/class-factory.php',
         'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_CPT_Loader' => __DIR__ . '/../..' . '/includes/data/loader/class-wc-cpt-loader.php',
         'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_Customer_Loader' => __DIR__ . '/../..' . '/includes/data/loader/class-wc-customer-loader.php',
