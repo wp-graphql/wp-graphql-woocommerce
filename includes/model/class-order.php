@@ -59,7 +59,7 @@ class Order extends Crud_CPT {
 			'needsPayment',
 			'needsProcessing',
 			'hasDownloadableItem',
-			'downloadableItems',
+			'downloadable_items',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_order', $id );
