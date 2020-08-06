@@ -390,6 +390,9 @@ class ProductHelper extends WCG_Helper {
 				'id'          => base64_encode( $attribute_name . ':' . $id . ':' . $attribute->get_name() ),
 				'attributeId' => $attribute->get_id(),
 				'name'        => str_replace( 'pa_', '', $attribute->get_name() ),
+				'label'       => $attribute->is_taxonomy()
+					? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
+					: null,
 				'options'     => $attribute->get_slugs(),
 				'position'    => $attribute->get_position(),
 				'visible'     => $attribute->get_visible(),

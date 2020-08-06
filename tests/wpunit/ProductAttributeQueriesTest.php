@@ -36,6 +36,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
                                 id
                                 attributeId
 								name
+								label
                                 options
                                 position
                                 visible
