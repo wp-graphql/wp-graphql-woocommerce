@@ -54,6 +54,10 @@ class ACF_Schema_Filters {
 	 * @return mixed|null
 	 */
 	public static function resolve_post_object_source( $source, $value ) {
+		
+		// If null of array do nothing
+		if (empty($value) || is_array($value)) return $source;
+		
 		$post = get_post( $value );
 		if ( $post instanceof \WP_Post ) {
 			switch ( $post->post_type ) {
