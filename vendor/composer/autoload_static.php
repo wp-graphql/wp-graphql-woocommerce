@@ -162,6 +162,7 @@ class ComposerStaticInit51f6ef77ec7a78ec4a9df8dd9f5dc45f
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Product_Types' => __DIR__ . '/../..' . '/includes/type/object/class-product-types.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Product_Variation_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-variation-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Refund_Type' => __DIR__ . '/../..' . '/includes/type/object/class-refund-type.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPObject\\Root_Query' => __DIR__ . '/../..' . '/includes/type/object/class-root-query.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-method-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Package_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-package-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Rate_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-rate-type.php',

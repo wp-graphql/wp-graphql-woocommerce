@@ -134,6 +134,7 @@ return array(
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Product_Types' => $baseDir . '/includes/type/object/class-product-types.php',
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Product_Variation_Type' => $baseDir . '/includes/type/object/class-product-variation-type.php',
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Refund_Type' => $baseDir . '/includes/type/object/class-refund-type.php',
+    'WPGraphQL\\WooCommerce\\Type\\WPObject\\Root_Query' => $baseDir . '/includes/type/object/class-root-query.php',
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => $baseDir . '/includes/type/object/class-shipping-method-type.php',
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Package_Type' => $baseDir . '/includes/type/object/class-shipping-package-type.php',
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Rate_Type' => $baseDir . '/includes/type/object/class-shipping-rate-type.php',
