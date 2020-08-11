@@ -231,22 +231,16 @@ class Product extends Crud_CPT {
 				'purchasable'         => function () {
 					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
 				},
+				'descriptionRaw'      => function() {
+					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+				},
+				'shortDescriptionRaw' => function() {
+					return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
+				},
 
 				/**
 				 * Editor/Shop Manager only fields
 				 */
-				'descriptionRaw'      => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
-				'shortDescriptionRaw' => array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				),
 				'catalogVisibility'   => array(
 					'callback'   => function() {
 						return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
@@ -302,49 +296,36 @@ class Product extends Crud_CPT {
 			);
 
 			if ( 'grouped' !== $this->data->get_type() ) {
-				$shared_fields['price']        = function() {
+				$shared_fields['price']           = function() {
 					return ! empty( $this->data->get_price() )
 						? \wc_graphql_price( $this->data->get_price() )
 						: null;
 				};
-				$shared_fields['regularPrice'] = function() {
+				$shared_fields['regularPrice']    = function() {
 					return ! empty( $this->data->get_regular_price() )
 						? \wc_graphql_price( $this->data->get_regular_price() )
 						: null;
 				};
-				$shared_fields['salePrice']    = function() {
+				$shared_fields['salePrice']       = function() {
 					return ! empty( $this->data->get_sale_price() )
 						? \wc_graphql_price( $this->data->get_sale_price() )
 						: null;
 				};
-				$shared_fields['taxStatus']    = function() {
+				$shared_fields['taxStatus']       = function() {
 					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
 				};
-				$shared_fields['taxClass']     = function() {
+				$shared_fields['taxClass']        = function() {
 					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
 				};
-
-				/**
-				 * Editor/Shop Manager only fields
-				 */
-				$shared_fields['priceRaw']        = array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				);
-				$shared_fields['regularPriceRaw'] = array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				);
-				$shared_fields['salePriceRaw']    = array(
-					'callback'   => function() {
-						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				);
+				$shared_fields['priceRaw']        = function() {
+					return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+				};
+				$shared_fields['regularPriceRaw'] = function() {
+					return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+				};
+				$shared_fields['salePriceRaw']    = function() {
+					return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+				};
 			}
 
 			if ( 'simple' === $this->data->get_type() || 'variable' === $this->data->get_type() ) {
@@ -431,28 +412,15 @@ class Product extends Crud_CPT {
 								? array_map( 'absint', $this->data->get_children() )
 								: array( '0' );
 						},
-
-						/**
-						 * Editor/Shop Manager only fields
-						 */
-						'priceRaw'        => array(
-							'callback'   => function() {
-								return $this->get_variation_price( '', true );
-							},
-							'capability' => $this->post_type_object->cap->edit_posts,
-						),
-						'regularPriceRaw' => array(
-							'callback'   => function() {
-								return $this->get_variation_price( 'regular', true );
-							},
-							'capability' => $this->post_type_object->cap->edit_posts,
-						),
-						'salePriceRaw'    => array(
-							'callback'   => function() {
-								return $this->get_variation_price( 'sale', true );
-							},
-							'capability' => $this->post_type_object->cap->edit_posts,
-						),
+						'priceRaw'        => function() {
+							return $this->get_variation_price( '', true );
+						},
+						'regularPriceRaw' => function() {
+							return $this->get_variation_price( 'regular', true );
+						},
+						'salePriceRaw'    => function() {
+							return $this->get_variation_price( 'sale', true );
+						},
 					);
 					break;
 				case 'external':
