@@ -6,9 +6,9 @@
  * @since 0.6.0
  * @package Tests\WPGraphQL\TestCase
  */
-namespace Tests\WPGraphQL\TestCase;
+namespace Tests\WPGraphQL\WooCommerce\TestCase;
 
-class WooGraphQLTestCase extends WPGraphQLTestCase {
+class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * Holds the User ID of an user with the "shop_manager" role.
 	 * For use through the tests for purpose of testing user access levels.
@@ -42,7 +42,7 @@ class WooGraphQLTestCase extends WPGraphQLTestCase {
 
 		foreach ( $factories as $factory ) {
 			$factory_name  = strtolower( $factory );
-			$factory_class = '\\Tests\\WPGraphQL\\Factory\\' . $factory . 'Factory';
+			$factory_class = '\\Tests\\WPGraphQL\\WooCommerce\\Factory\\' . $factory . 'Factory';
 			$this->factory->{$factory_name} = new $factory_class( $this->factory );
 		}
 	}

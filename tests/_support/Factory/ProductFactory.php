@@ -6,9 +6,9 @@
  * @package Tests\WPGraphQL\WooCommerce\Factory
  */
 
-namespace Tests\WPGraphQL\Factory;
+namespace Tests\WPGraphQL\WooCommerce\Factory;
 
-use Tests\WPGraphQL\Utils\Dummy;
+use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
 
 /**
  * Product Factory class for testing.

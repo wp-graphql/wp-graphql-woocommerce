@@ -33,9 +33,11 @@
     },
     "require-dev": {
         "composer/installers": "^1.9",
-        "lucatume/wp-browser": "^2.6.5",
+        "lucatume/wp-browser": "^2.6.",
+        "wp-graphql/wp-graphql-testcase": "^1.0",
         "codeception/module-asserts": "^1.0",
         "codeception/util-universalframework": "^1.0",
+        "codeception/module-rest": "^1.2",
         "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28",
         "wp-coding-standards/wpcs": "^2.3",
@@ -69,7 +71,7 @@
             "tests/_data/config.php"
         ],
         "psr-4": {
-          "Tests\\WPGraphQL\\": "tests/_support/"
+          "Tests\\WPGraphQL\\WooCommerce\\": "tests/_support/"
         }
     },
     "extra": {

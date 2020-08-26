@@ -8,7 +8,7 @@
  * @package Tests\WPGraphQL\Utils
  */
 
-namespace Tests\WPGraphQL\Utils;
+namespace Tests\WPGraphQL\WooCommerce\Utils;
 
 /**
  * Class - Dummy

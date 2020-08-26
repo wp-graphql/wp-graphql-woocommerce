@@ -1,7 +1,23 @@
 <?php
+class ProductQueriesTest extends Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-use GraphQLRelay\Relay;
-class ProductQueriesTest extends Tests\WPGraphQL\TestCase\WooGraphQLTestCase {
+	/**
+	 * The death of `! empty( $v ) ? apply_filters( $v ) : null;`
+	 *
+	 * @param array|mixed $possible   Variable whose existence has to be verified, or
+	 * an array containing the variable followed by a decorated value to be returned.
+	 * @param mixed       $default    Default value to be returned if $possible doesn't exist.
+	 *
+	 * @return mixed
+	 */
+	private function maybe( $possible, $default = null ) {
+		if ( is_array( $possible ) && 2 === count( $possible ) ) {
+			list( $possible, $decorated ) = $possible;
+		} else {
+			$decorated = $possible;
+		}
+		return ! empty( $possible ) ? $decorated : $default;
+	}
 
 	public function getExpectedProductData( $product_id ) {
 		$product         = \wc_get_product( $product_id );
@@ -12,67 +28,160 @@ class ProductQueriesTest extends Tests\WPGraphQL\TestCase\WooGraphQLTestCase {
 		}
 
 		return array(
-			'id'                => $this->toRelayId( 'product', $product_id ),
-			'productId'         => $product->get_id(),
-			'name'              => $product->get_name(),
-			'slug'              => $product->get_slug(),
-			'date'              => $product->get_date_created()->__toString(),
-			'modified'          => $product->get_date_modified()->__toString(),
-			'status'            => $product->get_status(),
-			'featured'          => $product->get_featured(),
-			'description'       => ! empty( $product->get_description() )
-				? apply_filters( 'the_content', $product->get_description() )
-				: null,
-			'shortDescription'  => ! empty( $product->get_short_description() )
-				? apply_filters(
-					'get_the_excerpt',
-					apply_filters( 'the_excerpt', $product->get_short_description() )
+			$this->expectedObject( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedObject( 'product.productId', $product->get_id() ),
+			$this->expectedObject( 'product.name', $product->get_name() ),
+			$this->expectedObject( 'product.slug', $product->get_slug() ),
+			$this->expectedObject( 'product.date', $product->get_date_created()->__toString() ),
+			$this->expectedObject( 'product.status', $product->get_status() ),
+			$this->expectedObject( 'product.featured', $product->get_featured() ),
+			$this->expectedObject(
+				'product.description',
+				$this->maybe(
+					array( $product->get_description(), apply_filters( 'the_content', $product->get_description() ) ),
+					'null'
 				)
-				: null,
-			'sku'               => $product->get_sku(),
-			'price'             => ! empty( $product->get_price() )
-				? \wc_graphql_price( $product->get_price() )
-				: null,
-			'regularPrice'      => ! empty( $product->get_regular_price() )
-				? \wc_graphql_price( $product->get_regular_price() )
-				: null,
-			'salePrice'         => ! empty( $product->get_sale_price() )
-				? \wc_graphql_price( $product->get_sale_price() )
-				: null,
-			'dateOnSaleFrom'    => $product->get_date_on_sale_from(),
-			'dateOnSaleTo'      => $product->get_date_on_sale_to(),
-			'taxStatus'         => strtoupper( $product->get_tax_status() ),
-			'taxClass'          => ! empty( $product->get_tax_class() )
-				? $product->get_tax_class()
-				: 'STANDARD',
-			'manageStock'       => $product->get_manage_stock(),
-			'stockQuantity'     => $product->get_stock_quantity(),
-			'stockStatus'       => $this->factory->product->getStockStatusEnum( $product->get_stock_status() ),
-			'backorders'        => \WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_backorders() ),
-			'soldIndividually'  => $product->get_sold_individually(),
-			'weight'            => $product->get_weight(),
-			'length'            => $product->get_length(),
-			'width'             => $product->get_width(),
-			'height'            => $product->get_height(),
-			'reviewsAllowed'    => $product->get_reviews_allowed(),
-			'purchaseNote'      => ! empty( $product->get_purchase_note() )
-				? $product->get_purchase_note()
-				: null,
-			'menuOrder'         => $product->get_menu_order(),
-			'virtual'           => $product->get_virtual(),
-			'downloadable'      => $product->get_downloadable(),
-			'downloadLimit'     => $product->get_download_limit(),
-			'downloadExpiry'    => $product->get_download_expiry(),
-			'averageRating'     => (float) $product->get_average_rating(),
-			'reviewCount'       => $product->get_review_count(),
-			'backordersAllowed' => $product->backorders_allowed(),
-			'onSale'            => $product->is_on_sale(),
-			'purchasable'       => $product->is_purchasable(),
-			'shippingRequired'  => $product->needs_shipping(),
-			'shippingTaxable'   => $product->is_shipping_taxable(),
-			'link'              => get_post_permalink( $product_id ),
-			'totalSales'        => $is_shop_manager ? $product->get_total_sales() : null,
-			'catalogVisibility' => $is_shop_manager ? strtoupper( $product->get_catalog_visibility() ) :null,
+			),
+			$this->expectedObject(
+				'product.shortDescription',
+				$this->maybe(
+					array(
+						$product->get_short_description(),
+						apply_filters(
+							'get_the_excerpt',
+							apply_filters( 'the_excerpt', $product->get_short_description() )
+						),
+					),
+					'null'
+				)
+			),
+			$this->expectedObject( 'product.sku', $product->get_sku() ),
+			$this->expectedObject(
+				'product.price',
+				$this->maybe(
+					array( $product->get_price(), \wc_graphql_price( $product->get_price() ) ),
+					'null'
+				)
+			),
+			$this->expectedObject(
+				'product.regularPrice',
+				$this->maybe(
+					array( $product->get_regular_price(), \wc_graphql_price( $product->get_regular_price() ) ),
+					'null'
+				)
+			),
+			$this->expectedObject(
+				'product.salePrice',
+				$this->maybe(
+					array( $product->get_sale_price(), \wc_graphql_price( $product->get_sale_price() ) ),
+					'null'
+				)
+			),
+			$this->expectedObject(
+				'product.dateOnSaleFrom',
+				$this->maybe( $product->get_date_on_sale_from(), 'null' )
+			),
+			$this->expectedObject(
+				'product.dateOnSaleTo',
+				$this->maybe( $product->get_date_on_sale_to(), 'null' )
+			),
+			$this->expectedObject(
+				'product.taxStatus',
+				$this->maybe( strtoupper( $product->get_tax_status() ), 'null' )
+			),
+			$this->expectedObject(
+				'product.taxClass',
+				$this->maybe( $product->get_tax_class(), 'STANDARD' )
+			),
+			$this->expectedObject( 'product.manageStock', $product->get_manage_stock() ),
+			$this->expectedObject(
+				'product.stockQuantity',
+				$this->maybe( $product->get_stock_quantity(), 'null' )
+			),
+			$this->expectedObject(
+				'product.stockStatus',
+				$this->maybe(
+					$this->factory->product->getStockStatusEnum( $product->get_stock_status() ),
+					'null'
+				)
+			),
+			$this->expectedObject(
+				'product.backorders',
+				$this->maybe(
+					\WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_backorders() ),
+					'null'
+				)
+			),
+			$this->expectedObject( 'product.soldIndividually', $product->get_sold_individually() ),
+			$this->expectedObject(
+				'product.weight',
+				$this->maybe( $product->get_weight(), 'null' )
+			),
+			$this->expectedObject(
+				'product.length',
+				$this->maybe( $product->get_length(), 'null' )
+			),
+			$this->expectedObject(
+				'product.width',
+				$this->maybe( $product->get_width(), 'null' )
+			),
+			$this->expectedObject(
+				'product.height',
+				$this->maybe( $product->get_height(), 'null' )
+			),
+			$this->expectedObject(
+				'product.reviewsAllowed',
+				$this->maybe( $product->get_reviews_allowed(), 'null' )
+			),
+			$this->expectedObject(
+				'product.purchaseNote',
+				$this->maybe( $product->get_purchase_note(), 'null' )
+			),
+			$this->expectedObject( 'product.menuOrder', $product->get_menu_order() ),
+			$this->expectedObject( 'product.virtual', $product->get_virtual() ),
+			$this->expectedObject( 'product.downloadable', $product->get_downloadable(), 'null' ),
+			$this->expectedObject(
+				'product.downloadLimit',
+				$this->maybe( $product->get_download_limit(), 'null' )
+			),
+			$this->expectedObject(
+				'product.downloadExpiry',
+				$this->maybe( $product->get_download_expiry(), 'null' )
+			),
+			$this->expectedObject( 'product.averageRating', (float) $product->get_average_rating()	),
+			$this->expectedObject( 'product.reviewCount', (int) $product->get_review_count() ),
+			$this->expectedObject(
+				'product.backordersAllowed',
+				$this->maybe( $product->backorders_allowed(), 'null' )
+			),
+			$this->expectedObject( 'product.onSale', $product->is_on_sale() ),
+			$this->expectedObject( 'product.purchasable', $product->is_purchasable() ),
+			$this->expectedObject( 'product.shippingRequired', $product->needs_shipping() ),
+			$this->expectedObject( 'product.shippingTaxable', $product->is_shipping_taxable() ),
+			$this->expectedObject(
+				'product.link',
+				$this->maybe( get_post_permalink( $product_id ), 'null' )
+			),
+			$this->expectedObject(
+				'product.totalSales',
+				$this->maybe(
+					array(
+						$is_shop_manager && $product->get_total_sales(),
+						$product->get_total_sales(),
+					),
+					'null'
+				)
+			),
+			$this->expectedObject(
+				'product.catalogVisibility',
+				$this->maybe(
+					array(
+						$is_shop_manager && ! empty( $product->get_catalog_visibility() ),
+						strtoupper( $product->get_catalog_visibility() ),
+					),
+					'null'
+				)
+			),
 		);
 	}
 
@@ -166,11 +275,9 @@ class ProductQueriesTest extends Tests\WPGraphQL\TestCase\WooGraphQLTestCase {
 		 */
 		$variables = array( 'id' => $this->toRelayId( 'product', $product_id ) );
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = array(
-			$this->expectedObject( 'product', $this->getExpectedProductData( $product_id ) )
-		);
+		$expected = $this->getExpectedProductData( $product_id );
 
-		$this->assertIsValidQueryResponse( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		// Clear cache
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
@@ -190,10 +297,10 @@ class ProductQueriesTest extends Tests\WPGraphQL\TestCase\WooGraphQLTestCase {
 			$this->expectedObject( 'product.description', $product->get_description() ),
 			$this->expectedObject( 'product.shortDescription', $product->get_short_description() ),
 			$this->expectedObject( 'product.totalSales', $product->get_total_sales() ),
-			$this->expectedObject( 'product.catalogVisibility', $product->get_catalog_visibility() ),
+			$this->expectedObject( 'product.catalogVisibility', strtoupper( $product->get_catalog_visibility() ) ),
 		);
 
-		$this->assertIsValidQueryResponse( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductTaxonomies() {
