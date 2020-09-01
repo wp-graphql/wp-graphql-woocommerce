@@ -20,15 +20,37 @@
             "role": "Lead developer"
         }
     ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    ],
     "require": {
         "php": ">=7.1.0",
         "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
-        "lucatume/wp-browser": ">=2.2.1 <2.2.8",
+        "lucatume/wp-browser": "^2.4",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-phpbrowser": "^1.0",
+        "codeception/module-webdriver": "^1.0",
+        "codeception/module-db": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "codeception/module-cli": "^1.0",
+        "codeception/module-rest": "^1.0",
+        "codeception/util-universalframework": "^1.0",
         "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28",
-        "wp-coding-standards/wpcs": "^2.3"
+        "wp-coding-standards/wpcs": "^2.3",
+        "johnpbloch/wordpress": "^5.4",
+        "wp-graphql/wp-graphql": "^1.0.4",
+        "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
+        "wpackagist-plugin/woocommerce": "^4.4",
+        "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
+        "wpackagist-theme/twentytwentyone": "^1.0",
+        "composer/installers": "^1.9",
+        "phpunit/phpunit": "<=9.4.4"
     },
     "config": {
         "optimize-autoloader": true,
@@ -51,23 +73,30 @@
             "tests/_data/config.php"
         ]
     },
+    "extra": {
+        "wordpress-install-dir": "local/public",
+        "installer-paths": {
+            "local/public/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+            "local/public/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+            "local/public/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+        }
+    },
     "scripts": {
         "install-test-env": "bash bin/install-test-env.sh",
-        "docker-build": "bash bin/run-docker.sh build",
-        "docker-run": "bash bin/run-docker.sh run",
-        "docker-destroy": "docker-compose down",
-        "build-and-run": [
-          "@docker-build",
-          "@docker-run"
+        "docker-build": "docker-compose build",
+        "docker-run-app": "docker-compose up --scale testing_db=0 --scale run_tests=0",
+        "docker-run-testing-db":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then docker-compose up -d testing_db; fi",
+        "docker-set-main-db": "docker-compose exec testable_app ./setup-database.sh main",
+        "docker-set-testing-db": "docker-compose exec testable_app wait-for-it testing_db:3306 --timeout=300 -- ./setup-database.sh testing",
+        "docker-run-test": [
+            "@docker-run-testing-db",
+            "@docker-set-testing-db",
+            "docker-compose exec testable_app wait-for-it testing_db:3306 --timeout=300 -- codecept run $FILTER"
         ],
-        "build-app": "@docker-build -a",
-        "build-test": "@docker-build -t",
-        "run-app": "@docker-run -a",
-        "run-test": "@docker-run -t",
-        "lint": "vendor/bin/phpcs"
+        "docker-run-test-standalone": "docker-compose run --rm run_tests"
     },
-    "support"    : {
-		"issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
-		"source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
-	}
+    "support": {
+        "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
+        "source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
+    }
 }

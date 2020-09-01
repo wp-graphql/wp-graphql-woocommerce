@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use Firebase\JWT\JWT;
 
@@ -6,7 +6,7 @@ class QLSessionHandlerCest {
     private $product_catalog;
 
     public function _before( FunctionalTester $I ) {
-        // Create Products
+        // Create products.
         $this->product_catalog = $I->getCatalog();
     }
 
@@ -22,7 +22,7 @@ class QLSessionHandlerCest {
                 'quantity'         => 5,
             )
         );
-        
+
         $I->assertArrayNotHasKey( 'errors', $success );
         $I->assertArrayHasKey('data', $success );
         $I->assertArrayHasKey('addToCart', $success['data'] );
@@ -50,12 +50,12 @@ class QLSessionHandlerCest {
         $I->assertNotEmpty( $token_data->data );
         $I->assertNotEmpty( $token_data->data->customer_id );
 
-        $wp_url = getenv( 'WP_URL' );
+        $wp_url = getenv( 'WORDPRESS_URL' );
         $I->assertEquals( $token_data->iss, $wp_url );
 
         /**
          * Make a cart query request with "woocommerce-session" HTTP Header and confirm
-         * correct cart contents. 
+         * correct cart contents.
          */
         $query = '
             query {
@@ -88,7 +88,7 @@ class QLSessionHandlerCest {
 
         /**
          * Remove item from the cart
-         */        
+         */
         $success = $I->removeItemsFromCart(
             array(
                 'clientMutationId' => 'someId',
@@ -96,7 +96,7 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session {$session_token}" )
         );
-        
+
         $I->assertArrayNotHasKey( 'errors', $success );
         $I->assertArrayHasKey('data', $success );
         $I->assertArrayHasKey('removeItemsFromCart', $success['data'] );
@@ -105,7 +105,7 @@ class QLSessionHandlerCest {
 
         /**
          * Make a cart query request with "woocommerce-session" HTTP Header and confirm
-         * correct cart contents. 
+         * correct cart contents.
          */
         $query = '
             query {
@@ -134,7 +134,7 @@ class QLSessionHandlerCest {
 
         /**
          * Restore item to the cart
-         */        
+         */
         $success = $I->restoreCartItems(
             array(
                 'clientMutationId' => 'someId',
@@ -142,7 +142,7 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session {$session_token}" )
         );
-        
+
         $I->assertArrayNotHasKey( 'errors', $success );
         $I->assertArrayHasKey('data', $success );
         $I->assertArrayHasKey('restoreCartItems', $success['data'] );
@@ -151,7 +151,7 @@ class QLSessionHandlerCest {
 
         /**
          * Make a cart query request with "woocommerce-session" HTTP Header and confirm
-         * correct cart contents. 
+         * correct cart contents.
          */
         $query = '
             query {
@@ -194,7 +194,7 @@ class QLSessionHandlerCest {
                 'quantity'         => 1,
             )
         );
-        
+
         $I->assertArrayNotHasKey( 'errors', $success );
         $I->assertArrayHasKey('data', $success );
         $I->assertArrayHasKey('addToCart', $success['data'] );
@@ -229,7 +229,7 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session {$invalid_token}" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
@@ -247,7 +247,7 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session {$invalid_token}" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
@@ -263,7 +263,7 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
@@ -274,7 +274,7 @@ class QLSessionHandlerCest {
             array( 'clientMutationId' => 'someId', ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
@@ -289,13 +289,13 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
          * Attempt to apply coupon on cart with invalid session token.
          * GraphQL should throw an error and mutation will fail.
-         * 
+         *
          * @Note: No coupons exist in the database, but mutation should fail before that becomes a factor.
          */
         $failed = $I->applyCoupon(
@@ -305,13 +305,13 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
          * Attempt to remove coupon from cart with invalid session token.
          * GraphQL should throw an error and mutation will fail.
-         * 
+         *
          * @Note: No coupons exist on the cart, but mutation should failed before that becomes a factor.
          */
         $failed = $I->removeCoupons(
@@ -321,14 +321,14 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
          * Attempt to restore item to the cart with invalid session token.
          * GraphQL should throw an error and mutation will fail.
-         * 
-         * @Note: No items have been removed from the cart in this session, 
+         *
+         * @Note: No items have been removed from the cart in this session,
          * but mutation should failed before that becomes a factor.
          */
         $failed = $I->restoreCartItems(
@@ -338,14 +338,14 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
          * Attempt to restore item to the cart with invalid session token.
          * GraphQL should throw an error and mutation will fail.
-         * 
-         * @Note: No items have been removed from the cart in this session, 
+         *
+         * @Note: No items have been removed from the cart in this session,
          * but mutation should failed before that becomes a factor.
          */
         $failed = $I->updateShippingMethod(
@@ -355,7 +355,7 @@ class QLSessionHandlerCest {
             ),
             array( 'woocommerce-session' => "Session invalid-jwt-token-string" )
         );
-        
+
         $I->assertArrayHasKey( 'errors', $failed );
 
         /**
@@ -394,7 +394,7 @@ class QLSessionHandlerCest {
                 'quantity'         => 2,
             )
         );
-        
+
         $I->assertArrayNotHasKey( 'errors', $success );
         $I->assertArrayHasKey('data', $success );
         $I->assertArrayHasKey('addToCart', $success['data'] );
@@ -422,7 +422,7 @@ class QLSessionHandlerCest {
         $I->assertNotEmpty( $token_data->data );
         $I->assertNotEmpty( $token_data->data->customer_id );
 
-        $wp_url = getenv( 'WP_URL' );
+        $wp_url = getenv( 'WORDPRESS_URL' );
         $I->assertEquals( $token_data->iss, $wp_url );
 
         /**
@@ -470,7 +470,7 @@ class QLSessionHandlerCest {
 
         /**
          * Make a cart query request with "woocommerce-session" HTTP Header and confirm
-         * correct cart contents and chosen and available shipping methods. 
+         * correct cart contents and chosen and available shipping methods.
          */
         $query = '
             query {
@@ -529,7 +529,7 @@ class QLSessionHandlerCest {
         $I->assertEquals( $expected, $actual );
 
         /**
-         * Update shipping method to 'flat_rate' shipping. 
+         * Update shipping method to 'flat_rate' shipping.
          */
         $mutation = '
             mutation ($input: UpdateShippingMethodInput!){

@@ -3,7 +3,7 @@
 class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 {
 
-	public function setUp() {
+	public function setUp(): void {
 		// before
 		parent::setUp();
 
@@ -68,7 +68,7 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 		\WC()->payment_gateways->init();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// your tear down methods here
 
 		// then

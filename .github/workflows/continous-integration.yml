@@ -29,10 +29,10 @@ jobs:
             use_xdebug: 1
           - php: '7.1'
             wordpress: '5.0'
-            coverage: 1
+            coverage: '--coverage --coverage-xml'
           - php: '7.3'
             wordpress: '5.0'
-            debug: 1
+            debug: '--debug'
           - php: '7.1'
           - lowest: 1
           - php: '7.2'
@@ -63,22 +63,16 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --no-dev
+        run: |
+          composer install
+          composer require --dev johnpbloch/wordpress:${{ matrix.wordpress }}
 
       - name: Build "testing" Docker Image
-        env:
-          PHP_VERSION: ${{ matrix.php }}
-          WP_VERSION: ${{ matrix.wordpress }}
-          USE_XDEBUG: ${{ matrix.use_xdebug }}
-        run: composer build-test
+        run: composer docker-build -- --build-arg PHPUNIT_VERSION=":<=9.4.4" --build-arg PHP_VERSION=${{ matrix.php }} run_tests
 
       - name: Run Tests w/ Docker.
         env:
-          COVERAGE: ${{ matrix.coverage }}
-          DEBUG: ${{ matrix.debug }}
-          SKIP_TESTS_CLEANUP: ${{ matrix.coverage }}
-          LOWEST: ${{ matrix.lowest }}
-        run: composer run-test
+        run: composer docker-run-test-standalone ${{ matrix.coverage }} ${{ matrix.debug }}
 
       - name: Push Codecoverage to Coveralls.io
         if: ${{ matrix.coverage == 1 && env.STRIPE_API_PUBLISHABLE_KEY != 0 }}

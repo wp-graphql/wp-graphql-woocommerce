@@ -4,7 +4,7 @@ use GraphQLRelay\Relay;
 
 class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
 
-    public function setUp() {
+    public function setUp(): void {
         // before
         parent::setUp();
 
@@ -14,7 +14,7 @@ class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->products = $this->getModule('\Helper\Wpunit')->product();
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then

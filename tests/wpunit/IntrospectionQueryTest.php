@@ -2,7 +2,7 @@
 
 class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 
-    public function setUp() {
+    public function setUp(): void {
         // before
 		parent::setUp();
 
@@ -15,7 +15,7 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 		WPGraphQL::clear_schema();
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then

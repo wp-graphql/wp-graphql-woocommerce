@@ -1,7 +1,7 @@
 <?php
 
 class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
-    public function setUp() {
+    public function setUp(): void {
         // before
         parent::setUp();
 
@@ -11,7 +11,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->orders     = $this->getModule('\Helper\Wpunit')->order();
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then
