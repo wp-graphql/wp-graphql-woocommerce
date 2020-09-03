@@ -1192,7 +1192,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ($id: ID!) {
 				product(id: $id) {
 					... on SimpleProduct {
-						related(first: 1) {
+						related {
 							nodes {
 								... on SimpleProduct {
 									id
@@ -1220,41 +1220,49 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$variables = array( 'id' => $this->helper->to_relay_id( $product->get_id() ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'related'   => array(
-						'nodes' => array_map(
-							function( $id ) {
-								return array( 'id' => $this->helper->to_relay_id( $id ) );
-							},
-							array_slice( wc_get_related_products( $product->get_id() ), 0, 1 )
-						),
-					),
-					'crossSell' => array(
-						'nodes' => array_map(
-							function( $id ) {
-								return array( 'id' => $this->helper->to_relay_id( $id ) );
-							},
-							$product->get_cross_sell_ids()
-						),
-					),
-					'upsell'    => array(
-						'nodes' => array_map(
-							function( $id ) {
-								return array( 'id' => $this->helper->to_relay_id( $id ) );
-							},
-							$product->get_upsell_ids()
-						),
-					),
-				),
-			),
-		);
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$related    = $actual['data']['product']['related']['nodes'];
+		$cross_sell = $actual['data']['product']['crossSell']['nodes'];
+		$upsell     = $actual['data']['product']['upsell']['nodes'];
+
+		// Assert that related products are valid.
+		foreach( wc_get_related_products( $product->get_id() ) as $pid ) {
+			$this->assertTrue(
+				in_array(
+					array( 'id' => $this->helper->to_relay_id( $pid ) ),
+					$related,
+					true
+				),
+				$this->helper->to_relay_id( $pid ) . ' not a related product of ' . $product->get_name()
+			);
+		}
+
+		// Assert that cross sell products are valid.
+		foreach( $product->get_cross_sell_ids() as $pid ) {
+			$this->assertTrue(
+				in_array(
+					array( 'id' => $this->helper->to_relay_id( $pid ) ),
+					$cross_sell,
+					true
+				),
+				$this->helper->to_relay_id( $pid ) . ' not being cross selling by ' . $product->get_name()
+			);
+		}
+
+		// Assert that upsell products are valid.
+		foreach( $product->get_upsell_ids() as $pid ) {
+			$this->assertTrue(
+				in_array(
+					array( 'id' => $this->helper->to_relay_id( $pid ) ),
+					$upsell,
+					true
+				),
+				$this->helper->to_relay_id( $pid ) . ' not a upsold product of ' . $product->get_name()
+			);
+		}
 	}
 
 	public function testProductToReviewConnections() {

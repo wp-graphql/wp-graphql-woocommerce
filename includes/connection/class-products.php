@@ -71,12 +71,32 @@ class Products {
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'related',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'fromType'       => 'Product',
+					'fromFieldName'  => 'related',
+					'connectionArgs' => array_merge(
+						self::get_connection_args(),
+						array(
+							'shuffle' => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Shuffle results? (Pagination currently not support by this argument)', 'wp-graphql-woocommerce' ),
+							)
+						)
+					),
+					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
-						$resolver->set_query_arg( 'post__in', $source->related_ids );
+						// Bypass randomization by default for pagination support.
+						if ( empty( $args['where']['shuffle'] ) ) {
+							add_filter(
+								'woocommerce_product_related_posts_shuffle',
+								function() {
+									return false;
+								}
+							);
+						}
+
+						$related_ids = wc_get_related_products( $source->ID, $resolver->get_query_amount() );
+						$resolver->set_query_arg( 'post__in', $related_ids );
 
 						// Change default ordering
 						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
@@ -98,7 +118,7 @@ class Products {
 
 						$resolver->set_query_arg( 'post__in', $source->upsell_ids );
 
-						// Change default ordering
+						// Change default ordering.
 						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
@@ -119,7 +139,7 @@ class Products {
 
 						$resolver->set_query_arg( 'post__in', $source->grouped_ids );
 
-						// Change default ordering
+						// Change default ordering.
 						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
@@ -138,7 +158,7 @@ class Products {
 
 				$resolver->set_query_arg( 'post__in', $source->cross_sell_ids );
 
-				// Change default ordering
+				// Change default ordering.
 				if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
 					$resolver->set_query_arg( 'orderby', 'post__in' );
 				}
@@ -167,11 +187,12 @@ class Products {
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
+						\codecept_debug( $source->variations_ids );
 						$resolver->set_query_arg( 'post_parent', $source->ID );
 						$resolver->set_query_arg( 'post_type', 'product_variation' );
 						$resolver->set_query_arg( 'post__in', $source->variation_ids );
 
-						// Change default ordering
+						// Change default ordering.
 						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
