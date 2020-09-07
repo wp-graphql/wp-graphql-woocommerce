@@ -151,7 +151,7 @@ class Product extends Crud_CPT {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$shared_fields = array(
+			$fields = array(
 				'ID'                  => function() {
 					return $this->data->get_id();
 				},
@@ -188,6 +188,9 @@ class Product extends Crud_CPT {
 						? apply_filters( 'the_content', $this->data->get_description() )
 						: null;
 				},
+				'descriptionRaw'      => function() {
+					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+				},
 				'shortDescription'    => function() {
 					$short_description = ! empty( $this->data->get_short_description() )
 					? apply_filters(
@@ -200,6 +203,9 @@ class Product extends Crud_CPT {
 
 					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 					return apply_filters( 'the_excerpt', $short_description );
+				},
+				'shortDescriptionRaw' => function() {
+					return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
 				},
 				'sku'                 => function() {
 					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
@@ -230,12 +236,6 @@ class Product extends Crud_CPT {
 				},
 				'purchasable'         => function () {
 					return ! is_null( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
-				},
-				'descriptionRaw'      => function() {
-					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
-				},
-				'shortDescriptionRaw' => function() {
-					return ! empty( $this->data->get_short_description() ) ? $this->data->get_short_description() : null;
 				},
 
 				/**
@@ -292,86 +292,89 @@ class Product extends Crud_CPT {
 			);
 
 			if ( 'grouped' !== $this->data->get_type() ) {
-				$shared_fields['price']           = function() {
-					return ! empty( $this->data->get_price() )
-						? \wc_graphql_price( $this->data->get_price() )
-						: null;
-				};
-				$shared_fields['regularPrice']    = function() {
-					return ! empty( $this->data->get_regular_price() )
-						? \wc_graphql_price( $this->data->get_regular_price() )
-						: null;
-				};
-				$shared_fields['salePrice']       = function() {
-					return ! empty( $this->data->get_sale_price() )
-						? \wc_graphql_price( $this->data->get_sale_price() )
-						: null;
-				};
-				$shared_fields['taxStatus']       = function() {
-					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
-				};
-				$shared_fields['taxClass']        = function() {
-					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
-				};
-				$shared_fields['priceRaw']        = function() {
-					return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
-				};
-				$shared_fields['regularPriceRaw'] = function() {
-					return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
-				};
-				$shared_fields['salePriceRaw']    = function() {
-					return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
-				};
+				$fields += array(
+					'price'           => function() {
+						return ! empty( $this->data->get_price() )
+							? \wc_graphql_price( $this->data->get_price() )
+							: null;
+					},
+					'priceRaw'        => function() {
+						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+					},
+					'regularPrice'    => function() {
+						return ! empty( $this->data->get_regular_price() )
+							? \wc_graphql_price( $this->data->get_regular_price() )
+							: null;
+					},
+					'regularPriceRaw' => function() {
+						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+					},
+					'salePrice'       => function() {
+						return ! empty( $this->data->get_sale_price() )
+							? \wc_graphql_price( $this->data->get_sale_price() )
+							: null;
+					},
+					'salePriceRaw'    => function() {
+						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+					},
+					'taxStatus'       => function() {
+						return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
+					},
+					'taxClass'        => function() {
+						return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
+					},
+				);
 			}
 
 			if ( 'simple' === $this->data->get_type() || 'variable' === $this->data->get_type() ) {
-				$shared_fields['manageStock']       = function() {
-					return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
-				};
-				$shared_fields['stockQuantity']     = function() {
-					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
-				};
-				$shared_fields['backorders']        = function() {
-					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
-				};
-				$shared_fields['backordersAllowed'] = function() {
-					return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
-				};
-				$shared_fields['soldIndividually']  = function() {
-					return ! is_null( $this->data->is_sold_individually() ) ? $this->data->is_sold_individually() : null;
-				};
-				$shared_fields['weight']            = function() {
-					return ! is_null( $this->data->get_weight() ) ? $this->data->get_weight() : null;
-				};
-				$shared_fields['length']            = function() {
-					return ! is_null( $this->data->get_length() ) ? $this->data->get_length() : null;
-				};
-				$shared_fields['width']             = function() {
-					return ! is_null( $this->data->get_width() ) ? $this->data->get_width() : null;
-				};
-				$shared_fields['height']            = function() {
-					return ! is_null( $this->data->get_height() ) ? $this->data->get_height() : null;
-				};
-				$shared_fields['shippingClassId']   = function () {
-					return ! empty( $this->data->get_image_id() ) ? $this->data->get_shipping_class_id() : null;
-				};
-				$shared_fields['shippingRequired']  = function() {
-					return ! is_null( $this->data->needs_shipping() ) ? $this->data->needs_shipping() : null;
-				};
-				$shared_fields['shippingTaxable']   = function() {
-					return ! is_null( $this->data->is_shipping_taxable() ) ? $this->data->is_shipping_taxable() : null;
-				};
-				$shared_fields['cross_sell_ids']    = function() {
-					return ! empty( $this->data->get_cross_sell_ids() )
-						? array_map( 'absint', $this->data->get_cross_sell_ids() )
-						: array( '0' );
-				};
+				$fields += array(
+					'manageStock'       => function() {
+						return ! is_null( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
+					},
+					'stockQuantity'     => function() {
+						return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
+					},
+					'backorders'        => function() {
+						return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
+					},
+					'backordersAllowed' => function() {
+						return ! empty( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
+					},
+					'soldIndividually'  => function() {
+						return ! is_null( $this->data->is_sold_individually() ) ? $this->data->is_sold_individually() : null;
+					},
+					'weight'            => function() {
+						return ! is_null( $this->data->get_weight() ) ? $this->data->get_weight() : null;
+					},
+					'length'            => function() {
+						return ! is_null( $this->data->get_length() ) ? $this->data->get_length() : null;
+					},
+					'width'             => function() {
+						return ! is_null( $this->data->get_width() ) ? $this->data->get_width() : null;
+					},
+					'height'            => function() {
+						return ! is_null( $this->data->get_height() ) ? $this->data->get_height() : null;
+					},
+					'shippingClassId'   => function () {
+						return ! empty( $this->data->get_image_id() ) ? $this->data->get_shipping_class_id() : null;
+					},
+					'shippingRequired'  => function() {
+						return ! is_null( $this->data->needs_shipping() ) ? $this->data->needs_shipping() : null;
+					},
+					'shippingTaxable'   => function() {
+						return ! is_null( $this->data->is_shipping_taxable() ) ? $this->data->is_shipping_taxable() : null;
+					},
+					'cross_sell_ids'    => function() {
+						return ! empty( $this->data->get_cross_sell_ids() )
+							? array_map( 'absint', $this->data->get_cross_sell_ids() )
+							: array( '0' );
+					},
+				);
 			}
 
-			$fields = array();
 			switch ( $this->data->get_type() ) {
 				case 'simple':
-					$fields = array(
+					$fields += array(
 						'virtual'        => function() {
 							return ! is_null( $this->data->is_virtual() ) ? $this->data->is_virtual() : null;
 						},
@@ -417,10 +420,10 @@ class Product extends Crud_CPT {
 						'salePriceRaw'    => function() {
 							return $this->get_variation_price( 'sale', true );
 						},
-					);
+					) + $fields;
 					break;
 				case 'external':
-					$fields = array(
+					$fields += array(
 						'externalUrl' => function() {
 							return ! empty( $this->data->get_product_url() ) ? $this->data->get_product_url() : null;
 						},
@@ -430,7 +433,7 @@ class Product extends Crud_CPT {
 					);
 					break;
 				case 'grouped':
-					$fields = array(
+					$fields += array(
 						'addToCartText'        => function() {
 							return ! empty( $this->data->add_to_cart_text() ) ? $this->data->add_to_cart_text() : null;
 						},
@@ -448,7 +451,38 @@ class Product extends Crud_CPT {
 					break;
 			}
 
-			$this->fields = array_merge( $shared_fields, $fields );
+			/**
+			 * Defines aliased fields
+			 *
+			 * These fields are used primarily by WPGraphQL core Node* interfaces
+			 * and some fields act as aliases/decorator for existing fields.
+			 */
+			$fields += array(
+				'commentCount'    => function() {
+					return $this->reviewCount;
+				},
+				'commentStatus'   => function() {
+					return $this->reviewsAllowed ? 'open': 'closed';
+				},
+				'contentRendered' => function() {
+					return $this->description;
+				},
+				'contentRaw'      => function() {
+					return $this->descriptionRaw;
+				},
+				'featuredImageId' => function() {
+					return $this->image_id;
+				},
+				'titleRendered'   => function() {
+					setup_postdata( $this->data );
+					return apply_filters( 'the_title', $this->name, $this->ID );
+				},
+				'titleRaw'        => function() {
+					return $this->name;
+				},
+			);
+
+			$this->fields = $fields;
 		}
 
 		parent::prepare_fields();

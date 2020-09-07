@@ -60,6 +60,8 @@ class Order extends Crud_CPT {
 			'needsProcessing',
 			'hasDownloadableItem',
 			'downloadable_items',
+			'commentCount',
+			'commentStatus',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_order', $id );
@@ -258,6 +260,38 @@ class Order extends Crud_CPT {
 				},
 				'downloadable_items'    => function() {
 					return ! empty( $this->data->get_downloadable_items() ) ? $this->data->get_downloadable_items() : null;
+				},
+				/**
+				 * Defines aliased fields
+				 *
+				 * These fields are used primarily by WPGraphQL core Node* interfaces
+			 	 * and some fields act as aliases/decorator for existing fields.
+				 */
+				'commentCount'    => function() {
+					remove_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
+
+					$args  = array(
+						'post_id' => $this->ID,
+						'approve' => 'approve',
+						'fields'  => 'ids',
+						'type'    => '',
+					);
+
+					if ( ! current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ) {
+						$args += array(
+							'meta_key'   => 'is_customer_note',
+							'meta_value' => true,
+						);
+					}
+
+					$notes = get_comments( $args );
+
+					add_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
+
+					return count( $notes );
+				},
+				'commentStatus'   => function() {
+					return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ?  'open' : 'closed';
 				},
 			);
 		}
