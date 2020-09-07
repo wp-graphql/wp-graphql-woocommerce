@@ -11,6 +11,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -26,12 +27,42 @@ class Products {
 		register_graphql_connection( self::get_connection_config() );
 
 		// From Coupon.
-		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'Coupon' ) ) );
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType' => 'Coupon',
+					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						$resolver->set_query_arg( 'post__in', $source->product_ids );
+
+						// Change default ordering
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					},
+				)
+			)
+		);
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProducts',
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						$resolver->set_query_arg( 'post__in', $source->excluded_product_ids );
+
+						// Change default ordering
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);
@@ -40,8 +71,40 @@ class Products {
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'Product',
-					'fromFieldName' => 'related',
+					'fromType'       => 'Product',
+					'fromFieldName'  => 'related',
+					'connectionArgs' => array_merge(
+						self::get_connection_args(),
+						array(
+							'shuffle' => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Shuffle results? (Pagination currently not support by this argument)', 'wp-graphql-woocommerce' ),
+							)
+						)
+					),
+					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						// Bypass randomization by default for pagination support.
+						if ( empty( $args['where']['shuffle'] ) ) {
+							add_filter(
+								'woocommerce_product_related_posts_shuffle',
+								function() {
+									return false;
+								}
+							);
+						}
+
+						$related_ids = wc_get_related_products( $source->ID, $resolver->get_query_amount() );
+						$resolver->set_query_arg( 'post__in', $related_ids );
+
+						// Change default ordering
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);
@@ -50,28 +113,67 @@ class Products {
 				array(
 					'fromType'      => 'Product',
 					'fromFieldName' => 'upsell',
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						$resolver->set_query_arg( 'post__in', $source->upsell_ids );
+
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);
 
 		// Group product children connection.
-		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'GroupProduct' ) ) );
-
-		// Product cross-sell connections.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
-					'fromType'      => 'SimpleProduct',
-					'fromFieldName' => 'crossSell',
+					'fromType' => 'GroupProduct',
+					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						$resolver->set_query_arg( 'post__in', $source->grouped_ids );
+
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					}
 				)
+			)
+		);
+
+		// Product cross-sell connections.
+		$cross_sell_config = array(
+			'fromFieldName' => 'crossSell',
+			'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+				$resolver->set_query_arg( 'post__in', $source->cross_sell_ids );
+
+				// Change default ordering.
+				if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+					$resolver->set_query_arg( 'orderby', 'post__in' );
+				}
+
+				return $resolver->get_connection();
+			},
+		);
+		register_graphql_connection(
+			self::get_connection_config(
+				array_merge( array( 'fromType' => 'SimpleProduct' ), $cross_sell_config )
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
-					'fromType'      => 'VariableProduct',
-					'fromFieldName' => 'crossSell',
-				)
+				array_merge( array( 'fromType' => 'VariableProduct' ), $cross_sell_config )
 			)
 		);
 
@@ -82,22 +184,70 @@ class Products {
 					'fromType'      => 'VariableProduct',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						\codecept_debug( $source->variations_ids );
+						$resolver->set_query_arg( 'post_parent', $source->ID );
+						$resolver->set_query_arg( 'post_type', 'product_variation' );
+						$resolver->set_query_arg( 'post__in', $source->variation_ids );
+
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+							$resolver->set_query_arg( 'orderby', 'post__in' );
+						}
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);
 
+		// Taxonomy To Product resolver.
+		$resolve_product_from_taxonomy = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+			$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+			$tax_query = array(
+				array( // WPCS: slow query ok.
+					'taxonomy' => $source->taxonomyName,
+					'field'    => 'term_id',
+					'terms'    => $source->term_id,
+				)
+			);
+			$resolver->set_query_arg( 'tax_query', $tax_query );
+
+			return $resolver->get_connection();
+		};
+
 		// From ProductCategory.
-		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'ProductCategory' ) ) );
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType' => 'ProductCategory',
+					'resolve'  => $resolve_product_from_taxonomy,
+				)
+			)
+		);
 
 		// From ProductTag.
-		register_graphql_connection( self::get_connection_config( array( 'fromType' => 'ProductTag' ) ) );
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType' => 'ProductTag',
+					'resolve'  => $resolve_product_from_taxonomy,
+				)
+			)
+		);
 
 		// From WooCommerce product attributes.
 		$attributes = \WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
 		foreach ( $attributes as $attribute ) {
 			register_graphql_connection(
 				self::get_connection_config(
-					array( 'fromType' => ucfirst( graphql_format_field_name( $attribute ) ) )
+					array(
+						'fromType' => ucfirst( graphql_format_field_name( $attribute ) ),
+						'resolve'  => $resolve_product_from_taxonomy,
+					)
 				)
 			);
 			register_graphql_connection(
@@ -106,6 +256,27 @@ class Products {
 						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
 						'toType'        => 'ProductVariation',
 						'fromFieldName' => 'variations',
+						'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							global $wpdb;
+							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
+							$variation_ids = $wpdb->get_col(
+								$wpdb->prepare(
+									"SELECT ID
+									FROM {$wpdb->prefix}posts
+									WHERE ID IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = %s AND meta_value = %s)
+									AND post_type = 'product_variation'",
+									$attribute_meta_key,
+									$source->slug
+								)
+							);
+
+							$resolver->set_query_arg( 'post__in', $variation_ids );
+							$resolver->set_query_arg( 'post_type', 'product_variation' );
+
+							return $resolver->get_connection();
+						},
 					)
 				)
 			);

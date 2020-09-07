@@ -266,10 +266,6 @@ class Product extends Crud_CPT {
 				 * These field resolvers are used in connection resolvers to define WP_Query argument
 				 * Note: underscore naming style is used as a quick identifier
 				 */
-				'related_ids'         => function() {
-					$related_ids = array_map( 'absint', array_values( wc_get_related_products( $this->data->get_id() ) ) );
-					return ! empty( $related_ids ) ? $related_ids : array( '0' );
-				},
 				'upsell_ids'          => function() {
 					return ! empty( $this->data->get_upsell_ids() )
 						? array_map( 'absint', $this->data->get_upsell_ids() )

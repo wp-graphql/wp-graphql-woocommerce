@@ -119,10 +119,11 @@ class ProductHelper extends WCG_Helper {
 		return $product->save();
 	}
 
-	public function create_grouped( $args = array() ) {
-		$children = array(
-			$this->create_simple(),
-		);
+	public function create_grouped( $args = array(), $children = array() ) {
+		if ( empty( $children ) ) {
+			$children = array( $this->create_simple() );
+		}
+
 		$product          = new WC_Product_Grouped();
 		$product->set_props(
 			array_merge(
