@@ -27,67 +27,6 @@ class Cart_Type {
 		self::register_cart_fee();
 		self::register_cart_item();
 		self::register_cart();
-
-		register_graphql_field(
-			'RootQuery',
-			'cart',
-			array(
-				'type'        => 'Cart',
-				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-				'resolve'     => function() {
-					$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
-					if ( $token_invalid ) {
-						throw new UserError( $token_invalid );
-					}
-
-					return Factory::resolve_cart();
-				},
-			)
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'cartItem',
-			array(
-				'type'        => 'CartItem',
-				'args'        => array(
-					'key' => array(
-						'type' => array( 'non_null' => 'ID' ),
-					),
-				),
-				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source, array $args, AppContext $context ) {
-					$item = Factory::resolve_cart_item( $args['key'], $context );
-					if ( empty( $item ) ) {
-						throw new UserError( __( 'The key input is invalid', 'wp-graphql-woocommerce' ) );
-					}
-
-					return $item;
-				},
-			)
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'cartFee',
-			array(
-				'type'        => 'CartFee',
-				'args'        => array(
-					'id' => array(
-						'type' => array( 'non_null' => 'ID' ),
-					),
-				),
-				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source, array $args ) {
-					$fee = Factory::resolve_cart_fee( $args['id'] );
-					if ( empty( $fee ) ) {
-						throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
-					}
-
-					return $fee;
-				},
-			)
-		);
 	}
 
 	/**

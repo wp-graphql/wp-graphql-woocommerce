@@ -109,53 +109,5 @@ class Coupon_Type {
 				),
 			)
 		);
-
-		register_graphql_field(
-			'RootQuery',
-			'coupon',
-			array(
-				'type'        => 'Coupon',
-				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'id'     => array( 'type' => array( 'non_null' => 'ID' ) ),
-					'idType' => array(
-						'type'        => 'CouponIdTypeEnum',
-						'description' => __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' ),
-					),
-				),
-				'resolve'     => function ( $source, array $args, AppContext $context ) {
-					$id = isset( $args['id'] ) ? $args['id'] : null;
-					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-					$coupon_id = null;
-					switch ( $id_type ) {
-						case 'code':
-							$coupon_id = \wc_get_coupon_id_by_code( $id );
-							break;
-						case 'database_id':
-							$coupon_id = absint( $id );
-							break;
-						case 'global_id':
-						default:
-							$id_components = Relay::fromGlobalId( $args['id'] );
-							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-							}
-							$coupon_id = absint( $id_components['id'] );
-							break;
-					}
-
-					if ( empty( $coupon_id ) ) {
-						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No coupon ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					} elseif ( get_post( $coupon_id )->post_type !== 'shop_coupon' ) {
-						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No coupon exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					}
-
-					return Factory::resolve_crud_object( $coupon_id, $context );
-				},
-			)
-		);
 	}
 }

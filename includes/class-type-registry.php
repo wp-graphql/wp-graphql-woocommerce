@@ -83,6 +83,7 @@ class Type_Registry {
 
 		// Object fields.
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
+		\WPGraphQL\WooCommerce\Type\WPObject\Root_Query::register_fields();
 
 		// Connections.
 		\WPGraphQL\WooCommerce\Connection\Posts::register_connections();

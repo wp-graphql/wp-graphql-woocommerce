@@ -45,6 +45,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		 * Set the post type for the resolver
 		 */
 		$this->post_type = 'shop_order';
+
 		/**
 		 * Call the parent construct to setup class data
 		 */
@@ -80,10 +81,8 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$post_type_obj = get_post_type_object( $this->post_type );
 		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
 			return true;
-		}
-
-		if ( is_a( $this->source, Customer::class ) ) {
-			return 'orders' === $this->info->fieldName && get_current_user_id() === $this->source->ID;
+		} elseif ( isset( $this->query_args['customer_id'] ) ) {
+			return get_current_user_id() === $this->query_args['customer_id'];
 		}
 
 		return false;
@@ -102,7 +101,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			'post_type'     => 'shop_order',
 			'no_rows_found' => true,
 			'return'        => 'ids',
-			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
+			'limit'         => min( max( absint( $first ), absint( $last ), 10 ),$this->query_amount ) + 1,
 		);
 
 		/**
@@ -137,16 +136,6 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
 
-		if ( true === is_object( $this->source ) ) {
-			switch ( true ) {
-				case is_a( $this->source, Customer::class ):
-					if ( 'orders' === $this->info->fieldName ) {
-						$query_args['customer_id'] = $this->source->ID;
-					}
-					break;
-			}
-		}
-
 		/**
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
 		 */
@@ -174,7 +163,13 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WC_Order_Query
 	 */
 	public function get_query() {
-		return new \WC_Order_Query( $this->get_query_args() );
+		$query = new \WC_Order_Query( $this->query_args );
+
+		if ( true === $query->get( 'suppress_filters', false ) ) {
+			throw new InvariantViolation( __( 'WC_Order_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql' ) );
+		}
+
+		return $query;
 	}
 
 	/**

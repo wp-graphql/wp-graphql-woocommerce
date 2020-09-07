@@ -11,7 +11,6 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
@@ -110,51 +109,6 @@ class Customer_Type {
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
 				),
-			)
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'customer',
-			array(
-				'type'        => 'Customer',
-				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'id'         => array(
-						'type'        => 'ID',
-						'description' => __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' ),
-					),
-					'customerId' => array(
-						'type'        => 'Int',
-						'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
-					),
-				),
-				'resolve'     => function ( $source, array $args, AppContext $context ) {
-					$customer_id = 0;
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
-							throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
-						}
-
-						$customer_id = absint( $id_components['id'] );
-					} elseif ( ! empty( $args['customerId'] ) ) {
-						$customer_id = absint( $args['customerId'] );
-					}
-
-					$authorized = ! empty( $customer_id )
-						&& ! current_user_can( 'list_users' )
-						&& get_current_user_id() !== $customer_id;
-					if ( $authorized ) {
-						throw new UserError( __( 'Not authorized to access this customer', 'wp-graphql-woocommerce' ) );
-					}
-
-					if ( $customer_id ) {
-						return Factory::resolve_customer( $customer_id, $context );
-					}
-
-					return Factory::resolve_session_customer();
-				},
 			)
 		);
 	}
