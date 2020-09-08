@@ -16,11 +16,14 @@ class Discount_Type {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = [
-			'PERCENT'       => array( 'value' => 'percent' ),
-			'FIXED_CART'    => array( 'value' => 'fixed_cart' ),
-			'FIXED_PRODUCT' => array( 'value' => 'fixed_product' ),
-		];
+		$values = apply_filters(
+			'graphql_discount_type_enum_values',
+			[
+				'PERCENT'       => array( 'value' => 'percent' ),
+				'FIXED_CART'    => array( 'value' => 'fixed_cart' ),
+				'FIXED_PRODUCT' => array( 'value' => 'fixed_product' ),
+			]
+		);
 
 		register_graphql_enum_type(
 			'DiscountTypeEnum',
