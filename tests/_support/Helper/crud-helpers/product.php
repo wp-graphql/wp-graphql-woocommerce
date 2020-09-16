@@ -170,14 +170,14 @@ class ProductHelper extends WCG_Helper {
 		$attribute_1->set_visible( true );
 		$attribute_1->set_variation( true );
 
-		$attribute_data = $this->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
+		$attribute_data = $this->create_attribute( 'color', array( 'red' ) );
 		$attribute_2    = new WC_Product_Attribute();
 		$attribute_2->set_id( $attribute_data['attribute_id'] );
 		$attribute_2->set_name( $attribute_data['attribute_taxonomy'] );
 		$attribute_2->set_options( $attribute_data['term_ids'] );
 		$attribute_2->set_position( 2 );
 		$attribute_2->set_visible( true );
-		$attribute_2->set_variation( true );
+		$attribute_2->set_variation( false );
 
 		$product->set_attributes( array( $attribute_1, $attribute_2 ) );
 		$product->set_default_attributes( array( 'size' => 'small' ) );
@@ -313,7 +313,7 @@ class ProductHelper extends WCG_Helper {
 
 		return array(
 			'id'                => $this->to_relay_id( $id ),
-			'productId'         => $data->get_id(),
+			'databaseId'        => $data->get_id(),
 			'name'              => $data->get_name(),
 			'slug'              => $data->get_slug(),
 			'date'              => $data->get_date_created()->__toString(),

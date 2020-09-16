@@ -35,7 +35,7 @@ class Refund extends Crud_CPT {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'refundId',
+			'databaseId',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_order_refund', $id );
@@ -53,8 +53,8 @@ class Refund extends Crud_CPT {
 				'id'             => function() {
 					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', $this->data->get_id() ) : null;
 				},
-				'refundId'       => function() {
-					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+				'databaseId'     => function() {
+					return $this->ID ?? $this->data->get_id();
 				},
 				'title'          => function() {
 					return ! empty( $this->data->get_post_title() ) ? $this->data->get_post_title() : null;

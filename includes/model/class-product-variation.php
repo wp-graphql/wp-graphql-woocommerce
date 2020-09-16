@@ -30,7 +30,7 @@ class Product_Variation extends Crud_CPT {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'variationId',
+			'databaseId',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'product_variation', $id );
@@ -71,8 +71,8 @@ class Product_Variation extends Crud_CPT {
 				'id'                => function() {
 					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'product_variation', $this->data->get_id() ) : null;
 				},
-				'variationId'       => function() {
-					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+				'databaseId'        => function() {
+					return $this->ID;
 				},
 				'name'              => function() {
 					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;

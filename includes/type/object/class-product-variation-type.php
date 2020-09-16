@@ -35,9 +35,9 @@ class Product_Variation_Type {
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product variation', 'wp-graphql-woocommerce' ),
 					),
-					'variationId'       => array(
+					'databaseId'        => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the refund in the database', 'wp-graphql-woocommerce' ),
 					),
 					'name'              => array(
 						'type'        => 'String',

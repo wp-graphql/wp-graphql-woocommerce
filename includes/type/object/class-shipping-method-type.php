@@ -33,9 +33,9 @@ class Shipping_Method_Type {
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
 					),
-					'methodId'    => array(
+					'databaseId'  => array(
 						'type'        => array( 'non_null' => 'ID' ),
-						'description' => __( 'The ID of the shipping method.', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the shipping method in the database', 'wp-graphql-woocommerce' ),
 					),
 					'title'       => array(
 						'type'        => 'String',

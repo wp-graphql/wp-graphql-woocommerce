@@ -34,7 +34,7 @@ class Order extends Crud_CPT {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'orderId',
+			'databaseId',
 			'orderNumber',
 			'status',
 			'date',
@@ -79,8 +79,8 @@ class Order extends Crud_CPT {
 				'id'                    => function() {
 					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shop_order', $this->data->get_id() ) : null;
 				},
-				'orderId'               => function() {
-					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+				'databaseId'            => function() {
+					return $this->ID ?? $this->data->get_id();
 				},
 				'date'                  => function() {
 					return ! empty( $this->data->get_date_created() ) ? $this->data->get_date_created() : null;

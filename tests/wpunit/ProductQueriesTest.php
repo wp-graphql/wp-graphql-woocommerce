@@ -60,7 +60,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				product(id: $id) {
 					... on SimpleProduct {
 						id
-						productId
+						databaseId
 						name
 						slug
 						date

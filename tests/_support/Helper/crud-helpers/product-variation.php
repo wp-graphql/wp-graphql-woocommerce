@@ -105,7 +105,7 @@ class ProductVariationHelper extends WCG_Helper {
 
 		return array(
 			'id'                => $this->to_relay_id( $id ),
-			'variationId'       => $data->get_id(),
+			'databaseId'        => $data->get_id(),
 			'name'              => $data->get_name(),
 			'date'              => $data->get_date_created()->__toString(),
 			'modified'          => ! empty( $data->get_date_created() )
@@ -200,7 +200,7 @@ class ProductVariationHelper extends WCG_Helper {
 		if ( empty( $downloads ) ) {
 			return null;
 		}
-		
+
 		$results = array();
 		foreach ( $downloads as $download ) {
 			$results[] = array(
@@ -214,7 +214,7 @@ class ProductVariationHelper extends WCG_Helper {
 				'file'            => $download->get_file(),
 			);
 		}
-		
+
 		return $results;
 	}
 }

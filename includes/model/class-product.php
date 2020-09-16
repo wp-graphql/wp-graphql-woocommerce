@@ -49,7 +49,7 @@ class Product extends Crud_CPT {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'productId',
+			'databaseId',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'product', $id );
@@ -158,8 +158,8 @@ class Product extends Crud_CPT {
 				'id'                  => function() {
 					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'product', $this->data->get_id() ) : null;
 				},
-				'productId'           => function() {
-					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+				'databaseId'          => function() {
+					return $this->ID;
 				},
 				'type'                => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;

@@ -9,7 +9,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
     private $order;
     private $item_helper;
 	private $order_helper;
-    
+
     public function setUp() {
         parent::setUp();
 
@@ -33,13 +33,13 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $order        = new WC_Order( $this->order );
         $coupon_lines = $order->get_items( 'coupon' );
         $id           = Relay::toGlobalId( 'shop_order', $this->order );
-        
+
         $query        = '
             query ($id: ID!) {
                 order(id: $id) {
                     couponLines {
                         nodes {
-                            itemId
+                            databaseId
                             orderId
                             code
                             discount
@@ -55,7 +55,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query and results
 		 */
         wp_set_current_user( $this->shop_manager );
@@ -69,7 +69,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                             array_map(
                                 function( $item ) {
                                     return array(
-                                        'itemId'      => $item->get_id(),
+                                        'databaseId'      => $item->get_id(),
                                         'orderId'     => $item->get_order_id(),
                                         'code'        => $item->get_code(),
                                         'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
@@ -80,7 +80,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                                     );
                                 },
                                 $coupon_lines
-                            ) 
+                            )
                         ),
                     )
 				),
@@ -98,13 +98,13 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $order     = new WC_Order( $this->order );
         $fee_lines = $order->get_items( 'fee' );
         $id        = Relay::toGlobalId( 'shop_order', $this->order );
-        
+
         $query     = '
             query ($id: ID!) {
                 order(id: $id) {
                     feeLines {
                         nodes {
-                            itemId
+                            databaseId
                             orderId
                             amount
                             name
@@ -120,7 +120,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query and results
 		 */
         wp_set_current_user( $this->shop_manager );
@@ -134,14 +134,14 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                             array_map(
                                 function( $item ) {
                                     return array(
-                                        'itemId'    => $item->get_id(),
+                                        'databaseId'    => $item->get_id(),
                                         'orderId'   => $item->get_order_id(),
                                         'amount'    => $item->get_amount(),
                                         'name'      => $item->get_name(),
                                         'taxStatus' => strtoupper( $item->get_tax_status() ),
                                         'total'     => $item->get_total(),
                                         'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                        'taxClass'  => ! empty( $item->get_tax_class() ) 
+                                        'taxClass'  => ! empty( $item->get_tax_class() )
                                             ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                             : 'STANDARD',
                                     );
@@ -164,13 +164,13 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $order          = new WC_Order( $this->order );
         $shipping_lines = $order->get_items( 'shipping' );
         $id             = Relay::toGlobalId( 'shop_order', $this->order );
-        
+
         $query          = '
             query ($id: ID!) {
                 order(id: $id) {
                     shippingLines {
                         nodes {
-                            itemId
+                            databaseId
                             orderId
                             methodTitle
                             total
@@ -184,7 +184,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query and results
 		 */
         wp_set_current_user( $this->shop_manager );
@@ -199,7 +199,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                                 function( $item ) {
 
                                     return array(
-                                        'itemId'         => $item->get_id(),
+                                        'databaseId'         => $item->get_id(),
                                         'orderId'        => $item->get_order_id(),
                                         'methodTitle'    => $item->get_method_title(),
                                         'total'          => $item->get_total(),
@@ -232,7 +232,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $order     = new WC_Order( $this->order );
         $tax_lines = $order->get_items( 'tax' );
         $id        = Relay::toGlobalId( 'shop_order', $this->order );
-        
+
         $query     = '
             query ($id: ID!) {
                 order(id: $id) {
@@ -244,7 +244,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                             shippingTaxTotal
                             isCompound
                             taxRate {
-                                rateId
+                                databaseId
                             }
                         }
                     }
@@ -254,7 +254,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query and results
 		 */
         wp_set_current_user( $this->shop_manager );
@@ -273,7 +273,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
                                         'taxTotal'         => $item->get_tax_total(),
                                         'shippingTaxTotal' => $item->get_shipping_tax_total(),
                                         'isCompound'       => $item->is_compound(),
-                                        'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
+                                        'taxRate'          => array( 'databaseId' => $item->get_rate_id() ),
                                     );
                                 },
                                 $tax_lines
@@ -294,7 +294,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
         $order      = new WC_Order( $this->order );
         $line_items = $order->get_items();
         $id         = Relay::toGlobalId( 'shop_order', $this->order );
-        
+
         $query      = '
             query ($id: ID!) {
                 order(id: $id) {
@@ -331,7 +331,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query and results
 		 */
         wp_set_current_user( $this->shop_manager );

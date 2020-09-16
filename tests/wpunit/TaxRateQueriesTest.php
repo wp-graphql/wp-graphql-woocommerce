@@ -31,7 +31,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query taxRateQuery( $id: ID, $rateId: Int ) {
 				taxRate( id: $id, rateId: $rateId ) {
 					id
-					rateId
+					databaseId
 					country
 					state
 					postcode
@@ -49,7 +49,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query, "id" query arg, and results
 		 */
 		$variables = array( 'id' => $id );
@@ -63,7 +63,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * tests query, "rateId" query arg, and results
 		 */
 		$variables = array( 'rateId' => $this->rate );
@@ -121,7 +121,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query
 		 */
 		$actual   = graphql( array( 'query' => $query ) );
@@ -145,7 +145,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * tests "class" where arg
 		 */
 		$variables = array( 'class' => 'REDUCED_RATE' );
@@ -183,7 +183,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * tests "postCode" where arg
 		 */
 		$variables = array( 'postCode' => '23451' );
@@ -213,7 +213,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * tests "postCodeIn" where arg
 		 */
 		$variables = array( 'postCodeIn' => array( '123456', '23451' ) );

@@ -23,7 +23,7 @@ class Coupon extends Crud_CPT {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'couponId',
+			'databaseId',
 		);
 
 		parent::__construct( $allowed_restricted_fields, 'shop_coupon', $id );
@@ -64,8 +64,8 @@ class Coupon extends Crud_CPT {
 				'id'                            => function() {
 					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->data->get_id() ) : null;
 				},
-				'couponId'                      => function() {
-					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+				'databaseId'                    => function() {
+					return $this->ID;
 				},
 				'code'                          => function() {
 					return ! empty( $this->data->get_code() ) ? $this->data->get_code() : null;

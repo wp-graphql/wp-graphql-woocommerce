@@ -31,7 +31,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query( $id: ID!, $idType: ShippingMethodIdTypeEnum ) {
 				shippingMethod( id: $id, idType: $idType ) {
 					id
-					methodId
+					databaseId
 					title
 					description
 				}
@@ -40,7 +40,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * test "ID" ID type.
 		 */
 		$variables = array(
@@ -62,7 +62,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * test "DATABASE_ID" ID type.
 		 */
 		$variables = array(
@@ -86,7 +86,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testShippingMethodsQuery() {
 		$wc_shipping = WC_Shipping::instance();
-		$methods = array_values( 
+		$methods = array_values(
 			array_map(
 				function( $method ) {
 					return array( 'id' => Relay::toGlobalId( 'shipping_method', $method->id ) );
@@ -107,7 +107,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query
 		 */
 		$actual = do_graphql_request( $query, 'shippingMethodQuery' );

@@ -32,7 +32,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
             query ($id: ID, $idType: ProductVariationIdTypeEnum) {
                 productVariation(id: $id, idType: $idType) {
                     id
-                    variationId
+                    databaseId
                     name
                     date
                     modified

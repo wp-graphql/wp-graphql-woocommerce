@@ -33,9 +33,9 @@ class Customer_Type {
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
 					),
-					'customerId'            => array(
+					'databaseId'            => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the user. Equivalent to WP_User->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
 					),
 					'isVatExempt'           => array(
 						'type'        => 'Boolean',
