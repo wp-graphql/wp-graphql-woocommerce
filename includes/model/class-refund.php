@@ -11,6 +11,7 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
+use WPGraphQL\Model\Post;
 use WC_Order_Refund;
 
 /**
@@ -20,16 +21,16 @@ class Refund extends Order {
 
 	/**
 	 * Hold order post type slug
-	 * 
+	 *
 	 * @var string $post_type
 	 */
 	protected $post_type = 'shop_order_refund';
 
 	/**
 	 * Return the data source to be used by the model.
-	 * 
+	 *
 	 * @param integer $id  Refund ID.
-	 * 
+	 *
 	 * @return WC_Data
 	 */
 	protected function get_object( $id ) {
@@ -37,53 +38,35 @@ class Refund extends Order {
 	}
 
 	/**
-	 * Return the fields allowed to be displayed even if this entry is restricted.
-	 *
-	 * @return array
-	 */
-	protected function get_allowed_restricted_fields() {
-		return array(
-			'isRestricted',
-			'isPrivate',
-			'isPublic',
-			'id',
-			'databaseId',
-		);
-	}
-
-	/**
 	 * Initializes the Refund field resolvers.
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = array(
-				'ID'             => function() {
-					return $this->data->get_id();
-				},
+			Post::init();
+
+			$fields = array(
 				'id'             => function() {
-					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', $this->data->get_id() ) : null;
-				},
-				'databaseId'     => function() {
-					return $this->ID ?? $this->data->get_id();
+					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', $this->wc_data->get_id() ) : null;
 				},
 				'title'          => function() {
-					return ! empty( $this->data->get_post_title() ) ? $this->data->get_post_title() : null;
+					return ! empty( $this->wc_data->get_post_title() ) ? $this->wc_data->get_post_title() : null;
 				},
 				'amount'         => function() {
-					return ! empty( $this->data->get_amount() ) ? $this->data->get_amount() : null;
+					return ! empty( $this->wc_data->get_amount() ) ? $this->wc_data->get_amount() : null;
 				},
 				'reason'         => function() {
-					return ! empty( $this->data->get_reason() ) ? $this->data->get_reason() : null;
+					return ! empty( $this->wc_data->get_reason() ) ? $this->wc_data->get_reason() : null;
 				},
 				'refunded_by_id' => array(
 					'callback'   => function() {
-						return ! empty( $this->data->get_refunded_by() ) ? $this->data->get_refunded_by() : null;
+						return ! empty( $this->wc_data->get_refunded_by() ) ? $this->wc_data->get_refunded_by() : null;
 					},
 					'capability' => 'list_users',
 				),
 			);
+
+			$this->fields = array_merge( $this->fields, $fields );
 		}
 
-		parent::prepare_fields();
 	}
 }

@@ -176,15 +176,9 @@ class ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-<<<<<<< HEAD
             $loader->prefixLengthsPsr4 = ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d::$classMap;
-=======
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1d218159c651cbc5020beefb5cc5651a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1d218159c651cbc5020beefb5cc5651a::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit1d218159c651cbc5020beefb5cc5651a::$classMap;
->>>>>>> Crud_CPT renamed to WC_Post
 
         }, null, ClassLoader::class);
     }

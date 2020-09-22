@@ -25,45 +25,7 @@ class Product_Variation extends WC_Post {
 	 */
 	public function __construct( $id ) {
 		$data = new WC_Product_Variation( $id );
-		parent::__construct( 'product_variation', $data );
-	}
-
-	/**
-	 * Retrieve the cap to check if the data should be restricted for the coupon
-	 *
-	 * @return string
-	 */
-	public function get_restricted_cap() {
-		if ( post_password_required( $this->data->get_parent_id() ) ) {
-			return $this->post_type_object->cap->edit_others_posts;
-		}
-		switch ( get_post_status( $this->data->get_parent_id() ) ) {
-			case 'trash':
-				$cap = $this->post_type_object->cap->edit_posts;
-				break;
-			case 'draft':
-				$cap = $this->post_type_object->cap->edit_others_posts;
-				break;
-			default:
-				$cap = '';
-				break;
-		}
-		return $cap;
-	}
-
-	/**
-	 * Return the fields allowed to be displayed even if this entry is restricted.
-	 *
-	 * @return array
-	 */
-	protected function get_allowed_restricted_fields() {
-		return array(
-			'isRestricted',
-			'isPrivate',
-			'isPublic',
-			'id',
-			'databaseId',
-		);
+		parent::__construct( $data );
 	}
 
 	/**
@@ -71,123 +33,119 @@ class Product_Variation extends WC_Post {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = array(
-				'ID'                => function() {
-					return $this->data->get_id();
-				},
+			parent::init();
+
+			$fields = array(
 				'id'                => function() {
-					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'product_variation', $this->data->get_id() ) : null;
-				},
-				'databaseId'        => function() {
-					return $this->ID;
+					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'product_variation', $this->wc_data->get_id() ) : null;
 				},
 				'name'              => function() {
-					return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
+					return ! empty( $this->wc_data->get_name() ) ? $this->wc_data->get_name() : null;
 				},
 				'date'              => function() {
-					return ! empty( $this->data ) ? $this->data->get_date_created() : null;
+					return ! empty( $this->wc_data ) ? $this->wc_data->get_date_created() : null;
 				},
 				'modified'          => function() {
-					return ! empty( $this->data ) ? $this->data->get_date_modified() : null;
+					return ! empty( $this->wc_data ) ? $this->wc_data->get_date_modified() : null;
 				},
 				'description'       => function() {
-					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+					return ! empty( $this->wc_data->get_description() ) ? $this->wc_data->get_description() : null;
 				},
 				'sku'               => function() {
-					return ! empty( $this->data->get_sku() ) ? $this->data->get_sku() : null;
+					return ! empty( $this->wc_data->get_sku() ) ? $this->wc_data->get_sku() : null;
 				},
 				'price'             => function() {
-					return ! empty( $this->data->get_price() )
-						? \wc_graphql_price( $this->data->get_price() )
+					return ! empty( $this->wc_data->get_price() )
+						? \wc_graphql_price( $this->wc_data->get_price() )
 						: null;
 				},
 				'regularPrice'      => function() {
-					return ! empty( $this->data->get_regular_price() ) ?
-						\wc_graphql_price( $this->data->get_regular_price() )
+					return ! empty( $this->wc_data->get_regular_price() ) ?
+						\wc_graphql_price( $this->wc_data->get_regular_price() )
 						: null;
 				},
 				'salePrice'         => function() {
-					return ! empty( $this->data->get_sale_price() )
-						? \wc_graphql_price( $this->data->get_sale_price() )
+					return ! empty( $this->wc_data->get_sale_price() )
+						? \wc_graphql_price( $this->wc_data->get_sale_price() )
 						: null;
 				},
 				'dateOnSaleFrom'    => function() {
-					return ! empty( $this->data->get_date_on_sale_from() ) ? $this->data->get_date_on_sale_from() : null;
+					return ! empty( $this->wc_data->get_date_on_sale_from() ) ? $this->wc_data->get_date_on_sale_from() : null;
 				},
 				'dateOnSaleTo'      => function() {
-					return ! empty( $this->data->get_date_on_sale_to() ) ? $this->data->get_date_on_sale_to() : null;
+					return ! empty( $this->wc_data->get_date_on_sale_to() ) ? $this->wc_data->get_date_on_sale_to() : null;
 				},
 				'onSale'            => function () {
-					return ! is_null( $this->data->is_on_sale() ) ? $this->data->is_on_sale() : null;
+					return ! is_null( $this->wc_data->is_on_sale() ) ? $this->wc_data->is_on_sale() : null;
 				},
 				'status'            => function() {
-					return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
+					return ! empty( $this->wc_data->get_status() ) ? $this->wc_data->get_status() : null;
 				},
 				'purchasable'       => function() {
-					return ! empty( $this->data->is_purchasable() ) ? $this->data->is_purchasable() : null;
+					return ! empty( $this->wc_data->is_purchasable() ) ? $this->wc_data->is_purchasable() : null;
 				},
 				'virtual'           => function() {
-					return ! is_null( $this->data->is_virtual() ) ? $this->data->is_virtual() : null;
+					return ! is_null( $this->wc_data->is_virtual() ) ? $this->wc_data->is_virtual() : null;
 				},
 				'downloadable'      => function() {
-					return ! is_null( $this->data->is_downloadable() ) ? $this->data->is_downloadable() : null;
+					return ! is_null( $this->wc_data->is_downloadable() ) ? $this->wc_data->is_downloadable() : null;
 				},
 				'downloads'         => function() {
-					return ! empty( $this->data->get_downloads() ) ? $this->data->get_downloads() : null;
+					return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;
 				},
 				'downloadLimit'     => function() {
-					return ! is_null( $this->data->get_download_limit() ) ? $this->data->get_download_limit() : null;
+					return ! is_null( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
 				},
 				'downloadExpiry'    => function() {
-					return ! is_null( $this->data->get_download_expiry() ) ? $this->data->get_download_expiry() : null;
+					return ! is_null( $this->wc_data->get_download_expiry() ) ? $this->wc_data->get_download_expiry() : null;
 				},
 				'taxStatus'         => function() {
-					return ! empty( $this->data->get_tax_status() ) ? $this->data->get_tax_status() : null;
+					return ! empty( $this->wc_data->get_tax_status() ) ? $this->wc_data->get_tax_status() : null;
 				},
 				'taxClass'          => function() {
-					return ! is_null( $this->data->get_tax_class() ) ? $this->data->get_tax_class() : '';
+					return ! is_null( $this->wc_data->get_tax_class() ) ? $this->wc_data->get_tax_class() : '';
 				},
 				'manageStock'       => function() {
-					return ! empty( $this->data->get_manage_stock() ) ? $this->data->get_manage_stock() : null;
+					return ! empty( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
 				},
 				'stockQuantity'     => function() {
-					return ! empty( $this->data->get_stock_quantity() ) ? $this->data->get_stock_quantity() : null;
+					return ! empty( $this->wc_data->get_stock_quantity() ) ? $this->wc_data->get_stock_quantity() : null;
 				},
 				'stockStatus'       => function() {
-					return ! empty( $this->data->get_stock_status() ) ? $this->data->get_stock_status() : null;
+					return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
 				},
 				'backorders'        => function() {
-					return ! empty( $this->data->get_backorders() ) ? $this->data->get_backorders() : null;
+					return ! empty( $this->wc_data->get_backorders() ) ? $this->wc_data->get_backorders() : null;
 				},
 				'backordersAllowed' => function() {
-					return ! is_null( $this->data->backorders_allowed() ) ? $this->data->backorders_allowed() : null;
+					return ! is_null( $this->wc_data->backorders_allowed() ) ? $this->wc_data->backorders_allowed() : null;
 				},
 				'weight'            => function() {
-					return ! empty( $this->data->get_weight() ) ? $this->data->get_weight() : null;
+					return ! empty( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
 				},
 				'length'            => function() {
-					return ! empty( $this->data->get_length() ) ? $this->data->get_length() : null;
+					return ! empty( $this->wc_data->get_length() ) ? $this->wc_data->get_length() : null;
 				},
 				'width'             => function() {
-					return ! empty( $this->data->get_width() ) ? $this->data->get_width() : null;
+					return ! empty( $this->wc_data->get_width() ) ? $this->wc_data->get_width() : null;
 				},
 				'height'            => function() {
-					return ! empty( $this->data->get_height() ) ? $this->data->get_height() : null;
+					return ! empty( $this->wc_data->get_height() ) ? $this->wc_data->get_height() : null;
 				},
 				'menuOrder'         => function() {
-					return ! is_null( $this->data->get_menu_order() ) ? $this->data->get_menu_order() : null;
+					return ! is_null( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
 				},
 				'purchaseNote'      => function() {
-					return ! empty( $this->data->get_purchase_note() ) ? $this->data->get_purchase_note() : null;
+					return ! empty( $this->wc_data->get_purchase_note() ) ? $this->wc_data->get_purchase_note() : null;
 				},
 				'catalogVisibility' => function() {
-					return ! empty( $this->data->get_catalog_visibility() ) ? $this->data->get_catalog_visibility() : null;
+					return ! empty( $this->wc_data->get_catalog_visibility() ) ? $this->wc_data->get_catalog_visibility() : null;
 				},
 				'hasAttributes'     => function() {
-					return ! empty( $this->data->has_attributes() ) ? $this->data->has_attributes() : null;
+					return ! empty( $this->wc_data->has_attributes() ) ? $this->wc_data->has_attributes() : null;
 				},
 				'type'              => function() {
-					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
+					return ! empty( $this->wc_data->get_type() ) ? $this->wc_data->get_type() : null;
 				},
 
 				/**
@@ -195,19 +153,19 @@ class Product_Variation extends WC_Post {
 				 */
 				'priceRaw'          => array(
 					'callback'   => function() {
-						return ! empty( $this->data->get_price() ) ? $this->data->get_price() : null;
+						return ! empty( $this->wc_data->get_price() ) ? $this->wc_data->get_price() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				),
 				'regularPriceRaw'   => array(
 					'callback'   => function() {
-						return ! empty( $this->data->get_regular_price() ) ? $this->data->get_regular_price() : null;
+						return ! empty( $this->wc_data->get_regular_price() ) ? $this->wc_data->get_regular_price() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				),
 				'salePriceRaw'      => array(
 					'callback'   => function() {
-						return ! empty( $this->data->get_sale_price() ) ? $this->data->get_sale_price() : null;
+						return ! empty( $this->wc_data->get_sale_price() ) ? $this->wc_data->get_sale_price() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				),
@@ -219,20 +177,23 @@ class Product_Variation extends WC_Post {
 				 * Note: underscore naming style is used as a quick identifier
 				 */
 				'parent_id'         => function() {
-					return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
+					return ! empty( $this->wc_data->get_parent_id() ) ? $this->wc_data->get_parent_id() : null;
+				},
+				'parentId'          => function() {
+					return ! empty( $this->wc_data->get_parent_id() ) ? Relay::toGlobalId( 'product', $this->wc_data->get_parent_id() ) : null;
 				},
 				'shipping_class_id' => function() {
-					return ! empty( $this->data->get_shipping_class_id() ) ? $this->data->get_shipping_class_id() : null;
+					return ! empty( $this->wc_data->get_shipping_class_id() ) ? $this->wc_data->get_shipping_class_id() : null;
 				},
 				'image_id'          => function() {
-					return ! empty( $this->data->get_image_id() ) ? $this->data->get_image_id() : null;
+					return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_image_id() : null;
 				},
 				'attributes'        => function() {
-					return ! empty( $this->data->get_attributes() ) ? $this->data->get_attributes() : null;
+					return ! empty( $this->wc_data->get_attributes() ) ? $this->wc_data->get_attributes() : null;
 				},
 			);
-		}
 
-		parent::prepare_fields();
+			$this->fields = array_merge( $this->fields, $fields );
+		}
 	}
 }

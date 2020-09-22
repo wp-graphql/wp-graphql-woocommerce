@@ -17,46 +17,9 @@ class Coupon extends WC_Post {
 	 * @param int $id - shop_coupon post-type ID.
 	 */
 	public function __construct( $id ) {
-		$this->data = new WC_Coupon( $id );
-		parent::__construct( 'shop_coupon', $data );
-	}
+		$data = new WC_Coupon( $id );
 
-	/**
-	 * Retrieve the cap to check if the data should be restricted for the coupon
-	 *
-	 * @return string
-	 */
-	public function get_restricted_cap() {
-		if ( post_password_required( $this->data->get_id() ) ) {
-			return $this->post_type_object->cap->edit_others_posts;
-		}
-		switch ( get_post_status( $this->data->get_id() ) ) {
-			case 'trash':
-				$cap = $this->post_type_object->cap->edit_posts;
-				break;
-			case 'draft':
-				$cap = $this->post_type_object->cap->edit_others_posts;
-				break;
-			default:
-				$cap = '';
-				break;
-		}
-		return $cap;
-	}
-
-	/**
-	 * Return the fields allowed to be displayed even if this entry is restricted.
-	 *
-	 * @return array
-	 */
-	protected function get_allowed_restricted_fields() {
-		return array(
-			'isRestricted',
-			'isPrivate',
-			'isPublic',
-			'id',
-			'databaseId',
-		);
+		parent::__construct( $data );
 	}
 
 	/**
@@ -64,66 +27,62 @@ class Coupon extends WC_Post {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = array(
-				'ID'                            => function() {
-					return $this->data->get_id();
-				},
+			parent::init();
+
+			$fields = array(
 				'id'                            => function() {
-					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->data->get_id() ) : null;
-				},
-				'databaseId'                    => function() {
-					return $this->ID;
+					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->wc_data->get_id() ) : null;
 				},
 				'code'                          => function() {
-					return ! empty( $this->data->get_code() ) ? $this->data->get_code() : null;
+					return ! empty( $this->wc_data->get_code() ) ? $this->wc_data->get_code() : null;
 				},
 				'date'                          => function() {
-					return ! empty( $this->data->get_date_created() ) ? $this->data->get_date_created() : null;
+					return ! empty( $this->wc_data->get_date_created() ) ? $this->wc_data->get_date_created() : null;
 				},
 				'modified'                      => function() {
-					return ! empty( $this->data->get_date_modified() ) ? $this->data->get_date_modified() : null;
+					return ! empty( $this->wc_data->get_date_modified() ) ? $this->wc_data->get_date_modified() : null;
 				},
 				'description'                   => function() {
-					return ! empty( $this->data->get_description() ) ? $this->data->get_description() : null;
+					return ! empty( $this->wc_data->get_description() ) ? $this->wc_data->get_description() : null;
 				},
 				'discountType'                  => function() {
-					return ! empty( $this->data->get_discount_type() ) ? $this->data->get_discount_type() : null;
+					return ! empty( $this->wc_data->get_discount_type() ) ? $this->wc_data->get_discount_type() : null;
 				},
 				'amount'                        => function() {
-					return ! empty( $this->data->get_amount() ) ? $this->data->get_amount() : null;
+					return ! empty( $this->wc_data->get_amount() ) ? $this->wc_data->get_amount() : null;
 				},
 				'dateExpiry'                    => function() {
-					return ! empty( $this->data->get_date_expires() ) ? $this->data->get_date_expires() : null;
+					return ! empty( $this->wc_data->get_date_expires() ) ? $this->wc_data->get_date_expires() : null;
 				},
 				'usageCount'                    => function() {
-					return ! is_null( $this->data->get_usage_count() ) ? $this->data->get_usage_count() : null;
+					return ! is_null( $this->wc_data->get_usage_count() ) ? $this->wc_data->get_usage_count() : null;
 				},
 				'individualUse'                 => function() {
-					return ! is_null( $this->data->get_individual_use() ) ? $this->data->get_individual_use() : null;
+					return ! is_null( $this->wc_data->get_individual_use() ) ? $this->wc_data->get_individual_use() : null;
 				},
 				'usageLimit'                    => function() {
-					return ! empty( $this->data->get_usage_limit() ) ? $this->data->get_usage_limit() : null;
+					return ! empty( $this->wc_data->get_usage_limit() ) ? $this->wc_data->get_usage_limit() : null;
 				},
 				'usageLimitPerUser'             => function() {
-					return ! empty( $this->data->get_usage_limit_per_user() ) ? $this->data->get_usage_limit_per_user() : null;
+					return ! empty( $this->wc_data->get_usage_limit_per_user() ) ? $this->wc_data->get_usage_limit_per_user() : null;
 				},
 				'limitUsageToXItems'            => function() {
-					return ! empty( $this->data->get_limit_usage_to_x_items() ) ? $this->data->get_limit_usage_to_x_items() : null;
+					return ! empty( $this->wc_data->get_limit_usage_to_x_items() ) ? $this->wc_data->get_limit_usage_to_x_items() : null;
 				},
 				'freeShipping'                  => function() {
-					return ! is_null( $this->data->get_free_shipping() ) ? $this->data->get_free_shipping() : null;
+					return ! is_null( $this->wc_data->get_free_shipping() ) ? $this->wc_data->get_free_shipping() : null;
 				},
 				'excludeSaleItems'              => function() {
-					return ! is_null( $this->data->get_exclude_sale_items() ) ? $this->data->get_exclude_sale_items() : null;
+					return ! is_null( $this->wc_data->get_exclude_sale_items() ) ? $this->wc_data->get_exclude_sale_items() : null;
 				},
 				'minimumAmount'                 => function() {
-					return ! empty( $this->data->get_minimum_amount() ) ? $this->data->get_minimum_amount() : null;
+					return ! empty( $this->wc_data->get_minimum_amount() ) ? $this->wc_data->get_minimum_amount() : null;
 				},
 				'maximumAmount'                 => function() {
-					return ! empty( $this->data->get_maximum_amount() ) ? $this->data->get_maximum_amount() : null;
+					return ! empty( $this->wc_data->get_maximum_amount() ) ? $this->wc_data->get_maximum_amount() : null;
 				},
 				'emailRestrictions'             => function() {
-					return ! empty( $this->data->get_email_restrictions() ) ? $this->data->get_email_restrictions() : null;
+					return ! empty( $this->wc_data->get_email_restrictions() ) ? $this->wc_data->get_email_restrictions() : null;
 				},
 				/**
 				 * Connection resolvers fields
@@ -132,23 +91,23 @@ class Coupon extends WC_Post {
 				 * Note: underscore naming style is used as a quick identifier
 				 */
 				'product_ids'                   => function() {
-					return ! empty( $this->data->get_product_ids() ) ? $this->data->get_product_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_product_ids() ) ? $this->wc_data->get_product_ids() : array( '0' );
 				},
 				'excluded_product_ids'          => function() {
-					return ! empty( $this->data->get_excluded_product_ids() ) ? $this->data->get_excluded_product_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_excluded_product_ids() ) ? $this->wc_data->get_excluded_product_ids() : array( '0' );
 				},
 				'product_category_ids'          => function() {
-					return ! empty( $this->data->get_product_categories() ) ? $this->data->get_product_categories() : array( '0' );
+					return ! empty( $this->wc_data->get_product_categories() ) ? $this->wc_data->get_product_categories() : array( '0' );
 				},
 				'excluded_product_category_ids' => function() {
-					return ! empty( $this->data->get_excluded_product_categories() ) ? $this->data->get_excluded_product_categories() : array( '0' );
+					return ! empty( $this->wc_data->get_excluded_product_categories() ) ? $this->wc_data->get_excluded_product_categories() : array( '0' );
 				},
 				'used_by_ids'                   => function() {
-					return ! empty( $this->data->get_used_by() ) ? $this->data->get_used_by() : array( '0' );
+					return ! empty( $this->wc_data->get_used_by() ) ? $this->wc_data->get_used_by() : array( '0' );
 				},
 			);
-		}
 
-		parent::prepare_fields();
+			$this->fields = array_merge( $this->fields, $fields );
+		}
 	}
 }

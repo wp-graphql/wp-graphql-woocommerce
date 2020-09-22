@@ -20,26 +20,11 @@ use WP_Post_Type;
 abstract class WC_Post extends Post {
 
 	/**
-	 * Stores the incoming post type object for the post being modeled
-	 *
-	 * @var WP_Post_Type $post_type_object
-	 */
-	protected $post_type_object;
-
-
-	/**
-	 * Store the WP_Post object connected to the model.
-	 * 
-	 * @var WP_Post $post
-	 */
-	protected $post;
-
-	/**
 	 * Stores the WC_Data object connected to the model.
-	 * 
+	 *
 	 * @var \WC_Data $data
 	 */
-	protected $data;
+	protected $wc_data;
 
 	/**
 	 * WC_Post constructor
@@ -47,27 +32,53 @@ abstract class WC_Post extends Post {
 	 * @param string $post_type  Post type.
 	 * @param int    $data       Data object to be used by the model.
 	 */
-	public function __construct( $post_type, $data, $owner_id = null ) {
+	public function __construct( $data ) {
+		// Store CRUD object.
+		$this->wc_data = $data;
+
 		// Get WP_Post object.
-		$this->post = get_post( $data->get_id() );
+		$post = get_post( $data->get_id() );
+
+		// Add $allowed_restricted_fields
+		if ( ! has_filter( 'graphql_allowed_fields_on_restricted_type', array( static::class, 'add_allowed_restricted_fields' ) ) ) {
+			add_filter( 'graphql_allowed_fields_on_restricted_type', array( static::class, 'add_allowed_restricted_fields' ), 10, 2 );
+		}
 
 		// Execute Post Model constructor.
-		parent::__construct( $data, $owner_id );
+		parent::__construct( $post );
 	}
 
 	/**
-	 * Setup the global data for the model to have proper context when resolving
+	 * Injects CRUD object fields into $allowed_restricted_fields
+	 * @param array  $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user
+	 * @param string $model_name                 Name of the model the filter is currently being executed in
+	 *
+	 * @return string[]
 	 */
-	public function setup() {
-		/**
-		 * Set the resolving post to the global $post. That way any filters that
-		 * might be applied when resolving fields can rely on global post and
-		 * post data being set up.
-		 */
-		if ( $this->post && $this->post instanceof \WP_Post ) {
-			$GLOBALS['post'] = $this->post;
-			setup_postdata( $this->post );
+	public static function add_allowed_restricted_fields( $allowed_restricted_fields, $model_name ) {
+		$class_name = static::class;
+		if ( "{$class_name}Object" === $model_name ) {
+			return static::get_allowed_restricted_fields( $allowed_restricted_fields );
 		}
+
+		return $allowed_restricted_fields;
+	}
+
+	/**
+	 * Return the fields allowed to be displayed even if this entry is restricted.
+	 *
+	 * @param array  $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user
+	 *
+	 * @return array
+	 */
+	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = array() ) {
+		return array(
+			'isRestricted',
+			'isPrivate',
+			'isPublic',
+			'id',
+			'databaseId',
+		);
 	}
 
 	/**
@@ -78,26 +89,12 @@ abstract class WC_Post extends Post {
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
-		return $this->data->$method( ...$args );
-	}
+		if ( \is_callable( array( $this->wc_data, $method ) ) ) {
+			return $this->wc_data->$method( ...$args );
+		}
 
-	/**
-	 * Determines if the data object should be considered private
-	 *
-	 * @return bool
-	 */
-	protected function is_private() {
-		$post_status = get_post_status( $this->data->get_id() );
-		if ( true === $this->owner_matches_current_user() || 'publish' === $post_status ) {
-			return false;
-		}
-		if ( 'private' === $post_status && ! current_user_can( $this->post_type_object->cap->read_private_posts ) ) {
-			return true;
-		}
-		if ( 'auto-draft' === $post_status && true !== $this->owner_matches_current_user() ) {
-			return true;
-		}
-		return false;
+		$class = __CLASS__;
+		throw new BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 
 	/**
@@ -118,6 +115,6 @@ abstract class WC_Post extends Post {
 			);
 		}
 
-		return $this->data->delete( $force_delete );
+		return $this->wc_data->delete( $force_delete );
 	}
 }

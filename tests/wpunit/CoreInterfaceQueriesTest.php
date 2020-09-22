@@ -180,8 +180,13 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testProductAsNodeWithFeaturedImage() {
 		// Create product to be queried.
-		$product_id = $this->products->create_simple();
-		$product    = \wc_get_product( $product_id );
+		$attachment_id = $this->factory()->attachment->create(
+			array(
+				'post_mime_type' => 'image/gif',
+				'post_author' => $this->admin
+			)
+		);
+		$product_id = $this->products->create_simple( array( 'image_id' => $attachment_id ) );
 
 		// Define query and variables.
 		$query     = '
@@ -195,10 +200,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = array(
-			'id'     => $product_id,
-			'format' => 'RAW',
-		);
+		$variables = array( 'id' => $product_id );
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
@@ -208,8 +210,8 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'product' => array(
 					'id'                      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'featuredImageId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $product->get_image_id() ),
-					'featuredImageDatabaseId' => $product->get_image_id(),
+					'featuredImageId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
+					'featuredImageDatabaseId' => $attachment_id,
 				),
 			),
 		);
@@ -221,7 +223,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testProductAsContentNode() {
 		// Create product to be queried.
 		$product_id = $this->products->create_simple();
-		$product    = \wc_get_product( $product_id );
+		$wc_product = \wc_get_product( $product_id );
 		$wp_product = get_post( $product_id );
 
 		// Define query and variables.
@@ -262,19 +264,19 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'product' => array(
 					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
 					'databaseId'                => $wp_product->ID,
-					'date'                      => \WPGraphQL\Utils\Utils::prepare_date_response( null, $wp_product->post_date ),
+					'date'                      => (string) $wc_product->get_date_created(),
 					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
-					'enclosure'                 => get_post_meta( $this->data->ID, 'enclosure', true ) ?: null,
+					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?: null,
 					'status'                    => $wp_product->post_status,
 					'slug'                      => $wp_product->post_name,
-					'modified'                  => $wp_product->post_modified,
-					'modifiedGmt'               => $wp_product->post_modified_gmt,
+					'modified'                  => (string) $wc_product->get_date_modified(),
+					'modifiedGmt'               => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_modified_gmt ),
 					'guid'                      => $wp_product->guid,
-					'desiredSlug'               => '',
+					'desiredSlug'               => null,
 					'link'                      => get_permalink( $wp_product->ID ),
 					'uri'                       => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
 					'isRestricted'              => false,
-					'isPreview'                 => false,
+					'isPreview'                 => null,
 					'previewRevisionDatabaseId' => null,
 					'previewRevisionId'         => null,
 				),
@@ -321,48 +323,11 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $response );
 	}
 
-	public function testProductAsHierarchicalContentNode() {
-		// Create product collection to be queried.
-		$product_ids      = $this->products->create_grouped();
-		$product_id       = $product_ids['children'][0];
-		$wp_product       = get_post( $product_id );
-
-		// Define query and variables.
-		$query     = '
-			query ( $id: ID! ) {
-				product( id: $id, idType: DATABASE_ID ) {
-					id
-					... on HierarchicalContentNode {
-						parentId
-						parentDatabaseId
-					}
-				}
-			}
-		';
-		$variables = array( 'id' => $product_id );
-
-		// Execute query and retrieve response.
-		$response = $this->graphql( compact( 'query', 'variables' ) );
-
-		// Define expected data object.
-		$expected = array(
-			'data' => array(
-				'product' => array(
-					'id'               => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'parentId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $wp_product->post_parent ),
-					'parentDatabaseId' => $wp_product->post_parent,
-				),
-			),
-		);
-
-		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
-	}
-
-	public function testProductVariationAsHierarchicalContentNode() {
+	public function testNodeInterfacesOnProductVariation() {
 		// Create product collection to be queried.
 		$product_ids  = $this->variations->create( $this->products->create_variable() );
-		$variation_id = $product_ids['variations'][0];
+		$variation_id = $product_ids['variations'][1];
+		$wc_product   = \wc_get_product( $variation_id );
 		$wp_product   = get_post( $variation_id );
 
 		// Define query and variables.
@@ -373,6 +338,28 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 					... on HierarchicalContentNode {
 						parentId
 						parentDatabaseId
+					}
+					... on ContentNode {
+						databaseId
+						date
+						dateGmt
+						enclosure
+						status
+						slug
+						modified
+						modifiedGmt
+						guid
+						desiredSlug
+						link
+						uri
+						isRestricted
+						isPreview
+						previewRevisionDatabaseId
+						previewRevisionId
+					}
+					... on NodeWithFeaturedImage {
+						featuredImageId
+						featuredImageDatabaseId
 					}
 				}
 			}
@@ -386,9 +373,27 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = array(
 			'data' => array(
 				'productVariation' => array(
-					'id'               => \GraphQLRelay\Relay::toGlobalId( 'product_variation', $variation_id ),
-					'parentId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $wp_product->post_parent ),
-					'parentDatabaseId' => $wp_product->post_parent,
+					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product_variation', $variation_id ),
+					'parentId'                  => \GraphQLRelay\Relay::toGlobalId( 'post', $wp_product->post_parent ),
+					'parentDatabaseId'          => $wp_product->post_parent,
+					'databaseId'                => $wp_product->ID,
+					'date'                      => (string) $wc_product->get_date_created(),
+					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
+					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?: null,
+					'status'                    => $wp_product->post_status,
+					'slug'                      => $wp_product->post_name,
+					'modified'                  => (string) $wc_product->get_date_modified(),
+					'modifiedGmt'               => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_modified_gmt ),
+					'guid'                      => $wp_product->guid,
+					'desiredSlug'               => null,
+					'link'                      => get_permalink( $wp_product->ID ),
+					'uri'                       => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
+					'isRestricted'              => false,
+					'isPreview'                 => null,
+					'previewRevisionDatabaseId' => null,
+					'previewRevisionId'         => null,
+					'featuredImageId'           => \GraphQLRelay\Relay::toGlobalId( 'post', $wc_product->get_image_id() ),
+					'featuredImageDatabaseId'   => $wc_product->get_image_id(),
 				),
 			),
 		);
