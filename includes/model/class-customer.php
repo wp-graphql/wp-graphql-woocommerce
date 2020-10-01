@@ -63,7 +63,7 @@ class Customer extends Model {
 				'id'                    => function() {
 					return ( ! empty( $this->data->get_id() ) )
 						? Relay::toGlobalId( 'customer', $this->data->get_id() )
-						: 'new_customer';
+						: 'guest';
 				},
 				'databaseId'            => function() {
 					return $this->ID;

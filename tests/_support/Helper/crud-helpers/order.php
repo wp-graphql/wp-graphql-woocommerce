@@ -204,7 +204,9 @@ class OrderHelper extends WCG_Helper {
 			'pricesIncludeTax'      => $data->get_prices_include_tax(),
 			'parent'                => null,
 			'customer'              => array(
-				'id' =>	Relay::toGlobalId( 'customer', $data->get_customer_id() )
+				'id' =>	! empty( $data->get_customer_id() )
+					? Relay::toGlobalId( 'customer', $data->get_customer_id() )
+					: 'guest',
 			),
 			'customerIpAddress'     => ! empty( $data->get_customer_ip_address() )
 				? $data->get_customer_ip_address()

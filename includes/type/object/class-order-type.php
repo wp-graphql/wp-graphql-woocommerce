@@ -286,6 +286,10 @@ class Order_Type {
 						'type'        => 'Customer',
 						'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $order, array $args, AppContext $context ) {
+							if ( empty( $order->customer_id ) ) {
+								return Factory::resolve_session_customer();
+							}
+
 							return Factory::resolve_customer( $order->customer_id, $context );
 						},
 					),

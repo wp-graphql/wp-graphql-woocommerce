@@ -145,6 +145,9 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$product_id = $this->products->create_simple();
 		$product    = \wc_get_product( $product_id );
 
+		// Authenticate to view RAW content.
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'shop_manager' ) ) );
+
 		// Define query and variables.
 		$query     = '
 			query ( $id: ID!, $format: PostObjectFieldFormatEnum ) {
@@ -335,10 +338,6 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ( $id: ID! ) {
 				productVariation( id: $id, idType: DATABASE_ID ) {
 					id
-					... on HierarchicalContentNode {
-						parentId
-						parentDatabaseId
-					}
 					... on ContentNode {
 						databaseId
 						date
@@ -374,8 +373,6 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'productVariation' => array(
 					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product_variation', $variation_id ),
-					'parentId'                  => \GraphQLRelay\Relay::toGlobalId( 'post', $wp_product->post_parent ),
-					'parentDatabaseId'          => $wp_product->post_parent,
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
 					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),

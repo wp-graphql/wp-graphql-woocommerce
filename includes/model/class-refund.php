@@ -67,6 +67,5 @@ class Refund extends Order {
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}
-
 	}
 }

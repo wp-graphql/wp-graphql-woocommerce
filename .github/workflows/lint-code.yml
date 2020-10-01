@@ -35,11 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require \
-          squizlabs/php_codesniffer \
-          phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs \
-          dealerdirect/phpcodesniffer-composer-installer
-          composer install --no-dev
+          composer install
 
       - name: Cache dependencies
         uses: actions/cache@v1
@@ -49,4 +45,4 @@ jobs:
           restore-keys: ${{ runner.os }}-composer
 
       - name: Run PHP CodeSniffer
-        run: vendor/bin/phpcs
+        run: composer lint

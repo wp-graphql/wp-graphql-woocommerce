@@ -75,7 +75,7 @@ class Order extends WC_Post {
 	}
 
 	/**
-	 * Whether or not the owner of the data matches the current user.
+	 * Whether or not the customer of the order matches the current user.
 	 *
 	 * @return bool
 	 */
@@ -87,10 +87,35 @@ class Order extends WC_Post {
 			$customer_id = get_post_meta( '_customer_user', $this->wc_data->get_parent_id(), true );
 		}
 
+		if ( 0 === $customer_id ) {
+			return $this->guest_order_customer_matches_current_user();
+		}
+
 		if ( empty( $this->current_user->ID ) || empty( $customer_id ) ) {
 			return false;
 		}
+
 		return absint( $customer_id ) === absint( $this->current_user->ID ) ? true : false;
+	}
+
+	/**
+	 * Whether or not the customer of the order who is a guest matches the current user.
+	 *
+	 * @return bool
+	 */
+	public function guest_order_customer_matches_current_user() {
+		if ( 'shop_order' === $this->post_type ) {
+			$customer_email = $this->wc_data->get_billing_email();
+		} else {
+			$customer_email = get_post_meta( '_billing_email', $this->wc_data->get_parent_id(), true );
+		}
+
+		$session_customer = new \WC_Customer( 0, true );
+		if ( empty( $session_customer->get_billing_email() ) || empty( $customer_email ) ) {
+			return false;
+		}
+
+		return $customer_email === $session_customer->get_billing_email() ? true : false ;
 	}
 
 	/**

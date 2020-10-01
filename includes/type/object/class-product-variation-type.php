@@ -34,7 +34,6 @@ class Product_Variation_Type {
 					'NodeWithFeaturedImage',
 					'ContentNode',
 					'UniformResourceIdentifiable',
-					'HierarchicalContentNode',
 				),
 				'fields'      => array(
 					'id'                => array(
@@ -235,13 +234,6 @@ class Product_Variation_Type {
 						'resolve'     => function( $source, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreLine
 							return DataSource::resolve_post_object( $source->image_id, $context );
-						},
-					),
-					'parent'            => array(
-						'type'        => 'VariableProduct',
-						'description' => __( 'Product variation parent product', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
-							return Factory::resolve_crud_object( $source->parent_id, $context );
 						},
 					),
 				),
