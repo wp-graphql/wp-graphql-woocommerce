@@ -68,7 +68,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
                     hasAttributes
                     type
                     parent {
-                        id
+						node { id }
                     }
                 }
             }

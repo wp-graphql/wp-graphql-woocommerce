@@ -70,6 +70,13 @@ class Core_Schema_Filters {
 			10,
 			3
 		);
+
+		add_filter(
+			'graphql_dataloader_pre_get_model',
+			array( '\WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader', 'inject_post_loader_models' ),
+			10,
+			3
+		);
 	}
 
 	/**

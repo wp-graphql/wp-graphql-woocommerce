@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d
+class ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -83,7 +83,6 @@ class ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d
         'WPGraphQL\\WooCommerce\\Data\\Mutation\\Order_Mutation' => __DIR__ . '/../..' . '/includes/data/mutation/class-order-mutation.php',
         'WPGraphQL\\WooCommerce\\JWT_Auth_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-jwt-auth-schema-filters.php',
         'WPGraphQL\\WooCommerce\\Model\\Coupon' => __DIR__ . '/../..' . '/includes/model/class-coupon.php',
-        'WPGraphQL\\WooCommerce\\Model\\Crud_CPT' => __DIR__ . '/../..' . '/includes/model/class-crud-cpt.php',
         'WPGraphQL\\WooCommerce\\Model\\Customer' => __DIR__ . '/../..' . '/includes/model/class-customer.php',
         'WPGraphQL\\WooCommerce\\Model\\Order' => __DIR__ . '/../..' . '/includes/model/class-order.php',
         'WPGraphQL\\WooCommerce\\Model\\Order_Item' => __DIR__ . '/../..' . '/includes/model/class-order-item.php',
@@ -91,8 +90,8 @@ class ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d
         'WPGraphQL\\WooCommerce\\Model\\Product_Variation' => __DIR__ . '/../..' . '/includes/model/class-product-variation.php',
         'WPGraphQL\\WooCommerce\\Model\\Refund' => __DIR__ . '/../..' . '/includes/model/class-refund.php',
         'WPGraphQL\\WooCommerce\\Model\\Shipping_Method' => __DIR__ . '/../..' . '/includes/model/class-shipping-method.php',
-        'WPGraphQL\\WooCommerce\\Model\\Shop_Manager_Caps' => __DIR__ . '/../..' . '/includes/model/trait-shop-manager-caps.php',
         'WPGraphQL\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/includes/model/class-tax-rate.php',
+        'WPGraphQL\\WooCommerce\\Model\\WC_Post' => __DIR__ . '/../..' . '/includes/model/class-wc-post.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Add_Fee' => __DIR__ . '/../..' . '/includes/mutation/class-cart-add-fee.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/includes/mutation/class-cart-add-item.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/includes/mutation/class-cart-apply-coupon.php',
@@ -177,9 +176,9 @@ class ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitd71d86c43e8ed05b96e37706ed82275d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa::$classMap;
 
         }, null, ClassLoader::class);
     }

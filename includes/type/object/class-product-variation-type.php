@@ -29,7 +29,12 @@ class Product_Variation_Type {
 			'ProductVariation',
 			array(
 				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node' ),
+				'interfaces'  => array(
+					'Node',
+					'NodeWithFeaturedImage',
+					'ContentNode',
+					'UniformResourceIdentifiable',
+				),
 				'fields'      => array(
 					'id'                => array(
 						'type'        => array( 'non_null' => 'ID' ),
@@ -229,13 +234,6 @@ class Product_Variation_Type {
 						'resolve'     => function( $source, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreLine
 							return DataSource::resolve_post_object( $source->image_id, $context );
-						},
-					),
-					'parent'            => array(
-						'type'        => 'VariableProduct',
-						'description' => __( 'Product variation parent product', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
-							return Factory::resolve_crud_object( $source->parent_id, $context );
 						},
 					),
 				),

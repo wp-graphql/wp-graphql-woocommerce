@@ -44,7 +44,8 @@ class Product_Types {
 			'NodeWithComments',
 			'NodeWithContentEditor',
 			'NodeWithFeaturedImage',
-			'NodeWithTitle',
+			'ContentNode',
+			'UniformResourceIdentifiable',
 		);
 	}
 

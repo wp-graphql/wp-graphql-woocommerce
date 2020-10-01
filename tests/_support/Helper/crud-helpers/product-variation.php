@@ -155,8 +155,10 @@ class ProductVariationHelper extends WCG_Helper {
 			'hasAttributes'     => ! empty( $data->has_attributes() ) ? $data->has_attributes() : null,
 			'type'              => WPEnumType::get_safe_name( $data->get_type() ),
 			'parent'            => array (
-				'id' => Relay::toGlobalId( 'product', $data->get_parent_id() )
-			)
+				'node' => array(
+					'id' => Relay::toGlobalId( 'product', $data->get_parent_id() ),
+				),
+			),
 		);
 	}
 

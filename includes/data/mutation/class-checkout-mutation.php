@@ -92,7 +92,7 @@ class Checkout_Mutation {
 				} else {
 					$value = ! empty( $input[ $fieldset_key ][ $input_key ] ) ? $input[ $fieldset_key ][ $input_key ] : null;
 				}
-				
+
 				if ( $value ) {
 					$data[ $key ] = $value;
 				} elseif ( 'billing_country' === $key || 'shipping_country' === $key ) {
