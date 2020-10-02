@@ -90,7 +90,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'product_id'      => $this->variation_ids['product'],
 				'quantity'        => 2,
 				'variation_id'    => $this->variation_ids['variations'][0],
-				'variation'       => array(),
+				'variation'       => array( 'attribute_pa_color' => 'red' ),
 				'cart_item_data'  => $cart_meta_data
 			)
 		)[0];
