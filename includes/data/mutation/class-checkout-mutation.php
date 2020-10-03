@@ -452,10 +452,14 @@ class Checkout_Mutation {
 		self::validate_data( $data );
 		WC()->checkout()->check_cart_items();
 
+
 		// Throw cart validation errors stored in the session.
 		$cart_item_errors = wc_get_notices( 'error' );
-		if ( ! empty( $errors ) ) {
+
+
+		if ( ! empty( $cart_item_errors ) ) {
 			$cart_item_error_msgs = implode( ' ', array_column( $cart_item_errors, 'notice' ) );
+			\wc_clear_notices();
 			throw new UserError( $cart_item_error_msgs );
 		}
 
