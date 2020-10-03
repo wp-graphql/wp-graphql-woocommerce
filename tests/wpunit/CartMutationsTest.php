@@ -181,15 +181,21 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'clientMutationId' => 'someId',
                 'productId'        => $ids['product'],
                 'quantity'         => 3,
-                'variationId'      => $ids['variations'][0],
+				'variationId'      => $ids['variations'][0],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
         // Retrieve cart item key.
-        $this->assertArrayHasKey('data', $actual );
-        $this->assertArrayHasKey('addToCart', $actual['data'] );
-        $this->assertArrayHasKey('cartItem', $actual['data']['addToCart'] );
-        $this->assertArrayHasKey('key', $actual['data']['addToCart']['cartItem'] );
+        $this->assertArrayHasKey( 'data', $actual );
+        $this->assertArrayHasKey( 'addToCart', $actual['data'] );
+        $this->assertArrayHasKey( 'cartItem', $actual['data']['addToCart'] );
+        $this->assertArrayHasKey( 'key', $actual['data']['addToCart']['cartItem'] );
         $key = $actual['data']['addToCart']['cartItem']['key'];
 
         // Get newly created cart item data.
@@ -322,7 +328,13 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'clientMutationId' => 'someId',
                 'productId'        => $ids['product'],
                 'quantity'         => 2,
-                'variationId'      => $ids['variations'][0],
+				'variationId'      => $ids['variations'][0],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -364,6 +376,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 2,
                 'variationId'      => $ids['variations'][0],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -380,6 +398,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 3,
                 'variationId'      => $ids['variations'][1],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -422,6 +446,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 2,
                 'variationId'      => $ids['variations'][0],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -438,6 +468,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 3,
                 'variationId'      => $ids['variations'][1],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -479,6 +515,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 2,
                 'variationId'      => $ids['variations'][0],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -527,6 +569,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 2,
                 'variationId'      => $ids['variations'][0],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -543,6 +591,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'productId'        => $ids['product'],
                 'quantity'         => 1,
                 'variationId'      => $ids['variations'][1],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'red',
+					),
+				),
             )
         );
 
@@ -589,7 +643,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
         // Add items to carts.
         $cart_item = $cart->get_cart_item(
-            $cart->add_to_cart( $ids['product'], 2, $ids['variations'][0] )
+            $cart->add_to_cart(
+				$ids['product'],
+				2,
+				$ids['variations'][0],
+				array( 'attribute_pa_color' => 'red' )
+			)
         );
 
         $mutation = '
@@ -1008,14 +1067,28 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testAddToCartMutationErrors() {
 		// Create products.
-        $product_id = $this->product->create_simple(
+        $product_id    = $this->product->create_simple(
 			array(
 				'manage_stock'   => true,
 				'stock_quantity' => 1,
 			)
 		);
+		$variation_ids = $this->variation->create( $this->product->create_variable() );
 
-		$failed = $this->addToCart(
+		\WC()->session->set( 'wc_notices', null );
+		$missing_attributes = $this->addToCart(
+            array(
+                'clientMutationId' => 'someId',
+                'productId'        => $product_id,
+				'quantity'         => 5,
+                'variationId'      => $variation_ids['variations'][0],
+            )
+		);
+
+		$this->assertArrayHasKey( 'errors', $missing_attributes );
+
+		\WC()->session->set( 'wc_notices', null );
+		$not_enough_stock = $this->addToCart(
             array(
                 'clientMutationId' => 'someId',
                 'productId'        => $product_id,
@@ -1023,6 +1096,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
 		);
 
-		$this->assertArrayHasKey( 'errors', $failed );
+		$this->assertArrayHasKey( 'errors', $not_enough_stock );
 	}
 }

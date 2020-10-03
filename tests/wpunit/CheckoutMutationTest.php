@@ -307,7 +307,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         WC()->cart->add_to_cart( $product_ids[0], 3 );
         WC()->cart->add_to_cart( $product_ids[1], 6 );
-        WC()->cart->add_to_cart( $product_ids[2], 2, $variable['variations'][0] );
+        WC()->cart->add_to_cart(
+			$product_ids[2],
+			2,
+			$variable['variations'][0],
+			array( 'attribute_pa_color' => 'red' )
+		);
         WC()->cart->apply_coupon( $coupon->get_code() );
 
         $input      = array(
@@ -515,7 +520,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         );
         WC()->cart->add_to_cart( $product_ids[0], 3 );
         WC()->cart->add_to_cart( $product_ids[1], 6 );
-        WC()->cart->add_to_cart( $product_ids[2], 2, $variable['variations'][0] );
+        WC()->cart->add_to_cart(
+			$product_ids[2],
+			2,
+			$variable['variations'][0],
+			array( 'attribute_pa_color' => 'red' )
+		);
         WC()->cart->apply_coupon( $coupon->get_code() );
 
         $input      = array(
@@ -708,7 +718,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         );
         WC()->cart->add_to_cart( $product_ids[0], 3 );
         WC()->cart->add_to_cart( $product_ids[1], 6 );
-        WC()->cart->add_to_cart( $product_ids[2], 2, $variable['variations'][0] );
+        WC()->cart->add_to_cart(
+			$product_ids[2],
+			2,
+			$variable['variations'][0],
+			array( 'attribute_pa_color' => 'red' )
+		);
         WC()->cart->apply_coupon( $coupon->get_code() );
 
         $input      = array(
@@ -1296,5 +1311,52 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         );
 
         $this->assertEquals( $expected, $actual );
-    }
+	}
+
+	public function testCheckoutMutationCartItemValidation() {
+		add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
+
+		$product_id = $this->product->create_simple(
+			array(
+				'manage_stock'   => true,
+				'stock_quantity' => 3,
+			)
+		);
+
+		$key = WC()->cart->add_to_cart( $product_id, 3 );
+		WC()->cart->set_quantity( $key, 5 );
+
+        /**
+		 * Assertion One
+		 *
+		 * Ensure that checkout failed when stock is too low.
+		 */
+		$input      = array(
+            'clientMutationId' => 'someId',
+            'paymentMethod'    => 'bacs',
+            'shippingMethod'   => array( 'flat rate' ),
+			'billing'          => array(
+                'firstName' => 'May',
+                'lastName'  => 'Parker',
+                'company'   => 'Harris Teeter',
+                'address1'  => '20 Ingram St',
+                'city'      => 'New York City',
+                'state'     => 'NY',
+                'postcode'  => '12345',
+                'country'   => 'US',
+                'email'     => 'superfreak500@gmail.com',
+                'phone'     => '555-555-1234',
+            ),
+            'account'          => array(
+                'username' => 'test_user_1',
+                'password' => 'test_pass'
+            )
+		);
+        $failed = $this->checkout( $input );
+
+        // use --debug flag to view.
+		codecept_debug( $failed );
+
+		$this->assertArrayHasKey( 'errors', $failed );
+	}
 }

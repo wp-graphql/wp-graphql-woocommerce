@@ -28,8 +28,8 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$id = Relay::toGlobalId( 'tax_rate', $this->rate );
 
 		$query = '
-			query taxRateQuery( $id: ID, $rateId: Int ) {
-				taxRate( id: $id, rateId: $rateId ) {
+			query taxRateQuery( $id: ID, $idType: TaxRateIdTypeEnum ) {
+				taxRate( id: $id, idType: $idType ) {
 					id
 					databaseId
 					country
@@ -66,7 +66,10 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * tests query, "rateId" query arg, and results
 		 */
-		$variables = array( 'rateId' => $this->rate );
+		$variables = array(
+			'id'     => $this->rate,
+			'idType' => 'DATABASE_ID',
+		);
 		$actual = do_graphql_request( $query, 'taxRateQuery', $variables );
 		$expected = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
 

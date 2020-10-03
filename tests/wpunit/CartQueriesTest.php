@@ -77,7 +77,8 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$key = $cart->add_to_cart(
 			$variations['product'],
 			3,
-			$variations['variations'][0]
+			$variations['variations'][0],
+			array( 'attribute_pa_color' => 'red' )
 		);
 
 		$query = '
