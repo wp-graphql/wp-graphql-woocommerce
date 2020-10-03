@@ -104,7 +104,11 @@ class Cart_Add_Item {
 		$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );
 
 		// Add item to cart and get item key.
-		$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
+		try {
+			$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
+		} catch( \Exception $e ) { // Repackage any errors.
+			throw new UserError( $e->getMessage() );
+		}
 
 		// If cart item key valid return payload.
 		if ( false !==  $cart_item_key ) {
@@ -115,6 +119,7 @@ class Cart_Add_Item {
 		$notices = \WC()->session->get( 'wc_notices' );
 		if ( ! empty( $notices['error'] ) ) {
 			$cart_error_messages = implode( ' ', array_column( $notices['error'], 'notice' ) );
+			\wc_clear_notices();
 			throw new UserError( $cart_error_messages );
 		} else {
 			throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
