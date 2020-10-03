@@ -203,6 +203,28 @@ class Products {
 			)
 		);
 
+		register_graphql_connection(
+			array(
+				'fromType'      => 'ProductVariation',
+				'toType'        => 'VariableProduct',
+				'fromFieldName' => 'parent',
+				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql' ),
+				'oneToOne'      => true,
+				'resolve'       => function( $source, $args, AppContext $context, ResolveInfo $info ) {
+
+					if ( empty( $source->parent_id ) ) {
+						return null;
+					}
+
+					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+					$resolver->set_query_arg( 'p', $source->parent_id );
+
+					return $resolver->one_to_one()->get_connection();
+
+				},
+			)
+		);
+
 		// Taxonomy To Product resolver.
 		$resolve_product_from_taxonomy = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 			$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );

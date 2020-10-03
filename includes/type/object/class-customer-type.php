@@ -20,7 +20,7 @@ use WPGraphQL\WooCommerce\Data\Factory;
 class Customer_Type {
 
 	/**
-	 * Registers Customer WPObject type
+	 * Registers Customer WPObject type and related fields.
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -33,9 +33,9 @@ class Customer_Type {
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
 					),
-					'customerId'            => array(
+					'databaseId'            => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the user. Equivalent to WP_User->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
 					),
 					'isVatExempt'           => array(
 						'type'        => 'Boolean',
@@ -108,7 +108,37 @@ class Customer_Type {
 						'type'        => 'Boolean',
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
+					'sessionToken'          => array(
+						'type'        => 'String',
+						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							if ( $source->ID === \get_current_user_id() ) {
+								return apply_filters( 'graphql_customer_session_token', null );
+							}
+
+							return null;
+						},
+					)
 				),
+			)
+		);
+
+		/**
+		 * Register the "sessionToken" field to the "User" type.
+		 */
+		register_graphql_field(
+			'User',
+			'sessionToken',
+			array(
+				'type'        => 'String',
+				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $source ) {
+					if ( $source->ID === \get_current_user_id() ) {
+						return apply_filters( 'graphql_customer_session_token', null );
+					}
+
+					return null;
+				},
 			)
 		);
 	}

@@ -88,12 +88,12 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 					product {
 						... on VariableProduct {
 							id
-							productId
+							databaseId
 						}
 					}
 					variation {
 						id
-						variationId
+						databaseId
 					}
 					quantity
 					subtotal

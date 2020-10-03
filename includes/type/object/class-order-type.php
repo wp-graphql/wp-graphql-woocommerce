@@ -28,15 +28,18 @@ class Order_Type {
 			'Order',
 			array(
 				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node' ),
+				'interfaces'  => array(
+					'Node',
+					'NodeWithComments'
+				),
 				'fields'      => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the order', 'wp-graphql-woocommerce' ),
 					),
-					'orderId'               => array(
+					'databaseId'            => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the order in the database', 'wp-graphql-woocommerce' ),
 					),
 					'orderKey'              => array(
 						'type'        => 'String',
@@ -283,6 +286,10 @@ class Order_Type {
 						'type'        => 'Customer',
 						'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $order, array $args, AppContext $context ) {
+							if ( empty( $order->customer_id ) ) {
+								return Factory::resolve_session_customer();
+							}
+
 							return Factory::resolve_customer( $order->customer_id, $context );
 						},
 					),

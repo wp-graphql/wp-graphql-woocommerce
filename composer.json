@@ -27,7 +27,8 @@
     "require-dev": {
         "lucatume/wp-browser": ">=2.2.1 <2.2.8",
         "simpod/php-coveralls-mirror": "^3.0",
-        "stripe/stripe-php": "^7.28"
+        "stripe/stripe-php": "^7.28",
+        "wp-coding-standards/wpcs": "^2.3"
     },
     "config": {
         "optimize-autoloader": true
@@ -51,10 +52,19 @@
     },
     "scripts": {
         "install-test-env": "bash bin/install-test-env.sh",
-        "test": "vendor/bin/codecept run",
-        "functional-test": "vendor/bin/codecept run functional",
-        "acceptance-test": "vendor/bin/codecept run acceptance",
-        "wpunit-test": "vendor/bin/codecept run wpunit"
+        "docker-build": "bash bin/run-docker.sh build",
+        "docker-run": [
+          "@docker-build",
+          "bash bin/run-docker.sh run"
+        ],
+        "docker-destroy": "docker-compose down",
+        "local-app": "@docker-run -a",
+        "local-test": "@docker-run -t",
+        "test": [
+          "composer install --no-dev",
+          "@local-test"
+        ],
+        "lint": "vendor/bin/phpcs"
     },
     "support"    : {
 		"issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",

@@ -35,7 +35,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ($id: ID!) {
 				order(id: $id) {
 					id
-					orderId
+					databaseId
 					currency
 					orderVersion
 					date
@@ -106,7 +106,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 							downloadsRemaining
 							name
 							product {
-								productId
+								databaseId
 							}
 							download {
 								downloadId

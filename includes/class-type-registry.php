@@ -88,7 +88,7 @@ class Type_Registry {
 		// Connections.
 		\WPGraphQL\WooCommerce\Connection\Posts::register_connections();
 		\WPGraphQL\WooCommerce\Connection\WC_Terms::register_connections();
-		\WPGraphQL\WooCommerce\Connection\Product_Reviews::register_connections();
+		\WPGraphQL\WooCommerce\Connection\Comments::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Coupons::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Products::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Orders::register_connections();

@@ -51,7 +51,7 @@ class CouponHelper extends WCG_Helper {
 
 		return array(
 			'id'                        => $this->to_relay_id( $id ),
-			'couponId'                  => $data->get_id(),
+			'databaseId'                => $data->get_id(),
 			'code'                      => $data->get_code(),
 			'amount'                    => $data->get_amount(),
 			'date'                      => $data->get_date_created()->__toString(),
@@ -82,7 +82,7 @@ class CouponHelper extends WCG_Helper {
 			'products'                  => [
 				'nodes' => array_map(
 					function( $id ) {
-						return array( 'productId' => $id );
+						return array( 'databaseId' => $id );
 					},
 					$data->get_product_ids()
 				),
@@ -90,7 +90,7 @@ class CouponHelper extends WCG_Helper {
 			'excludedProducts'          => [
 				'nodes' => array_map(
 					function( $id ) {
-						return array( 'productId' => $id );
+						return array( 'databaseId' => $id );
 					},
 					$data->get_excluded_product_ids()
 				),
@@ -114,7 +114,7 @@ class CouponHelper extends WCG_Helper {
 			'usedBy'                    => [
 				'nodes' => array_map(
 					function( $id ) {
-						return array( 'customerId' => $id );
+						return array( 'databaseId' => $id );
 					},
 					$data->get_used_by()
 				),

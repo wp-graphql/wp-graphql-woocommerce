@@ -71,7 +71,6 @@ class Review_Write {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
                     }
-
                     return (float) get_comment_meta( $payload['id'], 'rating', true );
                 }
             ),
@@ -82,7 +81,6 @@ class Review_Write {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
                     }
-
                     $comment = get_comment( $payload['id'] );
 					return new Comment( $comment );
 				},

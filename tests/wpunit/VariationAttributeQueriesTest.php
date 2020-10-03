@@ -46,7 +46,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * test query and results
 		 */
 		$variables = array( 'id' => $this->variation->to_relay_id( $this->variation_id ) );
@@ -87,7 +87,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * test query and results
 		 */
 		$variables = array( 'id' => $this->product->to_relay_id( $this->product_id ) );

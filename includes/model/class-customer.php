@@ -63,10 +63,10 @@ class Customer extends Model {
 				'id'                    => function() {
 					return ( ! empty( $this->data->get_id() ) )
 						? Relay::toGlobalId( 'customer', $this->data->get_id() )
-						: 'new_customer';
+						: 'guest';
 				},
-				'customerId'            => function() {
-					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : null;
+				'databaseId'            => function() {
+					return $this->ID;
 				},
 				'isVatExempt'           => function() {
 					return ! is_null( $this->data->get_is_vat_exempt() ) ? $this->data->get_is_vat_exempt() : null;

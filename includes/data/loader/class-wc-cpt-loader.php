@@ -34,13 +34,14 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	/**
 	 * Returns the Model for a given post-type and ID.
 	 *
-	 * @param string $post_type - WordPress post-type.
-	 * @param int    $id        - Post ID.
+	 * @param string  $post_type  WordPress post-type.
+	 * @param int     $id         Post ID.
+	 * @param boolean $fatal      Throw if no model found.
 	 *
 	 * @return mixed
 	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
 	 */
-	public function resolve_model( $post_type, $id ) {
+	public static function resolve_model( $post_type, $id, $fatal = true ) {
 		switch ( $post_type ) {
 			case 'product':
 				return new Product( $id );
@@ -57,6 +58,12 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				if ( ! empty( $model ) ) {
 					return new $model( $id );
 				}
+
+				// Bail if not fatal.
+				if ( ! $fatal ) {
+					return null;
+				}
+
 				/* translators: no model assigned error message */
 				throw new UserError( sprintf( __( 'No Model is register to the custom post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
 		}
@@ -192,11 +199,27 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			 */
 			$loaded_posts[ $key ] = $load_dependencies->then(
 				function() use ( $post_type, $key ) {
-					return $this->resolve_model( $post_type, $key );
+					return self::resolve_model( $post_type, $key );
 				}
 			);
 		}
 
 		return ! empty( $loaded_posts ) ? $loaded_posts : [];
+	}
+
+	/**
+	 * Callback for inject the PostObject dataloader with WC_Post models.
+	 *
+	 * @param null $model
+	 * @param mixed $entry
+	 * @param mixed $key
+	 * @return void
+	 */
+	public static function inject_post_loader_models( $model, $entry, $key ) {
+		if ( is_a( $entry, \WP_Post::class ) ) {
+			$model = self::resolve_model( $entry->post_type, $key, false );
+		}
+
+		return $model;
 	}
 }

@@ -45,7 +45,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $this->coupons->create(),
 			$this->coupons->create(),
         );
-        
+
         usort(
             $coupons,
             function( $key_a, $key_b ) {
@@ -68,12 +68,12 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                 }
 			}
         ';
-        
+
         $this->set_user( $this->shop_manager );
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
@@ -100,10 +100,10 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		$expected = $this->coupons->print_nodes( array_slice( $coupons, 0, 2 ) );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test "after" parameter.
 		 */
         $variables = array( 'first' => 3, 'after' => $end_cursor );
@@ -139,7 +139,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $this->products->create_simple(),
             $this->products->create_simple(),
         );
-        
+
         usort(
             $products,
             function( $key_a, $key_b ) {
@@ -165,7 +165,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
@@ -192,10 +192,10 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		$expected = $this->products->print_nodes( array_slice( $products, 0, 2 ) );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test "after" parameter.
 		 */
         $variables = array( 'first' => 3, 'after' => $end_cursor );
@@ -231,7 +231,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $this->orders->create(),
 			$this->orders->create(),
         );
-        
+
         usort(
             $orders,
             function( $key_a, $key_b ) {
@@ -254,12 +254,12 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                 }
 			}
         ';
-        
+
         wp_set_current_user( $this->shop_manager );
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
@@ -286,10 +286,10 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		$expected = $this->orders->print_nodes( array_slice( $orders, 0, 2 ) );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test "after" parameter.
 		 */
         $variables = array( 'first' => 3, 'after' => $end_cursor );
@@ -326,7 +326,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $this->refunds->create( $order, array( 'amount' => 0.5 ) ),
 			$this->refunds->create( $order, array( 'amount' => 0.5 ) ),
         );
-        
+
         usort(
             $refunds,
             function( $key_a, $key_b ) {
@@ -349,12 +349,12 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                 }
 			}
         ';
-        
+
         wp_set_current_user( $this->shop_manager );
 
         /**
 		 * Assertion One
-		 * 
+		 *
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
@@ -381,10 +381,10 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		$expected = $this->refunds->print_nodes( array_slice( $refunds, 0, 2 ) );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
 		 * Assertion Two
-		 * 
+		 *
 		 * Test "after" parameter.
 		 */
         $variables = array( 'first' => 3, 'after' => $end_cursor );
@@ -420,7 +420,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             $this->customers->create(),
             $this->customers->create(),
         );
-        
+
         usort(
             $customers,
             function( $key_a, $key_b ) {
@@ -443,12 +443,12 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
-        
+
         wp_set_current_user( $this->shop_manager );
 
         /**
          * Assertion One
-         * 
+         *
          * Test "first" parameter.
          */
         $variables = array( 'first' => 2 );
@@ -475,10 +475,10 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $expected = $this->customers->print_nodes( array_slice( $customers, 0, 2 ) );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
          * Assertion Two
-         * 
+         *
          * Test "after" parameter.
          */
         $variables = array( 'first' => 3, 'after' => $end_cursor );
@@ -570,7 +570,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                             downloadableItems(first: $first, last: $last, after: $after, before: $before) {
                                 nodes {
                                     product {
-                                        productId
+                                        databaseId
                                     }
                                 }
                                 pageInfo {
@@ -581,17 +581,17 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                                 }
                             }
                         }
-                        
+
                     }
                 }
             }
         ';
-        
+
         $this->set_user( $customer_id );
 
         /**
          * Assertion One
-         * 
+         *
          * Test "first" parameter.
          */
         $variables = array( 'first' => 2 );
@@ -621,16 +621,16 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $actual   = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['nodes'];
         $expected = array_map(
             function( $product_id ) {
-                return array( 'product' => array( 'productId' => $product_id ) );
+                return array( 'product' => array( 'databaseId' => $product_id ) );
             },
             array_slice( $downloable_products, 0, 2 )
         );
 
         $this->assertEquals( $expected, $actual );
-        
+
         /**
          * Assertion Two
-         * 
+         *
          * Test "after" parameter.
          */
         $variables = array( 'first' => 3, 'after' => $end_cursor );
@@ -659,7 +659,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $actual   = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['nodes'];
         $expected = array_map(
             function( $product_id ) {
-                return array( 'product' => array( 'productId' => $product_id ) );
+                return array( 'product' => array( 'databaseId' => $product_id ) );
             },
             array_slice( $downloable_products, 2, 3 )
         );

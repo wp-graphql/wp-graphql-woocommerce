@@ -60,12 +60,12 @@ class CartHelper extends WCG_Helper {
 		return array(
 			'key'         => $item['key'],
 			'product'     => array(
-				'id'        => Relay::toGlobalId( 'product', $item['product_id'] ),
-				'productId' => $item['product_id'],
+				'id'         => Relay::toGlobalId( 'product', $item['product_id'] ),
+				'databaseId' => $item['product_id'],
 			),
 			'variation'   => array(
-				'id'          => Relay::toGlobalId( 'product_variation', $item['variation_id'] ),
-				'variationId' => $item['variation_id']
+				'id'         => Relay::toGlobalId( 'product_variation', $item['variation_id'] ),
+				'databaseId' => $item['variation_id']
 			),
 			'quantity'    => $item['quantity'],
 			'subtotal'    => \wc_graphql_price( $item['line_subtotal'] ),

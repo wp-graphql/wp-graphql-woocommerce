@@ -31,7 +31,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query taxRateQuery( $id: ID, $idType: TaxRateIdTypeEnum ) {
 				taxRate( id: $id, idType: $idType ) {
 					id
-					rateId
+					databaseId
 					country
 					state
 					postcode

@@ -213,6 +213,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	public function init_session_token() {
 		$token = $this->get_session_token();
 
+		// Process existing session.
 		if ( $token && ! is_wp_error( $token ) ) {
 			$this->_customer_id        = $token->data->customer_id;
 			$this->_session_issued     = $token->iat;
@@ -226,6 +227,12 @@ class QL_Session_Handler extends WC_Session_Handler {
 				$guest_session_id   = $this->_customer_id;
 				$this->_customer_id = strval( get_current_user_id() );
 				$this->_dirty       = true;
+
+				// If session empty check for previous data associated with customer and assign that to the session.
+				if ( empty( $this->_data ) ) {
+					$this->_data = $this->get_session_data();
+				}
+
 				$this->save_data( $guest_session_id );
 				$this->set_customer_session_token( true );
 			}
@@ -236,6 +243,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
 		} else {
+
+			// If token invalid throw warning.
 			if ( is_wp_error( $token ) ) {
 				add_filter(
 					'graphql_woocommerce_session_token_errors',
@@ -245,9 +254,14 @@ class QL_Session_Handler extends WC_Session_Handler {
 					}
 				);
 			}
+
+			// Start new session.
 			$this->set_session_expiration();
-			$this->_customer_id = $this->generate_customer_id();
+
+			// Get Customer ID.
+			$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
 			$this->_data        = $this->get_session_data();
+			$this->set_customer_session_token( true );
 		}
 	}
 
@@ -393,7 +407,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			}
 
 			/**
-			 * Sets session token HTTP response header.
+			 * Set session token for use in the HTTP response header and customer/user "sessionToken" field.
 			 */
 			add_filter(
 				'graphql_response_headers_to_send',
@@ -402,6 +416,12 @@ class QL_Session_Handler extends WC_Session_Handler {
 					return $headers;
 				},
 				10
+			);
+			add_filter(
+				'graphql_customer_session_token',
+				function( $_ ) use ( $token ) {
+					return $token;
+				}
 			);
 
 			$this->_issuing_new_token = true;

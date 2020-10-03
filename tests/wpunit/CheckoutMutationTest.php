@@ -114,7 +114,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                         clientMutationId
                         order {
                             id
-                            orderId
+                            databaseId
                             currency
                             orderVersion
                             date
@@ -185,7 +185,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     downloadsRemaining
                                     name
                                     product {
-                                        productId
+                                        databaseId
                                     }
                                     download {
                                         downloadId
@@ -200,7 +200,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                             }
                             couponLines {
                                 nodes {
-                                    itemId
+                                    databaseId
                                     orderId
                                     code
                                     discount
@@ -212,7 +212,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                             }
                             feeLines {
                                 nodes {
-                                    itemId
+                                    databaseId
                                     orderId
                                     amount
                                     name
@@ -224,7 +224,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                             }
                             shippingLines {
                                 nodes {
-                                    itemId
+                                    databaseId
                                     orderId
                                     methodTitle
                                     total
@@ -240,7 +240,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     shippingTaxTotal
                                     isCompound
                                     taxRate {
-                                        rateId
+                                        databaseId
                                     }
                                 }
                             }
@@ -363,7 +363,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('checkout', $actual['data'] );
         $this->assertArrayHasKey('order', $actual['data']['checkout'] );
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
-        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
+        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
 
         // Get Available payment gateways.
         $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
@@ -390,7 +390,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'      => $item->get_id(),
+                                                'databaseId'  => $item->get_id(),
                                                 'orderId'     => $item->get_order_id(),
                                                 'code'        => $item->get_code(),
                                                 'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
@@ -407,14 +407,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'    => $item->get_id(),
-                                                'orderId'   => $item->get_order_id(),
-                                                'amount'    => $item->get_amount(),
-                                                'name'      => $item->get_name(),
-                                                'taxStatus' => strtoupper( $item->get_tax_status() ),
-                                                'total'     => $item->get_total(),
-                                                'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() )
+                                                'databaseId' => $item->get_id(),
+                                                'orderId'    => $item->get_order_id(),
+                                                'amount'     => $item->get_amount(),
+                                                'name'       => $item->get_name(),
+                                                'taxStatus'  => strtoupper( $item->get_tax_status() ),
+                                                'total'      => $item->get_total(),
+                                                'totalTax'   => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+                                                'taxClass'   => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -429,14 +429,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                         function( $item ) {
 
                                             return array(
-                                                'itemId'         => $item->get_id(),
-                                                'orderId'        => $item->get_order_id(),
-                                                'methodTitle'    => $item->get_method_title(),
-                                                'total'          => $item->get_total(),
-                                                'totalTax'       => !empty( $item->get_total_tax() )
+                                                'databaseId'  => $item->get_id(),
+                                                'orderId'     => $item->get_order_id(),
+                                                'methodTitle' => $item->get_method_title(),
+                                                'total'       => $item->get_total(),
+                                                'totalTax'    => !empty( $item->get_total_tax() )
                                                     ? $item->get_total_tax()
                                                     : null,
-                                                'taxClass'       => ! empty( $item->get_tax_class() )
+                                                'taxClass'    => ! empty( $item->get_tax_class() )
                                                     ? $item->get_tax_class() === 'inherit'
                                                         ? WPEnumType::get_safe_name( 'inherit cart' )
                                                         : WPEnumType::get_safe_name( $item->get_tax_class() )
@@ -457,7 +457,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxTotal'         => $item->get_tax_total(),
                                                 'shippingTaxTotal' => $item->get_shipping_tax_total(),
                                                 'isCompound'       => $item->is_compound(),
-                                                'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
+                                                'taxRate'          => array( 'databaseId' => $item->get_rate_id() ),
                                             );
                                         },
                                         $order->get_items( 'tax' )
@@ -564,7 +564,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('checkout', $actual['data'] );
         $this->assertArrayHasKey('order', $actual['data']['checkout'] );
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
-        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
+        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
 
         // Get Available payment gateways.
         $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
@@ -587,7 +587,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'      => $item->get_id(),
+                                                'databaseId'  => $item->get_id(),
                                                 'orderId'     => $item->get_order_id(),
                                                 'code'        => $item->get_code(),
                                                 'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
@@ -604,14 +604,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'    => $item->get_id(),
-                                                'orderId'   => $item->get_order_id(),
-                                                'amount'    => $item->get_amount(),
-                                                'name'      => $item->get_name(),
-                                                'taxStatus' => strtoupper( $item->get_tax_status() ),
-                                                'total'     => $item->get_total(),
-                                                'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() )
+                                                'databaseId' => $item->get_id(),
+                                                'orderId'    => $item->get_order_id(),
+                                                'amount'     => $item->get_amount(),
+                                                'name'       => $item->get_name(),
+                                                'taxStatus'  => strtoupper( $item->get_tax_status() ),
+                                                'total'      => $item->get_total(),
+                                                'totalTax'   => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+                                                'taxClass'   => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -626,7 +626,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                         function( $item ) {
 
                                             return array(
-                                                'itemId'         => $item->get_id(),
+                                                'databaseId'     => $item->get_id(),
                                                 'orderId'        => $item->get_order_id(),
                                                 'methodTitle'    => $item->get_method_title(),
                                                 'total'          => $item->get_total(),
@@ -654,7 +654,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxTotal'         => $item->get_tax_total(),
                                                 'shippingTaxTotal' => $item->get_shipping_tax_total(),
                                                 'isCompound'       => $item->is_compound(),
-                                                'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
+                                                'taxRate'          => array( 'databaseId' => $item->get_rate_id() ),
                                             );
                                         },
                                         $order->get_items( 'tax' )
@@ -766,7 +766,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('checkout', $actual['data'] );
         $this->assertArrayHasKey('order', $actual['data']['checkout'] );
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
-        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
+        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
 
         // Get Available payment gateways.
         $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
@@ -776,7 +776,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'checkout' => array(
                     'clientMutationId' => 'someId',
                     'order'            => array_merge(
-                        $this->order->print_restricted_query( $order->get_id() ),
+                        $this->order->print_query( $order->get_id() ),
                         array(
                             'metaData'      => array(
                                 array(
@@ -789,7 +789,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'      => $item->get_id(),
+                                                'databaseId'  => $item->get_id(),
                                                 'orderId'     => $item->get_order_id(),
                                                 'code'        => $item->get_code(),
                                                 'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
@@ -806,14 +806,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'    => $item->get_id(),
-                                                'orderId'   => $item->get_order_id(),
-                                                'amount'    => $item->get_amount(),
-                                                'name'      => $item->get_name(),
-                                                'taxStatus' => strtoupper( $item->get_tax_status() ),
-                                                'total'     => $item->get_total(),
-                                                'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() )
+                                                'databaseId' => $item->get_id(),
+                                                'orderId'    => $item->get_order_id(),
+                                                'amount'     => $item->get_amount(),
+                                                'name'       => $item->get_name(),
+                                                'taxStatus'  => strtoupper( $item->get_tax_status() ),
+                                                'total'      => $item->get_total(),
+                                                'totalTax'   => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+                                                'taxClass'   => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -828,7 +828,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                         function( $item ) {
 
                                             return array(
-                                                'itemId'         => $item->get_id(),
+                                                'databaseId'     => $item->get_id(),
                                                 'orderId'        => $item->get_order_id(),
                                                 'methodTitle'    => $item->get_method_title(),
                                                 'total'          => $item->get_total(),
@@ -856,7 +856,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxTotal'         => $item->get_tax_total(),
                                                 'shippingTaxTotal' => $item->get_shipping_tax_total(),
                                                 'isCompound'       => $item->is_compound(),
-                                                'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
+                                                'taxRate'          => array( 'databaseId' => $item->get_rate_id() ),
                                             );
                                         },
                                         $order->get_items( 'tax' )
@@ -971,7 +971,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('order', $actual['data']['checkout'] );
         $this->assertArrayHasKey('id', $actual['data']['checkout']['order'] );
         $this->assertEquals('COMPLETED', $actual['data']['checkout']['order']['status'] );
-        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
+        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
 
         // Get Available payment gateways.
         $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
@@ -981,7 +981,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'checkout' => array(
                     'clientMutationId' => 'someId',
                     'order'            => array_merge(
-                        $this->order->print_restricted_query( $order->get_id() ),
+                        $this->order->print_query( $order->get_id() ),
                         array(
                             'metaData'      => array(
                                 array(
@@ -994,7 +994,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'      => $item->get_id(),
+                                                'databaseId'  => $item->get_id(),
                                                 'orderId'     => $item->get_order_id(),
                                                 'code'        => $item->get_code(),
                                                 'discount'    => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
@@ -1011,14 +1011,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     array_map(
                                         function( $item ) {
                                             return array(
-                                                'itemId'    => $item->get_id(),
-                                                'orderId'   => $item->get_order_id(),
-                                                'amount'    => $item->get_amount(),
-                                                'name'      => $item->get_name(),
-                                                'taxStatus' => strtoupper( $item->get_tax_status() ),
-                                                'total'     => $item->get_total(),
-                                                'totalTax'  => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-                                                'taxClass'  => ! empty( $item->get_tax_class() )
+                                                'databaseId' => $item->get_id(),
+                                                'orderId'    => $item->get_order_id(),
+                                                'amount'     => $item->get_amount(),
+                                                'name'       => $item->get_name(),
+                                                'taxStatus'  => strtoupper( $item->get_tax_status() ),
+                                                'total'      => $item->get_total(),
+                                                'totalTax'   => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+                                                'taxClass'   => ! empty( $item->get_tax_class() )
                                                     ? WPEnumType::get_safe_name( $item->get_tax_class() )
                                                     : 'STANDARD',
                                             );
@@ -1038,7 +1038,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                                 'taxTotal'         => $item->get_tax_total(),
                                                 'shippingTaxTotal' => $item->get_shipping_tax_total(),
                                                 'isCompound'       => $item->is_compound(),
-                                                'taxRate'          => array( 'rateId' => $item->get_rate_id() ),
+                                                'taxRate'          => array( 'databaseId' => $item->get_rate_id() ),
                                             );
                                         },
                                         $order->get_items( 'tax' )
@@ -1099,7 +1099,6 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
         // use --debug flag to view.
         codecept_debug( $customer );
-
         return $customer;
     }
 
@@ -1208,7 +1207,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 checkout( input: $input ) {
                     clientMutationId
                     order {
-                        orderId
+                        databaseId
                         metaData { key }
                         lineItems {
                             nodes {
@@ -1253,8 +1252,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         $this->assertArrayHasKey('data', $actual );
         $this->assertArrayHasKey('checkout', $actual['data'] );
         $this->assertArrayHasKey('order', $actual['data']['checkout'] );
-        $this->assertArrayHasKey('orderId', $actual['data']['checkout']['order'] );
-        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['orderId'] );
+        $this->assertArrayHasKey('databaseId', $actual['data']['checkout']['order'] );
+        $order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
 
         // Get Available payment gateways.
         $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
@@ -1264,7 +1263,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                 'checkout' => array(
                     'clientMutationId' => 'someId',
                     'order'            => array(
-                        'orderId'       => $order->get_id(),
+                        'databaseId'    => $order->get_id(),
                         'metaData'      => array(
                             array( 'key' => 'is_vat_exempt', ),
                             array( 'key' => '_stripe_source_id' ),

@@ -295,9 +295,9 @@ class Order_Item_Type {
 	private static function get_fields( $fields = array() ) {
 		return array_merge(
 			array(
-				'itemId'  => array(
+				'databaseId'  => array(
 					'type'        => 'Int',
-					'description' => __( 'The Id of the order item.', 'wp-graphql-woocommerce' ),
+					'description' => __( 'The ID of the order item in the database', 'wp-graphql-woocommerce' ),
 				),
 				'orderId' => array(
 					'type'        => 'Int',

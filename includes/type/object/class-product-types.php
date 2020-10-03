@@ -33,9 +33,28 @@ class Product_Types {
 	}
 
 	/**
-	 * Defines fields related to product inventory.
+	 * Returns the GraphQL interfaces for product types.
+	 *
+	 * @return array
 	 */
-	private static function get_inventory_fields() {
+	public static function get_product_interfaces() {
+		return array(
+			'Node',
+			'Product',
+			'NodeWithComments',
+			'NodeWithContentEditor',
+			'NodeWithFeaturedImage',
+			'ContentNode',
+			'UniformResourceIdentifiable',
+		);
+	}
+
+	/**
+	 * Defines fields related to product inventory.
+	 *
+	 * @return array
+	 */
+	public static function get_inventory_fields() {
 		return array(
 			'manageStock'       => array(
 				'type'        => 'Boolean',
@@ -62,8 +81,10 @@ class Product_Types {
 
 	/**
 	 * Defines fields related to product shipping.
+	 *
+	 * @return array
 	 */
-	private static function get_shipping_fields() {
+	public static function get_shipping_fields() {
 		return array(
 			'weight'           => array(
 				'type'        => 'String',
@@ -98,8 +119,10 @@ class Product_Types {
 
 	/**
 	 * Defines fields not found in grouped-type products.
+	 *
+	 * @return array
 	 */
-	private static function get_non_grouped_fields() {
+	public static function get_non_grouped_fields() {
 		return array(
 			'price'        => array(
 				'type'        => 'String',
@@ -176,7 +199,7 @@ class Product_Types {
 			'SimpleProduct',
 			array(
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node', 'Product' ),
+				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_non_grouped_fields(),
@@ -221,7 +244,7 @@ class Product_Types {
 			'VariableProduct',
 			array(
 				'description' => __( 'A variable product object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node', 'Product' ),
+				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_non_grouped_fields(),
@@ -240,7 +263,7 @@ class Product_Types {
 			'ExternalProduct',
 			array(
 				'description' => __( 'A external product object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node', 'Product' ),
+				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_non_grouped_fields(),
@@ -267,7 +290,7 @@ class Product_Types {
 			'GroupProduct',
 			array(
 				'description' => __( 'A group product object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node', 'Product' ),
+				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
 					array(
