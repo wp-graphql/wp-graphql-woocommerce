@@ -66,7 +66,14 @@ class Core_Schema_Filters {
 
 		add_filter(
 			'graphql_union_resolve_type',
-			array( __CLASS__, 'inject_union_type_resolver' ),
+			array( __CLASS__, 'inject_type_resolver' ),
+			10,
+			3
+		);
+
+		add_filter(
+			'graphql_interface_resolve_type',
+			array( __CLASS__, 'inject_type_resolver' ),
 			10,
 			3
 		);
@@ -274,6 +281,28 @@ class Core_Schema_Filters {
 				$new_type = Factory::resolve_node_type( $type, $value );
 				if ( $new_type ) {
 					$type = $wp_union->type_registry->get_type( $new_type );
+				}
+				break;
+		}
+
+		return $type;
+	}
+
+	/**
+	 * Inject Union type resolver that resolve to Product with Product types
+	 *
+	 * @param \WPGraphQL\Type\WPObjectType $type           Type be resolve to.
+	 * @param mixed                        $value          Object for which the type is being resolve config.
+	 * @param WPUnionType|WPInterfaceType  $abstract_type  WPGraphQL abstract class object.
+	 */
+	public static function inject_type_resolver( $type, $value, $abstract_type ) {
+		switch ( $type ) {
+			case 'Product':
+			case 'Coupon':
+			case 'Order':
+				$new_type = Factory::resolve_node_type( $type, $value );
+				if ( $new_type ) {
+					$type = $abstract_type->type_registry->get_type( $new_type );
 				}
 				break;
 		}
