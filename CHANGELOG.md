@@ -1,6 +1,62 @@
 # Changelog
 
-## [v0.5.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.5.1) (2020-05-11)
+## [v0.6.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.0) (2020-10-13)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.5.1...v0.6.0)
+
+## Release Summary
+
+- [x] Demo/Examples sections added to README.md
+- [x] More WooGraphQL + WPGraphQL extension integration bugfixes
+- [x] Connection resolver classes support all new WPGraphQL v0.6.0+ features
+- [x] Better cart validation and error messages
+- [x] Replaces unauthorized queries with authorized queries for unauthorized queries instead of return `null`. For example `orders(...) {...}` should default to `customer{ orders(...) {...} }` when user is not authorized to execute `orders(...) {...}`
+
+**Enhancements:**
+
+- Support for some node interfaces added to the product and order models. [\#337](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/337) ([kidunot89](https://github.com/kidunot89))
+- Field caps removed from product raw price and description fields. [\#332](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/332) ([kidunot89](https://github.com/kidunot89))
+- "Root\_Query" class implemented. [\#331](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/331) ([kidunot89](https://github.com/kidunot89))
+- "price" field added to "GroupProduct" type. [\#319](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/319) ([kidunot89](https://github.com/kidunot89))
+- Two new fields added to the "ProductCategory" type. [\#318](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/318) ([kidunot89](https://github.com/kidunot89))
+- Adds some label fields to the attribute types. [\#314](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/314) ([kidunot89](https://github.com/kidunot89))
+- New error handling method introduced in the "addToCart" mutation [\#312](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/312) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- Incorrect namespace for WC\_Customer in Checkout Mutation [\#296](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/296)
+- Access to undeclared static property in Checkout Mutation [\#295](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/295)
+- Product Review bugs [\#292](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/292)
+- Composer dependecy breaks install [\#246](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/246)
+- Fixes downloadableItems accessibility bug. [\#316](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/316) ([kidunot89](https://github.com/kidunot89))
+- Fixes cart item validation and error handling on checkout [\#315](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/315) ([kidunot89](https://github.com/kidunot89))
+- "galleryImages" connection refactored. [\#311](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/311) ([kidunot89](https://github.com/kidunot89))
+- Fixes some unit tests [\#302](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/302) ([kidunot89](https://github.com/kidunot89))
+- Rating input type changed to "Int" [\#301](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/301) ([kidunot89](https://github.com/kidunot89))
+- Fixed : missing static keyword for static variable [\#294](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/294) ([hwsiew](https://github.com/hwsiew))
+
+**Closed issues:**
+
+- \[Question\] GraphQLError: Schema is not configured for mutations. [\#328](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/328)
+- Feature request: include more data for attributes -\> options [\#326](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/326)
+- Link user logged in at checkout [\#320](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/320)
+- Add "price" field for GroupedProduct [\#317](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/317)
+- Return updated product inventory in addToCart mutation [\#307](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/307)
+- GraphQL error: Expired token [\#305](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/305)
+- Unable to get parent order for an order [\#303](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/303)
+- Query on Products fails [\#289](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/289)
+- Guest cart session is not synced with Woocommerce cart session [\#285](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/285)
+- All Downloadable Items have the same related Product [\#281](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/281)
+
+**Merged pull requests:**
+
+- Fixed : \#303 [\#304](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/304) ([hwsiew](https://github.com/hwsiew))
+- Skip conditional added to stripe test [\#298](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/298) ([kidunot89](https://github.com/kidunot89))
+- Adds support for changes made in WPGraphQL v0.9.0 [\#288](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/288) ([kidunot89](https://github.com/kidunot89))
+- Update some README.md links [\#287](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/287) ([kidunot89](https://github.com/kidunot89))
+- Adds Local-Testing Contribution Guides [\#242](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/242) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.5.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.5.1) (2020-05-12)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.5.0...v0.5.1)
 
@@ -236,10 +292,6 @@ Updated tests
 ## [v0.3.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.1-beta) (2019-11-26)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.0-beta...v0.3.1-beta)
-
-**Breaking changes:**
-
-- Product\(Object\) to Product\(Interface\) [\#159](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/159) ([kidunot89](https://github.com/kidunot89))
 
 **Enhancements:**
 
