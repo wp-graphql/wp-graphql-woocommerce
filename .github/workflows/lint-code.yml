@@ -1,26 +1,29 @@
-name: WordPress Coding Standards
+name: lint_code
 
 on:
   push:
     branches:
       - develop
       - master
+      - release/v0.6.0
   pull_request:
     branches:
       - develop
+      - release/v0.6.0
     paths:
       - '**.php'
       - '!docs/**'
 
 jobs:
-  run:
+  lint_code:
     runs-on: ubuntu-latest
+    name: "Lint code with PHPCS"
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: 7.3
           extensions: mbstring, intl
@@ -32,11 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require \
-          squizlabs/php_codesniffer \
-          phpcompatibility/phpcompatibility-wp wp-coding-standards/wpcs \
-          dealerdirect/phpcodesniffer-composer-installer
-          composer install --no-dev
+          composer install
 
       - name: Cache dependencies
         uses: actions/cache@v1
@@ -46,4 +45,4 @@ jobs:
           restore-keys: ${{ runner.os }}-composer
 
       - name: Run PHP CodeSniffer
-        run: vendor/bin/phpcs
+        run: composer lint

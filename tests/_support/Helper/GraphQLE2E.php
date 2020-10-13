@@ -6,9 +6,9 @@ namespace Helper;
 class GraphQLE2E extends \Codeception\Module {
     /**
      * Asserts existence of and returns an array of HTTP response headers
-     * 
+     *
      * @param string|array $headers  Headers to be evaluated and returned.
-     * 
+     *
      * @return array
      */
     public function wantHTTPResponseHeaders( $headers ) {
@@ -41,9 +41,10 @@ class GraphQLE2E extends \Codeception\Module {
                     authToken
                     refreshToken
                     customer {
-                        customerId
+                        databaseId
                         username
-                    }
+					}
+					sessionToken
                 }
             }
         ';
@@ -72,12 +73,7 @@ class GraphQLE2E extends \Codeception\Module {
                     cartItem {
                         key
                         product {
-                            ... on SimpleProduct {
-                                id
-                            }
-                            ... on VariableProduct {
-                                id
-                            }
+							id
                         }
                         variation {
                             id
@@ -152,12 +148,7 @@ class GraphQLE2E extends \Codeception\Module {
                     cartItems {
                         key
                         product {
-                            ... on SimpleProduct {
-                                id
-                            }
-                            ... on VariableProduct {
-                                id
-                            }
+                            id
                         }
                         variation {
                             id
@@ -194,12 +185,7 @@ class GraphQLE2E extends \Codeception\Module {
                     cartItems {
                         key
                         product {
-                            ... on SimpleProduct {
-                                id
-                            }
-                            ... on VariableProduct {
-                                id
-                            }
+							id
                         }
                         variation {
                             id
@@ -233,17 +219,12 @@ class GraphQLE2E extends \Codeception\Module {
             mutation emptyCart( $input: EmptyCartInput! ) {
                 emptyCart( input: $input ) {
                     clientMutationId
-                    cart {
+                    deletedCart {
                         contents {
                             nodes {
                                 key
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
-                                        id
-                                    }
+									id
                                 }
                                 variation {
                                     id
@@ -320,12 +301,7 @@ class GraphQLE2E extends \Codeception\Module {
                             nodes {
                                 key
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
-                                        id
-                                    }
+                                    id
                                 }
                                 quantity
                                 subtotal
@@ -368,12 +344,7 @@ class GraphQLE2E extends \Codeception\Module {
                             nodes {
                                 key
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
-                                        id
-                                    }
+                                    id
                                 }
                                 quantity
                                 subtotal
@@ -439,7 +410,7 @@ class GraphQLE2E extends \Codeception\Module {
      *
      * @param array  $input
      * @param string $session_header
-     * 
+     *
      * @return array
      */
     public function checkout( $input, $request_headers = array() ) {
@@ -450,7 +421,7 @@ class GraphQLE2E extends \Codeception\Module {
                     clientMutationId
                     order {
                         id
-                        orderId
+                        databaseId
                         currency
                         orderVersion
                         date
@@ -521,7 +492,7 @@ class GraphQLE2E extends \Codeception\Module {
                                 downloadsRemaining
                                 name
                                 product {
-                                    productId
+                                    databaseId
                                 }
                                 download {
                                     downloadId
@@ -532,7 +503,7 @@ class GraphQLE2E extends \Codeception\Module {
                         needsProcessing
                         couponLines {
                             nodes {
-                                itemId
+                                databaseId
                                 orderId
                                 code
                                 discount
@@ -544,7 +515,7 @@ class GraphQLE2E extends \Codeception\Module {
                         }
                         feeLines {
                             nodes {
-                                itemId
+                                databaseId
                                 orderId
                                 amount
                                 name
@@ -556,7 +527,7 @@ class GraphQLE2E extends \Codeception\Module {
                         }
                         shippingLines {
                             nodes {
-                                itemId
+                                databaseId
                                 orderId
                                 methodTitle
                                 total
@@ -572,7 +543,7 @@ class GraphQLE2E extends \Codeception\Module {
                                 shippingTaxTotal
                                 isCompound
                                 taxRate {
-                                    rateId
+                                    databaseId
                                 }
                             }
                         }
@@ -588,12 +559,7 @@ class GraphQLE2E extends \Codeception\Module {
                                 totalTax
                                 taxStatus
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
-                                        id
-                                    }
+                                    id
                                 }
                                 variation {
                                     id
@@ -619,12 +585,12 @@ class GraphQLE2E extends \Codeception\Module {
 
     /**
      * Sends GraphQL and returns a response
-     * 
+     *
      * @param string      $mutation
      * @param array       $input
      * @param string|null $session_header
      * @param bool        $update_header
-     * 
+     *
      * @return array
      */
     public function sendGraphQLRequest( $query, $input, $request_headers = array() ) {
@@ -657,7 +623,7 @@ class GraphQLE2E extends \Codeception\Module {
         $response = json_decode( $rest->grabResponse(), true );
 
         // use --debug flag to view
-        codecept_debug( $response );
+        codecept_debug( json_encode( $response, JSON_PRETTY_PRINT ) );
 
         // Delete request headers
         foreach( $request_headers as $header => $value ) {
@@ -727,13 +693,13 @@ class GraphQLE2E extends \Codeception\Module {
      * @param AcceptanceTester $I
      * @return void
      */
-    public function _setupStore() {        
+    public function _setupStore() {
         // Turn on tax calculations and store shipping countries. Important!
         update_option( 'woocommerce_ship_to_countries', 'all' );
         update_option( 'woocommerce_prices_include_tax', 'no' );
         update_option( 'woocommerce_calc_taxes', 'yes' );
         update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
-        
+
         // Enable payment gateway.
         update_option(
             'woocommerce_bacs_settings',
@@ -752,11 +718,11 @@ class GraphQLE2E extends \Codeception\Module {
             'woocommerce_cart_calculate_fees',
             function() {
                 $percentage = 0.01;
-                $surcharge = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;	
+                $surcharge = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;
                 \WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
             }
         );
-        
+
         // Create Shipping Zones.
 		$zone = new \WC_Shipping_Zone();
 		$zone->set_zone_name( 'Local' );
@@ -843,7 +809,7 @@ class GraphQLE2E extends \Codeception\Module {
                         '_featured'               => false,
                         '_wc_rating_counts'       => array(),
                         '_wc_average_rating'      => 0,
-                        '_wc_review_count'        => 0,        
+                        '_wc_review_count'        => 0,
                     ),
                 ),
                 $args
@@ -852,14 +818,14 @@ class GraphQLE2E extends \Codeception\Module {
 
         if ( ! $term_id ) {
             $term_id = $wpdb->grabTermIdFromDatabase( [ 'name' => $term, 'slug' => $term ] );
-        }        
+        }
         $term_taxonomy_id = $wpdb->grabTermTaxonomyIdFromDatabase( [ 'term_id' => $term_id, 'taxonomy' => 'product_type' ] );
         $wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
     }
 
 
-    public function createOldSession() {
-        $products = $this->getCatalog();
+    public function setupStoreAndUsers() {
+		$this->_setupStore();
 
         $wpdb   = $this->getModule( 'WPDb' );
         $userId = $wpdb->haveUserInDatabase(

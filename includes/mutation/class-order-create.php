@@ -120,10 +120,16 @@ class Order_Create {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'order' => array(
+			'order'   => array(
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return new Order( $payload['id'] );
+				},
+			),
+			'orderId' => array(
+				'type'    => 'Int',
+				'resolve' => function( $payload ) {
+					return $payload['id'];
 				},
 			),
 		);
@@ -175,9 +181,7 @@ class Order_Create {
 				// Actions for after the order is saved.
 				if ( true === $input['isPaid'] ) {
 					$order->payment_complete(
-						! empty( $input['transactionId'] ) ?
-							$input['transactionId']
-							: ''
+						! empty( $input['transactionId'] ) ? $input['transactionId'] : ''
 					);
 				}
 

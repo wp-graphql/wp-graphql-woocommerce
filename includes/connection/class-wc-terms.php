@@ -48,6 +48,13 @@ class WC_Terms extends TermObjects {
 										'fromType'      => $post_type_object->graphql_single_name,
 										'toType'        => $tax_object->graphql_single_name,
 										'fromFieldName' => $tax_object->graphql_plural_name,
+										'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
+											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
+											$taxonomy = str_replace( ' ', '_', strtolower( $tax_object->labels->singular_name ) );
+											$resolver->set_query_arg( 'term_taxonomy_id', $source->{"{$taxonomy}_ids"} );
+
+											return $resolver->get_connection();
+										}
 									)
 								)
 							);
@@ -57,24 +64,35 @@ class WC_Terms extends TermObjects {
 			}
 		}
 
-		// From Coupons.
+		// From Coupons to ProductCategory connections.
+		$tax_object = get_taxonomy( 'product_cat' );
 		register_graphql_connection(
 			self::get_connection_config(
-				get_taxonomy( 'product_cat' ),
+				$tax_object,
 				array(
 					'fromType'      => 'Coupon',
-					'toType'        => 'ProductCategory',
 					'fromFieldName' => 'productCategories',
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
+						$resolver   = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
+						$resolver->set_query_arg( 'term_taxonomy_id', $source->product_category_ids );
+
+						return $resolver->get_connection();
+					}
 				)
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
-				get_taxonomy( 'product_cat' ),
+				$tax_object,
 				array(
 					'fromType'      => 'Coupon',
-					'toType'        => 'ProductCategory',
 					'fromFieldName' => 'excludedProductCategories',
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
+						$resolver   = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
+						$resolver->set_query_arg( 'term_taxonomy_id', $source->excluded_product_category_ids );
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);
@@ -84,9 +102,6 @@ class WC_Terms extends TermObjects {
 				'fromType'       => 'GlobalProductAttribute',
 				'toType'         => 'TermNode',
 				'queryClass'     => 'WP_Term_Query',
-				'resolveNode'    => function( $id, array $args, AppContext $context ) {
-					return DataSource::resolve_term_object( $id, $context );
-				},
 				'fromFieldName'  => 'terms',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -94,15 +109,8 @@ class WC_Terms extends TermObjects {
 						throw new UserError( __( 'Invalid product attribute', 'wp-graphql-woocommerce' ) );
 					}
 
-					$taxonomies = array( $source->get_name() );
-					$resolver   = new TermObjectConnectionResolver(
-						$source,
-						$args,
-						$context,
-						$info,
-						$taxonomies
-					);
-
+					$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $source->get_name() );
+					$resolver->set_query_arg( 'slug', $source->get_slugs() );
 					return $resolver->get_connection();
 				},
 			)

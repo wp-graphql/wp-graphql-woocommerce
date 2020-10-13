@@ -7,7 +7,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		update_option( 'users_can_register', 1 );
 		$this->helper = $this->getModule('\Helper\Wpunit')->customer();
-		
+
 		// Register Info
 		$this->first_name = 'Peter';
 		$this->last_name  = 'Parker';
@@ -98,7 +98,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					authToken
 					refreshToken
 					customer {
-						customerId
+						databaseId
 						username
 						email
 						firstName
@@ -155,7 +155,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					authToken
 					refreshToken
 					customer {
-						customerId
+						databaseId
 						username
 						email
 						firstName
@@ -205,7 +205,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	public function testRegisterMutationWithoutCustomerInfo() {
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$actual = $this->registerCustomer(
@@ -232,7 +232,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
-						'customerId' => $user->ID,
+						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
 						'firstName'  => $this->first_name,
@@ -253,7 +253,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	public function testRegisterMutationWithBillingInfo() {
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests mutation with customer billing information.
 		 */
 		$actual = $this->registerCustomer(
@@ -281,7 +281,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
-						'customerId' => $user->ID,
+						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
 						'firstName'  => $this->first_name,
@@ -302,7 +302,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	public function testRegisterMutationWithShippingSameAsBillingInfo() {
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests mutation using "shippingSameAsBilling" field.
 		 */
 		$actual = $this->registerCustomer(
@@ -331,7 +331,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
-						'customerId' => $user->ID,
+						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
 						'firstName'  => $this->first_name,
@@ -355,7 +355,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	public function testRegisterMutationWithBillingAndShippingInfo() {
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests mutation with customer shipping information.
 		 */
 		$actual = $this->registerCustomer(
@@ -384,7 +384,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
-						'customerId' => $user->ID,
+						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
 						'firstName'  => $this->first_name,
@@ -405,7 +405,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	public function testUpdateMutation() {
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$this->registerCustomer(
@@ -446,7 +446,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
-						'customerId' => $user->ID,
+						'databaseId' => $user->ID,
 						'email'      => $this->new_email,
 						'username'   => $this->username,
 						'firstName'  => $this->new_first_name,
@@ -464,7 +464,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	public function testUpdateMutationWithShippingSameAsBilling() {
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$this->registerCustomer(
@@ -501,7 +501,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
 					'customer'         => array(
-						'customerId' => $user->ID,
+						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
 						'firstName'  => $this->first_name,

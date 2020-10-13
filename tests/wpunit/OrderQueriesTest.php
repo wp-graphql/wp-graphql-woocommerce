@@ -35,7 +35,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ($id: ID!) {
 				order(id: $id) {
 					id
-					orderId
+					databaseId
 					currency
 					orderVersion
 					date
@@ -106,7 +106,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 							downloadsRemaining
 							name
 							product {
-								productId
+								databaseId
 							}
 							download {
 								downloadId
@@ -118,10 +118,10 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		
+
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query as customer, should return "null" because the customer isn't authorized.
 		 */
 		wp_set_current_user( $this->customer );
@@ -139,7 +139,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * tests query as shop manager
 		 */
 		wp_set_current_user( $this->shop_manager );
@@ -169,7 +169,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests "ID" ID type.
 		 */
 		$variables = array(
@@ -191,7 +191,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * tests "DATABASE_ID" ID type.
 		 */
 		$variables = array(
@@ -213,7 +213,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * tests "ORDER_NUMBER" ID type
 		 */
 		$variables = array(
@@ -284,7 +284,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * tests query with no without required capabilities
 		 */
 		wp_set_current_user( $this->customer );
@@ -298,7 +298,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * tests query with required capabilities
 		 */
 		wp_set_current_user( $this->shop_manager );
@@ -318,7 +318,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * tests "statuses" where argument
 		 */
 		$variables = array( 'statuses' => array( 'COMPLETED' ) );
@@ -346,7 +346,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * tests "customerId" where argument
 		 */
 		$variables = array( 'customerId' => $customer );
@@ -374,7 +374,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Five
-		 * 
+		 *
 		 * tests "customerIn" where argument
 		 */
 		$variables = array( 'customersIn' => array( $customer ) );
@@ -402,7 +402,7 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Six
-		 * 
+		 *
 		 * tests "productId" where argument
 		 */
 		$variables = array( 'productId' => $product );
@@ -415,6 +415,35 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 						array(
 							'filter' => function( $id ) use ( $product ) {
 								return $this->order_helper->has_product( $id, $product );
+							},
+						)
+					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Seven
+		 *
+		 * tests `orders` query as existing customer, should return customer's
+		 * orders only
+		 */
+		wp_set_current_user( $customer );
+		$actual    = graphql( compact( 'query' ) );
+		$expected  = array(
+			'data' => array(
+				'orders' => array(
+					'nodes' =>  $this->order_helper->print_nodes(
+						$orders,
+						array(
+							'filter' => function( $id ) use ( $customer ) {
+								$order = new WC_Order( $id );
+								return $order->get_customer_id() === $customer;
 							},
 						)
 					),

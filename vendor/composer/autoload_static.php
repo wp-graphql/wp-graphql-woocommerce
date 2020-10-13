@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
+class ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -41,6 +41,7 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'WPGraphQL\\WooCommerce\\ACF_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-acf-schema-filters.php',
         'WPGraphQL\\WooCommerce\\Connection\\Cart_Items' => __DIR__ . '/../..' . '/includes/connection/class-cart-items.php',
+        'WPGraphQL\\WooCommerce\\Connection\\Comments' => __DIR__ . '/../..' . '/includes/connection/class-comments.php',
         'WPGraphQL\\WooCommerce\\Connection\\Coupons' => __DIR__ . '/../..' . '/includes/connection/class-coupons.php',
         'WPGraphQL\\WooCommerce\\Connection\\Customers' => __DIR__ . '/../..' . '/includes/connection/class-customers.php',
         'WPGraphQL\\WooCommerce\\Connection\\Downloadable_Items' => __DIR__ . '/../..' . '/includes/connection/class-downloadable-items.php',
@@ -49,7 +50,6 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Connection\\Payment_Gateways' => __DIR__ . '/../..' . '/includes/connection/class-payment-gateways.php',
         'WPGraphQL\\WooCommerce\\Connection\\Posts' => __DIR__ . '/../..' . '/includes/connection/class-posts.php',
         'WPGraphQL\\WooCommerce\\Connection\\Product_Attributes' => __DIR__ . '/../..' . '/includes/connection/class-product-attributes.php',
-        'WPGraphQL\\WooCommerce\\Connection\\Product_Reviews' => __DIR__ . '/../..' . '/includes/connection/class-product-reviews.php',
         'WPGraphQL\\WooCommerce\\Connection\\Products' => __DIR__ . '/../..' . '/includes/connection/class-products.php',
         'WPGraphQL\\WooCommerce\\Connection\\Refunds' => __DIR__ . '/../..' . '/includes/connection/class-refunds.php',
         'WPGraphQL\\WooCommerce\\Connection\\Shipping_Methods' => __DIR__ . '/../..' . '/includes/connection/class-shipping-methods.php',
@@ -64,7 +64,6 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Order_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-order-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Order_Item_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-order-item-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Payment_Gateway_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-payment-gateway-connection-resolver.php',
-        'WPGraphQL\\WooCommerce\\Data\\Connection\\Post_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-post-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Attribute_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-product-attribute-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-product-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Review_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-product-review-connection-resolver.php',
@@ -74,7 +73,6 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Data\\Connection\\Variation_Attribute_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-variation-attribute-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_CPT_Loader_Common' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-cpt-loader-common.php',
         'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Db_Loader_Common' => __DIR__ . '/../..' . '/includes/data/connection/trait-wc-db-loader-common.php',
-        'WPGraphQL\\WooCommerce\\Data\\Connection\\WC_Term_Connection_Resolver' => __DIR__ . '/../..' . '/includes/data/connection/class-wc-term-connection-resolver.php',
         'WPGraphQL\\WooCommerce\\Data\\Factory' => __DIR__ . '/../..' . '/includes/data/class-factory.php',
         'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_CPT_Loader' => __DIR__ . '/../..' . '/includes/data/loader/class-wc-cpt-loader.php',
         'WPGraphQL\\WooCommerce\\Data\\Loader\\WC_Customer_Loader' => __DIR__ . '/../..' . '/includes/data/loader/class-wc-customer-loader.php',
@@ -85,7 +83,6 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Data\\Mutation\\Order_Mutation' => __DIR__ . '/../..' . '/includes/data/mutation/class-order-mutation.php',
         'WPGraphQL\\WooCommerce\\JWT_Auth_Schema_Filters' => __DIR__ . '/../..' . '/includes/class-jwt-auth-schema-filters.php',
         'WPGraphQL\\WooCommerce\\Model\\Coupon' => __DIR__ . '/../..' . '/includes/model/class-coupon.php',
-        'WPGraphQL\\WooCommerce\\Model\\Crud_CPT' => __DIR__ . '/../..' . '/includes/model/class-crud-cpt.php',
         'WPGraphQL\\WooCommerce\\Model\\Customer' => __DIR__ . '/../..' . '/includes/model/class-customer.php',
         'WPGraphQL\\WooCommerce\\Model\\Order' => __DIR__ . '/../..' . '/includes/model/class-order.php',
         'WPGraphQL\\WooCommerce\\Model\\Order_Item' => __DIR__ . '/../..' . '/includes/model/class-order-item.php',
@@ -93,8 +90,8 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Model\\Product_Variation' => __DIR__ . '/../..' . '/includes/model/class-product-variation.php',
         'WPGraphQL\\WooCommerce\\Model\\Refund' => __DIR__ . '/../..' . '/includes/model/class-refund.php',
         'WPGraphQL\\WooCommerce\\Model\\Shipping_Method' => __DIR__ . '/../..' . '/includes/model/class-shipping-method.php',
-        'WPGraphQL\\WooCommerce\\Model\\Shop_Manager_Caps' => __DIR__ . '/../..' . '/includes/model/trait-shop-manager-caps.php',
         'WPGraphQL\\WooCommerce\\Model\\Tax_Rate' => __DIR__ . '/../..' . '/includes/model/class-tax-rate.php',
+        'WPGraphQL\\WooCommerce\\Model\\WC_Post' => __DIR__ . '/../..' . '/includes/model/class-wc-post.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Add_Fee' => __DIR__ . '/../..' . '/includes/mutation/class-cart-add-fee.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Add_Item' => __DIR__ . '/../..' . '/includes/mutation/class-cart-add-item.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/includes/mutation/class-cart-apply-coupon.php',
@@ -126,6 +123,7 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Post_Type_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-post-type-orderby-enum.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Pricing_Field_Format' => __DIR__ . '/../..' . '/includes/type/enum/class-pricing-field-format.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Attribute_Types' => __DIR__ . '/../..' . '/includes/type/enum/class-product-attribute-types.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Category_Display' => __DIR__ . '/../..' . '/includes/type/enum/class-product-category-display.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Taxonomy' => __DIR__ . '/../..' . '/includes/type/enum/class-product-taxonomy.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Product_Types' => __DIR__ . '/../..' . '/includes/type/enum/class-product-types.php',
         'WPGraphQL\\WooCommerce\\Type\\WPEnum\\Products_Orderby_Enum' => __DIR__ . '/../..' . '/includes/type/enum/class-products-orderby-enum.php',
@@ -163,6 +161,7 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Product_Types' => __DIR__ . '/../..' . '/includes/type/object/class-product-types.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Product_Variation_Type' => __DIR__ . '/../..' . '/includes/type/object/class-product-variation-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Refund_Type' => __DIR__ . '/../..' . '/includes/type/object/class-refund-type.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPObject\\Root_Query' => __DIR__ . '/../..' . '/includes/type/object/class-root-query.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Method_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-method-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Package_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-package-type.php',
         'WPGraphQL\\WooCommerce\\Type\\WPObject\\Shipping_Rate_Type' => __DIR__ . '/../..' . '/includes/type/object/class-shipping-rate-type.php',
@@ -177,9 +176,9 @@ class ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit6ecb3b3e822b795cab805ed5884032b2::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita19c98089e83bf1ea084032a65b4d4fa::$classMap;
 
         }, null, ClassLoader::class);
     }

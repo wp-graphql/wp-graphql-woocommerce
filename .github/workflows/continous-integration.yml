@@ -1,4 +1,4 @@
-name: Testing Integration
+name: continuous_integration
 
 on:
   schedule:
@@ -7,15 +7,17 @@ on:
     branches:
       - develop
       - master
+      - release/v0.6.0
   pull_request:
     branches:
       - develop
+      - release/v0.6.0
     paths:
       - '**.php'
       - '!docs/**'
 
 jobs:
-  run:
+  continuous_integration:
     env:
       STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
       STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
@@ -46,6 +48,20 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: json, mbstring
+
+      - name: Get Composer Cache Directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-dev
 
       - name: Build "testing" Docker Image
         env:

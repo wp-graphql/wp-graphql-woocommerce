@@ -30,9 +30,9 @@ class Shipping_Method extends Model {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'rateId',
+			'databaseId',
 		);
-		
+
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'shipping_method_restricted_cap', '' );
 
@@ -60,8 +60,8 @@ class Shipping_Method extends Model {
 				'id'          => function() {
 					return ! empty( $this->data->id ) ? Relay::toGlobalId( 'shipping_method', $this->data->id ) : null;
 				},
-				'methodId'    => function() {
-					return ! empty( $this->data->id ) ? $this->data->id : null;
+				'databaseId'  => function() {
+					return $this->ID;
 				},
 				'title'       => function() {
 					return ! empty( $this->data->method_title ) ? $this->data->method_title : null;

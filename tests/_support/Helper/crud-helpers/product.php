@@ -119,10 +119,11 @@ class ProductHelper extends WCG_Helper {
 		return $product->save();
 	}
 
-	public function create_grouped( $args = array() ) {
-		$children = array(
-			$this->create_simple(),
-		);
+	public function create_grouped( $args = array(), $children = array() ) {
+		if ( empty( $children ) ) {
+			$children = array( $this->create_simple() );
+		}
+
 		$product          = new WC_Product_Grouped();
 		$product->set_props(
 			array_merge(
@@ -169,14 +170,14 @@ class ProductHelper extends WCG_Helper {
 		$attribute_1->set_visible( true );
 		$attribute_1->set_variation( true );
 
-		$attribute_data = $this->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
+		$attribute_data = $this->create_attribute( 'color', array( 'red' ) );
 		$attribute_2    = new WC_Product_Attribute();
 		$attribute_2->set_id( $attribute_data['attribute_id'] );
 		$attribute_2->set_name( $attribute_data['attribute_taxonomy'] );
 		$attribute_2->set_options( $attribute_data['term_ids'] );
 		$attribute_2->set_position( 2 );
 		$attribute_2->set_visible( true );
-		$attribute_2->set_variation( true );
+		$attribute_2->set_variation( false );
 
 		$product->set_attributes( array( $attribute_1, $attribute_2 ) );
 		$product->set_default_attributes( array( 'size' => 'small' ) );
@@ -192,7 +193,7 @@ class ProductHelper extends WCG_Helper {
 			$this->create_simple(),
 			$this->create_simple(),
 		);
-		$tag_ids            = array( $this->create_product_tag( 'related' ) ); 
+		$tag_ids            = array( $this->create_product_tag( 'related' ) );
 		$related_product_id = $this->create_simple( array( 'tag_ids' => $tag_ids ) );
 
 		return array(
@@ -312,7 +313,7 @@ class ProductHelper extends WCG_Helper {
 
 		return array(
 			'id'                => $this->to_relay_id( $id ),
-			'productId'         => $data->get_id(),
+			'databaseId'        => $data->get_id(),
 			'name'              => $data->get_name(),
 			'slug'              => $data->get_slug(),
 			'date'              => $data->get_date_created()->__toString(),
@@ -389,7 +390,10 @@ class ProductHelper extends WCG_Helper {
 			$results[] = array(
 				'id'          => base64_encode( $attribute_name . ':' . $id . ':' . $attribute->get_name() ),
 				'attributeId' => $attribute->get_id(),
-				'name'        => $attribute->get_name(),
+				'name'        => str_replace( 'pa_', '', $attribute->get_name() ),
+				'label'       => $attribute->is_taxonomy()
+					? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
+					: null,
 				'options'     => $attribute->get_slugs(),
 				'position'    => $attribute->get_position(),
 				'visible'     => $attribute->get_visible(),
@@ -406,7 +410,7 @@ class ProductHelper extends WCG_Helper {
 		if ( empty( $downloads ) ) {
 			return null;
 		}
-		
+
 		$results = array();
 		foreach ( $downloads as $download ) {
 			$results[] = array(
@@ -420,7 +424,7 @@ class ProductHelper extends WCG_Helper {
 				'file'            => $download->get_file(),
 			);
 		}
-		
+
 		return $results;
 	}
 
@@ -493,13 +497,13 @@ class ProductHelper extends WCG_Helper {
 		$reviews = array();
 		foreach ( $ids as $review_id ) {
 			$reviews[] = array(
-				'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ), 
+				'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ),
 				'node'   => array(
 					'id' => Relay::toGlobalId( 'comment', $review_id )
 				),
 			);
 		}
-	
+
 		return $reviews;
 	}
 }

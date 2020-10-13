@@ -77,7 +77,8 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$key = $cart->add_to_cart(
 			$variations['product'],
 			3,
-			$variations['variations'][0]
+			$variations['variations'][0],
+			array( 'attribute_pa_color' => 'red' )
 		);
 
 		$query = '
@@ -87,12 +88,12 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 					product {
 						... on VariableProduct {
 							id
-							productId
+							databaseId
 						}
 					}
 					variation {
 						id
-						variationId
+						databaseId
 					}
 					quantity
 					subtotal
@@ -430,7 +431,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 									'node'   => array( 'key' => $item ),
 								);
 							},
-							array_reverse( array_slice( $cart_items, 0, 2 ) )
+							array_slice( $cart_items, 0, 2 )
 						),
 					),
 				),
@@ -467,7 +468,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 									'node'   => array( 'key' => $item ),
 								);
 							},
-							array_reverse( array_slice( $cart_items, 0, 4 ) )
+							array_slice( $cart_items, 0, 4 )
 						),
 					),
 				),

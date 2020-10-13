@@ -92,19 +92,19 @@ class TaxRateHelper extends WCG_Helper {
 
 		return $rate
 			? array(
-				'id'       => $this->to_relay_id( $rate->tax_rate_id ),
-				'rateId'   => absint( $rate->tax_rate_id ),
-				'country'  => ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : null,
-				'state'    => ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : null,
-				'postcode' => ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : array( "*" ),
-				'city'     => ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : array( "*" ),
-				'rate'     => ! empty( $rate->tax_rate ) ? $rate->tax_rate : null,
-				'name'     => ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : null,
-				'priority' => absint( $rate->tax_rate_priority ),
-				'compound' => (bool) $rate->tax_rate_compound,
-				'shipping' => (bool) $rate->tax_rate_shipping,
-				'order'    => absint( $rate->tax_rate_order ),
-				'class'    => ! empty( $rate->tax_rate_class )
+				'id'         => $this->to_relay_id( $rate->tax_rate_id ),
+				'databaseId' => absint( $rate->tax_rate_id ),
+				'country'    => ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : null,
+				'state'      => ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : null,
+				'postcode'   => ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : array( "*" ),
+				'city'       => ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : array( "*" ),
+				'rate'       => ! empty( $rate->tax_rate ) ? $rate->tax_rate : null,
+				'name'       => ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : null,
+				'priority'   => absint( $rate->tax_rate_priority ),
+				'compound'   => (bool) $rate->tax_rate_compound,
+				'shipping'   => (bool) $rate->tax_rate_shipping,
+				'order'      => absint( $rate->tax_rate_order ),
+				'class'      => ! empty( $rate->tax_rate_class )
 					? WPEnumType::get_safe_name( $rate->tax_rate_class )
 					: 'STANDARD',
 			)

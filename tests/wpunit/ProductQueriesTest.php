@@ -60,7 +60,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				product(id: $id) {
 					... on SimpleProduct {
 						id
-						productId
+						databaseId
 						name
 						slug
 						date
@@ -162,7 +162,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testProductTaxonomies() {
 		// Create product for first assertion.
-		$category_5    = $this->helper->create_product_category( 'category-five' );
+		$category_5    = $this->helper->create_product_category( 'category-five' );;
 		$category_6    = $this->helper->create_product_category( 'category-six', $category_5 );
 		$tag_2         = $this->helper->create_product_tag( 'tag-two' );
 		$attachment_id = $this->factory()->attachment->create(
@@ -171,6 +171,8 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'post_author' => $this->admin
 			 )
 		);
+		update_term_meta( $category_5, 'thumbnail_id', $attachment_id );
+		update_term_meta( $category_5, 'display_type', 'both' );
 		$product = $this->helper->create_simple(
 			array(
 				'price'         => 10,
@@ -192,6 +194,9 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						productCategories {
 							nodes {
 								name
+								image { id }
+								display
+								menuOrder
 								children {
 									nodes {
 										name
@@ -229,8 +234,13 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'productCategories' => array(
 						'nodes' => array(
 							array(
-								'name'     => 'category-five',
-								'children' => array(
+								'name'      => 'category-five',
+								'image'     => array(
+									'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
+								),
+								'display'   => 'BOTH',
+								'menuOrder' => 0,
+								'children'  => array(
 									'nodes' => array(
 										array( 'name' => 'category-six' ),
 									),
@@ -1108,7 +1118,11 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testGroupProductConnections() {
-		$grouped_product = $this->helper->create_grouped();
+		$children        = array(
+			$this->helper->create_simple( array( 'regular_price' => '£1.00' ) ),
+			$this->helper->create_simple( array( 'regular_price' => '£10.00' ) ),
+		);
+		$grouped_product = $this->helper->create_grouped( array(), $children );
 		$query           = '
 			query ( $id: ID! ) {
 				product(id: $id) {
@@ -1144,11 +1158,37 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
+
+		$query           = '
+			query ( $id: ID! ) {
+				product( id: $id ) {
+					... on GroupProduct {
+						price
+					}
+				}
+			}
+		';
+
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
+			'data' => array(
+				'product' => array(
+					'price' => '£1.00 - £10.00',
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testRelatedProductConnections() {
-		$products = $this->helper->create_related();
-		$query    = '
+		$related_products = $this->helper->create_related();
+		$product          = wc_get_product( $related_products['product'] );
+
+		$query = '
 			query ($id: ID!) {
 				product(id: $id) {
 					... on SimpleProduct {
@@ -1159,7 +1199,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 								}
 							}
 						}
-						crossSell {
+						crossSell{
 							nodes {
 								... on SimpleProduct {
 									id
@@ -1178,26 +1218,51 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $products['product'] ) );
+		$variables = array( 'id' => $this->helper->to_relay_id( $product->get_id() ) );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'product' => array(
-					'related'   => array(
-						'nodes' => $this->helper->print_nodes(
-							array_merge( $products['related'], $products['cross_sell'], $products['upsell'] )
-						),
-					),
-					'crossSell' => array( 'nodes' => $this->helper->print_nodes( $products['cross_sell'] ) ),
-					'upsell'    => array( 'nodes' => $this->helper->print_nodes( $products['upsell'] ) ),
-				),
-			),
-		);
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$related    = $actual['data']['product']['related']['nodes'];
+		$cross_sell = $actual['data']['product']['crossSell']['nodes'];
+		$upsell     = $actual['data']['product']['upsell']['nodes'];
+
+		// Assert that related products are valid.
+		foreach( wc_get_related_products( $product->get_id() ) as $pid ) {
+			$this->assertTrue(
+				in_array(
+					array( 'id' => $this->helper->to_relay_id( $pid ) ),
+					$related,
+					true
+				),
+				$this->helper->to_relay_id( $pid ) . ' not a related product of ' . $product->get_name()
+			);
+		}
+
+		// Assert that cross sell products are valid.
+		foreach( $product->get_cross_sell_ids() as $pid ) {
+			$this->assertTrue(
+				in_array(
+					array( 'id' => $this->helper->to_relay_id( $pid ) ),
+					$cross_sell,
+					true
+				),
+				$this->helper->to_relay_id( $pid ) . ' not being cross selling by ' . $product->get_name()
+			);
+		}
+
+		// Assert that upsell products are valid.
+		foreach( $product->get_upsell_ids() as $pid ) {
+			$this->assertTrue(
+				in_array(
+					array( 'id' => $this->helper->to_relay_id( $pid ) ),
+					$upsell,
+					true
+				),
+				$this->helper->to_relay_id( $pid ) . ' not a upsold product of ' . $product->get_name()
+			);
+		}
 	}
 
 	public function testProductToReviewConnections() {
@@ -1213,7 +1278,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ($id: ID!) {
 				product(id: $id) {
 					id
-					reviews(last: 5, where: {order: DESC}) {
+					reviews(last: 5) {
 						averageRating
 						edges {
 							rating
@@ -1242,6 +1307,49 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 						'averageRating' => floatval( $product->get_average_rating() ),
 						'edges'         => $this->helper->print_review_edges( $reviews ),
 					),
+				),
+			),
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testProductGalleryImagesConnection() {
+		$image_id   = $this->factory->post->create(
+			array(
+				'post_type'    => 'attachment',
+				'post_content' => 'Lorem ipsum dolor...',
+			)
+		);
+		$product_id = $this->helper->create_simple(
+			array( 'gallery_image_ids' => array( $image_id ) )
+		);
+
+		$query = '
+			query( $id: ID! ) {
+				product( id: $id ) {
+					galleryImages {
+						nodes {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array( 'id' => $this->helper->to_relay_id( $product_id ) );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
+			'data' => array(
+				'product' => array (
+					'galleryImages' => array(
+						'nodes' => array(
+							array( 'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $image_id ) )
+						)
+					)
 				),
 			),
 		);

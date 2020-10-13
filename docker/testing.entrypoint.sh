@@ -128,7 +128,7 @@ fi
 if [ -f "${TESTS_OUTPUT}/failed" ]; then
     echo "Uh oh, some went wrong."
     exit 1
-else 
+else
     echo "Woohoo! It's working!"
     exit 0
 fi

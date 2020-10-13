@@ -28,15 +28,18 @@ class Order_Type {
 			'Order',
 			array(
 				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node' ),
+				'interfaces'  => array(
+					'Node',
+					'NodeWithComments'
+				),
 				'fields'      => array(
 					'id'                    => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the order', 'wp-graphql-woocommerce' ),
 					),
-					'orderId'               => array(
+					'databaseId'            => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the order in the database', 'wp-graphql-woocommerce' ),
 					),
 					'orderKey'              => array(
 						'type'        => 'String',
@@ -283,6 +286,10 @@ class Order_Type {
 						'type'        => 'Customer',
 						'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $order, array $args, AppContext $context ) {
+							if ( empty( $order->customer_id ) ) {
+								return Factory::resolve_session_customer();
+							}
+
 							return Factory::resolve_customer( $order->customer_id, $context );
 						},
 					),
@@ -315,105 +322,6 @@ class Order_Type {
 						'description' => __( 'If order needs processing before it can be completed', 'wp-graphql-woocommerce' ),
 					),
 				),
-			)
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'order',
-			array(
-				'type'        => 'Order',
-				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'id'       => array(
-						'type'        => 'ID',
-						'description' => __( 'The ID for identifying the order', 'wp-graphql-woocommerce' ),
-					),
-					'idType'   => array(
-						'type'        => 'OrderIdTypeEnum',
-						'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
-					),
-					'orderId'  => array(
-						'type'              => 'Int',
-						'description'       => __( 'Get the order by its database ID', 'wp-graphql-woocommerce' ),
-						'isDeprecated'      => true,
-						'deprecationReason' => __(
-							'This argument has been deprecation, and will be removed in v0.5.x. Please use "order(id: value, idType: value)" instead',
-							'wp-graphql-woocommerce'
-						),
-					),
-					'orderKey' => array(
-						'type'              => 'String',
-						'description'       => __( 'Get the order by its order number', 'wp-graphql-woocommerce' ),
-						'isDeprecated'      => true,
-						'deprecationReason' => __(
-							'This argument has been deprecation, and will be removed in v0.5.x. Please use "order(id: value, idType: value)" instead',
-							'wp-graphql-woocommerce'
-						),
-					),
-				),
-				'resolve'     => function ( $source, array $args, AppContext $context ) {
-					$id = isset( $args['id'] ) ? $args['id'] : null;
-					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-					// Process deprecated arguments. Will be removed in v0.5.x.
-					if ( ! empty( $args['orderId'] ) ) {
-						$id = $args['orderId'];
-						$id_type = 'database_id';
-					} elseif ( ! empty( $args['orderKey'] ) ) {
-						$id = $args['orderKey'];
-						$id_type = 'order_number';
-					}
-
-					$order_id = null;
-					switch ( $id_type ) {
-						case 'order_number':
-							$order_id = \wc_get_order_id_by_order_key( $id );
-							break;
-						case 'database_id':
-							$order_id = absint( $id );
-							break;
-						case 'global_id':
-						default:
-							$id_components = Relay::fromGlobalId( $id );
-							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-							}
-							$order_id = absint( $id_components['id'] );
-							break;
-					}
-
-					if ( empty( $order_id ) ) {
-						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					} elseif ( get_post( $order_id )->post_type !== 'shop_order' ) {
-						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					}
-
-					// Check if user authorized to view order.
-					$post_type = get_post_type_object( 'shop_order' );
-					$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
-					if ( get_current_user_id() ) {
-						$orders = wc_get_orders(
-							array(
-								'type'          => 'shop_order',
-								'post__in'      => array( $order_id ),
-								'customer_id'   => get_current_user_id(),
-								'no_rows_found' => true,
-								'return'        => 'ids',
-							)
-						);
-
-						if ( in_array( $order_id, $orders, true ) ) {
-							$is_authorized = true;
-						}
-					}
-
-					$order = $is_authorized ? Factory::resolve_crud_object( $order_id, $context ) : null;
-
-					return $order;
-				},
 			)
 		);
 	}

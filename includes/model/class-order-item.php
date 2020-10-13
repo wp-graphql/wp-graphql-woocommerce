@@ -47,7 +47,7 @@ class Order_Item extends Model {
 			'isPrivate',
 			'isPublic',
 			'id',
-			'orderItemId',
+			'databaseId',
 		);
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -73,16 +73,16 @@ class Order_Item extends Model {
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = array(
-				'ID'      => function() {
+				'ID'         => function() {
 					return $this->data->get_id();
 				},
-				'itemId'  => function() {
-					return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+				'databaseId' => function() {
+					return $this->ID;
 				},
-				'orderId' => function() {
+				'orderId'    => function() {
 					return ! empty( $this->data->get_order_id() ) ? $this->data->get_order_id() : null;
 				},
-				'type'    => function() {
+				'type'       => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
 				},
 			);
@@ -193,10 +193,10 @@ class Order_Item extends Model {
 								return ! empty( $this->data->get_tax_total() ) ? $this->data->get_tax_total() : null;
 							},
 							'shippingTaxTotal' => function() {
-								return ! empty( $this->data->get_shipping_tax_total() ) ? $this->data->get_shipping_tax_total() : null;
+								return ! is_null( $this->data->get_shipping_tax_total() ) ? $this->data->get_shipping_tax_total() : 0;
 							},
 							'isCompound'       => function() {
-								return ! empty( $this->data->is_compound() ) ? $this->data->is_compound() : null;
+								return ! is_null( $this->data->is_compound() ) ? $this->data->is_compound() : false;
 							},
 							'rate_id'          => function() {
 								return ! empty( $this->data->get_rate_id() ) ? $this->data->get_rate_id() : null;

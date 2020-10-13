@@ -29,6 +29,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Order_Status::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Types::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Attribute_Types::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Product_Category_Display::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Stock_Status::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Tax_Class::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Tax_Status::register();
@@ -82,11 +83,12 @@ class Type_Registry {
 
 		// Object fields.
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
+		\WPGraphQL\WooCommerce\Type\WPObject\Root_Query::register_fields();
 
 		// Connections.
 		\WPGraphQL\WooCommerce\Connection\Posts::register_connections();
 		\WPGraphQL\WooCommerce\Connection\WC_Terms::register_connections();
-		\WPGraphQL\WooCommerce\Connection\Product_Reviews::register_connections();
+		\WPGraphQL\WooCommerce\Connection\Comments::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Coupons::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Products::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Orders::register_connections();

@@ -40,7 +40,13 @@ class Cart_Empty {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'cart' => Cart_Mutation::get_cart_field(),
+			'deletedCart' => Cart_Mutation::get_cart_field(),
+			'cart'        => array(
+				'type'    => 'Cart',
+				'resolve' => function () {
+					return Factory::resolve_cart();
+				},
+			)
 		);
 	}
 

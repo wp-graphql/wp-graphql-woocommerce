@@ -7,13 +7,13 @@
 
 actor: AcceptanceTester
 modules:
-    enabled:
-        - Asserts
-        - REST
-        - WPBrowser
-        - WPDb
-        - WPLoader
-        - \Helper\GraphQLE2E
-    config:
-        WPDb:
-            cleanup: false
+  enabled:
+    - Asserts
+    - REST
+    - WPBrowser
+    - WPDb
+    - WPLoader
+    - \Helper\GraphQLE2E
+  config:
+    WPDb:
+      cleanup: false

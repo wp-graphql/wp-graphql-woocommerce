@@ -48,7 +48,7 @@ class RefundHelper extends WCG_Helper {
 
 		return array(
 			'id'         => $this->to_relay_id( $id ),
-			'refundId'   => $data->get_id(),
+			'databaseId' => $data->get_id(),
 			'title'      => $data->get_post_title(),
 			'reason'     => $data->get_reason(),
 			'amount'     => $data->get_amount(),
@@ -66,7 +66,7 @@ class RefundHelper extends WCG_Helper {
 
 		return array(
 			'id'         => $this->to_relay_id( $id ),
-			'refundId'   => $data->get_id(),
+			'databaseId' => $data->get_id(),
 			'title'      => null,
 			'reason'     => null,
 			'amount'     => null,

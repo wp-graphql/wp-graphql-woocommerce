@@ -49,6 +49,29 @@ class Product_Attribute_Types {
 							return 'global';
 						},
 					),
+					'label'        => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $attribute ) {
+							$taxonomy = get_taxonomy( $attribute->get_name() );
+							return $taxonomy ? ucwords( $taxonomy->labels->singular_name ) : null;
+						},
+					),
+					'name'        => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $attribute ) {
+							$taxonomy = get_taxonomy( $attribute->get_name() );
+							return $taxonomy->labels->singular_name;
+						},
+					),
+					'slug'        => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Product attribute slug', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $attribute ) {
+							return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
+						},
+					),
 				),
 			)
 		);

@@ -33,25 +33,6 @@ class Core_Schema_Filters {
 
 		// Adds connection resolutions for WooGraphQL type to WPGraphQL type connections.
 		add_filter(
-			'graphql_post_object_connection_query_args',
-			array(
-				'\WPGraphQL\WooCommerce\Data\Connection\Post_Connection_Resolver',
-				'get_query_args',
-			),
-			10,
-			5
-		);
-		add_filter(
-			'graphql_term_object_connection_query_args',
-			array(
-				'\WPGraphQL\WooCommerce\Data\Connection\WC_Term_Connection_Resolver',
-				'get_query_args',
-			),
-			10,
-			5
-		);
-
-		add_filter(
 			'graphql_comment_connection_query_args',
 			array(
 				'\WPGraphQL\WooCommerce\Data\Connection\Product_Review_Connection_Resolver',
@@ -85,7 +66,21 @@ class Core_Schema_Filters {
 
 		add_filter(
 			'graphql_union_resolve_type',
-			array( __CLASS__, 'inject_union_type_resolver' ),
+			array( __CLASS__, 'inject_type_resolver' ),
+			10,
+			3
+		);
+
+		add_filter(
+			'graphql_interface_resolve_type',
+			array( __CLASS__, 'inject_type_resolver' ),
+			10,
+			3
+		);
+
+		add_filter(
+			'graphql_dataloader_pre_get_model',
+			array( '\WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader', 'inject_post_loader_models' ),
 			10,
 			3
 		);
@@ -286,6 +281,28 @@ class Core_Schema_Filters {
 				$new_type = Factory::resolve_node_type( $type, $value );
 				if ( $new_type ) {
 					$type = $wp_union->type_registry->get_type( $new_type );
+				}
+				break;
+		}
+
+		return $type;
+	}
+
+	/**
+	 * Inject Union type resolver that resolve to Product with Product types
+	 *
+	 * @param \WPGraphQL\Type\WPObjectType $type           Type be resolve to.
+	 * @param mixed                        $value          Object for which the type is being resolve config.
+	 * @param WPUnionType|WPInterfaceType  $abstract_type  WPGraphQL abstract class object.
+	 */
+	public static function inject_type_resolver( $type, $value, $abstract_type ) {
+		switch ( $type ) {
+			case 'Product':
+			case 'Coupon':
+			case 'Order':
+				$new_type = Factory::resolve_node_type( $type, $value );
+				if ( $new_type ) {
+					$type = $abstract_type->type_registry->get_type( $new_type );
 				}
 				break;
 		}

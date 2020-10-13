@@ -11,7 +11,6 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
@@ -21,7 +20,7 @@ use WPGraphQL\WooCommerce\Data\Factory;
 class Customer_Type {
 
 	/**
-	 * Registers Customer WPObject type
+	 * Registers Customer WPObject type and related fields.
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -34,9 +33,9 @@ class Customer_Type {
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
 					),
-					'customerId'            => array(
+					'databaseId'            => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the user. Equivalent to WP_User->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
 					),
 					'isVatExempt'           => array(
 						'type'        => 'Boolean',
@@ -109,51 +108,36 @@ class Customer_Type {
 						'type'        => 'Boolean',
 						'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 					),
+					'sessionToken'          => array(
+						'type'        => 'String',
+						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							if ( $source->ID === \get_current_user_id() ) {
+								return apply_filters( 'graphql_customer_session_token', null );
+							}
+
+							return null;
+						},
+					)
 				),
 			)
 		);
 
+		/**
+		 * Register the "sessionToken" field to the "User" type.
+		 */
 		register_graphql_field(
-			'RootQuery',
-			'customer',
+			'User',
+			'sessionToken',
 			array(
-				'type'        => 'Customer',
-				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'id'         => array(
-						'type'        => 'ID',
-						'description' => __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' ),
-					),
-					'customerId' => array(
-						'type'        => 'Int',
-						'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
-					),
-				),
-				'resolve'     => function ( $source, array $args, AppContext $context ) {
-					$customer_id = 0;
-					if ( ! empty( $args['id'] ) ) {
-						$id_components = Relay::fromGlobalId( $args['id'] );
-						if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
-							throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
-						}
-
-						$customer_id = absint( $id_components['id'] );
-					} elseif ( ! empty( $args['customerId'] ) ) {
-						$customer_id = absint( $args['customerId'] );
+				'type'        => 'String',
+				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $source ) {
+					if ( $source->ID === \get_current_user_id() ) {
+						return apply_filters( 'graphql_customer_session_token', null );
 					}
 
-					$authorized = ! empty( $customer_id )
-						&& ! current_user_can( 'list_users' )
-						&& get_current_user_id() !== $customer_id;
-					if ( $authorized ) {
-						throw new UserError( __( 'Not authorized to access this customer', 'wp-graphql-woocommerce' ) );
-					}
-
-					if ( $customer_id ) {
-						return Factory::resolve_customer( $customer_id, $context );
-					}
-
-					return Factory::resolve_session_customer();
+					return null;
 				},
 			)
 		);

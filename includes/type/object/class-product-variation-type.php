@@ -29,15 +29,20 @@ class Product_Variation_Type {
 			'ProductVariation',
 			array(
 				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node' ),
+				'interfaces'  => array(
+					'Node',
+					'NodeWithFeaturedImage',
+					'ContentNode',
+					'UniformResourceIdentifiable',
+				),
 				'fields'      => array(
 					'id'                => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the product variation', 'wp-graphql-woocommerce' ),
 					),
-					'variationId'       => array(
-						'type'        => 'Int',
-						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+					'databaseId'        => array(
+						'type'        => array( 'non_null' => 'Int' ),
+						'description' => __( 'The ID of the refund in the database', 'wp-graphql-woocommerce' ),
 					),
 					'name'              => array(
 						'type'        => 'String',
@@ -231,81 +236,7 @@ class Product_Variation_Type {
 							return DataSource::resolve_post_object( $source->image_id, $context );
 						},
 					),
-					'parent'            => array(
-						'type'        => 'VariableProduct',
-						'description' => __( 'Product variation parent product', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
-							return Factory::resolve_crud_object( $source->parent_id, $context );
-						},
-					),
 				),
-			)
-		);
-
-		register_graphql_field(
-			'RootQuery',
-			'productVariation',
-			array(
-				'type'        => 'ProductVariation',
-				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'id'          => array(
-						'type'        => 'ID',
-						'description' => __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' ),
-					),
-					'idType'      => array(
-						'type'        => 'ProductVariationIdTypeEnum',
-						'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
-					),
-					'variationId' => array(
-						'type'              => 'Int',
-						'description'       => __( 'Get the product variation by its database ID', 'wp-graphql-woocommerce' ),
-						'isDeprecated'      => true,
-						'deprecationReason' => __(
-							'This argument has been deprecation, and will be removed in v0.5.x. Please use "productVariation(id: value, idType: DATABASE_ID)" instead',
-							'wp-graphql-woocommerce'
-						),
-					),
-				),
-				'resolve'     => function ( $source, array $args, AppContext $context ) {
-					$id = isset( $args['id'] ) ? $args['id'] : null;
-					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
-
-					/**
-					 * Process deprecated arguments
-					 *
-					 * Will be removed in v0.5.x.
-					 */
-					if ( ! empty( $args['variationId'] ) ) {
-						$id = $args['variationId'];
-						$id_type = 'database_id';
-					}
-
-					$variation_id = null;
-					switch ( $id_type ) {
-						case 'database_id':
-							$variation_id = absint( $id );
-							break;
-						case 'global_id':
-						default:
-							$id_components = Relay::fromGlobalId( $id );
-							if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-								throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
-							}
-							$variation_id = absint( $id_components['id'] );
-							break;
-					}
-
-					if ( empty( $variation_id ) ) {
-						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					} elseif ( get_post( $variation_id )->post_type !== 'product_variation' ) {
-						/* translators: %1$s: ID type, %2$s: ID value */
-						throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					}
-
-					return Factory::resolve_crud_object( $variation_id, $context );
-				},
 			)
 		);
 	}

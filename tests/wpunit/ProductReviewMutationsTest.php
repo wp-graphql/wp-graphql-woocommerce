@@ -58,7 +58,6 @@ class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'content'          => 'It came covered in poop!!!',
 			'author'           => 'Rude customer',
 			'authorEmail'      => 'rude-guy@example.com',
-			'authorIp'         => ':1',
         );
 
         $actual   = $this->run_mutation( 'writeReview', $input );

@@ -46,8 +46,6 @@ class Factory {
 	 * @access public
 	 */
 	public static function resolve_session_customer() {
-		self::maybe_initialize_session();
-
 		return new Customer();
 	}
 
@@ -164,42 +162,11 @@ class Factory {
 	}
 
 	/**
-	 * Checks if the WooCommerce Session needs to be (re)initialized.
-	 *
-	 * @return bool  True if (re)initialized.
-	 */
-	public static function maybe_initialize_session() {
-		switch ( true ) {
-			case is_null( WC()->customer ):
-			case 0 !== get_current_user_id() && get_current_user_id() !== WC()->customer->get_id():
-				if ( is_null( WC()->session ) ) {
-					WC()->initialize_session();
-				} else {
-					WC()->session->init();
-				}
-
-				// Set customer and cart to null just to be safe.
-				WC()->customer = null;
-				WC()->cart     = null;
-
-				// (re)initialize cart.
-				WC()->initialize_cart();
-
-				return true;
-
-			default:
-				return false;
-		}
-	}
-
-	/**
 	 * Resolves the WooCommerce cart instance.
 	 *
 	 * @return \WC_Cart
 	 */
 	public static function resolve_cart() {
-		self::maybe_initialize_session();
-
 		return WC()->cart;
 	}
 

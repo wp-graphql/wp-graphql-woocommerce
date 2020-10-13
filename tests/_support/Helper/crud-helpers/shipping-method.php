@@ -59,7 +59,7 @@ class ShippingMethodHelper extends WCG_Helper {
 		$method = $methods[ $id ];
 		return array(
 			'id'          => $this->to_relay_id( $id ),
-			'methodId'    => $id,
+			'databaseId'  => $id,
 			'title'       => $method->method_title,
 			'description' => $method->method_description,
 		);

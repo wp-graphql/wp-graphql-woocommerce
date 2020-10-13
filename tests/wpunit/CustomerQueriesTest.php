@@ -35,7 +35,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ( $id: ID, $customerId: Int ) {
 				customer( id: $id, customerId: $customerId ) {
 					id
-					customerId
+					databaseId
 					isVatExempt
 					hasCalculatedShipping
 					calculatedShipping
@@ -51,7 +51,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 					modified
 					lastOrder {
 						id
-						orderId
+						databaseId
 					}
 					billing {
 						firstName
@@ -86,7 +86,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Query should return null value due to lack of permissions.
 		 */
 		$this->set_user( $this->customer );
@@ -105,7 +105,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Query should return requested data because user queried themselves.
 		 */
 		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->customer ) );
@@ -122,7 +122,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * Query should return requested data because has sufficient permissions,
 		 * but should not have access to JWT fields.
 		 */
@@ -142,7 +142,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * Query should return data corresponding with current user when no ID is provided.
 		 */
 		$this->set_user( $this->new_customer );
@@ -156,10 +156,10 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Clear customer cache.
 		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
-		
+
 		/**
 		 * Assertion Five
-		 * 
+		 *
 		 * Query should return requested data because user queried themselves.
 		 */
 		$this->set_user( $this->new_customer );
@@ -177,7 +177,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Six
-		 * 
+		 *
 		 * Query should return null value due to lack of permissions..
 		 */
 		$this->set_user( $this->customer );
@@ -235,7 +235,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Query should return null value due to lack of capabilities...
 		 */
 		$this->set_user( $this->customer );
@@ -252,7 +252,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Query should return requested data because user has proper capabilities.
 		 */
 		$this->set_user( $this->shop_manager );
@@ -272,7 +272,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * Tests "search" where argument.
 		 */
 		$variables = array( 'search' => 'megaman8080' );
@@ -300,7 +300,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Four
-		 * 
+		 *
 		 * Tests "include" where argument.
 		 */
 		$variables = array( 'include' => array( $user_id ) );
@@ -327,7 +327,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Five
-		 * 
+		 *
 		 * Tests "exclude" where argument.
 		 */
 		$variables = array( 'exclude' => array( $user_id ) );
@@ -354,7 +354,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Six
-		 * 
+		 *
 		 * Tests "email" where argument.
 		 */
 		$variables = array( 'email' => 'gotcha@example.com' );
@@ -382,8 +382,8 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Seven
-		 * 
-		 * Tests "role" where argument. 
+		 *
+		 * Tests "role" where argument.
 		 */
 		$variables = array( 'role' => 'SHOP_MANAGER' );
 		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
@@ -402,7 +402,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Eight
-		 * 
+		 *
 		 * Tests "roleIn" where argument. Should
 		 */
 		$variables = array( 'roleIn' => array( 'SHOP_MANAGER' ) );
@@ -422,7 +422,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Nine
-		 * 
+		 *
 		 * Tests "roleNotIn" where argument.
 		 */
 		$variables = array( 'roleNotIn' => array( 'SHOP_MANAGER' ) );
@@ -434,7 +434,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 						get_users(
 							array(
 								'role__not_in' => 'shop_manager',
-								'fields'       => 'ID',	
+								'fields'       => 'ID',
 							)
 						),
 						array(
@@ -455,7 +455,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion Ten
-		 * 
+		 *
 		 * Tests "orderby" and "order" where arguments.
 		 */
 		$variables = array( 'orderby' => 'USERNAME', 'order' => 'ASC' );
@@ -489,7 +489,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testCustomerToOrdersConnection() {
 		$this->order_1 = $this->order_helper->create( array( 'customer_id' => $this->customer ) );
 		$this->order_2 = $this->order_helper->create( array( 'customer_id' => $this->new_customer ) );
-		
+
 		$query = '
 			query {
 				customer {
@@ -504,7 +504,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Query for authenticated customer's orders.
 		 */
 		$this->set_user( $this->customer );

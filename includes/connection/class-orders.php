@@ -11,7 +11,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
 
 /**
  * Class - Orders
@@ -25,7 +25,33 @@ class Orders {
 		// From RootQuery.
 		register_graphql_connection(
 			self::get_connection_config(
-				array( 'connectionArgs' => self::get_connection_args( 'private' ) )
+				array(
+					'connectionArgs' => self::get_connection_args( 'private' ),
+					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$post_type_obj = get_post_type_object( 'shop_order' );
+						$not_manager   = ! current_user_can( $post_type_obj->cap->edit_posts );
+
+						if ( $not_manager ) {
+							$public_args = array_keys( self::get_connection_args( 'public' ) );
+							$args = array_filter(
+								$args,
+								function( $key ) use ( $public_args ) {
+									return in_array( $key, $public_args, true );
+								},
+								ARRAY_FILTER_USE_KEY
+							);
+						}
+
+						$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
+
+						$customer_id = get_current_user_id();
+						if ( $not_manager && 0 !== $customer_id ) {
+							$resolver->set_query_arg( 'customer_id', $customer_id );
+						}
+
+						return $resolver->get_connection();
+					},
+				)
 			)
 		);
 
@@ -35,6 +61,12 @@ class Orders {
 				array(
 					'fromType'      => 'Customer',
 					'fromFieldName' => 'orders',
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
+						$resolver->set_query_arg( 'customer_id', $source->ID );
+
+						return $resolver->get_connection();
+					}
 				)
 			)
 		);
@@ -54,9 +86,6 @@ class Orders {
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_order_connection( $source, $args, $context, $info );
-				},
 			),
 			$args
 		);
