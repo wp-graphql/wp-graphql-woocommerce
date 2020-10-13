@@ -431,7 +431,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 									'node'   => array( 'key' => $item ),
 								);
 							},
-							array_reverse( array_slice( $cart_items, 0, 2 ) )
+							array_slice( $cart_items, 0, 2 )
 						),
 					),
 				),
@@ -468,7 +468,7 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 									'node'   => array( 'key' => $item ),
 								);
 							},
-							array_reverse( array_slice( $cart_items, 0, 4 ) )
+							array_slice( $cart_items, 0, 4 )
 						),
 					),
 				),

@@ -219,7 +219,7 @@ class GraphQLE2E extends \Codeception\Module {
             mutation emptyCart( $input: EmptyCartInput! ) {
                 emptyCart( input: $input ) {
                     clientMutationId
-                    cart {
+                    deletedCart {
                         contents {
                             nodes {
                                 key

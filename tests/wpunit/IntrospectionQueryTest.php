@@ -5,9 +5,12 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase
 
     public function setUp() {
         // before
-        parent::setUp();
+		parent::setUp();
 
-        // your set up methods here
+		$settings = get_option( 'graphql_general_settings' );
+		$settings['public_introspection_enabled'] = 'on';
+		update_option( 'graphql_general_settings', $settings );
+		WPGraphQL::clear_schema();
     }
 
     public function tearDown() {
@@ -38,6 +41,9 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase
     public function testIntrospectionQuery() {
         $query   = \GraphQL\Type\Introspection::getIntrospectionQuery();
         $results = graphql( array( 'query' => $query ) );
+
+		// use --debug flag to view.
+		codecept_debug( $results );
 
         $this->assertArrayNotHasKey('errors', $results );
     }

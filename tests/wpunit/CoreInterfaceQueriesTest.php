@@ -80,6 +80,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$order_id = $this->orders->create();
 		$order    = \wc_get_order( $order_id );
 		$order->add_order_note( 'testnote' );
+		$order->add_order_note( 'testcustomernote', 1, true );
 
 		// Define query and variables.
 		$query    = '
@@ -108,7 +109,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'data' => array(
 				'order' => array(
 					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
-					'commentCount'  => 1,
+					'commentCount'  => 2,
 					'commentStatus' => 'open',
 				),
 			),

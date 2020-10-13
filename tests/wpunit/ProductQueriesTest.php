@@ -1278,7 +1278,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 			query ($id: ID!) {
 				product(id: $id) {
 					id
-					reviews(last: 5, where: {order: DESC}) {
+					reviews(last: 5) {
 						averageRating
 						edges {
 							rating

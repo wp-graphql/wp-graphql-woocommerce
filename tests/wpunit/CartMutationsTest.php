@@ -655,7 +655,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             mutation emptyCart( $input: EmptyCartInput! ) {
                 emptyCart( input: $input ) {
                     clientMutationId
-                    cart {
+                    deletedCart {
                         contents {
                             nodes {
                                 key
@@ -691,7 +691,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             'data' => array(
                 'emptyCart' => array(
                     'clientMutationId' => 'someId',
-                    'cart'         => array(
+                    'deletedCart'         => array(
                         'contents' => array(
                             'nodes' => array(
                                 array(
@@ -1075,11 +1075,24 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 		);
 		$variation_ids = $this->variation->create( $this->product->create_variable() );
 
+		$product   = \wc_get_product( $variation_ids['product'] );
+		$attribute = new WC_Product_Attribute();
+		$attribute->set_id( 0 );
+		$attribute->set_name( 'test' );
+		$attribute->set_options( array( 'yes', 'no' ) );
+		$attribute->set_position( 3 );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$attributes = array_values( $product->get_attributes() );
+		$attributes[] = $attribute;
+		$product->set_attributes( $attributes );
+		$product->save();
+
 		\WC()->session->set( 'wc_notices', null );
 		$missing_attributes = $this->addToCart(
             array(
                 'clientMutationId' => 'someId',
-                'productId'        => $product_id,
+                'productId'        => $variation_ids['product'],
 				'quantity'         => 5,
                 'variationId'      => $variation_ids['variations'][0],
             )

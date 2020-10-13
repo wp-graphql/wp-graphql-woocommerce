@@ -285,7 +285,7 @@ class Product_Types {
 	/**
 	 * Registers "GroupProduct" type.
 	 */
-	public static function register_group_product_type() {
+	private static function register_group_product_type() {
 		register_graphql_object_type(
 			'GroupProduct',
 			array(
