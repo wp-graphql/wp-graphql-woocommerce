@@ -33,6 +33,10 @@ jobs:
           - php: '7.3'
             wordpress: '5.0'
             debug: 1
+          - php: '7.1'
+          - lowest: 1
+          - php: '7.2'
+          - lowest: 1
 
       fail-fast: false
     name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
@@ -59,21 +63,22 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install
+        run: composer install --no-dev
 
       - name: Build "testing" Docker Image
         env:
           PHP_VERSION: ${{ matrix.php }}
           WP_VERSION: ${{ matrix.wordpress }}
           USE_XDEBUG: ${{ matrix.use_xdebug }}
-        run: bin/run-docker.sh build -t
+        run: composer build-test
 
       - name: Run Tests w/ Docker.
         env:
           COVERAGE: ${{ matrix.coverage }}
           DEBUG: ${{ matrix.debug }}
           SKIP_TESTS_CLEANUP: ${{ matrix.coverage }}
-        run: bin/run-docker.sh run -t
+          LOWEST: ${{ matrix.lowest }}
+        run: composer run-test
 
       - name: Push Codecoverage to Coveralls.io
         if: ${{ matrix.coverage == 1 && env.STRIPE_API_PUBLISHABLE_KEY != 0 }}

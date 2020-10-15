@@ -2,8 +2,16 @@
 
 set -eu
 
+##
+# Use this script through Composer scripts in the package.json.
+# To quickly build and run the docker-compose scripts for an app or automated testing
+# run the command below after run `composer install --no-dev` with the respectively
+# flag for what you need.
+##
 print_usage_instructions() {
-	echo "Usage: $0 build|run [-e=env-file ] [-a|-t]";
+	echo "Usage: composer build-and-run -- [-a|-t]";
+	echo "       -a  Spin up a WordPress installation.";
+	echo "       -t  Run the automated tests.";
 	exit 1
 }
 
@@ -62,6 +70,7 @@ case "$subcommand" in
                     -e COVERAGE=${COVERAGE-} \
                     -e DEBUG=${DEBUG-} \
                     -e SKIP_TESTS_CLEANUP=${SKIP_TESTS_CLEANUP-} \
+					-e LOWEST=${LOWEST-} \
                     testing --scale app=0
                     ;;
                 \? ) print_usage_instructions;;

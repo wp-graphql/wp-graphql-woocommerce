@@ -66,7 +66,12 @@ if [ ! -f "$PROJECT_DIR/c3.php" ]; then
     curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "$PROJECT_DIR/c3.php"
 fi
 
+if [[ -n "$LOWEST" ]]; then
+    PREFER_LOWEST="--prefer-source"
+fi
+
 # Install dependencies
+COMPOSER_MEMORY_LIMIT=-1 composer update --prefer-source ${PREFER_LOWEST}
 COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-source --no-interaction
 
 # Install pcov/clobber if PHP7.1+

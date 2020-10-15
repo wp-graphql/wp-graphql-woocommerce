@@ -44,9 +44,6 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
         $query   = \GraphQL\Type\Introspection::getIntrospectionQuery();
         $results = graphql( array( 'query' => $query ) );
 
-		// use --debug flag to view.
-		codecept_debug( $results );
-
         $this->assertArrayNotHasKey('errors', $results );
     }
 }

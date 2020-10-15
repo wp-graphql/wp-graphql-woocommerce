@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.1.0",
         "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
@@ -57,14 +57,13 @@
         "docker-run": "bash bin/run-docker.sh run",
         "docker-destroy": "docker-compose down",
         "build-and-run": [
-          "Composer\\Config::disableProcessTimeout",
           "@docker-build",
           "@docker-run"
         ],
-        "build-local-app": "@docker-build -a",
-        "build-local-test": "@docker-build -t",
-        "run-local-app": "@docker-run -a",
-        "run-local-test": "@docker-run -t",
+        "build-app": "@docker-build -a",
+        "build-test": "@docker-build -t",
+        "run-app": "@docker-run -a",
+        "run-test": "@docker-run -t",
         "lint": "vendor/bin/phpcs"
     },
     "support"    : {
