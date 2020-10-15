@@ -1,4 +1,4 @@
-name: continuous_integration
+name: Automated Testing
 
 on:
   schedule:
@@ -59,7 +59,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --no-dev
+        run: composer install
 
       - name: Build "testing" Docker Image
         env:

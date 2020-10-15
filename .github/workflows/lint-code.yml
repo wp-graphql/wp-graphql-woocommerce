@@ -1,4 +1,4 @@
-name: lint_code
+name: Coding Standards
 
 on:
   push:
