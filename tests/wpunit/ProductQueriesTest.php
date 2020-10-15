@@ -651,7 +651,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 								$product_b = new \WC_Product( $id_b );
 
 								if ( floatval( $product_a->get_price() ) === floatval( $product_b->get_price() ) ) {
-									return 0;
+									return $id_a > $id_b ? -1 : 1;
 								}
 								return floatval( $product_a->get_price() ) > floatval( $product_b->get_price() ) ? -1 : 1;
 							},

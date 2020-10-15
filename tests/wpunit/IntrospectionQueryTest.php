@@ -1,13 +1,15 @@
 <?php
 
-class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase
-{
+class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 
     public function setUp() {
         // before
 		parent::setUp();
 
 		$settings = get_option( 'graphql_general_settings' );
+		if ( ! $settings ) {
+			$settings = array();
+		}
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
 		WPGraphQL::clear_schema();

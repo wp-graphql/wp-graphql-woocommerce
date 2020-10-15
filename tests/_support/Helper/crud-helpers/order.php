@@ -468,4 +468,18 @@ class OrderHelper extends WCG_Helper {
 
 		return $nodes;
 	}
+
+	public function delete_order( $order ) {
+
+		// Delete all products in the order.
+		foreach ( $order->get_items() as $item ) {
+			$product = wc_get_product( $item['product_id'] );
+			if ( $product ) {
+				$product->delete( true );
+			}
+		}
+
+		// Delete the order post.
+		$order->delete( true );
+	}
 }

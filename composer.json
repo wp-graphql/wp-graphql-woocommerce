@@ -31,7 +31,8 @@
         "wp-coding-standards/wpcs": "^2.3"
     },
     "config": {
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "process-timeout": 0
     },
     "autoload": {
         "files": [
@@ -53,17 +54,17 @@
     "scripts": {
         "install-test-env": "bash bin/install-test-env.sh",
         "docker-build": "bash bin/run-docker.sh build",
-        "docker-run": [
-          "@docker-build",
-          "bash bin/run-docker.sh run"
-        ],
+        "docker-run": "bash bin/run-docker.sh run",
         "docker-destroy": "docker-compose down",
-        "local-app": "@docker-run -a",
-        "local-test": "@docker-run -t",
-        "test": [
-          "composer install --no-dev",
-          "@local-test"
+        "build-and-run": [
+          "Composer\\Config::disableProcessTimeout",
+          "@docker-build",
+          "@docker-run"
         ],
+        "build-local-app": "@docker-build -a",
+        "build-local-test": "@docker-build -t",
+        "run-local-app": "@docker-run -a",
+        "run-local-test": "@docker-run -t",
         "lint": "vendor/bin/phpcs"
     },
     "support"    : {

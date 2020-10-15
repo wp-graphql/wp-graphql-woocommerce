@@ -235,10 +235,17 @@ class OrderQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testOrdersQueryAndWhereArgs() {
+		$query      = new \WC_Order_Query();
+		$old_orders = $query->get_orders();
+		foreach ( $old_orders as $order ) {
+			$this->order_helper->delete_order( $order );
+		}
+		unset( $old_orders );
+		unset( $query );
+
 		$customer = $this->customer_helper->create();
 		$product  = $this->product_helper->create_simple();
 		$orders   = array(
-			$this->order,
 			$this->order_helper->create(
 				array(),
 				array(

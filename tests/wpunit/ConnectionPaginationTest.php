@@ -224,6 +224,16 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
     }
 
     public function testOrdersPagination() {
+		wp_set_current_user( $this->shop_manager );
+
+		$query      = new \WC_Order_Query();
+		$old_orders = $query->get_orders();
+		foreach ( $old_orders as $order ) {
+			$this->orders->delete_order( $order );
+		}
+		unset( $old_orders );
+		unset( $query );
+
         $orders = array(
             $this->orders->create(),
 			$this->orders->create(),
@@ -254,8 +264,6 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                 }
 			}
         ';
-
-        wp_set_current_user( $this->shop_manager );
 
         /**
 		 * Assertion One
