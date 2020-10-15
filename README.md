@@ -45,6 +45,14 @@ Feel free to test out the extension using this [GraphiQL Playground](https://woo
 
 ## Demo/Examples
 
+**Examples with Next.js**
+
+[Next.js WooCommerce Theme](https://github.com/imranhsayed/woo-next) [[source]](https://github.com/imranhsayed/woo-next) [[demo video]](https://youtu.be/EGjY3X868YQ)
+
+**Examples with Gatsby**
+
+[Gatsby WooCommerce Theme](https://gatsby-woocommerce-theme.netlify.app/) [[source]](https://github.com/imranhsayed/gatsby-woocommerce-themes) [[demo video]](https://youtu.be/ygaE8ZdPEX8)
+
 ## Who using WooGraphQL
 
 ## Contributors
