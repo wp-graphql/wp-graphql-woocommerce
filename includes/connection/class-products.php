@@ -187,7 +187,6 @@ class Products {
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
-						\codecept_debug( $source->variations_ids );
 						$resolver->set_query_arg( 'post_parent', $source->ID );
 						$resolver->set_query_arg( 'post_type', 'product_variation' );
 						$resolver->set_query_arg( 'post__in', $source->variation_ids );
