@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.3', '7.2', '7.1']
+        php: ['7.1', '7.2', '7.3']
         wordpress: ['5.3', '5.0']
         include:
           - php: '7.1'
