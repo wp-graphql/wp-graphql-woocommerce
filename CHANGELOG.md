@@ -8,6 +8,11 @@
 
 - Call to undefined function codecept\_debug\(\) [\#342](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/342)
 
+**Merged pull requests:**
+
+- Adds demo/examples [\#344](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/344) ([imranhsayed](https://github.com/imranhsayed))
+- Remove undefined codecept\_debug\(\) function [\#343](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/343) ([jacobarriola](https://github.com/jacobarriola))
+
 ## [v0.6.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.0) (2020-10-13)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.5.1...v0.6.0)
@@ -82,7 +87,6 @@
 **Enhancements:**
 
 - Add product review mutation using "createComment" is missing ratings input fields. [\#254](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/254)
-- Feature/stripe payment gateway support [\#256](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/256) ([kidunot89](https://github.com/kidunot89))
 - Release v0.5.1 [\#255](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/255) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
@@ -288,7 +292,6 @@ Updated tests
 - Better guest customer support [\#187](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/187) ([kidunot89](https://github.com/kidunot89))
 - Bugfix/customer security patch [\#184](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/184) ([kidunot89](https://github.com/kidunot89))
 - Improved shipping support [\#182](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/182) ([kidunot89](https://github.com/kidunot89))
-- Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
 - Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
@@ -318,6 +321,7 @@ Updated tests
 
 - Product post\_type should be set to `show\_in\_graphql` [\#85](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/85)
 - QL Session Handler 2.0 [\#174](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/174) ([kidunot89](https://github.com/kidunot89))
+- Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
 - QL Search support added. [\#172](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/172) ([kidunot89](https://github.com/kidunot89))
 - Release v0.3.0 [\#155](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/155) ([kidunot89](https://github.com/kidunot89))
 
