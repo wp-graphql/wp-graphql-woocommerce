@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.1) (2020-10-15)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.6.0...v0.6.1)
+
+**Closed issues:**
+
+- Call to undefined function codecept\_debug\(\) [\#342](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/342)
+
 ## [v0.6.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.0) (2020-10-13)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.5.1...v0.6.0)
@@ -14,6 +22,7 @@
 
 **Enhancements:**
 
+- EmptyCartPayload return the cart before empty [\#300](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/300)
 - Support for some node interfaces added to the product and order models. [\#337](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/337) ([kidunot89](https://github.com/kidunot89))
 - Field caps removed from product raw price and description fields. [\#332](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/332) ([kidunot89](https://github.com/kidunot89))
 - "Root\_Query" class implemented. [\#331](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/331) ([kidunot89](https://github.com/kidunot89))
@@ -24,10 +33,16 @@
 
 **Fixed:**
 
-- Incorrect namespace for WC\_Customer in Checkout Mutation [\#296](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/296)
-- Access to undeclared static property in Checkout Mutation [\#295](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/295)
 - Product Review bugs [\#292](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/292)
 - Composer dependecy breaks install [\#246](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/246)
+- GraphQl Error when querying price fields \("regularPrice", "price" and "salePrice"\) whether formatted or not [\#330](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/330)
+- `Product.contentType.id` connection errors and returns null [\#325](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/325)
+- Make Product\_Types register\_product\_query static method public [\#323](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/323)
+- Cannot set query argument in Product\_Connection\_Resolver Class [\#321](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/321)
+- Checkout Mutation cannot create the order if a user accounts already exists. [\#297](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/297)
+- Incorrect namespace for WC\_Customer in Checkout Mutation [\#296](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/296)
+- Access to undeclared static property in Checkout Mutation [\#295](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/295)
+- Error when querying products that are ACF relationship field items [\#253](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/253)
 - Fixes downloadableItems accessibility bug. [\#316](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/316) ([kidunot89](https://github.com/kidunot89))
 - Fixes cart item validation and error handling on checkout [\#315](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/315) ([kidunot89](https://github.com/kidunot89))
 - "galleryImages" connection refactored. [\#311](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/311) ([kidunot89](https://github.com/kidunot89))
@@ -47,6 +62,10 @@
 - Query on Products fails [\#289](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/289)
 - Guest cart session is not synced with Woocommerce cart session [\#285](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/285)
 - All Downloadable Items have the same related Product [\#281](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/281)
+- Checkout mutation allows 'Out of Stock' product  [\#308](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/308)
+- Add to cart when product is out of stock returns generic error [\#306](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/306)
+- Unable to query 'Orders' under Root [\#299](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/299)
+- Product Categories - "Display" and "Menu Order" attributes [\#277](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/277)
 
 **Merged pull requests:**
 
@@ -63,6 +82,7 @@
 **Enhancements:**
 
 - Add product review mutation using "createComment" is missing ratings input fields. [\#254](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/254)
+- Feature/stripe payment gateway support [\#256](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/256) ([kidunot89](https://github.com/kidunot89))
 - Release v0.5.1 [\#255](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/255) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
@@ -268,6 +288,7 @@ Updated tests
 - Better guest customer support [\#187](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/187) ([kidunot89](https://github.com/kidunot89))
 - Bugfix/customer security patch [\#184](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/184) ([kidunot89](https://github.com/kidunot89))
 - Improved shipping support [\#182](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/182) ([kidunot89](https://github.com/kidunot89))
+- Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
 - Release v0.3.1 [\#171](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/171) ([kidunot89](https://github.com/kidunot89))
 
 **Fixed:**
@@ -297,7 +318,6 @@ Updated tests
 
 - Product post\_type should be set to `show\_in\_graphql` [\#85](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/85)
 - QL Session Handler 2.0 [\#174](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/174) ([kidunot89](https://github.com/kidunot89))
-- Testing/CI configurations upgrade. [\#173](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/173) ([kidunot89](https://github.com/kidunot89))
 - QL Search support added. [\#172](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/172) ([kidunot89](https://github.com/kidunot89))
 - Release v0.3.0 [\#155](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/155) ([kidunot89](https://github.com/kidunot89))
 
