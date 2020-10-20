@@ -51,7 +51,8 @@ class WC_Terms extends TermObjects {
 										'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 											$taxonomy = str_replace( ' ', '_', strtolower( $tax_object->labels->singular_name ) );
-											$resolver->set_query_arg( 'term_taxonomy_id', $source->attributes[$tax_object->name]['options'] );
+                                            $options = $source->attributes[ $tax_object->name ]['options'];
+											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $options ) ? $options : array( '0' ) );
 
 											return $resolver->get_connection();
 										}
