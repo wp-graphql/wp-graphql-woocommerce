@@ -123,7 +123,7 @@ class Order extends WC_Post {
 	 *
 	 * @return bool
 	 */
-	protected function is_private() {
+	public function is_private() {
 		/**
 		 * Published content is public, not private
 		 */
