@@ -383,10 +383,10 @@ class Cart_Type {
 						},
 					),
 					'amount'   => array(
-						'type'        => 'Float',
-						'description' => __( 'Fee amount', 'wp-graphql-woocommerce' ),
+						'type'        => 'String',
+						'description' => __( 'Tax amount', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return ! empty( $source->amount ) ? $source->amount : null;
+							return ! empty( $source->amount ) ? \wc_graphql_price( $source->amount ) : null;
 						},
 					),
 				),
