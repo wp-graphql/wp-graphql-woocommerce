@@ -1,5 +1,5 @@
 <?php
-class ProductQueriesTest extends Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
+class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
 	/**
 	 * The death of `! empty( $v ) ? apply_filters( $v ) : null;`

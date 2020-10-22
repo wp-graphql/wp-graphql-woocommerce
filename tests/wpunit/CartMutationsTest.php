@@ -1,6 +1,6 @@
 <?php
 
-class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
+class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
     private $shop_manager;
     private $customer;
     private $coupon;
@@ -14,7 +14,6 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
         $this->customer     = $this->getModule('\Helper\Wpunit')->customer();
         $this->coupon       = $this->getModule('\Helper\Wpunit')->coupon();
-        $this->product      = $this->getModule('\Helper\Wpunit')->product();
         $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
 		$this->shipping     = $this->getModule('\Helper\Wpunit')->shipping_method();
@@ -26,19 +25,13 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         parent::tearDown();
 	}
 
-	private function graphql( $query, $operation_name = null, $variables = null ) {
-		// Run GraphQL request.
-		$results = graphql( compact( 'query', 'operation_name', 'variables' ) );
+	public function getExpectedCartItemData( $cart_item_key ) {
 
-		// use --debug flag to view.
-		codecept_debug( json_encode( $results, JSON_PRETTY_PRINT ) );
-
-        return $results;
 	}
 
     private function addToCart( $input ) {
-        $mutation = '
-            mutation addToCart( $input: AddToCartInput! ) {
+        $query = '
+            mutation( $input: AddToCartInput! ) {
                 addToCart( input: $input ) {
                     clientMutationId
                     cartItem {
@@ -61,14 +54,16 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     }
                 }
             }
-        ';
+		';
 
-        return $this->graphql( $mutation, 'addToCart', compact( 'input' ) );
+		$variables = compact( 'input' );
+
+        return $this->graphql( compact( 'query', 'variables' ) );
     }
 
     private function removeItemsFromCart( $input ) {
-        $mutation = '
-            mutation removeItemsFromCart( $input: RemoveItemsFromCartInput! ) {
+        $query = '
+            mutation( $input: RemoveItemsFromCartInput! ) {
                 removeItemsFromCart( input: $input ) {
                     clientMutationId
                     cartItems {
@@ -92,13 +87,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 }
             }
         ';
+		$variables = compact( 'input' );
 
-		return $this->graphql( $mutation, 'removeItemsFromCart', compact( 'input' ) );
+        return $this->graphql( compact( 'query', 'variables' ) );
     }
 
     private function restoreItems( $input ) {
-        $mutation = '
-            mutation restoreCartItems( $input: RestoreCartItemsInput! ) {
+        $query = '
+            mutation( $input: RestoreCartItemsInput! ) {
                 restoreCartItems( input: $input ) {
                     clientMutationId
                     cartItems {
@@ -123,13 +119,15 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             }
 		';
 
-		return $this->graphql( $mutation, 'restoreCartItems', compact( 'input' ) );
+		$variables = compact( 'input' );
+
+        return $this->graphql( compact( 'query', 'variables' ) );
     }
 
     // tests
     public function testAddToCartMutationWithProduct() {
-        $product_id = $this->product->create_simple();
-        $actual     = $this->addToCart(
+        $product_id = $this->factory->product->createSimple();
+        $response   = $this->addToCart(
             array(
                 'clientMutationId' => 'someId',
                 'productId'        => $product_id,
@@ -138,40 +136,27 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         );
 
         // Retrieve cart item key.
-        $this->assertArrayHasKey('data', $actual );
-        $this->assertArrayHasKey('addToCart', $actual['data'] );
-        $this->assertArrayHasKey('cartItem', $actual['data']['addToCart'] );
-        $this->assertArrayHasKey('key', $actual['data']['addToCart']['cartItem'] );
-        $key = $actual['data']['addToCart']['cartItem']['key'];
-
-        // Get newly created cart item data.
-        $cart = WC()->cart;
-        $cart_item = $cart->get_cart_item( $key );
+		$this->assertIsValidQueryResponse( $response );
+		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );
+		$this->assertNotEmpty( $cart_item_key );
+		$cart      = wc_get_cart();
+        $cart_item = $cart->get_cart_item( $cart_item_key );
         $this->assertNotEmpty( $cart_item );
 
-        // Check cart item data.
-		$expected = array(
-			'data' => array(
-				'addToCart' => array(
-					'clientMutationId' => 'someId',
-					'cartItem'         => array(
-                        'key'          => $cart_item['key'],
-                        'product'      => array(
-							'node' => array(
-								'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
-							),
-                        ),
-                        'variation'    => null,
-                        'quantity'     => $cart_item['quantity'],
-                        'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
-                        'subtotalTax'  => wc_graphql_price( $cart_item['line_subtotal_tax'] ),
-                        'total'        => wc_graphql_price( $cart_item['line_total'] ),
-                        'tax'          => wc_graphql_price( $cart_item['line_tax'] ),
-					),
-				),
-			),
+		$this->assertQuerySuccessful(
+			$response,
+			array(
+				$this->expectedObject( 'addToCart.clientMutationId', 'someId' ),
+				$this->expectedObject( 'addToCart.cartItem.key', $cart_item_key ),
+				$this->expectedObject( 'addToCart.cartItem.product.id', $this->toRelay( 'product', $product_id ) ),
+				$this->expectedObject( 'addToCart.cartItem.variation', 'NULL' ),
+				$this->expectedObject( 'addToCart.cartItem.quantity', 2 ),
+				$this->expectedObject( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.subtotalTax', wc_graphql_price( $cart_item['line_subtotal_tax'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.total', wc_graphql_price( $cart_item['line_total'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.tax', wc_graphql_price( $cart_item['line_tax'] ) ),
+			)
 		);
-		$this->assertEquals( $expected, $actual );
     }
 
     public function testAddToCartMutationWithProductVariation() {

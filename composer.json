@@ -52,7 +52,8 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "process-timeout": 0
+        "process-timeout": 0,
+        "sort-packages": true
     },
     "autoload": {
         "files": [
