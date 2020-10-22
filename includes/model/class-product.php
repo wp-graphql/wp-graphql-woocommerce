@@ -126,6 +126,7 @@ class Product extends WC_Post {
 		if ( empty( $this->fields ) ) {
 			parent::init();
 
+			$type   = $this->wc_data->get_type();
 			$fields = array(
 				'id'                  => function() {
 					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'product', $this->wc_data->get_id() ) : null;
@@ -260,7 +261,12 @@ class Product extends WC_Post {
 				},
 			);
 
-			if ( 'grouped' !== $this->wc_data->get_type() ) {
+			if (
+				apply_filters(
+					"graphql_{$type}_product_model_use_pricing_and_tax_fields",
+					'grouped' !== $this->wc_data->get_type()
+				)
+			) {
 				$fields += array(
 					'price'           => function() {
 						return ! empty( $this->wc_data->get_price() )
@@ -295,7 +301,12 @@ class Product extends WC_Post {
 				);
 			}
 
-			if ( 'simple' === $this->wc_data->get_type() || 'variable' === $this->wc_data->get_type() ) {
+			if (
+				apply_filters(
+					"graphql_{$type}_product_model_use_inventory_fields",
+					'simple' === $type || 'variable' === $type
+				)
+			) {
 				$fields += array(
 					'manageStock'       => function() {
 						return ! is_null( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
@@ -338,11 +349,14 @@ class Product extends WC_Post {
 							? array_map( 'absint', $this->wc_data->get_cross_sell_ids() )
 							: array( '0' );
 					},
+					'stockStatus'    => function() {
+						return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
+					},
 				);
 			}
 
-			switch ( $this->wc_data->get_type() ) {
-				case 'simple':
+			switch ( true ) {
+				case apply_filters( "graphql_{$type}_product_model_use_virtual_data_fields", 'simple' === $type ):
 					$fields += array(
 						'virtual'        => function() {
 							return ! is_null( $this->wc_data->is_virtual() ) ? $this->wc_data->is_virtual() : null;
@@ -359,12 +373,9 @@ class Product extends WC_Post {
 						'downloads'      => function() {
 							return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;
 						},
-						'stockStatus'    => function() {
-							return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
-						},
 					);
 					break;
-				case 'variable':
+				case apply_filters( "graphql_{$type}_product_model_use_variation_pricing_fields", 'variable' === $type ):
 					$fields = array(
 						'price'           => function() {
 							return $this->get_variation_price();
@@ -391,7 +402,7 @@ class Product extends WC_Post {
 						},
 					) + $fields;
 					break;
-				case 'external':
+				case apply_filters( "graphql_{$type}_product_model_use_external_fields", 'external' === $type ):
 					$fields += array(
 						'externalUrl' => function() {
 							return ! empty( $this->wc_data->get_product_url() ) ? $this->wc_data->get_product_url() : null;
@@ -401,7 +412,7 @@ class Product extends WC_Post {
 						},
 					);
 					break;
-				case 'grouped':
+				case apply_filters( "graphql_{$type}_product_model_use_grouped_fields", 'grouped' === $type	):
 					$fields += array(
 						'addToCartText'        => function() {
 							return ! empty( $this->wc_data->add_to_cart_text() ) ? $this->wc_data->add_to_cart_text() : null;

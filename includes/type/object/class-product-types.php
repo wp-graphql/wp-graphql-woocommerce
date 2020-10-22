@@ -52,142 +52,196 @@ class Product_Types {
 	/**
 	 * Defines fields related to product inventory.
 	 *
+	 * @param array $fields  Fields array for overwriting any of the inventory fields.
+	 *
 	 * @return array
 	 */
-	public static function get_inventory_fields() {
-		return array(
-			'manageStock'       => array(
-				'type'        => 'Boolean',
-				'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
+	public static function get_inventory_fields( $fields = array() ) {
+		return array_merge(
+			array(
+				'manageStock'       => array(
+					'type'        => 'Boolean',
+					'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
+				),
+				'stockQuantity'     => array(
+					'type'        => 'Int',
+					'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),
+				),
+				'backorders'        => array(
+					'type'        => 'BackordersEnum',
+					'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
+				),
+				'soldIndividually'  => array(
+					'type'        => 'Boolean',
+					'description' => __( 'If should be sold individually', 'wp-graphql-woocommerce' ),
+				),
+				'backordersAllowed' => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
+				),
+				'stockStatus'    => array(
+					'type'        => 'StockStatusEnum',
+					'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
+				),
 			),
-			'stockQuantity'     => array(
-				'type'        => 'Int',
-				'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),
-			),
-			'backorders'        => array(
-				'type'        => 'BackordersEnum',
-				'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
-			),
-			'soldIndividually'  => array(
-				'type'        => 'Boolean',
-				'description' => __( 'If should be sold individually', 'wp-graphql-woocommerce' ),
-			),
-			'backordersAllowed' => array(
-				'type'        => 'Boolean',
-				'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
-			),
+			$fields
 		);
 	}
 
 	/**
 	 * Defines fields related to product shipping.
 	 *
+	 * @param array $fields  Fields array for overwriting any of shipping fields.
+	 *
 	 * @return array
 	 */
-	public static function get_shipping_fields() {
-		return array(
-			'weight'           => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s weight', 'wp-graphql-woocommerce' ),
+	public static function get_shipping_fields( $fields = array() ) {
+		return array_merge(
+			array(
+				'weight'           => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s weight', 'wp-graphql-woocommerce' ),
+				),
+				'length'           => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s length', 'wp-graphql-woocommerce' ),
+				),
+				'width'            => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s width', 'wp-graphql-woocommerce' ),
+				),
+				'height'           => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s height', 'wp-graphql-woocommerce' ),
+				),
+				'shippingClassId'  => array(
+					'type'        => 'Int',
+					'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
+				),
+				'shippingRequired' => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' ),
+				),
+				'shippingTaxable'  => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' ),
+				),
 			),
-			'length'           => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s length', 'wp-graphql-woocommerce' ),
-			),
-			'width'            => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s width', 'wp-graphql-woocommerce' ),
-			),
-			'height'           => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s height', 'wp-graphql-woocommerce' ),
-			),
-			'shippingClassId'  => array(
-				'type'        => 'Int',
-				'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
-			),
-			'shippingRequired' => array(
-				'type'        => 'Boolean',
-				'description' => __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' ),
-			),
-			'shippingTaxable'  => array(
-				'type'        => 'Boolean',
-				'description' => __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' ),
-			),
+			$fields
 		);
 	}
 
 	/**
-	 * Defines fields not found in grouped-type products.
+	 * Defines fields related to pricing and taxes.
+	 *
+	 * @param array $fields  Fields array for overwriting any of the pricing and tax fields.
 	 *
 	 * @return array
 	 */
-	public static function get_non_grouped_fields() {
-		return array(
-			'price'        => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'format' => array(
-						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+	public static function get_pricing_and_tax_fields( $fields = array() ) {
+		return array_merge(
+			array(
+				'price'        => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
+					'args'        => array(
+						'format' => array(
+							'type'        => 'PricingFieldFormatEnum',
+							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						),
 					),
+					'resolve'     => function( $source, $args ) {
+						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+							// @codingStandardsIgnoreLine.
+							return $source->priceRaw;
+						} else {
+							return $source->price;
+						}
+					},
 				),
-				'resolve'     => function( $source, $args ) {
-					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
-						// @codingStandardsIgnoreLine.
-						return $source->priceRaw;
-					} else {
-						return $source->price;
-					}
-				},
-			),
-			'regularPrice' => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'format' => array(
-						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+				'regularPrice' => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
+					'args'        => array(
+						'format' => array(
+							'type'        => 'PricingFieldFormatEnum',
+							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						),
 					),
+					'resolve'     => function( $source, $args ) {
+						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+							// @codingStandardsIgnoreLine.
+							return $source->regularPriceRaw;
+						} else {
+							// @codingStandardsIgnoreLine.
+							return $source->regularPrice;
+						}
+					},
 				),
-				'resolve'     => function( $source, $args ) {
-					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
-						// @codingStandardsIgnoreLine.
-						return $source->regularPriceRaw;
-					} else {
-						// @codingStandardsIgnoreLine.
-						return $source->regularPrice;
-					}
-				},
-			),
-			'salePrice'    => array(
-				'type'        => 'String',
-				'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
-				'args'        => array(
-					'format' => array(
-						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+				'salePrice'    => array(
+					'type'        => 'String',
+					'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
+					'args'        => array(
+						'format' => array(
+							'type'        => 'PricingFieldFormatEnum',
+							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						),
 					),
+					'resolve'     => function( $source, $args ) {
+						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+							// @codingStandardsIgnoreLine.
+							return $source->salePriceRaw;
+						} else {
+							// @codingStandardsIgnoreLine.
+							return $source->salePrice;
+						}
+					},
 				),
-				'resolve'     => function( $source, $args ) {
-					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
-						// @codingStandardsIgnoreLine.
-						return $source->salePriceRaw;
-					} else {
-						// @codingStandardsIgnoreLine.
-						return $source->salePrice;
-					}
-				},
+				'taxStatus'    => array(
+					'type'        => 'TaxStatusEnum',
+					'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
+				),
+				'taxClass'     => array(
+					'type'        => 'TaxClassEnum',
+					'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
+				),
 			),
-			'taxStatus'    => array(
-				'type'        => 'TaxStatusEnum',
-				'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
+			$fields
+		);
+	}
+
+	/**
+	 * Defines fields related to virtual product info.
+	 *
+	 * @param array $fields  Fields array for overwriting any of the virtual data fields.
+	 *
+	 * @return array
+	 */
+	public static function get_virtual_data_fields( $fields = array() ) {
+		return array_merge(
+			array(
+				'virtual'        => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
+				),
+				'downloadExpiry' => array(
+					'type'        => 'Int',
+					'description' => __( 'Download expiry', 'wp-graphql-woocommerce' ),
+				),
+				'downloadable'   => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Is downloadable?', 'wp-graphql-woocommerce' ),
+				),
+				'downloadLimit'  => array(
+					'type'        => 'Int',
+					'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
+				),
+				'downloads'      => array(
+					'type'        => array( 'list_of' => 'ProductDownload' ),
+					'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
+				),
 			),
-			'taxClass'     => array(
-				'type'        => 'TaxClassEnum',
-				'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
-			),
+			$fields
 		);
 	}
 
@@ -202,35 +256,10 @@ class Product_Types {
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
-					self::get_non_grouped_fields(),
+					self::get_pricing_and_tax_fields(),
 					self::get_inventory_fields(),
 					self::get_shipping_fields(),
-					array(
-						'virtual'        => array(
-							'type'        => 'Boolean',
-							'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
-						),
-						'downloadExpiry' => array(
-							'type'        => 'Int',
-							'description' => __( 'Download expiry', 'wp-graphql-woocommerce' ),
-						),
-						'downloadable'   => array(
-							'type'        => 'Boolean',
-							'description' => __( 'Is downloadable?', 'wp-graphql-woocommerce' ),
-						),
-						'downloadLimit'  => array(
-							'type'        => 'Int',
-							'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
-						),
-						'downloads'      => array(
-							'type'        => array( 'list_of' => 'ProductDownload' ),
-							'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
-						),
-						'stockStatus'    => array(
-							'type'        => 'StockStatusEnum',
-							'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
-						),
-					)
+					self::get_virtual_data_fields(),
 				),
 			)
 		);
@@ -247,7 +276,7 @@ class Product_Types {
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
-					self::get_non_grouped_fields(),
+					self::get_pricing_and_tax_fields(),
 					self::get_inventory_fields(),
 					self::get_shipping_fields()
 				),
@@ -266,7 +295,7 @@ class Product_Types {
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
-					self::get_non_grouped_fields(),
+					self::get_pricing_and_tax_fields(),
 					array(
 						'externalUrl' => array(
 							'type'        => 'String',

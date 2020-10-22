@@ -117,4 +117,22 @@ abstract class WC_Post extends Post {
 
 		return $this->wc_data->delete( $force_delete );
 	}
+
+	/**
+	 * Returns the source WP_Post instance.
+	 *
+	 * @return \WP_Post
+	 */
+	public function as_WP_Post() {
+		return $this->data;
+	}
+
+	/**
+	 * Returns the source WC_Data instance
+	 *
+	 * @return \WC_Data
+	 */
+	public function as_WC_Data() {
+		return $this->wc_data;
+	}
 }
