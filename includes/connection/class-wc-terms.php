@@ -49,9 +49,12 @@ class WC_Terms extends TermObjects {
 										'toType'        => $tax_object->graphql_single_name,
 										'fromFieldName' => $tax_object->graphql_plural_name,
 										'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
-											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
-                                            $options  = $source->attributes[ $tax_object->name ]['options'];
-											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $options ) ? $options : array( '0' ) );
+											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );											
+                                            
+											// Get the term ids that are associated with this $source
+											$terms = wp_list_pluck( get_the_terms( $source->ID, $tax_object->name ), 'term_id' );
+											
+											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $terms ) ? $terms : array( '0' ) );
 
 											return $resolver->get_connection();
 										}
