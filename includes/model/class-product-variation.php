@@ -24,7 +24,7 @@ class Product_Variation extends WC_Post {
 	 * @param int $id - product_variation post-type ID.
 	 */
 	public function __construct( $id ) {
-		$data = new WC_Product_Variation( $id );
+		$data = \wc_get_product( $id );
 		parent::__construct( $data );
 	}
 
