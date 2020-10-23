@@ -1,12 +1,6 @@
 <?php
 
 class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $product_helper;
-	private $variation_helper;
-	private $coupon_helper;
-	private $helper;
 
 	public function setUp(): void {
 		// before
@@ -49,6 +43,31 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	private function key_to_cursor( $key ) {
 		return base64_encode( "CI:{$key}" );
+	}
+
+	public function getExpectedCartData() {
+		$cart = WC()->cart;
+		return array(
+			$this->expectedObject( 'cart.subtotal', \wc_graphql_price( $cart->get_subtotal() ) ),
+			$this->expectedObject( 'cart.subtotalTax', \wc_graphql_price( $cart->get_subtotal_tax() ) ),
+			$this->expectedObject( 'cart.discountTotal', \wc_graphql_price( $cart->get_discount_total() ) ),
+			$this->expectedObject( 'cart.discountTax', \wc_graphql_price( $cart->get_discount_tax() ) ),
+			$this->expectedObject( 'cart.shippingTotal', \wc_graphql_price( $cart->get_shipping_total() ) ),
+			$this->expectedObject( 'cart.shippingTax', \wc_graphql_price( $cart->get_shipping_tax() ) ),
+			$this->expectedObject( 'cart.contentsTotal', \wc_graphql_price( $cart->get_cart_contents_total() ) ),
+			$this->expectedObject( 'cart.contentsTax', \wc_graphql_price( $cart->get_cart_contents_tax() ) ),
+			$this->expectedObject( 'cart.feeTotal', \wc_graphql_price( $cart->get_fee_total() ) ),
+			$this->expectedObject( 'cart.feeTax', \wc_graphql_price( $cart->get_fee_tax() ) ),
+			$this->expectedObject( 'cart.total', \wc_graphql_price( $cart->get_totals()['total'] ) ),
+			$this->expectedObject( 'cart.totalTax', \wc_graphql_price( $cart->get_total_tax() ) ),
+			$this->expectedObject( 'cart.isEmpty', $cart->is_empty() ),
+			$this->expectedObject( 'cart.displayPricesIncludeTax', $cart->display_prices_including_tax() ),
+			$this->expectedObject( 'cart.needsShippingAddress', $cart->needs_shipping_address() ),
+		);
+	}
+
+	public function getExpectedCartItemData( $cart_item_key ) {
+
 	}
 
 	// tests

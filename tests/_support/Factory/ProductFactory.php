@@ -11,7 +11,7 @@ namespace Tests\WPGraphQL\WooCommerce\Factory;
 use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
 
 /**
- * Product Factory class for testing.
+ * Product factory class for testing.
  */
 class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	function __construct( $factory = null ) {
@@ -19,7 +19,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		$name = Dummy::instance()->product();
 		$this->default_generation_definitions = array(
-			'product_class'     => '\WC_Product_Simple',
+			'product_class' => '\WC_Product_Simple',
 		);
 	}
 
@@ -61,7 +61,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		$object->save();
 	}
 
-	function get_object_by_id( $product_id ) {
+	public function get_object_by_id( $product_id ) {
 		return \wc_get_product( absint( $product_id ) );
 	}
 

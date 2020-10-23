@@ -1,13 +1,6 @@
 <?php
 
 class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-    private $shop_manager;
-    private $customer;
-    private $coupon;
-    private $product;
-    private $variation;
-    private $cart;
-
     public function setUp(): void {
         parent::setUp();
 
@@ -23,10 +16,6 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
         \WC()->cart->empty_cart( true );
 
         parent::tearDown();
-	}
-
-	public function getExpectedCartItemData( $cart_item_key ) {
-
 	}
 
     private function addToCart( $input ) {
@@ -68,21 +57,6 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
                     clientMutationId
                     cartItems {
                         key
-                        product {
-                            node {
-                                id
-                            }
-                        }
-                        variation {
-							node {
-								id
-							}
-                        }
-                        quantity
-                        subtotal
-                        subtotalTax
-                        total
-                        tax
                     }
                 }
             }
@@ -99,21 +73,6 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
                     clientMutationId
                     cartItems {
                         key
-                        product {
-                            node {
-                                id
-                            }
-                        }
-                        variation {
-							node {
-								id
-							}
-                        }
-                        quantity
-                        subtotal
-                        subtotalTax
-                        total
-                        tax
                     }
                 }
             }
@@ -135,11 +94,15 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             )
         );
 
-        // Retrieve cart item key.
+        // Confirm valid response
 		$this->assertIsValidQueryResponse( $response );
+
+		// Get/validate cart item key.
 		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );
 		$this->assertNotEmpty( $cart_item_key );
-		$cart      = wc_get_cart();
+
+		// Get cart item data.
+		$cart      = \WC()->cart;
         $cart_item = $cart->get_cart_item( $cart_item_key );
         $this->assertNotEmpty( $cart_item );
 
@@ -148,7 +111,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			array(
 				$this->expectedObject( 'addToCart.clientMutationId', 'someId' ),
 				$this->expectedObject( 'addToCart.cartItem.key', $cart_item_key ),
-				$this->expectedObject( 'addToCart.cartItem.product.id', $this->toRelay( 'product', $product_id ) ),
+				$this->expectedObject( 'addToCart.cartItem.product.id', $this->toRelayId( 'product', $product_id ) ),
 				$this->expectedObject( 'addToCart.cartItem.variation', 'NULL' ),
 				$this->expectedObject( 'addToCart.cartItem.quantity', 2 ),
 				$this->expectedObject( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
@@ -160,8 +123,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
     }
 
     public function testAddToCartMutationWithProductVariation() {
-        $ids    = $this->variation->create( $this->product->create_variable() );
-        $actual = $this->addToCart(
+        $ids      = $this->factory->product_variation->createSome();
+        $response = $this->addToCart(
             array(
                 'clientMutationId' => 'someId',
                 'productId'        => $ids['product'],
@@ -176,84 +139,57 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             )
         );
 
-        // Retrieve cart item key.
-        $this->assertArrayHasKey( 'data', $actual );
-        $this->assertArrayHasKey( 'addToCart', $actual['data'] );
-        $this->assertArrayHasKey( 'cartItem', $actual['data']['addToCart'] );
-        $this->assertArrayHasKey( 'key', $actual['data']['addToCart']['cartItem'] );
-        $key = $actual['data']['addToCart']['cartItem']['key'];
+        // Confirm valid response
+		$this->assertIsValidQueryResponse( $response );
 
-        // Get newly created cart item data.
-        $cart = WC()->cart;
-        $cart_item = $cart->get_cart_item( $key );
+		// Get/validate cart item key.
+		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );
+		$this->assertNotEmpty( $cart_item_key );
+
+		// Get cart item data.
+		$cart      = \WC()->cart;
+        $cart_item = $cart->get_cart_item( $cart_item_key );
         $this->assertNotEmpty( $cart_item );
 
-        $expected = array(
-            'data' => array(
-                'addToCart' => array(
-                    'clientMutationId' => 'someId',
-                    'cartItem'         => array(
-                        'key'          => $cart_item['key'],
-                        'product'      => array(
-							'node' => array(
-								'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
-							),
-                        ),
-                        'variation'    => array(
-							'node' => array(
-								'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
-							),
-                        ),
-                        'quantity'     => $cart_item['quantity'],
-                        'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
-                        'subtotalTax'  => wc_graphql_price( $cart_item['line_subtotal_tax'] ),
-                        'total'        => wc_graphql_price( $cart_item['line_total'] ),
-                        'tax'          => wc_graphql_price( $cart_item['line_tax'] ),
-                    ),
-                ),
-            ),
-        );
-        $this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful(
+			$response,
+			array(
+				$this->expectedObject( 'addToCart.clientMutationId', 'someId' ),
+				$this->expectedObject( 'addToCart.cartItem.key', $cart_item_key ),
+				$this->expectedObject( 'addToCart.cartItem.product.id', $this->toRelayId( 'product', $ids['product'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.variation.id', $this->toRelayId( 'product_variation', $ids['variations'][0] ) ),
+				$this->expectedObject( 'addToCart.cartItem.quantity', 3 ),
+				$this->expectedObject( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.subtotalTax', wc_graphql_price( $cart_item['line_subtotal_tax'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.total', wc_graphql_price( $cart_item['line_total'] ) ),
+				$this->expectedObject( 'addToCart.cartItem.tax', wc_graphql_price( $cart_item['line_tax'] ) ),
+			)
+		);
     }
 
     public function testUpdateCartItemQuantitiesMutation() {
-        // Create products.
-        $product_1 = $this->product->create_simple();
-        $product_2 = $this->product->create_simple();
-        $product_3 = $this->product->create_simple();
+        // Create/add some products to the cart.
+        $cart_item_data = array(
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 5,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 1,
+			),
+		);
 
-        // Add items to cart and retrieve keys
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $product_1,
-                'quantity'         => 2,
-            )
-        );
-        $this->assertArrayHasKey('data', $addToCart );
-        $key_1 = $addToCart['data']['addToCart']['cartItem']['key'];
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $product_2,
-                'quantity'         => 5,
-            )
-        );
-        $this->assertArrayHasKey('data', $addToCart );
-        $key_2 = $addToCart['data']['addToCart']['cartItem']['key'];
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $product_3,
-                'quantity'         => 1,
-            )
-        );
-        $this->assertArrayHasKey('data', $addToCart );
-        $key_3 = $addToCart['data']['addToCart']['cartItem']['key'];
+		// Store cart item keys for use in mutation.
+		$keys = $this->factory->cart->add( ...$cart_item_data );
 
-        // Update items mutation.
-        $mutation = '
-            mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
+        // Define mutation.
+        $query = '
+            mutation( $input: UpdateItemQuantitiesInput! ) {
                 updateItemQuantities( input: $input ) {
                     clientMutationId
                     updated {
@@ -270,377 +206,162 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
                     }
                 }
             }
-        ';
+		';
 
-        $actual = $this->graphql(
-			$mutation,
-			'updateItemQuantities',
-			array(
-				'input' => array(
-					'clientMutationId' => 'someId',
-					'items'            => array(
-						array( 'key' => $key_1, 'quantity' => 4 ),
-						array( 'key' => $key_2, 'quantity' => 2 ),
-						array( 'key' => $key_3, 'quantity' => 0 ),
-					),
-				),
-			)
-        );
-
-        // Check cart item data.
-		$expected = array(
-			'data' => array(
-				'updateItemQuantities' => array(
-					'clientMutationId' => 'someId',
-					'updated' => array(
-                        array( 'key' => $key_1, 'quantity' => 4 ),
-                        array( 'key' => $key_2, 'quantity' => 2 ),
-                    ),
-                    'removed' => array(
-                        array( 'key' => $key_3, 'quantity' => 1 ),
-                    ),
-                    'items'   => array(
-                        array( 'key' => $key_1, 'quantity' => 4 ),
-                        array( 'key' => $key_2, 'quantity' => 2 ),
-                        array( 'key' => $key_3, 'quantity' => 1 ),
-                    )
+		// Define variables
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'items'            => array(
+					array( 'key' => $keys[0], 'quantity' => 4 ),
+					array( 'key' => $keys[1], 'quantity' => 2 ),
+					array( 'key' => $keys[2], 'quantity' => 0 ),
 				),
 			),
 		);
-		$this->assertEquals( $expected, $actual );
+
+		// Execute mutation.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			array(
+				$this->expectedObject( 'updateItemQuantities.clientMutationId', 'someId' ),
+				$this->expectedNode( 'updateItemQuantities.updated', array( 'key' => $keys[0], 'quantity' => 4 ) ),
+				$this->expectedNode( 'updateItemQuantities.updated', array( 'key' => $keys[1], 'quantity' => 2 ) ),
+				$this->expectedNode( 'updateItemQuantities.removed', array( 'key' => $keys[2], 'quantity' => 1 ) ),
+				$this->expectedNode( 'updateItemQuantities.items', array( 'key' => $keys[0], 'quantity' => 4 ) ),
+				$this->expectedNode( 'updateItemQuantities.items', array( 'key' => $keys[1], 'quantity' => 2 ) ),
+				$this->expectedNode( 'updateItemQuantities.items', array( 'key' => $keys[2], 'quantity' => 1 ) ),
+			)
+		);
     }
 
     public function testRemoveItemsFromCartMutation() {
-        $ids  = $this->variation->create( $this->product->create_variable() );
-        $addToCart = $this->addToCart(
+		// Create/add some products to the cart.
+        $cart_item_data = array(
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 5,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 1,
+			)
+		);
+
+		// Store cart item keys for use in mutation.
+		$keys = $this->factory->cart->add( ...$cart_item_data );
+
+		// Define expected response data.
+		$expected = array( $this->expectedObject( 'removeItemsFromCart.clientMutationId', 'someId' ) );
+		foreach( $keys as $key ) {
+			$expected[] = $this->expectedNode( 'removeItemsFromCart.cartItems', compact( 'key' ) );
+		}
+
+		// Execute mutation w/ "keys" array.
+        $response = $this->removeItemsFromCart(
             array(
                 'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 2,
-				'variationId'      => $ids['variations'][0],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
+                'keys'             => $keys,
             )
-        );
+		);
 
-        // Retrieve cart item key.
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem = $addToCart['data']['addToCart']['cartItem'];
-        $key = $cartItem['key'];
+		$this->assertQuerySuccessful( $response, $expected );
 
-        $actual = $this->removeItemsFromCart(
-            array(
-                'clientMutationId' => 'someId',
-                'keys'             => array( $key ),
-            )
-        );
+		// Confirm none of the items in cart.
+		foreach( $keys as $key ) {
+			$this->assertEmpty(
+				\WC()->cart->get_cart_item( $key ),
+				"{$key} still in cart after \"removeItemsFromCart\" mutation."
+			);
+		}
 
-        $expected = array(
-            'data' => array(
-                'removeItemsFromCart' => array(
-                    'clientMutationId' => 'someId',
-                    'cartItems'         => array( $cartItem ),
-                ),
-            ),
-        );
-
-        $this->assertEquals( $expected, $actual );
-        $this->assertEmpty( \WC()->cart->get_cart_item( $key ) );
-    }
-
-    public function testRemoveItemsFromCartMutationWithMultipleItems() {
-        // Create products
-        $ids  = $this->variation->create( $this->product->create_variable() );
-
-        // Add item 1.
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 2,
-                'variationId'      => $ids['variations'][0],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
-            )
-        );
-
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem1 = $addToCart['data']['addToCart']['cartItem'];
-        $key1 = $cartItem1['key'];
-
-        // Add item 2.
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 3,
-                'variationId'      => $ids['variations'][1],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
-            )
-        );
-
-        // Retrieve cart item key.
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem2 = $addToCart['data']['addToCart']['cartItem'];
-        $key2 = $cartItem2['key'];
-
-        $actual = $this->removeItemsFromCart(
-            array(
-                'clientMutationId' => 'someId',
-                'keys'             => array( $key1, $key2 ),
-            )
-        );
-
-        $expected = array(
-            'data' => array(
-                'removeItemsFromCart' => array(
-                    'clientMutationId' => 'someId',
-                    'cartItems'         => array( $cartItem1, $cartItem2 ),
-                ),
-            ),
-        );
-
-        $this->assertEquals( $expected, $actual );
-        $this->assertEmpty( \WC()->cart->get_cart_item( $key1 ) );
-        $this->assertEmpty( \WC()->cart->get_cart_item( $key2 ) );
-    }
-
-    public function testRemoveItemsFromCartMutationUsingAllField() {
-        // Create products
-        $ids  = $this->variation->create( $this->product->create_variable() );
-
-        // Add item 1.
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 2,
-                'variationId'      => $ids['variations'][0],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
-            )
-        );
-
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem1 = $addToCart['data']['addToCart']['cartItem'];
-        $key1 = $cartItem1['key'];
-
-        // Add item 2.
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 3,
-                'variationId'      => $ids['variations'][1],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
-            )
-        );
-
-        // Retrieve cart item key.
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem2 = $addToCart['data']['addToCart']['cartItem'];
-        $key2 = $cartItem2['key'];
-
-        $actual = $this->removeItemsFromCart(
+		// Add more items and execute mutation with "all" flag.
+		$keys = $this->factory->cart->add( ...$cart_item_data );
+		$response = $this->removeItemsFromCart(
             array(
                 'clientMutationId' => 'someId',
                 'all'              => true
             )
-        );
+		);
 
-        $expected = array(
-            'data' => array(
-                'removeItemsFromCart' => array(
-                    'clientMutationId' => 'someId',
-                    'cartItems'         => array( $cartItem1, $cartItem2 ),
-                ),
-            ),
-        );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
-        $this->assertTrue( \WC()->cart->is_empty() );
+		// Confirm none of the items in cart.
+		foreach( $keys as $key ) {
+			$this->assertEmpty(
+				\WC()->cart->get_cart_item( $key ),
+				"{$key} still in cart after \"removeItemsFromCart\" mutation with \"all\" flag."
+			);
+		}
     }
 
     public function testRestoreCartItemsMutation() {
-        // Create products
-        $ids  = $this->variation->create( $this->product->create_variable() );
+        // Create/add some products to the cart.
+		$cart_item_data = array(
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 5,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 1,
+			)
+		);
+		$keys = $this->factory->cart->add( ...$cart_item_data );
+		$this->factory->cart->remove( ...$keys );
 
-        // Add item.
-        $addToCart = $this->addToCart(
+        $response = $this->restoreItems(
             array(
                 'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 2,
-                'variationId'      => $ids['variations'][0],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
+                'keys'             => $keys,
             )
-        );
+		);
 
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem = $addToCart['data']['addToCart']['cartItem'];
-        $key = $cartItem['key'];
+		$expected = array( $this->expectedObject( 'restoreCartItems.clientMutationId', 'someId' ) );
+		foreach( $keys as $key ) {
+			$expected[] = $this->expectedNode( 'restoreCartItems.cartItems', compact( 'key' ) );
+		}
 
-        // Remove item.
-        $this->removeItemsFromCart(
-            array(
-                'clientMutationId' => 'someId',
-                'all'              => true
-            )
-        );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        $actual = $this->restoreItems(
-            array(
-                'clientMutationId' => 'someId',
-                'keys'             => array( $key ),
-            )
-        );
-
-        $expected = array(
-            'data' => array(
-                'restoreCartItems' => array(
-                    'clientMutationId' => 'someId',
-                    'cartItems'        => array( $cartItem ),
-                ),
-            ),
-        );
-
-        $this->assertEquals( $expected, $actual );
-        $this->assertNotEmpty( \WC()->cart->get_cart_item( $key ) );
-    }
-
-    public function testRestoreCartItemsMutationWithMultipleItems() {
-        // Create products
-        $ids  = $this->variation->create( $this->product->create_variable() );
-
-        // Add item 1.
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 2,
-                'variationId'      => $ids['variations'][0],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
-            )
-        );
-
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem1 = $addToCart['data']['addToCart']['cartItem'];
-        $key1 = $cartItem1['key'];
-
-        // Add item 2.
-        $addToCart = $this->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 1,
-                'variationId'      => $ids['variations'][1],
-				'variation'        => array(
-					array(
-						'attributeName'  => 'color',
-						'attributeValue' => 'red',
-					),
-				),
-            )
-        );
-
-        $this->assertArrayHasKey('data', $addToCart );
-        $this->assertArrayHasKey('addToCart', $addToCart['data'] );
-        $this->assertArrayHasKey('cartItem', $addToCart['data']['addToCart'] );
-        $cartItem2 = $addToCart['data']['addToCart']['cartItem'];
-        $key2 = $cartItem2['key'];
-
-        // Remove items.
-        $this->removeItemsFromCart(
-            array(
-                'clientMutationId' => 'someId',
-                'all'              => true
-            )
-        );
-
-        $actual = $this->restoreItems(
-            array(
-                'clientMutationId' => 'someId',
-                'keys'             => array( $key1, $key2 ),
-            )
-        );
-
-        $expected = array(
-            'data' => array(
-                'restoreCartItems' => array(
-                    'clientMutationId' => 'someId',
-                    'cartItems'        => array( $cartItem1, $cartItem2 ),
-                ),
-            ),
-        );
-
-        $this->assertEquals( $expected, $actual );
-        $this->assertNotEmpty( \WC()->cart->get_cart_item( $key1 ) );
-        $this->assertNotEmpty( \WC()->cart->get_cart_item( $key2 ) );
+		// Confirm items in cart.
+		foreach( $keys as $key ) {
+			$this->assertNotEmpty(
+				\WC()->cart->get_cart_item( $key ),
+				"{$key} not found in cart after \"restoreCartItems\" mutation."
+			);
+		}
     }
 
     public function testEmptyCartMutation() {
-        $cart = WC()->cart;
-
-        // Create products.
-        $ids  = $this->variation->create( $this->product->create_variable() );
-
-        // Add items to carts.
-        $cart_item = $cart->get_cart_item(
-            $cart->add_to_cart(
-				$ids['product'],
-				2,
-				$ids['variations'][0],
-				array( 'attribute_pa_color' => 'red' )
+        // Create/add some products to the cart.
+		$cart_item_data = array(
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 5,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 1,
 			)
-        );
+		);
+		$keys = $this->factory->cart->add( ...$cart_item_data );
 
-        $mutation = '
+        $query = '
             mutation emptyCart( $input: EmptyCartInput! ) {
                 emptyCart( input: $input ) {
                     clientMutationId
