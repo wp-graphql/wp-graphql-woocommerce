@@ -29,7 +29,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		return array(
 			$this->expectedObject( 'product.id', $this->toRelayId( 'product', $product_id ) ),
-			$this->expectedObject( 'product.productId', $product->get_id() ),
+			$this->expectedObject( 'product.databaseId', $product->get_id() ),
 			$this->expectedObject( 'product.name', $product->get_name() ),
 			$this->expectedObject( 'product.slug', $product->get_slug() ),
 			$this->expectedObject( 'product.date', $product->get_date_created()->__toString() ),
@@ -371,8 +371,11 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedNode(
 				'product.productCategories.nodes',
 				array(
-					'name'     => 'category-five',
-					'children' => array(
+					'name'      => 'category-five',
+					'image'     => null,
+					'display'   => 'DEFAULT',
+					'menuOrder' => 0,
+					'children'  => array(
 						'nodes' => array(
 							array( 'name' => 'category-six' ),
 						),
@@ -1241,7 +1244,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'post_content' => 'Lorem ipsum dolor...',
 			)
 		);
-		$product_id = $this->helper->create_simple(
+		$product_id = $this->factory->product->createSimple(
 			array( 'gallery_image_ids' => array( $image_id ) )
 		);
 
@@ -1257,23 +1260,16 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			}
 		';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $product_id ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'product' => array (
-					'galleryImages' => array(
-						'nodes' => array(
-							array( 'id' => \GraphQLRelay\Relay::toGlobalId( 'post', $image_id ) )
-						)
-					)
-				),
-			),
+		$variables = array( 'id' => $this->toRelayId( 'product', $product_id ) );
+		$response    = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful(
+			$response,
+			array(
+				$this->expectedNode(
+					'product.galleryImages.nodes',
+					array( 'id' => $this->toRelayId( 'post', $image_id ) )
+				)
+			)
 		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
 	}
 }
