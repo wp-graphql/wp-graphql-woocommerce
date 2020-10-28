@@ -28,7 +28,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * Creates users and loads factories.
 	 */
-	function setUp(): void {
+	public function setUp(): void {
 		parent::setUp();
 
 		// Create users.
@@ -40,6 +40,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			'Product',
 			'ProductVariation',
 			'Cart',
+			'Coupon',
 		);
 
 		foreach ( $factories as $factory ) {
@@ -47,6 +48,13 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			$factory_class = '\\Tests\\WPGraphQL\\WooCommerce\\Factory\\' . $factory . 'Factory';
 			$this->factory->{$factory_name} = new $factory_class( $this->factory );
 		}
+	}
+
+	public function tearDown(): void {
+		\WC()->cart->empty_cart( true );
+
+		// then
+		parent::tearDown();
 	}
 
 	/**

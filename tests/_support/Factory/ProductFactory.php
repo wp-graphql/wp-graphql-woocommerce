@@ -2,7 +2,7 @@
 /**
  * Factory class for the WooCommerce's Product data objects.
  *
- * @since v0.6.0
+ * @since v0.6.1
  * @package Tests\WPGraphQL\WooCommerce\Factory
  */
 
@@ -17,7 +17,6 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$name = Dummy::instance()->product();
 		$this->default_generation_definitions = array(
 			'product_class' => '\WC_Product_Simple',
 		);
