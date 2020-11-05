@@ -46,11 +46,11 @@ class Coupons {
 	public static function get_connection_config( $args = array() ): array {
 		$connection_config = array_merge(
 			array(
-				'fromType'           => 'RootQuery',
-				'toType'             => 'Coupon',
-				'fromFieldName'      => 'coupons',
-				'connectionArgs'     => self::get_connection_args(),
-				'resolve'            => function ( $source, $args, $context, $info ) {
+				'fromType'       => 'RootQuery',
+				'toType'         => 'Coupon',
+				'fromFieldName'  => 'coupons',
+				'connectionArgs' => self::get_connection_args(),
+				'resolve'        => function ( $source, $args, $context, $info ) {
 					return Factory::resolve_coupon_connection( $source, $args, $context, $info );
 				},
 			),
