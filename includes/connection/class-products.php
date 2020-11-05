@@ -312,7 +312,7 @@ class Products {
 	 * @return array
 	 */
 	public static function get_connection_config( $args = array() ): array {
-		return array_merge(
+		$connection_config = array_merge(
 			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Product',
@@ -324,6 +324,10 @@ class Products {
 			),
 			$args
 		);
+
+		$connection_config['connectionTypeName'] = $connection_config['fromType'] . $connection_config['fromFieldName'] . 'To' . $connection_config['toType'] . 'Connection';
+
+		return $connection_config;
 	}
 
 	/**

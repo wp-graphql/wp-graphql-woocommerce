@@ -49,11 +49,11 @@ class WC_Terms extends TermObjects {
 										'toType'        => $tax_object->graphql_single_name,
 										'fromFieldName' => $tax_object->graphql_plural_name,
 										'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
-											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );											
-                                            
+											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
+
 											// Get the term ids that are associated with this $source
 											$terms = wp_list_pluck( get_the_terms( $source->ID, $tax_object->name ), 'term_id' );
-											
+
 											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $terms ) ? $terms : array( '0' ) );
 
 											return $resolver->get_connection();
@@ -118,5 +118,23 @@ class WC_Terms extends TermObjects {
 				},
 			)
 		);
+	}
+
+	/**
+	 * Given the Taxonomy Object and an array of args, this returns an array of args for use in
+	 * registering a connection.
+	 *
+	 * @param \WP_Taxonomy $tax_object        The taxonomy object for the taxonomy having a
+	 *                                        connection registered to it
+	 * @param array        $args              The custom args to modify the connection registration
+	 *
+	 * @return array
+	 */
+	public static function get_connection_config( $tax_object, $args = [] ) {
+		$connection_config = parent::get_connection_config( $tax_object, $args );
+
+		$connection_config['connectionTypeName'] = $connection_config['fromType'] . $connection_config['fromFieldName'] . 'To' . $connection_config['toType'] . 'Connection';
+
+		return $connection_config;
 	}
 }
