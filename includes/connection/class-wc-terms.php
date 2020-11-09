@@ -61,8 +61,8 @@ class WC_Terms extends TermObjects {
 											if ( ! empty( $terms ) ) {
 												$term_ids = wp_list_pluck( $terms, 'term_id' );
 											}
-											
-											$resolver->set_query_arg( 'term_taxonomy_id', $terms_ids );
+
+											$resolver->set_query_arg( 'term_taxonomy_id', $term_ids );
 
 											return $resolver->get_connection();
 										}
