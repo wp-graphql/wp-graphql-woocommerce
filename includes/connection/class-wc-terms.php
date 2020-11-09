@@ -51,10 +51,18 @@ class WC_Terms extends TermObjects {
 										'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );											
                                             
-											// Get the term ids that are associated with this $source
-											$terms = wp_list_pluck( get_the_terms( $source->ID, $tax_object->name ), 'term_id' );
+											// Set up the term_ids array for the query arguments.
+											$term_ids = [];
 											
-											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $terms ) ? $terms : array( '0' ) );
+											// Get the terms that are associated with this $source.
+											$terms = get_the_terms( $source->ID, $tax_object->name );
+											
+											// Extract the term ids if there are terms.
+											if ( ! empty( $terms ) ) {
+												$term_ids = wp_list_pluck( $terms, 'term_id' );
+											}
+											
+											$resolver->set_query_arg( 'term_taxonomy_id', $terms_ids );
 
 											return $resolver->get_connection();
 										}
