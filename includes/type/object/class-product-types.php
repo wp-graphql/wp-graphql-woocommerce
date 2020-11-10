@@ -259,7 +259,7 @@ class Product_Types {
 					self::get_pricing_and_tax_fields(),
 					self::get_inventory_fields(),
 					self::get_shipping_fields(),
-					self::get_virtual_data_fields(),
+					self::get_virtual_data_fields()
 				),
 			)
 		);
