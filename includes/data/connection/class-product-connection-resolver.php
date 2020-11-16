@@ -584,7 +584,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function set_query_arg( $key, $value, $overwrite = false ) {
 		if ( ! empty( $this->query_args[ $key ] )
-			&& is_array( $this->query_args[ $key ] ) && !$overwrite
+			&& is_array( $this->query_args[ $key ] ) && ! $overwrite
 		) {
 			$this->query_args[ $key ][] = $value;
 		} else {
