@@ -53,7 +53,7 @@ class WC_Terms extends TermObjects {
 
 											$term_ids = \wc_get_object_terms( $source->ID, $tax_object->name, 'term_id' );
 
-											$resolver->set_query_arg( 'term_taxonomy_id', $term_ids );
+											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : array( '0' ) );
 
 											return $resolver->get_connection();
 										}
