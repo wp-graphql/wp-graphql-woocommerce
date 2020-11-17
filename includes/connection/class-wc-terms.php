@@ -52,13 +52,8 @@ class WC_Terms extends TermObjects {
 											$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 
 											$term_ids = \wc_get_object_terms( $source->ID, $tax_object->name, 'term_id' );
-											
-											// Guard against empty terms to prevent all terms from returning
-											if ( empty( $term_ids ) ) {
-												return;
-											}
 
-											$resolver->set_query_arg( 'term_taxonomy_id', $term_ids );
+											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : array( '0' ) );
 
 											return $resolver->get_connection();
 										}
