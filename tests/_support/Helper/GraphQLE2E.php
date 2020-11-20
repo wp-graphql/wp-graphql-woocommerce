@@ -620,7 +620,10 @@ class GraphQLE2E extends \Codeception\Module {
         $rest->seeResponseIsJson();
 
         // Get response.
-        $response = json_decode( $rest->grabResponse(), true );
+		$response = json_decode( $rest->grabResponse(), true );
+
+		// Remove extensions field (temporary fix).
+		unset( $response['extensions'] );
 
         // use --debug flag to view
         codecept_debug( json_encode( $response, JSON_PRETTY_PRINT ) );
