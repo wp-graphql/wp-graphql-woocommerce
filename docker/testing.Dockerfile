@@ -51,9 +51,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 # Add composer global binaries to PATH
 ENV PATH "$PATH:~/.composer/vendor/bin"
 
-# Install parallel installation composer plugin by Hiraku NAKANO https://github.com/hirak/prestissimo
-RUN composer global require hirak/prestissimo
-
 # Configure php
 RUN echo "date.timezone = UTC" >> /usr/local/etc/php/php.ini
 
