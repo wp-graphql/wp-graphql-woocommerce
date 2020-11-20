@@ -875,7 +875,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $variables = array(
             'input' => array(
                 'clientMutationId' => 'someId',
-                'code'             => $coupon_id,
+                'code'             => "$coupon_id",
             ),
         );
         $actual    = $this->graphql( $mutation, null, $variables );
