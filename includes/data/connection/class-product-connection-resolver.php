@@ -569,27 +569,4 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function is_valid_offset( $offset ) {
 		return $this->is_valid_post_offset( $offset );
 	}
-
-	/**
-	 * Works like "AbstractConnectionResolver::set_query_arg()" with exception to
-	 * array values. If the query argument already existed and both values are arrays
-	 * the array with "array_intersect()". This behavior can be bypassed using
-	 * the "overwrite" parameter.
-	 *
-	 * @param string  $key        The key of the query arg to set
-	 * @param mixed   $value      The value of the query arg to set
-	 * @param boolean $overwrite  If true, array values are overwritten.
-	 *
-	 * @return Product_Connection_Resolver
-	 */
-	public function set_query_arg( $key, $value, $overwrite = false ) {
-		if ( ! empty( $this->query_args[ $key ] )
-			&& is_array( $this->query_args[ $key ] ) && $overwrite
-		) {
-			$this->query_args[ $key ] = array_intersect( $value, $this->query_args[ $key ] );
-		} else {
-			$this->query_args[ $key ] = $value;
-		}
-		return $this;
-	}
 }
