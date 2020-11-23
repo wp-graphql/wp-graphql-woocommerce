@@ -18,6 +18,26 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
 		$this->coupon_helper    = $this->getModule('\Helper\Wpunit')->coupon();
 		$this->helper           = $this->getModule('\Helper\Wpunit')->cart();
+		$this->tax              = $this->getModule('\Helper\Wpunit')->tax_rate();
+
+        // Turn on tax calculations. Important!
+        update_option( 'woocommerce_prices_include_tax', 'no' );
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
+
+        // Create a tax rate.
+        $this->tax->create(
+            array(
+                'country'  => '',
+                'state'    => '',
+                'rate'     => 20.000,
+                'name'     => 'VAT',
+                'priority' => '1',
+                'compound' => '0',
+                'shipping' => '1',
+                'class'    => ''
+            )
+        );
 	}
 
 	public function tearDown() {
@@ -55,6 +75,12 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 					isEmpty
 					displayPricesIncludeTax
 					needsShippingAddress
+					totalTaxes {
+						id
+						isCompound
+						amount
+						label
+					}
 				}
 			}
 		';

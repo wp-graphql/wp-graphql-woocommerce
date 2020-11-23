@@ -25,6 +25,7 @@ class Cart_Type {
 	 */
 	public static function register() {
 		self::register_cart_fee();
+		self::register_cart_tax();
 		self::register_cart_item();
 		self::register_cart();
 	}
@@ -50,7 +51,7 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Cart subtotal tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
+							$price = ! is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
 							return \wc_graphql_price( $price );
 						},
 					),
@@ -170,6 +171,14 @@ class Cart_Type {
 						'resolve'     => function( $source ) {
 							$price = ! is_null( $source->get_total_tax() ) ? $source->get_total_tax() : 0;
 							return \wc_graphql_price( $price );
+						},
+					),
+					'totalTaxes'								=> array(
+						'type'				=> array( 'list_of' => 'CartTax' ),
+						'description'	=> __( 'Cart total taxes itemized', 'wp-graphql-woocommerce' ),
+						'resolve'	 		=> function( $source ) {
+							$taxes = $source->get_tax_totals();
+							return ! empty( $taxes ) ? array_values( $taxes ) : null;
 						},
 					),
 					'isEmpty'                  => array(
@@ -337,6 +346,47 @@ class Cart_Type {
 						'description' => __( 'Fee total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->total ) ? $source->total : null;
+						},
+					),
+				),
+			)
+		);
+	}
+	/**
+	 * Registers CartTax type
+	 */
+	public static function register_cart_tax() {
+		register_graphql_object_type(
+			'CartTax',
+			array(
+				'description' => __( 'An itemized cart tax item', 'wp-graphql-woocommerce' ),
+				'fields'      => array(
+					'id'       => array(
+						'type'        => array( 'non_null' => 'ID' ),
+						'description' => __( 'Tax Rate ID', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return ! empty( $source->tax_rate_id ) ? $source->tax_rate_id : null;
+						},
+					),
+					'label'     => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Tax label', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return ! empty( $source->label ) ? $source->label : null;
+						},
+					),
+					'isCompound'  => array(
+						'type'        => 'Boolean',
+						'description' => __( 'Is tax compound?', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return ! empty( $source->is_compound ) ? $source->is_compound : null;
+						},
+					),
+					'amount'   => array(
+						'type'        => 'String',
+						'description' => __( 'Tax amount', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return ! empty( $source->amount ) ? \wc_graphql_price( $source->amount ) : null;
 						},
 					),
 				),
