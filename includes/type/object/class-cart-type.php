@@ -51,7 +51,7 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Cart subtotal tax', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
+							$price = ! is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
 							return \wc_graphql_price( $price );
 						},
 					),
@@ -177,8 +177,13 @@ class Cart_Type {
 						'type'				=> array( 'list_of' => 'CartTax' ),
 						'description'	=> __( 'Cart total taxes itemized', 'wp-graphql-woocommerce' ),
 						'resolve'	 		=> function( $source ) {
-							$taxes = $source->get_tax_totals();
-							return ! empty( $taxes ) ? array_values( $taxes ) : null;
+							try {
+								$taxes = $source->get_tax_totals();
+								return ! empty( $taxes ) ? array_values( $taxes ) : null;
+							} catch( \Exception $e ) {
+								wp_send_json( $e->getMessage() );
+							}
+
 						},
 					),
 					'isEmpty'                  => array(

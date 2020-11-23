@@ -27,14 +27,25 @@ class Root_Query {
 			array(
 				'cart'             => array(
 					'type'        => 'Cart',
+					'args'        => array(
+						'recalculateTotals' => array(
+							'type'        => 'Boolean',
+							'description' => __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' ),
+						),
+					),
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-					'resolve'     => function() {
+					'resolve'     => function( $_, $args ) {
 						$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
 						if ( $token_invalid ) {
 							throw new UserError( $token_invalid );
 						}
 
-						return Factory::resolve_cart();
+						$cart = Factory::resolve_cart();
+						if ( ! empty( $args['recalculateTotals'] ) && $args['recalculateTotals'] ) {
+							$cart->calculate_totals();
+						}
+
+						return $cart;
 					},
 				),
 				'cartItem'         => array(

@@ -51,6 +51,19 @@ class CartHelper extends WCG_Helper {
 			'isEmpty'                 => $cart->is_empty(),
 			'displayPricesIncludeTax' => $cart->display_prices_including_tax(),
 			'needsShippingAddress'    => $cart->needs_shipping_address(),
+			'totalTaxes'			  => ! empty( $cart->get_tax_totals() )
+				? array_map(
+					function( $tax_data ) {
+						return array(
+							'id'         => $tax_data->tax_rate_id,
+							'label'      => $tax_data->label,
+							'isCompound' => $tax_data->is_compound,
+							'amount'     => \wc_graphql_price( $tax_data->amount ),
+						);
+					},
+					array_values( $cart->get_tax_totals() )
+				)
+				: null,
 		);
 	}
 
