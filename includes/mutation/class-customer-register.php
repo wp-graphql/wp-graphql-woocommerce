@@ -61,9 +61,9 @@ class Customer_Register {
 			)
     	);
 
-		// Make the username field optional
+		// Make the username field optional.
     	$result['username']['type'] = 'String';
-    
+
     	return $result;
 	}
 
@@ -116,10 +116,10 @@ class Customer_Register {
 			$user_args = UserMutation::prepare_user_object( $input, 'registerCustomer' );
 
 			// Create the user using native WooCommerce function.
-			$user_id = wc_create_new_customer(
+			$user_id = \wc_create_new_customer(
 				$user_args['user_email'],
-				isset($user_args['user_login']) ? $user_args['user_login'] : '',
-				isset($user_args['user_pass']) ? $user_args['user_pass'] : '',
+				isset( $user_args['user_login'] ) ? $user_args['user_login'] : '',
+				isset( $user_args['user_pass'] ) ? $user_args['user_pass'] : '',
 				$user_args
 			);
 
