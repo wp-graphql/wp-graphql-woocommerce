@@ -201,7 +201,6 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		return $actual;
 	}
 
-	// tests
 	public function testRegisterMutationWithoutCustomerInfo() {
 		/**
 		 * Assertion One
@@ -512,6 +511,52 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							array_intersect_key( $this->billing, $this->empty_shipping() )
 						),
 					),
+				),
+			),
+		);
+
+		$this->assertEquals( $expected, $actual );
+	}
+
+	public function testRegisterMutationWithoutAnyInfo() {
+		/**
+		 * Assertion One
+		 *
+		 * Tests mutation without a providing an username and password.
+		 */
+		$actual = $this->registerCustomer(
+			array(
+				'clientMutationId' => 'someId',
+				'email'            => $this->email,
+				'firstName'        => $this->first_name,
+				'lastName'         => $this->last_name,
+			)
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$this->assertTrue( is_a( $user, WP_User::class ) );
+
+		$expected = array(
+			'data' => array(
+				'registerCustomer' => array(
+					'clientMutationId' => 'someId',
+					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
+					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
+					'customer'         => array(
+						'databaseId' => $user->ID,
+						'email'      => $this->email,
+						'username'   => $user->user_login,
+						'firstName'  => $this->first_name,
+						'lastName'   => $this->last_name,
+						'billing'    => $this->empty_billing(),
+						'shipping'   => $this->empty_shipping(),
+					),
+					'viewer'           => array(
+						'userId' => $user->ID,
+					)
 				),
 			),
 		);

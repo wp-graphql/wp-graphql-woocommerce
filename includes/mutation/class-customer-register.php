@@ -43,7 +43,7 @@ class Customer_Register {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array_merge(
+		$result = array_merge(
 			UserRegister::get_input_fields(),
 			array(
 				'billing'               => array(
@@ -59,7 +59,12 @@ class Customer_Register {
 					'description' => __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' ),
 				),
 			)
-		);
+    	);
+
+		// Make the username field optional.
+    	$result['username']['type'] = 'String';
+
+    	return $result;
 	}
 
 	/**
@@ -93,9 +98,6 @@ class Customer_Register {
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			// Validate input.
-			if ( empty( $input['username'] ) ) {
-				throw new UserError( __( 'Please enter a valid account username.', 'wp-graphql-woocommerce' ) );
-			}
 			if ( empty( $input['email'] ) ) {
 				throw new UserError( __( 'Please provide a valid email address.', 'wp-graphql-woocommerce' ) );
 			}
@@ -114,10 +116,10 @@ class Customer_Register {
 			$user_args = UserMutation::prepare_user_object( $input, 'registerCustomer' );
 
 			// Create the user using native WooCommerce function.
-			$user_id = wc_create_new_customer(
+			$user_id = \wc_create_new_customer(
 				$user_args['user_email'],
-				$user_args['user_login'],
-				isset($user_args['user_pass']) ? $user_args['user_pass'] : '',
+				isset( $user_args['user_login'] ) ? $user_args['user_login'] : '',
+				isset( $user_args['user_pass'] ) ? $user_args['user_pass'] : '',
 				$user_args
 			);
 
