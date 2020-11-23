@@ -177,13 +177,8 @@ class Cart_Type {
 						'type'				=> array( 'list_of' => 'CartTax' ),
 						'description'	=> __( 'Cart total taxes itemized', 'wp-graphql-woocommerce' ),
 						'resolve'	 		=> function( $source ) {
-							try {
-								$taxes = $source->get_tax_totals();
-								return ! empty( $taxes ) ? array_values( $taxes ) : null;
-							} catch( \Exception $e ) {
-								wp_send_json( $e->getMessage() );
-							}
-
+							$taxes = $source->get_tax_totals();
+							return ! empty( $taxes ) ? array_values( $taxes ) : null;
 						},
 					),
 					'isEmpty'                  => array(
