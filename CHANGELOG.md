@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.7.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.7.0) (2020-11-24)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.6.2...v0.7.0)
+
+**Fixed:**
+
+- Getting NO SCHEMA AVAILABLE after activating this plugin in GraphiQL Ide [\#357](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/357)
+- Allow multiple "orderby" fields [\#374](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/374) ([loganstellway](https://github.com/loganstellway))
+
+**Closed issues:**
+
+- \[WPGraphQL 0.14.0\] Duplicate Type errors [\#356](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/356)
+- Missing CartItem Variation Field in Cart Query [\#284](https://github.com/wp-graphql/wp-graphql-woocommerce/issues/284)
+
+**Merged pull requests:**
+
+- Release v0.7.0 [\#383](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/383) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.6.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.2) (2020-11-24)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.6.1...v0.6.2)
@@ -104,7 +122,6 @@
 - Remove undefined codecept\_debug\(\) function [\#343](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/343) ([jacobarriola](https://github.com/jacobarriola))
 - Fixed : \#303 [\#304](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/304) ([hwsiew](https://github.com/hwsiew))
 - Skip conditional added to stripe test [\#298](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/298) ([kidunot89](https://github.com/kidunot89))
-- Adds support for changes made in WPGraphQL v0.9.0 [\#288](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/288) ([kidunot89](https://github.com/kidunot89))
 - Update some README.md links [\#287](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/287) ([kidunot89](https://github.com/kidunot89))
 - Adds Local-Testing Contribution Guides [\#242](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/242) ([kidunot89](https://github.com/kidunot89))
 
@@ -291,7 +308,6 @@ Updated tests
 
 - Master to Release v0.3.1 [\#178](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/178) ([kidunot89](https://github.com/kidunot89))
 - Master to v0.3.0 [\#161](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/161) ([kidunot89](https://github.com/kidunot89))
-- v0.2.1 hotfix to master [\#134](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/134) ([kidunot89](https://github.com/kidunot89))
 - Master to v0.2.1 [\#133](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/133) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.3.2-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.2-beta) (2019-12-21)
@@ -331,10 +347,6 @@ Updated tests
 ## [v0.3.1-beta](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.3.1-beta) (2019-11-26)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.3.0-beta...v0.3.1-beta)
-
-**Breaking changes:**
-
-- Fixes WPGraphQL ACF integration [\#158](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/158) ([kidunot89](https://github.com/kidunot89))
 
 **Enhancements:**
 
