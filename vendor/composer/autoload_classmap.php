@@ -38,7 +38,6 @@ return array(
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Payment_Gateway_Connection_Resolver' => $baseDir . '/includes/data/connection/class-payment-gateway-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Attribute_Connection_Resolver' => $baseDir . '/includes/data/connection/class-product-attribute-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Connection_Resolver' => $baseDir . '/includes/data/connection/class-product-connection-resolver.php',
-    'WPGraphQL\\WooCommerce\\Data\\Connection\\Product_Review_Connection_Resolver' => $baseDir . '/includes/data/connection/class-product-review-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Refund_Connection_Resolver' => $baseDir . '/includes/data/connection/class-refund-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Shipping_Method_Connection_Resolver' => $baseDir . '/includes/data/connection/class-shipping-method-connection-resolver.php',
     'WPGraphQL\\WooCommerce\\Data\\Connection\\Tax_Rate_Connection_Resolver' => $baseDir . '/includes/data/connection/class-tax-rate-connection-resolver.php',

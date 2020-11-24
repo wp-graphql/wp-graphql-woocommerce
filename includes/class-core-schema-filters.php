@@ -31,17 +31,6 @@ class Core_Schema_Filters {
 		// Add data-loaders to AppContext.
 		add_filter( 'graphql_data_loaders', array( __CLASS__, 'graphql_data_loaders' ), 10, 2 );
 
-		// Adds connection resolutions for WooGraphQL type to WPGraphQL type connections.
-		add_filter(
-			'graphql_comment_connection_query_args',
-			array(
-				'\WPGraphQL\WooCommerce\Data\Connection\Product_Review_Connection_Resolver',
-				'get_query_args',
-			),
-			10,
-			5
-		);
-
 		// Add node resolvers.
 		add_filter(
 			'graphql_resolve_node',
