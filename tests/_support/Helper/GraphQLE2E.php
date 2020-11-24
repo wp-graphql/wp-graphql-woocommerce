@@ -73,10 +73,14 @@ class GraphQLE2E extends \Codeception\Module {
                     cartItem {
                         key
                         product {
-							id
+							node {
+								id
+							}
                         }
                         variation {
-                            id
+                            node {
+								id
+							}
                         }
                         quantity
                         subtotal
@@ -148,10 +152,14 @@ class GraphQLE2E extends \Codeception\Module {
                     cartItems {
                         key
                         product {
-                            id
+                            node {
+								id
+							}
                         }
                         variation {
-                            id
+                            node {
+								id
+							}
                         }
                         quantity
                         subtotal
@@ -185,10 +193,14 @@ class GraphQLE2E extends \Codeception\Module {
                     cartItems {
                         key
                         product {
-							id
+							node {
+								id
+							}
                         }
                         variation {
-                            id
+                            node {
+								id
+							}
                         }
                         quantity
                         subtotal
@@ -224,10 +236,14 @@ class GraphQLE2E extends \Codeception\Module {
                             nodes {
                                 key
                                 product {
-									id
+									node {
+										id
+									}
                                 }
                                 variation {
-                                    id
+                                    node {
+										id
+									}
                                 }
                                 quantity
                                 subtotal
@@ -301,7 +317,9 @@ class GraphQLE2E extends \Codeception\Module {
                             nodes {
                                 key
                                 product {
-                                    id
+									node {
+										id
+									}
                                 }
                                 quantity
                                 subtotal

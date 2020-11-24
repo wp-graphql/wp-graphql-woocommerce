@@ -43,15 +43,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     cartItem {
                         key
                         product {
-                            ... on SimpleProduct {
-                                id
-                            }
-                            ... on VariableProduct {
+                            node {
                                 id
                             }
                         }
                         variation {
-                            id
+							node {
+								id
+							}
                         }
                         quantity
                         subtotal
@@ -74,15 +73,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     cartItems {
                         key
                         product {
-                            ... on SimpleProduct {
-                                id
-                            }
-                            ... on VariableProduct {
+                            node {
                                 id
                             }
                         }
                         variation {
-                            id
+							node {
+								id
+							}
                         }
                         quantity
                         subtotal
@@ -105,15 +103,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     cartItems {
                         key
                         product {
-                            ... on SimpleProduct {
-                                id
-                            }
-                            ... on VariableProduct {
+                            node {
                                 id
                             }
                         }
                         variation {
-                            id
+							node {
+								id
+							}
                         }
                         quantity
                         subtotal
@@ -159,7 +156,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'cartItem'         => array(
                         'key'          => $cart_item['key'],
                         'product'      => array(
-                            'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+							'node' => array(
+								'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+							),
                         ),
                         'variation'    => null,
                         'quantity'     => $cart_item['quantity'],
@@ -210,10 +209,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     'cartItem'         => array(
                         'key'          => $cart_item['key'],
                         'product'      => array(
-                            'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+							'node' => array(
+								'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+							),
                         ),
                         'variation'    => array(
-                            'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
+							'node' => array(
+								'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
+							),
                         ),
                         'quantity'     => $cart_item['quantity'],
                         'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
@@ -660,15 +663,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 key
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
+                                    node {
                                         id
                                     }
                                 }
                                 variation {
-                                    id
+									node {
+										id
+									}
                                 }
                                 quantity
                                 subtotal
@@ -697,10 +699,14 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                                 array(
                                     'key'          => $cart_item['key'],
                                     'product'      => array(
-                                        'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+										'node' => array(
+											'id'       => $this->product->to_relay_id( $cart_item['product_id'] ),
+										),
                                     ),
                                     'variation'    => array(
-                                        'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
+										'node' => array(
+											'id'       => $this->variation->to_relay_id( $cart_item['variation_id'] ),
+										),
                                     ),
                                     'quantity'     => $cart_item['quantity'],
                                     'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
@@ -756,10 +762,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 key
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
+                                    node {
                                         id
                                     }
                                 }
@@ -803,7 +806,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                                 array(
                                     'key'          => $cart_item['key'],
                                     'product'      => array(
-                                        'id' => $this->product->to_relay_id( $cart_item['product_id'] ),
+										'node' => array(
+											'id' => $this->product->to_relay_id( $cart_item['product_id'] ),
+										),
                                     ),
                                     'quantity'     => $cart_item['quantity'],
                                     'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
@@ -947,10 +952,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                             nodes {
                                 key
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
+                                    node {
                                         id
                                     }
                                 }
@@ -990,7 +992,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                                 array(
                                     'key'          => $cart_item['key'],
                                     'product'      => array(
-                                        'id' => $this->product->to_relay_id( $cart_item['product_id'] ),
+										'node' => array(
+											'id' => $this->product->to_relay_id( $cart_item['product_id'] ),
+										),
                                     ),
                                     'quantity'     => $cart_item['quantity'],
                                     'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
