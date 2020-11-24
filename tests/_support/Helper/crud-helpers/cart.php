@@ -70,16 +70,68 @@ class CartHelper extends WCG_Helper {
 	public function print_item_query( $key ) {
 		$cart = WC()->cart;
 		$item = $cart->get_cart_item( $key );
+
+		$variation      = $item['variation_id'];
+		$variation_data = $item['variation'];
+
+		// Stub any variation attributes for later use.
+		$attributes = array();
+		if ( ! empty( $variation ) ) {
+			$variation = \wc_get_product( $variation );
+			foreach ( $variation->get_attributes() as $name => $default_value ) {
+				if ( isset( $variation_data["attribute_{$name}"] ) ) {
+					$value = $variation_data["attribute_{$name}"];
+				} else {
+					$value = $default_value;
+				}
+
+				$attribute = array(
+					'id'    => base64_encode( $variation->get_id() . '||' . $name . '||' . $value ),
+					'label' => ucwords( str_replace( '_', ' ', \wc_attribute_taxonomy_slug( $name ) ) ),
+				);
+
+				$term = \get_term_by( 'slug', $value, $name );
+				if ( empty( $term ) ) {
+					$attribute = array_merge(
+						$attribute,
+						array(
+							'attributeId' => 0,
+							'name'        => $name,
+							'value'       => $value,
+						)
+					);
+				} else {
+					$attribute = array_merge(
+						$attribute,
+						array(
+							'attributeId' => $term->term_id,
+							'name'        => $term->taxonomy,
+							'value'       => $term->name,
+						)
+					);
+				}
+
+				$attributes[] = $attribute;
+			}
+		}
+
 		return array(
 			'key'         => $item['key'],
 			'product'     => array(
-				'id'         => Relay::toGlobalId( 'product', $item['product_id'] ),
-				'databaseId' => $item['product_id'],
+				'node' => array(
+					'id'         => Relay::toGlobalId( 'product', $item['product_id'] ),
+					'databaseId' => $item['product_id'],
+				),
 			),
-			'variation'   => array(
-				'id'         => Relay::toGlobalId( 'product_variation', $item['variation_id'] ),
-				'databaseId' => $item['variation_id']
-			),
+			'variation'   => ! empty( $variation )
+				? array(
+					'attributes' => $attributes,
+					'node'       => array(
+						'id'         => Relay::toGlobalId( 'product_variation', $item['variation_id'] ),
+						'databaseId' => $item['variation_id'],
+					),
+				)
+				: null,
 			'quantity'    => $item['quantity'],
 			'subtotal'    => \wc_graphql_price( $item['line_subtotal'] ),
 			'subtotalTax' => \wc_graphql_price( $item['line_subtotal_tax'] ),

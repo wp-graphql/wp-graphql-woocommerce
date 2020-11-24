@@ -99,7 +99,11 @@ $cart_query = '
 			contents {
 				nodes {
 					key
-					product{ databaseId }
+					product {
+						node {
+							databaseId
+						}
+					}
 				}
 			}
 		}
@@ -121,7 +125,11 @@ $expected_results = array(
 				'nodes' => array(
 					array(
 						'key'     => $shirt_key,
-						'product' => array( 'databaseId' => $product_catalog['t-shirt'] ),
+						'product' => array(
+							'node' => array(
+								'databaseId' => $product_catalog['t-shirt']
+							),
+						),
 					),
 				),
 			),
@@ -165,7 +173,11 @@ $cart_query = '
 			contents {
 				nodes {
 					key
-					product{ databaseId }
+					product {
+						node {
+							databaseId
+						}
+					}
 				}
 			}
 		}
@@ -180,7 +192,11 @@ $expected_results = array(
 				'nodes' => array(
 					array(
 						'key'     => $shirt_key,
-						'product' => array( 'databaseId' => $product_catalog['t-shirt'] ),
+						'product' => array(
+							'node' => array(
+								'databaseId' => $product_catalog['t-shirt']
+							),
+						),
 					),
 				),
 			),
@@ -224,7 +240,11 @@ $cart_query = '
 			contents {
 				nodes {
 					key
-					product{ databaseId }
+					product {
+						node {
+							databaseId
+						}
+					}
 				}
 			}
 		}
@@ -246,11 +266,19 @@ $expected_results = array(
 				'nodes' => array(
 					array(
 						'key'     => $shirt_key,
-						'product' => array( 'databaseId' => $product_catalog['t-shirt'] ),
+						'product' => array(
+							'node' => array(
+								'databaseId' => $product_catalog['t-shirt']
+							),
+						),
 					),
 					array(
 						'key'     => $belt_key,
-						'product' => array( 'databaseId' => $product_catalog['belt'] ),
+						'product' => array(
+							'node' => array(
+								'databaseId' => $product_catalog['belt']
+							),
+						),
 					),
 				),
 			),
@@ -299,7 +327,11 @@ $cart_query = '
 			contents {
 				nodes {
 					key
-					product{ databaseId }
+					product {
+						node {
+							databaseId
+						}
+					}
 				}
 			}
 		}

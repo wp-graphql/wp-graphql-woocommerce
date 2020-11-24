@@ -112,14 +112,23 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 				cartItem(key: $key) {
 					key
 					product {
-						... on VariableProduct {
+						node {
 							id
 							databaseId
 						}
 					}
 					variation {
-						id
-						databaseId
+						attributes {
+							id
+							attributeId
+							name
+							label
+							value
+						}
+						node {
+							id
+							databaseId
+						}
 					}
 					quantity
 					subtotal

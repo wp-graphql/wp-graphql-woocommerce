@@ -26,14 +26,14 @@ class Variation_Attribute_Type {
 				'fields'      => array(
 					'id'          => array(
 						'type'        => array( 'non_null' => 'ID' ),
-						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The Global ID of the attribute.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['id'] ) ? $source['id'] : null;
 						},
 					),
 					'attributeId' => array(
 						'type'        => 'Int',
-						'description' => __( 'The Id of the order. Equivalent to WP_Post->ID', 'wp-graphql-woocommerce' ),
+						'description' => __( 'The Database ID of the attribute.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
 						},
