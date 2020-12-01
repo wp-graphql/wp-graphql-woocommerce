@@ -100,15 +100,20 @@ class Product extends WC_Post {
 		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->wc_data->is_on_sale() ) ) {
 			return null;
 		} else {
-			$min_price     = current( $prices['price'] );
-			$max_price     = end( $prices['price'] );
-			$min_reg_price = current( $prices['regular_price'] );
-			$max_reg_price = end( $prices['regular_price'] );
+			if ( 'regular' === $pricing_type ) {
+				$min_price = current( $prices['regular_price'] );
+				$max_price = end( $prices['regular_price'] );
+			} elseif ( 'sale' === $pricing_type ) {
+				$min_price = current( $prices['sale_price'] );
+				$max_price = end( $prices['sale_price'] );
+			} else {
+				$min_price = current( $prices['price'] );
+				$max_price = end( $prices['price'] );
+			}
 
 			if ( $min_price !== $max_price ) {
-				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_price ) : implode( ', ', $prices['price'] );
-			} elseif ( 'regular' !== $pricing_type && $this->wc_data->is_on_sale() && $min_reg_price === $max_reg_price ) {
-				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_reg_price ) : implode( ', ', $prices['price'] );
+				wp_send_json( $prices );
+				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_price ) : implode( ', ', $prices["{$pricing_type}_price"] );
 			} else {
 				$price = ! $raw ? \wc_graphql_price( $min_price ) : $min_price;
 			}
@@ -264,7 +269,7 @@ class Product extends WC_Post {
 			if (
 				apply_filters(
 					"graphql_{$type}_product_model_use_pricing_and_tax_fields",
-					'grouped' !== $this->wc_data->get_type()
+					'grouped' !== $type
 				)
 			) {
 				$fields += array(
