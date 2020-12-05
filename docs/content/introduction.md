@@ -48,9 +48,11 @@ mutation {
     cartItem {
       key
       product {
-        id
-        productId
-        name
+        node {
+          id
+          databaseId
+          name
+        }
       }
       quantity
       subtotal
