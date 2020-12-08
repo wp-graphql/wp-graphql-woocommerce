@@ -139,14 +139,54 @@ class QL_Session_Handler extends WC_Session_Handler {
 			define( 'WOOGRAPHQL_SESSION_TRANSACTION_ID', \uniqid() );
 		}
 
-		// Update transaction queue.
-		$transaction_queue = $this->get_transaction_queue();
-
 		// Wait until our transaction ID is at the top of the queue before continuing.
-		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0] ) {
+		if ( ! $this->next_transaction() ) {
 			usleep( 500000 );
 			$this->update_transaction_queue( $source, $args, $context, $info );
 		}
+	}
+
+	/**
+	 * Processes next transaction and returns whether the current transaction is the next transaction.
+	 *
+	 * @return bool
+	 */
+	public function next_transaction() {
+		// Update transaction queue.
+		$transaction_queue = $this->get_transaction_queue();
+
+		// If lead transaction object invalid pop transaction and loop.
+		if ( ! is_array( $transaction_queue[0] ) ) {
+			array_shift( $transaction_queue );
+			$this->save_transaction_queue( $transaction_queue );
+
+		// If current transaction is the lead exit loop.
+		} elseif ( WOOGRAPHQL_SESSION_TRANSACTION_ID === $transaction_queue[0]['transaction_id'] ) {
+			return true;
+
+		// If lead transaction stale pop transaction and loop
+		} elseif ( $this->get_session_data() !== $transaction_queue[0]['snapshot'] ) {
+			array_shift( $transaction_queue );
+			$this->save_transaction_queue( $transaction_queue );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Saves transaction queue.
+	 *
+	 * @param array $queue  Transaction queue.
+	 */
+	public function save_transaction_queue( $queue = array() ) {
+		// If queue empty delete transient and bail.
+		if ( empty( $queue ) ) {
+			delete_transient( "woo_session_transactions_queue_{$this->_customer_id}" );
+			return;
+		}
+
+		// Save transaction queue.
+		set_transient( "woo_session_transactions_queue_{$this->_customer_id}", $queue );
 	}
 
 	/**
@@ -157,21 +197,19 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	public function get_transaction_queue() {
 		// Get transaction queue.
-		$transaction_queue = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
+		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->_customer_id}" );
 		if ( ! $transaction_queue ) {
 			$transaction_queue = array();
 		}
 
 		// If transaction ID not in queue, add it, and start transaction.
-		if ( ! in_array( WOOGRAPHQL_SESSION_TRANSACTION_ID, $transaction_queue, true ) ) {
-			$transaction_queue[] = WOOGRAPHQL_SESSION_TRANSACTION_ID;
+		if ( false === array_search( WOOGRAPHQL_SESSION_TRANSACTION_ID, array_column( $transaction_queue, 'transaction_id' ) ) ) {
+			$transaction_id      = WOOGRAPHQL_SESSION_TRANSACTION_ID;
+			$snapshot            = $this->_data;
+			$transaction_queue[] = compact( 'transaction_id', 'snapshot' );
 
 			// Update queue.
-			wp_cache_add(
-				$this->_customer_id,
-				$transaction_queue,
-				'woo_session_transactions_queue'
-			);
+			$this->save_transaction_queue( $transaction_queue );
 		}
 
 		return $transaction_queue;
@@ -183,26 +221,22 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @throws UserError If transaction ID is not on the top of the queue.
 	 */
 	public function pop_transaction_id() {
-		// Bail if not transaction started.
+		// Bail if transaction not started.
 		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
 			return;
 		}
 
 		// Get transaction queue.
-		$transaction_queue = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
+		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->_customer_id}" );
 
 		// Throw if transaction ID not on top.
-		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0] ) {
+		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0]['transaction_id'] ) {
 			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
 		} else {
 
 			// Remove Transaction ID and update queue.
 			array_shift( $transaction_queue );
-			wp_cache_add(
-				$this->_customer_id,
-				$transaction_queue,
-				'woo_session_transactions_queue'
-			);
+			$this->save_transaction_queue( $transaction_queue );
 		}
 	}
 
