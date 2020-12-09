@@ -46,6 +46,12 @@ class Customer_Register {
 		$result = array_merge(
 			UserRegister::get_input_fields(),
 			array(
+				'metaData'          => array(
+					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
+					'type'        => array( 'list_of' => 'MetaDataInput' ),
+				)
+			),
+			array(
 				'billing'               => array(
 					'type'        => 'CustomerAddressInput',
 					'description' => __( 'Customer billing information', 'wp-graphql-woocommerce' ),
@@ -170,6 +176,11 @@ class Customer_Register {
 					$setter = 'set_shipping_' . $prop;
 					$customer->{$setter}( $value );
 				}
+			}
+
+			// Set meta data
+			if ( ! empty( $input['metaData'] ) ) {
+				Customer_Mutation::input_meta_data_mapping($customer, $input['metaData']);
 			}
 
 			// Save customer and get customer ID.

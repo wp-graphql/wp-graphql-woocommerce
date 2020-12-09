@@ -118,4 +118,12 @@ class Customer_Mutation {
 			)
 		);
 	}
+
+	public static function input_meta_data_mapping( $customer, $inputs ) {
+		if ( is_array( $inputs ) ) {
+			foreach ( $inputs as $meta ) {
+				$customer->update_meta_data( $meta['key'], $meta['value'], isset( $meta['id'] ) ? $meta['id'] : '' );
+			}
+		}
+	}
 }

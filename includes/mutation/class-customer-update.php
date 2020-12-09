@@ -45,6 +45,12 @@ class Customer_Update {
 		return array_merge(
 			UserCreate::get_input_fields(),
 			array(
+				'metaData'          => array(
+					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
+					'type'        => array( 'list_of' => 'MetaDataInput' ),
+				)
+			),
+			array(
 				'id'                    => array(
 					'type'        => 'ID',
 					'description' => __( 'The ID of the user', 'wp-graphql-woocommerce' ),
@@ -134,6 +140,11 @@ class Customer_Update {
 				} elseif ( is_callable( array( $customer, "set_{$prop}" ) ) ) {
 					$customer->{"set_{$prop}"}( $value );
 				}
+			}
+
+			// Set meta data
+			if ( ! empty( $input['metaData'] ) ) {
+				Customer_Mutation::input_meta_data_mapping($customer, $input['metaData']);
 			}
 
 			// Save customer and get customer ID.
