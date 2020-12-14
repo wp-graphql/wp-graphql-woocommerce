@@ -92,6 +92,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		add_action( 'shutdown', array( $this, 'save_data' ) );
 
 		add_action( 'graphql_before_resolve_field', array( $this, 'update_transaction_queue' ), 10, 8 );
+		add_action( 'graphql_after_resolve_field', array( $this, 'save_data' ) );
 		add_action( 'shutdown', array( $this, 'pop_transaction_id' ), 20 );
 
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
@@ -143,6 +144,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 		if ( ! $this->next_transaction() ) {
 			usleep( 500000 );
 			$this->update_transaction_queue( $source, $args, $context, $info );
+		} else {
+			$this->_data = $this->get_session( $this->_customer_id, false );
 		}
 	}
 

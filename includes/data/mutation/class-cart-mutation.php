@@ -172,5 +172,7 @@ class Cart_Mutation {
 		if ( $token_invalid ) {
 			throw new UserError( $token_invalid );
 		}
+
+		\WC()->cart->get_cart_from_session();
 	}
 }
