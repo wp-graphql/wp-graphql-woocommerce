@@ -54,7 +54,7 @@ class ACF_Schema_Filters {
 	 * @return mixed|null
 	 */
 	public static function resolve_post_object_source( $source, $value ) {
-		// Bail if $value is empty to prevent an unexpected query result
+		// Bail if $value is empty to prevent an unexpected query result.
 		if ( empty( $value ) ) {
 			return $source;
 		}
