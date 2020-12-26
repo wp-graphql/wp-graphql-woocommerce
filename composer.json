@@ -43,7 +43,7 @@
         "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28",
         "wp-coding-standards/wpcs": "^2.3",
-        "johnpbloch/wordpress": "^5.4",
+        "johnpbloch/wordpress": "^5.0",
         "wp-graphql/wp-graphql": "^1.0.4",
         "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
         "wpackagist-plugin/woocommerce": "^4.4",
