@@ -87,4 +87,7 @@ wp db export "${PROJECT_DIR}/local/db/app_db.sql" \
 echo "Setup complete!!!"
 echo "WordPress app located at $WORDPRESS_URL";
 
+# Make the "uploads" directory unrestricted.
+chmod 777 -R wp-content/uploads
+
 exec "$@"

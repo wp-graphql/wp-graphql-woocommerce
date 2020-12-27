@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '853683e847afc16a06b4d1acced33573f3f2baf9',
+    'reference' => '7b57a2a381ff6ad1f6c548da9ebdd87b9036f347',
     'name' => 'wp-graphql/wp-graphql-woocommerce',
   ),
   'versions' => 
@@ -50,7 +50,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '853683e847afc16a06b4d1acced33573f3f2baf9',
+      'reference' => '7b57a2a381ff6ad1f6c548da9ebdd87b9036f347',
     ),
   ),
 );

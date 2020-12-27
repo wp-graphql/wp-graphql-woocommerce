@@ -289,7 +289,7 @@ class ProductHelper extends WCG_Helper {
 	}
 
 	public function create_download() {
-		self::createDownload( ...func_get_args() );
+		return self::createDownload( ...func_get_args() );
 	}
 
 	public static function createDownload( $id = 0 ) {
