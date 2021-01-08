@@ -13,13 +13,12 @@ settings:
     memory_limit: 1024M
 coverage:
     enabled: true
+    c3_url: '%WORDPRESS_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-wooocommerce.php/'
     include:
-        - includes/*
+        - 'wp-content/plugins/wp-graphql-woocommerce/**/*.php'
     exclude:
-        - wp-graphql-woocommerce.php
-        - access-functions.php
-        - class-inflect.php
-        - vendor/*
+        - 'wp-content/plugins/wp-graphql-woocommerce/class-inflect.php'
+        - 'wp-content/plugins/wp-graphql-woocommerce/vendor/*'
     show_only_summary: false
 extensions:
     enabled:

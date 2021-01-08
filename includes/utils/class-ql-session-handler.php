@@ -75,6 +75,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	private function get_secret_key() {
 		// Use the defined secret key, if it exists.
+
 		$secret_key = defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) && ! empty( GRAPHQL_WOOCOMMERCE_SECRET_KEY )
 			? GRAPHQL_WOOCOMMERCE_SECRET_KEY :
 			'graphql-woo-cart-session';
@@ -271,7 +272,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Session cookies without a customer ID are invalid.
 	 *
 	 * @throws \Exception  Invalid token.
-	 * @return bool|array
+	 * @return bool|object
 	 */
 	public function get_session_token() {
 		// Get the Auth header.
@@ -384,7 +385,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 			// Encode the token.
 			JWT::$leeway = 60;
-			$token       = JWT::encode( $token, $this->get_secret_key() );
+			$token       = JWT::encode( $token, $this->get_secret_key(), 'HS256' );
 
 			/**
 			 * Filter the token before returning it, allowing for individual systems to override what's returned.

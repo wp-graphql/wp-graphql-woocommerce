@@ -29,11 +29,11 @@ defined( 'ABSPATH' ) || exit;
  * This file should only exist locally or when CI bootstraps the environment for testing
  */
 if ( file_exists( __DIR__ . '/c3.php' ) ) {
-	// Get tests output directory.
-	$woographql_test_dir = __DIR__ . '/tests/output';
-
-	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-	define( 'C3_CODECOVERAGE_ERROR_LOG_FILE', $woographql_test_dir . '/c3_error.log' );
+	// Set output directory, if one provided.
+	if ( is_dir( getenv( 'WOOGRAPHQL_TESTS_DIR' ) ) ) {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+		define( 'C3_CODECOVERAGE_ERROR_LOG_FILE', getenv( 'WOOGRAPHQL_TESTS_DIR' ) . '/_output/c3_error.log' );
+	}
 
 	// Import c3 file.
 	require_once __DIR__ . '/c3.php';

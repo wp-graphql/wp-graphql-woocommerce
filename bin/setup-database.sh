@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set +u
 
 ##
 # Use this script through Composer scripts in the package.json.
@@ -23,18 +23,29 @@ command=$1; shift
 case "$command" in
     "main" )
         wp config set DB_HOST app_db --allow-root
-		wp config delete WP_SITEURL --allow-root
-		wp config delete WP_HOME --allow-root
         ;;
     "testing" )
         wp config set DB_HOST testing_db --allow-root
-		wp config set WP_SITEURL "http://$( hostname -i )" --allow-root
-		wp config set WP_HOME "http://$( hostname -i )" --allow-root
         ;;
 
     \? ) print_usage_instructions;;
     * ) print_usage_instructions;;
 esac
+
+# Set WP_SITEURL and WP_HOME constants if env exists.
+if wp config has WP_SITEURL --allow-root; then
+    wp config delete WP_SITEURL --allow-root
+fi
+if wp config has WP_HOME --allow-root; then
+    wp config delete WP_HOME --allow-root
+fi
+
+if [ -n "$WP_SITEURL" ]; then
+	wp config set WP_SITEURL ${WP_SITEURL} --allow-root
+fi
+if [ -n "$WP_HOME" ]; then
+	wp config set WP_HOME ${WP_HOME} --allow-root
+fi
 
 # If secondary command passed execute it.
 if [ $# -ne 0 ]; then

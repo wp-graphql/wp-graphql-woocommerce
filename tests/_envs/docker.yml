@@ -1,7 +1,7 @@
 coverage:
     enabled: true
     remote: false
-    c3_url: '%WORDPRESS_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
+    c3_url: 'http://locahost/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
     include:
         - wp-content/plugins/wp-graphql-woocommerce/includes/*
     exclude:
@@ -16,6 +16,7 @@ modules:
             dsn: 'mysql:host=testing_db;dbname=wordpress'
             user: wordpress
             password: password
+            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
             dump: 'wp-content/plugins/wp-graphql-woocommerce/local/db/app_db.sql'
             populate: false
             cleanup: false
@@ -33,7 +34,7 @@ modules:
         REST:
             depends: WPBrowser
             url: '%WORDPRESS_URL%'
-            WPFilesystem:
+        WPFilesystem:
             wpRootFolder: '/var/www/html'
             plugins: '/wp-content/plugins'
             mu-plugins: '/wp-content/mu-plugins'

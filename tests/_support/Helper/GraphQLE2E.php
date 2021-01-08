@@ -623,7 +623,7 @@ class GraphQLE2E extends \Codeception\Module {
         }
 
         // Send request.
-        $rest->sendPOST(
+        $rest->sendPost(
             "/graphql",
             json_encode(
                 array(

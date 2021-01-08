@@ -31,25 +31,19 @@
         "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
+        "composer/installers": "^1.9",
         "lucatume/wp-browser": "^2.4",
         "codeception/module-asserts": "^1.0",
-        "codeception/module-phpbrowser": "^1.0",
-        "codeception/module-webdriver": "^1.0",
-        "codeception/module-db": "^1.0",
-        "codeception/module-filesystem": "^1.0",
-        "codeception/module-cli": "^1.0",
-        "codeception/module-rest": "^1.0",
         "codeception/util-universalframework": "^1.0",
         "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28",
         "wp-coding-standards/wpcs": "^2.3",
-        "johnpbloch/wordpress": "^5.0",
-        "wp-graphql/wp-graphql": "^1.0.4",
+        "johnpbloch/wordpress": "~5.3",
+        "wp-graphql/wp-graphql": "^1.1.2",
         "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
         "wpackagist-plugin/woocommerce": "^4.4",
         "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
         "wpackagist-theme/twentytwentyone": "^1.0",
-        "composer/installers": "^1.9",
         "phpunit/phpunit": "<=9.4.4"
     },
     "config": {
@@ -82,18 +76,20 @@
         }
     },
     "scripts": {
-        "install-test-env": "bash bin/install-test-env.sh",
-        "docker-build": "docker-compose build",
-        "docker-run-app": "docker-compose up --scale testing_db=0 --scale run_tests=0",
-        "docker-run-testing-db":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then docker-compose up -d testing_db; fi",
-        "docker-set-main-db": "docker-compose exec testable_app ./setup-database.sh main",
-        "docker-set-testing-db": "docker-compose exec testable_app wait-for-it testing_db:3306 --timeout=300 -- ./setup-database.sh testing",
-        "docker-run-test": [
-            "@docker-run-testing-db",
-            "@docker-set-testing-db",
-            "docker-compose exec testable_app wait-for-it testing_db:3306 --timeout=300 -- codecept run $FILTER"
+        "installTestEnv": "bash bin/install-test-env.sh",
+        "runWPUnitTest": "vendor/bin/codept run wpunit",
+        "dBuild": "env $(sed -e '/^#/d' .env.dist) docker-compose build",
+        "dRunApp": "env $(sed -e '/^#/d' .env.dist) docker-compose up testable_app app_db mailhog",
+        "dRunTestingDb":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.dist) docker-compose up -d testing_db; fi",
+        "dSetMainDb": "docker-compose exec testable_app ./setup-database.sh main",
+        "dSetTestingDb": "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- ./setup-database.sh testing",
+        "dRunTest": [
+            "@dRunTestingDb",
+            "@dSetTestingDb",
+            "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- codecept run $FILTER"
         ],
-        "docker-run-test-standalone": "docker-compose run --rm run_tests"
+        "dRunTestStandalone": "env $(sed -e '/^#/d' .env.dist) docker-compose run --rm run_tests",
+        "dDestroy": "docker-compose down -v"
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",

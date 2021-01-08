@@ -6,17 +6,20 @@
 set +u
 
 # Ensure mysql is loaded
-wait-for-it ${DB_HOST}:${DB_PORT} --timeout=300 -- echo "Application database is operationally..."
+wait-for-it -s -t 300 ${DB_HOST}:${DB_PORT} -- echo "Application database is operationally..."
 
 # Setup tester scripts.
-cp $PROJECT_DIR/bin/setup-database.sh setup-database.sh
-chmod 755 /var/www/html/setup-database.sh
+if [ ! -f $WP_ROOT_FOLDER/setup-database.sh ]; then
+	ln -s $PROJECT_DIR/bin/setup-database.sh $WP_ROOT_FOLDER/setup-database.sh
+	chmod +x $WP_ROOT_FOLDER/setup-database.sh
+fi
 
 # Update our domain to just be the docker container's IP address
-export WORDPRESS_DOMAIN=$( hostname -i )
+export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
 echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" >> .env
 echo "WORDPRESS_URL=$WORDPRESS_URL" >> .env
+echo $WORDPRESS_URL
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
@@ -56,6 +59,30 @@ wp-graphql wp-graphql-jwt-authentication \
 wp-graphql-woocommerce \
 --allow-root
 
+# Download c3 for testing.
+if [ ! -f "$PROJECT_DIR/c3.php" ]; then
+    echo "Downloading Codeception's c3.php..."
+    curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "$PROJECT_DIR/c3.php"
+fi
+
+if ! wp config has GRAPHQL_JWT_AUTH_SECRET_KEY --allow-root; then
+	echo "Adding WPGraphQL-JWT-Authentication salt..."
+    wp config set GRAPHQL_JWT_AUTH_SECRET_KEY 'test' --allow-root
+fi
+
+if ! wp config has GRAPHQL_WOOCOMMERCE_SECRET_KEY --allow-root; then
+	echo "Adding WooGraphQL JWT Session Handler salt..."
+	wp config set GRAPHQL_WOOCOMMERCE_SECRET_KEY 'test' --allow-root
+fi
+
+if wp config has GRAPHQL_DEBUG --allow-root; then
+	echo "Setting GRAPHQL_DEBUG flag"
+    wp config delete GRAPHQL_DEBUG --allow-root
+fi
+if [[ -n "$GRAPHQL_DEBUG" ]]; then
+	wp config set GRAPHQL_DEBUG $GRAPHQL_DEBUG --allow-root
+fi
+
 if [[ -n "$IMPORT_WC_PRODUCTS" ]]; then
 	echo "Installing & Activating WordPress Importer..."
 	wp plugin install wordpress-importer --activate --allow-root
@@ -84,10 +111,17 @@ wp db export "${PROJECT_DIR}/local/db/app_db.sql" \
 	--skip-themes \
 	--allow-root
 
+# Create the "uploads" directory and set public permissions.
+if [ ! -d "wp-content/uploads" ]; then
+	mkdir wp-content/uploads
+fi
+chmod 777 -R wp-content/uploads
+
+if [ -n "$RUNNING_TEST_STANDALONE" ]; then
+	service apache2 start
+fi
+
 echo "Setup complete!!!"
 echo "WordPress app located at $WORDPRESS_URL";
-
-# Make the "uploads" directory unrestricted.
-chmod 777 -R wp-content/uploads
 
 exec "$@"

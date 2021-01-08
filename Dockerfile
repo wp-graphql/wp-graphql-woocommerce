@@ -1,5 +1,4 @@
-ARG PHP_VERSION=7.4
-
+ARG PHP_VERSION
 FROM wordpress:php${PHP_VERSION}-apache
 
 ARG XDEBUG_VERSION=2.9.6
@@ -18,8 +17,7 @@ RUN	pecl install "xdebug-${XDEBUG_VERSION}"; \
 	docker-php-ext-enable xdebug; \
 	echo "xdebug.default_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_autostart = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_handler = dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_connect_back = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_connect_back = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_port = 9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_log = /var/www/html/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
@@ -38,9 +36,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 ENV PATH "$PATH:~/.composer/vendor/bin"
 
 # Set PHPUnit version.
-ARG PHPUNIT_VERSION
-ENV PHPUNIT_VERSION=${PHPUNIT_VERSION:-''}
-
+ARG PHPUNIT_VERSION=9.4.4
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle \
@@ -55,7 +51,8 @@ RUN composer global require --optimize-autoloader \
     codeception/util-universalframework \
     league/factory-muffin \
     league/factory-muffin-faker \
-	phpunit/phpunit${PHPUNIT_VERSION}
+	stripe/stripe-php \
+	"phpunit/phpunit:<=${PHPUNIT_VERSION}"
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
@@ -73,6 +70,7 @@ ENV WORDPRESS_DB_PASSWORD=${DB_PASSWORD}
 ENV WORDPRESS_DB_NAME=${DB_NAME}
 ENV PLUGINS_DIR="${WP_ROOT_FOLDER}/wp-content/plugins"
 ENV PROJECT_DIR="${PLUGINS_DIR}/wp-graphql-woocommerce"
+ENV WOOGRAPHQL_TESTS_DIR="/var/www/html/tests"
 
 # Set up Apache
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf

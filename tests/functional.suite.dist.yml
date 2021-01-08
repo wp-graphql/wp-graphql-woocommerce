@@ -12,6 +12,3 @@ modules:
     - WPDb
     - WPLoader
     - \Helper\GraphQLE2E
-  config:
-    WPDb:
-      cleanup: false

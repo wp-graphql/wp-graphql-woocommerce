@@ -21,14 +21,15 @@ DB_HOST=${DB_HOST-localhost}
 DB_PASS=${DB_PASSWORD-""}
 WP_VERSION=${WP_VERSION-latest}
 PROJECT_ROOT_DIR=$(pwd)
-WP_CORE_DIR=${WP_CORE_DIR-local/public}
-PLUGINS_DIR=${PLUGINS_DIR-"$WP_CORE_DIR/wp-content/plugins"}
-MUPLUGINS_DIR=${MUPLUGINS_DIR-"$WP_CORE_DIR/wp-content/mu-plugins"}
-THEMES_DIR=${THEMES_DIR-"$WP_CORE_DIR/wp-content/themes"}
+WP_CORE_DIR=${WP_CORE_DIR:-local/public}
+PLUGINS_DIR=${PLUGINS_DIR:-"$WP_CORE_DIR/wp-content/plugins"}
+MUPLUGINS_DIR=${MUPLUGINS_DIR:-"$WP_CORE_DIR/wp-content/mu-plugins"}
+THEMES_DIR=${THEMES_DIR:-"$WP_CORE_DIR/wp-content/themes"}
 SKIP_DB_CREATE=${SKIP_DB_CREATE-false}
 
 install_wordpress_and_codeception() {
 	if [ -d $WP_CORE_DIR ]; then
+		echo "Wordpress already installed."
 		return;
 	fi
 
@@ -49,6 +50,7 @@ install_wordpress_and_codeception() {
 
 install_db() {
 	if [ ${SKIP_DB_CREATE} = "true" ]; then
+		echo "Skipping database creation..."
 		return 0
 	fi
 
@@ -77,18 +79,31 @@ install_db() {
 
 
 configure_wordpress() {
+	if [ ${SKIP_WP_SETUP} = "true" ]; then
+		echo "Skipping WordPress setup..."
+		return 0
+	fi
+
     cd $WP_CORE_DIR
+
+	echo "Setting up WordPress..."
     wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
     wp core install --url=wp.test --title="WooGraphQL Tests" --admin_user=admin --admin_password=password --admin_email=admin@woographql.local
     wp rewrite structure '/%year%/%monthnum%/%postname%/'
 }
 
 setup_plugin() {
+	if [ ${SKIP_WP_SETUP} = "true" ]; then
+		echo "Skipping WooGraphQL installation..."
+		return 0
+	fi
+
 	# Move to project root directory
 	cd $PROJECT_ROOT_DIR
 
 	# Add this repo as a plugin to the repo
 	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce ]; then
+		echo "Installing WooGraphQL..."
 		ln -s $PROJECT_ROOT_DIR $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce
 	fi
 
@@ -106,7 +121,8 @@ setup_plugin() {
 		mkdir ${PROJECT_ROOT_DIR}/local/db
 	fi
 	if [ -f "$PROJECT_ROOT_DIR/local/db/app_db.sql" ]; then
-		rm ${PROJECT_ROOT_DIR}/local/db/app_db.sql
+		echo "Deleting old DB dump..."
+		rm -rf ${PROJECT_ROOT_DIR}/local/db/app_db.sql
 	fi
 
 	wp db export ${PROJECT_ROOT_DIR}/local/db/app_db.sql

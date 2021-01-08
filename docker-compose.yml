@@ -5,13 +5,15 @@ services:
   app_db:
     image: mysql
     volumes:
-      - db_data
+      - app_db_data
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${DB_NAME:-wordpress}
+      MYSQL_USER: ${DB_USER:-wordpress}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+    networks:
+      development:
 
   # Capture and display all email sent by WordPress.
   mailhog:
@@ -19,24 +21,34 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+    networks:
+      development:
 
   # Main application service
   testable_app:
-    image: woographql/wordpress:${WORDPRESS_IMAGE_VERSION:-latest}
+    image: woographql/wordpress-dev:${WP_VERSION:-latest}
     depends_on:
       - app_db
       - mailhog
-    build: .
+    build:
+      context: .
+      args:
+        PHP_VERSION: ${PHP_VERSION:-7.4}
     volumes:
       - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
       - ./local/public:/var/www/html # WP core files.
       - ./local/.htaccess:/var/www/html/.htaccess
       - ./tests:/var/www/html/tests
       - ./codeception.dist.yml:/var/www/html/codeception.yml
+      - ./.log/testable_app:/var/log/apache2
     env_file: .env.dist
     environment:
       APACHE_RUN_USER: "#1000" # Ensure Apache can write to the filesystem.
-      XDEBUG_CONFIG: remote_host=10.0.0.120 idekey=vscode
+      XDEBUG_CONFIG: remote_host=10.0.0.52 idekey=vscode
+    networks:
+      development:
+    ports:
+      - "9001:9001"
 
   # Main application database clone for testing inside the main application service.
   testing_db:
@@ -45,27 +57,50 @@ services:
       - ./local/db:/docker-entrypoint-initdb.d
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${DB_NAME:-wordpress}
+      MYSQL_USER: ${DB_USER:-wordpress}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+    networks:
+      development:
+      testing:
+        aliases:
+          - app_db
 
-  # Standalone testing application
+  # Standalone testing application service (for inside of CI).
   run_tests:
-      image: woographql/wordpress:${WORDPRESS_IMAGE_VERSION:-latest}
-      depends_on:
-        - testing_db
-      build: .
-      volumes:
-        - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
-        - ./local/public:/var/www/html # WP core files.
-        - ./local/.htaccess:/var/www/html/.htaccess
-        - ./tests:/var/www/html/tests
-        - ./codeception.dist.yml:/var/www/html/codeception.yml
-      env_file: .env.dist
-      environment:
-        APACHE_RUN_USER: "#1000" # Ensure Apache can write to the filesystem.
-        DB_HOST: testing_db
-      command: ./setup-database.sh testing codecept run ${FILTER:-}
+    image: woographql/wordpress-ci:${WP_VERSION:-latest}
+    depends_on:
+      - testing_db
+    build:
+      context: .
+      args:
+        PHP_VERSION: ${PHP_VERSION:-7.4}
+    volumes:
+      - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
+      - ./local/public:/var/www/html # WP core files.
+      - ./local/.htaccess:/var/www/html/.htaccess
+      - ./tests:/var/www/html/tests
+      - ./codeception.dist.yml:/var/www/html/codeception.yml
+      - ./.log/run_tests:/var/log/apache2
+    env_file: .env.dist
+    environment:
+      RUNNING_TEST_STANDALONE: 1
+      GRAPHQL_DEBUG: 1
+      WPGRAPHQL_WOOCOMMERCE_AUTOLOAD: 1
+      APACHE_RUN_USER: "#1000" # Ensure Apache can write to the filesystem.
+      WORDPRESS_DOMAIN: localhost
+      WP_SITEURL: http://localhost
+      WP_HOME: http://localhost
+    command: ./setup-database.sh testing codecept run ${FILTER:-}
+    networks:
+      testing:
+        aliases:
+          - run_tests
+
+networks:
+  development:
+  testing:
+
 volumes:
-  db_data: {}
+  app_db_data: {}

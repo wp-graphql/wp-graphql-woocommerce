@@ -15,28 +15,23 @@ on:
       - '!docs/**'
 
 jobs:
-  continuous_integration:
+  Automated-Testing:
     env:
       STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
       STRIPE_API_SECRET_KEY: ${{ secrets.STRIPE_API_SECRET_KEY }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.1', '7.2', '7.3']
+        php: ['7.1', '7.2', '7.3', '7.4']
         wordpress: ['5.3', '5.0']
+        debug: ['--ext DotReporter']
         include:
-          - php: '7.1'
-            use_xdebug: 1
           - php: '7.1'
             wordpress: '5.0'
             coverage: '--coverage --coverage-xml'
           - php: '7.3'
             wordpress: '5.0'
             debug: '--debug'
-          - php: '7.1'
-          - lowest: 1
-          - php: '7.2'
-          - lowest: 1
 
       fail-fast: false
     name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
@@ -53,15 +48,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require --dev johnpbloch/wordpress:~${{ matrix.wordpress }}
-          composer install
-
-
-      - name: Build "testing" Docker Image
-        run: composer docker-build -- --build-arg PHP_VERSION=${{ matrix.php }} run_tests
+          cp .env.dist .env
+          SKIP_DB_CREATE=true SKIP_WP_SETUP=true composer require --dev johnpbloch/wordpress:~${{ matrix.wordpress }}
+          composer installTestEnv
 
       - name: Run Tests w/ Docker.
-        run: FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer docker-run-test-standalone
+        env:
+          WP_VERSION: ${{ matrix.wordpress }}
+          PHP_VERSION: ${{ matrix.php }}
+        run: FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Push Codecoverage to Coveralls.io
         if: ${{ matrix.coverage == 1 && env.STRIPE_API_PUBLISHABLE_KEY != 0 }}
