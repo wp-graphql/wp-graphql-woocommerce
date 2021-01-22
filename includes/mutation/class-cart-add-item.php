@@ -29,7 +29,7 @@ class Cart_Add_Item {
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => array( __CLASS__, 'mutate_and_get_payload' ),
+				'mutateAndGetPayload' => self::mutate_and_get_payload(),
 			)
 		);
 	}
@@ -88,41 +88,43 @@ class Cart_Add_Item {
 	 *
 	 * @return callable
 	 */
-	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
-		Cart_Mutation::check_session_token();
+	public static function mutate_and_get_payload() {
+		return function( $input, AppContext $context, ResolveInfo $info ) {
+			Cart_Mutation::check_session_token();
 
-		// Retrieve product database ID if relay ID provided.
-		if ( empty( $input['productId'] ) ) {
-			throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
-		}
+			// Retrieve product database ID if relay ID provided.
+			if ( empty( $input['productId'] ) ) {
+				throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
+			}
 
-		if ( ! \wc_get_product( $input['productId'] ) ) {
-			throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
-		}
+			if ( ! \wc_get_product( $input['productId'] ) ) {
+				throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
+			}
 
-		// Prepare args for "add_to_cart" from input data.
-		$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );
+			// Prepare args for "add_to_cart" from input data.
+			$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );
 
-		// Add item to cart and get item key.
-		try {
-			$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
-		} catch( \Exception $e ) { // Repackage any errors.
-			throw new UserError( $e->getMessage() );
-		}
+			// Add item to cart and get item key.
+			try {
+				$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
+			} catch ( \Exception $e ) { // Repackage any errors.
+				throw new UserError( $e->getMessage() );
+			}
 
-		// If cart item key valid return payload.
-		if ( false !==  $cart_item_key ) {
-			return array( 'key' => $cart_item_key );
-		}
+			// If cart item key valid return payload.
+			if ( false !== $cart_item_key ) {
+				return array( 'key' => $cart_item_key );
+			}
 
-		// Process errors.
-		$notices = \WC()->session->get( 'wc_notices' );
-		if ( ! empty( $notices['error'] ) ) {
-			$cart_error_messages = implode( ' ', array_column( $notices['error'], 'notice' ) );
-			\wc_clear_notices();
-			throw new UserError( $cart_error_messages );
-		} else {
-			throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
-		}
+			// Process errors.
+			$notices = \WC()->session->get( 'wc_notices' );
+			if ( ! empty( $notices['error'] ) ) {
+				$cart_error_messages = implode( ' ', array_column( $notices['error'], 'notice' ) );
+				\wc_clear_notices();
+				throw new UserError( $cart_error_messages );
+			} else {
+				throw new UserError( __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' ) );
+			}
+		};
 	}
 }

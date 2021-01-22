@@ -36,6 +36,7 @@ class Variation_Attribute_Connection_Resolver {
 				if ( empty( $term ) ) {
 					$attributes[] = array(
 						// ID create for caching only, not object retrieval.
+						// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 						'id'          => base64_encode( $parent_id . '||' . $name . '||' . $value ),
 						'attributeId' => 0,
 						'name'        => $name,
@@ -44,6 +45,7 @@ class Variation_Attribute_Connection_Resolver {
 				} else {
 					$attributes[] = array(
 						// ID create for caching only, not object retrieval.
+						// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 						'id'          => base64_encode( $parent_id . '||' . $name . '||' . $value ),
 						'attributeId' => $term->term_id,
 						'name'        => $term->taxonomy,

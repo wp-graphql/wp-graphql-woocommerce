@@ -16,11 +16,11 @@ class Manage_Stock {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = [
+		$values = array(
 			'TRUE'   => array( 'value' => true ),
 			'FALSE'  => array( 'value' => false ),
 			'PARENT' => array( 'value' => 'parent' ),
-		];
+		);
 
 		register_graphql_enum_type(
 			'ManageStockEnum',

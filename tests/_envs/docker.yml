@@ -1,0 +1,52 @@
+modules:
+  config:
+    WPDb:
+      dsn: 'mysql:host=testing_db;dbname=wordpress'
+      user: wordpress
+      password: password
+      populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
+      dump: 'wp-content/plugins/wp-graphql-woocommerce/local/db/app_db.sql'
+      populate: false
+      cleanup: false
+      waitlock: 10
+      url: '%WORDPRESS_URL%'
+      urlReplacement: true
+      tablePrefix: 'wp_'
+    WPBrowser:
+      url: '%WORDPRESS_URL%'
+      wpRootFolder: /var/www/html
+      adminUsername: admin
+      adminPassword: password
+      adminPath: '/wp-admin'
+    REST:
+      depends: WPBrowser
+      url: '%WORDPRESS_URL%'
+    WPFilesystem:
+      wpRootFolder: '/var/www/html'
+      plugins: '/wp-content/plugins'
+      mu-plugins: '/wp-content/mu-plugins'
+      themes: '/wp-content/themes'
+      uploads: '/wp-content/uploads'
+    WPLoader:
+      wpRootFolder: '/var/www/html'
+      dbName: wordpress
+      dbHost: testing_db
+      dbUser: wordpress
+      dbPassword: password
+      tablePrefix: wp_
+      domain: '%WORDPRESS_DOMAIN%'
+      adminEmail: 'admin@example.com'
+      title: 'WooGraphQL Tests'
+      plugins:
+        - woocommerce/woocommerce.php
+        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+        - wp-graphql/wp-graphql.php
+        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      activatePlugins:
+        - woocommerce/woocommerce.php
+        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+        - wp-graphql/wp-graphql.php
+        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      configFile: 'tests/_data/config.php'

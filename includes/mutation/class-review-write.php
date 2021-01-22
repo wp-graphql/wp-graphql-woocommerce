@@ -43,13 +43,13 @@ class Review_Write {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-        $comment_input_fields = CommentCreate::get_input_fields();
-        unset( $comment_input_fields['type'] );
+		$comment_input_fields = CommentCreate::get_input_fields();
+		unset( $comment_input_fields['type'] );
 
 		return array_merge(
 			$comment_input_fields,
 			array(
-				'rating'         => array(
+				'rating' => array(
 					'type'        => array( 'non_null' => 'Int' ),
 					'description' => __( 'Product rating', 'wp-graphql-woocommerce' ),
 				),
@@ -64,24 +64,24 @@ class Review_Write {
 	 */
 	public static function get_output_fields() {
 		return array(
-            'rating' => array(
-                'type'        => 'Float',
-                'description' => __( 'The product rating of the review that was created', 'wp-graphql-woocommerce' ),
-                'resolve'     => function( $payload ) {
+			'rating' => array(
+				'type'        => 'Float',
+				'description' => __( 'The product rating of the review that was created', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $payload ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
-                    }
-                    return (float) get_comment_meta( $payload['id'], 'rating', true );
-                }
-            ),
+					}
+					return (float) get_comment_meta( $payload['id'], 'rating', true );
+				},
+			),
 			'review' => array(
-                'type'        => 'Comment',
-                'description' => __( 'The product review that was created', 'wp-graphql-woocommerce' ),
+				'type'        => 'Comment',
+				'description' => __( 'The product review that was created', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $payload, $args, AppContext $context ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
-                    }
-                    $comment = get_comment( $payload['id'] );
+					}
+					$comment = get_comment( $payload['id'] );
 					return new Comment( $comment );
 				},
 			),
@@ -95,17 +95,17 @@ class Review_Write {
 	 */
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
-            // Set comment type to "review".
-            $input['type'] = 'review';
+			// Set comment type to "review".
+			$input['type'] = 'review';
 
-            $resolver = CommentCreate::mutate_and_get_payload();
+			$resolver = CommentCreate::mutate_and_get_payload();
 
-            $payload = $resolver( $input, $context, $info );
+			$payload = $resolver( $input, $context, $info );
 
-            // Set product rating upon successful creation of the review.
-            if ( $payload['success'] ) {
-                add_comment_meta( $payload['id'], 'rating', $input['rating'] );
-            }
+			// Set product rating upon successful creation of the review.
+			if ( $payload['success'] ) {
+				add_comment_meta( $payload['id'], 'rating', $input['rating'] );
+			}
 
 			return $payload;
 		};

@@ -11,11 +11,12 @@
  * @since 0.0.4
  */
 
-if ( ! class_exists( 'Inflect' ) ) :
+if ( ! class_exists( 'WooGraphQL_Inflect' ) ) :
 	/**
 	 * Class Inflect
 	 */
-	class Inflect { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
+	class WooGraphQL_Inflect {
+ // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
 		/**
 		 * Stores plural suffixes.
 		 *

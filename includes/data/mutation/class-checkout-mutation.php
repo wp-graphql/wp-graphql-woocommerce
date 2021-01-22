@@ -86,9 +86,9 @@ class Checkout_Mutation {
 			}
 
 			foreach ( $fieldset as $field => $input_key ) {
-				$key   = "{$fieldset_key}_{$field}";
+				$key = "{$fieldset_key}_{$field}";
 				if ( 'order' === $fieldset_key ) {
-					$value = ! empty( $input[ $input_key ] ) ?  $input[ $input_key ] : null;
+					$value = ! empty( $input[ $input_key ] ) ? $input[ $input_key ] : null;
 				} else {
 					$value = ! empty( $input[ $fieldset_key ][ $input_key ] ) ? $input[ $fieldset_key ][ $input_key ] : null;
 				}
@@ -150,7 +150,7 @@ class Checkout_Mutation {
 				'password' => 'password',
 			),
 			'order'    => array(
-				'comments' => 'customerNote'
+				'comments' => 'customerNote',
 			),
 		);
 
@@ -235,7 +235,7 @@ class Checkout_Mutation {
 			'country'    => '',
 		);
 
-		if ( $type = 'billing' ) {
+		if ( 'billing' === $type ) {
 			$address = array_merge(
 				$address,
 				array(
@@ -452,10 +452,8 @@ class Checkout_Mutation {
 		self::validate_data( $data );
 		WC()->checkout()->check_cart_items();
 
-
 		// Throw cart validation errors stored in the session.
 		$cart_item_errors = wc_get_notices( 'error' );
-
 
 		if ( ! empty( $cart_item_errors ) ) {
 			$cart_item_error_msgs = implode( ' ', array_column( $cart_item_errors, 'notice' ) );

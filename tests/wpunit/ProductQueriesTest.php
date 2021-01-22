@@ -9,7 +9,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $product_tag;
 	private $product_cat;
 
-	public function setUp() {
+	public function setUp(): void {
 		// before
 		parent::setUp();
 
@@ -45,7 +45,7 @@ class ProductQueriesTest extends \Codeception\TestCase\WPTestCase {
 		update_term_meta( $category_id, 'thumbnail_id', $this->image_id );
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// your tear down methods here
 		$product = \WC()->product_factory->get_product( $this->product );
 		$product->delete( true );

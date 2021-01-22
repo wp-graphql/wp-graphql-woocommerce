@@ -117,7 +117,7 @@ class Factory {
 	/**
 	 * Returns the tax rate Model for the tax rate ID.
 	 *
-	 * @param string $id - Tax rate ID.
+	 * @param string     $id - Tax rate ID.
 	 * @param AppContext $context - AppContext object.
 	 *
 	 * @return Deferred object
@@ -127,8 +127,8 @@ class Factory {
 			return null;
 		}
 
-		$id = absint( $id );
-		$loader    = $context->getLoader( 'tax_rate' );
+		$id     = absint( $id );
+		$loader = $context->getLoader( 'tax_rate' );
 		$loader->buffer( array( $id ) );
 		return new Deferred(
 			function () use ( $loader, $id ) {

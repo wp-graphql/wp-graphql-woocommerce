@@ -31,12 +31,12 @@ class WC_Terms extends TermObjects {
 		$allowed_taxonomies = WPGraphQL::get_allowed_taxonomies();
 		$wc_post_types      = WP_GraphQL_WooCommerce::get_post_types();
 
-		// Loop through the allowed_taxonomies to register appropriate connections
+		// Loop through the allowed_taxonomies to register appropriate connections.
 		if ( ! empty( $allowed_taxonomies && is_array( $allowed_taxonomies ) ) ) {
 			foreach ( $allowed_taxonomies as $taxonomy ) {
 				$tax_object = get_taxonomy( $taxonomy );
 
-				// Registers the connections between each allowed PostObjectType and it's TermObjects
+				// Registers the connections between each allowed PostObjectType and it's TermObjects.
 				if ( ! empty( $wc_post_types ) && is_array( $wc_post_types ) ) {
 					foreach ( $wc_post_types as $post_type ) {
 						if ( in_array( $post_type, $tax_object->object_type, true ) ) {
@@ -56,7 +56,7 @@ class WC_Terms extends TermObjects {
 											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : array( '0' ) );
 
 											return $resolver->get_connection();
-										}
+										},
 									)
 								)
 							);
@@ -75,11 +75,11 @@ class WC_Terms extends TermObjects {
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'productCategories',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
-						$resolver   = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
+						$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 						$resolver->set_query_arg( 'term_taxonomy_id', $source->product_category_ids );
 
 						return $resolver->get_connection();
-					}
+					},
 				)
 			)
 		);

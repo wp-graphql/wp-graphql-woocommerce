@@ -36,7 +36,7 @@ class ProductVariationHelper extends WCG_Helper {
 				'slug'          => $this->next_slug(),
 				'sku'           => 'DUMMY SKU VARIABLE SMALL',
 				'regular_price' => 10,
-				'downloads'     => array( ProductHelper::create_download() ),
+				'downloads'     => array( ProductHelper::createDownload() ),
 			)
 		);
 		$variation_1->set_attributes( array( 'pa_size' => 'small' ) );

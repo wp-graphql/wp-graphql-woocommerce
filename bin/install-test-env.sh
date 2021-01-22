@@ -4,115 +4,53 @@ source .env
 
 print_usage_instruction() {
 	echo "Ensure that .env file exist in project root directory exists."
-	echo "And run the following 'composer install-wp-tests' in the project root directory"
+	echo "And run the following 'composer install-test-env' in the project root directory"
 	exit 1
 }
 
-if [[ -z "$TEST_DB_NAME" ]]; then
-	echo "TEST_DB_NAME not found"
+if [[ -z "$DB_NAME" ]]; then
+	echo "DB_NAME not found"
 	print_usage_instruction
-else
-	DB_NAME=$TEST_DB_NAME
 fi
-if [[ -z "$TEST_DB_USER" ]]; then 
-	echo "TEST_DB_USER not found"
+if [[ -z "$DB_USER" ]]; then
+	echo "DB_USER not found"
 	print_usage_instruction
-else
-	DB_USER=$TEST_DB_USER
 fi
 
-DB_HOST=${TEST_DB_HOST-localhost}
-DB_PASS=${TEST_DB_PASSWORD-""}
+DB_HOST=${DB_HOST-localhost}
+DB_PASS=${DB_PASSWORD-""}
 WP_VERSION=${WP_VERSION-latest}
-TMPDIR=${TMPDIR-/tmp}
-TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
-WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
-WP_CORE_DIR=${TEST_WP_ROOT_FOLDER-$TMPDIR/wordpress/}
-PLUGIN_DIR=$(pwd)
-DB_SERVE_NAME=${DB_SERVE_NAME-woographql_serve}
+PROJECT_ROOT_DIR=$(pwd)
+WP_CORE_DIR=${WP_CORE_DIR:-local/public}
+PLUGINS_DIR=${PLUGINS_DIR:-"$WP_CORE_DIR/wp-content/plugins"}
+MUPLUGINS_DIR=${MUPLUGINS_DIR:-"$WP_CORE_DIR/wp-content/mu-plugins"}
+THEMES_DIR=${THEMES_DIR:-"$WP_CORE_DIR/wp-content/themes"}
 SKIP_DB_CREATE=${SKIP_DB_CREATE-false}
 
-download() {
-    if [ `which curl` ]; then
-        curl -s "$1" > "$2";
-    elif [ `which wget` ]; then
-        wget -nv -O "$2" "$1"
-    fi
-}
-
-if [[ $WP_VERSION =~ ^[0-9]+\.[0-9]+\-(beta|RC)[0-9]+$ ]]; then
-	WP_BRANCH=${WP_VERSION%\-*}
-	WP_TESTS_TAG="branches/$WP_BRANCH"
-
-elif [[ $WP_VERSION =~ ^[0-9]+\.[0-9]+$ ]]; then
-	WP_TESTS_TAG="branches/$WP_VERSION"
-elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
-	if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
-		# version x.x.0 means the first release of the major version, so strip off the .0 and download version x.x
-		WP_TESTS_TAG="tags/${WP_VERSION%??}"
-	else
-		WP_TESTS_TAG="tags/$WP_VERSION"
-	fi
-elif [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
-	WP_TESTS_TAG="trunk"
-else
-	# http serves a single offer, whereas https serves multiple. we only want one
-	download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
-	grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
-	LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
-	if [[ -z "$LATEST_VERSION" ]]; then
-		echo "Latest WordPress version could not be found"
-		exit 1
-	fi
-	WP_TESTS_TAG="tags/$LATEST_VERSION"
-fi
-set -ex
-
-install_wp() {
-
+install_wordpress_and_codeception() {
 	if [ -d $WP_CORE_DIR ]; then
+		echo "Wordpress already installed."
 		return;
 	fi
 
-	mkdir -p $WP_CORE_DIR
+	# Set the wordpress install directory and plugin paths in the composer.json
+	composer config --unset extra.wordpress-install-dir;
+	composer config extra.wordpress-install-dir $WP_CORE_DIR;
 
-	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
-		mkdir -p $TMPDIR/wordpress-nightly
-		download https://wordpress.org/nightly-builds/wordpress-latest.zip  $TMPDIR/wordpress-nightly/wordpress-nightly.zip
-		unzip -q $TMPDIR/wordpress-nightly/wordpress-nightly.zip -d $TMPDIR/wordpress-nightly/
-		mv $TMPDIR/wordpress-nightly/wordpress/* $WP_CORE_DIR
-	else
-		if [ $WP_VERSION == 'latest' ]; then
-			local ARCHIVE_NAME='latest'
-		elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+ ]]; then
-			# https serves multiple offers, whereas http serves single.
-			download https://api.wordpress.org/core/version-check/1.7/ $TMPDIR/wp-latest.json
-			if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
-				# version x.x.0 means the first release of the major version, so strip off the .0 and download version x.x
-				LATEST_VERSION=${WP_VERSION%??}
-			else
-				# otherwise, scan the releases and get the most up to date minor version of the major release
-				local VERSION_ESCAPED=`echo $WP_VERSION | sed 's/\./\\\\./g'`
-				LATEST_VERSION=$(grep -o '"version":"'$VERSION_ESCAPED'[^"]*' $TMPDIR/wp-latest.json | sed 's/"version":"//' | head -1)
-			fi
-			if [[ -z "$LATEST_VERSION" ]]; then
-				local ARCHIVE_NAME="wordpress-$WP_VERSION"
-			else
-				local ARCHIVE_NAME="wordpress-$LATEST_VERSION"
-			fi
-		else
-			local ARCHIVE_NAME="wordpress-$WP_VERSION"
-		fi
-		download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  $TMPDIR/wordpress.tar.gz
-		tar --strip-components=1 -zxmf $TMPDIR/wordpress.tar.gz -C $WP_CORE_DIR
-	fi
+	composer config --unset extra.installer-paths;
+	composer config --json extra.installer-paths "{
+	\"$PLUGINS_DIR/{\$name}/\": [\"type:wordpress-plugin\"],
+	\"$MUPLUGINS_DIR/{\$name}/\": [\"type:wordpress-muplugin\"],
+	\"$THEMES_DIR/{\$name}/\": [\"type:wordpress-theme\"]
+}"
 
-	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
+	# Install Wordpress + Codeception w/ WPBrowser.
+	composer install
 }
 
 install_db() {
-
 	if [ ${SKIP_DB_CREATE} = "true" ]; then
+		echo "Skipping database creation..."
 		return 0
 	fi
 
@@ -139,57 +77,58 @@ install_db() {
 	fi
 }
 
+
 configure_wordpress() {
+	if [ ${SKIP_WP_SETUP} = "true" ]; then
+		echo "Skipping WordPress setup..."
+		return 0
+	fi
+
     cd $WP_CORE_DIR
+
+	echo "Setting up WordPress..."
     wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
-    wp core install --url=wp.test --title="WPGraphQL WooCommerce Tests" --admin_user=admin --admin_password=password --admin_email=admin@wp.test
+    wp core install --url=wp.test --title="WooGraphQL Tests" --admin_user=admin --admin_password=password --admin_email=admin@woographql.local
     wp rewrite structure '/%year%/%monthnum%/%postname%/'
 }
 
-setup_woocommerce() {
-	echo "Installing & Activating WooCommerce"
-	wp plugin install woocommerce --activate
-	echo "Installing & Activating WooCommerce-Gateway-Stripe"
-	wp plugin install woocommerce-gateway-stripe --activate
-}
-
-setup_wpgraphql() {
-	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql ]; then
-		echo "Cloning WPGraphQL"
-		wp plugin install https://github.com/wp-graphql/wp-graphql/archive/${CORE_BRANCH-master}.zip
-	fi
-	echo "Activating WPGraphQL"
-	wp plugin activate wp-graphql
-
-	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-jwt-authentication ]; then
-		echo "Cloning WPGraphQL-JWT-Authentication"
-		wp plugin install https://github.com/wp-graphql/wp-graphql-jwt-authentication/archive/${JWT_AUTH_BRANCH-master}.zip
-	fi
-	echo "Activating WPGraphQL-JWT-Authentication"
-	wp plugin activate wp-graphql-jwt-authentication
-}
-
 setup_plugin() {
+	if [ ${SKIP_WP_SETUP} = "true" ]; then
+		echo "Skipping WooGraphQL installation..."
+		return 0
+	fi
+
+	# Move to project root directory
+	cd $PROJECT_ROOT_DIR
+
 	# Add this repo as a plugin to the repo
 	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce ]; then
-		ln -s $PLUGIN_DIR $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce
+		echo "Installing WooGraphQL..."
+		ln -s $PROJECT_ROOT_DIR $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce
 	fi
 
+	# Move to WordPress directory
 	cd $WP_CORE_DIR
 
-	# activate the plugin
+	# Activate the plugin, it's dependencies should be activated already.
 	wp plugin activate wp-graphql-woocommerce
 
 	# Flush the permalinks
 	wp rewrite flush
 
 	# Export the db for codeception to use
-	wp db export $PLUGIN_DIR/tests/_data/dump.sql
+	if [ ! -d "$PROJECT_ROOT_DIR/local/db" ]; then
+		mkdir ${PROJECT_ROOT_DIR}/local/db
+	fi
+	if [ -f "$PROJECT_ROOT_DIR/local/db/app_db.sql" ]; then
+		echo "Deleting old DB dump..."
+		rm -rf ${PROJECT_ROOT_DIR}/local/db/app_db.sql
+	fi
+
+	wp db export ${PROJECT_ROOT_DIR}/local/db/app_db.sql
 }
 
-install_wp
+install_wordpress_and_codeception
 install_db
 configure_wordpress
-setup_woocommerce
-setup_wpgraphql
 setup_plugin

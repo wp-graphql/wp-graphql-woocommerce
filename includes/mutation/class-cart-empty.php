@@ -28,7 +28,7 @@ class Cart_Empty {
 			'emptyCart',
 			array(
 				'inputFields'         => array(
-					'clearPersistentCart' => array( 'type' => 'Boolean' )
+					'clearPersistentCart' => array( 'type' => 'Boolean' ),
 				),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
@@ -49,7 +49,7 @@ class Cart_Empty {
 				'resolve' => function () {
 					return \WC()->cart;
 				},
-			)
+			),
 		);
 	}
 

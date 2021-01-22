@@ -9,7 +9,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
     private $products;
     private $refunds;
 
-    public function setUp() {
+    public function setUp(): void {
         // before
         parent::setUp();
 
@@ -24,7 +24,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
         $this->customers = $this->getModule('\Helper\Wpunit')->customer();
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then

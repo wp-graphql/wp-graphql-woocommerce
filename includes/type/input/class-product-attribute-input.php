@@ -22,7 +22,7 @@ class Product_Attribute_Input {
 			array(
 				'description' => __( 'Options for ordering the connection', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
-					'attributeName'     => array(
+					'attributeName'  => array(
 						'type' => array( 'non_null' => 'String' ),
 					),
 					'attributeValue' => array(

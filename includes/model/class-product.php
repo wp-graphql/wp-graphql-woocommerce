@@ -349,7 +349,7 @@ class Product extends WC_Post {
 							? array_map( 'absint', $this->wc_data->get_cross_sell_ids() )
 							: array( '0' );
 					},
-					'stockStatus'    => function() {
+					'stockStatus'       => function() {
 						return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
 					},
 				);
@@ -412,7 +412,7 @@ class Product extends WC_Post {
 						},
 					);
 					break;
-				case apply_filters( "graphql_{$type}_product_model_use_grouped_fields", 'grouped' === $type	):
+				case apply_filters( "graphql_{$type}_product_model_use_grouped_fields", 'grouped' === $type ):
 					$fields += array(
 						'addToCartText'        => function() {
 							return ! empty( $this->wc_data->add_to_cart_text() ) ? $this->wc_data->add_to_cart_text() : null;
@@ -438,11 +438,13 @@ class Product extends WC_Post {
 			 * and some fields act as aliases/decorator for existing fields.
 			 */
 			$fields += array(
-				'commentCount'    => function() {
+				'commentCount'  => function() {
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					return $this->reviewCount;
 				},
-				'commentStatus'   => function() {
-					return $this->reviewsAllowed ? 'open': 'closed';
+				'commentStatus' => function() {
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					return $this->reviewsAllowed ? 'open' : 'closed';
 				},
 			);
 

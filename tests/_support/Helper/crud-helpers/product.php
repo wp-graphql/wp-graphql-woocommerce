@@ -288,7 +288,11 @@ class ProductHelper extends WCG_Helper {
 		return $return;
 	}
 
-	public function create_download( $id = 0 ) {
+	public function create_download() {
+		return self::createDownload( ...func_get_args() );
+	}
+
+	public static function createDownload( $id = 0 ) {
 		$download = new WC_Product_Download();
 		$download->set_id( wp_generate_uuid4() );
 		$download->set_name( 'Test Name' );

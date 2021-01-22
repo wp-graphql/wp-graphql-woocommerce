@@ -119,7 +119,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		);
 		new \WP_Query( $args );
 
-		$loaded_posts = [];
+		$loaded_posts = array();
 
 		/**
 		 * Loop over the posts and return an array of all_posts,
@@ -156,13 +156,13 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				case 'shop_order':
 					$customer_id = get_post_meta( $key, '_customer_user', true );
 					if ( ! empty( $customer_id ) ) {
-						$this->context->getLoader( 'wc_customer' )->buffer( [ $customer_id ] );
+						$this->context->getLoader( 'wc_customer' )->buffer( array( $customer_id ) );
 					}
 					break;
 				case 'product_variation':
 				case 'shop_refund':
 					$parent_id = get_post_field( 'post_parent', $key );
-					$this->buffer( [ $parent_id ] );
+					$this->buffer( array( $parent_id ) );
 					break;
 			}
 
@@ -204,16 +204,16 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			);
 		}
 
-		return ! empty( $loaded_posts ) ? $loaded_posts : [];
+		return ! empty( $loaded_posts ) ? $loaded_posts : array();
 	}
 
 	/**
 	 * Callback for inject the PostObject dataloader with WC_Post models.
 	 *
-	 * @param null $model
-	 * @param mixed $entry
-	 * @param mixed $key
-	 * @return void
+	 * @param null  $model  Possible model instance to be loader.
+	 * @param mixed $entry  Data source.
+	 * @param mixed $key    Data key/ID.
+	 * @return \WPGraphQL\Model\Model|null
 	 */
 	public static function inject_post_loader_models( $model, $entry, $key ) {
 		if ( is_a( $entry, \WP_Post::class ) ) {

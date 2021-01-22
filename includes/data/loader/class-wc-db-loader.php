@@ -29,14 +29,14 @@ class WC_Db_Loader extends AbstractDataLoader {
 
 	/**
 	 * Loader type
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $loader_type;
-	
+
 	/**
 	 * WC_Db_Loader constructor
-	 * 
+	 *
 	 * @param AppContext $context      AppContext instance.
 	 * @param string     $loader_type  Type of loader be initialized.
 	 */
@@ -45,14 +45,14 @@ class WC_Db_Loader extends AbstractDataLoader {
 		parent::__construct( $context );
 	}
 
-    /**
+	/**
 	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
 	 * posts as the values
 	 *
 	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws \Exception Invalid loader type
+	 * @throws \Exception Invalid loader type.
 	 */
 	public function loadKeys( array $keys ) {
 		$loader = null;
@@ -87,10 +87,10 @@ class WC_Db_Loader extends AbstractDataLoader {
 
 		return ! empty( $loaded_items ) ? $loaded_items : array();
 	}
-	
+
 	/**
 	 * Returns the cart item connected the provided key.
-	 * 
+	 *
 	 * @param string $key - Cart item key.
 	 *
 	 * @return array
@@ -102,9 +102,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 
 	/**
 	 * Returns the downloadable item connected the provided IDs.
-	 * 
+	 *
 	 * @param int $id - Downloadable item ID.
-	 * 
+	 *
 	 * @return WC_Customer_Download|null
 	 */
 	public function load_downloadable_item_from_id( $id ) {
@@ -114,9 +114,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 
 	/**
 	 * Returns the tax rate connected the provided IDs.
-	 * 
-	 * @param int $key - Tax rate IDs.
-	 * 
+	 *
+	 * @param int $id - Tax rate IDs.
+	 *
 	 * @return Tax_Rate|null
 	 */
 	public function load_tax_rate_from_id( $id ) {

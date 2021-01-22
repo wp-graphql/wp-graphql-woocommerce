@@ -315,7 +315,7 @@ class Order_Mutation {
 					}
 					break;
 				default:
-					$prop = \Inflect::camel_case_to_underscore( $key );
+					$prop = \WooGraphQL_Inflect::camel_case_to_underscore( $key );
 					if ( is_callable( array( $order, "set_{$prop}" ) ) ) {
 						$order->{"set_{$prop}"}( $value );
 					}

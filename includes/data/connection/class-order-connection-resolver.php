@@ -64,7 +64,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Given an ID, return the model for the entity or null
 	 *
-	 * @param integer $id
+	 * @param integer $id  Node ID.
 	 *
 	 * @return mixed|Order|null
 	 */
@@ -101,7 +101,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			'post_type'     => 'shop_order',
 			'no_rows_found' => true,
 			'return'        => 'ids',
-			'limit'         => min( max( absint( $first ), absint( $last ), 10 ),$this->query_amount ) + 1,
+			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		);
 
 		/**
@@ -161,12 +161,14 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * Executes query
 	 *
 	 * @return \WC_Order_Query
+	 *
+	 * @throws InvariantViolation  Filter currently not supported for WC_Order_Query.
 	 */
 	public function get_query() {
 		$query = new \WC_Order_Query( $this->query_args );
 
 		if ( true === $query->get( 'suppress_filters', false ) ) {
-			throw new InvariantViolation( __( 'WC_Order_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql' ) );
+			throw new InvariantViolation( __( 'WC_Order_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql-woocommerce' ) );
 		}
 
 		return $query;

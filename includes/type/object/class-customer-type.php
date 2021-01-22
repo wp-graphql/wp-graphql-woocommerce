@@ -112,13 +112,13 @@ class Customer_Type {
 						'type'        => 'String',
 						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							if ( $source->ID === \get_current_user_id() ) {
+							if ( \get_current_user_id() === $source->ID ) {
 								return apply_filters( 'graphql_customer_session_token', null );
 							}
 
 							return null;
 						},
-					)
+					),
 				),
 			)
 		);
@@ -133,7 +133,7 @@ class Customer_Type {
 				'type'        => 'String',
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source ) {
-					if ( $source->ID === \get_current_user_id() ) {
+					if ( \get_current_user_id() === $source->ID ) {
 						return apply_filters( 'graphql_customer_session_token', null );
 					}
 

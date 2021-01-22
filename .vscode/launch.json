@@ -1,0 +1,38 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Listen for XDebug in Docker",
+            "type": "php",
+            "request": "launch",
+            "port": 9000,
+            "log": true,
+            "pathMappings": {
+              "/var/www/html/wp-content/plugins/wp-graphql-woocommerce": "${workspaceRoot}",
+              "/var/www/html": "${workspaceRoot}/local/public"
+            }
+        },
+        {
+          "name": "Listen for XDebug",
+          "type": "php",
+          "request": "launch",
+          "port": 9003,
+          "log": true,
+          "ignore": [
+            "**/vendor/**/*.php"
+          ],
+        },
+        {
+            "name": "Launch currently open script",
+            "type": "php",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "port": 9000
+        }
+    ]
+}

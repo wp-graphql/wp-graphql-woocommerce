@@ -176,10 +176,10 @@ class Cart_Type {
 							return \wc_graphql_price( $price );
 						},
 					),
-					'totalTaxes'			   => array(
-						'type'				=> array( 'list_of' => 'CartTax' ),
-						'description'	=> __( 'Cart total taxes itemized', 'wp-graphql-woocommerce' ),
-						'resolve'	 		=> function( $source ) {
+					'totalTaxes'               => array(
+						'type'        => array( 'list_of' => 'CartTax' ),
+						'description' => __( 'Cart total taxes itemized', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
 							$taxes = $source->get_tax_totals();
 							return ! empty( $taxes ) ? array_values( $taxes ) : null;
 						},
@@ -288,11 +288,11 @@ class Cart_Type {
 	public static function register_cart_item_connections() {
 		register_graphql_connection(
 			array(
-				'fromType'         => 'CartItem',
-				'toType'           => 'Product',
-				'fromFieldName'    => 'product',
-				'oneToOne'         => true,
-				'resolve'          => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'fromType'      => 'CartItem',
+				'toType'        => 'Product',
+				'fromFieldName' => 'product',
+				'oneToOne'      => true,
+				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id       = $source['product_id'];
 					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
@@ -305,11 +305,11 @@ class Cart_Type {
 
 		register_graphql_connection(
 			array(
-				'fromType'         => 'CartItem',
-				'toType'           => 'ProductVariation',
-				'fromFieldName'    => 'variation',
-				'oneToOne'         => true,
-				'edgeFields'       => array(
+				'fromType'      => 'CartItem',
+				'toType'        => 'ProductVariation',
+				'fromFieldName' => 'variation',
+				'oneToOne'      => true,
+				'edgeFields'    => array(
 					'attributes' => array(
 						'type'        => array( 'list_of' => 'VariationAttribute' ),
 						'description' => __( 'Attributes of the variation.', 'wp-graphql-woocommerce' ),
@@ -319,9 +319,9 @@ class Cart_Type {
 							$variation           = $source['node'];
 							$cart_item_data      = $source['source'];
 							$cart_variation_data = $cart_item_data['variation'];
-							foreach( $variation->attributes as $name => $default_value ) {
-								if ( isset( $cart_variation_data["attribute_{$name}"] ) ) {
-									$attributes[ $name ] = $cart_variation_data["attribute_{$name}"];
+							foreach ( $variation->attributes as $name => $default_value ) {
+								if ( isset( $cart_variation_data[ "attribute_{$name}" ] ) ) {
+									$attributes[ $name ] = $cart_variation_data[ "attribute_{$name}" ];
 								} else {
 									$attributes[ $name ] = $default_value;
 								}
@@ -331,7 +331,7 @@ class Cart_Type {
 						},
 					),
 				),
-				'resolve'          => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id       = $source['variation_id'];
 					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
@@ -408,28 +408,28 @@ class Cart_Type {
 			array(
 				'description' => __( 'An itemized cart tax item', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
-					'id'       => array(
+					'id'         => array(
 						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'Tax Rate ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->tax_rate_id ) ? $source->tax_rate_id : null;
 						},
 					),
-					'label'     => array(
+					'label'      => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Tax label', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->label ) ? $source->label : null;
 						},
 					),
-					'isCompound'  => array(
+					'isCompound' => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Is tax compound?', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->is_compound ) ? $source->is_compound : null;
 						},
 					),
-					'amount'   => array(
+					'amount'     => array(
 						'type'        => 'String',
 						'description' => __( 'Tax amount', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {

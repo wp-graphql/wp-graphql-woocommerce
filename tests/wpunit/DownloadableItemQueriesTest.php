@@ -3,7 +3,7 @@
 class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 {
 
-    public function setUp() {
+    public function setUp(): void {
         // before
         parent::setUp();
 
@@ -16,7 +16,7 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
         $this->customer  = $this->customers->create();
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then

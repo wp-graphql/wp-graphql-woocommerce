@@ -7,7 +7,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $helper;
 	private $new_customer;
 
-	public function setUp() {
+	public function setUp(): void {
 		// before
 		parent::setUp();
 
@@ -18,7 +18,7 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->new_customer  = $this->helper->create();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// your tear down methods here
 		// then
 		parent::tearDown();

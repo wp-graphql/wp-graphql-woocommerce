@@ -20,15 +20,32 @@
             "role": "Lead developer"
         }
     ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    ],
     "require": {
         "php": ">=7.1.0",
         "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
-        "lucatume/wp-browser": ">=2.2.1 <2.2.8",
+        "composer/installers": "^1.9",
+        "lucatume/wp-browser": "^2.4",
+        "codeception/module-asserts": "^1.0",
+        "codeception/util-universalframework": "^1.0",
         "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28",
-        "wp-coding-standards/wpcs": "^2.3"
+        "wp-coding-standards/wpcs": "^2.3",
+        "johnpbloch/wordpress": "~5.3",
+        "wp-graphql/wp-graphql": "^1.1.2",
+        "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
+        "wpackagist-plugin/woocommerce": "^4.4",
+        "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
+        "wpackagist-theme/twentytwentyone": "^1.0",
+        "phpunit/phpunit": "<=9.4.4",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "config": {
         "optimize-autoloader": true,
@@ -51,23 +68,33 @@
             "tests/_data/config.php"
         ]
     },
-    "scripts": {
-        "install-test-env": "bash bin/install-test-env.sh",
-        "docker-build": "bash bin/run-docker.sh build",
-        "docker-run": "bash bin/run-docker.sh run",
-        "docker-destroy": "docker-compose down",
-        "build-and-run": [
-          "@docker-build",
-          "@docker-run"
-        ],
-        "build-app": "@docker-build -a",
-        "build-test": "@docker-build -t",
-        "run-app": "@docker-run -a",
-        "run-test": "@docker-run -t",
-        "lint": "vendor/bin/phpcs"
+    "extra": {
+        "wordpress-install-dir": "local/public",
+        "installer-paths": {
+            "local/public/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+            "local/public/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+            "local/public/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+        }
     },
-    "support"    : {
-		"issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
-		"source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
-	}
+    "scripts": {
+        "installTestEnv": "bash bin/install-test-env.sh",
+        "runWPUnitTest": "vendor/bin/codept run wpunit",
+        "dBuild": "env $(sed -e '/^#/d' .env.dist) docker-compose build",
+        "dRunApp": "env $(sed -e '/^#/d' .env.dist) docker-compose up testable_app app_db mailhog",
+        "dRunTestingDb":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.dist) docker-compose up -d testing_db; fi",
+        "dSetMainDb": "docker-compose exec testable_app ./setup-database.sh main",
+        "dSetTestingDb": "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- ./setup-database.sh testing",
+        "dRunTest": [
+            "@dRunTestingDb",
+            "@dSetTestingDb",
+            "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- codecept run $FILTER"
+        ],
+        "dRunTestStandalone": "env $(sed -e '/^#/d' .env.dist) docker-compose run --rm run_tests",
+        "dDestroy": "docker-compose down -v",
+        "lint": "vendor/bin/phpcs -vp ."
+    },
+    "support": {
+        "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
+        "source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
+    }
 }

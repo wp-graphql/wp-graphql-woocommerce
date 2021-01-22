@@ -63,7 +63,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Given an ID, return the model for the entity or null
 	 *
-	 * @param integer $id
+	 * @param integer $id Node ID.
 	 *
 	 * @return mixed|Coupon|null
 	 */
