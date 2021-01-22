@@ -89,7 +89,8 @@
             "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- codecept run $FILTER"
         ],
         "dRunTestStandalone": "env $(sed -e '/^#/d' .env.dist) docker-compose run --rm run_tests",
-        "dDestroy": "docker-compose down -v"
+        "dDestroy": "docker-compose down -v",
+        "lint": "vendor/bin/phpcs"
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",

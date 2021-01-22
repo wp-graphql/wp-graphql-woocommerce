@@ -318,7 +318,7 @@ class GraphQLE2E extends \Codeception\Module {
                                 key
                                 product {
 									node {
-										id
+										node { id }
 									}
                                 }
                                 quantity
@@ -362,7 +362,7 @@ class GraphQLE2E extends \Codeception\Module {
                             nodes {
                                 key
                                 product {
-                                    id
+                                    node { id }
                                 }
                                 quantity
                                 subtotal

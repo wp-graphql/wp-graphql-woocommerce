@@ -70,7 +70,6 @@ ENV WORDPRESS_DB_PASSWORD=${DB_PASSWORD}
 ENV WORDPRESS_DB_NAME=${DB_NAME}
 ENV PLUGINS_DIR="${WP_ROOT_FOLDER}/wp-content/plugins"
 ENV PROJECT_DIR="${PLUGINS_DIR}/wp-graphql-woocommerce"
-ENV WOOGRAPHQL_TESTS_DIR="/var/www/html/tests"
 
 # Set up Apache
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf

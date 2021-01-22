@@ -36,10 +36,9 @@ services:
         PHP_VERSION: ${PHP_VERSION:-7.4}
     volumes:
       - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
+      - ./codeception.dist.yml:/var/www/html/wp-content/plugins/wp-graphql-woocommerce/codeception.yml
       - ./local/public:/var/www/html # WP core files.
       - ./local/.htaccess:/var/www/html/.htaccess
-      - ./tests:/var/www/html/tests
-      - ./codeception.dist.yml:/var/www/html/codeception.yml
       - ./.log/testable_app:/var/log/apache2
     env_file: .env.dist
     environment:
@@ -78,10 +77,9 @@ services:
         PHP_VERSION: ${PHP_VERSION:-7.4}
     volumes:
       - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
+      - ./codeception.dist.yml:/var/www/html/wp-content/plugins/wp-graphql-woocommerce/codeception.yml
       - ./local/public:/var/www/html # WP core files.
       - ./local/.htaccess:/var/www/html/.htaccess
-      - ./tests:/var/www/html/tests
-      - ./codeception.dist.yml:/var/www/html/codeception.yml
       - ./.log/run_tests:/var/log/apache2
     env_file: .env.dist
     environment:

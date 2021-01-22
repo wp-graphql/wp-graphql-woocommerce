@@ -17,9 +17,11 @@ fi
 # Update our domain to just be the docker container's IP address
 export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
-echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" >> .env
-echo "WORDPRESS_URL=$WORDPRESS_URL" >> .env
-echo $WORDPRESS_URL
+if [ -f $PROJECT_DIR/.env.docker ]; then
+	rm $PROJECT_DIR/.env.docker
+fi
+echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" >> $PROJECT_DIR/.env.docker
+echo "WORDPRESS_URL=$WORDPRESS_URL" >> $PROJECT_DIR/.env.docker
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
@@ -58,12 +60,6 @@ woocommerce woocommerce-gateway-stripe \
 wp-graphql wp-graphql-jwt-authentication \
 wp-graphql-woocommerce \
 --allow-root
-
-# Download c3 for testing.
-if [ ! -f "$PROJECT_DIR/c3.php" ]; then
-    echo "Downloading Codeception's c3.php..."
-    curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "$PROJECT_DIR/c3.php"
-fi
 
 if ! wp config has GRAPHQL_JWT_AUTH_SECRET_KEY --allow-root; then
 	echo "Adding WPGraphQL-JWT-Authentication salt..."

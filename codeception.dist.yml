@@ -1,84 +1,87 @@
 paths:
-    tests: tests
-    output: tests/_output
-    data: tests/_data
-    support: tests/_support
-    envs: tests/_envs
+  tests: tests
+  output: tests/_output
+  data: tests/_data
+  support: tests/_support
+  envs: tests/_envs
 params:
-    - env
-    - .env
+  - env
+  - .env
+  - .env.docker
 actor_suffix: Tester
 settings:
-    colors: true
-    memory_limit: 1024M
+  colors: true
+  memory_limit: 1024M
 coverage:
-    enabled: true
-    c3_url: '%WORDPRESS_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-wooocommerce.php/'
-    include:
-        - 'wp-content/plugins/wp-graphql-woocommerce/**/*.php'
-    exclude:
-        - 'wp-content/plugins/wp-graphql-woocommerce/class-inflect.php'
-        - 'wp-content/plugins/wp-graphql-woocommerce/vendor/*'
-    show_only_summary: false
+  enabled: true
+  include:
+    - 'wp-graphql-woocommerce.php'
+    - 'access-functions.php'
+    - 'includes/*'
+  exclude:
+    - 'vendor/*'
+    - 'class-inflect.php'
+    - 'local/*'
+  show_only_summary: false
 extensions:
-    enabled:
-        - Codeception\Extension\RunFailed
-    commands:
-        - Codeception\Command\GenerateWPUnit
-        - Codeception\Command\GenerateWPRestApi
-        - Codeception\Command\GenerateWPRestController
-        - Codeception\Command\GenerateWPRestPostTypeController
-        - Codeception\Command\GenerateWPAjax
-        - Codeception\Command\GenerateWPCanonical
-        - Codeception\Command\GenerateWPXMLRPC
+  enabled:
+    - Codeception\Extension\RunFailed
+  commands:
+    - Codeception\Command\GenerateWPUnit
+    - Codeception\Command\GenerateWPRestApi
+    - Codeception\Command\GenerateWPRestController
+    - Codeception\Command\GenerateWPRestPostTypeController
+    - Codeception\Command\GenerateWPAjax
+    - Codeception\Command\GenerateWPCanonical
+    - Codeception\Command\GenerateWPXMLRPC
 modules:
-    config:
-        WPDb:
-            dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
-            user: '%DB_USER%'
-            password: '%DB_PASSWORD%'
-            dump: 'local/db/app_db.sql'
-            populate: false
-            cleanup: false
-            waitlock: 10
-            url: '%WORDPRESS_URL%'
-            urlReplacement: true
-            tablePrefix: '%WP_TABLE_PREFIX%'
-        WPBrowser:
-            url: '%WORDPRESS_URL%'
-            wpRootFolder: '%WP_CORE_DIR%'
-            adminUsername: '%ADMIN_USERNAME%'
-            adminPassword: '%ADMIN_PASSWORD%'
-            adminPath: '/wp-admin'
-        REST:
-            depends: WPBrowser
-            url: '%WORDPRESS_URL%'
-        WPFilesystem:
-            wpRootFolder: '%WP_CORE_DIR%'
-            plugins: '/wp-content/plugins'
-            mu-plugins: '/wp-content/mu-plugins'
-            themes: '/wp-content/themes'
-            uploads: '/wp-content/uploads'
-        WPLoader:
-            wpRootFolder: '%WP_CORE_DIR%'
-            dbName: '%DB_NAME%'
-            dbHost: '%DB_HOST%'
-            dbUser: '%DB_USER%'
-            dbPassword: '%DB_PASSWORD%'
-            tablePrefix: '%WP_TABLE_PREFIX%'
-            domain: '%WORDPRESS_DOMAIN%'
-            adminEmail: '%ADMIN_EMAIL%'
-            title: 'WooGraphQL Tests'
-            plugins:
-                - woocommerce/woocommerce.php
-                - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-                - wp-graphql/wp-graphql.php
-                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
-            activatePlugins:
-                - woocommerce/woocommerce.php
-                - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-                - wp-graphql/wp-graphql.php
-                - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-                - wp-graphql-woocommerce/wp-graphql-woocommerce.php
-            configFile: 'tests/_data/config.php'
+  config:
+    WPDb:
+      dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
+      user: '%DB_USER%'
+      password: '%DB_PASSWORD%'
+      dump: 'local/db/app_db.sql'
+      populate: false
+      cleanup: false
+      waitlock: 10
+      url: '%WORDPRESS_URL%'
+      urlReplacement: true
+      tablePrefix: '%WP_TABLE_PREFIX%'
+    WPBrowser:
+      url: '%WORDPRESS_URL%'
+      wpRootFolder: '%WP_CORE_DIR%'
+      adminUsername: '%ADMIN_USERNAME%'
+      adminPassword: '%ADMIN_PASSWORD%'
+      adminPath: '/wp-admin'
+    REST:
+      depends: WPBrowser
+      url: '%WORDPRESS_URL%'
+    WPFilesystem:
+      wpRootFolder: '%WP_CORE_DIR%'
+      plugins: '/wp-content/plugins'
+      mu-plugins: '/wp-content/mu-plugins'
+      themes: '/wp-content/themes'
+      uploads: '/wp-content/uploads'
+    WPLoader:
+      wpRootFolder: '%WP_CORE_DIR%'
+      dbName: '%DB_NAME%'
+      dbHost: '%DB_HOST%'
+      dbUser: '%DB_USER%'
+      dbPassword: '%DB_PASSWORD%'
+      tablePrefix: '%WP_TABLE_PREFIX%'
+      domain: '%WORDPRESS_DOMAIN%'
+      adminEmail: '%ADMIN_EMAIL%'
+      title: 'WooGraphQL Tests'
+      plugins:
+        - woocommerce/woocommerce.php
+        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+        - wp-graphql/wp-graphql.php
+        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      activatePlugins:
+        - woocommerce/woocommerce.php
+        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+        - wp-graphql/wp-graphql.php
+        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      configFile: 'tests/_data/config.php'

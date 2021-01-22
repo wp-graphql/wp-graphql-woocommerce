@@ -6,6 +6,8 @@
 # If you need both WPWebDriver and WPBrowser tests - create a separate suite.
 
 actor: AcceptanceTester
+coverage:
+  enabled: false
 modules:
   enabled:
     - Asserts

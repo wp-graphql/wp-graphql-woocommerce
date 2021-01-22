@@ -2,15 +2,19 @@
 
 set -eu
 
+declare work_dir=$(pwd)
+
 if [ 'run' = "$1" ]; then
 	declare no_exit="--no-exit";
 fi
 
+cd $PROJECT_DIR
+
 echo "Running 'codecept $@' in Docker..."
-~/.composer/vendor/bin/codecept $@ --env docker $no_exit
+~/.composer/vendor/bin/codecept $@ --env docker --no-redirect $no_exit
 
 if [ 'run' = "$1" ]; then
-	declare test_output="/var/www/html/tests/_output";
+	declare test_output="tests/_output";
 	if [ -n "$(ls $test_output )" ]; then
 		echo 'Setting result files permissions'.
 		chmod 777 -R ${test_output}/*
@@ -25,3 +29,5 @@ if [ 'run' = "$1" ]; then
 		exit 0
 	fi
 fi
+
+cd $work_dir

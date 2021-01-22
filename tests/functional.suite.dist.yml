@@ -4,6 +4,8 @@
 # Emulate web requests and make WordPress process them
 
 actor: FunctionalTester
+coverage:
+  enabled: false
 modules:
   enabled:
     - Asserts
