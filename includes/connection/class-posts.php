@@ -30,13 +30,13 @@ class Posts extends PostObjects {
 					'fromType'      => 'Product',
 					'toType'        => 'MediaItem',
 					'fromFieldName' => 'galleryImages',
-					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'attachment' );
 						$resolver->set_query_arg( 'post_type', 'attachment' );
 						$resolver->set_query_arg( 'post__in', $source->gallery_image_ids );
 
-						// Change default ordering
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 

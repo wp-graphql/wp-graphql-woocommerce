@@ -115,7 +115,7 @@ class Order extends WC_Post {
 			return false;
 		}
 
-		return $customer_email === $session_customer->get_billing_email() ? true : false ;
+		return $customer_email === $session_customer->get_billing_email() ? true : false;
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Order extends WC_Post {
 	/**
 	 * Return the fields that visible to owners of the order without management caps.
 	 *
-	 * @param array  $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user
+	 * @param array $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user.
 	 *
 	 * @return array
 	 */
@@ -372,9 +372,9 @@ class Order extends WC_Post {
 				 * Defines aliased fields
 				 *
 				 * These fields are used primarily by WPGraphQL core Node* interfaces
-			 	 * and some fields act as aliases/decorator for existing fields.
+				 * and some fields act as aliases/decorator for existing fields.
 				 */
-				'commentCount'    => function() {
+				'commentCount'          => function() {
 					remove_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
 
 					$args  = array(
@@ -397,8 +397,8 @@ class Order extends WC_Post {
 
 					return count( $notes );
 				},
-				'commentStatus'   => function() {
-					return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ?  'open' : 'closed';
+				'commentStatus'         => function() {
+					return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ? 'open' : 'closed';
 				},
 			);
 

@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Model - Coupon
+ *
+ * Resolves coupon crud object model
+ *
+ * @package WPGraphQL\WooCommerce\Model
+ * @since 0.0.1
+ */
 
 namespace WPGraphQL\WooCommerce\Model;
 

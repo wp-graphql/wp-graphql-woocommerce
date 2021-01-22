@@ -36,8 +36,8 @@ class Products {
 
 						$resolver->set_query_arg( 'post__in', $source->product_ids );
 
-						// Change default ordering
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
@@ -56,8 +56,8 @@ class Products {
 
 						$resolver->set_query_arg( 'post__in', $source->excluded_product_ids );
 
-						// Change default ordering
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
@@ -79,7 +79,7 @@ class Products {
 							'shuffle' => array(
 								'type'        => 'Boolean',
 								'description' => __( 'Shuffle results? (Pagination currently not support by this argument)', 'wp-graphql-woocommerce' ),
-							)
+							),
 						)
 					),
 					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -98,8 +98,8 @@ class Products {
 						$related_ids = wc_get_related_products( $source->ID, $resolver->get_query_amount() );
 						$resolver->set_query_arg( 'post__in', $related_ids );
 
-						// Change default ordering
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						// Change default ordering.
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
@@ -119,7 +119,7 @@ class Products {
 						$resolver->set_query_arg( 'post__in', $source->upsell_ids );
 
 						// Change default ordering.
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
@@ -140,12 +140,12 @@ class Products {
 						$resolver->set_query_arg( 'post__in', $source->grouped_ids );
 
 						// Change default ordering.
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
 						return $resolver->get_connection();
-					}
+					},
 				)
 			)
 		);
@@ -159,7 +159,7 @@ class Products {
 				$resolver->set_query_arg( 'post__in', $source->cross_sell_ids );
 
 				// Change default ordering.
-				if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+				if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 					$resolver->set_query_arg( 'orderby', 'post__in' );
 				}
 
@@ -192,7 +192,7 @@ class Products {
 						$resolver->set_query_arg( 'post__in', $source->variation_ids );
 
 						// Change default ordering.
-						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ) ) ) {
+						if ( ! in_array( 'orderby', array_keys( $resolver->get_query_args() ), true ) ) {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
@@ -207,10 +207,9 @@ class Products {
 				'fromType'      => 'ProductVariation',
 				'toType'        => 'VariableProduct',
 				'fromFieldName' => 'parent',
-				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql' ),
+				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql-woocommerce' ),
 				'oneToOne'      => true,
 				'resolve'       => function( $source, $args, AppContext $context, ResolveInfo $info ) {
-
 					if ( empty( $source->parent_id ) ) {
 						return null;
 					}
@@ -219,7 +218,6 @@ class Products {
 					$resolver->set_query_arg( 'p', $source->parent_id );
 
 					return $resolver->one_to_one()->get_connection();
-
 				},
 			)
 		);
@@ -230,10 +228,10 @@ class Products {
 
 			$tax_query = array(
 				array( // WPCS: slow query ok.
-					'taxonomy' => $source->taxonomyName,
+					'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					'field'    => 'term_id',
 					'terms'    => $source->term_id,
-				)
+				),
 			);
 			$resolver->set_query_arg( 'tax_query', $tax_query );
 
@@ -281,6 +279,7 @@ class Products {
 							global $wpdb;
 							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
+							// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
 							$variation_ids = $wpdb->get_col(
 								$wpdb->prepare(

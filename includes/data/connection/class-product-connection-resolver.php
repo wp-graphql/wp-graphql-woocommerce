@@ -79,11 +79,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Given an ID, return the model for the entity or null
 	 *
-	 * @param integer $id
+	 * @param integer $id  Node ID.
 	 *
 	 * @return Product|Product_Variation|null
-	 *
-	 * @throws \Exception
 	 */
 	public function get_node_by_id( $id ) {
 		$post = get_post( $id );
@@ -223,6 +221,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * Executes query
 	 *
 	 * @return \WP_Query
+	 *
+	 * @throws InvariantViolation  Filter currently not supported for WP_Query.
 	 */
 	public function get_query() {
 		$query = new \WP_Query( $this->query_args );
@@ -373,7 +373,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				$terms           = ! empty( $where_args['typeNotIn'] )
 					? array_diff( $supported_types, $where_args['typeNotIn'] )
 					: $supported_types;
-			$tax_query[] = array(
+			$tax_query[]         = array(
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
 				'terms'    => $terms,

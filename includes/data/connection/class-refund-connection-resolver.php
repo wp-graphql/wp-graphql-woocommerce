@@ -64,7 +64,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Given an ID, return the model for the entity or null
 	 *
-	 * @param integer $id
+	 * @param integer $id  Node ID.
 	 *
 	 * @return mixed|Refund|null
 	 */
@@ -145,7 +145,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 				break;
 			case is_a( $this->source, Customer::class ):
 				if ( 'refunds' === $this->info->fieldName ) {
-					$customer_orders              = \wc_get_orders(
+					$customer_orders               = \wc_get_orders(
 						array(
 							'customer_id'   => $this->source->ID,
 							'no_rows_found' => true,

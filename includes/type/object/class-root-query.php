@@ -169,11 +169,11 @@ class Root_Query {
 					'type'        => 'Order',
 					'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
 					'args'        => array(
-						'id'       => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the order', 'wp-graphql-woocommerce' ),
 						),
-						'idType'   => array(
+						'idType' => array(
 							'type'        => 'OrderIdTypeEnum',
 							'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
 						),
@@ -236,11 +236,11 @@ class Root_Query {
 					'type'        => 'ProductVariation',
 					'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
 					'args'        => array(
-						'id'          => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' ),
 						),
-						'idType'      => array(
+						'idType' => array(
 							'type'        => 'ProductVariationIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 						),
@@ -345,11 +345,11 @@ class Root_Query {
 					'type'        => 'ShippingMethod',
 					'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
 					'args'        => array(
-						'id'       => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' ),
 						),
-						'idType'   => array(
+						'idType' => array(
 							'type'        => 'ShippingMethodIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 						),
@@ -414,12 +414,12 @@ class Root_Query {
 			)
 		);
 
-		// Product queries
+		// Product queries.
 		$product_types = apply_filters(
 			'woographql_register_product_queries',
 			array_keys( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
-		foreach( $product_types as $type ) {
+		foreach ( $product_types as $type ) {
 			$field_name = "{$type}Product";
 			$type_name  = ucfirst( $type ) . 'Product';
 			register_graphql_field(
@@ -429,7 +429,7 @@ class Root_Query {
 					'type'        => $type_name,
 					'description' => __( 'A simple product object', 'wp-graphql-woocommerce' ),
 					'args'        => array(
-						'id'        => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => sprintf(
 								/* translators: %s: product type */
@@ -437,7 +437,7 @@ class Root_Query {
 								$type
 							),
 						),
-						'idType'    => array(
+						'idType' => array(
 							'type'        => 'ProductIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						),

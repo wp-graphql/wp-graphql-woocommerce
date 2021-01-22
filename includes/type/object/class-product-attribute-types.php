@@ -24,7 +24,7 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => array( 'ProductAttribute' ),
 				'fields'      => array(
-					'scope'       => array(
+					'scope' => array(
 						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function () {
@@ -42,14 +42,14 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => array( 'ProductAttribute' ),
 				'fields'      => array(
-					'scope'       => array(
+					'scope' => array(
 						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function () {
 							return 'global';
 						},
 					),
-					'label'        => array(
+					'label' => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
@@ -57,7 +57,7 @@ class Product_Attribute_Types {
 							return $taxonomy ? ucwords( $taxonomy->labels->singular_name ) : null;
 						},
 					),
-					'name'        => array(
+					'name'  => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
@@ -65,7 +65,7 @@ class Product_Attribute_Types {
 							return $taxonomy->labels->singular_name;
 						},
 					),
-					'slug'        => array(
+					'slug'  => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Product attribute slug', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {

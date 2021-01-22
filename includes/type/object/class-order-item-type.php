@@ -295,11 +295,11 @@ class Order_Item_Type {
 	private static function get_fields( $fields = array() ) {
 		return array_merge(
 			array(
-				'databaseId'  => array(
+				'databaseId' => array(
 					'type'        => 'Int',
 					'description' => __( 'The ID of the order item in the database', 'wp-graphql-woocommerce' ),
 				),
-				'orderId' => array(
+				'orderId'    => array(
 					'type'        => 'Int',
 					'description' => __( 'The Id of the order the order item belongs to.', 'wp-graphql-woocommerce' ),
 				),

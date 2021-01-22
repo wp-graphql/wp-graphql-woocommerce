@@ -44,7 +44,8 @@
         "wpackagist-plugin/woocommerce": "^4.4",
         "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
         "wpackagist-theme/twentytwentyone": "^1.0",
-        "phpunit/phpunit": "<=9.4.4"
+        "phpunit/phpunit": "<=9.4.4",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "config": {
         "optimize-autoloader": true,
@@ -90,7 +91,7 @@
         ],
         "dRunTestStandalone": "env $(sed -e '/^#/d' .env.dist) docker-compose run --rm run_tests",
         "dDestroy": "docker-compose down -v",
-        "lint": "vendor/bin/phpcs"
+        "lint": "vendor/bin/phpcs -vp ."
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",

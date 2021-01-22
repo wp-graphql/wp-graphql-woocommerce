@@ -15,13 +15,14 @@ settings:
 coverage:
   enabled: true
   include:
-    - 'wp-graphql-woocommerce.php'
-    - 'access-functions.php'
     - 'includes/*'
+    - 'access-functions.php'
   exclude:
-    - 'vendor/*'
-    - 'class-inflect.php'
     - 'local/*'
+    - 'vendor/*'
+    - 'includes/utils/class-ql-session-handler.php'
+    - 'class-woographql-inflect.php'
+    - 'wp-graphql-woocommerce.php'
   show_only_summary: false
 extensions:
   enabled:

@@ -45,14 +45,14 @@ class WC_Db_Loader extends AbstractDataLoader {
 		parent::__construct( $context );
 	}
 
-    /**
+	/**
 	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
 	 * posts as the values
 	 *
 	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws \Exception Invalid loader type
+	 * @throws \Exception Invalid loader type.
 	 */
 	public function loadKeys( array $keys ) {
 		$loader = null;
@@ -115,7 +115,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	/**
 	 * Returns the tax rate connected the provided IDs.
 	 *
-	 * @param int $key - Tax rate IDs.
+	 * @param int $id - Tax rate IDs.
 	 *
 	 * @return Tax_Rate|null
 	 */

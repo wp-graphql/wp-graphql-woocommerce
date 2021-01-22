@@ -20,7 +20,7 @@ class JWT_Auth_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is installed.
-		if ( \class_exists( '\WPGraphQL\JWT_Authentication\Auth') ) {
+		if ( \class_exists( '\WPGraphQL\JWT_Authentication\Auth' ) ) {
 			add_filter( 'graphql_jwt_user_types', array( __CLASS__, 'add_customer_to_jwt_user_types' ), 10 );
 			add_filter( 'graphql_registerCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 3 );
 			add_filter( 'graphql_updateCustomerPayload_fields', array( __CLASS__, 'add_jwt_output_fields' ), 10, 3 );
@@ -79,7 +79,7 @@ class JWT_Auth_Schema_Filters {
 
 						return $refresh_token;
 					},
-				)
+				),
 			)
 		);
 
@@ -93,7 +93,7 @@ class JWT_Auth_Schema_Filters {
 		register_graphql_fields(
 			'LoginPayload',
 			array(
-				'customer' => array(
+				'customer'     => array(
 					'type'        => 'Customer',
 					'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
@@ -101,13 +101,13 @@ class JWT_Auth_Schema_Filters {
 						return new Customer( $id );
 					},
 				),
-				'sessionToken'          => array(
+				'sessionToken' => array(
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
 						return apply_filters( 'graphql_customer_session_token', null );
 					},
-				)
+				),
 			)
 		);
 	}

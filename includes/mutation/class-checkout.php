@@ -84,7 +84,7 @@ class Checkout {
 			'customerNote'           => array(
 				'type'        => 'String',
 				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
-			)
+			),
 		);
 	}
 

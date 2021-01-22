@@ -111,10 +111,9 @@ function wc_graphql_price( $price, $args = array() ) {
 	$negative          = $price < 0;
 
 	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-	$price             = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) ); 
+	$price = apply_filters( 'raw_woocommerce_price', floatval( $negative ? $price * -1 : $price ) );
 
-
-	$price             = apply_filters(
+	$price = apply_filters(
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		'formatted_woocommerce_price',
 		number_format(

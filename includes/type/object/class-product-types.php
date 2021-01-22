@@ -79,7 +79,7 @@ class Product_Types {
 					'type'        => 'Boolean',
 					'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
 				),
-				'stockStatus'    => array(
+				'stockStatus'       => array(
 					'type'        => 'StockStatusEnum',
 					'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
 				),

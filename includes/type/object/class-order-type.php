@@ -30,7 +30,7 @@ class Order_Type {
 				'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => array(
 					'Node',
-					'NodeWithComments'
+					'NodeWithComments',
 				),
 				'fields'      => array(
 					'id'                    => array(

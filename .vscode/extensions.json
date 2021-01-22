@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "felixfbecker.php-debug",
+    "ikappas.phpcs"
+  ]
+}

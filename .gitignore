@@ -11,7 +11,7 @@ node_modules/
 .env.*
 !.env.dist
 .idea
-.vscode
+.vscode/settings.json
 .github_changelog_generator
 !vendor/
 vendor/*

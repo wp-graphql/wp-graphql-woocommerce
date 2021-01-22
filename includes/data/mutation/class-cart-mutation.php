@@ -58,22 +58,27 @@ class Cart_Mutation {
 	/**
 	 * Processes the provided variation attributes data for the cart.
 	 *
+	 * @param int   $product_id      Product ID.
 	 * @param array $variation_data  Variation data.
+	 *
 	 * @return array
+	 *
+	 * @throws UserError  Invalid cart attribute provided.
 	 */
 	private static function prepare_attributes( $product_id, array $variation_data = array() ) {
 		$product         = wc_get_product( $product_id );
 		$attribute_names = array_keys( $product->get_attributes() );
 
 		$attributes = array();
-		foreach( $variation_data as $attribute ) {
-			$attribute_name  = $attribute['attributeName'];
+		foreach ( $variation_data as $attribute ) {
+			$attribute_name = $attribute['attributeName'];
 			if ( in_array( "pa_{$attribute_name}", $attribute_names, true ) ) {
 				$attribute_name = "pa_{$attribute_name}";
 			} elseif ( ! in_array( $attribute_name, $attribute_names, true ) ) {
 				throw new UserError(
 					sprintf(
-						__( '%s is not a valid attribute of the product: %s.', 'wp-graphql-woocommerce' ),
+						/* translators: %1$s: attribute name, %2$s: product name */
+						__( '%1$s is not a valid attribute of the product: %2$s.', 'wp-graphql-woocommerce' ),
 						$attribute_name,
 						$product->get_name()
 					)
@@ -81,7 +86,7 @@ class Cart_Mutation {
 			}
 
 			$attribute_value = ! empty( $attribute['attributeValue'] ) ? $attribute['attributeValue'] : '';
-			$attribute_key = "attribute_{$attribute_name}";
+			$attribute_key   = "attribute_{$attribute_name}";
 
 			$attributes[ $attribute_key ] = $attribute_value;
 		}

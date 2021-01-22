@@ -33,7 +33,7 @@ class WooCommerce_Filters {
 			add_filter( 'graphql_access_control_allow_headers', array( __CLASS__, 'add_session_header_to_allow_headers' ) );
 		}
 
-		// Add better support for Stripe payment gateway
+		// Add better support for Stripe payment gateway.
 		add_filter( 'graphql_stripe_process_payment_args', array( __CLASS__, 'woographql_stripe_gateway_args' ), 10, 2 );
 	}
 
@@ -80,9 +80,9 @@ class WooCommerce_Filters {
 
 	/**
 	 * Adds extra arguments to the Stripe Gateway process payment call.
-	 * 
-	 * @params array  $gateway_args    Arguments to be passed to the gateway `process_payment` method.
-	 * @params string $payment_method  Payment gateway ID.
+	 *
+	 * @param array  $gateway_args    Arguments to be passed to the gateway `process_payment` method.
+	 * @param string $payment_method  Payment gateway ID.
 	 */
 	public static function woographql_stripe_gateway_args( $gateway_args, $payment_method ) {
 		if ( 'stripe' === $payment_method ) {
@@ -91,7 +91,7 @@ class WooCommerce_Filters {
 				true,
 				false,
 				false,
-				true
+				true,
 			);
 		}
 

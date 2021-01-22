@@ -42,14 +42,14 @@ class Review_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-        return array_merge(
+		return array_merge(
 			Review_Write::get_input_fields(),
 			array(
 				'id' => array(
 					'type'        => array( 'non_null' => 'ID' ),
 					'description' => __( 'The ID of the review being updated.', 'wp-graphql-woocommerce' ),
 				),
-            )
+			)
 		);
 	}
 
@@ -70,20 +70,20 @@ class Review_Update {
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			// Set comment type to "review".
-            $input['type'] = 'review';
+			$input['type'] = 'review';
 
-            $resolver = CommentUpdate::mutate_and_get_payload();
+			$resolver = CommentUpdate::mutate_and_get_payload();
 
-            $payload = $resolver( $input, $context, $info );
+			$payload = $resolver( $input, $context, $info );
 
-            // Check if product rating needs updating.
-            if ( ! empty( $payload['id'] ) && isset( $input['rating'] ) ) {
+			// Check if product rating needs updating.
+			if ( ! empty( $payload['id'] ) && isset( $input['rating'] ) ) {
 				$success = update_comment_meta( $payload['id'], 'rating', $input['rating'] );
-				
+
 				if ( ! $success ) {
 					throw UserError( __( 'Failed to update review rating', 'wp-graphql-woocommerce' ) );
 				}
-            }
+			}
 
 			return $payload;
 		};

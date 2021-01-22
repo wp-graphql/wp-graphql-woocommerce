@@ -29,8 +29,7 @@ abstract class WC_Post extends Post {
 	/**
 	 * WC_Post constructor
 	 *
-	 * @param string $post_type  Post type.
-	 * @param int    $data       Data object to be used by the model.
+	 * @param int $data  Data object to be used by the model.
 	 */
 	public function __construct( $data ) {
 		// Store CRUD object.
@@ -39,7 +38,7 @@ abstract class WC_Post extends Post {
 		// Get WP_Post object.
 		$post = get_post( $data->get_id() );
 
-		// Add $allowed_restricted_fields
+		// Add $allowed_restricted_fields.
 		if ( ! has_filter( 'graphql_allowed_fields_on_restricted_type', array( static::class, 'add_allowed_restricted_fields' ) ) ) {
 			add_filter( 'graphql_allowed_fields_on_restricted_type', array( static::class, 'add_allowed_restricted_fields' ), 10, 2 );
 		}
@@ -50,8 +49,9 @@ abstract class WC_Post extends Post {
 
 	/**
 	 * Injects CRUD object fields into $allowed_restricted_fields
-	 * @param array  $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user
-	 * @param string $model_name                 Name of the model the filter is currently being executed in
+	 *
+	 * @param array  $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user.
+	 * @param string $model_name                 Name of the model the filter is currently being executed in.
 	 *
 	 * @return string[]
 	 */
@@ -67,7 +67,7 @@ abstract class WC_Post extends Post {
 	/**
 	 * Return the fields allowed to be displayed even if this entry is restricted.
 	 *
-	 * @param array  $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user
+	 * @param array $allowed_restricted_fields  The fields to allow when the data is designated as restricted to the current user.
 	 *
 	 * @return array
 	 */
@@ -86,7 +86,10 @@ abstract class WC_Post extends Post {
 	 *
 	 * @param string $method - function name.
 	 * @param array  $args  - function call arguments.
+	 *
 	 * @return mixed
+	 *
+	 * @throws BadMethodCallException Method not found on WC data object.
 	 */
 	public function __call( $method, $args ) {
 		if ( \is_callable( array( $this->wc_data, $method ) ) ) {

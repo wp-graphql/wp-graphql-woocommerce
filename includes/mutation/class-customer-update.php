@@ -125,12 +125,12 @@ class Customer_Update {
 
 					// Check if group field has set function and assigns new value.
 					foreach ( $value as $field => $field_value ) {
-						if ( is_callable( array( $customer, "set_{$prop}_{$field}") ) ) {
+						if ( is_callable( array( $customer, "set_{$prop}_{$field}" ) ) ) {
 							$customer->{"set_{$prop}_{$field}"}( $field_value );
 						}
 					}
 
-				// If field has set function and assigns new value.
+					// If field has set function and assigns new value.
 				} elseif ( is_callable( array( $customer, "set_{$prop}" ) ) ) {
 					$customer->{"set_{$prop}"}( $value );
 				}

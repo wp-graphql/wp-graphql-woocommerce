@@ -23,6 +23,7 @@ trait WC_Db_Loader_Common {
 	 * @return string
 	 */
 	public function offset_to_cursor( $prefix, $offset ) {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return base64_encode( "{$prefix}:{$offset}" );
 	}
 
@@ -35,6 +36,7 @@ trait WC_Db_Loader_Common {
 	 * @return string|integer
 	 */
 	public function cursor_to_offset( $prefix, $cursor ) {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 		return substr( base64_decode( $cursor ), strlen( $prefix . ':' ) );
 	}
 }

@@ -61,7 +61,7 @@ class Product_Attribute {
 					return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 				},
 			),
-			'label'        => array(
+			'label'       => array(
 				'type'        => array( 'non_null' => 'String' ),
 				'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $attribute ) {

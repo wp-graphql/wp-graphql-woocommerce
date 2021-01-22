@@ -59,12 +59,12 @@ class Customer_Register {
 					'description' => __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' ),
 				),
 			)
-    	);
+		);
 
 		// Make the username field optional.
-    	$result['username']['type'] = 'String';
+		$result['username']['type'] = 'String';
 
-    	return $result;
+		return $result;
 	}
 
 	/**

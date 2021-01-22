@@ -146,7 +146,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 		foreach ( $items as $item ) {
 			$this->loader->prime( $item['download_id'], $item );
 		}
-		
+
 		return array_column( $items, 'download_id' );
 	}
 

@@ -66,7 +66,7 @@ class Orders {
 						$resolver->set_query_arg( 'customer_id', $source->ID );
 
 						return $resolver->get_connection();
-					}
+					},
 				)
 			)
 		);

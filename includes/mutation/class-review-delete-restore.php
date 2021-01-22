@@ -45,14 +45,16 @@ class Review_Delete_Restore {
 			)
 		);
 	}
-	
+
 	/**
 	 * Defines the mutation input field configuration.
+	 *
+	 * @param bool $delete Whether the `forceDelete` flag should be included.
 	 *
 	 * @return array
 	 */
 	public static function get_input_fields( $delete = false ) {
-		$fields =  array(
+		$fields = array(
 			'id' => array(
 				'type'        => array(
 					'non_null' => 'ID',
@@ -74,20 +76,22 @@ class Review_Delete_Restore {
 	/**
 	 * Defines the mutation output field configuration.
 	 *
+	 * @param bool $restore  Whether the restored review should be resolved.
+	 *
 	 * @return array
 	 */
 	public static function get_output_fields( $restore = false ) {
 		return array(
 			'rating'     => array(
 				'type'        => 'Float',
-                'description' => __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' ),
-                'resolve'     => function( $payload ) {
-                    if ( ! isset( $payload['rating'] ) ) {
+				'description' => __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $payload ) {
+					if ( ! isset( $payload['rating'] ) ) {
 						return null;
-                    }
-                    
-                    return floatval( $payload['rating'] );
-                }
+					}
+
+					return floatval( $payload['rating'] );
+				},
 			),
 			'affectedId' => array(
 				'type'        => 'Id',
@@ -114,7 +118,7 @@ class Review_Delete_Restore {
 
 					return $payload['commentObject'];
 				},
-			)
+			),
 		);
 	}
 
@@ -143,11 +147,11 @@ class Review_Delete_Restore {
 					break;
 			}
 
-			// Get the comment mutation resolver
+			// Get the comment mutation resolver.
 			$resolver = $classname::mutate_and_get_payload();
 
 			// Execute and retrieve payload.
-			$payload  = $resolver( $input, $context, $info );
+			$payload = $resolver( $input, $context, $info );
 
 			// Add rating to payload.
 			$payload['rating'] = $rating;

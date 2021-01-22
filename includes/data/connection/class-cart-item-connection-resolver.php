@@ -150,7 +150,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Check if cart item key is valid by confirming the validity of 
+	 * Check if cart item key is valid by confirming the validity of
 	 * the cart item in the cart encoded into cart item key.
 	 *
 	 * @param string $offset  Cart item key.
@@ -163,9 +163,9 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * Validates cart item model.
-	 * 
+	 *
 	 * @param array $model Cart item model.
-	 * 
+	 *
 	 * @return bool
 	 */
 	protected function is_valid_model( $model ) {

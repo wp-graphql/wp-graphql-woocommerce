@@ -25,7 +25,7 @@ class Product_Category_Type {
 		register_graphql_fields(
 			'ProductCategory',
 			array(
-				'image'   => array(
+				'image'     => array(
 					'type'        => 'MediaItem',
 					'description' => __( 'Product category image', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {
@@ -35,7 +35,7 @@ class Product_Category_Type {
 							: null;
 					},
 				),
-				'display' => array(
+				'display'   => array(
 					'type'        => 'ProductCategoryDisplay',
 					'description' => __( 'Product category display type', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {
@@ -43,7 +43,7 @@ class Product_Category_Type {
 						return ! empty( $display ) ? $display : 'default';
 					},
 				),
-				'menuOrder'   => array(
+				'menuOrder' => array(
 					'type'        => 'Integer',
 					'description' => __( 'Product category menu order', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {
