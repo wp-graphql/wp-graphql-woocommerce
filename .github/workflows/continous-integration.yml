@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.1', '7.2', '7.3', '7.4']
-        wordpress: ['5.3', '5.0']
+        php: ['7.4', '7.3', '7.2', '7.1']
+        wordpress: ['5.6', '5.0']
         debug: ['--ext DotReporter']
         include:
-          - php: '7.1'
-            wordpress: '5.0'
+          - php: '7.4'
+            wordpress: '5.6'
             coverage: '--coverage --coverage-xml'
           - php: '7.3'
             wordpress: '5.0'
@@ -48,6 +48,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo EMPTY ${{ env.STRIPE_API_PUBLISHABLE_KEY }}
           cp .env.dist .env
           SKIP_DB_CREATE=true SKIP_WP_SETUP=true composer require --dev johnpbloch/wordpress:~${{ matrix.wordpress }}
           composer installTestEnv
@@ -59,8 +60,17 @@ jobs:
         run: FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Push Codecoverage to Coveralls.io
-        if: ${{ matrix.coverage == 1 && env.STRIPE_API_PUBLISHABLE_KEY != 0 }}
+        if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY != null }}
         env:
           COVERALLS_RUN_LOCALLY: 1
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: vendor/bin/php-coveralls -v
+
+      - name: Test & publish code coverage
+        if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY == null }}
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: 739347fbfc0caa4e7f25069899203df2d4a411b3cbc9c3b1ef28257520c99d31
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/tests/_output/*.xml:clover

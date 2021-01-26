@@ -1,12 +1,12 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => 'dev-develop',
+    'version' => 'dev-develop',
     'aliases' => 
     array (
     ),
-    'reference' => '2cdd917e80a8fb45fa3bf75eb73fccb4b232fd37',
+    'reference' => '6f1105d3c8e1cb8363475e07411b461f151f2a5d',
     'name' => 'wp-graphql/wp-graphql-woocommerce',
   ),
   'versions' => 
@@ -22,12 +22,12 @@
     ),
     'wp-graphql/wp-graphql-woocommerce' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => 'dev-develop',
+      'version' => 'dev-develop',
       'aliases' => 
       array (
       ),
-      'reference' => '2cdd917e80a8fb45fa3bf75eb73fccb4b232fd37',
+      'reference' => '6f1105d3c8e1cb8363475e07411b461f151f2a5d',
     ),
   ),
 );
