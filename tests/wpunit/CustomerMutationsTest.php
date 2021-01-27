@@ -63,7 +63,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown(): void {
-		// your tear down methods here
+		wp_set_current_user( 0 );
+		\WC()->customer = null;
+		\WC()->session  = null;
+		\WC()->cart     = null;
+
+		\WC()->initialize_session();
+		\WC()->initialize_cart();
 
 		// then
 		parent::tearDown();

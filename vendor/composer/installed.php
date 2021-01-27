@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '81f1f9d7d8de9146489f69eb1b833d21d39b444e',
+    'reference' => '6adfc199f4aefb3e92b0729d1312b874d452bc1e',
     'name' => 'wp-graphql/wp-graphql-woocommerce',
   ),
   'versions' => 
@@ -27,7 +27,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '81f1f9d7d8de9146489f69eb1b833d21d39b444e',
+      'reference' => '6adfc199f4aefb3e92b0729d1312b874d452bc1e',
     ),
   ),
 );

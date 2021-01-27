@@ -119,6 +119,12 @@ class Customer_Mutation {
 		);
 	}
 
+	/**
+	 * Processes Customer meta data input.
+	 *
+	 * @param \WC_Customer $customer  Customer object.
+	 * @param array        $inputs    Incoming meta data.
+	 */
 	public static function input_meta_data_mapping( $customer, $inputs ) {
 		if ( is_array( $inputs ) ) {
 			foreach ( $inputs as $meta ) {
