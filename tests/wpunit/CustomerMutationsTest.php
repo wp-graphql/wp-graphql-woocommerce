@@ -563,4 +563,168 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( $expected, $actual );
 	}
+
+	public function testCustomerMutationsWithMeta() {
+		/**
+		 * Assertion One
+		 *
+		 * Test "metaData" input field with "registerCustomer" mutation.
+		 */
+		$query      = '
+			mutation( $input: RegisterCustomerInput! ) {
+				registerCustomer( input: $input ) {
+					customer {
+						databaseId
+						email
+						metaData {
+							key
+							value
+						}
+					}
+				}
+			}
+		';
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'some_id',
+				'email'            => 'user@woographql.test',
+				'metaData'         => array(
+					array(
+						'key'   => 'test_meta_key',
+						'value' => 'test_meta_value',
+					),
+				),
+			)
+		);
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+		codecept_debug( $actual );
+
+		$user = get_user_by( 'email', 'user@woographql.test' );
+		$this->assertTrue( is_a( $user, WP_User::class ) );
+
+		$expected = array(
+			'data' => array(
+				'registerCustomer' => array(
+					'customer' => array(
+						'databaseId' => $user->ID,
+						'email'      => 'user@woographql.test',
+						'metaData'   => array(
+							array(
+								'key'   => 'test_meta_key',
+								'value' => 'test_meta_value',
+							)
+						)
+					),
+				),
+			),
+		);
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Test "metaData" input field with "updateCustomer" mutation.
+		 */
+		$query      = '
+			mutation( $input: UpdateCustomerInput! ) {
+				updateCustomer( input: $input ) {
+					customer {
+						databaseId
+						email
+						metaData {
+							key
+							value
+						}
+					}
+				}
+			}
+		';
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'some_id',
+				'id'               => \GraphQLRelay\Relay::toGlobalId( 'customer', $user->ID ),
+				'metaData'         => array(
+					array(
+						'key'   => 'test_meta_key',
+						'value' => 'new_meta_value',
+					),
+				),
+			)
+		);
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+		codecept_debug( $actual );
+
+		$expected = array(
+			'data' => array(
+				'updateCustomer' => array(
+					'customer' => array(
+						'databaseId' => $user->ID,
+						'email'      => 'user@woographql.test',
+						'metaData'   => array(
+							array(
+								'key'   => 'test_meta_key',
+								'value' => 'new_meta_value',
+							)
+						)
+					),
+				),
+			),
+		);
+
+		$this->assertEquals( $expected, $actual );
+
+		/**
+		 * Assertion Three
+		 *
+		 * Test "metaData" input field with "updateCustomer" mutation on the session user.
+		 */
+		$query      = '
+			mutation( $input: UpdateCustomerInput! ) {
+				updateCustomer( input: $input ) {
+					customer {
+						id
+						metaData {
+							key
+							value
+						}
+					}
+				}
+			}
+		';
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'some_id',
+				'metaData'         => array(
+					array(
+						'key'   => 'test_meta_key',
+						'value' => 'test_meta_value',
+					),
+				),
+			)
+		);
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+		codecept_debug( $actual );
+
+		$expected = array(
+			'data' => array(
+				'updateCustomer' => array(
+					'customer' => array(
+						'id'       => 'guest',
+						'metaData' => array(
+							array(
+								'key'   => 'test_meta_key',
+								'value' => 'test_meta_value',
+							)
+						)
+					),
+				),
+			),
+		);
+
+		$this->assertEquals( $expected, $actual );
+	}
 }
