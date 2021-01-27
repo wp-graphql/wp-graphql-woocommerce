@@ -47,7 +47,7 @@ const config = {
 		"title": "WPGraphQL WooCommerce Docs | AxisTaylor",
 		"description": "The official WPGraphQL WooCommerce (WooGraphQL) documentation",
 		"ogImage": null,
-		"docsLocation": "https://github.com/kidunot89/woographql-docs/tree/master/content",
+		"docsLocation": "https://github.com/wp-graphql/wp-graphql-woocommerce/tree/develop/docs/content",
 		"favicon": "https://docs.axistaylor.com/wp-content/uploads/2020/02/woographql-v3.svg.png",
 		"twitterHandle": "woographql"
 	},
