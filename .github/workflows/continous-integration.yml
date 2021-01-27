@@ -67,7 +67,7 @@ jobs:
         run: vendor/bin/php-coveralls -v
 
       - name: Test & publish code coverage
-        if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY == null }}
+        if: ${{ matrix.coverage == '--coverage --coverage-xml' }}
         uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: 739347fbfc0caa4e7f25069899203df2d4a411b3cbc9c3b1ef28257520c99d31
