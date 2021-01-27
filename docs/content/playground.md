@@ -64,10 +64,12 @@ query {
       nodes {
         key
         product {
-          id
-          productId
-          name
-          sku
+          node {
+            id
+            databaseId
+            name
+            sku
+          }
         }
       }
     }
@@ -84,7 +86,7 @@ query {
       cursor
       node {
         id
-        orderId
+        databaseId
         lineItems {
           nodes {
             itemId
