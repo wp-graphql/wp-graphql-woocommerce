@@ -156,6 +156,10 @@ function wc_graphql_price( $price, $args = array() ) {
  * @return string
  */
 function wc_graphql_price_range( $from, $to ) {
+	if ( $from === $to ) {
+		return wc_graphql_price( $from );
+	}
+
 	$price = sprintf(
 		/* translators: 1: price from 2: price to */
 		_x( '%1$s %2$s %3$s', 'Price range: from-to', 'wp-graphql-woocommerce' ),

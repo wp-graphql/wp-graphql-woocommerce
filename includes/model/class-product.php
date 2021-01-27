@@ -99,22 +99,27 @@ class Product extends WC_Post {
 
 		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->wc_data->is_on_sale() ) ) {
 			return null;
-		} else {
-			$min_price     = current( $prices['price'] );
-			$max_price     = end( $prices['price'] );
-			$min_reg_price = current( $prices['regular_price'] );
-			$max_reg_price = end( $prices['regular_price'] );
-
-			if ( $min_price !== $max_price ) {
-				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_price ) : implode( ', ', $prices['price'] );
-			} elseif ( 'regular' !== $pricing_type && $this->wc_data->is_on_sale() && $min_reg_price === $max_reg_price ) {
-				$price = ! $raw ? \wc_graphql_price_range( $min_price, $max_reg_price ) : implode( ', ', $prices['price'] );
-			} else {
-				$price = ! $raw ? \wc_graphql_price( $min_price ) : $min_price;
-			}
 		}
 
-		return apply_filters( 'graphql_get_variation_price', $price, $this );
+		switch ( $pricing_type ) {
+			case 'sale':
+				$prices = array_values( array_diff( $prices['sale_price'], $prices['regular_price'] ) );
+				break;
+			case 'regular':
+				$prices = $prices['regular_price'];
+				break;
+			default:
+				$prices = $prices['price'];
+				break;
+		}
+
+		sort( $prices, SORT_NUMERIC );
+
+		if ( $raw ) {
+			return implode( ', ', $prices['price'] );
+		}
+
+		return \wc_graphql_price_range( current( $prices ), end( $prices ) );
 	}
 
 	/**

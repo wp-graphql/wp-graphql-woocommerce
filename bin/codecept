@@ -20,6 +20,13 @@ if [ 'run' = "$1" ]; then
 		chmod 777 -R ${test_output}/*
 	fi
 
+	# Clean coverage.xml and clean up PCOV configurations.
+	if [ -f "${test_output}/coverage.xml" ]; then
+		echo 'Cleaning coverage.xml for deployment...'
+		pattern="$PROJECT_DIR/"
+		sed -i "s~$pattern~~g" "$test_output"/coverage.xml
+	fi
+
 	# Check results and exit accordingly.
 	if [ -f "$test_output/failed" ]; then
 		echo "Uh oh, some went wrong." >> /dev/stderr
