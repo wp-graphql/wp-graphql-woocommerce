@@ -335,6 +335,10 @@ class Cart_Type {
 					$id       = $source['variation_id'];
 					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
+					if ( ! $id ) {
+						return null;
+					}
+
 					return $resolver->one_to_one()
 						->set_query_arg( 'post_type', 'product_variation' )
 						->set_query_arg( 'p', $id )

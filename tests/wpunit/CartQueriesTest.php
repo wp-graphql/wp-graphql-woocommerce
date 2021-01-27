@@ -150,6 +150,39 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		codecept_debug( $actual );
 
 		$this->assertEquals( $expected, $actual );
+
+		$key = $cart->add_to_cart( $this->product_helper->create_simple() );
+		$query = '
+			query ($key: ID!) {
+				cartItem(key: $key) {
+					key
+					variation {
+						node {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assertion Two
+		 */
+		$variables = array( 'key' => $key );
+		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$expected  = array(
+			'data' => array(
+				'cartItem' => array(
+					'key' 		=> $key,
+					'variation' => null,
+				)
+			)
+		);
+
+		// use --debug flag to view.
+		codecept_debug( $actual );
+
+		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testCartItemConnection() {
