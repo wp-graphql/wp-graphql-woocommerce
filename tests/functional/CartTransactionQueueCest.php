@@ -79,8 +79,10 @@ class CartTransactionQueueCest {
 
     // tests
     public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I ) {
+		$I->wantTo( 'Add Item to cart' );
 		extract( $this->_startAuthenticatedSession( $I ) );
 
+		$I->wantTo( 'Running a bunch of cart mutations one after the another wait for all the response at once' );
 		$update_item_quantities_mutation = '
 			mutation( $input: UpdateItemQuantitiesInput! ) {
 				updateItemQuantities( input: $input ) {
@@ -143,7 +145,7 @@ class CartTransactionQueueCest {
 			}
 		';
 
-		$batch_requests = array(
+		$requests = array(
 			array(
 				'query'     => $update_item_quantities_mutation,
 				'variables' => array(
@@ -183,32 +185,9 @@ class CartTransactionQueueCest {
 						'keys'             => array( $key ),
 					),
 				),
-			),
-			array( 'query' => $cart_query ),
+			)
 		);
-
-
-		$client = new \GuzzleHttp\Client();
-
-		$fn = function( $batch_requests ) use ( $client, $auth_token, $session_token ) {
-			$base_uri = getenv( 'WORDPRESS_URL' ) ? getenv( 'WORDPRESS_URL' ) : 'http://localhost';
-			$headers  = array(
-				'Content-Type'        => 'application/json',
-				'Authorization'       => "Bearer ${auth_token}",
-				'woocommerce-session' => "Session {$session_token}",
-			);
-
-			foreach ( $batch_requests as $request ) {
-				yield new \GuzzleHttp\Psr7\Request(
-					'POST',
-					"$base_uri/graphql",
-					$headers,
-					json_encode( $request )
-				);
-			}
-		};
-
-		$batch_expected_responses = array(
+		$expected_responses = array(
 			array(
 				'updateItemQuantities' => array(
 					'clientMutationId' => 'some_id',
@@ -270,46 +249,54 @@ class CartTransactionQueueCest {
 					),
 				),
 			),
-			array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => array(
-							array(
-								'key'      => $key,
-								'quantity' => 4
-							),
-						),
-					),
-				),
-			),
 		);
 
-		$pool   = new \GuzzleHttp\Pool( $client, $fn( $batch_requests ),
+		$base_uri = getenv( 'WORDPRESS_URL' ) ? getenv( 'WORDPRESS_URL' ) : 'http://localhost';
+		$headers  = array(
+			'Content-Type'        => 'application/json',
+			'Authorization'       => "Bearer ${auth_token}",
+			'woocommerce-session' => "Session {$session_token}",
+		);
+		$timeout  = 300;
+		$client   = new \GuzzleHttp\Client( compact( 'base_uri', 'headers', 'timeout' ) );
+
+		$iterator = function( $requests ) use ( $client ) {
+			$stagger = 1000;
+			foreach( $requests as $index => $payload ) {
+				yield function() use ( $client, $stagger, $index, $payload ) {
+					$body      = json_encode( $payload );
+					$delay     = $stagger * $index + 1;
+					$connected = false;
+					$progress  = function( $downloadTotal, $downloadedBytes, $uploadTotal, $uploadedBytes ) use ( $index, &$connected ) {
+						if ( $uploadTotal === $uploadedBytes && $downloadTotal === 0 && ! $connected ) {
+							\codecept_debug( "Session mutation request $index connected @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
+							$connected = true;
+						}
+					};
+					return $client->postAsync( '/graphql', compact( 'body', 'delay', 'progress' ) );
+				};
+			}
+		};
+
+		$pool = new \GuzzleHttp\Pool(
+			$client,
+			$iterator( $requests ),
 			array(
 				'concurrency' => 5,
-				'fulfilled' => function( \GuzzleHttp\Psr7\Response $response, $index ) use ( $I, $batch_expected_responses ) {
-					// this is delivered each successful response
-					$body = json_decode( $response->getBody(), true );
+				'fulfilled' => function ( $response, $index ) use ( $I, $expected_responses ) {
+					\codecept_debug( "Finished session mutation request $index @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
+
+					$expected = $expected_responses[ $index ];
+					$body     = json_decode( $response->getBody(), true );
+
 					\codecept_debug( $body );
-					$I->assertEquals(
-						$batch_expected_responses[ $index ],
-						$body['data'],
-						"Response $index doesn't match expected data"
-					);
-				},
-				'rejected' => function( \GuzzleHttp\Exception\RequestExceptionRequestException $reason, $index ) use ( $I ) {
-					// this is delivered each failed request
-					$body = json_decode( $response->getBody(), true );
-					\codecept_debug( $body );
-					$I->assertTrue( false, "Response $index rejected" );
+					$I->assertEquals( $expected, $body['data'] );
 				},
 			)
 		);
 
-		// Initiate the transfers and create a promise
 		$promise = $pool->promise();
 
-		// Force the pool of requests to complete.
 		$promise->wait();
     }
 }

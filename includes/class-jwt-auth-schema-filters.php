@@ -105,7 +105,7 @@ class JWT_Auth_Schema_Filters {
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
-						return apply_filters( 'graphql_customer_session_token', null );
+						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
 					},
 				),
 			)
