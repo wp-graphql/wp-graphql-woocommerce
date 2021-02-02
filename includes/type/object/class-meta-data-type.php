@@ -27,7 +27,7 @@ class Meta_Data_Type {
 				'description' => __( 'Extra data defined on the WC object', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
 					'id'    => array(
-						'type'        => array( 'non_null' => 'String' ),
+						'type'        => 'ID',
 						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
@@ -37,14 +37,14 @@ class Meta_Data_Type {
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
-							return ! empty( $source->key ) ? $source->key : null;
+							return ! empty( $source->key ) ? (string) $source->key : null;
 						},
 					),
 					'value' => array(
 						'type'        => 'String',
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
-							return ! empty( $source->value ) ? $source->value : null;
+							return ! empty( $source->value ) ? (string) $source->value : null;
 						},
 					),
 				),
