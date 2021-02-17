@@ -26,6 +26,7 @@ class Cart_Mutation {
 			'type'    => 'Cart',
 			'resolve' => function ( $payload ) use ( $fallback ) {
 				$cart = ! empty( $payload['cart'] ) ? $payload['cart'] : null;
+
 				if ( is_null( $cart ) && $fallback ) {
 					$cart = Factory::resolve_cart();
 				}
@@ -41,9 +42,19 @@ class Cart_Mutation {
 	 * @param AppContext  $context AppContext instance.
 	 * @param ResolveInfo $info    Query info.
 	 *
+	 * @throws UserError Missing/Invalid input.
+	 *
 	 * @return array
 	 */
 	public static function prepare_cart_item( $input, $context, $info ) {
+		if ( empty( $input['productId'] ) ) {
+			throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
+		}
+
+		if ( ! \wc_get_product( $input['productId'] ) ) {
+			throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
+		}
+
 		$cart_item_args   = array( $input['productId'] );
 		$cart_item_args[] = ! empty( $input['quantity'] ) ? $input['quantity'] : 1;
 		$cart_item_args[] = ! empty( $input['variationId'] ) ? $input['variationId'] : 0;

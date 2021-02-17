@@ -43,6 +43,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Id_Type_Enums::register();
 
 		// InputObjects.
+		\WPGraphQL\WooCommerce\Type\WPInputObject\Cart_Item_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Customer_Address_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Product_Attribute_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input::register();
@@ -107,6 +108,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Customer_Register::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Customer_Update::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Item::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Items::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Update_Item_Quantities::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Remove_Items::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Restore_Items::register_mutation();

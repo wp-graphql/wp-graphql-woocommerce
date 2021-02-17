@@ -30,7 +30,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$results = graphql( compact( 'query', 'operation_name', 'variables' ) );
 
 		// use --debug flag to view.
-		codecept_debug( $results );
+		codecept_debug( json_encode( $results, JSON_PRETTY_PRINT ) );
 
         return $results;
 	}
@@ -1114,5 +1114,99 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$this->assertArrayHasKey( 'errors', $not_enough_stock );
+	}
+
+	public function testAddCartItemsMutationAndErrors() {
+		// Create variable product for later use.
+		$variation_ids = $this->variation->create( $this->product->create_variable() );
+		$product   = \wc_get_product( $variation_ids['product'] );
+		$attribute = new WC_Product_Attribute();
+		$attribute->set_id( 0 );
+		$attribute->set_name( 'test' );
+		$attribute->set_options( array( 'yes', 'no' ) );
+		$attribute->set_position( 3 );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$attributes = array_values( $product->get_attributes() );
+		$attributes[] = $attribute;
+		$product->set_attributes( $attributes );
+		$product->save();
+
+		$product_one = $this->product->create_simple();
+		$invalid_product = 1000;
+
+		$mutation = '
+			mutation ($input: AddCartItemsInput!) {
+				addCartItems(input: $input) {
+					clientMutationId
+					added {
+						product {
+							node { databaseId }
+						}
+						variation {
+							node { databaseId }
+						}
+						quantity
+					}
+				}
+			}
+		';
+
+		$input = array(
+			'clientMutationId' => 'someId',
+			'items'            => array(
+				array(
+					'productId' => $product_one,
+					'quantity'  => 2,
+				),
+				array(
+					'productId'   => $variation_ids['product'],
+					'quantity'    => 5,
+					'variationId' => $variation_ids['variations'][0],
+				),
+				array(
+					'productId' => $invalid_product,
+					'quantity'  => 4
+				),
+				array(
+					'productId'   => $variation_ids['product'],
+					'quantity'    => 3,
+					'variationId' => $variation_ids['variations'][1],
+					'variation'   => array(
+						array(
+							'attributeName'  => 'test',
+							'attributeValue' => 'yes',
+						),
+					)
+				)
+			),
+		);
+
+		$response = $this->graphql( $mutation, null, compact( 'input' ) );
+		$expected = array(
+			'addCartItems' => array(
+				'clientMutationId' => 'someId',
+				'added'            => array(
+					array(
+						'product'   => array(
+							'node' => array( 'databaseId' => $product_one )
+						),
+						'variation' => null,
+						'quantity'  => 2
+					),
+					array(
+						'product'   => array(
+							'node' => array( 'databaseId' => $variation_ids['product'] )
+						),
+						'variation' => array(
+							'node' => array( 'databaseId' => $variation_ids['variations'][1] )
+						),
+						'quantity'  => 3
+					),
+				)
+			),
+		);
+
+		$this->assertEquals( $expected, $response['data'] );
 	}
 }
