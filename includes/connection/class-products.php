@@ -465,6 +465,6 @@ class Products {
 			);
 		}
 
-		return array_merge( get_wc_cpt_connection_args(), $args, apply_filters('graphql_woocommerce_products_connection_args', []) );
+		return array_merge( get_wc_cpt_connection_args(), $args, apply_filters( 'graphql_woocommerce_products_connection_args', array() ) );
 	}
 }
