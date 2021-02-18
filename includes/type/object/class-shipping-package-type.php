@@ -30,7 +30,7 @@ class Shipping_Package_Type {
 						'resolve'     => function( $source ) {
 							$product_names = array();
 							foreach ( $source['contents'] as $item_id => $values ) {
-								$product_names[ $item_id ] = $values['data']->get_name() . ' &times;' . $values['quantity'];
+								$product_names[ $item_id ] = html_entity_decode( $values['data']->get_name() . ' &times;' . $values['quantity'] );
 							}
 
 							// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound

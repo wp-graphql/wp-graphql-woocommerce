@@ -117,6 +117,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Cart_Remove_Coupons::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Fee::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Update_Shipping_Method::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Cart_Fill::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Create::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Update::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Delete::register_mutation();

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitf24928177991f8b148ada6b1cfc04705
+class ComposerStaticInit5eacf0c3882a5724168d223c2be9fedf
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -97,6 +97,7 @@ class ComposerStaticInitf24928177991f8b148ada6b1cfc04705
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Add_Items' => __DIR__ . '/../..' . '/includes/mutation/class-cart-add-items.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Apply_Coupon' => __DIR__ . '/../..' . '/includes/mutation/class-cart-apply-coupon.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Empty' => __DIR__ . '/../..' . '/includes/mutation/class-cart-empty.php',
+        'WPGraphQL\\WooCommerce\\Mutation\\Cart_Fill' => __DIR__ . '/../..' . '/includes/mutation/class-cart-fill.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Remove_Coupons' => __DIR__ . '/../..' . '/includes/mutation/class-cart-remove-coupons.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Remove_Items' => __DIR__ . '/../..' . '/includes/mutation/class-cart-remove-items.php',
         'WPGraphQL\\WooCommerce\\Mutation\\Cart_Restore_Items' => __DIR__ . '/../..' . '/includes/mutation/class-cart-restore-items.php',
@@ -179,9 +180,9 @@ class ComposerStaticInitf24928177991f8b148ada6b1cfc04705
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf24928177991f8b148ada6b1cfc04705::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf24928177991f8b148ada6b1cfc04705::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf24928177991f8b148ada6b1cfc04705::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5eacf0c3882a5724168d223c2be9fedf::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5eacf0c3882a5724168d223c2be9fedf::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit5eacf0c3882a5724168d223c2be9fedf::$classMap;
 
         }, null, ClassLoader::class);
     }

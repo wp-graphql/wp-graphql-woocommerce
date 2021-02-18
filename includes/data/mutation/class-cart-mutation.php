@@ -156,6 +156,120 @@ class Cart_Mutation {
 		return apply_filters( 'graphql_woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
 
+
+	/**
+	 * Validates coupon and checks if application is possible
+	 *
+	 * @param string $code    Coupon code.
+	 * @param string $reason  Reason for failure.
+	 *
+	 * @return bool
+	 */
+	public static function validate_coupon( $code, &$reason = '' ) {
+		// Get the coupon.
+		$the_coupon = new \WC_Coupon( $code );
+
+		// Prevent adding coupons by post ID.
+		if ( $the_coupon->get_code() !== $code ) {
+			$reason = __( 'No coupon found with the code provided', 'wp-graphql-woocommerce' );
+			return false;
+		}
+
+		// Check it can be used with cart.
+		if ( ! $the_coupon->is_valid() ) {
+			$reason = $the_coupon->get_error_message();
+			return false;
+		}
+
+		// Check if applied.
+		if ( \WC()->cart->has_discount( $code ) ) {
+			$reason = __( 'This coupon has already been applied to the cart', 'wp-graphql-woocommerce' );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates shipping method by checking comparing against shipping package.
+	 *
+	 * @param string  $shipping_method  Shipping method being validated.
+	 * @param integer $index            Index of the shipping package.
+	 * @param string  $reason           Reason for failure.
+	 *
+	 * @return bool
+	 */
+	public static function validate_shipping_method( $shipping_method, $index, &$reason = '' ) {
+		// Get available shipping packages.
+		$available_packages = \WC()->cart->needs_shipping()
+			? \WC()->shipping()->calculate_shipping( \WC()->cart->get_shipping_packages() )
+			: array();
+
+		if ( ! isset( $available_packages[ $index ] ) ) {
+			$reason = sprintf(
+				/* translators: %d: Package index */
+				__( 'No shipping packages available for corresponding index %d', 'wp-graphql-woocommerce' ),
+				$index
+			);
+
+			return false;
+		}
+
+		$package           = $available_packages[ $index ];
+		$chosen_rate_index = array_search( $shipping_method, wp_list_pluck( $package['rates'], 'id' ), true );
+
+		if ( false !== $chosen_rate_index ) {
+			return true;
+		}
+
+		$product_names = array();
+		foreach ( $package['contents'] as $item_id => $values ) {
+			$product_names[ $item_id ] = \html_entity_decode( $values['data']->get_name() . ' &times;' . $values['quantity'] );
+		}
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$product_names = apply_filters( 'woocommerce_shipping_package_details_array', $product_names, $package );
+
+		$reason = sprintf(
+			/* translators: %1$s: shipping method ID, %2$s: package contents */
+			__( '"%1$s" is not an available shipping method for shipping package "%2$s"', 'wp-graphql-woocommerce' ),
+			$shipping_method,
+			implode( ', ', $product_names )
+		);
+
+		return false;
+	}
+
+	/**
+	 * Validates and prepares posted shipping methods for the user session.
+	 *
+	 * @param array $posted_shipping_methods  Chosen shipping methods.
+	 *
+	 * @throws UserError  Invalid shipping method.
+	 *
+	 * @return array
+	 */
+	public static function prepare_shipping_methods( $posted_shipping_methods ) {
+		// Get current shipping methods.
+		$chosen_shipping_methods = \WC()->session->get( 'chosen_shipping_methods' );
+
+		// Update current shipping methods.
+		foreach ( $posted_shipping_methods as $package => $chosen_method ) {
+			if ( empty( $chosen_method ) ) {
+				continue;
+			}
+
+			$reason = '';
+			if ( self::validate_shipping_method( $chosen_method, $package, $reason ) ) {
+				$chosen_shipping_methods[ $package ] = $chosen_method;
+			} else {
+				throw new UserError( $reason );
+			}
+		}
+
+		return $chosen_shipping_methods;
+	}
+
 	/**
 	 * Validate CartItemQuantityInput item.
 	 *

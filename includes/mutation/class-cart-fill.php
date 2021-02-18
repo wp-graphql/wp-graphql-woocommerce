@@ -1,8 +1,9 @@
 <?php
 /**
- * Mutation - addCartItems
+ * Mutation - fillCart
  *
- * Registers mutation for adding multiple items to the cart.
+ * Registers mutation for adding cart items, coupons, and shipping methods at once.
+ * Designed for minimal use.
  *
  * @package WPGraphQL\WooCommerce\Mutation
  * @since 0.7.0
@@ -16,15 +17,15 @@ use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 
 /**
- * Class - Cart_Add_Items
+ * Class - Cart_Fill
  */
-class Cart_Add_Items {
+class Cart_Fill {
 	/**
 	 * Registers mutation
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
-			'addCartItems',
+			'fillCart',
 			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
@@ -40,7 +41,15 @@ class Cart_Add_Items {
 	 */
 	public static function get_input_fields() {
 		return array(
-			'items' => array(
+			'shippingMethods' => array(
+				'type'        => array( 'list_of' => 'String' ),
+				'description' => __( 'Shipping methods to be used.', 'wp-graphql-woocommerce' ),
+			),
+			'coupons'         => array(
+				'type'        => array( 'list_of' => 'String' ),
+				'description' => __( 'Coupons to be applied to the cart', 'wp-graphql-woocommerce' ),
+			),
+			'items'           => array(
 				'type'        => array( 'list_of' => 'CartItemInput' ),
 				'description' => __( 'Cart items to be added', 'wp-graphql-woocommerce' ),
 			),
@@ -54,7 +63,7 @@ class Cart_Add_Items {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'added' => array(
+			'added'                 => array(
 				'type'    => array( 'list_of' => 'CartItem' ),
 				'resolve' => function ( $payload ) {
 					$items = array();
@@ -65,7 +74,21 @@ class Cart_Add_Items {
 					return $items;
 				},
 			),
-			'cart'  => Cart_Mutation::get_cart_field( true ),
+			'applied'               => array(
+				'type'    => array( 'list_of' => 'AppliedCoupon' ),
+				'resolve' => function( $payload ) {
+					$codes = $payload['applied'];
+					return ! empty( $codes ) ? $codes : null;
+				},
+			),
+			'chosenShippingMethods' => array(
+				'type'    => array( 'list_of' => 'String' ),
+				'resolve' => function( $payload ) {
+					$methods = $payload['chosen_shipping_methods'];
+					return ! empty( $methods ) ? $methods : null;
+				},
+			),
+			'cart'                  => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 
@@ -130,8 +153,72 @@ class Cart_Add_Items {
 				throw new UserError( __( 'Failed to add any cart items. Please check input.', 'wp-graphql-woocommerce' ) );
 			}
 
+			$applied = array();
+			if ( ! empty( $input['coupons'] ) ) {
+				$failure = array();
+				foreach ( $input['coupons'] as $code ) {
+					$reason = '';
+					// If validate and successful applied to cart, return payload.
+					if ( Cart_Mutation::validate_coupon( $code, $reason ) && \WC()->cart->apply_coupon( $code ) ) {
+						$applied[] = $code;
+						continue;
+					}
+
+					// If any session error notices, capture them.
+					if ( empty( $reason ) && ! empty( \WC()->session->get( 'wc_notices' ) ) ) {
+						$reason = implode( ' ', array_column( \WC()->session->get( 'wc_notices' ), 'notice' ) );
+						\wc_clear_notices();
+					}
+
+					// Throw any capture errors.
+					if ( empty( $reason ) ) {
+						$reason = __( 'Failed to apply coupon. Check for an individual-use coupon on cart.', 'wp-graphql-woocommerce' );
+					}
+
+					$failure[] = compact( 'code', 'reason' );
+				}
+
+				if ( ! empty( $failure ) ) {
+					graphql_debug( $failure, array( 'type' => 'INVALID_COUPONS' ) );
+				}
+			}
+
+			$chosen_shipping_methods = array();
+			if ( ! empty( $input['shippingMethods'] ) ) {
+				$posted_shipping_methods = $input['shippingMethods'];
+
+				// Get current shipping methods.
+				$chosen_shipping_methods = \WC()->session->get( 'chosen_shipping_methods' );
+
+				// Update current shipping methods.
+				$failure = array();
+				foreach ( $posted_shipping_methods as $package => $chosen_method ) {
+					if ( empty( $chosen_method ) ) {
+						continue;
+					}
+
+					$reason = '';
+					if ( Cart_Mutation::validate_shipping_method( $chosen_method, $package, $reason ) ) {
+						$chosen_shipping_methods[ $package ] = $chosen_method;
+						continue;
+					}
+
+					$failure[] = compact( 'package', 'chosen_method', 'reason' );
+				}
+
+				// Set updated shipping methods in session.
+				\WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
+
+				if ( ! empty( $failure ) ) {
+					graphql_debug( $failure, array( 'type' => 'INVALID_SHIPPING_METHODS' ) );
+				}
+			}
+
+			// Recalculate totals.
+			\WC()->cart->calculate_totals();
+
 			// Return payload.
-			return compact( 'added' );
+			return compact( 'added', 'applied', 'chosen_shipping_methods' );
 		};
 	}
 }

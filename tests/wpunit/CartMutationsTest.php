@@ -17,6 +17,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->product      = $this->getModule('\Helper\Wpunit')->product();
         $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
+		$this->shipping     = $this->getModule('\Helper\Wpunit')->shipping_method();
     }
 
     public function tearDown(): void {
@@ -754,9 +755,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     clientMutationId
                     cart {
                         appliedCoupons {
-                            nodes {
-                                code
-                            }
+							code
                         }
                         contents {
                             nodes {
@@ -795,11 +794,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     'clientMutationId' => 'someId',
                     'cart'         => array(
                         'appliedCoupons' => array(
-                            'nodes' => array(
-                                array(
-                                    'code' => $coupon_code,
-                                ),
-                            ),
+							array(
+								'code' => $coupon_code,
+							),
                         ),
                         'contents' => array(
                             'nodes' => array(
@@ -944,9 +941,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     clientMutationId
                     cart {
                         appliedCoupons {
-                            nodes {
-                                code
-                            }
+							code
                         }
                         contents {
                             nodes {
@@ -984,9 +979,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'removeCoupons' => array(
                     'clientMutationId' => 'someId',
                     'cart'         => array(
-                        'appliedCoupons' => array(
-                            'nodes' => array(),
-                        ),
+                        'appliedCoupons' => null,
                         'contents' => array(
                             'nodes' => array(
                                 array(
@@ -1205,6 +1198,131 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 					),
 				)
 			),
+		);
+
+		$this->assertEquals( $expected, $response['data'] );
+	}
+
+	public function testFillCartMutation() {
+		// Create products.
+        $product_one = $this->product->create_simple(
+            array( 'regular_price' => 100 )
+        );
+		$product_two = $this->product->create_simple(
+            array( 'regular_price' => 40 )
+        );
+
+        // Create coupons.
+        $coupon_code_one = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array(
+                    'amount'      => 0.5,
+                    'product_ids' => array( $product_one )
+                )
+            )
+        );
+		$coupon_code_two = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array(
+                    'amount'      => 0.2,
+                    'product_ids' => array( $product_two )
+                )
+            )
+        );
+
+		$invalid_product = 1000;
+
+		\ShippingMethodHelper::create_legacy_flat_rate_instance();
+
+		$mutation = '
+			mutation ($input: FillCartInput!) {
+				fillCart( input: $input ) {
+					clientMutationId
+					cart {
+						chosenShippingMethods
+						contents {
+							nodes {
+								product {
+									node { databaseId }
+								}
+								quantity
+								variation {
+									node { databaseId }
+								}
+							}
+						}
+						appliedCoupons {
+							code
+							discountAmount
+							discountTax
+						}
+					}
+				}
+			}
+		';
+
+		$input = array(
+			"clientMutationId" => "someId",
+			"items"            => array(
+				array(
+					"productId" => $product_one,
+					"quantity"  => 3,
+				),
+				array(
+					"productId" => $product_two,
+					"quantity"  => 2,
+				)
+			),
+			"coupons"           => array( $coupon_code_one, $coupon_code_two ),
+			"shippingMethods"   => array( "legacy_flat_rate" ),
+		);
+
+		$response = $this->graphql( $mutation, null, compact( 'input' ) );
+		$expected = array(
+			'fillCart' => array(
+				'clientMutationId' => 'someId',
+				'cart'             => array(
+					'chosenShippingMethods' => array( 'legacy_flat_rate' ),
+					'contents'              => array(
+						'nodes' => array(
+							array(
+								'product'   => array(
+									'node' => array( 'databaseId' => $product_one )
+								),
+								'quantity'  => 3,
+								'variation' => null,
+							),
+							array(
+								'product'   => array(
+									'node' => array( 'databaseId' => $product_two )
+								),
+								'quantity'  => 2,
+								'variation' => null,
+							),
+						)
+					),
+					'appliedCoupons' => array(
+						array(
+							'code'           => $coupon_code_one,
+							'discountAmount' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_amount( $coupon_code_one, true )
+							),
+							'discountTax' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_tax_amount( $coupon_code_one )
+							),
+						),
+						array(
+							'code' => $coupon_code_two,
+							'discountAmount' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_amount( $coupon_code_two, true )
+							),
+							'discountTax' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_tax_amount( $coupon_code_two )
+							),
+						),
+					)
+				)
+			)
 		);
 
 		$this->assertEquals( $expected, $response['data'] );

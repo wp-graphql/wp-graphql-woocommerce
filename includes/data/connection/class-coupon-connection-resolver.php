@@ -79,7 +79,6 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	public function should_execute() {
 		$post_type_obj = get_post_type_object( 'shop_coupon' );
 		switch ( true ) {
-			case 'appliedCoupons' === $this->info->fieldName:
 			case current_user_can( $post_type_obj->cap->edit_posts ):
 				return true;
 			default:
@@ -143,19 +142,6 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		if ( empty( $query_args['orderby'] ) ) {
 			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
-		}
-
-		if ( is_a( $this->source, \WC_Cart::class ) ) {
-			// @codingStandardsIgnoreLine
-			switch( $this->info->fieldName ) {
-				case 'appliedCoupons':
-					$ids = array();
-					foreach ( $this->source->get_applied_coupons() as $code ) {
-						$ids[] = \wc_get_coupon_id_by_code( $code );
-					}
-					$query_args['post__in'] = ! empty( $ids ) ? $ids : array( '0' );
-					break;
-			}
 		}
 
 		/**

@@ -54,7 +54,13 @@ class Cart_Apply_Coupon {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'cart' => Cart_Mutation::get_cart_field(),
+			'applied' => array(
+				'type'    => 'AppliedCoupon',
+				'resolve' => function( $payload ) {
+					return $payload['code'];
+				},
+			),
+			'cart'    => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 
@@ -67,32 +73,26 @@ class Cart_Apply_Coupon {
 		return function( $input ) {
 			Cart_Mutation::check_session_token();
 
-			// Get the coupon.
-			$the_coupon = new WC_Coupon( $input['code'] );
-
-			// Prevent adding coupons by post ID.
-			if ( $the_coupon->get_code() !== $input['code'] ) {
-				throw new UserError( __( 'No coupon found with the code provided', 'wp-graphql-woocommerce' ) );
+			$reason = '';
+			// If validate and successful applied to cart, return payload.
+			if ( Cart_Mutation::validate_coupon( $input['code'], $reason ) && \WC()->cart->apply_coupon( $input['code'] ) ) {
+				return array( 'code' => $input['code'] );
 			}
 
-			// Check it can be used with cart.
-			if ( ! $the_coupon->is_valid() ) {
-				throw new UserError( $the_coupon->get_error_message() );
+			// If any session error notices, capture them.
+			$notices = \WC()->session->get( 'wc_notices' );
+			if ( ! empty( $notices['error'] ) ) {
+				$reason = implode( ' ', array_column( $notices['error'], 'notice' ) );
+				\wc_clear_notices();
 			}
 
-			// Check if applied.
-			if ( \WC()->cart->has_discount( $input['code'] ) ) {
-				throw new UserError( __( 'This coupon has already been applied to the cart', 'wp-graphql-woocommerce' ) );
+			// Throw any capture errors.
+			if ( ! empty( $reason ) ) {
+				throw new UserError( $reason );
 			}
 
-			// Get cart item for payload.
-			$success = \WC()->cart->apply_coupon( $input['code'] );
-			if ( false === $success ) {
-				throw new UserError( __( 'Failed to apply coupon. Check for an individual-use coupon on cart.', 'wp-graphql-woocommerce' ) );
-			}
-
-			// Return payload.
-			return array( 'cart' => \WC()->cart );
+			// Throw for unknown failure.
+			throw new UserError( __( 'Failed to apply coupon. Check for an individual-use coupon on cart.', 'wp-graphql-woocommerce' ) );
 		};
 	}
 }

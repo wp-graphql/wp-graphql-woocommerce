@@ -509,7 +509,7 @@ class QLSessionHandlerCest {
                     ),
                     'availableShippingMethods' => array(
                         array(
-                            'packageDetails'             => 'socks &times;2',
+                            'packageDetails'             => \html_entity_decode( 'socks &times;2' ),
                             'supportsShippingCalculator' => true,
                             'rates'                      => array(
                                 array(
@@ -547,7 +547,7 @@ class QLSessionHandlerCest {
                                 label
                             }
                         }
-                        chosenShippingMethod
+                        chosenShippingMethods
                         shippingTotal
                         shippingTax
                         subtotal
@@ -573,6 +573,6 @@ class QLSessionHandlerCest {
         $I->assertNotEmpty( $success['data']['updateShippingMethod']['cart'] );
         $cart = $success['data']['updateShippingMethod']['cart'];
         $I->assertNotEmpty( $cart['availableShippingMethods'] );
-        $I->assertEquals( 'flat_rate:7', $cart['chosenShippingMethod'] );
+        $I->assertEquals( 'flat_rate:7', $cart['chosenShippingMethods'][0] );
     }
 }
