@@ -55,7 +55,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                 array(
                     'id'    => 0,
                     'key'   => 'meta_1',
-                    'value' => 'test_meta_3'
+                    'value' => 75,
                 ),
             ),
         );
@@ -334,7 +334,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                         ),
                         array(
                             'key'   => 'meta_1',
-                            'value' => 'test_meta_3',
+                            'value' => '75',
                         ),
                     )
                 ),
@@ -364,7 +364,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                         ),
                         array(
                             'key'   => 'meta_1',
-                            'value' => 'test_meta_3',
+                            'value' => '75',
                         ),
                     )
                 ),
@@ -398,7 +398,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
                         ),
                         array(
                             'key'   => 'meta_1',
-                            'value' => 'test_meta_3',
+                            'value' => '75',
                         ),
                     )
                 ),
