@@ -29,28 +29,19 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '4146b15b8a6adc3fc8791a065f4db628dd9684d6',
+    'reference' => '5c48a4dfee8e1aeb9320491ab01d1d8c49ed7bb4',
     'name' => 'wp-graphql/wp-graphql-woocommerce',
   ),
   'versions' => 
   array (
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'feb0e820b8436873675fd3aca04f3728eb2185cb',
-    ),
-    'webonyx/graphql-php' => 
-    array (
-      'pretty_version' => 'v14.4.0',
-      'version' => '14.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'aab3d49181467db064b41429cde117a7589625fc',
+      'reference' => 'f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
     ),
     'wp-graphql/wp-graphql-woocommerce' => 
     array (
@@ -59,7 +50,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '4146b15b8a6adc3fc8791a065f4db628dd9684d6',
+      'reference' => '5c48a4dfee8e1aeb9320491ab01d1d8c49ed7bb4',
     ),
   ),
 );

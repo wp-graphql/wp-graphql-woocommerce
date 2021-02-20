@@ -4,28 +4,22 @@ metaTitle: "Why is understanding a WooGraphQL's session management important? | 
 metaDescription: "Learn the responsibilites and capabilities of the custom session handler WooGraphQL uses."
 ---
 
-Typically, GraphQL requests don't have an effect on the **user context of the PHP environment** when a request is sent. This is due to user context (or custom context) rarely ever being necessary when querying for public data.  However, when dealing with private data, you are going to want to hide values, fields, or possibly types behind user context. 
+Typically, GraphQL requests don't have an effect on the **context of the PHP environment**. This is due to any context hardly ever being needed when querying for public data. However, when dealing with private data, it's best practice to hide values, fields, or possibly types behind some kind of context.
 
-When I refer to user context, I'm referring to changes to the environment that cause user checks like the following
-```php
-current_user_can( 'capability_name' )
-```
-or
-```php
-is_user_logged_in()
-```
-to return `true` when executing the query.
+When I refer to **context of the PHP environment**, I'm referring to any preset values assigned PHP globals and storages like PHP sessions and PHP cookies, when the WPGraphQL server begin to process the query.
 
-To create some context, typical means authenticating the end-user or start a session and providing means for identifying the end-user in all request to follow, in the form of some kind of token like a HTTP cookie or JSON Web token.
+To elaborate further, **user context** could be any preset value related to end-user whose browser sent the request. These values can be used by WordPress to do common tasks like authenticate the end-user or identify some data object related the end-user.
 
-For WordPress user authentication, a WPGraphQL request made from the same origin or domain will usually pass any existing HTTP cookies along with the request. This includes cookies created by WordPress' native login methods.
+In typical HTTP requests made when navigating links on a WordPress site, those common tasks are managed by cookies created in previous requests and saved to the end-user's computer. These cookies are then sent by the end-user's browser along with any HTTP request sent to WordPress from within the WordPress domain.
 
-When dealing with front-end application and GraphQL requests made from external origins and domains, you're most likely be better off using a JSON Web Token User Authentication solution.
+On the other hand, when dealing with an decoupled front-end application that makes GraphQL requests from external origins and domains, using cookies to manage the **user context** of these requests is difficult to setup and not always possible. Sending JSON Web Tokens as HTTP headers in the GraphQL request is the recommended solution for creating context.
 
-A JSON Web Token (JWT) User Authentication solution is a tool, most commonly in the form of a wordpress plugin, that provide a means to authenticate an user through the HTTP "Authorization" header by passing a JWT as the value.
-There are a couple of solution out there but throughout the documentation you'll find reference to the WPGraphQL-JWT-Authentication plugin, so that will be the JWT User Authentication solution discussed here.
+JSON Web Token (JWT) solutions for the purpose of WordPress user authentication are available. Most commonly in the form of plugins, that authenticate the end-user by decoding and reading JWTs sent through the "Authorization" HTTP header container the end-user's WordPress User ID.
 
-So to answer the question of "why is this important?"
+While there are multiple solutions out there but throughout this documentation you'll find references to the **WPGraphQL-JWT-Authentication** plugin, so that will be the JWT solution discussed here.
 
-WooGraphQL takes advantage of the user context created by JWT User Authentication solutions and an in house JWT solution to provide a gateway to WooCommerce's functionality that relies the user context.
+So to answer the question of **"why is this important?"**
+
+WooGraphQL has the ability to take advantage of JWTs build and distribute in-house to provide a gateway to WooCommerce's functionality that rely user context.
+
 These features are the shopping cart, shipping calculator, guest data/orders. The shopping cart data and guest data, are saved temporarily in the database, so rolling your own objects for these client-side won't be necessary if using methods demonstrated throughout this section.
