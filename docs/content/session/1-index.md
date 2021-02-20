@@ -22,4 +22,6 @@ So to answer the question of **"why is this important?"**
 
 WooGraphQL has the ability to take advantage of JWTs build and distribute in-house to provide a gateway to WooCommerce's functionality that rely user context.
 
-These features are the shopping cart, shipping calculator, guest data/orders. The shopping cart data and guest data, are saved temporarily in the database, so rolling your own objects for these client-side won't be necessary if using methods demonstrated throughout this section.
+This includes the shopping cart, shipping calculator and guest data/orders.
+
+The shopping cart data and guest data are saved temporarily in the WordPress database, so rolling your own objects for these client-side won't be necessary if using methods demonstrated throughout this section.
