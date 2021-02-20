@@ -4,12 +4,15 @@ metaTitle: "What is a JWT-Auth token and WooCommerce Session Token? | WooGraphQL
 metaDescription: "Learn the uses and differences between a JWT-Auth token and WooCommerce Session token."
 ---
 
-A JWT-Auth token refers to any JSON Web Token (JWT) sent through the HTTP "Authorization" header for the purpose of authenticating the end-user as a WordPress user before the core logic of the HTTP request has executed.
+A JWT-Auth token refers to any JSON Web Token (JWT) sent through the "Authorization" HTTP header for the purpose of authenticating the end-user as a WordPress user before the core logic of the HTTP request has executed.
 
 A WooCommerce session token is a JWT created by WooGraphQL for the sole purpose of identifying the WooCommerce customer session of the end-user.
 
+> **Small note:** As I said, there are multiple solutions available but throughout this documentation you'll find references to the **WPGraphQL-JWT-Authentication** plugin, so that will be the JWT solution discussed here.
+
 They both work by storing the user/customer ID along with some info about who made and whose to recieve the token in an object and encrypting that into a string a.k.a. a JWT.
 WPGraphQL-JWT-Authentication and WooGraphQL makes these tokens available through way of queryable fields
+
 ```graphql
 query {
   customer {
@@ -18,11 +21,13 @@ query {
   }
 }
 ```
+
 However, the user context typically has to be already be setup before this fields are accessible.
 
 Most of the time the way to generate the JWTs that will setup the user context in all future requests is to run a mutation the changes the context by authenticating an user or creating a session.
 
 For instance the `login()` mutation provided by the WPGraphQL-JWT-Authentication plugin is perfect for this, and when used with WooGraphQL the following mutation can be used.
+
 ```graphql
 mutation {
   login(input: {clientMutationId: "someId", username: "admin", password: "password"}) {
