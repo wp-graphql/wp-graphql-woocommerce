@@ -6,28 +6,19 @@
     'aliases' => 
     array (
     ),
-    'reference' => '35121e5adb47c963ccf0f7bfe481742245af69f5',
+    'reference' => '4b2c8c8f7165d203c74070424aff0c8a0d3ecb6b',
     'name' => 'wp-graphql/wp-graphql-woocommerce',
   ),
   'versions' => 
   array (
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'feb0e820b8436873675fd3aca04f3728eb2185cb',
-    ),
-    'webonyx/graphql-php' => 
-    array (
-      'pretty_version' => 'v14.4.0',
-      'version' => '14.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'aab3d49181467db064b41429cde117a7589625fc',
+      'reference' => 'f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
     ),
     'wp-graphql/wp-graphql-woocommerce' => 
     array (
@@ -36,7 +27,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '35121e5adb47c963ccf0f7bfe481742245af69f5',
+      'reference' => '4b2c8c8f7165d203c74070424aff0c8a0d3ecb6b',
     ),
   ),
 );

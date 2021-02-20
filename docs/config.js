@@ -30,17 +30,21 @@ const config = {
 			"/introduction",
 			"/playground",
 			"/guides",
+      "/session",
 			"/contributing"
 		],
     	"collapsedNav": [
-      		"/guides"
+      		"/guides",
+          "/session",
+          "/session/4-index"
     	],
 		"links": [
-			{ "text": "AxisTaylor", "link": "https://axistaylor.com"},
+      { "text": "Github", "link": "https://github.com/wp-graphql/wp-graphql-woocommerce" },
 			{ "text": "WPGraphQL", "link": "https://wpgraphql.com"},
 			{ "text": "WPGraphQL Documentation", "link": "https://wpgraphql.com/docs"},
+			{ "text": "AxisTaylor", "link": "https://axistaylor.com"},
 		],
-		"frontline": true,
+		"frontline": false,
 		"ignoreIndex": true,
 	},
 	"siteMetadata": {

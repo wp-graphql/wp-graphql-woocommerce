@@ -7,6 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WPGraphQL\\WooCommerce\\' => array($baseDir . '/includes'),
-    'GraphQL\\' => array($vendorDir . '/webonyx/graphql-php/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
 );
