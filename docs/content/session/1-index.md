@@ -4,7 +4,7 @@ metaTitle: "Why is understanding a WooGraphQL's session management important? | 
 metaDescription: "Learn the responsibilites and capabilities of the custom session handler WooGraphQL uses."
 ---
 
-Typically GraphQL requests don't have an effect on the user context of the environment when a request is sent. This is due to user context or custom context rarely ever being necessary when querying for public data. However when dealing with private or personal data, your gonna wanna hide values, fields, or possibly types behind user context.
+Typically, GraphQL requests don't have an effect on the **user context of the PHP environment** when a request is sent. This is due to user context (or custom context) rarely ever being necessary when querying for public data.  However, when dealing with private data, you are going to want to hide values, fields, or possibly types behind user context. 
 
 When I refer to user context, I'm referring to changes to the environment that cause user checks like the following
 ```php
