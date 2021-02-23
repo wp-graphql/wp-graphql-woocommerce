@@ -330,6 +330,7 @@ return array(
     'WPGraphQL\\WooCommerce\\Type\\WPObject\\Variation_Attribute_Type' => $baseDir . '/includes/type/object/class-variation-attribute-type.php',
     'WPGraphQL\\WooCommerce\\Type_Registry' => $baseDir . '/includes/class-type-registry.php',
     'WPGraphQL\\WooCommerce\\Utils\\QL_Session_Handler' => $baseDir . '/includes/utils/class-ql-session-handler.php',
+    'WPGraphQL\\WooCommerce\\Utils\\Session_Transaction_Manager' => $baseDir . '/includes/utils/class-session-transaction-manager.php',
     'WPGraphQL\\WooCommerce\\WooCommerce_Filters' => $baseDir . '/includes/class-woocommerce-filters.php',
     'WP_GraphQL_WooCommerce' => $baseDir . '/includes/class-wp-graphql-woocommerce.php',
 );

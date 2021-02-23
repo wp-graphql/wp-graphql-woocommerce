@@ -46,6 +46,13 @@ class QL_Session_Handler extends WC_Session_Handler {
 	protected $_issuing_new_token = false; // @codingStandardsIgnoreLine
 
 	/**
+	 * Manages connection to the session transaction queue.
+	 *
+	 * @var Session_Transaction_Manager
+	 */
+	private $transaction_manager = null;
+
+	/**
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
@@ -87,122 +94,15 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	public function init() {
 		$this->init_session_token();
+		$this->transaction_manager = Session_Transaction_Manager::get( $this );
 
 		add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
+		add_action( 'graphql_after_resolve_field', array( $this, 'save_if_dirty' ), 10, 4 );
 		add_action( 'shutdown', array( $this, 'save_data' ) );
-
-		add_action( 'graphql_before_resolve_field', array( $this, 'update_transaction_queue' ), 10, 8 );
-		add_action( 'shutdown', array( $this, 'pop_transaction_id' ), 20 );
-
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 
 		if ( ! is_user_logged_in() ) {
 			add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
-		}
-	}
-
-	/**
-	 * Transaction queue workhorse.
-	 *
-	 * Creates an transaction ID if executing mutations that alter the session data, and stales
-	 * execution until the transaction ID is at the top of the queue.
-	 *
-	 * @param mixed                 $source   Operation root object.
-	 * @param array                 $args     Operation arguments.
-	 * @param \WPGraphQL\AppContext $context  AppContext instance.
-	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
-	 */
-	public function update_transaction_queue( $source, $args, $context, $info ) {
-		// All mutations that alter the session data.
-		$session_mutations = array(
-			'cart',
-			'addToCart',
-			'updateItemQuantities',
-			'addFee',
-			'applyCoupon',
-			'removeCoupons',
-			'emptyCart',
-			'removeItemsFromCart',
-			'restoreCartItems',
-			'updateItemQuantities',
-			'updateShippingMethod',
-			'updateCustomer',
-		);
-
-		// Bail early, if not one of the session mutations.
-		if ( ! in_array( $info->fieldName, $session_mutations, true ) ) { // @codingStandardsIgnoreLine
-			return;
-		}
-
-		// Initialize transaction ID.
-		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
-			define( 'WOOGRAPHQL_SESSION_TRANSACTION_ID', \uniqid() );
-		}
-
-		// Update transaction queue.
-		$transaction_queue = $this->get_transaction_queue();
-
-		// Wait until our transaction ID is at the top of the queue before continuing.
-		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0] ) {
-			usleep( 500000 );
-			$this->update_transaction_queue( $source, $args, $context, $info );
-		}
-	}
-
-	/**
-	 * Adds transaction ID to the end of the queue, officially starting the transaction,
-	 * and returns the transaction queue.
-	 *
-	 * @return array
-	 */
-	public function get_transaction_queue() {
-		// Get transaction queue.
-		$transaction_queue = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
-		if ( ! $transaction_queue ) {
-			$transaction_queue = array();
-		}
-
-		// If transaction ID not in queue, add it, and start transaction.
-		if ( ! in_array( WOOGRAPHQL_SESSION_TRANSACTION_ID, $transaction_queue, true ) ) {
-			$transaction_queue[] = WOOGRAPHQL_SESSION_TRANSACTION_ID;
-
-			// Update queue.
-			wp_cache_add(
-				$this->_customer_id,
-				$transaction_queue,
-				'woo_session_transactions_queue'
-			);
-		}
-
-		return $transaction_queue;
-	}
-
-	/**
-	 * Pop transaction ID off the top of the queue, ending the transaction.
-	 *
-	 * @throws UserError If transaction ID is not on the top of the queue.
-	 */
-	public function pop_transaction_id() {
-		// Bail if not transaction started.
-		if ( ! defined( 'WOOGRAPHQL_SESSION_TRANSACTION_ID' ) ) {
-			return;
-		}
-
-		// Get transaction queue.
-		$transaction_queue = wp_cache_get( $this->_customer_id, 'woo_session_transactions_queue' );
-
-		// Throw if transaction ID not on top.
-		if ( WOOGRAPHQL_SESSION_TRANSACTION_ID !== $transaction_queue[0] ) {
-			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
-		} else {
-
-			// Remove Transaction ID and update queue.
-			array_shift( $transaction_queue );
-			wp_cache_add(
-				$this->_customer_id,
-				$transaction_queue,
-				'woo_session_transactions_queue'
-			);
 		}
 	}
 
@@ -336,7 +236,75 @@ class QL_Session_Handler extends WC_Session_Handler {
 	}
 
 	/**
-	 * Encrypts and sets the session header on-demand (usually after adding an item to the cart).
+	 * Creates JSON Web Token for customer session.
+	 *
+	 * @return string
+	 */
+	public function build_token() {
+		/**
+		 * Determine the "not before" value for use in the token
+		 *
+		 * @param string  $issued        The timestamp of token was issued.
+		 * @param integer $customer_id   Customer ID.
+		 * @param array   $session_data  Cart session data.
+		 */
+		$not_before = apply_filters(
+			'graphql_woo_cart_session_not_before',
+			$this->_session_issued,
+			$this->_customer_id,
+			$this->_data
+		);
+
+		// Configure the token array, which will be encoded.
+		$token = array(
+			'iss'  => get_bloginfo( 'url' ),
+			'iat'  => $this->_session_issued,
+			'nbf'  => $not_before,
+			'exp'  => $this->_session_expiration,
+			'data' => array(
+				'customer_id' => $this->_customer_id,
+			),
+		);
+
+		/**
+		 * Filter the token, allowing for individual systems to configure the token as needed
+		 *
+		 * @param array   $token         The token array that will be encoded
+		 * @param integer $customer_id   ID of customer associated with token.
+		 * @param array   $session_data  Session data associated with token.
+		 */
+		$token = apply_filters(
+			'graphql_woocommerce_cart_session_before_token_sign',
+			$token,
+			$this->_customer_id,
+			$this->_data
+		);
+
+		// Encode the token.
+		JWT::$leeway = 60;
+		$token       = JWT::encode( $token, $this->get_secret_key(), 'HS256' );
+
+		/**
+		 * Filter the token before returning it, allowing for individual systems to override what's returned.
+		 *
+		 * For example, if the user should not be granted a token for whatever reason, a filter could have the token return null.
+		 *
+		 * @param string  $token         The signed JWT token that will be returned
+		 * @param integer $customer_id   ID of customer associated with token.
+		 * @param array   $session_data  Session data associated with token.
+		 */
+		$token = apply_filters(
+			'graphql_woocommerce_cart_session_signed_token',
+			$token,
+			$this->_customer_id,
+			$this->_data
+		);
+
+		return $token;
+	}
+
+	/**
+	 * Sets the session header on-demand (usually after adding an item to the cart).
 	 *
 	 * Warning: Headers will only be set if this is called before the headers are sent.
 	 *
@@ -345,84 +313,19 @@ class QL_Session_Handler extends WC_Session_Handler {
 	public function set_customer_session_token( $set ) {
 		if ( $set ) {
 			/**
-			 * Determine the "not before" value for use in the token
-			 *
-			 * @param string  $issued        The timestamp of token was issued.
-			 * @param integer $customer_id   Customer ID.
-			 * @param array   $session_data  Cart session data.
-			 */
-			$not_before = apply_filters(
-				'graphql_woo_cart_session_not_before',
-				$this->_session_issued,
-				$this->_customer_id,
-				$this->_data
-			);
-
-			// Configure the token array, which will be encoded.
-			$token = array(
-				'iss'  => get_bloginfo( 'url' ),
-				'iat'  => $this->_session_issued,
-				'nbf'  => $not_before,
-				'exp'  => $this->_session_expiration,
-				'data' => array(
-					'customer_id' => $this->_customer_id,
-				),
-			);
-
-			/**
-			 * Filter the token, allowing for individual systems to configure the token as needed
-			 *
-			 * @param array   $token         The token array that will be encoded
-			 * @param integer $customer_id   ID of customer associated with token.
-			 * @param array   $session_data  Session data associated with token.
-			 */
-			$token = apply_filters(
-				'graphql_woocommerce_cart_session_before_token_sign',
-				$token,
-				$this->_customer_id,
-				$this->_data
-			);
-
-			// Encode the token.
-			JWT::$leeway = 60;
-			$token       = JWT::encode( $token, $this->get_secret_key(), 'HS256' );
-
-			/**
-			 * Filter the token before returning it, allowing for individual systems to override what's returned.
-			 *
-			 * For example, if the user should not be granted a token for whatever reason, a filter could have the token return null.
-			 *
-			 * @param string  $token         The signed JWT token that will be returned
-			 * @param integer $customer_id   ID of customer associated with token.
-			 * @param array   $session_data  Session data associated with token.
-			 */
-			$token = apply_filters(
-				'graphql_woocommerce_cart_session_signed_token',
-				$token,
-				$this->_customer_id,
-				$this->_data
-			);
-
-			if ( ! $token ) {
-				return;
-			}
-
-			/**
-			 * Set session token for use in the HTTP response header and customer/user "sessionToken" field.
+			 * Set callback session token for use in the HTTP response header and customer/user "sessionToken" field.
 			 */
 			add_filter(
 				'graphql_response_headers_to_send',
-				function( $headers ) use ( $token ) {
-					$headers[ $this->_token ] = $token;
+				function( $headers ) {
+					$token = $this->build_token();
+					if ( $token ) {
+						$headers[ $this->_token ] = $token;
+					}
+
 					return $headers;
 				},
 				10
-			);
-			add_filter(
-				'graphql_customer_session_token',
-				function( $_ ) use ( $token ) {
-					return $token;
-				}
 			);
 
 			$this->_issuing_new_token = true;
@@ -464,5 +367,40 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->_data        = array();
 		$this->_dirty       = false;
 		$this->_customer_id = $this->generate_customer_id();
+	}
+
+	/**
+	 * Save any changes to database after a session mutations has been run.
+	 *
+	 * @param mixed                 $source   Operation root object.
+	 * @param array                 $args     Operation arguments.
+	 * @param \WPGraphQL\AppContext $context  AppContext instance.
+	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
+	 */
+	public function save_if_dirty( $source, $args, $context, $info ) {
+		// Bail early, if not one of the session mutations.
+		if ( ! in_array( $info->fieldName, Session_Transaction_Manager::get_session_mutations(), true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			return;
+		}
+
+		// Update if user recently authenticated.
+		if ( is_user_logged_in() && get_current_user_id() !== $this->_customer_id ) {
+			$this->_customer_id = get_current_user_id();
+		}
+
+		// Bail if no changes.
+		if ( ! $this->_dirty ) {
+			return;
+		}
+
+		$this->save_data();
+	}
+
+	/**
+	 * For refreshing session data mid-request when changes occur in concurrent requests.
+	 */
+	public function reload_data() {
+		\WC_Cache_Helper::incr_cache_prefix( WC_SESSION_CACHE_GROUP );
+		$this->_data = $this->get_session( $this->_customer_id );
 	}
 }

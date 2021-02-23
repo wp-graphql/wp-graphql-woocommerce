@@ -28,7 +28,8 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "webonyx/graphql-php": "^14.4.0"
     },
     "require-dev": {
         "composer/installers": "^1.9",
