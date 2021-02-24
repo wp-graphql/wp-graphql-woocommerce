@@ -872,12 +872,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         /**
          * Assertion One
          *
-         * Can't pass coupon ID as coupon "code". Mutation should fail.
+         * Can't pass coupon ID as coupon 'code'. Mutation should fail.
          */
         $variables = array(
             'input' => array(
                 'clientMutationId' => 'someId',
-                'code'             => "$coupon_id",
+                'code'             => '$coupon_id',
             ),
         );
         $actual    = $this->graphql( $mutation, null, $variables );
@@ -1141,6 +1141,18 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 						}
 						quantity
 					}
+					cartErrors {
+						type
+						reasons
+						productId
+						quantity
+						variationId
+						variation {
+							attributeName
+							attributeValue
+						}
+						extraData
+					}
 				}
 			}
 		';
@@ -1196,6 +1208,26 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 						),
 						'quantity'  => 3
 					),
+				),
+				'cartErrors' => array(
+					array(
+						'type'        => 'INVALID_CART_ITEM',
+						'reasons'     => array( 'test is a required field' ),
+						'productId'   => $variation_ids['product'],
+						'quantity'    => 5,
+						'variationId' => $variation_ids['variations'][0],
+						'variation'   => null,
+						'extraData'   => null
+					),
+					array(
+						'type'        => 'INVALID_CART_ITEM',
+						'reasons'     => array( 'No product found matching the ID provided' ),
+						'productId'   => $invalid_product,
+						'quantity'    => 4,
+						'variationId' => null,
+						'variation'   => null,
+						'extraData'   => null
+					)
 				)
 			),
 		);
@@ -1203,7 +1235,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $response['data'] );
 	}
 
-	public function testFillCartMutation() {
+	public function testFillCartMutationAndErrors() {
 		// Create products.
         $product_one = $this->product->create_simple(
             array( 'regular_price' => 100 )
@@ -1230,7 +1262,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
             )
         );
 
-		$invalid_product = 1000;
+		$invalid_product         = 1000;
+		$invalid_coupon          = 'failed';
+		$invalid_shipping_method = 'fakityfake-shipping';
 
 		\ShippingMethodHelper::create_legacy_flat_rate_instance();
 
@@ -1257,24 +1291,44 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 							discountTax
 						}
 					}
+	cartErrors {
+		type
+		... on CartItemError {
+			reasons
+			productId
+			quantity
+		}
+		... on CouponError {
+			reasons
+			code
+		}
+		... on ShippingMethodError {
+			chosenMethod
+			package
+		}
+	}
 				}
 			}
 		';
 
 		$input = array(
-			"clientMutationId" => "someId",
-			"items"            => array(
+			'clientMutationId' => 'someId',
+			'items'            => array(
 				array(
-					"productId" => $product_one,
-					"quantity"  => 3,
+					'productId' => $product_one,
+					'quantity'  => 3,
 				),
 				array(
-					"productId" => $product_two,
-					"quantity"  => 2,
-				)
+					'productId' => $product_two,
+					'quantity'  => 2,
+				),
+				array(
+					'productId' => $invalid_product,
+					'quantity'  => 4,
+				),
 			),
-			"coupons"           => array( $coupon_code_one, $coupon_code_two ),
-			"shippingMethods"   => array( "legacy_flat_rate" ),
+			'coupons'           => array( $coupon_code_one, $coupon_code_two, $invalid_coupon ),
+			'shippingMethods'   => array( 'legacy_flat_rate', $invalid_shipping_method ),
 		);
 
 		$response = $this->graphql( $mutation, null, compact( 'input' ) );
@@ -1287,19 +1341,19 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'nodes' => array(
 							array(
 								'product'   => array(
-									'node' => array( 'databaseId' => $product_one )
+									'node' => array( 'databaseId' => $product_one ),
 								),
 								'quantity'  => 3,
 								'variation' => null,
 							),
 							array(
 								'product'   => array(
-									'node' => array( 'databaseId' => $product_two )
+									'node' => array( 'databaseId' => $product_two ),
 								),
 								'quantity'  => 2,
 								'variation' => null,
 							),
-						)
+						),
 					),
 					'appliedCoupons' => array(
 						array(
@@ -1320,7 +1374,25 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 								\WC()->cart->get_coupon_discount_tax_amount( $coupon_code_two )
 							),
 						),
-					)
+					),
+				),
+				'cartErrors' => array(
+					array(
+						'type'        => 'INVALID_CART_ITEM',
+						'reasons'     => array( 'No product found matching the ID provided' ),
+						'productId'   => $invalid_product,
+						'quantity'    => 4
+					),
+					array(
+						'type'        => 'INVALID_COUPON',
+						'reasons'     => array( "Coupon \"{$invalid_coupon}\" does not exist!" ),
+						'code'        => $invalid_coupon,
+					),
+					array(
+						'type'         => 'INVALID_SHIPPING_METHOD',
+						'package'      => 1,
+						'chosenMethod' => $invalid_shipping_method
+					),
 				)
 			)
 		);

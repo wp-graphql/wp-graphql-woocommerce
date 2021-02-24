@@ -88,6 +88,47 @@ class Cart_Fill {
 					return ! empty( $methods ) ? $methods : null;
 				},
 			),
+			'cartErrors'            => array(
+				'type'    => array( 'list_of' => 'CartError' ),
+				'resolve' => function ( $payload ) {
+					$errors = array();
+					$all_error_data = array_merge(
+						$payload['invalid_cart_items'],
+						$payload['invalid_coupons'],
+						$payload['invalid_shipping_methods']
+					);
+
+					foreach ( $all_error_data as $error_data ) {
+						switch ( true ) {
+							case isset( $error_data['cart_item_data'] ):
+								$cart_error         = $error_data['cart_item_data'];
+								$cart_error['type'] = 'INVALID_CART_ITEM';
+								break;
+							case isset( $error_data['code'] ):
+								$cart_error         = array( 'code' => $error_data['code'] );
+								$cart_error['type'] = 'INVALID_COUPON';
+								break;
+							case isset( $error_data['package'] ):
+								$cart_error         = array(
+									'package'       => $error_data['package'],
+									'chosen_method' => $error_data['chosen_method'],
+								);
+								$cart_error['type'] = 'INVALID_SHIPPING_METHOD';
+								break;
+						}
+
+						if ( ! empty( $error_data['reasons'] ) ) {
+							$cart_error['reasons'] = $error_data['reasons'];
+						} elseif ( $error_data['reason'] ) {
+							$cart_error['reasons'] = array( $error_data['reason'] );
+						}
+
+						$errors[] = $cart_error;
+					}
+
+					return $errors;
+				},
+			),
 			'cart'                  => Cart_Mutation::get_cart_field( true ),
 		);
 	}
@@ -107,8 +148,8 @@ class Cart_Fill {
 			}
 
 			// Validate cart item input.
-			$added   = array();
-			$failure = array();
+			$added              = array();
+			$invalid_cart_items = array();
 			foreach ( $input['items'] as $cart_item_data ) {
 				try {
 					// Prepare args for "add_to_cart" from input data.
@@ -126,26 +167,26 @@ class Cart_Fill {
 					// Else capture errors.
 					$notices = \WC()->session->get( 'wc_notices' );
 					if ( ! empty( $notices['error'] ) ) {
-						$reasons = implode( ' ', array_column( $notices['error'], 'notice' ) );
+						$reasons = array_column( $notices['error'], 'notice' );
 						\wc_clear_notices();
 
-						$failure[] = compact( 'cart_item_data', 'reasons' );
+						$invalid_cart_items[] = compact( 'cart_item_data', 'reasons' );
 					} else {
-						$reason    = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );
-						$failure[] = compact( 'cart_item_data', 'reason' );
+						$reason               = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );
+						$invalid_cart_items[] = compact( 'cart_item_data', 'reason' );
 					}
 				} catch ( \Exception $e ) {
 					// Get thrown error message.
 					$reason = $e->getMessage();
 
 					// Capture error.
-					$failure[] = compact( 'cart_item_data', 'reason' );
+					$invalid_cart_items[] = compact( 'cart_item_data', 'reason' );
 				}
 			}
 
 			// Log captured errors.
-			if ( ! empty( $failure ) ) {
-				graphql_debug( $failure, array( 'type' => 'INVALID_CART_ITEMS' ) );
+			if ( ! empty( $invalid_cart_items ) ) {
+				graphql_debug( $invalid_cart_items, array( 'type' => 'INVALID_CART_ITEMS' ) );
 			}
 
 			// Throw error, if no items added.
@@ -155,7 +196,7 @@ class Cart_Fill {
 
 			$applied = array();
 			if ( ! empty( $input['coupons'] ) ) {
-				$failure = array();
+				$invalid_coupons = array();
 				foreach ( $input['coupons'] as $code ) {
 					$reason = '';
 					// If validate and successful applied to cart, return payload.
@@ -175,11 +216,11 @@ class Cart_Fill {
 						$reason = __( 'Failed to apply coupon. Check for an individual-use coupon on cart.', 'wp-graphql-woocommerce' );
 					}
 
-					$failure[] = compact( 'code', 'reason' );
+					$invalid_coupons[] = compact( 'code', 'reason' );
 				}
 
-				if ( ! empty( $failure ) ) {
-					graphql_debug( $failure, array( 'type' => 'INVALID_COUPONS' ) );
+				if ( ! empty( $invalid_coupons ) ) {
+					graphql_debug( $invalid_coupons, array( 'type' => 'INVALID_COUPONS' ) );
 				}
 			}
 
@@ -191,7 +232,7 @@ class Cart_Fill {
 				$chosen_shipping_methods = \WC()->session->get( 'chosen_shipping_methods' );
 
 				// Update current shipping methods.
-				$failure = array();
+				$invalid_shipping_methods = array();
 				foreach ( $posted_shipping_methods as $package => $chosen_method ) {
 					if ( empty( $chosen_method ) ) {
 						continue;
@@ -203,14 +244,14 @@ class Cart_Fill {
 						continue;
 					}
 
-					$failure[] = compact( 'package', 'chosen_method', 'reason' );
+					$invalid_shipping_methods[] = compact( 'package', 'chosen_method', 'reason' );
 				}
 
 				// Set updated shipping methods in session.
 				\WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
 
-				if ( ! empty( $failure ) ) {
-					graphql_debug( $failure, array( 'type' => 'INVALID_SHIPPING_METHODS' ) );
+				if ( ! empty( $invalid_shipping_methods ) ) {
+					graphql_debug( $invalid_shipping_methods, array( 'type' => 'INVALID_SHIPPING_METHODS' ) );
 				}
 			}
 
@@ -218,7 +259,14 @@ class Cart_Fill {
 			\WC()->cart->calculate_totals();
 
 			// Return payload.
-			return compact( 'added', 'applied', 'chosen_shipping_methods' );
+			return compact(
+				'added',
+				'invalid_cart_items',
+				'applied',
+				'invalid_coupons',
+				'chosen_shipping_methods',
+				'invalid_shipping_methods'
+			);
 		};
 	}
 }

@@ -54,7 +54,7 @@ class Cart_Add_Items {
 	 */
 	public static function get_output_fields() {
 		return array(
-			'added' => array(
+			'added'      => array(
 				'type'    => array( 'list_of' => 'CartItem' ),
 				'resolve' => function ( $payload ) {
 					$items = array();
@@ -65,7 +65,27 @@ class Cart_Add_Items {
 					return $items;
 				},
 			),
-			'cart'  => Cart_Mutation::get_cart_field( true ),
+			'cartErrors' => array(
+				'type'    => array( 'list_of' => 'CartItemError' ),
+				'resolve' => function ( $payload ) {
+					$errors = array();
+					foreach ( $payload['failure'] as $error_data ) {
+						$cart_error         = $error_data['cart_item_data'];
+						$cart_error['type'] = 'INVALID_CART_ITEM';
+
+						if ( ! empty( $error_data['reasons'] ) ) {
+							$cart_error['reasons'] = $error_data['reasons'];
+						} elseif ( $error_data['reason'] ) {
+							$cart_error['reasons'] = array( $error_data['reason'] );
+						}
+
+						$errors[] = $cart_error;
+					}
+
+					return $errors;
+				},
+			),
+			'cart'       => Cart_Mutation::get_cart_field( true ),
 		);
 	}
 
@@ -103,7 +123,7 @@ class Cart_Add_Items {
 					// Else capture errors.
 					$notices = \WC()->session->get( 'wc_notices' );
 					if ( ! empty( $notices['error'] ) ) {
-						$reasons = implode( ' ', array_column( $notices['error'], 'notice' ) );
+						$reasons = array_column( $notices['error'], 'notice' );
 						\wc_clear_notices();
 
 						$failure[] = compact( 'cart_item_data', 'reasons' );
@@ -131,7 +151,7 @@ class Cart_Add_Items {
 			}
 
 			// Return payload.
-			return compact( 'added' );
+			return compact( 'added', 'failure' );
 		};
 	}
 }

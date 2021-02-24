@@ -41,6 +41,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Products_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Orders_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Id_Type_Enums::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Cart_Error_Type::register();
 
 		// InputObjects.
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Cart_Item_Input::register();
@@ -60,6 +61,7 @@ class Type_Registry {
 		// Interfaces.
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product::register_interface( $type_registry );
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product_Attribute::register_interface( $type_registry );
+		\WPGraphQL\WooCommerce\Type\WPInterface\Cart_Error::register_interface( $type_registry );
 
 		// Objects.
 		\WPGraphQL\WooCommerce\Type\WPObject\Coupon_Type::register();
@@ -81,6 +83,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Package_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Rate_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Cart_Error_Types::register();
 
 		// Object fields.
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();

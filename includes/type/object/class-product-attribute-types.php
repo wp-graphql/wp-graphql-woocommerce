@@ -75,5 +75,29 @@ class Product_Attribute_Types {
 				),
 			)
 		);
+
+		// ProductAttributeOutput for CartItemError and CartItem edges.
+		register_graphql_object_type(
+			'ProductAttributeOutput',
+			array(
+				'description' => __( 'A simple product attribute object', 'wp-graphql-woocommerce' ),
+				'fields'      => array(
+					'attributeName'  => array(
+						'type'        => 'String',
+						'description' => __( 'Attribute name.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( array $attribute ) {
+							return ! empty( $attribute['attributeName'] ) ? $attribute['attributeName'] : null;
+						},
+					),
+					'attributeValue' => array(
+						'type'        => 'String',
+						'description' => __( 'Attribute value.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( array $attribute ) {
+							return ! empty( $attribute['attributeValue'] ) ? $attribute['attributeValue'] : null;
+						},
+					),
+				),
+			)
+		);
 	}
 }

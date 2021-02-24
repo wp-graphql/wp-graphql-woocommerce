@@ -36,7 +36,9 @@ class Product_Attribute {
 	}
 
 	/**
-	 * Defines product fields. All child type must have these fields as well.
+	 * Defines ProductAttribute fields. All child type must have these fields as well.
+	 *
+	 * @return array
 	 */
 	public static function get_fields() {
 		return array(
