@@ -69,15 +69,7 @@ class Cart_Update_Shipping_Method {
 				throw new UserError( __( 'No shipping method provided', 'wp-graphql-woocommerce' ) );
 			}
 
-			$posted_shipping_methods = $input['shippingMethods'];
-
-			// Get current shipping methods.
-			$chosen_shipping_methods = \WC()->session->get( 'chosen_shipping_methods' );
-
-			// Update current shipping methods.
-			foreach ( $posted_shipping_methods as $i => $value ) {
-				$chosen_shipping_methods[ $i ] = $value;
-			}
+			$chosen_shipping_methods = Cart_Mutation::prepare_shipping_methods( $input['shippingMethods'] );
 
 			// Set updated shipping methods in session.
 			\WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );

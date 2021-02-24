@@ -92,15 +92,6 @@ class Cart_Add_Item {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
-			// Retrieve product database ID if relay ID provided.
-			if ( empty( $input['productId'] ) ) {
-				throw new UserError( __( 'No product ID provided', 'wp-graphql-woocommerce' ) );
-			}
-
-			if ( ! \wc_get_product( $input['productId'] ) ) {
-				throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
-			}
-
 			// Prepare args for "add_to_cart" from input data.
 			$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );
 

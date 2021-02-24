@@ -17,6 +17,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         $this->product      = $this->getModule('\Helper\Wpunit')->product();
         $this->variation    = $this->getModule('\Helper\Wpunit')->product_variation();
         $this->cart         = $this->getModule('\Helper\Wpunit')->cart();
+		$this->shipping     = $this->getModule('\Helper\Wpunit')->shipping_method();
     }
 
     public function tearDown(): void {
@@ -30,7 +31,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$results = graphql( compact( 'query', 'operation_name', 'variables' ) );
 
 		// use --debug flag to view.
-		codecept_debug( $results );
+		codecept_debug( json_encode( $results, JSON_PRETTY_PRINT ) );
 
         return $results;
 	}
@@ -754,9 +755,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     clientMutationId
                     cart {
                         appliedCoupons {
-                            nodes {
-                                code
-                            }
+							code
                         }
                         contents {
                             nodes {
@@ -795,11 +794,9 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     'clientMutationId' => 'someId',
                     'cart'         => array(
                         'appliedCoupons' => array(
-                            'nodes' => array(
-                                array(
-                                    'code' => $coupon_code,
-                                ),
-                            ),
+							array(
+								'code' => $coupon_code,
+							),
                         ),
                         'contents' => array(
                             'nodes' => array(
@@ -875,12 +872,12 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
         /**
          * Assertion One
          *
-         * Can't pass coupon ID as coupon "code". Mutation should fail.
+         * Can't pass coupon ID as coupon 'code'. Mutation should fail.
          */
         $variables = array(
             'input' => array(
                 'clientMutationId' => 'someId',
-                'code'             => "$coupon_id",
+                'code'             => '$coupon_id',
             ),
         );
         $actual    = $this->graphql( $mutation, null, $variables );
@@ -944,9 +941,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                     clientMutationId
                     cart {
                         appliedCoupons {
-                            nodes {
-                                code
-                            }
+							code
                         }
                         contents {
                             nodes {
@@ -984,9 +979,7 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
                 'removeCoupons' => array(
                     'clientMutationId' => 'someId',
                     'cart'         => array(
-                        'appliedCoupons' => array(
-                            'nodes' => array(),
-                        ),
+                        'appliedCoupons' => null,
                         'contents' => array(
                             'nodes' => array(
                                 array(
@@ -1114,5 +1107,296 @@ class CartMutationsTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$this->assertArrayHasKey( 'errors', $not_enough_stock );
+	}
+
+	public function testAddCartItemsMutationAndErrors() {
+		// Create variable product for later use.
+		$variation_ids = $this->variation->create( $this->product->create_variable() );
+		$product   = \wc_get_product( $variation_ids['product'] );
+		$attribute = new WC_Product_Attribute();
+		$attribute->set_id( 0 );
+		$attribute->set_name( 'test' );
+		$attribute->set_options( array( 'yes', 'no' ) );
+		$attribute->set_position( 3 );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$attributes = array_values( $product->get_attributes() );
+		$attributes[] = $attribute;
+		$product->set_attributes( $attributes );
+		$product->save();
+
+		$product_one = $this->product->create_simple();
+		$invalid_product = 1000;
+
+		$mutation = '
+			mutation ($input: AddCartItemsInput!) {
+				addCartItems(input: $input) {
+					clientMutationId
+					added {
+						product {
+							node { databaseId }
+						}
+						variation {
+							node { databaseId }
+						}
+						quantity
+					}
+					cartErrors {
+						type
+						reasons
+						productId
+						quantity
+						variationId
+						variation {
+							attributeName
+							attributeValue
+						}
+						extraData
+					}
+				}
+			}
+		';
+
+		$input = array(
+			'clientMutationId' => 'someId',
+			'items'            => array(
+				array(
+					'productId' => $product_one,
+					'quantity'  => 2,
+				),
+				array(
+					'productId'   => $variation_ids['product'],
+					'quantity'    => 5,
+					'variationId' => $variation_ids['variations'][0],
+				),
+				array(
+					'productId' => $invalid_product,
+					'quantity'  => 4
+				),
+				array(
+					'productId'   => $variation_ids['product'],
+					'quantity'    => 3,
+					'variationId' => $variation_ids['variations'][1],
+					'variation'   => array(
+						array(
+							'attributeName'  => 'test',
+							'attributeValue' => 'yes',
+						),
+					)
+				)
+			),
+		);
+
+		$response = $this->graphql( $mutation, null, compact( 'input' ) );
+		$expected = array(
+			'addCartItems' => array(
+				'clientMutationId' => 'someId',
+				'added'            => array(
+					array(
+						'product'   => array(
+							'node' => array( 'databaseId' => $product_one )
+						),
+						'variation' => null,
+						'quantity'  => 2
+					),
+					array(
+						'product'   => array(
+							'node' => array( 'databaseId' => $variation_ids['product'] )
+						),
+						'variation' => array(
+							'node' => array( 'databaseId' => $variation_ids['variations'][1] )
+						),
+						'quantity'  => 3
+					),
+				),
+				'cartErrors' => array(
+					array(
+						'type'        => 'INVALID_CART_ITEM',
+						'reasons'     => array( 'test is a required field' ),
+						'productId'   => $variation_ids['product'],
+						'quantity'    => 5,
+						'variationId' => $variation_ids['variations'][0],
+						'variation'   => null,
+						'extraData'   => null
+					),
+					array(
+						'type'        => 'INVALID_CART_ITEM',
+						'reasons'     => array( 'No product found matching the ID provided' ),
+						'productId'   => $invalid_product,
+						'quantity'    => 4,
+						'variationId' => null,
+						'variation'   => null,
+						'extraData'   => null
+					)
+				)
+			),
+		);
+
+		$this->assertEquals( $expected, $response['data'] );
+	}
+
+	public function testFillCartMutationAndErrors() {
+		// Create products.
+        $product_one = $this->product->create_simple(
+            array( 'regular_price' => 100 )
+        );
+		$product_two = $this->product->create_simple(
+            array( 'regular_price' => 40 )
+        );
+
+        // Create coupons.
+        $coupon_code_one = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array(
+                    'amount'      => 0.5,
+                    'product_ids' => array( $product_one )
+                )
+            )
+        );
+		$coupon_code_two = wc_get_coupon_code_by_id(
+            $this->coupon->create(
+                array(
+                    'amount'      => 0.2,
+                    'product_ids' => array( $product_two )
+                )
+            )
+        );
+
+		$invalid_product         = 1000;
+		$invalid_coupon          = 'failed';
+		$invalid_shipping_method = 'fakityfake-shipping';
+
+		\ShippingMethodHelper::create_legacy_flat_rate_instance();
+
+		$mutation = '
+			mutation ($input: FillCartInput!) {
+				fillCart( input: $input ) {
+					clientMutationId
+					cart {
+						chosenShippingMethods
+						contents {
+							nodes {
+								product {
+									node { databaseId }
+								}
+								quantity
+								variation {
+									node { databaseId }
+								}
+							}
+						}
+						appliedCoupons {
+							code
+							discountAmount
+							discountTax
+						}
+					}
+	cartErrors {
+		type
+		... on CartItemError {
+			reasons
+			productId
+			quantity
+		}
+		... on CouponError {
+			reasons
+			code
+		}
+		... on ShippingMethodError {
+			chosenMethod
+			package
+		}
+	}
+				}
+			}
+		';
+
+		$input = array(
+			'clientMutationId' => 'someId',
+			'items'            => array(
+				array(
+					'productId' => $product_one,
+					'quantity'  => 3,
+				),
+				array(
+					'productId' => $product_two,
+					'quantity'  => 2,
+				),
+				array(
+					'productId' => $invalid_product,
+					'quantity'  => 4,
+				),
+			),
+			'coupons'           => array( $coupon_code_one, $coupon_code_two, $invalid_coupon ),
+			'shippingMethods'   => array( 'legacy_flat_rate', $invalid_shipping_method ),
+		);
+
+		$response = $this->graphql( $mutation, null, compact( 'input' ) );
+		$expected = array(
+			'fillCart' => array(
+				'clientMutationId' => 'someId',
+				'cart'             => array(
+					'chosenShippingMethods' => array( 'legacy_flat_rate' ),
+					'contents'              => array(
+						'nodes' => array(
+							array(
+								'product'   => array(
+									'node' => array( 'databaseId' => $product_one ),
+								),
+								'quantity'  => 3,
+								'variation' => null,
+							),
+							array(
+								'product'   => array(
+									'node' => array( 'databaseId' => $product_two ),
+								),
+								'quantity'  => 2,
+								'variation' => null,
+							),
+						),
+					),
+					'appliedCoupons' => array(
+						array(
+							'code'           => $coupon_code_one,
+							'discountAmount' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_amount( $coupon_code_one, true )
+							),
+							'discountTax' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_tax_amount( $coupon_code_one )
+							),
+						),
+						array(
+							'code' => $coupon_code_two,
+							'discountAmount' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_amount( $coupon_code_two, true )
+							),
+							'discountTax' => \wc_graphql_price(
+								\WC()->cart->get_coupon_discount_tax_amount( $coupon_code_two )
+							),
+						),
+					),
+				),
+				'cartErrors' => array(
+					array(
+						'type'        => 'INVALID_CART_ITEM',
+						'reasons'     => array( 'No product found matching the ID provided' ),
+						'productId'   => $invalid_product,
+						'quantity'    => 4
+					),
+					array(
+						'type'        => 'INVALID_COUPON',
+						'reasons'     => array( "Coupon \"{$invalid_coupon}\" does not exist!" ),
+						'code'        => $invalid_coupon,
+					),
+					array(
+						'type'         => 'INVALID_SHIPPING_METHOD',
+						'package'      => 1,
+						'chosenMethod' => $invalid_shipping_method
+					),
+				)
+			)
+		);
+
+		$this->assertEquals( $expected, $response['data'] );
 	}
 }

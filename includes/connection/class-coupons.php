@@ -24,16 +24,6 @@ class Coupons {
 	public static function register_connections() {
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
-
-		// From Cart.
-		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Cart',
-					'fromFieldName' => 'appliedCoupons',
-				)
-			)
-		);
 	}
 
 	/**

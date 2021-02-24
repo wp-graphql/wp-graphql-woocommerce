@@ -41,8 +41,10 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPEnum\Products_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Orders_Orderby_Enum::register();
 		\WPGraphQL\WooCommerce\Type\WPEnum\Id_Type_Enums::register();
+		\WPGraphQL\WooCommerce\Type\WPEnum\Cart_Error_Type::register();
 
 		// InputObjects.
+		\WPGraphQL\WooCommerce\Type\WPInputObject\Cart_Item_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Customer_Address_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Product_Attribute_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Tax_Rate_Connection_Orderby_Input::register();
@@ -59,6 +61,7 @@ class Type_Registry {
 		// Interfaces.
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product::register_interface( $type_registry );
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product_Attribute::register_interface( $type_registry );
+		\WPGraphQL\WooCommerce\Type\WPInterface\Cart_Error::register_interface( $type_registry );
 
 		// Objects.
 		\WPGraphQL\WooCommerce\Type\WPObject\Coupon_Type::register();
@@ -80,6 +83,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Package_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Rate_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Cart_Error_Types::register();
 
 		// Object fields.
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
@@ -107,6 +111,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Customer_Register::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Customer_Update::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Item::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Items::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Update_Item_Quantities::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Remove_Items::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Restore_Items::register_mutation();
@@ -115,6 +120,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Cart_Remove_Coupons::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Add_Fee::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Cart_Update_Shipping_Method::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Cart_Fill::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Create::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Update::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Order_Delete::register_mutation();

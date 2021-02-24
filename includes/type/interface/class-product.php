@@ -106,7 +106,9 @@ class Product {
 	}
 
 	/**
-	 * Defines product fields. All child type must have these fields as well.
+	 * Defines Product fields. All child type must have these fields as well.
+	 *
+	 * @return array
 	 */
 	public static function get_fields() {
 		return array(

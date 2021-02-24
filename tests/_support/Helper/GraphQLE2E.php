@@ -309,9 +309,7 @@ class GraphQLE2E extends \Codeception\Module {
                     clientMutationId
                     cart {
                         appliedCoupons {
-                            nodes {
-                                code
-                            }
+							code
                         }
                         contents {
                             nodes {
@@ -354,9 +352,7 @@ class GraphQLE2E extends \Codeception\Module {
                     clientMutationId
                     cart {
                         appliedCoupons {
-                            nodes {
-                                code
-                            }
+							code
                         }
                         contents {
                             nodes {
@@ -405,7 +401,7 @@ class GraphQLE2E extends \Codeception\Module {
                                 label
                             }
                         }
-                        chosenShippingMethod
+                        chosenShippingMethods
                         shippingTotal
                         shippingTax
                         subtotal

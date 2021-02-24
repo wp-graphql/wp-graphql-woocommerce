@@ -40,7 +40,7 @@
         "stripe/stripe-php": "^7.28",
         "wp-coding-standards/wpcs": "^2.3",
         "johnpbloch/wordpress": "~5.3",
-        "wp-graphql/wp-graphql": "^1.1.2",
+        "wp-graphql/wp-graphql": "^1.1.4",
         "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
         "wpackagist-plugin/woocommerce": "^4.4",
         "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
@@ -79,7 +79,7 @@
     },
     "scripts": {
         "installTestEnv": "bash bin/install-test-env.sh",
-        "runWPUnitTest": "vendor/bin/codept run wpunit",
+        "runWPUnitTest": "vendor/bin/codecept run wpunit",
         "dBuild": "env $(sed -e '/^#/d' .env.dist) docker-compose build",
         "dRunApp": "env $(sed -e '/^#/d' .env.dist) docker-compose up testable_app app_db mailhog",
         "dRunTestingDb":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.dist) docker-compose up -d testing_db; fi",

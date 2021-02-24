@@ -28,6 +28,7 @@ class Cart_Type {
 	public static function register() {
 		self::register_cart_fee();
 		self::register_cart_tax();
+		self::register_applied_coupon();
 		self::register_cart_item();
 		self::register_cart_item_connections();
 		self::register_cart();
@@ -80,11 +81,11 @@ class Cart_Type {
 						'resolve'     => function( $source ) {
 							$packages = array();
 
-							$shipping_methods = $source->needs_shipping()
+							$available_packages = $source->needs_shipping()
 								? \WC()->shipping()->calculate_shipping( $source->get_shipping_packages() )
 								: array();
 
-							foreach ( $shipping_methods as $index => $package ) {
+							foreach ( $available_packages as $index => $package ) {
 								$package['index'] = $index;
 								$packages[] = $package;
 							}
@@ -92,17 +93,23 @@ class Cart_Type {
 							return $packages;
 						},
 					),
-					'chosenShippingMethod'     => array(
-						'type'        => 'String',
+					'chosenShippingMethods'    => array(
+						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'Shipping method chosen for this order.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							foreach ( \WC()->shipping()->calculate_shipping( $source->get_shipping_packages() ) as $i => $package ) {
+							$chosen_shipping_methods = array();
+
+							$available_packages = $source->needs_shipping()
+								? \WC()->shipping()->calculate_shipping( $source->get_shipping_packages() )
+								: array();
+
+							foreach ( $available_packages as $i => $package ) {
 								if ( isset( \WC()->session->chosen_shipping_methods[ $i ] ) ) {
-									return \WC()->session->chosen_shipping_methods[ $i ];
+									$chosen_shipping_methods[] = \WC()->session->chosen_shipping_methods[ $i ];
 								}
 							}
 
-							return null;
+							return $chosen_shipping_methods;
 						},
 					),
 					'shippingTotal'            => array(
@@ -215,6 +222,15 @@ class Cart_Type {
 						'resolve'     => function( $source ) {
 							$fees = $source->get_fees();
 							return ! empty( $fees ) ? array_values( $fees ) : null;
+						},
+					),
+					'appliedCoupons'           => array(
+						'type'        => array( 'list_of' => 'AppliedCoupon' ),
+						'description' => __( 'Coupons applied to the cart', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							$applied_coupons = $source->get_applied_coupons();
+
+							return ! empty( $applied_coupons ) ? $applied_coupons : null;
 						},
 					),
 				),
@@ -438,6 +454,50 @@ class Cart_Type {
 						'description' => __( 'Tax amount', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->amount ) ? \wc_graphql_price( $source->amount ) : null;
+						},
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Registers AppliedCoupon type
+	 */
+	public static function register_applied_coupon() {
+		register_graphql_object_type(
+			'AppliedCoupon',
+			array(
+				'description' => __( 'Coupon applied to the shopping cart.', 'wp-graphql-woocommerce' ),
+				'fields'      => array(
+					'code'           => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Coupon code', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							return $source;
+						},
+					),
+					'discountAmount' => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'args'        => array(
+							'excludeTax' => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Exclude Taxes (Default "true")', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'description' => __( 'Discount applied with this coupon', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args ) {
+							$ex_tax = ! empty( $args['excludeTax'] ) ? $args['excludeTax'] : true;
+							$amount = Factory::resolve_cart()->get_coupon_discount_amount( $source, $ex_tax );
+							return \wc_graphql_price( $amount );
+						},
+					),
+					'discountTax'    => array(
+						'type'        => array( 'non_null' => 'String' ),
+						'description' => __( 'Taxes on discount applied with this coupon', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args ) {
+							$tax = Factory::resolve_cart()->get_coupon_discount_tax_amount( $source );
+							return \wc_graphql_price( $tax );
 						},
 					),
 				),
