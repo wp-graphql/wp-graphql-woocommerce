@@ -3,7 +3,7 @@
  * WPInputObjectType - CartItemInput
  *
  * @package WPGraphQL\WooCommerce\Type\WPInputObject
- * @since   0.7.0
+ * @since   0.8.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInputObject;

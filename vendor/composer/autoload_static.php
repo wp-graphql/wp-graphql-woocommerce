@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit648341988a21d33ec51fdb8a740ccacb
+class ComposerStaticInitc13734f997008b63ac0208a72c7b7d0c
 {
     public static $files = array (
         '944484f100dc1864a5320474d49ebd5a' => __DIR__ . '/../..' . '/includes/connection/wc-cpt-connection-args.php',
@@ -158,6 +158,7 @@ class ComposerStaticInit648341988a21d33ec51fdb8a740ccacb
         'GraphQL\\Type\\Definition\\FieldDefinition' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/FieldDefinition.php',
         'GraphQL\\Type\\Definition\\FloatType' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/FloatType.php',
         'GraphQL\\Type\\Definition\\IDType' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/IDType.php',
+        'GraphQL\\Type\\Definition\\ImplementingType' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/ImplementingType.php',
         'GraphQL\\Type\\Definition\\InputObjectField' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/InputObjectField.php',
         'GraphQL\\Type\\Definition\\InputObjectType' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/InputObjectType.php',
         'GraphQL\\Type\\Definition\\InputType' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Type/Definition/InputType.php',
@@ -190,6 +191,7 @@ class ComposerStaticInit648341988a21d33ec51fdb8a740ccacb
         'GraphQL\\Utils\\BreakingChangesFinder' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/BreakingChangesFinder.php',
         'GraphQL\\Utils\\BuildClientSchema' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/BuildClientSchema.php',
         'GraphQL\\Utils\\BuildSchema' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/BuildSchema.php',
+        'GraphQL\\Utils\\InterfaceImplementations' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/InterfaceImplementations.php',
         'GraphQL\\Utils\\MixedStore' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/MixedStore.php',
         'GraphQL\\Utils\\PairSet' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/PairSet.php',
         'GraphQL\\Utils\\SchemaExtender' => __DIR__ . '/..' . '/webonyx/graphql-php/src/Utils/SchemaExtender.php',
@@ -380,9 +382,9 @@ class ComposerStaticInit648341988a21d33ec51fdb8a740ccacb
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit648341988a21d33ec51fdb8a740ccacb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit648341988a21d33ec51fdb8a740ccacb::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit648341988a21d33ec51fdb8a740ccacb::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc13734f997008b63ac0208a72c7b7d0c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc13734f997008b63ac0208a72c7b7d0c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc13734f997008b63ac0208a72c7b7d0c::$classMap;
 
         }, null, ClassLoader::class);
     }
