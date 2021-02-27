@@ -4,7 +4,7 @@
  *
  * @author @morningtoast, @kidunot89
  * @link https://github.com/morningtoast/dummy
- * @since 0.6.0
+ * @since 0.8.0
  * @package Tests\WPGraphQL\Utils
  */
 

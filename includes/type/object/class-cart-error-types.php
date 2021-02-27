@@ -3,7 +3,7 @@
  * WPObject Types - CartItemError, CouponError, ShippingMethodError
  *
  * @package WPGraphQL\WooCommerce\Type\WPObject
- * @since   0.7.0
+ * @since   0.8.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;

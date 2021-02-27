@@ -5,7 +5,7 @@
  * Registers mutation for adding multiple items to the cart.
  *
  * @package WPGraphQL\WooCommerce\Mutation
- * @since 0.7.0
+ * @since 0.8.0
  */
 
 namespace WPGraphQL\WooCommerce\Mutation;

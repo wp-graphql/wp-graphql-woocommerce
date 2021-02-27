@@ -2,7 +2,7 @@
 /**
  * Factory class for the WooCommerce's Cart data objects.
  *
- * @since v0.6.1
+ * @since v0.8.0
  * @package Tests\WPGraphQL\WooCommerce\Factory
  */
 
