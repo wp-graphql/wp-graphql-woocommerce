@@ -398,21 +398,21 @@ class Cart_Type {
 						'type'        => 'Boolean',
 						'description' => __( 'Is fee taxable?', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return ! empty( $source->taxable ) ? $source->taxable : null;
+							return ! is_null( $source->taxable ) ? $source->taxable : null;
 						},
 					),
 					'amount'   => array(
 						'type'        => 'Float',
 						'description' => __( 'Fee amount', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return ! empty( $source->amount ) ? $source->amount : null;
+							return ! is_null( $source->amount ) ? $source->amount : 0;
 						},
 					),
 					'total'    => array(
 						'type'        => 'Float',
 						'description' => __( 'Fee total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return ! empty( $source->total ) ? $source->total : null;
+							return ! is_null( $source->total ) ? $source->total : 0;
 						},
 					),
 				),

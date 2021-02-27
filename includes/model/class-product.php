@@ -329,16 +329,16 @@ class Product extends WC_Post {
 						return ! is_null( $this->wc_data->is_sold_individually() ) ? $this->wc_data->is_sold_individually() : null;
 					},
 					'weight'            => function() {
-						return ! is_null( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
+						return ! empty( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
 					},
 					'length'            => function() {
-						return ! is_null( $this->wc_data->get_length() ) ? $this->wc_data->get_length() : null;
+						return ! empty( $this->wc_data->get_length() ) ? $this->wc_data->get_length() : null;
 					},
 					'width'             => function() {
-						return ! is_null( $this->wc_data->get_width() ) ? $this->wc_data->get_width() : null;
+						return ! empty( $this->wc_data->get_width() ) ? $this->wc_data->get_width() : null;
 					},
 					'height'            => function() {
-						return ! is_null( $this->wc_data->get_height() ) ? $this->wc_data->get_height() : null;
+						return ! empty( $this->wc_data->get_height() ) ? $this->wc_data->get_height() : null;
 					},
 					'shippingClassId'   => function () {
 						return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_shipping_class_id() : null;

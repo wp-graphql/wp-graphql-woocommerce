@@ -33,15 +33,17 @@
     },
     "require-dev": {
         "composer/installers": "^1.9",
-        "lucatume/wp-browser": "^2.4",
+        "lucatume/wp-browser": "^2.6.",
+        "wp-graphql/wp-graphql-testcase": "^1.0.1",
         "codeception/module-asserts": "^1.0",
         "codeception/util-universalframework": "^1.0",
+        "codeception/module-rest": "^1.2",
         "simpod/php-coveralls-mirror": "^3.0",
         "stripe/stripe-php": "^7.28",
         "wp-coding-standards/wpcs": "^2.3",
         "johnpbloch/wordpress": "~5.3",
-        "wp-graphql/wp-graphql": "^1.1.4",
         "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
+        "wpackagist-plugin/wp-graphql": "^1.1.8",
         "wpackagist-plugin/woocommerce": "^4.4",
         "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
         "wpackagist-theme/twentytwentyone": "^1.0",
@@ -50,7 +52,8 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "process-timeout": 0
+        "process-timeout": 0,
+        "sort-packages": true
     },
     "autoload": {
         "files": [
@@ -67,7 +70,10 @@
     "autoload-dev": {
         "files": [
             "tests/_data/config.php"
-        ]
+        ],
+        "psr-4": {
+          "Tests\\WPGraphQL\\WooCommerce\\": "tests/_support/"
+        }
     },
     "extra": {
         "wordpress-install-dir": "local/public",

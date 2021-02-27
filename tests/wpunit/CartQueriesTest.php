@@ -1,61 +1,69 @@
 <?php
 
-class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $product_helper;
-	private $variation_helper;
-	private $coupon_helper;
-	private $helper;
-
-	public function setUp(): void {
-		// before
-		parent::setUp();
-
-		$this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer         = $this->factory->user->create( array( 'role' => 'customer' ) );
-		$this->product_helper   = $this->getModule('\Helper\Wpunit')->product();
-		$this->variation_helper = $this->getModule('\Helper\Wpunit')->product_variation();
-		$this->coupon_helper    = $this->getModule('\Helper\Wpunit')->coupon();
-		$this->helper           = $this->getModule('\Helper\Wpunit')->cart();
-		$this->tax              = $this->getModule('\Helper\Wpunit')->tax_rate();
-
-        // Turn on tax calculations. Important!
-        update_option( 'woocommerce_prices_include_tax', 'no' );
-		update_option( 'woocommerce_calc_taxes', 'yes' );
-		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
-
-        // Create a tax rate.
-        $this->tax->create(
-            array(
-                'country'  => '',
-                'state'    => '',
-                'rate'     => 20.000,
-                'name'     => 'VAT',
-                'priority' => '1',
-                'compound' => '0',
-                'shipping' => '1',
-                'class'    => ''
-            )
-        );
-	}
-
-	public function tearDown(): void {
-		WC()->cart->empty_cart( true );
-
-		// then
-		parent::tearDown();
-	}
-
+class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	private function key_to_cursor( $key ) {
 		return base64_encode( "CI:{$key}" );
+	}
+
+	public function getExpectedCartData() {
+		$cart = WC()->cart;
+		return array(
+			$this->expectedObject( 'cart.subtotal', \wc_graphql_price( $cart->get_subtotal() ) ),
+			$this->expectedObject( 'cart.subtotalTax', \wc_graphql_price( $cart->get_subtotal_tax() ) ),
+			$this->expectedObject( 'cart.discountTotal', \wc_graphql_price( $cart->get_discount_total() ) ),
+			$this->expectedObject( 'cart.discountTax', \wc_graphql_price( $cart->get_discount_tax() ) ),
+			$this->expectedObject( 'cart.shippingTotal', \wc_graphql_price( $cart->get_shipping_total() ) ),
+			$this->expectedObject( 'cart.shippingTax', \wc_graphql_price( $cart->get_shipping_tax() ) ),
+			$this->expectedObject( 'cart.contentsTotal', \wc_graphql_price( $cart->get_cart_contents_total() ) ),
+			$this->expectedObject( 'cart.contentsTax', \wc_graphql_price( $cart->get_cart_contents_tax() ) ),
+			$this->expectedObject( 'cart.feeTotal', \wc_graphql_price( $cart->get_fee_total() ) ),
+			$this->expectedObject( 'cart.feeTax', \wc_graphql_price( $cart->get_fee_tax() ) ),
+			$this->expectedObject( 'cart.total', \wc_graphql_price( $cart->get_totals()['total'] ) ),
+			$this->expectedObject( 'cart.totalTax', \wc_graphql_price( $cart->get_total_tax() ) ),
+			$this->expectedObject( 'cart.isEmpty', $cart->is_empty() ),
+			$this->expectedObject( 'cart.displayPricesIncludeTax', $cart->display_prices_including_tax() ),
+			$this->expectedObject( 'cart.needsShippingAddress', $cart->needs_shipping_address() ),
+		);
+	}
+
+	public function getExpectedCartItemData( $path, $cart_item_key ) {
+		$cart = WC()->cart;
+		$item = $cart->get_cart_item( $cart_item_key );
+		return array(
+			$this->expectedObject( "{$path}.key", $item['key'] ),
+			$this->expectedObject( "{$path}.product.node.id", $this->toRelayId( 'product', $item['product_id'] ) ),
+			$this->expectedObject( "{$path}.product.node.databaseId", $item['product_id'] ),
+			$this->expectedObject(
+				"{$path}.variation.node.id",
+				! empty( $item['variation_id'] )
+					? $this->toRelayId( 'product_variation', $item['variation_id'] )
+					: 'NULL'
+			),
+			$this->expectedObject(
+				"{$path}.variation.node.databaseId",
+				! empty( $item['variation_id'] ) ? $item['variation_id'] : 'NULL'
+			),
+			$this->expectedObject( "{$path}.quantity", $item['quantity'] ),
+			$this->expectedObject( "{$path}.subtotal", \wc_graphql_price( $item['line_subtotal'] ) ),
+			$this->expectedObject( "{$path}.subtotalTax", \wc_graphql_price( $item['line_subtotal_tax'] ) ),
+			$this->expectedObject( "{$path}.total", \wc_graphql_price( $item['line_total'] ) ),
+			$this->expectedObject( "{$path}.tax", \wc_graphql_price( $item['line_tax'] ) ),
+		);
 	}
 
 	// tests
 	public function testCartQuery() {
 		$cart = WC()->cart;
-		$cart->add_to_cart( $this->product_helper->create_simple(), 2 );
-		$cart->add_to_cart( $this->product_helper->create_simple(), 1 );
+		$this->factory->cart->add(
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 1,
+			)
+		);
 
 		$query = '
 			query {
@@ -88,18 +96,15 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$actual    = graphql( array( 'query' => $query ) );
-		$expected  = array( 'data' => array( 'cart' => $this->helper->print_query() ) );
+		$response = $this->graphql( compact( 'query' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $this->getExpectedCartData() );
 	}
 
 	public function testCartItemQuery() {
-		$cart = WC()->cart;
-		$variations = $this->variation_helper->create( $this->product_helper->create_variable() );
+		$cart = \WC()->cart;
+		$variations = $this->factory->product_variation->createSome();
+
 		$key = $cart->add_to_cart(
 			$variations['product'],
 			3,
@@ -143,62 +148,38 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Assertion One
 		 */
 		$variables = array( 'key' => $key );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'cartItem' => $this->helper->print_item_query( $key ) ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
-
-		$key = $cart->add_to_cart( $this->product_helper->create_simple() );
-		$query = '
-			query ($key: ID!) {
-				cartItem(key: $key) {
-					key
-					variation {
-						node {
-							id
-						}
-					}
-				}
-			}
-		';
-
-		/**
-		 * Assertion Two
-		 */
-		$variables = array( 'key' => $key );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'cartItem' => array(
-					'key' 		=> $key,
-					'variation' => null,
-				)
-			)
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $this->getExpectedCartItemData( 'cartItem', $key ) );
 	}
 
 	public function testCartItemConnection() {
-		$cart = WC()->cart;
-		$cart->add_to_cart( $this->product_helper->create_simple( array( 'virtual' => true ) ), 2 );
-		$cart->add_to_cart( $this->product_helper->create_simple(), 1 );
-		$cart->add_to_cart( $this->product_helper->create_simple(), 10 );
+		$keys = $this->factory->cart->add(
+			array(
+				'product_id' => $this->factory->product->createSimple(
+					array( 'virtual' => true )
+				),
+				'quantity'  => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 1,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'  => 10,
+			)
+		);
 
 		$code = \wc_get_coupon_code_by_id(
-			$this->coupon_helper->create(
+			$this->factory->coupon->create(
 				array(
 					'amount'        => 45.50,
 					'discount_type' => 'fixed_cart',
 				)
 			)
 		);
+		$cart = \WC()->cart;
 		$cart->apply_coupon( $code );
 
 		$query = '
@@ -216,21 +197,15 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$actual    = graphql( array( 'query' => $query ) );
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => $this->helper->print_nodes(),
-					),
-				),
-			),
-		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$response = $this->graphql( compact( 'query' ) );
 
-		$this->assertEquals( $expected, $actual );
+		$expected = array();
+		foreach( $keys as $key ) {
+			$expected[] = $this->expectedNode( 'cart.contents.nodes', array( 'key' => $key ) );
+		}
+
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
@@ -238,34 +213,15 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "needsShipping" parameter.
 		 */
 		$variables = array( 'needsShipping' => true );
-		$actual    = graphql(
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
 			array(
-				'query'     => $query,
-				'variables' => $variables,
+				$this->expectedNode( 'cart.contents.nodes', array( 'key' => $keys[1] ) ),
+				$this->expectedNode( 'cart.contents.nodes', array( 'key' => $keys[2] ) ),
 			)
 		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => $this->helper->print_nodes(
-							array(
-								'filter' => function( $key ) {
-									$item = WC()->cart->get_cart_item( $key );
-									$product = WC()->product_factory->get_product( $item['product_id'] );
-									return $product->needs_shipping();
-								}
-							)
-						),
-					),
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
 
 		/**
 		 * Assertion Three
@@ -273,38 +229,18 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "needsShipping" parameter reversed.
 		 */
 		$variables = array( 'needsShipping' => false );
-		$actual    = graphql(
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
 			array(
-				'query'     => $query,
-				'variables' => $variables,
+				$this->expectedNode( 'cart.contents.nodes', array( 'key' => $keys[0] ) ),
 			)
 		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => $this->helper->print_nodes(
-							array(
-								'filter' => function( $key ) {
-									$item = WC()->cart->get_cart_item( $key );
-									$product = WC()->product_factory->get_product( $item['product_id'] );
-									return ! $product->needs_shipping();
-								}
-							)
-						),
-					),
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testCartFeeQuery() {
-		$product_id = $this->product_helper->create_simple();
+		$product_id = $this->factory->product->createSimple();
 		WC()->cart->add_to_cart( $product_id, 3 );
 		WC()->cart->add_fee( 'Test fee', 30.50 );
 		$fee_ids = array_keys( WC()->cart->get_fees() );
@@ -326,17 +262,25 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Assertion One
 		 */
 		$variables = array( 'id' => $fee_ids[0] );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'cartFee' => $this->helper->print_fee_query( $fee_ids[0] ) ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$fee  = ( \WC()->cart->get_fees() )[ $fee_ids[0] ];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful(
+			$response,
+			array(
+				$this->expectedObject( 'cartFee.id', $fee->id ),
+				$this->expectedObject( 'cartFee.name', $fee->name ),
+				$this->expectedObject( 'cartFee.taxClass', ! empty( $fee->tax_class ) ? $fee->tax_class : 'NULL' ),
+				$this->expectedObject( 'cartFee.taxable', $fee->taxable ),
+				$this->expectedObject( 'cartFee.amount', (float) $fee->amount ),
+				$this->expectedObject( 'cartFee.total', (float) $fee->total ),
+			)
+		);
 	}
 
 	public function testCartToCartFeeQuery() {
-		$product_id = $this->product_helper->create_simple();
+		$product_id = $this->factory->product->createSimple();
 		WC()->cart->add_to_cart( $product_id, 3 );
 		WC()->cart->add_fee( 'Test fee', 30.50 );
 
@@ -353,32 +297,39 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$actual    = graphql( array( 'query' => $query ) );
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'fees' => $this->helper->print_fee_nodes(),
-				),
-			),
-		);
+		$response  = $this->graphql( compact( 'query' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$expected = array();
+		foreach( \WC()->cart->get_fees() as $fee_id => $value ) {
+			$expected[] = $this->expectedNode( 'cart.fees', array( 'id' => $fee_id ) );
+		}
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCartItemPagination() {
-		$cart = WC()->cart;
-		$cart_items = array(
-			$cart->add_to_cart( $this->product_helper->create_simple(), 2 ),
-			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
-			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
-			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
-			$cart->add_to_cart( $this->product_helper->create_simple(), 1 ),
+		$cart_items = $this->factory->cart->add(
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 2,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 1,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 1,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 1,
+			),
+			array(
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 1,
+			)
 		);
-
-		codecept_debug( $cart_items );
 
 		$query = '
 			query ($first: Int, $last: Int, $before: String, $after: String) {
@@ -397,42 +348,35 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
+		// Array_map callback that generates the expected node data from splices of the $cart_items
+		$expected_edge_mapper = function( $item, $position ) {
+			return $this->expectedEdge(
+				'cart.contents.edges',
+				array(
+					'cursor' => $this->key_to_cursor( $item ),
+					'node'   => array( 'key' => $item ),
+				),
+				$position
+			);
+		};
+
 		/**
 		 * Assertion One
 		 *
 		 * Tests "first" parameter.
 		 */
 		$variables = array( 'first' => 2 );
-		$actual    = graphql(
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$expected = array_merge(
 			array(
-				'query' => $query,
-				'variables' => $variables,
-			)
-		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'itemCount'    => 6,
-						'productCount' => 5,
-						'edges' => array_map(
-							function( $item ) {
-								return array(
-									'cursor' => $this->key_to_cursor( $item ),
-									'node'   => array( 'key' => $item ),
-								);
-							},
-							array_slice( $cart_items, 0, 2 )
-						),
-					),
-				),
+				$this->expectedObject( 'cart.contents.itemCount', 6 ),
+				$this->expectedObject( 'cart.contents.productCount', 5 ),
 			),
+			array_map( $expected_edge_mapper, array_slice( $cart_items, 0, 2 ), range( 0, 1 ) )
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
@@ -443,36 +387,13 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'first' => 2,
 			'after' => $this->key_to_cursor( $cart_items[1] )
 		);
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables,
-			)
-		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'itemCount'    => 6,
-						'productCount' => 5,
-						'edges' => array_map(
-							function( $item ) {
-								return array(
-									'cursor' => $this->key_to_cursor( $item ),
-									'node'   => array( 'key' => $item ),
-								);
-							},
-							array_slice( $cart_items, 2, 2 )
-						),
-					),
-				),
-			),
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful(
+			$response,
+			// Only check the edges.
+			array_map( $expected_edge_mapper, array_slice( $cart_items, 2, 2 ), range( 0, 1 ) )
+		);
 
 		/**
 		 * Assertion Three
@@ -480,36 +401,13 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "last" parameter.
 		 */
 		$variables = array( 'last' => 2 );
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables,
-			)
-		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'itemCount'    => 6,
-						'productCount' => 5,
-						'edges' => array_map(
-							function( $item ) {
-								return array(
-									'cursor' => $this->key_to_cursor( $item ),
-									'node'   => array( 'key' => $item ),
-								);
-							},
-							array_slice( $cart_items, 0, 2 )
-						),
-					),
-				),
-			),
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful(
+			$response,
+			// Only check the edges.
+			array_map( $expected_edge_mapper, array_slice( $cart_items, 0, 2 ), range( 0, 1 ) )
+		);
 
 		/**
 		 * Assertion Four
@@ -517,35 +415,12 @@ class CartQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "before" parameter.
 		 */
 		$variables = array( 'last' => 4, 'before' => $cart_items[4] );
-		$actual    = graphql(
-			array(
-				'query' => $query,
-				'variables' => $variables,
-			)
-		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'itemCount'    => 6,
-						'productCount' => 5,
-						'edges' => array_map(
-							function( $item ) {
-								return array(
-									'cursor' => $this->key_to_cursor( $item ),
-									'node'   => array( 'key' => $item ),
-								);
-							},
-							array_slice( $cart_items, 0, 4 )
-						),
-					),
-				),
-			),
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful(
+			$response,
+			// Only check the edges.
+			array_map( $expected_edge_mapper, array_slice( $cart_items, 0, 4 ), range( 0, 3 ) )
+		);
 	}
 }
