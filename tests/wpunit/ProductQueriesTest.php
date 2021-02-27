@@ -1081,9 +1081,9 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			)
 		);
 		$grouped_product_ids = array(
-			$this->factory->product->createSimple(),
-			$this->factory->product->createSimple(),
-			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple( array( 'regular_price' => '1.00' ) ),
+			$this->factory->product->createSimple( array( 'regular_price' => '5.00' ) ),
+			$this->factory->product->createSimple( array( 'regular_price' => '10.00' ) ),
 		);
 
 		$product = \wc_get_product( $product_id );
@@ -1126,6 +1126,21 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				array( 'id' => $this->toRelayId( 'product', $grouped_product_id ) )
 			);
 		}
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$query = '
+			query ( $id: ID! ) {
+				product( id: $id ) {
+					... on GroupProduct {
+						price
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = array( $this->expectedObject( 'product.price', '£1.00 - £10.00' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

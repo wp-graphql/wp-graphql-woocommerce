@@ -3,7 +3,7 @@
  * WPEnum Type - CartErrorType
  *
  * @package WPGraphQL\WooCommerce\Type\WPEnum
- * @since   0.7.0
+ * @since   0.8.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;

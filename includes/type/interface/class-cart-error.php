@@ -3,7 +3,7 @@
  * WPInterface Type - Cart_Error
  *
  * @package WPGraphQL\WooCommerce\Type\WPInterface
- * @since   0.7.0
+ * @since   0.8.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
