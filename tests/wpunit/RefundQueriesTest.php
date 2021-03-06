@@ -44,6 +44,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 					refundedBy {
 						id
 					}
+					date
 				}
 			}
 		';
