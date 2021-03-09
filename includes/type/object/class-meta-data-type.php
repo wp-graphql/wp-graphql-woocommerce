@@ -107,7 +107,7 @@ class Meta_Data_Type {
 						$data[] = (object) array(
 							'id'    => "{$id_prefix}_{$key}",
 							'key'   => $key,
-							'value' => is_array( $source[ $key ] ) ? JSON_ENCODE($source[ $key ]) : $source[ $key ],
+							'value' => is_array( $source[ $key ] ) ? JSON_ENCODE( $source[ $key ] ) : $source[ $key ],
 						);
 					}
 
