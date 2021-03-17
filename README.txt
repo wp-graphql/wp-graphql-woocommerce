@@ -5,9 +5,9 @@ Requires at least: 4.9
 Tested up to: 5.6
 Requires PHP: 7.1
 Requires WooCommerce: 4.8.0
-Requires WPGraphQL: 1.0.0+
+Requires WPGraphQL: 1.2.6+
 Works with WPGraphQL-JWT-Authentication: 0.4.0+
-Stable tag: 0.8.0
+Stable tag: 0.8.1
 License: GPL-3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Maintained at: https://github.com/wp-graphql/wp-graphql-woocommerce
@@ -25,6 +25,23 @@ Adds WooCommerce functionality to the WPGraphQL schema.
 5. (Optional) Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) to add an extra layer of security using HTTP CORS and some of WPGraphQL advanced functionality.
 
 == Changelog ==
+
+## [v0.8.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.8.1) (2021-03-17)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.8.0...v0.8.1)
+
+**New Features:**
+
+- Added refund date field [\#450](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/450) ([hilmerx](https://github.com/hilmerx))
+
+**Fixed:**
+
+- Bugfix/product reviews connections [\#457](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/457) ([kidunot89](https://github.com/kidunot89))
+- JSON stringify string to match expectation of "extraData" on cartItem [\#453](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/453) ([davevanhoorn](https://github.com/davevanhoorn))
+
+**Other Changes:**
+
+- \[Docs\]: homepage typo fixes [\#445](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/445) ([jacobarriola](https://github.com/jacobarriola))
 
 == [v0.8.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.8.0) (2021-02-26) ==
 

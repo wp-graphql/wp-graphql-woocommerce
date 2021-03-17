@@ -1,6 +1,23 @@
 # Changelog
 
-## [v0.8.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.8.0) (2021-02-26)
+## [v0.8.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.8.1) (2021-03-17)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.8.0...v0.8.1)
+
+**New Features:**
+
+- Added refund date field [\#450](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/450) ([hilmerx](https://github.com/hilmerx))
+
+**Fixed:**
+
+- Bugfix/product reviews connections [\#457](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/457) ([kidunot89](https://github.com/kidunot89))
+- JSON stringify string to match expectation of "extraData" on cartItem [\#453](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/453) ([davevanhoorn](https://github.com/davevanhoorn))
+
+**Other Changes:**
+
+- \[Docs\]: homepage typo fixes [\#445](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/445) ([jacobarriola](https://github.com/jacobarriola))
+
+## [v0.8.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.8.0) (2021-03-01)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.7.0...v0.8.0)
 
@@ -39,7 +56,6 @@
 **Other Changes:**
 
 - Release v0.7.0 [\#383](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/383) ([kidunot89](https://github.com/kidunot89))
-- Guard against false terms when plucking IDs [\#364](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/364) ([jacobarriola](https://github.com/jacobarriola))
 
 ## [v0.6.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.2) (2020-11-24)
 
@@ -60,9 +76,11 @@
 - WPGraphQL v1 CI Fix [\#375](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/375) ([kidunot89](https://github.com/kidunot89))
 - Guard against empty terms [\#373](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/373) ([jacobarriola](https://github.com/jacobarriola))
 - support added for externally defined product type queries. [\#366](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/366) ([kidunot89](https://github.com/kidunot89))
+- Guard against false terms when plucking IDs [\#364](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/364) ([jacobarriola](https://github.com/jacobarriola))
 - Fix Syntax Error in php7.2 and 7.4 [\#355](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/355) ([namli](https://github.com/namli))
 - Connect terms to their source [\#351](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/351) ([jacobarriola](https://github.com/jacobarriola))
 - Return connected TermObjects from the PostObjectType [\#346](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/346) ([jacobarriola](https://github.com/jacobarriola))
+- Adds demo/examples [\#344](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/344) ([imranhsayed](https://github.com/imranhsayed))
 
 ## [v0.6.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.6.1) (2020-10-15)
 
@@ -97,13 +115,11 @@
 
 **Other Changes:**
 
-- Adds demo/examples [\#344](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/344) ([imranhsayed](https://github.com/imranhsayed))
 - Remove undefined codecept\_debug\(\) function [\#343](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/343) ([jacobarriola](https://github.com/jacobarriola))
 - Fixed : \#303 [\#304](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/304) ([hwsiew](https://github.com/hwsiew))
 - Skip conditional added to stripe test [\#298](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/298) ([kidunot89](https://github.com/kidunot89))
 - Adds support for changes made in WPGraphQL v0.9.0 [\#288](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/288) ([kidunot89](https://github.com/kidunot89))
 - Update some README.md links [\#287](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/287) ([kidunot89](https://github.com/kidunot89))
-- Changing how we verify the JWT plugin [\#273](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/273) ([renatonascalves](https://github.com/renatonascalves))
 - Adds Local-Testing Contribution Guides [\#242](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/242) ([kidunot89](https://github.com/kidunot89))
 
 
