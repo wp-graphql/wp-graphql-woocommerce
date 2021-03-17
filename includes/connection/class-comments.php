@@ -54,6 +54,14 @@ class Comments extends \WPGraphQL\Connection\Comments {
 							},
 						),
 					),
+					'resolve'          => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new \WPGraphQL\Data\Connection\CommentConnectionResolver( $source, $args, $context, $info );
+
+						$resolver->set_query_arg( 'post_type', 'product' );
+						$resolver->set_query_arg( 'post_id', $source->ID );
+
+						return $resolver->get_connection();
+					},
 				)
 			)
 		);

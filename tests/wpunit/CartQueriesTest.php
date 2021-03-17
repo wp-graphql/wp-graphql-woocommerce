@@ -365,7 +365,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "first" parameter.
 		 */
-		$variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2, 'after' => '' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = array_merge(
@@ -419,8 +419,11 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 		$this->assertQuerySuccessful(
 			$response,
-			// Only check the edges.
-			array_map( $expected_edge_mapper, array_slice( $cart_items, 0, 4 ), range( 0, 3 ) )
+			array_map( // Only check the edges.
+				$expected_edge_mapper,
+				array_slice( $cart_items, 0, 4 ),
+				range( 3, 0, -1 ) // Reverse
+			)
 		);
 	}
 }
