@@ -54,7 +54,8 @@ class RefundHelper extends WCG_Helper {
 			'amount'     => $data->get_amount(),
 			'refundedBy' => array(
 				'id' => Relay::toGlobalId( 'user', $data->get_refunded_by() )
-			)
+			),
+			'date'       => $data->get_date_modified(),
 		);
 	}
 
@@ -71,6 +72,7 @@ class RefundHelper extends WCG_Helper {
 			'reason'     => null,
 			'amount'     => null,
 			'refundedBy' => null,
+			'date'       => null,
 		);
 	}
 }

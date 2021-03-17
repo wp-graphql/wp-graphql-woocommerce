@@ -58,6 +58,10 @@ class Refund_Type {
 							return DataSource::resolve_user( $source->refunded_by_id, $context );
 						},
 					),
+					'date'       => array(
+						'type'        => 'String',
+						'description' => __( 'The date of the refund', 'wp-graphql-woocommerce' ),
+					),
 				),
 			)
 		);

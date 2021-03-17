@@ -63,6 +63,9 @@ class Refund extends Order {
 					},
 					'capability' => 'list_users',
 				),
+				'date'           => function() {
+					return ! empty( $this->wc_data->get_date_modified() ) ? $this->wc_data->get_date_modified() : null;
+				},
 			);
 
 			$this->fields = array_merge( $this->fields, $fields );
