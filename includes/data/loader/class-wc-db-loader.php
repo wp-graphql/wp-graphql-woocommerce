@@ -69,11 +69,12 @@ class WC_Db_Loader extends AbstractDataLoader {
 			default:
 				/**
 				 * For adding custom key types to this loader
-				 * 
+				 *
 				 * @param callable|null $loader       Callback that gets entry from key.
 				 * @param string        $loader_type  Used to determine loader being used for this instance of the loader.
 				 */
-				$loader = apply_filters( 'woographql_db_loader_func', $loader, $this->loader_type );
+				$loader = apply_filters( 'woographql_db_loader_func', null, $this->loader_type );
+
 				if ( empty( $loader ) ) {
 					throw new \Exception(
 						/* translators: %s: Loader Type */
