@@ -143,8 +143,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * to filter the WP_Query to support cursor pagination
 		 */
 		$cursor_offset                        = $this->get_offset();
+
 		$query_args['graphql_cursor_offset']  = $cursor_offset;
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+
+		$query_args['graphql_after_cursor']  = ! empty( $this->get_after_offset() ) ? $this->get_after_offset() : null;
+		$query_args['graphql_before_cursor'] = ! empty( $this->get_before_offset() ) ? $this->get_before_offset() : null;
 
 		/**
 		 * Pass the graphql $args to the WP_Query
@@ -197,10 +201,74 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		/**
-		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
+		 * Updated orderby settings based up onstream backwards pagination fixes.
 		 */
-		if ( empty( $query_args['orderby'] ) ) {
-			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
+
+		if ( empty( $this->args['where']['orderby'] ) ) {
+			if ( ! empty( $query_args['post__in'] ) ) {
+
+				$post_in = $query_args['post__in'];
+				// Make sure the IDs are integers
+				$post_in = array_map( function( $id ) {
+					return absint( $id );
+				}, $post_in );
+
+				// If we're coming backwards, let's reverse the IDs
+				if ( ! empty( $this->args['last'] ) || ! empty( $this->args['before'] ) ) {
+					$post_in = array_reverse( $post_in );
+				}
+
+				if ( ! empty( $this->get_offset() ) ) {
+					// Determine if the offset is in the array
+					$key = array_search( $this->get_offset(), $post_in, true );
+
+					// If the offset is in the array
+					if ( false !== $key ) {
+						$key     = absint( $key );
+						$post_in = array_slice( $post_in, $key + 1, null, true );
+					}
+				}
+
+				$query_args['post__in'] = $post_in;
+				$query_args['orderby']  = 'post__in';
+				$query_args['order']    = isset( $last ) ? 'ASC' : 'DESC';
+			}
+		}
+
+		/**
+		 * Map the orderby inputArgs to the WP_Query
+		 */
+		if ( isset( $this->args['where']['orderby'] ) && is_array( $this->args['where']['orderby'] ) ) {
+			$query_args['orderby'] = [];
+			foreach ( $this->args['where']['orderby'] as $orderby_input ) {
+				/**
+				 * These orderby options should not include the order parameter.
+				 */
+				if ( in_array(
+					$orderby_input['field'],
+					[
+						'post__in',
+						'post_name__in',
+						'post_parent__in',
+					],
+					true
+				) ) {
+					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
+				} elseif ( ! empty( $orderby_input['field'] ) ) {
+
+					$order = $orderby_input['order'];
+
+					if ( isset( $query_args['graphql_args']['last'] ) && ! empty( $query_args['graphql_args']['last'] ) ) {
+						if ( 'ASC' === $order ) {
+							$order = 'DESC';
+						} else {
+							$order = 'ASC';
+						}
+					}
+
+					$query_args['orderby'][ esc_sql( $orderby_input['field'] ) ] = esc_sql( $order );
+				}
+			}
 		}
 
 		/**
