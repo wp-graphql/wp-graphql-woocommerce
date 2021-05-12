@@ -177,7 +177,7 @@ class Session_Transaction_Manager {
 		// If transaction ID not in queue, add it, and start transaction.
 		if ( false === array_search( $this->transaction_id, array_column( $transaction_queue, 'transaction_id' ), true ) ) {
 			$transaction_id      = $this->transaction_id;
-			$snapshot            = $this->_data;
+			$snapshot            = $this->session_handler->get_session_data();
 			$transaction_queue[] = compact( 'transaction_id', 'snapshot' );
 
 			// Update queue.
