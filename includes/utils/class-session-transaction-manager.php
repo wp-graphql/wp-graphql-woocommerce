@@ -124,8 +124,15 @@ class Session_Transaction_Manager {
 			return;
 		}
 
-		// Initialize transaction ID.
-		if ( is_null( $this->transaction_id ) ) {
+
+		// Bail if transaction has already been completed. There are times when the underlying action runs twice.
+		if ( ! is_null( $this->transaction_id ) ) {
+			$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+			if ( in_array( $this->transaction_id, array_column( $transaction_queue, 'transaction_id' ), true ) ) {
+				return;
+			}
+		} else {
+			// Initialize transaction ID.
 			$mutation             = $info->fieldName; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			$this->transaction_id = \uniqid( "wooSession_{$mutation}_" );
 		}
@@ -136,6 +143,9 @@ class Session_Transaction_Manager {
 			$this->update_transaction_queue( $source, $args, $context, $info );
 		} else {
 			$this->session_handler->reload_data();
+
+			// Set a timestamp on the transaction, which will allow us to check for any stale transactions that accidentally get left behind.
+			$this->set_timestamp();
 		}
 	}
 
@@ -156,6 +166,10 @@ class Session_Transaction_Manager {
 			// If current transaction is the lead exit loop.
 		} elseif ( $this->transaction_id === $transaction_queue[0]['transaction_id'] ) {
 			return true;
+		} elseif ( true === $this->did_transaction_expire( $transaction_queue ) ) {
+			// If transaction has expired, remove it from the queue array and continue loop
+			array_shift( $transaction_queue );
+			$this->save_transaction_queue( $transaction_queue );
 		}
 
 		return false;
@@ -175,9 +189,10 @@ class Session_Transaction_Manager {
 		}
 
 		// If transaction ID not in queue, add it, and start transaction.
-		if ( false === array_search( $this->transaction_id, array_column( $transaction_queue, 'transaction_id' ), true ) ) {
-			$transaction_id      = $this->transaction_id;
-			$snapshot            = $this->session_handler->get_session_data();
+		if ( ! in_array( $this->transaction_id, array_column( $transaction_queue, 'transaction_id' ), true ) ) {
+			$transaction_id = $this->transaction_id;
+			$snapshot       = $this->session_handler->get_session_data();
+
 			$transaction_queue[] = compact( 'transaction_id', 'snapshot' );
 
 			// Update queue.
@@ -227,5 +242,54 @@ class Session_Transaction_Manager {
 
 		// Save transaction queue.
 		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue );
+	}
+
+	public function set_timestamp() {
+		$transaction_queue = $this->get_transaction_queue();
+
+		// Bail if we don't have a queue to add a timestamp against.
+		if ( empty( $transaction_queue[0] ) ) {
+			return;
+		}
+
+		$transaction_queue[0]['timestamp'] = time();
+
+		$this->save_transaction_queue( $transaction_queue );
+	}
+
+	/**
+	 * The length of time in seconds a transaction should stay in the queue
+	 *
+	 * @return mixed|void
+	 */
+	public function get_timestamp_threshold() {
+		return apply_filters( 'woographql_session_transaction_timeout', 30 );
+	}
+
+	/**
+	 * Whether the transaction has expired. This helps prevent infinite loops while searching through the transaction
+	 * queue.
+	 *
+	 * @param $transaction_queue
+	 *
+	 * @return bool
+	 */
+	public function did_transaction_expire( $transaction_queue ) {
+		// Guard against empty transaction queue. We assume that it is invalid since we cannot calculate.
+		if ( empty( $transaction_queue ) ) {
+			return true;
+		}
+
+		// Guard against empty timestamp. We assume that it is invalid since we cannot calculate.
+		if ( empty( $transaction_queue[0] ) || empty( $transaction_queue[0]['timestamp'] ) ) {
+			return true;
+		}
+
+		$now        = time();
+		$stamp      = $transaction_queue[0]['timestamp'];
+		$threshold  = $this->get_timestamp_threshold();
+		$difference = $now - $stamp;
+
+		return $difference > $threshold;
 	}
 }
