@@ -169,7 +169,7 @@ class Session_Transaction_Manager {
 	 */
 	public function get_transaction_queue() {
 		// Get transaction queue.
-		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->_customer_id}" );
+		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 		if ( ! $transaction_queue ) {
 			$transaction_queue = array();
 		}
@@ -199,7 +199,7 @@ class Session_Transaction_Manager {
 		}
 
 		// Get transaction queue.
-		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->_customer_id}" );
+		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 
 		// Throw if transaction ID not on top.
 		if ( $this->transaction_id !== $transaction_queue[0]['transaction_id'] ) {
@@ -221,11 +221,11 @@ class Session_Transaction_Manager {
 	public function save_transaction_queue( $queue = array() ) {
 		// If queue empty delete transient and bail.
 		if ( empty( $queue ) ) {
-			delete_transient( "woo_session_transactions_queue_{$this->_customer_id}" );
+			delete_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 			return;
 		}
 
 		// Save transaction queue.
-		set_transient( "woo_session_transactions_queue_{$this->_customer_id}", $queue );
+		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue );
 	}
 }
