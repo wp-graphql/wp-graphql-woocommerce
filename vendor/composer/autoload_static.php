@@ -145,7 +145,7 @@ class ComposerStaticInit6c77413f58088c2fdac4123439a6431a
         'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Orderby_Inputs' => __DIR__ . '/../..' . '/includes/type/input/class-orderby-inputs.php',
         'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Attribute_Input' => __DIR__ . '/../..' . '/includes/type/input/class-product-attribute-input.php',
         'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Taxonomy_Filter_Input' => __DIR__ . '/../..' . '/includes/type/input/class-product-taxonomy-filter-input.php',
-        'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Taxonomy_Filter_Relation_Input' => __DIR__ . '/../..' . '/includes/type/input/class-product-taxonomy-filter-relation-input.php',
+        'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Taxonomy_Input' => __DIR__ . '/../..' . '/includes/type/input/class-product-taxonomy-input.php',
         'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Shipping_Line_Input' => __DIR__ . '/../..' . '/includes/type/input/class-shipping-line-input.php',
         'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Tax_Rate_Connection_Orderby_Input' => __DIR__ . '/../..' . '/includes/type/input/class-tax-rate-connection-orderby-input.php',
         'WPGraphQL\\WooCommerce\\Type\\WPInterface\\Cart_Error' => __DIR__ . '/../..' . '/includes/type/interface/class-cart-error.php',

@@ -117,7 +117,7 @@ return array(
     'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Orderby_Inputs' => $baseDir . '/includes/type/input/class-orderby-inputs.php',
     'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Attribute_Input' => $baseDir . '/includes/type/input/class-product-attribute-input.php',
     'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Taxonomy_Filter_Input' => $baseDir . '/includes/type/input/class-product-taxonomy-filter-input.php',
-    'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Taxonomy_Filter_Relation_Input' => $baseDir . '/includes/type/input/class-product-taxonomy-filter-relation-input.php',
+    'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Product_Taxonomy_Input' => $baseDir . '/includes/type/input/class-product-taxonomy-input.php',
     'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Shipping_Line_Input' => $baseDir . '/includes/type/input/class-shipping-line-input.php',
     'WPGraphQL\\WooCommerce\\Type\\WPInputObject\\Tax_Rate_Connection_Orderby_Input' => $baseDir . '/includes/type/input/class-tax-rate-connection-orderby-input.php',
     'WPGraphQL\\WooCommerce\\Type\\WPInterface\\Cart_Error' => $baseDir . '/includes/type/interface/class-cart-error.php',
