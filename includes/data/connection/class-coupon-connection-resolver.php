@@ -18,6 +18,8 @@ use WPGraphQL\Extension\WooCommerce\Model\Coupon;
 
 /**
  * Class Coupon_Connection_Resolver
+ *
+ * @deprecated v0.10.0
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**

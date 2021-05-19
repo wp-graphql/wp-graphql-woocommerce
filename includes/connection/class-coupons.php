@@ -9,9 +9,11 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 /**
  * Class - Coupons
@@ -22,6 +24,13 @@ class Coupons {
 	 * Registers the various connections from other Types to Coupon
 	 */
 	public static function register_connections() {
+		add_filter(
+			'graphql_map_input_fields_to_wp_query',
+			array( __CLASS__, 'map_input_fields_to_wp_query' ),
+			10,
+			7
+		);
+
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
 	}
@@ -41,11 +50,32 @@ class Coupons {
 				'fromFieldName'  => 'coupons',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function ( $source, $args, $context, $info ) {
-					return Factory::resolve_coupon_connection( $source, $args, $context, $info );
+					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_coupon' );
+
+					if ( ! self::should_execute() ) {
+						throw new UserError( __( 'Not authorized to execute this query', 'wp-graphql-woocommerce' ) );
+					}
+
+					return $resolver->get_connection();
 				},
 			),
 			$args
 		);
+	}
+
+	/**
+	 * Confirms the uses has the privileges to query Coupons
+	 *
+	 * @return bool
+	 */
+	public static function should_execute() {
+		$post_type_obj = get_post_type_object( 'shop_coupon' );
+		switch ( true ) {
+			case current_user_can( $post_type_obj->cap->edit_posts ):
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
@@ -63,5 +93,63 @@ class Coupons {
 				),
 			)
 		);
+	}
+
+	/**
+	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+	 * from a GraphQL Query to the WP_Query
+	 *
+	 * @param array              $query_args The mapped query arguments.
+	 * @param array              $args       Query "where" args.
+	 * @param mixed              $source     The query results for a query calling this.
+	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param AppContext         $context    The AppContext object.
+	 * @param ResolveInfo        $info       The ResolveInfo object.
+	 * @param mixed|string|array $post_type  The post type for the query.
+	 *
+	 * @return array Query arguments.
+	 */
+	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
+		if ( ! in_array( 'shop_coupon', $post_type, true ) ) {
+			return $query_args;
+		}
+
+		$query_args = array_merge(
+			$query_args,
+			map_shared_input_fields_to_wp_query( $where_args ),
+		);
+
+		if ( ! empty( $where_args['code'] ) ) {
+			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );
+			$ids              = $id ? array( $id ) : array( '0' );
+			$query_args['post__in'] = isset( $query_args['post__in'] )
+				? array_intersect( $ids, $query_args['post__in'] )
+				: $ids;
+		}
+
+		/**
+		 * Filter the input fields
+		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+		 * from a GraphQL Query to the WP_Query
+		 *
+		 * @param array       $args       The mapped query arguments
+		 * @param array       $where_args Query "where" args
+		 * @param mixed       $source     The query results for a query calling this
+		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param AppContext  $context    The AppContext object
+		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param mixed|string|array      $post_type  The post type for the query
+		 */
+		$query_args = apply_filters(
+			'graphql_map_input_fields_to_coupon_query',
+			$query_args,
+			$where_args,
+			$source,
+			$args,
+			$context,
+			$info
+		);
+
+		return $query_args;
 	}
 }

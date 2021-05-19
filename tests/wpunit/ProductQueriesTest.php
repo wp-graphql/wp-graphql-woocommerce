@@ -1,24 +1,6 @@
 <?php
 class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-	/**
-	 * The death of `! empty( $v ) ? apply_filters( $v ) : null;`
-	 *
-	 * @param array|mixed $possible   Variable whose existence has to be verified, or
-	 * an array containing the variable followed by a decorated value to be returned.
-	 * @param mixed       $default    Default value to be returned if $possible doesn't exist.
-	 *
-	 * @return mixed
-	 */
-	private function maybe( $possible, $default = null ) {
-		if ( is_array( $possible ) && 2 === count( $possible ) ) {
-			list( $possible, $decorated ) = $possible;
-		} else {
-			$decorated = $possible;
-		}
-		return ! empty( $possible ) ? $decorated : $default;
-	}
-
 	public function getExpectedProductData( $product_id ) {
 		$product         = \wc_get_product( $product_id );
 		$is_shop_manager = false;
