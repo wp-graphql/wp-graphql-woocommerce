@@ -287,7 +287,8 @@ class Order_Type {
 						'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $order, array $args, AppContext $context ) {
 							if ( empty( $order->customer_id ) ) {
-								return Factory::resolve_session_customer();
+								// Guest orders don't have an attached customer.
+								return null;
 							}
 
 							return Factory::resolve_customer( $order->customer_id, $context );

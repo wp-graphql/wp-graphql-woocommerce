@@ -18,6 +18,8 @@ use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Order_Connection_Resolver
+ *
+ * @deprecated v0.10.0
  */
 class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
