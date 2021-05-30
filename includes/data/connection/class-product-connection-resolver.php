@@ -21,6 +21,8 @@ use WPGraphQL\WooCommerce\Model\Product_Variation;
 
 /**
  * Class Product_Connection_Resolver
+ *
+ * @deprecated v0.10.0
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**

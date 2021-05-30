@@ -496,7 +496,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				$featured: Boolean,
 				$maxPrice: Float,
 				$orderby: [ProductsOrderbyInput]
-				$taxonomyFilter: [ProductTaxonomyFilterRelationInput]
+				$taxonomyFilter: ProductTaxonomyInput
 			) {
 				products( where: {
 					slug: $slug,
@@ -790,18 +790,17 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 */
 		$variables = array(
 			'taxonomyFilter' => array(
-				array(
-					'and' => array(
-						array(
-							'taxonomy' => 'PRODUCTCATEGORY',
-							'terms'    => array( 'category-three' ),
-						),
-						array(
-							'taxonomy' => 'PRODUCTCATEGORY',
-							'terms'    => array( 'category-four' ),
-							'operator' => 'NOT_IN'
-						),
-					)
+				'relation' => 'AND',
+				'filters'  => array(
+					array(
+						'taxonomy' => 'PRODUCTCATEGORY',
+						'terms'    => array( 'category-three' ),
+					),
+					array(
+						'taxonomy' => 'PRODUCTCATEGORY',
+						'terms'    => array( 'category-four' ),
+						'operator' => 'NOT_IN'
+					),
 				)
 			),
 		);

@@ -55,7 +55,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Create_Account_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Cart_Item_Quantity_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Input::register();
-		\WPGraphQL\WooCommerce\Type\WPInputObject\Product_Taxonomy_Filter_Relation_Input::register();
+		\WPGraphQL\WooCommerce\Type\WPInputObject\Product_Taxonomy_Input::register();
 		\WPGraphQL\WooCommerce\Type\WPInputObject\Orderby_Inputs::register();
 
 		// Interfaces.

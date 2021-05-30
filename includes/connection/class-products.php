@@ -12,7 +12,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 /**
  * Class - Products
@@ -23,6 +23,13 @@ class Products {
 	 * Registers the various connections from other Types to Product
 	 */
 	public static function register_connections() {
+		add_filter(
+			'graphql_map_input_fields_to_wp_query',
+			array( __CLASS__, 'map_input_fields_to_wp_query' ),
+			10,
+			7
+		);
+
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
 
@@ -32,7 +39,7 @@ class Products {
 				array(
 					'fromType' => 'Coupon',
 					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 						$resolver->set_query_arg( 'post__in', $source->product_ids );
 
@@ -52,7 +59,7 @@ class Products {
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProducts',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 						$resolver->set_query_arg( 'post__in', $source->excluded_product_ids );
 
@@ -83,7 +90,7 @@ class Products {
 						)
 					),
 					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 						// Bypass randomization by default for pagination support.
 						if ( empty( $args['where']['shuffle'] ) ) {
@@ -114,7 +121,7 @@ class Products {
 					'fromType'      => 'Product',
 					'fromFieldName' => 'upsell',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 						$resolver->set_query_arg( 'post__in', $source->upsell_ids );
 
@@ -135,7 +142,7 @@ class Products {
 				array(
 					'fromType' => 'GroupProduct',
 					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 						$resolver->set_query_arg( 'post__in', $source->grouped_ids );
 
@@ -154,7 +161,7 @@ class Products {
 		$cross_sell_config = array(
 			'fromFieldName' => 'crossSell',
 			'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-				$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 				$resolver->set_query_arg( 'post__in', $source->cross_sell_ids );
 
@@ -185,7 +192,7 @@ class Products {
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 						$resolver->set_query_arg( 'post_parent', $source->ID );
 						$resolver->set_query_arg( 'post_type', 'product_variation' );
@@ -214,7 +221,7 @@ class Products {
 						return null;
 					}
 
-					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 					$resolver->set_query_arg( 'p', $source->parent_id );
 
 					return $resolver->one_to_one()->get_connection();
@@ -224,7 +231,7 @@ class Products {
 
 		// Taxonomy To Product resolver.
 		$resolve_product_from_taxonomy = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-			$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+			$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 			$tax_query = array(
 				array( // WPCS: slow query ok.
@@ -277,7 +284,7 @@ class Products {
 						'fromFieldName' => 'variations',
 						'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							global $wpdb;
-							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
 							// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
@@ -318,7 +325,27 @@ class Products {
 				'fromFieldName'  => 'products',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_product_connection( $source, $args, $context, $info );
+					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
+
+					if ( ! empty( $args['where']['orderby'] ) ) {
+						foreach( $args['where']['orderby'] as $orderby_input ) {
+							switch( $orderby_input['field'] ) {
+								case '_price':
+								case '_regular_price':
+								case '_sale_price':
+								case '_wc_rating_count':
+								case '_wc_average_rating':
+								case '_sale_price_dates_from':
+								case '_sale_price_dates_to':
+								case 'total_sales':
+									$resolver->set_query_arg( 'orderby', array( 'meta_value_num' => $orderby_input['order'] ) );
+									$resolver->set_query_arg( 'meta_key', esc_sql( $orderby_input['field'] ) );
+									$resolver->set_query_arg( 'meta_type', 'NUMERIC' );
+									break 2;
+							}
+						}
+					}
+					return $resolver->get_connection();
 				},
 			),
 			$args
@@ -445,7 +472,7 @@ class Products {
 				'description' => __( 'Limit result set to products with a specific visibility level.', 'wp-graphql-woocommerce' ),
 			),
 			'taxonomyFilter'     => array(
-				'type'        => array( 'list_of' => 'ProductTaxonomyFilterRelationInput' ),
+				'type'        => 'ProductTaxonomyInput',
 				'description' => __( 'Limit result set with complex set of taxonomy filters.', 'wp-graphql-woocommerce' ),
 			),
 			'orderby'            => array(
@@ -466,5 +493,323 @@ class Products {
 		}
 
 		return array_merge( get_wc_cpt_connection_args(), $args );
+	}
+
+	/**
+	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+	 * from a GraphQL Query to the WP_Query
+	 *
+	 * @param array              $query_args The mapped query arguments.
+	 * @param array              $args       Query "where" args.
+	 * @param mixed              $source     The query results for a query calling this.
+	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param AppContext         $context    The AppContext object.
+	 * @param ResolveInfo        $info       The ResolveInfo object.
+	 * @param mixed|string|array $post_type  The post type for the query.
+	 *
+	 * @return array Query arguments.
+	 */
+	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
+		if ( ! in_array( 'product', $post_type, true ) && ! in_array( 'product_variation', $post_type, true ) ) {
+			return $query_args;
+		}
+
+		$remove = array(
+			'cat',
+			'category_name',
+			'category__in',
+			'category__not_in',
+			'tag_id',
+			'tag__and',
+			'tag__in',
+			'tag__not_in',
+		);
+
+		$query_args = array_diff_key( $query_args, array_flip( $remove ) );
+
+		$tax_query     = array();
+		$taxonomy_args = array(
+			'type'            => 'product_type',
+			'typeIn'          => 'product_type',
+			'typeNotIn'       => 'product_type',
+			'category'        => 'product_cat',
+			'categoryIn'      => 'product_cat',
+			'categoryNotIn'   => 'product_cat',
+			'categoryId'      => 'product_cat',
+			'categoryIdIn'    => 'product_cat',
+			'categoryIdNotIn' => 'product_cat',
+			'tag'             => 'product_tag',
+			'tagIn'           => 'product_tag',
+			'tagNotIn'        => 'product_tag',
+			'tagId'           => 'product_tag',
+			'tagIdIn'         => 'product_tag',
+			'tagIdNotIn'      => 'product_tag',
+		);
+
+		foreach ( $taxonomy_args as $field => $taxonomy ) {
+			if ( ! empty( $where_args[ $field ] ) ) {
+				// Set tax query operator.
+				switch ( true ) {
+					case \wc_graphql_ends_with( $field, 'NotIn' ):
+						$operator = 'NOT IN';
+						break;
+					default:
+						$operator = 'IN';
+						break;
+				}
+
+				// Set tax query config.
+				switch ( $field ) {
+					case 'type':
+					case 'typeIn':
+					case 'typeNotIn':
+					case 'category':
+					case 'categoryIn':
+					case 'categoryNotIn':
+					case 'tag':
+					case 'tagIn':
+					case 'tagNotIn':
+						$tax_query[] = array(
+							'taxonomy' => $taxonomy,
+							'field'    => 'slug',
+							'terms'    => $where_args[ $field ],
+							'operator' => $operator,
+						);
+						break;
+					case 'categoryId':
+					case 'categoryIdIn':
+					case 'categoryIdNotIn':
+					case 'tagId':
+					case 'tagIdIn':
+					case 'tagIdNotIn':
+						$tax_query[] = array(
+							'taxonomy' => $taxonomy,
+							'field'    => 'term_id',
+							'terms'    => $where_args[ $field ],
+							'operator' => $operator,
+						);
+						break;
+				}
+			}
+		}
+
+		if ( 1 < count( $tax_query ) ) {
+			$tax_query['relation'] = 'AND';
+		}
+
+		// Filter by attribute and term.
+		if ( ! empty( $where_args['attribute'] ) && ! empty( $where_args['attributeTerm'] ) ) {
+			if ( in_array( $where_args['attribute'], \wc_get_attribute_taxonomy_names(), true ) ) {
+				$tax_query[] = array(
+					'taxonomy' => $where_args['attribute'],
+					'field'    => 'slug',
+					'terms'    => $where_args['attributeTerm'],
+				);
+			}
+		}
+
+		if ( empty( $where_args['type'] ) && empty( $where_args['typeIn'] ) && ! empty( $where_args['supportedTypesOnly'] )
+			&& true === $where_args['supportedTypesOnly'] ) {
+				$supported_types = array_keys( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+				$terms           = ! empty( $where_args['typeNotIn'] )
+					? array_diff( $supported_types, $where_args['typeNotIn'] )
+					: $supported_types;
+			$tax_query[]         = array(
+				'taxonomy' => 'product_type',
+				'field'    => 'slug',
+				'terms'    => $terms,
+			);
+		}
+
+		if ( isset( $where_args['featured'] ) ) {
+			$product_visibility_term_ids = wc_get_product_visibility_term_ids();
+			if ( $where_args['featured'] ) {
+				$tax_query[] = array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'term_taxonomy_id',
+					'terms'    => array( $product_visibility_term_ids['featured'] ),
+				);
+				$tax_query[] = array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'term_taxonomy_id',
+					'terms'    => array( $product_visibility_term_ids['exclude-from-catalog'] ),
+					'operator' => 'NOT IN',
+				);
+			} else {
+				$tax_query[] = array(
+					'taxonomy' => 'product_visibility',
+					'field'    => 'term_taxonomy_id',
+					'terms'    => array( $product_visibility_term_ids['featured'] ),
+					'operator' => 'NOT IN',
+				);
+			}
+		}
+
+		// Handle visibility.
+		$post_type_obj = get_post_type_object( $post_type );
+		if ( ! empty( $where_args['visibility'] ) ) {
+			switch ( $where_args['visibility'] ) {
+				case 'search':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-search' ),
+						'operator' => 'NOT IN',
+					);
+					break;
+				case 'catalog':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-catalog' ),
+						'operator' => 'NOT IN',
+					);
+					break;
+				case 'visible':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+						'operator' => 'NOT IN',
+					);
+					break;
+				case 'hidden':
+					$tax_query[] = array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'slug',
+						'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
+						'operator' => 'AND',
+					);
+					break;
+			}
+		}
+
+		// Process "taxonomyFilter".
+		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
+			$taxonomy_query = $where_args['taxonomyFilter'];
+			$relation       = ! empty( $taxonomy_query['relation'] ) ? $taxonomy_query['relation'] : 'AND';
+
+			if ( ! empty( $taxonomy_query['filters'] ) ) {
+				$tax_groups = array();
+				foreach( $taxonomy_query['filters'] as $filter ) {
+					$common = array(
+						'taxonomy' => $filter['taxonomy'],
+						'operator' => ! empty( $filter['operator'] ) ? $filter['operator'] : 'IN',
+					);
+
+					if ( ! empty( $filter['ids'] ) ) {
+						$tax_groups[] = array_merge(
+							$common,
+							array(
+								'field'    => 'ID',
+								'terms'    => $filter['ids'],
+							)
+						);
+					}
+
+					if ( ! empty( $filter['terms'] ) ) {
+						$tax_groups[] = array_merge(
+							$common,
+							array(
+								'field'    => 'slug',
+								'terms'    => $filter['terms'],
+							)
+						);
+					}
+				}
+
+				if ( ! empty( $tax_groups ) ) {
+					array_push( $tax_query, ...$tax_groups );
+				}
+
+				if ( 1 < count( $tax_groups ) ) {
+					$tax_query['relation'] = $relation;
+				}
+			}
+		}
+
+		if ( ! empty( $tax_query ) ) {
+			$query_args['tax_query'] = $tax_query; // WPCS: slow query ok.
+		}
+
+		$meta_query = array();
+		if ( ! empty( $where_args['sku'] ) ) {
+			$meta_query[] = array(
+				'key'     => '_sku',
+				'value'   => $where_args['sku'],
+				'compare' => 'LIKE',
+			);
+		}
+
+		if ( ! empty( $where_args['minPrice'] ) || ! empty( $where_args['maxPrice'] ) ) {
+			$current_min_price = isset( $where_args['minPrice'] )
+				? floatval( $where_args['minPrice'] )
+				: 0;
+			$current_max_price = isset( $where_args['maxPrice'] )
+				? floatval( $where_args['maxPrice'] )
+				: PHP_INT_MAX;
+
+			$meta_query[] = apply_filters(
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+				'woocommerce_get_min_max_price_meta_query',
+				array(
+					'key'     => '_price',
+					'value'   => array( $current_min_price, $current_max_price ),
+					'compare' => 'BETWEEN',
+					'type'    => 'DECIMAL(10,' . wc_get_price_decimals() . ')',
+				),
+				$query_args
+			);
+		}
+
+		if ( isset( $where_args['stockStatus'] ) ) {
+			$meta_query[] = array(
+				'key'     => '_stock_status',
+				'value'   => $where_args['stockStatus'],
+				'compare' => is_array( $where_args['stockStatus'] ) ? 'IN' : '=',
+			);
+		}
+
+		if ( ! empty( $meta_query ) ) {
+			$query_args['meta_query'] = $meta_query; // WPCS: slow query ok.
+		}
+
+		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
+			$on_sale_key = $where_args['onSale'] ? 'post__in' : 'post__not_in';
+			$on_sale_ids = \wc_get_product_ids_on_sale();
+
+			$on_sale_ids          = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
+			$query_args[ $on_sale_key ] = $on_sale_ids;
+		}
+
+		/**
+		 * Filter the input fields
+		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+		 * from a GraphQL Query to the WP_Query
+		 *
+		 * @param array       $args       The mapped query arguments
+		 * @param array       $where_args Query "where" args
+		 * @param mixed       $source     The query results for a query calling this
+		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param AppContext  $context    The AppContext object
+		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param mixed|string|array      $post_type  The post type for the query
+		 */
+		$query_args = apply_filters_deprecated(
+			'graphql_map_input_fields_to_product_query',
+			array(
+				$query_args,
+				$where_args,
+				$source,
+				$args,
+				$context,
+				$info,
+				$post_type
+			),
+			'0.9.0',
+			'graphql_map_input_fields_to_wp_query'
+		);
+
+		return $query_args;
 	}
 }
