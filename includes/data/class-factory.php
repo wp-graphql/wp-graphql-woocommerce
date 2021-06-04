@@ -86,10 +86,10 @@ class Factory {
 			return null;
 		}
 
-		$context->getLoader( 'wc_cpt' )->buffer( array( $id ) );
+		$context->getLoader( 'wc_post' )->buffer( array( $id ) );
 		return new Deferred(
 			function () use ( $id, $context ) {
-				return $context->getLoader( 'wc_cpt' )->load( $id );
+				return $context->getLoader( 'wc_post' )->load( $id );
 			}
 		);
 	}

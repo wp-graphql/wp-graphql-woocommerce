@@ -884,7 +884,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
         codecept_debug( $initial_response );
 
         // Clear loader cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post' );
 
         // Retrieve order and items
         $order_id       = $initial_response['data']['createOrder']['order']['databaseId'];
@@ -1035,7 +1035,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
         codecept_debug( $initial_response );
 
         // Clear loader cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post' );
 
         // Retrieve order and items
         $order_id       = $initial_response['data']['createOrder']['order']['databaseId'];

@@ -73,6 +73,33 @@ class Core_Schema_Filters {
 			10,
 			3
 		);
+		add_filter(
+			'graphql_post_object_connection_query_args',
+			array( '\WPGraphQL\WooCommerce\Connection\Orders', 'post_object_connection_query_args' ),
+			10,
+			5
+		);
+
+		add_filter(
+			'graphql_map_input_fields_to_wp_query',
+			array( '\WPGraphQL\WooCommerce\Connection\Coupons', 'map_input_fields_to_wp_query' ),
+			10,
+			7
+		);
+
+		add_filter(
+			'graphql_map_input_fields_to_wp_query',
+			array( '\WPGraphQL\WooCommerce\Connection\Products', 'map_input_fields_to_wp_query' ),
+			10,
+			7
+		);
+
+		add_filter(
+			'graphql_map_input_fields_to_wp_query',
+			array( '\WPGraphQL\WooCommerce\Connection\Orders', 'map_input_fields_to_wp_query' ),
+			10,
+			7
+		);
 	}
 
 	/**
@@ -203,7 +230,7 @@ class Core_Schema_Filters {
 
 		// WooCommerce CPT loader.
 		$cpt_loader        = new WC_CPT_Loader( $context );
-		$loaders['wc_cpt'] = &$cpt_loader;
+		$loaders['wc_post'] = &$cpt_loader;
 
 		// WooCommerce DB loaders.
 		$cart_item_loader             = new WC_Db_Loader( $context, 'CART_ITEM' );

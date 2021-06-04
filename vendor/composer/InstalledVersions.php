@@ -20,38 +20,40 @@ use Composer\Semver\VersionParser;
 
 
 
+
+
 class InstalledVersions
 {
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => 'dev-develop',
+    'version' => 'dev-develop',
     'aliases' => 
     array (
     ),
-    'reference' => '312e9ce978f8a61ff546016962b2d093b3cf4d00',
+    'reference' => 'a37e22480b5588a7942f7b96ce69c066780cb3e7',
     'name' => 'wp-graphql/wp-graphql-woocommerce',
   ),
   'versions' => 
   array (
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.2.1',
-      'version' => '5.2.1.0',
+      'pretty_version' => 'v5.3.0',
+      'version' => '5.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
+      'reference' => '3c2d70f2e64e2922345e89f2ceae47d2463faae1',
     ),
     'wp-graphql/wp-graphql-woocommerce' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => 'dev-develop',
+      'version' => 'dev-develop',
       'aliases' => 
       array (
       ),
-      'reference' => '312e9ce978f8a61ff546016962b2d093b3cf4d00',
+      'reference' => 'a37e22480b5588a7942f7b96ce69c066780cb3e7',
     ),
   ),
 );
@@ -70,7 +72,6 @@ $packages = array();
 foreach (self::getInstalled() as $installed) {
 $packages[] = array_keys($installed['versions']);
 }
-
 
 if (1 === \count($packages)) {
 return $packages[0];
@@ -235,9 +236,23 @@ return $installed[0]['root'];
 
 
 
+
 public static function getRawData()
 {
+@trigger_error('getRawData only returns the first dataset loaded, which may not be what you expect. Use getAllRawData() instead which returns all datasets for all autoloaders present in the process.', E_USER_DEPRECATED);
+
 return self::$installed;
+}
+
+
+
+
+
+
+
+public static function getAllRawData()
+{
+return self::getInstalled();
 }
 
 
@@ -263,6 +278,7 @@ public static function reload($data)
 self::$installed = $data;
 self::$installedByVendor = array();
 }
+
 
 
 

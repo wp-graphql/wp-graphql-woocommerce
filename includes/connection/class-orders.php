@@ -23,17 +23,13 @@ class Orders {
 	 */
 	public static function register_connections() {
 		add_filter(
-			'graphql_post_object_connection_query_args',
-			array( __CLASS__, 'post_object_connection_query_args' ),
-			10,
-			5
-		);
-		add_filter(
 			'graphql_map_input_fields_to_wp_query',
 			array( __CLASS__, 'map_input_fields_to_wp_query' ),
 			10,
 			7
 		);
+
+
 
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
@@ -47,7 +43,7 @@ class Orders {
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order' );
 
-						return $resolver->get_connection();
+						return self::get_customer_order_connection( $resolver, $source );
 					},
 				)
 			)
@@ -55,10 +51,40 @@ class Orders {
 	}
 
 	/**
+	 * Returns connection filter by customer.
+	 *
+	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
+	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
+	 *
+	 * @return array
+	 */
+	private static function get_customer_order_connection( $resolver, $customer ) {
+		// If not "billing email" or "ID" set bail early by returning an empty connection.
+		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
+			return array(
+				'pageInfo' => null,
+				'nodes'    => array(),
+				'edges'    => array(),
+			);
+		}
+
+		// If the querying user has a "billing email" set filter orders by user's billing email, otherwise filter by user's ID.
+		$meta_key   = ! empty( $customer->get_billing_email() ) ? '_billing_email' : '_customer_user';
+		$meta_value = ! empty( $customer->get_billing_email() )
+			? $customer->get_billing_email()
+			: $customer->get_id();
+		$resolver->set_query_arg( 'meta_key', $meta_key );
+		$resolver->set_query_arg( 'meta_value', $meta_value );
+
+		return $resolver->get_connection();
+	}
+
+	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults.
 	 *
 	 * @param array $args - Connection configuration.
+	 *
 	 * @return array
 	 */
 	public static function get_connection_config( $args = array() ): array {
@@ -69,28 +95,24 @@ class Orders {
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args( 'private' ),
 					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$post_type_obj = get_post_type_object( 'shop_order' );
-						$not_manager   = ! current_user_can( $post_type_obj->cap->edit_posts );
+						// Check if user shop manager.
+						$not_manager = ! current_user_can( get_post_type_object( 'shop_order' )->cap->edit_posts );
 
-						if ( $not_manager ) {
-							$public_args = array_keys( self::get_connection_args( 'public' ) );
-							$args = array_filter(
-								$args,
-								function( $key ) use ( $public_args ) {
-									return in_array( $key, $public_args, true );
-								},
-								ARRAY_FILTER_USE_KEY
-							);
-						}
+						// Remove any arguments that require querying user to have "shop manager" role.
+						$args = $not_manager
+							? \array_intersect_key( $args, array_keys( self::get_connection_args( 'public' ) ) )
+							: $args;
 
+						// Initialize connection resolver.
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order' );
 
-						$customer_id = get_current_user_id();
-						if ( $not_manager && 0 !== $customer_id ) {
-							$resolver->set_query_arg( 'customer_id', $customer_id );
-						}
-
-						return $resolver->get_connection();
+						/**
+						 * If not shop manager, restrict results to orders/refunds owned by querying user
+						 * and return the connection.
+						 */
+						return $not_manager
+							? self::get_customer_order_connection( $resolver, \WC()->customer )
+							: $resolver->get_connection();
 					},
 			),
 			$args
@@ -171,29 +193,19 @@ class Orders {
 	 * @return array
 	 */
 	public static function post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		if ( $source instanceof \WPGraphQL\WooCommerce\Model\Customer ) {
-			$meta_query = array(
-				array(
-					'key'     => '_customer_user',
-					'value'   => $source->ID,
-					'compare' => '=',
-				)
-			);
+		$not_order_query = is_string( $query_args['post_type'] )
+			? 'shop_order' !== $query_args['post_type']
+			: ! in_array( 'shop_order', $query_args['post_type'], true );
 
-			if ( ! empty( $query_args['meta_query'] ) ) {
-				array_push( $query_args['meta_query'], $meta_query );
-			} else {
-				$query_args['meta_query'] = $meta_query;
-			}
-		}
-
-		if ( empty( $args['where'] ) || empty( $args['where']['statuses'] ) ) {
-			$query_args['post_status'] = array_keys( \wc_get_order_statuses() );
+		if ( $not_order_query ) {
+			return $query_args;
 		}
 
 		$query_args['type'] = \wc_get_order_types( 'view-orders' );
 
-		//wp_send_json( $query_args );
+		if ( empty( $args['where'] ) || empty( $args['where']['statuses'] ) ) {
+			$query_args['post_status'] = array_keys( \wc_get_order_statuses() );
+		}
 
 		return $query_args;
 	}
@@ -334,5 +346,21 @@ class Orders {
 		);
 
 		return $query_args;
+	}
+
+	/**
+	 * Checks if user is authorized to query orders
+	 *
+	 * @return bool
+	 */
+	public static function should_execute( $customer_id = 0 ) {
+		$post_type_obj = get_post_type_object( 'shop_order' );
+		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
+			return true;
+		} elseif ( 0 !== $customer_id ) {
+			return get_current_user_id() === $customer_id;
+		}
+
+		return false;
 	}
 }

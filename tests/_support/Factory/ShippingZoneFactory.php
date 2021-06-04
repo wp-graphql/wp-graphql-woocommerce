@@ -78,7 +78,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		update_option( 'woocommerce_flat_rate_settings', $flat_rate_settings );
 		update_option( 'woocommerce_flat_rate', array() );
 		\WC_Cache_Helper::get_transient_version( 'shipping', true );
-		WC()->shipping()->load_shipping_methods();
+		\WC()->shipping()->load_shipping_methods();
 
 		return 'legacy_flat_rate';
 	}

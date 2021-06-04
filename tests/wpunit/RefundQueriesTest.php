@@ -74,7 +74,7 @@ class RefundQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $expected, $actual );
 
 		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post' );
 
 		/**
 		 * Assertion Two

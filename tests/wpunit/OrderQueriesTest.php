@@ -44,31 +44,31 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 			$this->expectedObject(
 				'order.billing',
 				array(
-					'firstName' => $order->get_billing_first_name(),
-					'lastName'  => $this->maybe( $order->get_billing_last_name(), null ),
-					'company'   => $this->maybe( $order->get_billing_company(), null ),
-					'address1'  => $this->maybe( $order->get_billing_address_1(), null ),
-					'address2'  => $this->maybe( $order->get_billing_address_2(), null ),
-					'city'      => $this->maybe( $order->get_billing_city(), null ),
-					'state'     => $this->maybe( $order->get_billing_state(), null ),
-					'postcode'  => $this->maybe( $order->get_billing_postcode(), null ),
-					'country'   => $this->maybe( $order->get_billing_country(), null ),
-					'email'     => $this->maybe( $order->get_billing_email(), null ),
-					'phone'     => $this->maybe( $order->get_billing_phone(), null ),
+					'firstName' => $this->maybe( $order->get_billing_first_name() ),
+					'lastName'  => $this->maybe( $order->get_billing_last_name() ),
+					'company'   => $this->maybe( $order->get_billing_company() ),
+					'address1'  => $this->maybe( $order->get_billing_address_1() ),
+					'address2'  => $this->maybe( $order->get_billing_address_2() ),
+					'city'      => $this->maybe( $order->get_billing_city() ),
+					'state'     => $this->maybe( $order->get_billing_state() ),
+					'postcode'  => $this->maybe( $order->get_billing_postcode() ),
+					'country'   => $this->maybe( $order->get_billing_country() ),
+					'email'     => $this->maybe( $order->get_billing_email() ),
+					'phone'     => $this->maybe( $order->get_billing_phone() ),
 				)
 			),
 			$this->expectedObject(
 				'order.shipping',
 				array(
-					'firstName' => $this->maybe( $order->get_billing_first_name(), null ),
-					'lastName'  => $this->maybe( $order->get_billing_last_name(), null ),
-					'company'   => $this->maybe( $order->get_billing_company(), null ),
-					'address1'  => $this->maybe( $order->get_billing_address_1(), null ),
-					'address2'  => $this->maybe( $order->get_billing_address_2(), null ),
-					'city'      => $this->maybe( $order->get_billing_city(), null ),
-					'state'     => $this->maybe( $order->get_billing_state(), null ),
-					'postcode'  => $this->maybe( $order->get_billing_postcode(), null ),
-					'country'   => $this->maybe( $order->get_billing_country(), null ),
+					'firstName' => $this->maybe( $order->get_shipping_first_name() ),
+					'lastName'  => $this->maybe( $order->get_shipping_last_name() ),
+					'company'   => $this->maybe( $order->get_shipping_company() ),
+					'address1'  => $this->maybe( $order->get_shipping_address_1() ),
+					'address2'  => $this->maybe( $order->get_shipping_address_2() ),
+					'city'      => $this->maybe( $order->get_shipping_city() ),
+					'state'     => $this->maybe( $order->get_shipping_state() ),
+					'postcode'  => $this->maybe( $order->get_shipping_postcode() ),
+					'country'   => $this->maybe( $order->get_shipping_country() ),
 				)
 			),
 			$this->expectedObject( 'order.paymentMethod', $this->maybe( $order->get_payment_method(), 'null' ) ),
@@ -269,6 +269,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$query      = new \WC_Order_Query();
 		$old_orders = $query->get_orders();
 		foreach ( $old_orders as $order ) {
+			$this->logData( 'Order ' . $order->get_id() . ' deleted.' );
 			$this->factory->order->delete_order( $order );
 		}
 
@@ -329,6 +330,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$expected = array( $this->expectedObject( 'orders.nodes', array() ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Two
@@ -344,6 +346,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Three
@@ -353,10 +356,11 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$variables = array( 'statuses' => array( 'COMPLETED' ) );
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = array(
-			$this->expectedNode( 'orders.nodes', array( 'id' => $this->relay_id( 'shop_order', $orders[1] ) ) ),
+			$this->expectedNode( 'orders.nodes', array( 'id' => $this->toRelayId( 'shop_order', $orders[1] ) ) ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Four
@@ -367,6 +371,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Five
@@ -377,6 +382,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Six
@@ -387,6 +393,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Seven
@@ -394,9 +401,10 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 * tests `orders` query as existing customer, should return customer's
 		 * orders only
 		 */
-		wp_set_current_user( $customer );
+		$this->loginAs( $customer );
 		$response = $this->graphql( compact( 'query' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
+		$this->clearLoaderCache( 'wc_post' );
 	}
 }

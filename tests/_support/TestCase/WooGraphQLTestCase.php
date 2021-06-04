@@ -31,10 +31,6 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		// Create users.
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
-
 		// Load factories.
 		$factories = array(
 			'Product',
@@ -52,6 +48,12 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			$factory_class = '\\Tests\\WPGraphQL\\WooCommerce\\Factory\\' . $factory . 'Factory';
 			$this->factory->{$factory_name} = new $factory_class( $this->factory );
 		}
+
+		$this->factory->shipping_zone->createLegacyFlatRate();
+
+		// Create test users.
+		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->customer     = $this->factory->customer->create();
 	}
 
 	public function tearDown(): void {
@@ -65,14 +67,23 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 * Logs in as a "shop manager"
 	 */
 	protected function loginAsShopManager() {
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAs( $this->shop_manager );
 	}
 
 	/**
 	 * Logs in as a "customer"
 	 */
 	protected function loginAsCustomer() {
-		wp_set_current_user( $this->customer );
+		$this->loginAs( $this->customer );
+	}
+
+	/**
+	 * Logs in as a specific user
+	 */
+	protected function loginAs( $customer_id = 0 ) {
+		wp_set_current_user( $customer_id );
+		\WC()->customer = new \WC_Customer( get_current_user_id(), true );
+		\WC()->session->init();
 	}
 
 	/**

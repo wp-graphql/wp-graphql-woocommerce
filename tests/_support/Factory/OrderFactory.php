@@ -17,13 +17,14 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array();
-
-		add_filter(
-			'woocommerce_package_rates',
-			array( $this, 'woocommerce_package_rates' ),
-			20,
-			2
+		$this->default_generation_definitions = array(
+			'status'        => '',
+			'customer_id'   => 0,
+			'customer_note' => '',
+			'parent'        => 0,
+			'created_via'   => '',
+			'cart_hash'     => '',
+			'order_id'      => 0,
 		);
 	}
 
@@ -31,12 +32,16 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1'; // Required, else wc_create_order throws an exception
         $order 					= \wc_create_order( $args );
 
+		if ( is_wp_error( $order ) ) {
+			throw new \Exception( $order->get_error_message( $args->get_error_code() ) );
+		}
+
 		// Set meta data.
 		if ( ! empty( $args['meta_data'] ) ) {
 			$order->set_meta_data( $args['meta_data'] );
 		}
 
-		$order->save();
+		return $order->save();
 	}
 
 	public function update_object( $object, $fields ) {
@@ -61,14 +66,6 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		return \wc_get_order( $id );
 	}
 
-	public function woocommerce_package_rates( $rates, $package ) {
-		foreach( $rates as $rate_key => $rate ) {
-			if ( $rate->method_id === 'flat_rate' ) {
-				$rates[ $rate_key ]->cost = 10;
-			}
-		}
-	}
-
 	public function createNew( $args = array(), $items = array() ) {
 		if ( ! isset( $args['customer_id'] ) ) {
 			$customer            = new \WC_Customer( $this->factory->customer->create() );
@@ -77,78 +74,74 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		$this->factory->shipping_zone->createLegacyFlatRate();
 
-		$generation_definitions = array(
-			'status'        => 'pending',
-			'customer_note' => '',
-			'total'         => '',
-		);
+		$order_id = $this->create( $args );
+		$order    = \wc_get_order( $order_id );
 
-		$order = $this->create( $args, $generation_definitions );
+		\codecept_debug( compact( 'order_id', 'order' ) );
 
-		// Add line items
-		if ( ! empty( $items['line_items'] ) ) {
-			foreach( $items['line_items'] as $item ) {
-				$order = $this->add_line_item( $order, $item, false );
+		try {
+			// Add line items
+			if ( ! empty( $items['line_items'] ) ) {
+				foreach( $items['line_items'] as $item ) {
+					$order = $this->add_line_item( $order, $item, false );
+				}
+			} else {
+				for ( $i = 0; $i < rand( 1, 3 ); $i++ ) {
+					$order = $this->add_line_item(
+						$order,
+						array(
+							'product' => $this->factory->product->createSimple(),
+							'qty'     => rand( 1, 6 ),
+						),
+						false
+					);
+				}
 			}
-		} else {
-            for ( $i = 0; $i < rand( 1, 3 ); $i++ ) {
-				$order = $this->add_line_item(
-					$order,
-					array(
-						'product' => $this->factory->product->createSimple(),
-						'qty'     => rand( 1, 6 ),
-					),
-					false
-				);
-            }
+			$order->save();
+
+			// Add billing / shipping address
+			$order = $this->set_to_customer_billing_address( $order, $args['customer_id'], false );
+			$order = $this->set_to_customer_shipping_address( $order, $args['customer_id'], false );
+
+			\codecept_debug( $order );
+			// Add shipping costs
+			$shipping_taxes = \WC_Tax::calc_shipping_tax( '10', \WC_Tax::get_shipping_tax_rates() );
+			$rate           = new \WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );
+			$item           = new \WC_Order_Item_Shipping();
+			$item->set_props( array(
+				'method_title' => $rate->label,
+				'method_id'    => $rate->id,
+				'total'        => \wc_format_decimal( $rate->cost ),
+				'taxes'        => $rate->taxes,
+			) );
+			foreach ( $rate->get_meta_data() as $key => $value ) {
+				$item->add_meta_data( $key, $value, true );
+			}
+			$order->add_item( $item );
+
+			// Set payment gateway
+			$payment_gateways = \WC()->payment_gateways->payment_gateways();
+			$order->set_payment_method( $payment_gateways['bacs'] );
+
+			// Set totals
+			$order->set_shipping_total( 10 );
+			$order->set_discount_total( 0 );
+			$order->set_discount_tax( 0 );
+			$order->set_cart_tax( 0 );
+			$order->set_shipping_tax( 0 );
+			$order->set_total( 50 ); // 4 x $10 simple helper product
+
+			// Save and return ID.
+			return $order->save();
+		} catch( \Exception $e ) {
+			$order->delete( true );
+
+			throw new \Exception( $e->getMessage() );
 		}
-		$order->save();
-
-
-        // Add billing / shipping address
-        $order = $this->set_to_customer_billing_address( $order, $args['customer_id'], false );
-        $order = $this->set_to_customer_shipping_address( $order, $args['customer_id'], false );
-
-		// Add shipping costs
-		$shipping_taxes = \WC_Tax::calc_shipping_tax( '10', \WC_Tax::get_shipping_tax_rates() );
-		$rate           = new \WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );
-		$item           = new \WC_Order_Item_Shipping();
-		$item->set_props( array(
-			'method_title' => $rate->label,
-			'method_id'    => $rate->id,
-			'total'        => \wc_format_decimal( $rate->cost ),
-			'taxes'        => $rate->taxes,
-		) );
-		foreach ( $rate->get_meta_data() as $key => $value ) {
-			$item->add_meta_data( $key, $value, true );
-		}
-        $order->add_item( $item );
-
-		// Set payment gateway
-		$payment_gateways = \WC()->payment_gateways->payment_gateways();
-        $order->set_payment_method( $payment_gateways['bacs'] );
-
-		// Set totals
-		$order->set_shipping_total( 10 );
-		$order->set_discount_total( 0 );
-		$order->set_discount_tax( 0 );
-		$order->set_cart_tax( 0 );
-		$order->set_shipping_tax( 0 );
-        $order->set_total( 50 ); // 4 x $10 simple helper product
-
-		// Set meta data.
-		if ( ! empty( $args['meta_data'] ) ) {
-			$order->set_meta_data( $args['meta_data'] );
-		}
-
-        // Save and return ID.
-		return $order->save();
 	}
 
 	public function add_line_item( $order, $args = array(), $save = true ) {
-		if ( ! is_a( $order, \WC_Order::class ) ) {
-			$order = new \WC_Order( $order );
-		}
+		$order = \wc_get_order( $order );
 
 		if ( empty( $args['product'] ) ) {
 			$product = wc_get_product( $this->factory->product->create_simple() );
@@ -187,9 +180,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function add_shipping_line( $order, $args = array(), $save = true ) {
-		if ( ! is_a( $order, \WC_Order::class ) ) {
-			$order = new \WC_Order( $order );
-		}
+		$order = \wc_get_order( $order );
 
 		$this->factory->shipping_zone->createLegacyFlatRate();
 		$item = new WC_Order_Item_Shipping();
@@ -227,10 +218,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function add_coupon_line( $order, $coupon_id = 0, $save = true ) {
-		// Retrieve order.
-		if ( ! is_a( $order, \WC_Order::class ) ) {
-			$order = new \WC_Order( $order );
-		}
+		$order = \wc_get_order( $order );
 
 		// Create new coupon if $coupon_id not passed.
 		if ( empty( $coupon_id ) ) {
@@ -262,8 +250,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function add_fee( $order, $args = array(), $save = true ) {
-		// Retrieve order.
-		$order = new \WC_Order( $order );
+		$order = \wc_get_order( $order );
 
 		// Get thre customer country code.
 		$country_code = $order->get_shipping_country();
@@ -311,9 +298,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function add_tax( $order, $args = array(), $save = true ) {
-		if ( ! is_a( $order, \WC_Order::class ) ) {
-			$order = new \WC_Order( $order );
-		}
+		$order = \wc_get_order( $order );
 
 		if ( empty( $args['rate_id'] ) ) {
 			$rate_id = TaxRateHelper::instance()->create();
@@ -353,12 +338,8 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
     public function set_to_customer_billing_address( $order, $customer, $save = true ) {
-        if ( ! is_a( $order, \WC_Order::class ) ) {
-            $order = new \WC_Order( absint( $order ) );
-        }
-        if ( ! is_a( $customer, \WC_Customer::class ) ) {
-            $customer = new \WC_Customer( $customer );
-        }
+        $order = \wc_get_order( $order );
+		$customer = new \WC_Customer( $customer );
 
         // Set billing address
 		$order->set_billing_first_name( $customer->get_first_name() );
@@ -381,12 +362,8 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
     }
 
     public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
-        if ( ! is_a( $order, \WC_Order::class ) ) {
-            $order = new \WC_Order( absint( $order ) );
-        }
-        if ( ! is_a( $customer, \WC_Customer::class ) ) {
-            $customer = new \WC_Customer( $customer );
-        }
+        $order = \wc_get_order( $order );
+		$customer = new \WC_Customer( $customer );
 
         // Set shipping address
 		$order->set_shipping_first_name( $customer->get_first_name() );
