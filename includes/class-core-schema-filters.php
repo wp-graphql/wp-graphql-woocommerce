@@ -229,7 +229,7 @@ class Core_Schema_Filters {
 		$loaders['wc_customer'] = &$customer_loader;
 
 		// WooCommerce CPT loader.
-		$cpt_loader        = new WC_CPT_Loader( $context );
+		$cpt_loader         = new WC_CPT_Loader( $context );
 		$loaders['wc_post'] = &$cpt_loader;
 
 		// WooCommerce DB loaders.

@@ -53,7 +53,8 @@ function get_wc_cpt_connection_args(): array {
 /**
  * Sanitizes common post-type connection query input.
  *
- * @param array $input  Input to be sanitize.
+ * @param array $input          Input to be sanitize.
+ * @param array $ordering_meta  Meta types used for ordering results.
  *
  * @return array
  */

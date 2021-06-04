@@ -59,7 +59,7 @@ class Orders {
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
 
 						$resolver->set_query_arg( 'post_parent', $source->ID );
@@ -78,7 +78,7 @@ class Orders {
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
 
 						$customer_orders = \wc_get_orders(
@@ -151,7 +151,8 @@ class Orders {
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults.
 	 *
-	 * @param array $args - Connection configuration.
+	 * @param array  $args       Connection configuration.
+	 * @param string $post_type  Connection resolving post-type.
 	 *
 	 * @return array
 	 */
@@ -165,7 +166,7 @@ class Orders {
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args( 'private' ),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use( $post_object ) {
+				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $post_object ) {
 					// Check if user shop manager.
 					$not_manager = ! current_user_can( $post_object->cap->edit_posts );
 
@@ -182,8 +183,14 @@ class Orders {
 					 * and return the connection.
 					 */
 					if ( 'shop_order_refund' === $post_object->name ) {
+						$empty_results = array(
+							'pageInfo' => null,
+							'nodes'    => array(),
+							'edges'    => array(),
+						);
+
 						return $not_manager
-							? array( 'pageInfo' => null, 'nodes' => array(), 'edges' => array() )
+							? $empty_results
 							: $resolver->get_connection();
 					}
 
@@ -291,7 +298,7 @@ class Orders {
 	 * @return array
 	 */
 	public static function post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		$post_types = array( 'shop_order', 'shop_order_refund' );
+		$post_types      = array( 'shop_order', 'shop_order_refund' );
 		$not_order_query = is_string( $query_args['post_type'] )
 			? empty( array_intersect( $post_types, array( $query_args['post_type'] ) ) )
 			: empty( array_intersect( $post_types, $query_args['post_type'], ) );
@@ -314,9 +321,9 @@ class Orders {
 	 * from a GraphQL Query to the WP_Query
 	 *
 	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $args       Query "where" args.
+	 * @param array              $where_args Query "where" args.
 	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param array              $args       All of the arguments for the query (not just the "where" args).
 	 * @param AppContext         $context    The AppContext object.
 	 * @param ResolveInfo        $info       The ResolveInfo object.
 	 * @param mixed|string|array $post_type  The post type for the query.
@@ -325,7 +332,7 @@ class Orders {
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
 		$post_types = array( 'shop_order', 'shop_order_refund' );
-		if ( empty( array_intersect( $post_types, is_string( $post_type ) ? [ $post_type ] : $post_type ) ) ) {
+		if ( empty( array_intersect( $post_types, is_string( $post_type ) ? array( $post_type ) : $post_type ) ) ) {
 			return $query_args;
 		}
 
@@ -339,10 +346,10 @@ class Orders {
 		// Process order meta inputs.
 		$metas      = array( 'customerId', 'customersIn' );
 		$meta_query = array();
-		foreach( $metas as $field ) {
+		foreach ( $metas as $field ) {
 			if ( isset( $query_args[ $field ] ) ) {
 				$value = $query_args[ $field ];
-				switch( $field ) {
+				switch ( $field ) {
 					case 'customerId':
 					case 'customersIn':
 						if ( is_null( $value ) ) {
@@ -367,8 +374,8 @@ class Orders {
 		}
 
 		$key_mapping = array(
-			'statuses'            => 'post_status',
-			'orderIn'             => 'post_parent__in'
+			'statuses' => 'post_status',
+			'orderIn'  => 'post_parent__in',
 		);
 
 		$prefixer = function( $status ) {
@@ -384,6 +391,7 @@ class Orders {
 			}
 		}
 
+		// @codingStandardsIgnoreStart
 		// if ( ! empty( $where_args['statuses'] ) ) {
 		// 	if ( 1 === count( $where_args ) ) {
 		// 		$query_args['status'] = $where_args['statuses'][0];
@@ -391,6 +399,7 @@ class Orders {
 		// 		$query_args['status'] = $where_args['statuses'];
 		// 	}
 		// }
+		// @codingStandardsIgnoreEnd
 
 		// Search by product.
 		if ( ! empty( $where_args['productId'] ) ) {

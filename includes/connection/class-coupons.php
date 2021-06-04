@@ -96,9 +96,9 @@ class Coupons {
 	 * from a GraphQL Query to the WP_Query
 	 *
 	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $args       Query "where" args.
+	 * @param array              $where_args       Query "where" args.
 	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param array              $args   All of the arguments for the query (not just the "where" args).
 	 * @param AppContext         $context    The AppContext object.
 	 * @param ResolveInfo        $info       The ResolveInfo object.
 	 * @param mixed|string|array $post_type  The post type for the query.

@@ -169,7 +169,7 @@ class Cart_Fill {
 					if ( ! empty( $notices['error'] ) ) {
 						$reasons = array_column( $notices['error'], 'notice' );
 						\wc_clear_notices();
-						\codecept_debug($reasons);
+
 						$invalid_cart_items[] = compact( 'cart_item_data', 'reasons' );
 					} else {
 						$reason               = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );

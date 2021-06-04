@@ -36,7 +36,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 ENV PATH "$PATH:~/.composer/vendor/bin"
 
 # Set PHPUnit version.
-ARG PHPUNIT_VERSION=9.4.4
+ARG PHPUNIT_VERSION=8.1.*
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle \
@@ -52,7 +52,7 @@ RUN composer global require --optimize-autoloader \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
-	"phpunit/phpunit:<=${PHPUNIT_VERSION}"
+	"phpunit/phpunit:${PHPUNIT_VERSION}"
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
