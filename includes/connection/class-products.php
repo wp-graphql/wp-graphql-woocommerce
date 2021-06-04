@@ -23,13 +23,6 @@ class Products {
 	 * Registers the various connections from other Types to Product
 	 */
 	public static function register_connections() {
-		add_filter(
-			'graphql_map_input_fields_to_wp_query',
-			array( __CLASS__, 'map_input_fields_to_wp_query' ),
-			10,
-			7
-		);
-
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
 

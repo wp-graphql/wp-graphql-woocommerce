@@ -221,11 +221,13 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			$this->expectedErrorPath( 'coupons' ),
-			$this->expectedObject( 'coupons', 'NULL' ),
+			$this->expectedObject( 'coupons.nodes', array() ),
+			$this->not()->expectedNode( 'coupons.nodes', array( 'id' => $this->toRelayId( 'shop_coupon', $coupons['0'] ) ) ),
+			$this->not()->expectedNode( 'coupons.nodes', array( 'id' => $this->toRelayId( 'shop_coupon', $coupons['1'] ) ) ),
+			$this->not()->expectedNode( 'coupons.nodes', array( 'id' => $this->toRelayId( 'shop_coupon', $coupons['2'] ) ) ),
 		);
 
-		$this->assertQueryError( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		$this->clearLoaderCache( 'wc_post' );
 

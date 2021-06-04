@@ -115,7 +115,7 @@ class Coupons {
 
 		$query_args = array_merge(
 			$query_args,
-			map_shared_input_fields_to_wp_query( $where_args ),
+			map_shared_input_fields_to_wp_query( $where_args )
 		);
 
 		if ( ! empty( $where_args['code'] ) ) {

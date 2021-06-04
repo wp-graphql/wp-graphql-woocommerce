@@ -41,6 +41,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			'ShippingZone',
 			'TaxRate',
 			'Order',
+			'Refund',
 		);
 
 		foreach ( $factories as $factory ) {

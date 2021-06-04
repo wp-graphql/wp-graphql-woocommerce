@@ -77,8 +77,6 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order_id = $this->create( $args );
 		$order    = \wc_get_order( $order_id );
 
-		\codecept_debug( compact( 'order_id', 'order' ) );
-
 		try {
 			// Add line items
 			if ( ! empty( $items['line_items'] ) ) {
@@ -103,7 +101,6 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			$order = $this->set_to_customer_billing_address( $order, $args['customer_id'], false );
 			$order = $this->set_to_customer_shipping_address( $order, $args['customer_id'], false );
 
-			\codecept_debug( $order );
 			// Add shipping costs
 			$shipping_taxes = \WC_Tax::calc_shipping_tax( '10', \WC_Tax::get_shipping_tax_rates() );
 			$rate           = new \WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );

@@ -22,19 +22,10 @@ class Orders {
 	 * Registers the various connections from other Types to Customer
 	 */
 	public static function register_connections() {
-		add_filter(
-			'graphql_map_input_fields_to_wp_query',
-			array( __CLASS__, 'map_input_fields_to_wp_query' ),
-			10,
-			7
-		);
-
-
-
-		// From RootQuery.
+		// From RootQuery To Orders.
 		register_graphql_connection( self::get_connection_config() );
 
-		// From Customer.
+		// From Customer To Orders.
 		register_graphql_connection(
 			self::get_connection_config(
 				array(
@@ -48,10 +39,68 @@ class Orders {
 				)
 			)
 		);
+
+		// From RootQuery To Refunds.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'toType'         => 'Refund',
+					'fromFieldName'  => 'refunds',
+					'connectionArgs' => self::get_refund_connection_args(),
+				),
+				'shop_order_refund'
+			)
+		);
+		// From Order To Refunds.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'       => 'Order',
+					'toType'         => 'Refund',
+					'fromFieldName'  => 'refunds',
+					'connectionArgs' => self::get_refund_connection_args(),
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
+
+						$resolver->set_query_arg( 'post_parent', $source->ID );
+
+						return $resolver->get_connection();
+					},
+				),
+				'shop_order_refund'
+			)
+		);
+		// From Customer To Refunds.
+		register_graphql_connection(
+			self::get_connection_config(
+				array(
+					'fromType'       => 'Customer',
+					'toType'         => 'Refund',
+					'fromFieldName'  => 'refunds',
+					'connectionArgs' => self::get_refund_connection_args(),
+					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
+
+						$customer_orders = \wc_get_orders(
+							array(
+								'customer_id'   => $source->ID,
+								'no_rows_found' => true,
+								'return'        => 'ids',
+							)
+						);
+
+						$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $customer_orders ) );
+
+						return $resolver->get_connection();
+					},
+				),
+				'shop_order_refund'
+			)
+		);
 	}
 
 	/**
-	 * Returns connection filter by customer.
+	 * Returns order connection filter by customer.
 	 *
 	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
 	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
@@ -80,6 +129,25 @@ class Orders {
 	}
 
 	/**
+	 * Returns refund connection filter by customer.
+	 *
+	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
+	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
+	 *
+	 * @return array
+	 */
+	private static function get_customer_refund_connection( $resolver, $customer ) {
+		// If not "billing email" or "ID" set bail early by returning an empty connection.
+		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
+			return array(
+				'pageInfo' => null,
+				'nodes'    => array(),
+				'edges'    => array(),
+			);
+		}
+	}
+
+	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults.
 	 *
@@ -87,33 +155,42 @@ class Orders {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ): array {
+	public static function get_connection_config( $args = array(), $post_type = 'shop_order' ): array {
+		// Get Post type object for use in connection resolve function.
+		$post_object = get_post_type_object( $post_type );
+
 		return array_merge(
 			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args( 'private' ),
-					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						// Check if user shop manager.
-						$not_manager = ! current_user_can( get_post_type_object( 'shop_order' )->cap->edit_posts );
+				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use( $post_object ) {
+					// Check if user shop manager.
+					$not_manager = ! current_user_can( $post_object->cap->edit_posts );
 
-						// Remove any arguments that require querying user to have "shop manager" role.
-						$args = $not_manager
-							? \array_intersect_key( $args, array_keys( self::get_connection_args( 'public' ) ) )
-							: $args;
+					// Remove any arguments that require querying user to have "shop manager" role.
+					$args = $not_manager && 'shop_order' === $post_object->name
+						? \array_intersect_key( $args, array_keys( self::get_connection_args( 'public' ) ) )
+						: $args;
 
-						// Initialize connection resolver.
-						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order' );
+					// Initialize connection resolver.
+					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, $post_object->name );
 
-						/**
-						 * If not shop manager, restrict results to orders/refunds owned by querying user
-						 * and return the connection.
-						 */
+					/**
+					 * If not shop manager, restrict results to orders/refunds owned by querying user
+					 * and return the connection.
+					 */
+					if ( 'shop_order_refund' === $post_object->name ) {
 						return $not_manager
-							? self::get_customer_order_connection( $resolver, \WC()->customer )
+							? array( 'pageInfo' => null, 'nodes' => array(), 'edges' => array() )
 							: $resolver->get_connection();
-					},
+					}
+
+					return $not_manager
+						? self::get_customer_order_connection( $resolver, \WC()->customer )
+						: $resolver->get_connection();
+				},
 			),
 			$args
 		);
@@ -182,6 +259,27 @@ class Orders {
 	}
 
 	/**
+	 * Returns array of where args.
+	 *
+	 * @return array
+	 */
+	public static function get_refund_connection_args(): array {
+		return array_merge(
+			get_wc_cpt_connection_args(),
+			array(
+				'statuses' => array(
+					'type'        => array( 'list_of' => 'String' ),
+					'description' => __( 'Limit result set to refunds assigned a specific status.', 'wp-graphql-woocommerce' ),
+				),
+				'orderIn'  => array(
+					'type'        => array( 'list_of' => 'Int' ),
+					'description' => __( 'Limit result set to refunds from a specific group of order IDs.', 'wp-graphql-woocommerce' ),
+				),
+			)
+		);
+	}
+
+	/**
 	 * Filter the $query_args to allow folks to customize queries programmatically
 	 *
 	 * @param array       $query_args  The args that will be passed to the WP_Query.
@@ -193,9 +291,10 @@ class Orders {
 	 * @return array
 	 */
 	public static function post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
+		$post_types = array( 'shop_order', 'shop_order_refund' );
 		$not_order_query = is_string( $query_args['post_type'] )
-			? 'shop_order' !== $query_args['post_type']
-			: ! in_array( 'shop_order', $query_args['post_type'], true );
+			? empty( array_intersect( $post_types, array( $query_args['post_type'] ) ) )
+			: empty( array_intersect( $post_types, $query_args['post_type'], ) );
 
 		if ( $not_order_query ) {
 			return $query_args;
@@ -225,7 +324,8 @@ class Orders {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
-		if ( ! in_array( 'shop_order', $post_type, true ) ) {
+		$post_types = array( 'shop_order', 'shop_order_refund' );
+		if ( empty( array_intersect( $post_types, is_string( $post_type ) ? [ $post_type ] : $post_type ) ) ) {
 			return $query_args;
 		}
 
@@ -233,7 +333,7 @@ class Orders {
 
 		$query_args = array_merge(
 			$query_args,
-			map_shared_input_fields_to_wp_query( $where_args ),
+			map_shared_input_fields_to_wp_query( $where_args )
 		);
 
 		// Process order meta inputs.
@@ -268,9 +368,7 @@ class Orders {
 
 		$key_mapping = array(
 			'statuses'            => 'post_status',
-			'post_parent'         => 'parent',
-			'post_parent__not_in' => 'parent_exclude',
-			'post__not_in'        => 'exclude',
+			'orderIn'             => 'post_parent__in'
 		);
 
 		$prefixer = function( $status ) {
@@ -286,13 +384,13 @@ class Orders {
 			}
 		}
 
-		if ( ! empty( $where_args['statuses'] ) ) {
-			if ( 1 === count( $where_args ) ) {
-				$query_args['status'] = $where_args['statuses'][0];
-			} else {
-				$query_args['status'] = $where_args['statuses'];
-			}
-		}
+		// if ( ! empty( $where_args['statuses'] ) ) {
+		// 	if ( 1 === count( $where_args ) ) {
+		// 		$query_args['status'] = $where_args['statuses'][0];
+		// 	} else {
+		// 		$query_args['status'] = $where_args['statuses'];
+		// 	}
+		// }
 
 		// Search by product.
 		if ( ! empty( $where_args['productId'] ) ) {
@@ -346,21 +444,5 @@ class Orders {
 		);
 
 		return $query_args;
-	}
-
-	/**
-	 * Checks if user is authorized to query orders
-	 *
-	 * @return bool
-	 */
-	public static function should_execute( $customer_id = 0 ) {
-		$post_type_obj = get_post_type_object( 'shop_order' );
-		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
-			return true;
-		} elseif ( 0 !== $customer_id ) {
-			return get_current_user_id() === $customer_id;
-		}
-
-		return false;
 	}
 }
