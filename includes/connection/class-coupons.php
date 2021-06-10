@@ -24,13 +24,6 @@ class Coupons {
 	 * Registers the various connections from other Types to Coupon
 	 */
 	public static function register_connections() {
-		add_filter(
-			'graphql_map_input_fields_to_wp_query',
-			array( __CLASS__, 'map_input_fields_to_wp_query' ),
-			10,
-			7
-		);
-
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
 	}
@@ -53,7 +46,10 @@ class Coupons {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_coupon' );
 
 					if ( ! self::should_execute() ) {
-						throw new UserError( __( 'Not authorized to execute this query', 'wp-graphql-woocommerce' ) );
+						return array(
+							'nodes' => array(),
+							'edges' => array(),
+						);
 					}
 
 					return $resolver->get_connection();
@@ -100,9 +96,9 @@ class Coupons {
 	 * from a GraphQL Query to the WP_Query
 	 *
 	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $args       Query "where" args.
+	 * @param array              $where_args       Query "where" args.
 	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param array              $args   All of the arguments for the query (not just the "where" args).
 	 * @param AppContext         $context    The AppContext object.
 	 * @param ResolveInfo        $info       The ResolveInfo object.
 	 * @param mixed|string|array $post_type  The post type for the query.
@@ -110,22 +106,27 @@ class Coupons {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
-		if ( ! in_array( 'shop_coupon', $post_type, true ) ) {
+		$not_coupon_query = is_string( $post_type )
+			? 'shop_coupon' !== $post_type
+			: ! in_array( 'shop_coupon', $post_type, true );
+		if ( $not_coupon_query ) {
 			return $query_args;
 		}
 
 		$query_args = array_merge(
 			$query_args,
-			map_shared_input_fields_to_wp_query( $where_args ),
+			map_shared_input_fields_to_wp_query( $where_args )
 		);
 
 		if ( ! empty( $where_args['code'] ) ) {
-			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );
-			$ids              = $id ? array( $id ) : array( '0' );
-			$query_args['post__in'] = isset( $query_args['post__in'] )
+			$id                     = \wc_get_coupon_id_by_code( $where_args['code'] );
+			$ids                    = $id ? array( $id ) : array( '0' );
+			$query_args['post__in'] = ! empty( $query_args['post__in'] )
 				? array_intersect( $ids, $query_args['post__in'] )
 				: $ids;
 		}
+
+		\codecept_debug( $query_args );
 
 		/**
 		 * Filter the input fields

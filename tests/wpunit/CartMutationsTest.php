@@ -986,7 +986,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$invalid_coupon          = 'failed';
 		$invalid_shipping_method = 'fakityfake-shipping';
 
-		\ShippingMethodHelper::create_legacy_flat_rate_instance();
+		$this->factory->shipping_zone->createLegacyFlatRate();
 
 		$query = '
 			mutation ($input: FillCartInput!) {

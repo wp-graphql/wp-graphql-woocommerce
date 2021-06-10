@@ -24,11 +24,11 @@ class Product_Taxonomy_Input {
 				'fields'      => array(
 					'relation' => array(
 						'type'        => 'RelationEnum',
-						'description' => __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' )
+						'description' => __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' ),
 					),
 					'filters'  => array(
 						'type'        => array( 'list_of' => 'ProductTaxonomyFilterInput' ),
-						'description' => __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' )
+						'description' => __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' ),
 					),
 				),
 			)

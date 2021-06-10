@@ -19,6 +19,8 @@ use WPGraphQL\WooCommerce\Model\Refund;
 
 /**
  * Class Refund_Connection_Resolver
+ *
+ * @deprecated v0.10.0
  */
 class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -58,7 +60,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return string
 	 */
 	public function get_loader_name() {
-		return 'wc_cpt';
+		return 'wc_post';
 	}
 
 	/**

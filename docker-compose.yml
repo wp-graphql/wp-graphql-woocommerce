@@ -33,7 +33,7 @@ services:
     build:
       context: .
       args:
-        PHP_VERSION: ${PHP_VERSION:-7.4}
+        PHP_VERSION: ${PHP_VERSION:-7.3}
     volumes:
       - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
       - ./codeception.dist.yml:/var/www/html/wp-content/plugins/wp-graphql-woocommerce/codeception.yml
@@ -74,7 +74,7 @@ services:
     build:
       context: .
       args:
-        PHP_VERSION: ${PHP_VERSION:-7.4}
+        PHP_VERSION: ${PHP_VERSION:-7.3}
     volumes:
       - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
       - ./codeception.dist.yml:/var/www/html/wp-content/plugins/wp-graphql-woocommerce/codeception.yml

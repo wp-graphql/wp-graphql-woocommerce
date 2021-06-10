@@ -18,6 +18,8 @@ use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Order_Connection_Resolver
+ *
+ * @deprecated v0.10.0
  */
 class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -58,7 +60,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return string
 	 */
 	public function get_loader_name() {
-		return 'wc_cpt';
+		return 'wc_post';
 	}
 
 	/**

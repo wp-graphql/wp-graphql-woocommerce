@@ -23,13 +23,6 @@ class Products {
 	 * Registers the various connections from other Types to Product
 	 */
 	public static function register_connections() {
-		add_filter(
-			'graphql_map_input_fields_to_wp_query',
-			array( __CLASS__, 'map_input_fields_to_wp_query' ),
-			10,
-			7
-		);
-
 		// From RootQuery.
 		register_graphql_connection( self::get_connection_config() );
 
@@ -328,8 +321,8 @@ class Products {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 					if ( ! empty( $args['where']['orderby'] ) ) {
-						foreach( $args['where']['orderby'] as $orderby_input ) {
-							switch( $orderby_input['field'] ) {
+						foreach ( $args['where']['orderby'] as $orderby_input ) {
+							switch ( $orderby_input['field'] ) {
 								case '_price':
 								case '_regular_price':
 								case '_sale_price':
@@ -500,9 +493,9 @@ class Products {
 	 * from a GraphQL Query to the WP_Query
 	 *
 	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $args       Query "where" args.
+	 * @param array              $where_args       Query "where" args.
 	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param array              $args   All of the arguments for the query (not just the "where" args).
 	 * @param AppContext         $context    The AppContext object.
 	 * @param ResolveInfo        $info       The ResolveInfo object.
 	 * @param mixed|string|array $post_type  The post type for the query.
@@ -691,7 +684,7 @@ class Products {
 
 			if ( ! empty( $taxonomy_query['filters'] ) ) {
 				$tax_groups = array();
-				foreach( $taxonomy_query['filters'] as $filter ) {
+				foreach ( $taxonomy_query['filters'] as $filter ) {
 					$common = array(
 						'taxonomy' => $filter['taxonomy'],
 						'operator' => ! empty( $filter['operator'] ) ? $filter['operator'] : 'IN',
@@ -701,8 +694,8 @@ class Products {
 						$tax_groups[] = array_merge(
 							$common,
 							array(
-								'field'    => 'ID',
-								'terms'    => $filter['ids'],
+								'field' => 'ID',
+								'terms' => $filter['ids'],
 							)
 						);
 					}
@@ -711,8 +704,8 @@ class Products {
 						$tax_groups[] = array_merge(
 							$common,
 							array(
-								'field'    => 'slug',
-								'terms'    => $filter['terms'],
+								'field' => 'slug',
+								'terms' => $filter['terms'],
 							)
 						);
 					}
@@ -778,7 +771,7 @@ class Products {
 			$on_sale_key = $where_args['onSale'] ? 'post__in' : 'post__not_in';
 			$on_sale_ids = \wc_get_product_ids_on_sale();
 
-			$on_sale_ids          = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
+			$on_sale_ids                = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
 			$query_args[ $on_sale_key ] = $on_sale_ids;
 		}
 
@@ -804,7 +797,7 @@ class Products {
 				$args,
 				$context,
 				$info,
-				$post_type
+				$post_type,
 			),
 			'0.9.0',
 			'graphql_map_input_fields_to_wp_query'

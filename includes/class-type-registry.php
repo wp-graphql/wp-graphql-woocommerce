@@ -98,7 +98,6 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Connection\Orders::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Order_Items::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Downloadable_Items::register_connections();
-		\WPGraphQL\WooCommerce\Connection\Refunds::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Product_Attributes::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Variation_Attributes::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Customers::register_connections();

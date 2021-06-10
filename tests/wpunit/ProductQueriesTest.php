@@ -262,7 +262,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$this->assertQuerySuccessful( $response, $expected );
 
 		// Clear cache
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_cpt' );
+		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_post' );
 
 		/**
 		 * Assertion Two
@@ -689,6 +689,8 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
+
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Eleven
@@ -1121,7 +1123,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		';
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = array( $this->expectedObject( 'product.price', '£1.00 - £10.00' ) );
+		$expected = array( $this->expectedObject( 'product.price', '$1.00 - $10.00' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

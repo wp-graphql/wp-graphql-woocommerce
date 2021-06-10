@@ -59,7 +59,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return string
 	 */
 	public function get_loader_name() {
-		return 'wc_cpt';
+		return 'wc_post';
 	}
 
 	/**

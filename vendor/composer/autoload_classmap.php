@@ -24,7 +24,6 @@ return array(
     'WPGraphQL\\WooCommerce\\Connection\\Posts' => $baseDir . '/includes/connection/class-posts.php',
     'WPGraphQL\\WooCommerce\\Connection\\Product_Attributes' => $baseDir . '/includes/connection/class-product-attributes.php',
     'WPGraphQL\\WooCommerce\\Connection\\Products' => $baseDir . '/includes/connection/class-products.php',
-    'WPGraphQL\\WooCommerce\\Connection\\Refunds' => $baseDir . '/includes/connection/class-refunds.php',
     'WPGraphQL\\WooCommerce\\Connection\\Shipping_Methods' => $baseDir . '/includes/connection/class-shipping-methods.php',
     'WPGraphQL\\WooCommerce\\Connection\\Tax_Rates' => $baseDir . '/includes/connection/class-tax-rates.php',
     'WPGraphQL\\WooCommerce\\Connection\\Variation_Attributes' => $baseDir . '/includes/connection/class-variation-attributes.php',
