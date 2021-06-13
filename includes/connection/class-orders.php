@@ -301,7 +301,7 @@ class Orders {
 		$post_types      = array( 'shop_order', 'shop_order_refund' );
 		$not_order_query = is_string( $query_args['post_type'] )
 			? empty( array_intersect( $post_types, array( $query_args['post_type'] ) ) )
-			: empty( array_intersect( $post_types, $query_args['post_type'], ) );
+			: empty( array_intersect( $post_types, $query_args['post_type'] ) );
 
 		if ( $not_order_query ) {
 			return $query_args;
