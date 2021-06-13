@@ -442,6 +442,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$product_ids = array (
 			$this->factory->product->createSimple(
 				array(
+					'slug'          => 'test-product-1',
 					'price'         => 6000,
 					'regular_price' => 6000
 				)
@@ -464,7 +465,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		$query = '
 			query (
-				$slug: String,
+				$slugIn: [String],
 				$status: String,
 				$category: String,
 				$categoryIn: [String],
@@ -481,7 +482,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				$taxonomyFilter: ProductTaxonomyInput
 			) {
 				products( where: {
-					slug: $slug,
+					slugIn: $slugIn,
 					status: $status,
 					category: $category,
 					categoryIn: $categoryIn,
@@ -533,7 +534,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * Tests query with "slug" where argument, and expect the product with
 		 * the slug "test-product-1" to be returned.
 		 */
-		$variables = array( 'slug' => 'test-product-1' );
+		$variables = array( 'slugIn' => array( 'test-product-1' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,

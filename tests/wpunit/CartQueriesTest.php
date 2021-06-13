@@ -2,7 +2,7 @@
 
 class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	private function key_to_cursor( $key ) {
-		return base64_encode( "CI:{$key}" );
+		return base64_encode( 'arrayconnection:' . $key );
 	}
 
 	public function getExpectedCartData() {
@@ -337,6 +337,10 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 					contents(first: $first, last: $last, before: $before, after: $after) {
 					  	itemCount
 					  	productCount
+						pageInfo {
+							hasNextPage
+							hasPreviousPage
+						}
 					  	edges {
 							cursor
 							node {
@@ -348,18 +352,6 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			}
 		';
 
-		// Array_map callback that generates the expected node data from splices of the $cart_items
-		$expected_edge_mapper = function( $item, $position ) {
-			return $this->expectedEdge(
-				'cart.contents.edges',
-				array(
-					'cursor' => $this->key_to_cursor( $item ),
-					'node'   => array( 'key' => $item ),
-				),
-				$position
-			);
-		};
-
 		/**
 		 * Assertion One
 		 *
@@ -367,13 +359,23 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 */
 		$variables = array( 'first' => 2, 'after' => '' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-
-		$expected = array_merge(
-			array(
-				$this->expectedObject( 'cart.contents.itemCount', 6 ),
-				$this->expectedObject( 'cart.contents.productCount', 5 ),
+		$expected  = array(
+			$this->expectedObject( 'cart.contents.itemCount', 6 ),
+			$this->expectedObject( 'cart.contents.productCount', 5 ),
+			$this->expectedObject( 'cart.contents.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'cart.contents.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[0] ) ),
+			$this->expectedObject( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[1] ) ),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[0] ) ),
+				0
 			),
-			array_map( $expected_edge_mapper, array_slice( $cart_items, 0, 2 ), range( 0, 1 ) )
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[1] ) ),
+				1
+			)
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -388,12 +390,24 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			'after' => $this->key_to_cursor( $cart_items[1] )
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-
-		$this->assertQuerySuccessful(
-			$response,
-			// Only check the edges.
-			array_map( $expected_edge_mapper, array_slice( $cart_items, 2, 2 ), range( 0, 1 ) )
+		$expected  = array(
+			$this->expectedObject( 'cart.contents.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'cart.contents.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[2] ) ),
+			$this->expectedObject( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[3] ) ),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[2] ) ),
+				0
+			),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[3] ) ),
+				1
+			)
 		);
+
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
@@ -402,28 +416,58 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 */
 		$variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-
-		$this->assertQuerySuccessful(
-			$response,
-			// Only check the edges.
-			array_map( $expected_edge_mapper, array_slice( $cart_items, 0, 2 ), range( 0, 1 ) )
+		$expected  = array(
+			$this->expectedObject( 'cart.contents.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'cart.contents.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[3] ) ),
+			$this->expectedObject( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[4] ) ),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[3] ) ),
+				0
+			),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[4] ) ),
+				1
+			)
 		);
+
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
 		 *
 		 * Tests "before" parameter.
 		 */
-		$variables = array( 'last' => 4, 'before' => $cart_items[4] );
+		$variables = array(
+			'last' => 4,
+			'before' => $this->key_to_cursor( $cart_items[3] ),
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-
-		$this->assertQuerySuccessful(
-			$response,
-			array_map( // Only check the edges.
-				$expected_edge_mapper,
-				array_slice( $cart_items, 0, 4 ),
-				range( 3, 0, -1 ) // Reverse
+		$expected  = array(
+			$this->expectedObject( 'cart.contents.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'cart.contents.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[0] ) ),
+			$this->expectedObject( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[1] ) ),
+			$this->expectedObject( 'cart.contents.edges.2.cursor', $this->key_to_cursor( $cart_items[2] ) ),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[0] ) ),
+				0
+			),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[1] ) ),
+				1
+			),
+			$this->expectedEdge(
+				'cart.contents.edges',
+				array( $this->expectedObject( 'key', $cart_items[2] ) ),
+				2
 			)
 		);
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }

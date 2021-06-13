@@ -36,7 +36,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 ENV PATH "$PATH:~/.composer/vendor/bin"
 
 # Set PHPUnit version.
-ARG PHPUNIT_VERSION=8.1.*
+ARG PHPUNIT_VERSION="<=8.1.*"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle \

@@ -352,9 +352,9 @@ class Products {
 	 */
 	public static function get_connection_args(): array {
 		$args = array(
-			'slug'               => array(
-				'type'        => 'String',
-				'description' => __( 'Limit result set to products with a specific slug.', 'wp-graphql-woocommerce' ),
+			'slugIn'             => array(
+				'type'        => array( 'list_of' => 'String' ),
+				'description' => __( 'Limit result set to products with specific slugs.', 'wp-graphql-woocommerce' ),
 			),
 			'status'             => array(
 				'type'        => 'String',
@@ -519,6 +519,10 @@ class Products {
 		);
 
 		$query_args = array_diff_key( $query_args, array_flip( $remove ) );
+
+		if ( ! empty( $where_args['slugIn'] ) ) {
+			$query_args['post_name__in'] = $where_args['slugIn'];
+		}
 
 		$tax_query     = array();
 		$taxonomy_args = array(
