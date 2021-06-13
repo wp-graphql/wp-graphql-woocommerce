@@ -276,8 +276,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_common_inputs( $where_args );
 
-		if ( ! empty( $where_args['slug'] ) ) {
-			$args['name'] = $where_args['slug'];
+		if ( ! empty( $where_args['slugIn'] ) ) {
+			$args['post_name__in'] = $where_args['slugIn'];
 		}
 
 		if ( ! empty( $where_args['status'] ) ) {

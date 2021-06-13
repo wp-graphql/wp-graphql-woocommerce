@@ -26,8 +26,6 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	use WC_Db_Loader_Common;
 
-	const PREFIX = 'CI';
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -92,14 +90,26 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		$cursor_key    = $this->get_offset();
-		$cursor_offset = array_search( $cursor_key, \array_column( $cart_items, 'key' ), true );
+		$cursor = $this->get_offset();
+		$first  = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
+		$last   = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 
-		if ( ! empty( $this->args['after'] ) ) {
-			$cart_items = array_splice( $cart_items, $cursor_offset + 1 );
-		} elseif ( $cursor_offset ) {
-			$cart_items = array_splice( $cart_items, 0, $cursor_offset );
+		// MUST DO FOR SANITY ~ If last, reverse list for correct slicing.
+		if ( $last ) {
+			$cart_items = array_reverse( $cart_items );
 		}
+
+		// Set offset.
+		$offset = $cursor
+			? array_search( $cursor, array_column( $cart_items, 'key' ), true )
+			: 0;
+
+		// If cursor set, move index up one to ensure cursor not included in keys.
+		if ( $cursor ) {
+			$offset++;
+		}
+
+		$cart_items = array_slice( $cart_items, $offset, $this->query_amount + 1 );
 
 		// Cache cart items for later.
 		foreach ( $cart_items as $item ) {
@@ -108,36 +118,6 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Return cart item keys.
 		return array_column( $cart_items, 'key' );
-	}
-
-	/**
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		$offset = null;
-
-		// Get the offset.
-		if ( ! empty( $this->args['after'] ) ) {
-			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['after'] );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['before'] );
-		}
-
-		return $offset;
-	}
-
-	/**
-	 * Create cursor for downloadable item node.
-	 *
-	 * @param string $id  Cart item key.
-	 *
-	 * @return string
-	 */
-	protected function get_cursor_for_node( $id ) {
-		return $this->offset_to_cursor( self::PREFIX, $id );
 	}
 
 	/**
@@ -170,5 +150,34 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	protected function is_valid_model( $model ) {
 		return ! empty( $model ) && ! empty( $model['key'] ) && ! empty( $model['product_id'] );
+	}
+
+		/**
+	 * Get_offset
+	 *
+	 * This returns the offset to be used in the $query_args based on the $args passed to the
+	 * GraphQL query.
+	 *
+	 * @return int|mixed
+	 */
+	public function get_offset() {
+		/**
+		 * Defaults
+		 */
+		$offset = 0;
+
+		/**
+		 * Get the $after offset
+		 */
+		if ( ! empty( $this->args['after'] ) ) {
+			$offset = substr( base64_decode( $this->args['after'] ), strlen('arrayconnection:') );
+		} elseif ( ! empty( $this->args['before'] ) ) {
+			$offset = substr( base64_decode( $this->args['before'] ), strlen('arrayconnection:') );
+		}
+
+		/**
+		 * Return the higher of the two values
+		 */
+		return $offset;
 	}
 }
