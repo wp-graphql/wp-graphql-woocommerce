@@ -152,7 +152,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 		return ! empty( $model ) && ! empty( $model['key'] ) && ! empty( $model['product_id'] );
 	}
 
-		/**
+	/**
 	 * Get_offset
 	 *
 	 * This returns the offset to be used in the $query_args based on the $args passed to the
@@ -170,9 +170,11 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 		 * Get the $after offset
 		 */
 		if ( ! empty( $this->args['after'] ) ) {
-			$offset = substr( base64_decode( $this->args['after'] ), strlen('arrayconnection:') );
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
 		} elseif ( ! empty( $this->args['before'] ) ) {
-			$offset = substr( base64_decode( $this->args['before'] ), strlen('arrayconnection:') );
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
 		}
 
 		/**

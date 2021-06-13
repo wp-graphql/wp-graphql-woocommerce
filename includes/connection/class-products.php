@@ -352,7 +352,7 @@ class Products {
 	 */
 	public static function get_connection_args(): array {
 		$args = array(
-			'slugIn'               => array(
+			'slugIn'             => array(
 				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Limit result set to products with specific slugs.', 'wp-graphql-woocommerce' ),
 			),
