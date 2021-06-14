@@ -174,7 +174,7 @@ class Checkout_Mutation {
 	 *
 	 * @param array $data Order data.
 	 */
-	protected function update_session( $data ) {
+	protected static function update_session( $data ) {
 		// Update both shipping and billing to the passed billing address first if set.
 		$address_fields = array(
 			'first_name',
