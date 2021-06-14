@@ -11,6 +11,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Data\Connection\UserConnectionResolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -23,43 +24,62 @@ class Customers {
 	 */
 	public static function register_connections() {
 		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'RootQuery',
-					'toType'        => 'Customer',
-					'fromFieldName' => 'customers',
-				)
+			array(
+				'fromType'      => 'RootQuery',
+				'toType'        => 'Customer',
+				'fromFieldName' => 'customers',
+				'connectionArgs' => self::get_connection_args(),
+				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
+
+					if ( ! self::should_execute() ) {
+						return array(
+							'nodes' => array(),
+							'edges' => array(),
+						);
+					}
+
+					$resolver->set_query_arg( 'role', 'customer' );
+
+					return $resolver->get_connection();
+				},
 			)
 		);
 
 		register_graphql_connection(
-			self::get_connection_config(
-				array(
-					'fromType'      => 'Coupon',
-					'toType'        => 'Customer',
-					'fromFieldName' => 'usedBy',
-				)
+			array(
+				'fromType'      => 'Coupon',
+				'toType'        => 'Customer',
+				'fromFieldName' => 'usedBy',
+				'connectionArgs' => self::get_connection_args(),
+				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
+
+					$resolver->set_query_arg( 'include', $source->used_by_ids );
+					$resolver->set_query_arg( 'role', 'customer' );
+
+					if ( ! self::should_execute() ) {
+						return array();
+					}
+
+					return $resolver->get_connection();
+				},
 			)
 		);
 	}
 
 	/**
-	 * Given an array of $args, this returns the connection config, merging the provided args
-	 * with the defaults
+	 * Confirms the uses has the privileges to query Customer
 	 *
-	 * @param array $args - Connection configuration.
-	 * @return array
+	 * @return bool
 	 */
-	public static function get_connection_config( $args ): array {
-		return array_merge(
-			array(
-				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_customer_connection( $source, $args, $context, $info );
-				},
-			),
-			$args
-		);
+	public static function should_execute() {
+		switch ( true ) {
+			case current_user_can( 'list_users' ):
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
@@ -85,18 +105,6 @@ class Customers {
 				'type'        => 'String',
 				'description' => __( 'Limit result set to resources with a specific email.', 'wp-graphql-woocommerce' ),
 			),
-			'role'      => array(
-				'type'        => 'UserRoleEnum',
-				'description' => __( 'Limit result set to resources with a specific role.', 'wp-graphql-woocommerce' ),
-			),
-			'roleIn'    => array(
-				'type'        => array( 'list_of' => 'UserRoleEnum' ),
-				'description' => __( 'Limit result set to resources with a specific group of roles.', 'wp-graphql-woocommerce' ),
-			),
-			'roleNotIn' => array(
-				'type'        => array( 'list_of' => 'UserRoleEnum' ),
-				'description' => __( 'Limit result set to resources not within a specific group of roles.', 'wp-graphql-woocommerce' ),
-			),
 			'orderby'   => array(
 				'type'        => 'CustomerConnectionOrderbyEnum',
 				'description' => __( 'Order results by a specific field.', 'wp-graphql-woocommerce' ),
@@ -106,5 +114,77 @@ class Customers {
 				'description' => __( 'Order of results.', 'wp-graphql-woocommerce' ),
 			),
 		);
+	}
+
+	/**
+	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+	 * from a GraphQL Query to the WP_Query
+	 *
+	 * @param array              $query_args The mapped query arguments.
+	 * @param array              $where_args       Query "where" args.
+	 * @param mixed              $source     The query results for a query calling this.
+	 * @param array              $args   All of the arguments for the query (not just the "where" args).
+	 * @param AppContext         $context    The AppContext object.
+	 * @param ResolveInfo        $info       The ResolveInfo object.
+	 *
+	 * @return array Query arguments.
+	 */
+	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info ) {
+
+		$key_mapping = array(
+			'search'    => 'search',
+			'exclude'   => 'exclude',
+			'include'   => 'include',
+		);
+
+		foreach ( $key_mapping as $key => $field ) {
+			if ( ! empty( $where_args[ $key ] ) ) {
+				$query_args[ $field ] = $where_args[ $key ];
+			}
+		}
+
+		// Filter by email.
+		if ( ! empty( $where_args['email'] ) ) {
+			$query_args['search']         = $where_args['email'];
+			$query_args['search_columns'] = array( 'user_email' );
+		}
+
+		/**
+		 * Map the orderby inputArgs to the WP_Query
+		 */
+		if ( ! empty( $where_args['orderby'] ) ) {
+			$query_args['orderby'] = $where_args['orderby'];
+		}
+
+		/**
+		 * Map the orderby inputArgs to the WP_Query
+		 */
+		if ( ! empty( $where_args['order'] ) ) {
+			$query_args['order'] = $where_args['order'];
+		}
+
+		/**
+		 * Filter the input fields
+		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
+		 * from a GraphQL Query to the WP_Query
+		 *
+		 * @param array       $args       The mapped query arguments
+		 * @param array       $where_args Query "where" args
+		 * @param mixed       $source     The query results for a query calling this
+		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param AppContext  $context    The AppContext object
+		 * @param ResolveInfo $info       The ResolveInfo object
+		 */
+		$query_args = apply_filters(
+			'graphql_map_input_fields_to_customer_query',
+			$query_args,
+			$where_args,
+			$source,
+			$args,
+			$context,
+			$info
+		);
+
+		return $query_args;
 	}
 }

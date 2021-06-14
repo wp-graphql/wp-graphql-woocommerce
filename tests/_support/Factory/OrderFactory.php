@@ -138,12 +138,12 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function add_line_item( $order, $args = array(), $save = true ) {
-		$order = \wc_get_order( $order );
+		$order = $save ? \wc_get_order( $order ) : $order;
 
 		if ( empty( $args['product'] ) ) {
-			$product = wc_get_product( $this->factory->product->create_simple() );
+			$product = \wc_get_product( $this->factory->product->createSimple() );
 		} else {
-			$product = wc_get_product( $args['product'] );
+			$product = \wc_get_product( $args['product'] );
 		}
 
 		if ( empty( $args['qty'] ) ) {
@@ -157,8 +157,8 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			array(
 				'product'  => $product,
 				'quantity' => $qty,
-				'subtotal' => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
-				'total'    => wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
+				'subtotal' => \wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
+				'total'    => \wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
 			)
 		);
 
@@ -177,7 +177,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function add_shipping_line( $order, $args = array(), $save = true ) {
-		$order = \wc_get_order( $order );
+		$order = $save ? \wc_get_order( $order ) : $order;
 
 		$this->factory->shipping_zone->createLegacyFlatRate();
 		$item = new WC_Order_Item_Shipping();

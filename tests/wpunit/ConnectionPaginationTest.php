@@ -1,49 +1,23 @@
 <?php
 
-class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
-    private $shop_manager;
-    private $simple_customer;
+class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-    private $coupons;
-    private $orders;
-    private $products;
-    private $refunds;
+	public function toCursor( $id ) {
+		if ( $id instanceof \WC_Product_Download ) {
+			return base64_encode( 'arrayconnection:' . $id['id'] );
+		}
 
-    public function setUp(): void {
-        // before
-        parent::setUp();
-
-        // Create users.
-        $this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-
-        // Setup helpers.
-        $this->coupons   = $this->getModule('\Helper\Wpunit')->coupon();
-        $this->orders    = $this->getModule('\Helper\Wpunit')->order();
-        $this->products  = $this->getModule('\Helper\Wpunit')->product();
-        $this->refunds   = $this->getModule('\Helper\Wpunit')->refund();
-        $this->customers = $this->getModule('\Helper\Wpunit')->customer();
-    }
-
-    public function tearDown(): void {
-        // your tear down methods here
-
-        // then
-        parent::tearDown();
-    }
-
-    public function set_user( $user ) {
-		wp_set_current_user( $user );
-		WC()->customer = new WC_Customer( get_current_user_id(), true );
+		return base64_encode( 'arrayconnection:' . $id );
 	}
 
     // tests
     public function testCouponsPagination() {
 		$coupons = array(
-            $this->coupons->create(),
-			$this->coupons->create(),
-			$this->coupons->create(),
-            $this->coupons->create(),
-			$this->coupons->create(),
+            $this->factory->coupon->create(),
+			$this->factory->coupon->create(),
+			$this->factory->coupon->create(),
+            $this->factory->coupon->create(),
+			$this->factory->coupon->create(),
         );
 
         usort(
@@ -57,7 +31,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			query ($first: Int, $last: Int, $after: String, $before: String) {
 				coupons(first: $first, last: $last, after: $after, before: $before) {
 					nodes {
-						id
+						databaseId
                     }
                     pageInfo {
                         hasPreviousPage
@@ -69,7 +43,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			}
         ';
 
-        $this->set_user( $this->shop_manager );
+        $this->loginAsShopManager();
 
         /**
 		 * Assertion One
@@ -77,67 +51,90 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
-		$results   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'coupons.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[0] ) ),
+			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[1] ) ),
+			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[0] ),
+			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[1] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
-
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['coupons'] );
-        $this->assertNotEmpty( $results['data']['coupons']['pageInfo'] );
-        $this->assertTrue( $results['data']['coupons']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['coupons']['pageInfo']['endCursor'] );
-        $end_cursor = $results['data']['coupons']['pageInfo']['endCursor'];
-
-        // Check coupons.
-        $actual   = $results['data']['coupons']['nodes'];
-		$expected = $this->coupons->print_nodes( array_slice( $coupons, 0, 2 ) );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array( 'first' => 3, 'after' => $end_cursor );
-		$results    = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+        $variables = array(
+			'first' => 3,
+			'after' => $this->toCursor( $coupons[1] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'coupons.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[2] ) ),
+			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[4] ) ),
+			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[2] ),
+			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[3] ),
+			$this->expectedObject( 'coupons.nodes.2.databaseId', $coupons[4] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['coupons'] );
-        $this->assertNotEmpty( $results['data']['coupons']['pageInfo'] );
-        $this->assertFalse( $results['data']['coupons']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['coupons']['pageInfo']['endCursor'] );
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter.
+		 */
+		\WPGraphQL::set_is_graphql_request( true );
+        $variables = array(
+			'last'   => 2,
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'coupons.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[3] ) ),
+			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[4] ) ),
+			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[3] ),
+			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[4] ),
+		);
 
-        // Check coupons.
-        $actual   = $results['data']['coupons']['nodes'];
-        $expected = $this->coupons->print_nodes( array_slice( $coupons, 2, 3 ) );
+        //$this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
+		/**
+		 * Assertion Four
+		 *
+		 * Test "before" parameter.
+		 */
+        $variables = array(
+			'last'   => 2,
+			'before' => $this->toCursor( $coupons[3] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'coupons.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[1] ) ),
+			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[2] ) ),
+			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[1] ),
+			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[2] ),
+		);
+
+        //$this->assertQuerySuccessful( $response, $expected );
     }
 
     public function testProductsPagination() {
         $products = array(
-            $this->products->create_simple(),
-            $this->products->create_simple(),
-            $this->products->create_simple(),
-            $this->products->create_simple(),
-            $this->products->create_simple(),
+            $this->factory->product->createSimple(),
+            $this->factory->product->createSimple(),
+            $this->factory->product->createSimple(),
+            $this->factory->product->createSimple(),
+            $this->factory->product->createSimple(),
         );
 
         usort(
@@ -151,7 +148,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			query ($first: Int, $last: Int, $after: String, $before: String) {
 				products(first: $first, last: $last, after: $after, before: $before) {
 					nodes {
-						id
+						databaseId
                     }
                     pageInfo {
                         hasPreviousPage
@@ -169,62 +166,82 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
-		$results   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'products.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[0] ) ),
+			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedObject( 'products.nodes.0.databaseId', $products[0] ),
+			$this->expectedObject( 'products.nodes.1.databaseId', $products[1] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
-
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['products'] );
-        $this->assertNotEmpty( $results['data']['products']['pageInfo'] );
-        $this->assertTrue( $results['data']['products']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['products']['pageInfo']['endCursor'] );
-        $end_cursor = $results['data']['products']['pageInfo']['endCursor'];
-
-        // Check products.
-        $actual   = $results['data']['products']['nodes'];
-		$expected = $this->products->print_nodes( array_slice( $products, 0, 2 ) );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array( 'first' => 3, 'after' => $end_cursor );
-		$results    = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+        $variables = array(
+			'first' => 3,
+			'after' => $this->toCursor( $products[1] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
+			$this->expectedObject( 'products.nodes.0.databaseId', $products[2] ),
+			$this->expectedObject( 'products.nodes.1.databaseId', $products[3] ),
+			$this->expectedObject( 'products.nodes.2.databaseId', $products[4] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['products'] );
-        $this->assertNotEmpty( $results['data']['products']['pageInfo'] );
-        $this->assertFalse( $results['data']['products']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['products']['pageInfo']['endCursor'] );
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter.
+		 */
+        $variables = array( 'last' => 2 );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[3] ) ),
+			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
+			$this->expectedObject( 'products.nodes.0.databaseId', $products[3] ),
+			$this->expectedObject( 'products.nodes.1.databaseId', $products[4] ),
+		);
 
-        // Check coupons.
-        $actual   = $results['data']['products']['nodes'];
-        $expected = $this->products->print_nodes( array_slice( $products, 2, 3 ) );
+        //$this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
+		/**
+		 * Assertion Four
+		 *
+		 * Test "before" parameter.
+		 */
+        $variables = array(
+			'last'   => 2,
+			'before' => $this->toCursor( $products[3] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedObject( 'products.nodes.0.databaseId', $products[1] ),
+			$this->expectedObject( 'products.nodes.1.databaseId', $products[2] ),
+		);
+
+        //$this->assertQuerySuccessful( $response, $expected );
     }
 
     public function testOrdersPagination() {
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 
 		$query      = new \WC_Order_Query();
 		$old_orders = $query->get_orders();
@@ -235,11 +252,11 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		unset( $query );
 
         $orders = array(
-            $this->orders->create(),
-			$this->orders->create(),
-			$this->orders->create(),
-            $this->orders->create(),
-			$this->orders->create(),
+            $this->factory->order->createNew(),
+			$this->factory->order->createNew(),
+			$this->factory->order->createNew(),
+            $this->factory->order->createNew(),
+			$this->factory->order->createNew(),
         );
 
         usort(
@@ -253,7 +270,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			query ($first: Int, $last: Int, $after: String, $before: String) {
 				orders(first: $first, last: $last, after: $after, before: $before) {
 					nodes {
-						id
+						databaseId
                     }
                     pageInfo {
                         hasPreviousPage
@@ -271,68 +288,88 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
-		$results   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'orders.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[0] ) ),
+			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[1] ) ),
+			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[0] ),
+			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[1] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
-
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['orders'] );
-        $this->assertNotEmpty( $results['data']['orders']['pageInfo'] );
-        $this->assertTrue( $results['data']['orders']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['orders']['pageInfo']['endCursor'] );
-        $end_cursor = $results['data']['orders']['pageInfo']['endCursor'];
-
-        // Check orders.
-        $actual   = $results['data']['orders']['nodes'];
-		$expected = $this->orders->print_nodes( array_slice( $orders, 0, 2 ) );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array( 'first' => 3, 'after' => $end_cursor );
-		$results    = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+        $variables = array(
+			'first' => 3,
+			'after' => $this->toCursor( $orders[1] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'orders.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[2] ) ),
+			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[4] ) ),
+			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[2] ),
+			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[3] ),
+			$this->expectedObject( 'orders.nodes.2.databaseId', $orders[4] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['orders'] );
-        $this->assertNotEmpty( $results['data']['orders']['pageInfo'] );
-        $this->assertFalse( $results['data']['orders']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['orders']['pageInfo']['endCursor'] );
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter.
+		 */
+        $variables = array( 'last' => 2 );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'orders.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[3] ) ),
+			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[4] ) ),
+			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[3] ),
+			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[4] ),
+		);
 
-        // Check orders.
-        $actual   = $results['data']['orders']['nodes'];
-        $expected = $this->orders->print_nodes( array_slice( $orders, 2, 3 ) );
+        //$this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
+        /**
+		 * Assertion Four
+		 *
+		 * Test "before" parameter.
+		 */
+        $variables = array(
+			'last'   => 2,
+			'before' => $this->toCursor( $orders[3] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'orders.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[1] ) ),
+			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[2] ) ),
+			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[1] ),
+			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[2] ),
+		);
+
+        //$this->assertQuerySuccessful( $response, $expected );
     }
 
     public function testRefundsPagination() {
-        $order   = $this->orders->create();
+        $order   = $this->factory->order->createNew();
         $refunds = array(
-            $this->refunds->create( $order, array( 'amount' => 0.5 ) ),
-			$this->refunds->create( $order, array( 'amount' => 0.5 ) ),
-			$this->refunds->create( $order, array( 'amount' => 0.5 ) ),
-            $this->refunds->create( $order, array( 'amount' => 0.5 ) ),
-			$this->refunds->create( $order, array( 'amount' => 0.5 ) ),
+            $this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+            $this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
         );
 
         usort(
@@ -346,7 +383,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			query ($first: Int, $last: Int, $after: String, $before: String) {
 				refunds(first: $first, last: $last, after: $after, before: $before) {
 					nodes {
-						id
+						databaseId
                     }
                     pageInfo {
                         hasPreviousPage
@@ -358,7 +395,7 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 			}
         ';
 
-        wp_set_current_user( $this->shop_manager );
+        $this->loginAsShopManager();
 
         /**
 		 * Assertion One
@@ -366,81 +403,106 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
 		 * Test "first" parameter.
 		 */
         $variables = array( 'first' => 2 );
-		$results   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'refunds.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[0] ) ),
+			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[1] ) ),
+			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[0] ),
+			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[1] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
-
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['refunds'] );
-        $this->assertNotEmpty( $results['data']['refunds']['pageInfo'] );
-        $this->assertTrue( $results['data']['refunds']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['refunds']['pageInfo']['endCursor'] );
-        $end_cursor = $results['data']['refunds']['pageInfo']['endCursor'];
-
-        // Check refunds.
-        $actual   = $results['data']['refunds']['nodes'];
-		$expected = $this->refunds->print_nodes( array_slice( $refunds, 0, 2 ) );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array( 'first' => 3, 'after' => $end_cursor );
-		$results    = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+        $variables = array(
+			'first' => 3,
+			'after' => $this->toCursor( $refunds[1] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'refunds.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[2] ) ),
+			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[4] ) ),
+			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[2] ),
+			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[3] ),
+			$this->expectedObject( 'refunds.nodes.2.databaseId', $refunds[4] ),
+		);
 
-        // use --debug flag to view.
-		codecept_debug( $results );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['refunds'] );
-        $this->assertNotEmpty( $results['data']['refunds']['pageInfo'] );
-        $this->assertFalse( $results['data']['refunds']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['refunds']['pageInfo']['endCursor'] );
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter.
+		 */
+        $variables = array( 'last' => 2 );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'refunds.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[3] ) ),
+			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[4] ) ),
+			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[3] ),
+			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[4] ),
+		);
 
-        // Check refunds.
-        $actual   = $results['data']['refunds']['nodes'];
-        $expected = $this->refunds->print_nodes( array_slice( $refunds, 2, 3 ) );
+        //$this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
+        /**
+		 * Assertion Four
+		 *
+		 * Test "before" parameter.
+		 */
+        $variables = array(
+			'last'   => 2,
+			'before' => $this->toCursor( $refunds[3] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'refunds.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[1] ) ),
+			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[2] ) ),
+			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[1] ),
+			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[2] ),
+		);
+
+        //$this->assertQuerySuccessful( $response, $expected );
     }
 
     public function testCustomersPagination() {
-        $customers = array(
-            $this->customers->create(),
-            $this->customers->create(),
-            $this->customers->create(),
-            $this->customers->create(),
-            $this->customers->create(),
+        $some_customers = array(
+            $this->factory->customer->create(),
+            $this->factory->customer->create(),
+            $this->factory->customer->create(),
+            $this->factory->customer->create(),
+            $this->factory->customer->create(),
         );
 
-        usort(
-            $customers,
-            function( $key_a, $key_b ) {
-                return $key_a < $key_b;
-            }
-        );
+		$customers = get_users(
+			array(
+				'fields'  => 'id',
+				'role'    => 'customer',
+				'orderby' => 'user_login',
+				'order'   => 'ASC',
+			)
+		);
+
+		$customers = array_map( 'absint', $customers );
 
         $query = '
             query ($first: Int, $last: Int, $after: String, $before: String) {
                 customers(first: $first, last: $last, after: $after, before: $before) {
                     nodes {
-                        id
+                        databaseId
+						username
                     }
                     pageInfo {
                         hasPreviousPage
@@ -452,104 +514,111 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-        wp_set_current_user( $this->shop_manager );
+        $this->loginAsShopManager();
 
         /**
-         * Assertion One
-         *
-         * Test "first" parameter.
-         */
+		 * Assertion One
+		 *
+		 * Test "first" parameter.
+		 */
         $variables = array( 'first' => 2 );
-        $results   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'customers.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[0] ),
+			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[1] ),
+			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[0] ) ),
+			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[1] ) ),
+		);
 
-        // use --debug flag to view.
-        codecept_debug( $results );
-
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['customers'] );
-        $this->assertNotEmpty( $results['data']['customers']['pageInfo'] );
-        $this->assertTrue( $results['data']['customers']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['customers']['pageInfo']['endCursor'] );
-        $end_cursor = $results['data']['customers']['pageInfo']['endCursor'];
-
-        // Check customers.
-        $actual   = $results['data']['customers']['nodes'];
-        $expected = $this->customers->print_nodes( array_slice( $customers, 0, 2 ) );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
-         * Assertion Two
-         *
-         * Test "after" parameter.
-         */
-        $variables = array( 'first' => 3, 'after' => $end_cursor );
-        $results    = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		 * Assertion Two
+		 *
+		 * Test "after" parameter.
+		 */
+        $variables = array(
+			'first' => 3,
+			'after' => $this->toCursor( $customers[1] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[2] ) ),
+			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[4] ) ),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[2] ),
+			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[3] ),
+			$this->expectedObject( 'customers.nodes.2.databaseId', $customers[4] ),
+		);
 
-        // use --debug flag to view.
-        codecept_debug( $results );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['customers'] );
-        $this->assertNotEmpty( $results['data']['customers']['pageInfo'] );
-        $this->assertFalse( $results['data']['customers']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['customers']['pageInfo']['endCursor'] );
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter.
+		 */
+        $variables = array( 'last' => 2 );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'customers.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[3] ) ),
+			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[4] ) ),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[3] ),
+			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[4] ),
+		);
 
-        // Check customers.
-        $actual   = $results['data']['customers']['nodes'];
-        $expected = $this->customers->print_nodes( array_slice( $customers, 2, 3 ) );
+        //$this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
+        /**
+		 * Assertion Four
+		 *
+		 * Test "before" parameter.
+		 */
+        $variables = array(
+			'last'   => 2,
+			'before' => $this->toCursor( $customers[3] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'customers.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[1] ) ),
+			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[2] ) ),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[1] ),
+			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[2] ),
+		);
+
+        //$this->assertQuerySuccessful( $response, $expected );
     }
 
     public function testDownloadableItemsPagination() {
-        $customer_id = $this->customers->create();
-        $downloable_products = array(
-            $this->products->create_simple(
-                array(
-                    'downloadable' => true,
-                    'downloads'    => array( $this->products->create_download() )
-                )
-            ),
-            $this->products->create_simple(
-                array(
-                    'downloadable' => true,
-                    'downloads'    => array( $this->products->create_download() )
-                )
-            ),
-            $this->products->create_simple(
-                array(
-                    'downloadable' => true,
-                    'downloads'    => array( $this->products->create_download() )
-                )
-            ),
-            $this->products->create_simple(
-                array(
-                    'downloadable' => true,
-                    'downloads'    => array( $this->products->create_download() )
-                )
-            ),
-            $this->products->create_simple(
-                array(
-                    'downloadable' => true,
-                    'downloads'    => array( $this->products->create_download() )
-                )
-            ),
-        );
+        $customer_id         = $this->factory->customer->create();
 
-        $order_id = $this->orders->create(
+		$downloads = array(
+			$this->factory->product->createDownload(),
+			$this->factory->product->createDownload(),
+			$this->factory->product->createDownload(),
+			$this->factory->product->createDownload(),
+			$this->factory->product->createDownload(),
+
+		);
+        $products = array_map(
+			function( $download ) {
+				return $this->factory->product->createSimple(
+					array(
+						'downloadable' => true,
+						'downloads'    => array( $download )
+					)
+				);
+			},
+			$downloads
+		);
+
+        $order_id = $this->factory->order->createNew(
             array(
                 'status'      => 'completed',
                 'customer_id' => $customer_id,
@@ -562,10 +631,12 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
                             'qty'     => 1,
                         );
                     },
-                    $downloable_products
+                    $products
                 ),
             )
         );
+
+		$order = \wc_get_order( $order_id );
 
         // Force download permission updated.
         wc_downloadable_product_permissions( $order_id, true );
@@ -595,83 +666,86 @@ class ConnectionPaginationTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-        $this->set_user( $customer_id );
+        $this->loginAs( $customer_id );
 
-        /**
-         * Assertion One
-         *
-         * Test "first" parameter.
-         */
+         /**
+		 * Assertion One
+		 *
+		 * Test "first" parameter.
+		 */
         $variables = array( 'first' => 2 );
-        $results   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[0] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[1] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[0] ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
+		);
 
-        // use --debug flag to view.
-        codecept_debug( $results );
-
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['customer'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo'] );
-        $this->assertTrue( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['endCursor'] );
-        $end_cursor = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['endCursor'];
-
-        // Check downloadable items.
-        $actual   = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['nodes'];
-        $expected = array_map(
-            function( $product_id ) {
-                return array( 'product' => array( 'databaseId' => $product_id ) );
-            },
-            array_slice( $downloable_products, 0, 2 )
-        );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
-         * Assertion Two
-         *
-         * Test "after" parameter.
-         */
-        $variables = array( 'first' => 3, 'after' => $end_cursor );
-        $results    = graphql(
-            array(
-                'query'     => $query,
-                'variables' => $variables,
-            )
-        );
+		 * Assertion Two
+		 *
+		 * Test "after" parameter.
+		 */
+        $variables = array(
+			'first' => 3,
+			'after' => $this->toCursor( $downloads[1] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[2] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[4] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[2] ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[3] ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[4] ),
+		);
 
-        // use --debug flag to view.
-        codecept_debug( $results );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        // Check pageInfo.
-        $this->assertNotEmpty( $results['data'] );
-        $this->assertNotEmpty( $results['data']['customer'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo'] );
-        $this->assertFalse( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['hasNextPage'] );
-        $this->assertNotEmpty( $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['pageInfo']['endCursor'] );
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter.
+		 */
+        $variables = array( 'last' => 2 );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', false ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[3] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[4] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[3] ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[4] ),
+		);
 
-        // Check downloadable items.
-        $actual   = $results['data']['customer']['orders']['nodes'][0]['downloadableItems']['nodes'];
-        $expected = array_map(
-            function( $product_id ) {
-                return array( 'product' => array( 'databaseId' => $product_id ) );
-            },
-            array_slice( $downloable_products, 2, 3 )
-        );
+        $this->assertQuerySuccessful( $response, $expected );
 
-        $this->assertEquals( $expected, $actual );
+        /**
+		 * Assertion Two
+		 *
+		 * Test "before" parameter.
+		 */
+        $variables = array(
+			'last' => 3,
+			'before' => $this->toCursor( $downloads[3] ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', true ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[0] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[2] ) ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[0] ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
+			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[2] ),
+		);
+
+        $this->assertQuerySuccessful( $response, $expected );
     }
 }

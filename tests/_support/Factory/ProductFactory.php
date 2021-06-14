@@ -313,7 +313,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		if ( $id ) {
 			$product = \wc_get_product( $id );
-			$product->set_downloads( array($download) );
+			$product->set_downloads( array( $download ) );
 			$product->save();
 		}
 
