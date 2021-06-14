@@ -124,7 +124,6 @@ class Session_Transaction_Manager {
 			return;
 		}
 
-
 		// Bail if transaction has already been completed. There are times when the underlying action runs twice.
 		if ( ! is_null( $this->transaction_id ) ) {
 			$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
@@ -167,7 +166,7 @@ class Session_Transaction_Manager {
 		} elseif ( $this->transaction_id === $transaction_queue[0]['transaction_id'] ) {
 			return true;
 		} elseif ( true === $this->did_transaction_expire( $transaction_queue ) ) {
-			// If transaction has expired, remove it from the queue array and continue loop
+			// If transaction has expired, remove it from the queue array and continue loop.
 			array_shift( $transaction_queue );
 			$this->save_transaction_queue( $transaction_queue );
 		}
@@ -244,6 +243,11 @@ class Session_Transaction_Manager {
 		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue );
 	}
 
+	/**
+	 * Create transaction timestamp.
+	 *
+	 * @return void
+	 */
 	public function set_timestamp() {
 		$transaction_queue = $this->get_transaction_queue();
 
@@ -270,7 +274,7 @@ class Session_Transaction_Manager {
 	 * Whether the transaction has expired. This helps prevent infinite loops while searching through the transaction
 	 * queue.
 	 *
-	 * @param $transaction_queue
+	 * @param array $transaction_queue  Transaction queue.
 	 *
 	 * @return bool
 	 */
