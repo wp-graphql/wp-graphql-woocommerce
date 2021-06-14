@@ -73,6 +73,14 @@ class Core_Schema_Filters {
 			10,
 			3
 		);
+
+		add_filter(
+			'graphql_dataloader_get_model',
+			array( '\WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader', 'inject_user_loader_models' ),
+			10,
+			3
+		);
+
 		add_filter(
 			'graphql_post_object_connection_query_args',
 			array( '\WPGraphQL\WooCommerce\Connection\Orders', 'post_object_connection_query_args' ),
@@ -99,6 +107,13 @@ class Core_Schema_Filters {
 			array( '\WPGraphQL\WooCommerce\Connection\Orders', 'map_input_fields_to_wp_query' ),
 			10,
 			7
+		);
+
+		add_filter(
+			'graphql_map_input_fields_to_wp_user_query',
+			array( '\WPGraphQL\WooCommerce\Connection\Customers', 'map_input_fields_to_wp_query' ),
+			10,
+			6
 		);
 	}
 

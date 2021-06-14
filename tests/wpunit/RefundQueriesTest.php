@@ -12,7 +12,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			$this->expectedObject( 'refund.title', $refund->get_post_title() ),
 			$this->expectedObject( 'refund.reason', $refund->get_reason() ),
 			$this->expectedObject( 'refund.amount', floatval( $refund->get_amount() ) ),
-			$this->expectedObject( 'refund.refundedBy.id', $this->toRelayId( 'user', $refund->get_refunded_by() ) ),
+			$this->expectedObject( 'refund.refundedBy.databaseId', $refund->get_refunded_by() ),
 			$this->expectedObject( 'refund.date', (string) $refund->get_date_modified() ),
 		);
 	}
@@ -33,7 +33,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 					reason
 					amount
 					refundedBy {
-						id
+						databaseId
 					}
 					date
 				}

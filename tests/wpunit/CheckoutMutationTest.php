@@ -384,10 +384,10 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     'key'   => 'test_key',
                                     'value' => 'test value',
                                 ),
-								array(
-									'key'   => '_new_order_email_sent',
-									'value' => 'true'
-								)
+								// array(
+								// 	'key'   => '_new_order_email_sent',
+								// 	'value' => 'true'
+								// )
                             ),
                             'couponLines'   => array(
                                 'nodes' => array_reverse(

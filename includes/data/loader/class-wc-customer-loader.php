@@ -65,4 +65,22 @@ class WC_Customer_Loader extends AbstractDataLoader {
 
 		return $all_customers;
 	}
+
+	/**
+	 * Callback for inject the User dataloader with the WC_Customer model.
+	 *
+	 * @param null  $model  Possible model instance to be loader.
+	 * @param mixed $entry  Data source.
+	 * @param mixed $key    Data key/ID.
+	 * @return \WPGraphQL\Model\Model|null
+	 */
+	public static function inject_user_loader_models( $model, $entry, $key ) {
+		if ( is_null( $model ) && is_a( $entry, \WP_User::class ) ) {
+			if ( in_array( 'customer', (array) $entry->roles, true ) ) {
+				$model = new Customer( $key );
+			}
+		}
+
+		return $model;
+	}
 }

@@ -21,10 +21,6 @@ use WPGraphQL\WooCommerce\Data\Factory;
  * Class Cart_Item_Connection_Resolver
  */
 class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
-	/**
-	 * Include Db Loader connection common functions.
-	 */
-	use WC_Db_Loader_Common;
 
 	/**
 	 * Return the name of the loader to be used with the connection resolver

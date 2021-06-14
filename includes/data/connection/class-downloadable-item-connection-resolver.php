@@ -22,12 +22,6 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class Downloadable_Item_Connection_Resolver
  */
 class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
-	/**
-	 * Include Db Loader connection common functions.
-	 */
-	use WC_Db_Loader_Common;
-
-	const PREFIX = 'DI';
 
 	/**
 	 * Return the name of the loader to be used with the connection resolver
@@ -133,14 +127,26 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		$cursor_key    = $this->get_offset();
-		$cursor_offset = array_search( $cursor_key, array_column( $items, 'download_id' ), true ) ?? null;
+		$cursor = $this->get_offset();
+		$first  = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
+		$last   = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 
-		if ( ! empty( $this->args['after'] ) ) {
-			$items = array_splice( $items, $cursor_offset + 1 );
-		} elseif ( $cursor_offset ) {
-			$items = array_splice( $items, 0, $cursor_offset );
+		// MUST DO FOR SANITY ~ If last, reverse list for correct slicing.
+		if ( $last ) {
+			$items = array_reverse( $items );
 		}
+
+		// Set offset.
+		$offset = $cursor
+			? array_search( $cursor, array_column( $items, 'download_id' ), true )
+			: 0;
+
+		// If cursor set, move index up one to ensure cursor not included in keys.
+		if ( $cursor ) {
+			$offset++;
+		}
+
+		$items = array_slice( $items, $offset, $this->query_amount + 1 );
 
 		// Cache items for later.
 		foreach ( $items as $item ) {
@@ -148,36 +154,6 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		return array_column( $items, 'download_id' );
-	}
-
-	/**
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		$offset = null;
-
-		// Get the offset.
-		if ( ! empty( $this->args['after'] ) ) {
-			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['after'] );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			$offset = $this->cursor_to_offset( self::PREFIX, $this->args['before'] );
-		}
-
-		return $offset;
-	}
-
-	/**
-	 * Create cursor for downloadable item node.
-	 *
-	 * @param string $id  Downloadable item ID.
-	 *
-	 * @return string
-	 */
-	protected function get_cursor_for_node( $id ) {
-		return $this->offset_to_cursor( self::PREFIX, $id );
 	}
 
 	/**
@@ -212,5 +188,37 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	protected function is_valid_model( $model ) {
 		return isset( $model ) && ! empty( $model['download_id'] );
+	}
+
+
+	/**
+	 * Get_offset
+	 *
+	 * This returns the offset to be used in the $query_args based on the $args passed to the
+	 * GraphQL query.
+	 *
+	 * @return int|mixed
+	 */
+	public function get_offset() {
+		/**
+		 * Defaults
+		 */
+		$offset = 0;
+
+		/**
+		 * Get the $after offset
+		 */
+		if ( ! empty( $this->args['after'] ) ) {
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
+		} elseif ( ! empty( $this->args['before'] ) ) {
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
+		}
+
+		/**
+		 * Return the higher of the two values
+		 */
+		return $offset;
 	}
 }

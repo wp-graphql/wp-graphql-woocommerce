@@ -1,36 +1,73 @@
 <?php
 
 use GraphQLRelay\Relay;
-class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $helper;
-	private $new_customer;
+class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-	public function setUp(): void {
-		// before
-		parent::setUp();
+	public function expectedCustomerData( $id ) {
+		$customer = new \WC_Customer( $id );
+		$wp_user  = get_user_by( 'ID', $id );
 
-		$this->shop_manager  = $this->factory->user->create( array( 'role' => 'shop_manager', 'user_login' => 'shopManager25' ) );
-		$this->customer      = $this->factory->user->create( array( 'role' => 'customer', 'user_login' => 'customer43' ) );
-		$this->helper        = $this->getModule('\Helper\Wpunit')->customer();
-		$this->order_helper  = $this->getModule('\Helper\Wpunit')->order();
-		$this->new_customer  = $this->helper->create();
-	}
+		if ( ! $customer->get_id() ) {
+			throw new \Exception( 'Invalid customer ID provided.' );
+		}
 
-	public function tearDown(): void {
-		// your tear down methods here
-		// then
-		parent::tearDown();
-	}
-
-	public function set_user( $user ) {
-		wp_set_current_user( $user );
-		WC()->customer = new WC_Customer( get_current_user_id(), true );
+		return array(
+			$this->expectedObject( 'customer.id', $this->toRelayId( 'customer', $id ) ),
+			$this->expectedObject( 'customer.databaseId', $id ),
+			$this->expectedObject( 'customer.isVatExempt', $customer->get_is_vat_exempt() ),
+			$this->expectedObject( 'customer.hasCalculatedShipping', $customer->has_calculated_shipping() ),
+			$this->expectedObject( 'customer.calculatedShipping', $customer->get_calculated_shipping() ),
+			$this->expectedObject( 'customer.orderCount', $customer->get_order_count() ),
+			$this->expectedObject( 'customer.totalSpent', (float) $customer->get_total_spent() ),
+			$this->expectedObject( 'customer.username', $customer->get_username() ),
+			$this->expectedObject( 'customer.email', $customer->get_email() ),
+			$this->expectedObject( 'customer.firstName', $this->maybe( $customer->get_first_name() ) ),
+			$this->expectedObject( 'customer.lastName', $this->maybe( $customer->get_last_name() ) ),
+			$this->expectedObject( 'customer.displayName', $customer->get_display_name() ),
+			$this->expectedObject( 'customer.role', $customer->get_role() ),
+			$this->expectedObject( 'customer.date', (string) $customer->get_date_created() ),
+			$this->expectedObject( 'customer.modified', (string) $customer->get_date_modified() ),
+			$this->expectedObject( 'customer.lastOrder.databaseId', $customer->get_last_order() ? $customer->get_last_order()->get_id() : null ),
+			$this->expectedObject( 'customer.billing.firstName', $this->maybe( $customer->get_billing_first_name() ) ),
+			$this->expectedObject( 'customer.billing.lastName', $this->maybe( $customer->get_billing_last_name() ) ),
+			$this->expectedObject( 'customer.billing.company', $this->maybe( $customer->get_billing_company() ) ),
+			$this->expectedObject( 'customer.billing.address1', $this->maybe( $customer->get_billing_address_1() ) ),
+			$this->expectedObject( 'customer.billing.address2', $this->maybe( $customer->get_billing_address_2() ) ),
+			$this->expectedObject( 'customer.billing.city', $this->maybe( $customer->get_billing_city() ) ),
+			$this->expectedObject( 'customer.billing.state', $this->maybe( $customer->get_billing_state() ) ),
+			$this->expectedObject( 'customer.billing.postcode', $this->maybe( $customer->get_billing_postcode() ) ),
+			$this->expectedObject( 'customer.billing.country', $this->maybe( $customer->get_billing_country() ) ),
+			$this->expectedObject( 'customer.billing.email', $this->maybe( $customer->get_billing_email() ) ),
+			$this->expectedObject( 'customer.billing.phone', $this->maybe( $customer->get_billing_phone() ) ),
+			$this->expectedObject( 'customer.shipping.firstName', $this->maybe( $customer->get_shipping_first_name() ) ),
+			$this->expectedObject( 'customer.shipping.lastName', $this->maybe( $customer->get_shipping_last_name() ) ),
+			$this->expectedObject( 'customer.shipping.company', $this->maybe( $customer->get_shipping_company() ) ),
+			$this->expectedObject( 'customer.shipping.address1', $this->maybe( $customer->get_shipping_address_1() ) ),
+			$this->expectedObject( 'customer.shipping.address2', $this->maybe( $customer->get_shipping_address_2() ) ),
+			$this->expectedObject( 'customer.shipping.city', $this->maybe( $customer->get_shipping_city() ) ),
+			$this->expectedObject( 'customer.shipping.state', $this->maybe( $customer->get_shipping_state() ) ),
+			$this->expectedObject( 'customer.shipping.postcode', $this->maybe( $customer->get_shipping_postcode() ) ),
+			$this->expectedObject( 'customer.shipping.country', $this->maybe( $customer->get_shipping_country() ) ),
+			$this->expectedObject( 'customer.isPayingCustomer', $customer->get_is_paying_customer() ),
+			$this->expectedObject(
+				'customer.jwtAuthToken',
+				! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user ) )
+					? \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user )
+					: null
+			),
+			$this->expectedObject(
+				'customer.jwtRefreshToken',
+				! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user ) )
+					? \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user )
+					: null
+			),
+		);
 	}
 
 	// tests
 	public function testCustomerQueryAndArgs() {
+		$new_customer_id = $this->factory->customer->create();
+
 		$query = '
 			query ( $id: ID, $customerId: Int ) {
 				customer( id: $id, customerId: $customerId ) {
@@ -89,36 +126,33 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query should return null value due to lack of permissions.
 		 */
-		$this->set_user( $this->customer );
-		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$this->loginAsCustomer();
+		$variables = array( 'id' => $this->toRelayId( 'customer', $new_customer_id ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedErrorPath( 'customer' ),
+			$this->expectedObject( 'customer', 'null' )
+		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQueryError( $response, $expected );
 
-		$this->assertNotEmpty( $actual['data'] );
-		$this->assertNotEmpty( $actual['errors'] );
-		$this->assertNull( $actual['data']['customer'] );
 
 		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+		$this->clearLoaderCache( 'wc_customer' );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Query should return requested data because user queried themselves.
 		 */
-		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->customer ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'customer' => $this->helper->print_query( $this->customer ) ) );
+		$variables = array( 'id' => $this->toRelayId( 'customer', $this->customer ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = $this->expectedCustomerData( $this->customer );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+		$this->clearLoaderCache( 'wc_customer' );
 
 		/**
 		 * Assertion Three
@@ -126,81 +160,82 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Query should return requested data because has sufficient permissions,
 		 * but should not have access to JWT fields.
 		 */
-		$this->set_user( $this->shop_manager );
-		$variables = array( 'id' => Relay::toGlobalId( 'customer', $this->new_customer ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
+		$this->loginAsShopManager();
+		$variables = array( 'id' => $this->toRelayId( 'customer', $new_customer_id ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_merge(
+			array(
+				$this->expectedErrorPath( 'customer.jwtAuthToken' ),
+				$this->expectedObject( 'customer.jwtAuthToken', 'null' ),
+				$this->expectedErrorPath( 'customer.jwtRefreshToken' ),
+				$this->expectedObject( 'customer.jwtRefreshToken', 'null' )
+			),
+			$this->expectedCustomerData( $new_customer_id )
+		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected['data'], $actual['data'] );
-		$this->assertNotEmpty( $actual['errors'] );
+		$this->assertQueryError( $response, $expected );
 
 		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+		$this->clearLoaderCache( 'wc_customer' );
 
 		/**
 		 * Assertion Four
 		 *
 		 * Query should return data corresponding with current user when no ID is provided.
 		 */
-		$this->set_user( $this->new_customer );
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer, true ) ) );
+		$this->loginAs( $new_customer_id );
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = $this->expectedCustomerData( $new_customer_id );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+		$this->clearLoaderCache( 'wc_customer' );
 
 		/**
 		 * Assertion Five
 		 *
 		 * Query should return requested data because user queried themselves.
 		 */
-		$this->set_user( $this->new_customer );
-		$variables = array( 'customerId' => $this->new_customer );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array( 'data' => array( 'customer' => $this->helper->print_query( $this->new_customer ) ) );
+		$this->loginAs( $new_customer_id );
+		$variables = array( 'customerId' => $new_customer_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+		$this->clearLoaderCache( 'wc_customer' );
 
 		/**
 		 * Assertion Six
 		 *
 		 * Query should return null value due to lack of permissions..
 		 */
-		$this->set_user( $this->customer );
-		$variables = array( 'customerId' => $this->new_customer );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$this->loginAsCustomer();
+		$variables = array( 'customerId' => $new_customer_id );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedErrorPath( 'customer' ),
+			$this->expectedObject( 'customer', 'null' )
+		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQueryError( $response, $expected );
 
-		$this->assertNotEmpty( $actual['data'] );
-		$this->assertNotEmpty( $actual['errors'] );
-		$this->assertNull( $actual['data']['customer'] );
+		// Clear customer cache.
+		$this->clearLoaderCache( 'wc_customer' );
 	}
 
 	public function testCustomersQueryAndWhereArgs() {
-		$user_id = $this->helper->create( array( 'email' => 'gotcha@example.com', 'username' => 'megaman8080' ) );
-		$users = get_users(
-			array (
-				'count_total' => false,
-				'order'       => 'ASC',
-				'fields'      => 'ID',
-				'role'        => 'customer',
-			)
+		$users = array(
+			$this->factory->customer->create(
+				array(
+					'email' => 'gotcha@example.com',
+					'username' => 'megaman8080'
+				)
+			),
+			$this->factory->customer->create(),
+			$this->factory->customer->create(),
+			$this->factory->customer->create(),
 		);
 
 		$query = '
@@ -209,9 +244,6 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 				$include: [Int],
 				$exclude: [Int],
 				$email: String,
-				$role: UserRoleEnum,
-				$roleIn: [UserRoleEnum],
-				$roleNotIn: [UserRoleEnum],
 				$orderby: CustomerConnectionOrderbyEnum,
 				$order: OrderEnum
 			) {
@@ -220,14 +252,11 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 					include: $include,
 					exclude: $exclude,
 					email: $email,
-					role: $role,
-					roleIn: $roleIn,
-					roleNotIn: $roleNotIn,
 					orderby: $orderby,
 					order: $order
 				} ) {
 					nodes{
-						id
+						databaseId
 					}
 				}
 			}
@@ -238,37 +267,27 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query should return null value due to lack of capabilities...
 		 */
-		$this->set_user( $this->customer );
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array( 'data' => array( 'customers' => array( 'nodes' => array() ) ) );
+		$this->loginAs( $users[0] );
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = array( $this->expectedObject( 'customers.nodes', array() ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
-
-		// Clear customer cache.
-		$this->getModule('\Helper\Wpunit')->clear_loader_cache( 'wc_customer' );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Query should return requested data because user has proper capabilities.
 		 */
-		$this->set_user( $this->shop_manager );
-		$actual   = graphql( array( 'query' => $query ) );
+		$this->loginAsShopManager();
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes( $users ),
-				),
-			),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[0] ),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[1] ),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[2] ),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[3] ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
@@ -276,81 +295,41 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "search" where argument.
 		 */
 		$variables = array( 'search' => 'megaman8080' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'filter' => function( $id ) {
-								$customer = new \WC_Customer( $id );
-								return 'megaman8080' === $customer->get_username();
-							}
-						)
-					),
-				),
-			),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $users[0] ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
 		 *
 		 * Tests "include" where argument.
 		 */
-		$variables = array( 'include' => array( $user_id ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'include' => array( $users[2]) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'filter' => function( $id ) use ( $user_id ) {
-								return absint( $id ) === $user_id;
-							}
-						)
-					),
-				),
-			),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $users[2] ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Five
 		 *
 		 * Tests "exclude" where argument.
 		 */
-		$variables = array( 'exclude' => array( $user_id ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$variables = array( 'exclude' => array( $users[2] ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'filter' => function( $id ) use( $user_id ) {
-								return absint( $id ) !== $user_id;
-							}
-						)
-					),
-				),
-			),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[0] ),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[1] ),
+			$this->expectedObject( 'customers.nodes.#.databaseId', $users[3] ),
+			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[2] ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Six
@@ -358,144 +337,58 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "email" where argument.
 		 */
 		$variables = array( 'email' => 'gotcha@example.com' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'filter' => function( $id ) {
-								$customer = new \WC_Customer( $id );
-								return 'gotcha@example.com' === $customer->get_email();
-							}
-						)
-					),
-				),
-			),
+			$this->expectedObject( 'customers.nodes.0.databaseId', $users[0] ),
+			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[1] ),
+			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[2] ),
+			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[3] ),
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Seven
 		 *
-		 * Tests "role" where argument.
-		 */
-		$variables = array( 'role' => 'SHOP_MANAGER' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes( array ( $this->shop_manager ) ),
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
-
-		/**
-		 * Assertion Eight
-		 *
-		 * Tests "roleIn" where argument. Should
-		 */
-		$variables = array( 'roleIn' => array( 'SHOP_MANAGER' ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes( array ( $this->shop_manager ) ),
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
-
-		/**
-		 * Assertion Nine
-		 *
-		 * Tests "roleNotIn" where argument.
-		 */
-		$variables = array( 'roleNotIn' => array( 'SHOP_MANAGER' ) );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						get_users(
-							array(
-								'role__not_in' => 'shop_manager',
-								'fields'       => 'ID',
-							)
-						),
-						array(
-							'filter' => function( $id ) {
-								$customer = new \WC_Customer( $id );
-								return 'shop_manager' !== $customer->get_role();
-							}
-						)
-					),
-				),
-			),
-		);
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
-
-		/**
-		 * Assertion Ten
-		 *
 		 * Tests "orderby" and "order" where arguments.
 		 */
 		$variables = array( 'orderby' => 'USERNAME', 'order' => 'ASC' );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-		$expected  = array(
-			'data' => array(
-				'customers' => array(
-					'nodes' => $this->helper->print_nodes(
-						$users,
-						array(
-							'sorter' => function( $id_a, $id_b ) {
-								$data = new \WC_Customer( $id_a );
-								$username_a = $data->get_username();
-								$data = new \WC_Customer( $id_b );
-								$username_b = $data->get_username();
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-								return strnatcmp( $username_a, $username_b );
-							}
-						)
-					),
-				),
-			),
+		$all_users = get_users(
+			array(
+				'fields'  => 'ID',
+				'role'    => 'customer',
+				'orderby' => 'username',
+				'order'   => 'ASC',
+			)
 		);
+		$expected  = array();
+		foreach ( $all_users as $index => $user_id ) {
+			$expected[] = $this->expectedObject(
+				"customers.nodes.{$index}.databaseId",
+				absint( $user_id )
+			);
+		}
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCustomerToOrdersConnection() {
-		$this->order_1 = $this->order_helper->create( array( 'customer_id' => $this->customer ) );
-		$this->order_2 = $this->order_helper->create( array( 'customer_id' => $this->new_customer ) );
+		$new_customer_id = $this->factory->customer->create();
+		$order_1         = $this->factory->order->createNew(
+			array( 'customer_id' => $this->customer )
+		);
+		$order_2         = $this->factory->order->createNew(
+			array( 'customer_id' => $new_customer_id )
+		);
 
 		$query = '
 			query {
 				customer {
 					orders {
 						nodes {
-							id
+							databaseId
 						}
 					}
 				}
@@ -507,20 +400,12 @@ class CustomerQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query for authenticated customer's orders.
 		 */
-		$this->set_user( $this->customer );
-		$actual   = graphql( array( 'query' => $query ) );
+		$this->loginAsCustomer();
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			'data' => array(
-				'customer' => array(
-					'orders' => array(
-						'nodes' => array(
-							array( 'id' => $this->order_helper->to_relay_id( $this->order_1 ) ),
-						)
-					)
-				)
-			)
+			$this->expectedObject( 'customer.orders.nodes.#.databaseId', $order_1 ),
 		);
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
