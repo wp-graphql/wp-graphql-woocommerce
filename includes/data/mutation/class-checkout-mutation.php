@@ -600,7 +600,7 @@ class Checkout_Mutation {
 
 		// Add meta data.
 		if ( ! empty( $input['metaData'] ) ) {
-			self::add_order_meta( $order_id, $input['metaData'], $input, $context, $info );
+			self::update_order_meta( $order_id, $input['metaData'], $input, $context, $info );
 		}
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -698,7 +698,7 @@ class Checkout_Mutation {
 	}
 
 	/**
-	 * Add meta data not set in WC_Checkout::create_order().
+	 * Add or update meta data not set in WC_Checkout::create_order().
 	 *
 	 * @param int         $order_id   Order ID.
 	 * @param array       $meta_data  Order meta data.
@@ -706,12 +706,12 @@ class Checkout_Mutation {
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
 	 */
-	public static function add_order_meta( $order_id, $meta_data, $input, $context, $info ) {
+	public static function update_order_meta( $order_id, $meta_data, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
 
 		if ( $meta_data ) {
 			foreach ( $meta_data as $meta ) {
-				$order->add_meta_data( $meta['key'], $meta['value'] );
+				$order->update_meta_data( $meta['key'], $meta['value'] );
 			}
 		}
 
