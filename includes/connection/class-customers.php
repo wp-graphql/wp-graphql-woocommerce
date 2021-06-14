@@ -25,9 +25,9 @@ class Customers {
 	public static function register_connections() {
 		register_graphql_connection(
 			array(
-				'fromType'      => 'RootQuery',
-				'toType'        => 'Customer',
-				'fromFieldName' => 'customers',
+				'fromType'       => 'RootQuery',
+				'toType'         => 'Customer',
+				'fromFieldName'  => 'customers',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
@@ -48,9 +48,9 @@ class Customers {
 
 		register_graphql_connection(
 			array(
-				'fromType'      => 'Coupon',
-				'toType'        => 'Customer',
-				'fromFieldName' => 'usedBy',
+				'fromType'       => 'Coupon',
+				'toType'         => 'Customer',
+				'fromFieldName'  => 'usedBy',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
@@ -89,27 +89,27 @@ class Customers {
 	 */
 	public static function get_connection_args(): array {
 		return array(
-			'search'    => array(
+			'search'  => array(
 				'type'        => 'String',
 				'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
 			),
-			'exclude'   => array(
+			'exclude' => array(
 				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' ),
 			),
-			'include'   => array(
+			'include' => array(
 				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' ),
 			),
-			'email'     => array(
+			'email'   => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to resources with a specific email.', 'wp-graphql-woocommerce' ),
 			),
-			'orderby'   => array(
+			'orderby' => array(
 				'type'        => 'CustomerConnectionOrderbyEnum',
 				'description' => __( 'Order results by a specific field.', 'wp-graphql-woocommerce' ),
 			),
-			'order'     => array(
+			'order'   => array(
 				'type'        => 'OrderEnum',
 				'description' => __( 'Order of results.', 'wp-graphql-woocommerce' ),
 			),
@@ -120,21 +120,20 @@ class Customers {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $where_args       Query "where" args.
-	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $args   All of the arguments for the query (not just the "where" args).
-	 * @param AppContext         $context    The AppContext object.
-	 * @param ResolveInfo        $info       The ResolveInfo object.
+	 * @param array       $query_args  The mapped query arguments.
+	 * @param array       $where_args  Query "where" args.
+	 * @param mixed       $source      The query results for a query calling this.
+	 * @param array       $args        All of the arguments for the query (not just the "where" args).
+	 * @param AppContext  $context     The AppContext object.
+	 * @param ResolveInfo $info        The ResolveInfo object.
 	 *
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info ) {
-
 		$key_mapping = array(
-			'search'    => 'search',
-			'exclude'   => 'exclude',
-			'include'   => 'include',
+			'search'  => 'search',
+			'exclude' => 'exclude',
+			'include' => 'include',
 		);
 
 		foreach ( $key_mapping as $key => $field ) {

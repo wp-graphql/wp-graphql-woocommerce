@@ -76,7 +76,7 @@ class WC_Customer_Loader extends AbstractDataLoader {
 	 */
 	public static function inject_user_loader_models( $model, $entry, $key ) {
 		if ( is_null( $model ) && is_a( $entry, \WP_User::class ) ) {
-			if ( in_array( 'customer', (array) $entry->roles ) ) {
+			if ( in_array( 'customer', (array) $entry->roles, true ) ) {
 				$model = new Customer( $key );
 			}
 		}
