@@ -246,7 +246,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		$query      = new \WC_Order_Query();
 		$old_orders = $query->get_orders();
 		foreach ( $old_orders as $order ) {
-			$order->delete_order( $order );
+			$order->delete( true );
 		}
 		unset( $old_orders );
 		unset( $query );
