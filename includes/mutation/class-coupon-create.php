@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Coupon_Mutation;
 use WPGraphQL\WooCommerce\Model\Coupon;
@@ -47,7 +48,7 @@ class Coupon_Create {
 				'description' => __( 'Coupon code.', 'wp-graphql-woocommerce' ),
 			),
 			'amount'                    => array(
-				'type'        => 'String',
+				'type'        => 'Float',
 				'description' => __( 'The amount of discount. Should always be numeric, even if setting a percentage.', 'wp-graphql-woocommerce' ),
 			),
 			'discountType'              => array(
@@ -123,7 +124,7 @@ class Coupon_Create {
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 			),
 		);
-    }
+	}
 
 	/**
 	 * Defines the mutation output field configuration
@@ -136,31 +137,50 @@ class Coupon_Create {
 				'type'    => 'Coupon',
 				'resolve' => function( $payload ) {
 					return new Coupon( $payload['id'] );
-				}
+				},
 			),
 			'code'   => array(
 				'type'    => 'String',
 				'resolve' => function( $payload ) {
 					return $payload['code'];
-				}
+				},
 			),
 		);
-    }
+	}
 
 	/**
 	 * Defines the mutation data modification closure.
 	 *
+	 * @param array       $input    Mutation input.
+	 * @param AppContext  $context  AppContext instance.
+	 * @param ResolveInfo $info     ResolveInfo instance. Can be
+	 * use to get info about the current node in the GraphQL tree.
+	 *
+	 * @throws UserError Invalid ID provided | Lack of capabilities.
+	 *
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
-		$id     = isset( $input['id'] ) ? $input['id'] : 0;
-		$coupon = new \WC_Coupon( $id );
+		// Retrieve order ID.
+		$coupon_id = 0;
+		if ( ! empty( $input['id'] ) && is_numeric( $input['id'] ) ) {
+			$coupon_id = absint( $input['id'] );
+		} elseif ( ! empty( $input['id'] ) ) {
+			$id_components = Relay::fromGlobalId( $input['id'] );
+			if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+				throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
+			}
 
-		if ( 0 === $id && ! wc_rest_check_post_permissions( 'shop_coupon', 'create' ) ) {
+			$coupon_id = absint( $id_components['id'] );
+		}
+
+		$coupon = new \WC_Coupon( $coupon_id );
+
+		if ( 0 === $coupon_id && ! wc_rest_check_post_permissions( 'shop_coupon', 'create' ) ) {
 			throw new UserError( __( 'Sorry, you are not allowed to create resources.', 'wp-graphql-woocommerce' ) );
 		}
 
-		if ( 0 !== $id && ! wc_rest_check_post_permissions( 'shop_coupon', 'edit', $id ) ) {
+		if ( 0 !== $coupon_id && ! wc_rest_check_post_permissions( 'shop_coupon', 'edit', $coupon_id ) ) {
 			throw new UserError( __( 'Sorry, you are not allowed to edit this resource.', 'wp-graphql-woocommerce' ) );
 		}
 
@@ -181,7 +201,7 @@ class Coupon_Create {
 					break;
 				case 'meta_data':
 					if ( is_array( $value ) ) {
-						foreach( $value as $meta ) {
+						foreach ( $value as $meta ) {
 							$coupon->update_meta_data( $meta['key'], $meta['value'], isset( $meta['id'] ) ? $meta['id'] : '' );
 						}
 					}

@@ -53,12 +53,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'coupons.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[0] ) ),
-			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[1] ) ),
-			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[0] ),
-			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[1] ),
+			$this->expectedField( 'coupons.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'coupons.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[0] ) ),
+			$this->expectedField( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[1] ) ),
+			$this->expectedField( 'coupons.nodes.0.databaseId', $coupons[0] ),
+			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[1] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -74,13 +74,13 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'coupons.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[2] ) ),
-			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[4] ) ),
-			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[2] ),
-			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[3] ),
-			$this->expectedObject( 'coupons.nodes.2.databaseId', $coupons[4] ),
+			$this->expectedField( 'coupons.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'coupons.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[2] ) ),
+			$this->expectedField( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[4] ) ),
+			$this->expectedField( 'coupons.nodes.0.databaseId', $coupons[2] ),
+			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[3] ),
+			$this->expectedField( 'coupons.nodes.2.databaseId', $coupons[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -96,12 +96,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'coupons.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[3] ) ),
-			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[4] ) ),
-			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[3] ),
-			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[4] ),
+			$this->expectedField( 'coupons.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'coupons.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[3] ) ),
+			$this->expectedField( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[4] ) ),
+			$this->expectedField( 'coupons.nodes.0.databaseId', $coupons[3] ),
+			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[4] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -117,12 +117,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'coupons.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'coupons.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[1] ) ),
-			$this->expectedObject( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[2] ) ),
-			$this->expectedObject( 'coupons.nodes.0.databaseId', $coupons[1] ),
-			$this->expectedObject( 'coupons.nodes.1.databaseId', $coupons[2] ),
+			$this->expectedField( 'coupons.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'coupons.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'coupons.pageInfo.startCursor', $this->toCursor( $coupons[1] ) ),
+			$this->expectedField( 'coupons.pageInfo.endCursor', $this->toCursor( $coupons[2] ) ),
+			$this->expectedField( 'coupons.nodes.0.databaseId', $coupons[1] ),
+			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[2] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -168,12 +168,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'products.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'products.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[0] ) ),
-			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[1] ) ),
-			$this->expectedObject( 'products.nodes.0.databaseId', $products[0] ),
-			$this->expectedObject( 'products.nodes.1.databaseId', $products[1] ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[0] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[0] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[1] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -189,13 +189,13 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'products.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'products.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[2] ) ),
-			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
-			$this->expectedObject( 'products.nodes.0.databaseId', $products[2] ),
-			$this->expectedObject( 'products.nodes.1.databaseId', $products[3] ),
-			$this->expectedObject( 'products.nodes.2.databaseId', $products[4] ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[2] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[3] ),
+			$this->expectedField( 'products.nodes.2.databaseId', $products[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -208,12 +208,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'products.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'products.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[3] ) ),
-			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
-			$this->expectedObject( 'products.nodes.0.databaseId', $products[3] ),
-			$this->expectedObject( 'products.nodes.1.databaseId', $products[4] ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[3] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[3] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[4] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -229,12 +229,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'products.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'products.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),
-			$this->expectedObject( 'products.pageInfo.endCursor', $this->toCursor( $products[2] ) ),
-			$this->expectedObject( 'products.nodes.0.databaseId', $products[1] ),
-			$this->expectedObject( 'products.nodes.1.databaseId', $products[2] ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[1] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[2] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -290,12 +290,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'orders.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[0] ) ),
-			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[1] ) ),
-			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[0] ),
-			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[1] ),
+			$this->expectedField( 'orders.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'orders.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'orders.pageInfo.startCursor', $this->toCursor( $orders[0] ) ),
+			$this->expectedField( 'orders.pageInfo.endCursor', $this->toCursor( $orders[1] ) ),
+			$this->expectedField( 'orders.nodes.0.databaseId', $orders[0] ),
+			$this->expectedField( 'orders.nodes.1.databaseId', $orders[1] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -311,13 +311,13 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'orders.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[2] ) ),
-			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[4] ) ),
-			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[2] ),
-			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[3] ),
-			$this->expectedObject( 'orders.nodes.2.databaseId', $orders[4] ),
+			$this->expectedField( 'orders.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'orders.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'orders.pageInfo.startCursor', $this->toCursor( $orders[2] ) ),
+			$this->expectedField( 'orders.pageInfo.endCursor', $this->toCursor( $orders[4] ) ),
+			$this->expectedField( 'orders.nodes.0.databaseId', $orders[2] ),
+			$this->expectedField( 'orders.nodes.1.databaseId', $orders[3] ),
+			$this->expectedField( 'orders.nodes.2.databaseId', $orders[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -330,12 +330,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'orders.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[3] ) ),
-			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[4] ) ),
-			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[3] ),
-			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[4] ),
+			$this->expectedField( 'orders.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'orders.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'orders.pageInfo.startCursor', $this->toCursor( $orders[3] ) ),
+			$this->expectedField( 'orders.pageInfo.endCursor', $this->toCursor( $orders[4] ) ),
+			$this->expectedField( 'orders.nodes.0.databaseId', $orders[3] ),
+			$this->expectedField( 'orders.nodes.1.databaseId', $orders[4] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -351,12 +351,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'orders.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'orders.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'orders.pageInfo.startCursor', $this->toCursor( $orders[1] ) ),
-			$this->expectedObject( 'orders.pageInfo.endCursor', $this->toCursor( $orders[2] ) ),
-			$this->expectedObject( 'orders.nodes.0.databaseId', $orders[1] ),
-			$this->expectedObject( 'orders.nodes.1.databaseId', $orders[2] ),
+			$this->expectedField( 'orders.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'orders.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'orders.pageInfo.startCursor', $this->toCursor( $orders[1] ) ),
+			$this->expectedField( 'orders.pageInfo.endCursor', $this->toCursor( $orders[2] ) ),
+			$this->expectedField( 'orders.nodes.0.databaseId', $orders[1] ),
+			$this->expectedField( 'orders.nodes.1.databaseId', $orders[2] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -405,12 +405,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'refunds.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[0] ) ),
-			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[1] ) ),
-			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[0] ),
-			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[1] ),
+			$this->expectedField( 'refunds.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'refunds.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[0] ) ),
+			$this->expectedField( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[1] ) ),
+			$this->expectedField( 'refunds.nodes.0.databaseId', $refunds[0] ),
+			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[1] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -426,13 +426,13 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'refunds.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[2] ) ),
-			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[4] ) ),
-			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[2] ),
-			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[3] ),
-			$this->expectedObject( 'refunds.nodes.2.databaseId', $refunds[4] ),
+			$this->expectedField( 'refunds.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'refunds.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[2] ) ),
+			$this->expectedField( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[4] ) ),
+			$this->expectedField( 'refunds.nodes.0.databaseId', $refunds[2] ),
+			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[3] ),
+			$this->expectedField( 'refunds.nodes.2.databaseId', $refunds[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -445,12 +445,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'refunds.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[3] ) ),
-			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[4] ) ),
-			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[3] ),
-			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[4] ),
+			$this->expectedField( 'refunds.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'refunds.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[3] ) ),
+			$this->expectedField( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[4] ) ),
+			$this->expectedField( 'refunds.nodes.0.databaseId', $refunds[3] ),
+			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[4] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -466,12 +466,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'refunds.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'refunds.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[1] ) ),
-			$this->expectedObject( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[2] ) ),
-			$this->expectedObject( 'refunds.nodes.0.databaseId', $refunds[1] ),
-			$this->expectedObject( 'refunds.nodes.1.databaseId', $refunds[2] ),
+			$this->expectedField( 'refunds.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'refunds.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'refunds.pageInfo.startCursor', $this->toCursor( $refunds[1] ) ),
+			$this->expectedField( 'refunds.pageInfo.endCursor', $this->toCursor( $refunds[2] ) ),
+			$this->expectedField( 'refunds.nodes.0.databaseId', $refunds[1] ),
+			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[2] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -524,12 +524,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'customers.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[0] ),
-			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[1] ),
-			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[0] ) ),
-			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[1] ) ),
+			$this->expectedField( 'customers.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'customers.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $customers[0] ),
+			$this->expectedField( 'customers.nodes.1.databaseId', $customers[1] ),
+			$this->expectedField( 'customers.pageInfo.startCursor', $this->toCursor( $customers[0] ) ),
+			$this->expectedField( 'customers.pageInfo.endCursor', $this->toCursor( $customers[1] ) ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -545,12 +545,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[2] ) ),
-			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[4] ) ),
-			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[2] ),
-			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[3] ),
-			$this->expectedObject( 'customers.nodes.2.databaseId', $customers[4] ),
+			$this->expectedField( 'customers.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'customers.pageInfo.startCursor', $this->toCursor( $customers[2] ) ),
+			$this->expectedField( 'customers.pageInfo.endCursor', $this->toCursor( $customers[4] ) ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $customers[2] ),
+			$this->expectedField( 'customers.nodes.1.databaseId', $customers[3] ),
+			$this->expectedField( 'customers.nodes.2.databaseId', $customers[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -563,12 +563,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'customers.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[3] ) ),
-			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[4] ) ),
-			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[3] ),
-			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[4] ),
+			$this->expectedField( 'customers.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'customers.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'customers.pageInfo.startCursor', $this->toCursor( $customers[3] ) ),
+			$this->expectedField( 'customers.pageInfo.endCursor', $this->toCursor( $customers[4] ) ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $customers[3] ),
+			$this->expectedField( 'customers.nodes.1.databaseId', $customers[4] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -584,12 +584,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'customers.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'customers.pageInfo.startCursor', $this->toCursor( $customers[1] ) ),
-			$this->expectedObject( 'customers.pageInfo.endCursor', $this->toCursor( $customers[2] ) ),
-			$this->expectedObject( 'customers.nodes.0.databaseId', $customers[1] ),
-			$this->expectedObject( 'customers.nodes.1.databaseId', $customers[2] ),
+			$this->expectedField( 'customers.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'customers.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'customers.pageInfo.startCursor', $this->toCursor( $customers[1] ) ),
+			$this->expectedField( 'customers.pageInfo.endCursor', $this->toCursor( $customers[2] ) ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $customers[1] ),
+			$this->expectedField( 'customers.nodes.1.databaseId', $customers[2] ),
 		);
 
         //$this->assertQuerySuccessful( $response, $expected );
@@ -676,12 +676,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[0] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[1] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[0] ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[0] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[1] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[0] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -697,13 +697,13 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[2] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[4] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[2] ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[3] ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[4] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[2] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[4] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[2] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[3] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -716,12 +716,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
         $variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', false ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[3] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[4] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[3] ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[4] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[3] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[4] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[3] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[4] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );
@@ -737,13 +737,13 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', true ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[0] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[2] ) ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[0] ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
-			$this->expectedObject( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[2] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.startCursor', $this->toCursor( $downloads[0] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.endCursor', $this->toCursor( $downloads[2] ) ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.0.product.databaseId', $products[0] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
+			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[2] ),
 		);
 
         $this->assertQuerySuccessful( $response, $expected );

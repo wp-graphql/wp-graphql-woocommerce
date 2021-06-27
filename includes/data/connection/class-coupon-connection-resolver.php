@@ -164,6 +164,8 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
+	 * @throws InvariantViolation Filtering suppressed.
+	 *
 	 * @return \WP_Query
 	 */
 	public function get_query() {

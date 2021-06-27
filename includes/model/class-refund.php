@@ -27,17 +27,6 @@ class Refund extends Order {
 	protected $post_type = 'shop_order_refund';
 
 	/**
-	 * Return the data source to be used by the model.
-	 *
-	 * @param integer $id  Refund ID.
-	 *
-	 * @return WC_Data
-	 */
-	protected function get_object( $id ) {
-		return new WC_Order_Refund( $id );
-	}
-
-	/**
 	 * Initializes the Refund field resolvers.
 	 */
 	protected function init() {

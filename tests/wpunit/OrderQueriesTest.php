@@ -8,83 +8,88 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$order = \wc_get_order( $order_id );
 
 		$expected = array(
-			$this->expectedObject( 'order.id', $this->toRelayId( 'shop_order', $order_id ) ),
-			$this->expectedObject( 'order.databaseId', $order->get_id() ),
-			$this->expectedObject( 'order.currency', $this->maybe( $order->get_currency(), 'null' ) ),
-			$this->expectedObject( 'order.orderVersion', $this->maybe( $order->get_version(), 'null' ) ),
-            $this->expectedObject( 'order.date', $order->get_date_created()->__toString() ),
-            $this->expectedObject( 'order.modified', $order->get_date_modified()->__toString() ),
-			$this->expectedObject( 'order.status', WPEnumType::get_safe_name( $order->get_status() ) ),
-			$this->expectedObject( 'order.discountTotal', \wc_graphql_price(  $order->get_discount_total(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.discountTax', \wc_graphql_price( $order->get_discount_tax(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.shippingTotal', \wc_graphql_price( $order->get_shipping_total(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.shippingTax', \wc_graphql_price( $order->get_shipping_tax(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.cartTax', \wc_graphql_price( $order->get_cart_tax(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.total', \wc_graphql_price( $order->get_total(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.totalTax', \wc_graphql_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.subtotal', \wc_graphql_price( $order->get_subtotal(), array( 'currency' => $order->get_currency() ) ) ),
-			$this->expectedObject( 'order.orderNumber', $order->get_order_number() ),
-			$this->expectedObject( 'order.orderKey', $order->get_order_key() ),
-			$this->expectedObject( 'order.createdVia', $this->maybe( $order->get_created_via(), 'null' ) ),
-			$this->expectedObject( 'order.pricesIncludeTax', $order->get_prices_include_tax() ),
-			$this->expectedObject( 'order.parent', 'null' ),
 			$this->expectedObject(
-				'order.customer',
-				$this->maybe(
-					array(
-						$order->get_customer_id(),
-						array( 'id' => $this->toRelayId( 'customer', $order->get_customer_id() ) ),
+				'order',
+				array(
+					$this->expectedField( 'id', $this->toRelayId( 'shop_order', $order_id ) ),
+					$this->expectedField( 'databaseId', $order->get_id() ),
+					$this->expectedField( 'currency', $this->maybe( $order->get_currency() ) ),
+					$this->expectedField( 'orderVersion', $this->maybe( $order->get_version() ) ),
+					$this->expectedField( 'date', $order->get_date_created()->__toString() ),
+					$this->expectedField( 'modified', $order->get_date_modified()->__toString() ),
+					$this->expectedField( 'status', WPEnumType::get_safe_name( $order->get_status() ) ),
+					$this->expectedField( 'discountTotal', \wc_graphql_price(  $order->get_discount_total(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'discountTax', \wc_graphql_price( $order->get_discount_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'shippingTotal', \wc_graphql_price( $order->get_shipping_total(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'shippingTax', \wc_graphql_price( $order->get_shipping_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'cartTax', \wc_graphql_price( $order->get_cart_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'total', \wc_graphql_price( $order->get_total(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'totalTax', \wc_graphql_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'subtotal', \wc_graphql_price( $order->get_subtotal(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'orderNumber', $order->get_order_number() ),
+					$this->expectedField( 'orderKey', $order->get_order_key() ),
+					$this->expectedField( 'createdVia', $this->maybe( $order->get_created_via() ) ),
+					$this->expectedField( 'pricesIncludeTax', $order->get_prices_include_tax() ),
+					$this->expectedField( 'parent', self::IS_NULL ),
+					$this->expectedField(
+						'customer',
+						$this->maybe(
+							array(
+								$order->get_customer_id(),
+								array( 'id' => $this->toRelayId( 'customer', $order->get_customer_id() ) ),
+							),
+							self::IS_NULL
+						)
 					),
-					'null'
+					$this->expectedField( 'customerIpAddress', $this->maybe( $order->get_customer_ip_address() ) ),
+					$this->expectedField( 'customerUserAgent', $this->maybe( $order->get_customer_user_agent() ) ),
+					$this->expectedField( 'customerNote', $this->maybe( $order->get_customer_note() ) ),
+					$this->expectedObject(
+						'billing',
+						array(
+							$this->expectedField( 'firstName', $this->maybe( $order->get_billing_first_name() ) ),
+							$this->expectedField( 'lastName', $this->maybe( $order->get_billing_last_name() ) ),
+							$this->expectedField( 'company', $this->maybe( $order->get_billing_company() ) ),
+							$this->expectedField( 'address1', $this->maybe( $order->get_billing_address_1() ) ),
+							$this->expectedField( 'address2', $this->maybe( $order->get_billing_address_2() ) ),
+							$this->expectedField( 'city', $this->maybe( $order->get_billing_city() ) ),
+							$this->expectedField( 'state', $this->maybe( $order->get_billing_state() ) ),
+							$this->expectedField( 'postcode', $this->maybe( $order->get_billing_postcode()  ) ),
+							$this->expectedField( 'country', $this->maybe( $order->get_billing_country() ) ),
+							$this->expectedField( 'email', $this->maybe( $order->get_billing_email() ) ),
+							$this->expectedField( 'phone', $this->maybe( $order->get_billing_phone() ) ),
+						)
+					),
+					$this->expectedObject(
+						'shipping',
+						array(
+							$this->expectedField( 'firstName', $this->maybe( $order->get_shipping_first_name() ) ),
+							$this->expectedField( 'lastName', $this->maybe( $order->get_shipping_last_name() ) ),
+							$this->expectedField( 'company', $this->maybe( $order->get_shipping_company() ) ),
+							$this->expectedField( 'address1', $this->maybe( $order->get_shipping_address_1() ) ),
+							$this->expectedField( 'address2', $this->maybe( $order->get_shipping_address_2() ) ),
+							$this->expectedField( 'city', $this->maybe( $order->get_shipping_city() ) ),
+							$this->expectedField( 'state', $this->maybe( $order->get_shipping_state() ) ),
+							$this->expectedField( 'postcode', $this->maybe( $order->get_shipping_postcode()  ) ),
+							$this->expectedField( 'country', $this->maybe( $order->get_shipping_country() ) ),
+						)
+					),
+					$this->expectedField( 'paymentMethod', $this->maybe( $order->get_payment_method() ) ),
+					$this->expectedField( 'paymentMethodTitle', $this->maybe( $order->get_payment_method_title() ) ),
+					$this->expectedField( 'transactionId', $this->maybe( $order->get_transaction_id() ) ),
+					$this->expectedField( 'dateCompleted', $this->maybe( $order->get_date_completed() ) ),
+					$this->expectedField( 'datePaid', $this->maybe( $order->get_date_paid() ) ),
+					$this->expectedField( 'cartHash', $this->maybe( $order->get_cart_hash() ) ),
+					$this->expectedField( 'shippingAddressMapUrl', $this->maybe( $order->get_shipping_address_map_url() ) ),
+					$this->expectedField( 'hasBillingAddress', $order->has_billing_address() ),
+					$this->expectedField( 'hasShippingAddress', $order->has_shipping_address() ),
+					$this->expectedField( 'isDownloadPermitted', $order->is_download_permitted() ),
+					$this->expectedField( 'needsShippingAddress', $order->needs_shipping_address() ),
+					$this->expectedField( 'hasDownloadableItem', $order->has_downloadable_item() ),
+					$this->expectedField( 'needsPayment', $order->needs_payment() ),
+					$this->expectedField( 'needsProcessing', $order->needs_processing() ),
 				)
 			),
-			$this->expectedObject( 'order.customerIpAddress', $this->maybe( $order->get_customer_ip_address(), 'null' ) ),
-			$this->expectedObject( 'order.customerUserAgent', $this->maybe( $order->get_customer_user_agent(), 'null' ) ),
-			$this->expectedObject( 'order.customerNote', $this->maybe( $order->get_customer_note(), 'null' ) ),
-			$this->expectedObject(
-				'order.billing',
-				array(
-					'firstName' => $this->maybe( $order->get_billing_first_name() ),
-					'lastName'  => $this->maybe( $order->get_billing_last_name() ),
-					'company'   => $this->maybe( $order->get_billing_company() ),
-					'address1'  => $this->maybe( $order->get_billing_address_1() ),
-					'address2'  => $this->maybe( $order->get_billing_address_2() ),
-					'city'      => $this->maybe( $order->get_billing_city() ),
-					'state'     => $this->maybe( $order->get_billing_state() ),
-					'postcode'  => $this->maybe( $order->get_billing_postcode() ),
-					'country'   => $this->maybe( $order->get_billing_country() ),
-					'email'     => $this->maybe( $order->get_billing_email() ),
-					'phone'     => $this->maybe( $order->get_billing_phone() ),
-				)
-			),
-			$this->expectedObject(
-				'order.shipping',
-				array(
-					'firstName' => $this->maybe( $order->get_shipping_first_name() ),
-					'lastName'  => $this->maybe( $order->get_shipping_last_name() ),
-					'company'   => $this->maybe( $order->get_shipping_company() ),
-					'address1'  => $this->maybe( $order->get_shipping_address_1() ),
-					'address2'  => $this->maybe( $order->get_shipping_address_2() ),
-					'city'      => $this->maybe( $order->get_shipping_city() ),
-					'state'     => $this->maybe( $order->get_shipping_state() ),
-					'postcode'  => $this->maybe( $order->get_shipping_postcode() ),
-					'country'   => $this->maybe( $order->get_shipping_country() ),
-				)
-			),
-			$this->expectedObject( 'order.paymentMethod', $this->maybe( $order->get_payment_method(), 'null' ) ),
-			$this->expectedObject( 'order.paymentMethodTitle', $this->maybe( $order->get_payment_method_title(), 'null' ) ),
-			$this->expectedObject( 'order.transactionId', $this->maybe( $order->get_transaction_id(), 'null' ) ),
-			$this->expectedObject( 'order.dateCompleted', $this->maybe( $order->get_date_completed(), 'null' ) ),
-			$this->expectedObject( 'order.datePaid', $this->maybe( $order->get_date_paid(), 'null' ) ),
-			$this->expectedObject( 'order.cartHash', $this->maybe( $order->get_cart_hash(), 'null' ) ),
-			$this->expectedObject( 'order.shippingAddressMapUrl', $this->maybe( $order->get_shipping_address_map_url(), 'null' ) ),
-			$this->expectedObject( 'order.hasBillingAddress', $order->has_billing_address() ),
-			$this->expectedObject( 'order.hasShippingAddress', $order->has_shipping_address() ),
-			$this->expectedObject( 'order.isDownloadPermitted', $order->is_download_permitted() ),
-			$this->expectedObject( 'order.needsShippingAddress', $order->needs_shipping_address() ),
-			$this->expectedObject( 'order.hasDownloadableItem', $order->has_downloadable_item() ),
-			$this->expectedObject( 'order.needsPayment', $order->needs_payment() ),
-			$this->expectedObject( 'order.needsProcessing', $order->needs_processing() ),
 		);
 
 		return $expected;
@@ -191,7 +196,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$this->loginAsCustomer();
 		$variables = array( 'id' => $id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array( $this->expectedObject( 'order', 'null' ) );
+		$expected  = array( $this->expectedField( 'order', self::IS_NULL ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -232,7 +237,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 			'idType' => 'ID',
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array( $this->expectedObject( 'order.id', $id ) );
+		$expected  = array( $this->expectedField( 'order.id', $id ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -327,7 +332,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 */
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = array( $this->expectedObject( 'orders.nodes', array() ) );
+		$expected = array( $this->expectedField( 'orders.nodes', array() ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 		$this->clearLoaderCache( 'wc_post' );

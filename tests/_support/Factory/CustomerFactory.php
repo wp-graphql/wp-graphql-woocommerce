@@ -38,6 +38,33 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		$email      = $this->dummy->email();
 		$phone      = $this->dummy->telephone();
 
+		$args = array_merge(
+			array(
+				'billing'  => array(),
+				'shipping' => array(),
+			),
+			$args
+		);
+
+		$customer->set_billing_first_name( ! empty( $args['billing']['first_name'] ) ? $args['billing']['first_name'] : $first_name );
+		$customer->set_billing_last_name( ! empty( $args['billing']['last_name'] ) ? $args['billing']['last_name'] : $last_name );
+		$customer->set_billing_address_1( ! empty( $args['billing']['address_1'] ) ? $args['billing']['address_1'] : $street );
+		$customer->set_billing_address_2( ! empty( $args['billing']['address_2'] ) ? $args['billing']['address_2'] : '' );
+		$customer->set_billing_city( ! empty( $args['billing']['city'] ) ? $args['billing']['city'] : $city );
+		$customer->set_billing_state( ! empty( $args['billing']['state'] ) ? $args['billing']['state'] : $state );
+		$customer->set_billing_postcode( ! empty( $args['billing']['postcode'] ) ? $args['billing']['postcode'] : $postcode );
+		$customer->set_billing_country( ! empty( $args['billing']['country'] ) ? $args['billing']['country'] : $country );
+		$customer->set_billing_email( ! empty( $args['billing']['email'] ) ? $args['billing']['email'] : $email );
+		$customer->set_billing_phone( ! empty( $args['billing']['phone'] ) ? $args['billing']['phone'] : $phone );
+		$customer->set_shipping_first_name( ! empty( $args['shipping']['first_name'] ) ? $args['shipping']['first_name'] : $first_name );
+		$customer->set_shipping_last_name( ! empty( $args['shipping']['last_name'] ) ? $args['shipping']['last_name'] : $last_name );
+		$customer->set_shipping_address_1( ! empty( $args['shipping']['address_1'] ) ? $args['shipping']['address_1'] : $street );
+		$customer->set_shipping_address_2( ! empty( $args['shipping']['address_2'] ) ? $args['shipping']['address_2'] : '' );
+		$customer->set_shipping_city( ! empty( $args['shipping']['city'] ) ? $args['shipping']['city'] : $city );
+		$customer->set_shipping_state( ! empty( $args['shipping']['state'] ) ? $args['shipping']['state'] : $state );
+		$customer->set_shipping_postcode( ! empty( $args['shipping']['postcode'] ) ? $args['shipping']['postcode'] : $postcode );
+		$customer->set_shipping_country( ! empty( $args['shipping']['country'] ) ? $args['shipping']['country'] : $country );
+
 		// Set data.
 		$customer->set_props(
 			array_merge(
@@ -48,30 +75,6 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 					'display_name'       => $username,
 					'role'               => 'customer',
 					'username'           => $username,
-					'billing'            => array(
-						'first_name'     => $first_name,
-						'last_name'      => $last_name,
-						'company'        => '',
-						'address_1'      => $street,
-						'address_2'      => '',
-						'city'           => $city,
-						'state'          => $state,
-						'postcode'       => $postcode,
-						'country'        => $country,
-						'email'          => $email,
-						'phone'          => $phone,
-					),
-					'shipping'           => array(
-						'first_name'     => $first_name,
-						'last_name'      => $last_name,
-						'company'        => '',
-						'address_1'      => $street,
-						'address_2'      => '',
-						'city'           => $city,
-						'state'          => $state,
-						'postcode'       => $postcode,
-						'country'        => $country,
-					),
 					'is_paying_customer' => false,
 				),
 				$args

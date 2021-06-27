@@ -7,25 +7,25 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$coupon = new \WC_Coupon( $coupon_id );
 
 		$expected = array(
-			$this->expectedObject( 'coupon.id', $this->toRelayId( 'shop_coupon', $coupon_id ) ),
-			$this->expectedObject( 'coupon.databaseId', $coupon->get_id() ),
-			$this->expectedObject( 'coupon.code', $coupon->get_code() ),
-			$this->expectedObject( 'coupon.amount', floatval( $coupon->get_amount() ) ),
-			$this->expectedObject( 'coupon.date', $coupon->get_date_created()->__toString() ),
-			$this->expectedObject( 'coupon.modified', $coupon->get_date_modified()->__toString() ),
-			$this->expectedObject( 'coupon.discountType', strtoupper( $coupon->get_discount_type() ) ),
-			$this->expectedObject( 'coupon.description', $coupon->get_description() ),
-			$this->expectedObject( 'coupon.dateExpiry', $this->maybe( $coupon->get_date_expires(), 'null' ) ),
-			$this->expectedObject( 'coupon.usageCount', $coupon->get_usage_count() ),
-			$this->expectedObject( 'coupon.individualUse', $coupon->get_individual_use() ),
-			$this->expectedObject( 'coupon.usageLimit', $this->maybe( $coupon->get_usage_limit(), 'null' ) ),
-			$this->expectedObject( 'coupon.usageLimitPerUser', $this->maybe( $coupon->get_usage_limit_per_user(), 'null' ) ),
-			$this->expectedObject( 'coupon.limitUsageToXItems', $this->maybe( $coupon->get_limit_usage_to_x_items(), 'null' ) ),
-			$this->expectedObject( 'coupon.freeShipping', $coupon->get_free_shipping() ),
-			$this->expectedObject( 'coupon.excludeSaleItems', $coupon->get_exclude_sale_items() ),
-			$this->expectedObject( 'coupon.minimumAmount', $this->maybe( $coupon->get_minimum_amount(), 'null' ) ),
-			$this->expectedObject( 'coupon.maximumAmount', $this->maybe( $coupon->get_maximum_amount(), 'null' ) ),
-			$this->expectedObject( 'coupon.emailRestrictions', $this->maybe( $coupon->get_email_restrictions(), 'null' ) ),
+			$this->expectedField( 'coupon.id', $this->toRelayId( 'shop_coupon', $coupon_id ) ),
+			$this->expectedField( 'coupon.databaseId', $coupon->get_id() ),
+			$this->expectedField( 'coupon.code', $coupon->get_code() ),
+			$this->expectedField( 'coupon.amount', floatval( $coupon->get_amount() ) ),
+			$this->expectedField( 'coupon.date', $coupon->get_date_created()->__toString() ),
+			$this->expectedField( 'coupon.modified', $coupon->get_date_modified()->__toString() ),
+			$this->expectedField( 'coupon.discountType', strtoupper( $coupon->get_discount_type() ) ),
+			$this->expectedField( 'coupon.description', $coupon->get_description() ),
+			$this->expectedField( 'coupon.dateExpiry', $this->maybe( $coupon->get_date_expires(), self::IS_NULL ) ),
+			$this->expectedField( 'coupon.usageCount', $coupon->get_usage_count() ),
+			$this->expectedField( 'coupon.individualUse', $coupon->get_individual_use() ),
+			$this->expectedField( 'coupon.usageLimit', $this->maybe( $coupon->get_usage_limit(), self::IS_NULL ) ),
+			$this->expectedField( 'coupon.usageLimitPerUser', $this->maybe( $coupon->get_usage_limit_per_user(), self::IS_NULL ) ),
+			$this->expectedField( 'coupon.limitUsageToXItems', $this->maybe( $coupon->get_limit_usage_to_x_items(), self::IS_NULL ) ),
+			$this->expectedField( 'coupon.freeShipping', $coupon->get_free_shipping() ),
+			$this->expectedField( 'coupon.excludeSaleItems', $coupon->get_exclude_sale_items() ),
+			$this->expectedField( 'coupon.minimumAmount', $this->maybe( $coupon->get_minimum_amount(), self::IS_NULL ) ),
+			$this->expectedField( 'coupon.maximumAmount', $this->maybe( $coupon->get_maximum_amount(), self::IS_NULL ) ),
+			$this->expectedField( 'coupon.emailRestrictions', $this->maybe( $coupon->get_email_restrictions(), self::IS_NULL ) ),
 		);
 
 		foreach( $coupon->get_product_ids() as $product_id ) {
@@ -153,7 +153,7 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			'idType' => 'ID',
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array( $this->expectedObject( 'coupon.id', $relay_id ) );
+		$expected  = array( $this->expectedField( 'coupon.id', $relay_id ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -221,7 +221,7 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			$this->expectedObject( 'coupons.nodes', array() ),
+			$this->expectedField( 'coupons.nodes', array() ),
 			$this->not()->expectedNode( 'coupons.nodes', array( 'id' => $this->toRelayId( 'shop_coupon', $coupons['0'] ) ) ),
 			$this->not()->expectedNode( 'coupons.nodes', array( 'id' => $this->toRelayId( 'shop_coupon', $coupons['1'] ) ) ),
 			$this->not()->expectedNode( 'coupons.nodes', array( 'id' => $this->toRelayId( 'shop_coupon', $coupons['2'] ) ) ),

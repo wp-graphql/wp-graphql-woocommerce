@@ -38,15 +38,15 @@ class Coupon_Update {
 		return array_merge(
 			Coupon_Create::get_input_fields(),
 			array(
-				'id' => array(
+				'id'   => array(
 					'type'        => array( 'non_null' => 'ID' ),
 					'description' => __( 'Unique identifier for the object.', 'wp-graphql-woocommerce' ),
 				),
-				'code'                      => array(
+				'code' => array(
 					'type'        => 'String',
 					'description' => __( 'Coupon code.', 'wp-graphql-woocommerce' ),
-				)
+				),
 			)
 		);
-    }
+	}
 }

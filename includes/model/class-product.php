@@ -39,51 +39,13 @@ class Product extends WC_Post {
 	/**
 	 * Product constructor.
 	 *
-	 * @param int $id - product post-type ID.
+	 * @param int|\WC_Data $id - product post-type ID.
 	 */
 	public function __construct( $id ) {
-		// Get product type.
-		$this->product_type = $this->product_factory()->get_product_type( $id );
-
 		// Get WC_Product object.
-		$data = $this->get_object( $id );
+		$data = \wc_get_product( $id );
 
 		parent::__construct( $data );
-	}
-
-	/**
-	 * Returns product factory instance.
-	 *
-	 * @return WC_Product_Factory
-	 */
-	public function product_factory() {
-		if ( null === self::$product_factory ) {
-			self::$product_factory = new WC_Product_Factory();
-		}
-
-		return self::$product_factory;
-	}
-
-	/**
-	 * Returns an instance of: WC_Product_External, WC_Product_Simple, WC_Product_Grouped,
-	 * or WC_Product_Variable; based upon the product type
-	 *
-	 * @param int $id - ID of the product.
-	 * @return WC_Product_External|WC_Product_Simple|WC_Product_Grouped|WC_Product_Variable
-	 */
-	private function get_object( $id ) {
-		switch ( $this->product_type ) {
-			case 'external':
-				return new WC_Product_External( $id );
-			case 'grouped':
-				return new WC_Product_Grouped( $id );
-			case 'variable':
-				return new WC_Product_Variable( $id );
-			case 'simple':
-				return new WC_Product_Simple( $id );
-			default:
-				return \wc_get_product( $id );
-		}
 	}
 
 	/**
