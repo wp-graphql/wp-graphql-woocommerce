@@ -379,7 +379,13 @@ class Orders {
 		);
 
 		$prefixer = function( $status ) {
-			return "wc-{$status}";
+			$statuses = array_keys( \wc_get_order_statuses() );
+
+			if ( in_array( "wc-{$status}", $statuses, true ) ) {
+				return "wc-{$status}";
+			}
+
+			return $status;
 		};
 
 		foreach ( $key_mapping as $key => $field ) {

@@ -16,15 +16,15 @@ class Order_Status {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = array(
-			'PENDING'    => array( 'value' => 'pending' ),
-			'PROCESSING' => array( 'value' => 'processing' ),
-			'ON_HOLD'    => array( 'value' => 'on-hold' ),
-			'COMPLETED'  => array( 'value' => 'completed' ),
-			'CANCELLED'  => array( 'value' => 'cancelled' ),
-			'REFUNDED'   => array( 'value' => 'refunded' ),
-			'FAILED'     => array( 'value' => 'failed' ),
-		);
+		$statuses = \wc_get_order_statuses();
+
+		$values = array();
+		foreach( $statuses as $status => $description ) {
+			$split_status_slug = explode( 'wc-', $status );
+			$value             = array_pop( $split_status_slug );
+			$key               = strtoupper( str_replace( '-', '_', $value ) );
+			$values[ $key ]    = compact( 'value', 'description' );
+		}
 
 		register_graphql_enum_type(
 			'OrderStatusEnum',
