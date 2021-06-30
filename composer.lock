@@ -4815,16 +4815,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v7.86.0",
+            "version": "v7.87.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "7a56d1066305afe2601f39bed5b1caf277f829c7"
+                "reference": "9392f03cb8d8803bf8273378ce42d5cbbf1e24fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/7a56d1066305afe2601f39bed5b1caf277f829c7",
-                "reference": "7a56d1066305afe2601f39bed5b1caf277f829c7",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/9392f03cb8d8803bf8273378ce42d5cbbf1e24fc",
+                "reference": "9392f03cb8d8803bf8273378ce42d5cbbf1e24fc",
                 "shasum": ""
             },
             "require": {
@@ -4870,9 +4870,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v7.86.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v7.87.0"
             },
-            "time": "2021-06-25T16:48:21+00:00"
+            "time": "2021-06-30T18:22:47+00:00"
         },
         {
             "name": "symfony/config",
@@ -9358,5 +9358,5 @@
         "php": ">=7.1.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }
