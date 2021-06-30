@@ -1,8 +1,6 @@
 ARG PHP_VERSION
 FROM wordpress:php${PHP_VERSION}-apache
 
-ARG XDEBUG_VERSION=2.9.6
-
 RUN apt-get update; \
 	apt-get install -y --no-install-recommends \
 	# WP-CLI dependencies.
