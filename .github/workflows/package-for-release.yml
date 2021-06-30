@@ -1,0 +1,36 @@
+name: Package for Release
+on:
+  release:
+    types: [ published ]
+jobs:
+  tag:
+    name: New release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: mbstring, intl
+          tools: composer
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --optimize-autoloader
+      - name: Create Artifact
+        run: |
+          mkdir plugin-build
+          rm -rf .* bin docs local tests netlify.toml docker-compose.yml Dockerfile
+          composer archive -vvv --format=zip --file="plugin-build/wp-graphql-woocommerce"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: wp-graphql
+          path: plugin-build/wp-graphql-woocommerce.zip
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: plugin-build/wp-graphql-woocommerce.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

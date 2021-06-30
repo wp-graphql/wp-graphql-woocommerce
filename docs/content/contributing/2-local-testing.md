@@ -20,9 +20,9 @@ Have **PHP**, **MySQL** or **PostgreSQL**, **Composer**, and **[WP-CLI](https://
 
 1. Start by cloning **[WooGraphQL](https://github.com/wp-graphql/wp-graphql-woocommerce)**.
 2. Open your terminal.
-3. Copy the `.env.dist` to `.env` by execute the following in your terminal in the **WooGraphQL** root directory.
+3. Copy the `.env.testing` to `.env` by execute the following in your terminal in the **WooGraphQL** root directory.
 ```
-cp .env.dist .env
+cp .env.testing .env
 ```
 4. Open the .env and update the highlighted environmental variables to match your machine setup.
 ![.env example](2-local-testing/image-01.png)

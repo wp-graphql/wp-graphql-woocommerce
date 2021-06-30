@@ -40,7 +40,7 @@ services:
       - ./local/public:/var/www/html # WP core files.
       - ./local/.htaccess:/var/www/html/.htaccess
       - ./.log/testable_app:/var/log/apache2
-    env_file: .env.dist
+    env_file: .env.testing
     environment:
       APACHE_RUN_USER: "#1000" # Ensure Apache can write to the filesystem.
       XDEBUG_CONFIG: remote_host=10.0.0.52 idekey=vscode
@@ -81,7 +81,7 @@ services:
       - ./local/public:/var/www/html # WP core files.
       - ./local/.htaccess:/var/www/html/.htaccess
       - ./.log/run_tests:/var/log/apache2
-    env_file: .env.dist
+    env_file: .env.testing
     environment:
       RUNNING_TEST_STANDALONE: 1
       GRAPHQL_DEBUG: 1

@@ -85,9 +85,9 @@
     "scripts": {
         "installTestEnv": "bash bin/install-test-env.sh",
         "runWPUnitTest": "vendor/bin/codecept run wpunit",
-        "dBuild": "env $(sed -e '/^#/d' .env.dist) docker-compose build",
-        "dRunApp": "env $(sed -e '/^#/d' .env.dist) docker-compose up testable_app app_db mailhog",
-        "dRunTestingDb":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.dist) docker-compose up -d testing_db; fi",
+        "dBuild": "env $(sed -e '/^#/d' .env.testing) docker-compose build",
+        "dRunApp": "env $(sed -e '/^#/d' .env.testing) docker-compose up testable_app app_db mailhog",
+        "dRunTestingDb":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.testing) docker-compose up -d testing_db; fi",
         "dSetMainDb": "docker-compose exec testable_app ./setup-database.sh main",
         "dSetTestingDb": "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- ./setup-database.sh testing",
         "dRunTest": [
@@ -95,7 +95,7 @@
             "@dSetTestingDb",
             "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- codecept run $FILTER"
         ],
-        "dRunTestStandalone": "env $(sed -e '/^#/d' .env.dist) docker-compose run --rm run_tests",
+        "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker-compose run --rm run_tests",
         "dDestroy": "docker-compose down -v",
         "lint": "vendor/bin/phpcs -vp ."
     },

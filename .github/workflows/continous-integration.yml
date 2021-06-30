@@ -48,7 +48,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo EMPTY ${{ env.STRIPE_API_PUBLISHABLE_KEY }}
-          cp .env.dist .env
+          cp .env.testing .env
           SKIP_DB_CREATE=true SKIP_WP_SETUP=true composer require --dev johnpbloch/wordpress:~${{ matrix.wordpress }}
           composer installTestEnv
 

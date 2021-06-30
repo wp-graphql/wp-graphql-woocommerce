@@ -16,7 +16,7 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
 - [PHP](https://php.net)
 ### Setup
 
-1. First copy  the `.env.dist` file as `.env`
+1. First copy  the `.env.testing` file as `.env`
 2. Next open `.env` and alter to make you usage.
   ```bash
 	# WordPress admin configurations

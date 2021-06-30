@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$USING_XDEBUG" == "1"  ]; then
+    echo "Enabling XDebug 3"
+    mv /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/
+fi
+
 # Run WordPress docker entrypoint.
 . docker-entrypoint.sh 'apache2'
 
@@ -117,7 +122,6 @@ if [ -n "$RUNNING_TEST_STANDALONE" ]; then
 	service apache2 start
 fi
 
-echo "Setup complete!!!"
-echo "WordPress app located at $WORDPRESS_URL";
+echo "Running WordPress version: $(wp core version --allow-root) at $(wp option get home --allow-root)"
 
 exec "$@"
