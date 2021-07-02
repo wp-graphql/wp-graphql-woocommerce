@@ -1,34 +1,7 @@
 #!/usr/bin/env bash
 
-source .env
-
-print_usage_instruction() {
-	echo "Ensure that .env file exist in project root directory exists."
-	echo "And run the following 'composer install-test-env' in the project root directory"
-	exit 1
-}
-
-if [[ -z "$DB_NAME" ]]; then
-	echo "DB_NAME not found"
-	print_usage_instruction
-fi
-if [[ -z "$DB_USER" ]]; then
-	echo "DB_USER not found"
-	print_usage_instruction
-fi
-
-DB_HOST=${DB_HOST-localhost}
-DB_PASS=${DB_PASSWORD-""}
-WP_VERSION=${WP_VERSION-latest}
-PROJECT_ROOT_DIR=$(pwd)
-WP_CORE_DIR=${WP_CORE_DIR:-local/public}
-PLUGINS_DIR=${PLUGINS_DIR:-"$WP_CORE_DIR/wp-content/plugins"}
-MUPLUGINS_DIR=${MUPLUGINS_DIR:-"$WP_CORE_DIR/wp-content/mu-plugins"}
-THEMES_DIR=${THEMES_DIR:-"$WP_CORE_DIR/wp-content/themes"}
-SKIP_DB_CREATE=${SKIP_DB_CREATE-false}
-
-install_wordpress_and_codeception() {
-	if [ -d $WP_CORE_DIR ]; then
+install_wordpress() {
+	if [ -f $WP_CORE_DIR/wp-config.php ]; then
 		echo "Wordpress already installed."
 		return;
 	fi
@@ -44,8 +17,56 @@ install_wordpress_and_codeception() {
 	\"$THEMES_DIR/{\$name}/\": [\"type:wordpress-theme\"]
 }"
 
-	# Install Wordpress + Codeception w/ WPBrowser.
+	# Install Wordpress + integrated plugins for testing/development.
 	composer install
+	composer require --dev composer/installers \
+		johnpbloch/wordpress:~${WP_VERSION} \
+        wp-graphql/wp-graphql-jwt-authentication \
+        wpackagist-plugin/woocommerce \
+        wpackagist-plugin/woocommerce-gateway-stripe \
+        wpackagist-plugin/wp-graphql \
+        wpackagist-theme/twentytwentyone
+}
+
+remove_wordpress() {
+	# Remove Wordpress + integrated plugins.
+	wp plugin uninstall woocommerce --deactivate --path=${WP_CORE_DIR}
+	composer remove --dev wp-graphql/wp-graphql-jwt-authentication \
+        wpackagist-plugin/woocommerce-gateway-stripe \
+        wpackagist-plugin/wp-graphql \
+        wpackagist-theme/twentytwentyone \
+        wpackagist-plugin/woocommerce \
+		johnpbloch/wordpress \
+		composer/installers
+
+	composer update
+}
+
+install_local_test_library() {
+	# Install testing library dependencies.
+	composer install
+	composer require --dev lucatume/wp-browser \
+		codeception/module-asserts \
+		codeception/module-rest \
+		codeception/util-universalframework \
+		wp-graphql/wp-graphql-testcase \
+		simpod/php-coveralls-mirror \
+		stripe/stripe-php \
+		wp-cli/wp-cli-bundle
+}
+
+remove_local_test_library() {
+	# Remove testing library dependencies.
+	composer remove --dev wp-graphql/wp-graphql-testcase \
+		codeception/module-asserts \
+		codeception/module-rest \
+		codeception/util-universalframework \
+		lucatume/wp-browser \
+		simpod/php-coveralls-mirror \
+		stripe/stripe-php \
+		wp-cli/wp-cli-bundle
+
+	composer update
 }
 
 install_db() {
@@ -127,8 +148,3 @@ setup_plugin() {
 
 	wp db export ${PROJECT_ROOT_DIR}/local/db/app_db.sql
 }
-
-install_wordpress_and_codeception
-install_db
-configure_wordpress
-setup_plugin

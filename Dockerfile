@@ -1,6 +1,8 @@
 ARG PHP_VERSION
 FROM wordpress:php${PHP_VERSION}-apache
 
+ARG XDEBUG_VERSION=2.9.6
+
 RUN apt-get update; \
 	apt-get install -y --no-install-recommends \
 	# WP-CLI dependencies.
@@ -10,20 +12,15 @@ RUN apt-get update; \
 	# Dockerize dependencies.
 	wget;
 
-# Install XDebug 3
-RUN echo "Installing XDebug 3 (in disabled state)" \
-    && pecl install xdebug \
-    && mkdir -p /usr/local/etc/php/conf.d/disabled \
-    && echo "zend_extension=xdebug" > /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini \
-    && echo "xdebug.mode=develop,debug,coverage" >> /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini \
-    && echo "xdebug.max_nesting_level=512" >> /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini \
-    ;
-
-# Set xdebug configuration off by default. See the entrypoint.sh.
-ENV USING_XDEBUG=0
+# Setup xdebug. The latest version supported by PHP 5.6 is 2.5.5.
+RUN	pecl install "xdebug-${XDEBUG_VERSION}"; \
+	docker-php-ext-enable xdebug; \
+	echo "xdebug.default_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_autostart = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_connect_back = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_port = 9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_log = /var/www/html/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 
 # Install PDO MySQL driver.
 RUN docker-php-ext-install pdo_mysql

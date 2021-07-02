@@ -31,22 +31,8 @@
         "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
-        "codeception/module-asserts": "^1.0",
-        "codeception/module-rest": "^1.2",
-        "codeception/util-universalframework": "^1.0",
-        "composer/installers": "^1.9",
-        "lucatume/wp-browser": "^2.6 || ^3.0",
-        "simpod/php-coveralls-mirror": "^3.0",
         "squizlabs/php_codesniffer": "^3.5",
-        "stripe/stripe-php": "^7.75",
-        "wp-cli/wp-cli-bundle": "^2.5",
-        "wp-coding-standards/wpcs": "^2.3",
-        "wp-graphql/wp-graphql-jwt-authentication": "^0.4.1",
-        "wp-graphql/wp-graphql-testcase": "^2.1",
-        "wpackagist-plugin/woocommerce": "^5.1.0",
-        "wpackagist-plugin/woocommerce-gateway-stripe": "^4.5",
-        "wpackagist-plugin/wp-graphql": "^1.3.9",
-        "wpackagist-theme/twentytwentyone": "^1.0"
+        "wp-coding-standards/wpcs": "^2.3"
     },
     "config": {
         "optimize-autoloader": true,
@@ -74,15 +60,13 @@
         }
     },
     "extra": {
-        "wordpress-install-dir": "local/public",
-        "installer-paths": {
-            "local/public/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
-            "local/public/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
-            "local/public/wp-content/themes/{$name}/": ["type:wordpress-theme"]
-        }
     },
     "scripts": {
-        "installTestEnv": "bash bin/install-test-env.sh",
+        "installTestEnv": "bash bin/install-test-env.local.sh",
+        "runPreCommitCleanup": [
+          "bash bin/remove-wordpress.local.sh",
+          "bash bin/remove-testing-library.local.sh"
+        ],
         "runWPUnitTest": "vendor/bin/codecept run wpunit",
         "dBuild": "env $(sed -e '/^#/d' .env.testing) docker-compose build",
         "dRunApp": "env $(sed -e '/^#/d' .env.testing) docker-compose up testable_app app_db mailhog",
