@@ -195,6 +195,8 @@ class Products {
 							$resolver->set_query_arg( 'orderby', 'post__in' );
 						}
 
+						$resolver = self::set_ordering_query_args( $resolver, $args );
+
 						return $resolver->get_connection();
 					},
 				)
@@ -216,6 +218,8 @@ class Products {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 					$resolver->set_query_arg( 'p', $source->parent_id );
 
+					$resolver = self::set_ordering_query_args( $resolver, $args );
+
 					return $resolver->one_to_one()->get_connection();
 				},
 			)
@@ -233,6 +237,8 @@ class Products {
 				),
 			);
 			$resolver->set_query_arg( 'tax_query', $tax_query );
+
+			$resolver = self::set_ordering_query_args( $resolver, $args );
 
 			return $resolver->get_connection();
 		};
@@ -294,6 +300,8 @@ class Products {
 							$resolver->set_query_arg( 'post__in', $variation_ids );
 							$resolver->set_query_arg( 'post_type', 'product_variation' );
 
+							$resolver = self::set_ordering_query_args( $resolver, $args );
+
 							return $resolver->get_connection();
 						},
 					)
@@ -319,29 +327,52 @@ class Products {
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
-					if ( ! empty( $args['where']['orderby'] ) ) {
-						foreach ( $args['where']['orderby'] as $orderby_input ) {
-							switch ( $orderby_input['field'] ) {
-								case '_price':
-								case '_regular_price':
-								case '_sale_price':
-								case '_wc_rating_count':
-								case '_wc_average_rating':
-								case '_sale_price_dates_from':
-								case '_sale_price_dates_to':
-								case 'total_sales':
-									$resolver->set_query_arg( 'orderby', array( 'meta_value_num' => $orderby_input['order'] ) );
-									$resolver->set_query_arg( 'meta_key', esc_sql( $orderby_input['field'] ) );
-									$resolver->set_query_arg( 'meta_type', 'NUMERIC' );
-									break 2;
-							}
-						}
-					}
+					$resolver = self::set_ordering_query_args( $resolver, $args );
+
 					return $resolver->get_connection();
 				},
 			),
 			$args
 		);
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param PostObjectConnectionResolver $resolver  Connection resolver instance.
+	 * @param array                        $args      Connection provided args.
+	 *
+	 * @return PostObjectConnectionResolver
+	 */
+	public static function set_ordering_query_args( $resolver, $args ) {
+		$backward = isset( $args['last'] ) ? true : false;
+
+		if ( ! empty( $args['where']['orderby'] ) ) {
+			foreach ( $args['where']['orderby'] as $orderby_input ) {
+				switch ( $orderby_input['field'] ) {
+					case '_price':
+					case '_regular_price':
+					case '_sale_price':
+					case '_wc_rating_count':
+					case '_wc_average_rating':
+					case '_sale_price_dates_from':
+					case '_sale_price_dates_to':
+					case 'total_sales':
+						$order = $orderby_input['order'];
+
+						if ( $backward ) {
+							$order = 'ASC' === $order ? 'DESC' : 'ASC';
+						}
+
+						$resolver->set_query_arg( 'orderby', array( 'meta_value_num' => $order ) );
+						$resolver->set_query_arg( 'meta_key', esc_sql( $orderby_input['field'] ) );
+						$resolver->set_query_arg( 'meta_type', 'NUMERIC' );
+						break 2;
+				}
+			}
+		}
+
+		return $resolver;
 	}
 
 	/**
