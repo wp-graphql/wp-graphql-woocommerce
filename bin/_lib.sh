@@ -25,7 +25,8 @@ install_wordpress() {
         wpackagist-plugin/woocommerce \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
-        wpackagist-theme/twentytwentyone
+        wpackagist-theme/twentytwentyone \
+		wp-cli/wp-cli-bundle
 }
 
 remove_wordpress() {
@@ -37,7 +38,8 @@ remove_wordpress() {
         wpackagist-theme/twentytwentyone \
         wpackagist-plugin/woocommerce \
 		johnpbloch/wordpress \
-		composer/installers
+		composer/installers \
+		wp-cli/wp-cli-bundle
 
 	composer update
 }
@@ -45,14 +47,14 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev lucatume/wp-browser \
+	composer require --dev phpunit/phpunit:<=${PHPUNIT_VERSION}
+		lucatume/wp-browser \
 		codeception/module-asserts \
 		codeception/module-rest \
 		codeception/util-universalframework \
 		wp-graphql/wp-graphql-testcase \
-		simpod/php-coveralls-mirror \
-		stripe/stripe-php \
-		wp-cli/wp-cli-bundle
+		php-coveralls/php-coveralls \
+		stripe/stripe-php
 }
 
 remove_local_test_library() {
@@ -62,9 +64,9 @@ remove_local_test_library() {
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
-		simpod/php-coveralls-mirror \
-		stripe/stripe-php \
-		wp-cli/wp-cli-bundle
+		phpunit/phpunit \
+		php-coveralls/php-coveralls \
+		stripe/stripe-php
 
 	composer update
 }

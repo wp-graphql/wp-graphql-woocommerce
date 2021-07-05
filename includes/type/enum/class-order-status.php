@@ -19,7 +19,7 @@ class Order_Status {
 		$statuses = \wc_get_order_statuses();
 
 		$values = array();
-		foreach( $statuses as $status => $description ) {
+		foreach ( $statuses as $status => $description ) {
 			$split_status_slug = explode( 'wc-', $status );
 			$value             = array_pop( $split_status_slug );
 			$key               = strtoupper( str_replace( '-', '_', $value ) );

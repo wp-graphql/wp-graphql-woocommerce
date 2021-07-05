@@ -52,6 +52,7 @@ RUN composer global require --optimize-autoloader \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
+	wp-graphql/wp-graphql-testcase \
 	"phpunit/phpunit:${PHPUNIT_VERSION}"
 
 # Remove exec statement from base entrypoint script.
