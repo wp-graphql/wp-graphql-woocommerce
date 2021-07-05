@@ -60,6 +60,7 @@ class Type_Registry {
 
 		// Interfaces.
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product::register_interface( $type_registry );
+		\WPGraphQL\WooCommerce\Type\WPInterface\Attribute::register_interface( $type_registry );
 		\WPGraphQL\WooCommerce\Type\WPInterface\Product_Attribute::register_interface( $type_registry );
 		\WPGraphQL\WooCommerce\Type\WPInterface\Cart_Error::register_interface( $type_registry );
 
@@ -78,6 +79,7 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Tax_Rate_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Method_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Cart_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Simple_Attribute_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Variation_Attribute_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Payment_Gateway_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::register();

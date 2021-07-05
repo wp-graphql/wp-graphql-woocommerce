@@ -308,6 +308,24 @@ class Cart_Type {
 				'toType'        => 'Product',
 				'fromFieldName' => 'product',
 				'oneToOne'      => true,
+				'edgeFields'    => array(
+					'simpleVariations' => array(
+						'type'        => array( 'list_of' => 'SimpleAttribute' ),
+						'description' => __( 'Simple variation attribute data', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							$attributes = array();
+
+							$variation             = $source['node'];
+							$cart_item_data        = $source['source'];
+							$simple_attribute_data = $cart_item_data['variation'];
+							foreach ( $simple_attribute_data as $name => $value ) {
+								$attributes[] = compact( 'name', 'value' );
+							}
+
+							return $attributes;
+						},
+					)
+				),
 				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id       = $source['product_id'];
 					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );

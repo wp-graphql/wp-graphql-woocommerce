@@ -819,6 +819,86 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->assertArrayHasKey( 'errors', $not_enough_stock );
 	}
 
+	public function testAddToCartMutationItemEdgeData() {
+		// Create variable product for later use.
+		$variation_ids = $this->factory->product_variation->createSome();
+		$product       = \wc_get_product( $variation_ids['product'] );
+		$attribute     = new WC_Product_Attribute();
+		$attribute->set_id( 0 );
+		$attribute->set_name( 'test' );
+		$attribute->set_options( array( 'yes', 'no' ) );
+		$attribute->set_position( 3 );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$attributes = array_values( $product->get_attributes() );
+		$attributes[] = $attribute;
+		$product->set_attributes( $attributes );
+		$product->save();
+
+		$query = '
+			mutation( $input: AddToCartInput! ) {
+				addToCart(input: $input) {
+					cartItem {
+						product {
+							simpleVariations {
+								name
+								value
+							}
+							node {
+								databaseId
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'productId'        => $variation_ids['product'],
+				'quantity'         => 3,
+				'variationId'      => $variation_ids['variations'][1],
+				'variation'        => array(
+					array(
+						'attributeName'  => 'test',
+						'attributeValue' => 'yes',
+					),
+					array(
+						'attributeName'  => 'color',
+						'attributeValue' => 'green',
+					),
+				)
+			)
+		);
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = array(
+			$this->expectedObject(
+				'addToCart.cartItem.product',
+				array(
+					$this->expectedField( 'node.databaseId', $variation_ids['product'] ),
+					$this->expectedObject(
+						'simpleVariations.#',
+						array(
+							$this->expectedField( 'name', 'attribute_test' ),
+							$this->expectedField( 'value', 'yes' ),
+						)
+					),
+					$this->expectedObject(
+						'simpleVariations.#',
+						array(
+							$this->expectedField( 'name', 'attribute_pa_color' ),
+							$this->expectedField( 'value', 'green' ),
+						)
+					),
+				)
+			)
+		);
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
 	public function testAddCartItemsMutationAndErrors() {
 		// Create variable product for later use.
 		$variation_ids = $this->factory->product_variation->createSome();

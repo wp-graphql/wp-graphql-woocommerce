@@ -1,3 +1,5 @@
+set +u
+
 if [[ -z "$DB_NAME" ]]; then
 	echo "DB_NAME not found"
 	print_usage_instruction
@@ -10,7 +12,7 @@ fi
 DB_HOST=${DB_HOST-localhost}
 DB_PASS=${DB_PASSWORD-""}
 WP_VERSION=${WP_VERSION-5}
-PHPUNIT_VERSION=${PHPUNIT_VERSION-8.1}
+PHPUNIT_VERSION=${PHPUNIT_VERSION-"<=8.1"}
 PROJECT_ROOT_DIR=$(pwd)
 WP_CORE_DIR=${WP_CORE_DIR:-local/public}
 PLUGINS_DIR=${PLUGINS_DIR:-"$WP_CORE_DIR/wp-content/plugins"}
