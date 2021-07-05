@@ -25,3 +25,4 @@ c3.php
 .log/
 php-coveralls.phar
 codeception.yml
+.editorconfig
