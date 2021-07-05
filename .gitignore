@@ -26,3 +26,4 @@ c3.php
 php-coveralls.phar
 codeception.yml
 .editorconfig
+plugin-build

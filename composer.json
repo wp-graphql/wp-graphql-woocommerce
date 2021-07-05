@@ -85,5 +85,25 @@
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
         "source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
+    },
+    "archive": {
+      "name": "wp-graphql-wooocommerce",
+      "exclude": [
+        "/.*",
+        "/bin",
+        "/docs",
+        "/local",
+        "/plugin-build",
+        "/tests",
+        "!/vendor",
+        "/codeception.dist.yml",
+        "/codeception.yml",
+        "/composer.json",
+        "/composer.lock",
+        "/docker-composer.yml",
+        "/Dockerfile",
+        "/netlify.toml",
+        "/README.md"
+      ]
     }
 }
