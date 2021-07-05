@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use GraphQL\Error\InvariantViolation;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;

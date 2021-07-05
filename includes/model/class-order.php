@@ -27,22 +27,12 @@ class Order extends WC_Post {
 	/**
 	 * Order constructor.
 	 *
-	 * @param int $id - shop_order post-type ID.
+	 * @param int|\WC_Data $id - shop_order post-type ID.
 	 */
 	public function __construct( $id ) {
-		$data = $this->get_object( $id );
-		parent::__construct( $data );
-	}
+		$data = \wc_get_order( $id );
 
-	/**
-	 * Return the data source to be used by the model.
-	 *
-	 * @param integer $id  Order ID.
-	 *
-	 * @return WC_Data
-	 */
-	protected function get_object( $id ) {
-		return \WC_Order_Factory::get_order( $id );
+		parent::__construct( $data );
 	}
 
 	/**

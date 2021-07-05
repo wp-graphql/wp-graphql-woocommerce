@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
@@ -163,10 +164,18 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
+	 * @throws InvariantViolation Filtering suppressed.
+	 *
 	 * @return \WP_Query
 	 */
 	public function get_query() {
-		return new \WP_Query( $this->get_query_args() );
+		$query = new \WP_Query( $this->query_args );
+
+		if ( isset( $query->query_vars['suppress_filters'] ) && true === $query->query_vars['suppress_filters'] ) {
+			throw new InvariantViolation( __( 'WP_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql-woocommerce' ) );
+		}
+
+		return $query;
 	}
 
 	/**

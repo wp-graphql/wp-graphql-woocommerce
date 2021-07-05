@@ -7,13 +7,13 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$refund = \wc_get_order( $refund_id );
 
 		return array(
-			$this->expectedObject( 'refund.id', $this->toRelayId( 'shop_order_refund', $refund_id ) ),
-			$this->expectedObject( 'refund.databaseId', $refund->get_id() ),
-			$this->expectedObject( 'refund.title', $refund->get_post_title() ),
-			$this->expectedObject( 'refund.reason', $refund->get_reason() ),
-			$this->expectedObject( 'refund.amount', floatval( $refund->get_amount() ) ),
-			$this->expectedObject( 'refund.refundedBy.databaseId', $refund->get_refunded_by() ),
-			$this->expectedObject( 'refund.date', (string) $refund->get_date_modified() ),
+			$this->expectedField( 'refund.id', $this->toRelayId( 'shop_order_refund', $refund_id ) ),
+			$this->expectedField( 'refund.databaseId', $refund->get_id() ),
+			$this->expectedField( 'refund.title', $refund->get_post_title() ),
+			$this->expectedField( 'refund.reason', $refund->get_reason() ),
+			$this->expectedField( 'refund.amount', floatval( $refund->get_amount() ) ),
+			$this->expectedField( 'refund.refundedBy.databaseId', $refund->get_refunded_by() ),
+			$this->expectedField( 'refund.date', (string) $refund->get_date_modified() ),
 		);
 	}
 
@@ -49,13 +49,13 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$variables = array( 'id' => $relay_id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'refund.id', $relay_id ),
-			$this->expectedObject( 'refund.databaseId', $refund_id ),
-			$this->expectedObject( 'refund.title', 'null' ),
-			$this->expectedObject( 'refund.reason', 'null' ),
-			$this->expectedObject( 'refund.amount', 'null' ),
-			$this->expectedObject( 'refund.refundedBy', 'null' ),
-			$this->expectedObject( 'refund.date', 'null' ),
+			$this->expectedField( 'refund.id', $relay_id ),
+			$this->expectedField( 'refund.databaseId', $refund_id ),
+			$this->expectedField( 'refund.title', self::IS_NULL ),
+			$this->expectedField( 'refund.reason', self::IS_NULL ),
+			$this->expectedField( 'refund.amount', self::IS_NULL ),
+			$this->expectedField( 'refund.refundedBy', self::IS_NULL ),
+			$this->expectedField( 'refund.date', self::IS_NULL ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -100,7 +100,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			'idType' => 'ID',
 		);
 		$response    = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array( $this->expectedObject( 'refund.id', $relay_id ) );
+		$expected  = array( $this->expectedField( 'refund.id', $relay_id ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -151,7 +151,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			$this->expectedObject( 'refunds.nodes', array() ),
+			$this->expectedField( 'refunds.nodes', array() ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );

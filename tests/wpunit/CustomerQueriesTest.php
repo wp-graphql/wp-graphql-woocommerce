@@ -5,61 +5,82 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 	public function expectedCustomerData( $id ) {
 		$customer = new \WC_Customer( $id );
+		$customer->read_meta_data( true );
+
 		$wp_user  = get_user_by( 'ID', $id );
 
 		if ( ! $customer->get_id() ) {
 			throw new \Exception( 'Invalid customer ID provided.' );
 		}
 
+		$billing  = $customer->get_billing();
+		$shipping = $customer->get_shipping();
+
 		return array(
-			$this->expectedObject( 'customer.id', $this->toRelayId( 'customer', $id ) ),
-			$this->expectedObject( 'customer.databaseId', $id ),
-			$this->expectedObject( 'customer.isVatExempt', $customer->get_is_vat_exempt() ),
-			$this->expectedObject( 'customer.hasCalculatedShipping', $customer->has_calculated_shipping() ),
-			$this->expectedObject( 'customer.calculatedShipping', $customer->get_calculated_shipping() ),
-			$this->expectedObject( 'customer.orderCount', $customer->get_order_count() ),
-			$this->expectedObject( 'customer.totalSpent', (float) $customer->get_total_spent() ),
-			$this->expectedObject( 'customer.username', $customer->get_username() ),
-			$this->expectedObject( 'customer.email', $customer->get_email() ),
-			$this->expectedObject( 'customer.firstName', $this->maybe( $customer->get_first_name() ) ),
-			$this->expectedObject( 'customer.lastName', $this->maybe( $customer->get_last_name() ) ),
-			$this->expectedObject( 'customer.displayName', $customer->get_display_name() ),
-			$this->expectedObject( 'customer.role', $customer->get_role() ),
-			$this->expectedObject( 'customer.date', (string) $customer->get_date_created() ),
-			$this->expectedObject( 'customer.modified', (string) $customer->get_date_modified() ),
-			$this->expectedObject( 'customer.lastOrder.databaseId', $customer->get_last_order() ? $customer->get_last_order()->get_id() : null ),
-			$this->expectedObject( 'customer.billing.firstName', $this->maybe( $customer->get_billing_first_name() ) ),
-			$this->expectedObject( 'customer.billing.lastName', $this->maybe( $customer->get_billing_last_name() ) ),
-			$this->expectedObject( 'customer.billing.company', $this->maybe( $customer->get_billing_company() ) ),
-			$this->expectedObject( 'customer.billing.address1', $this->maybe( $customer->get_billing_address_1() ) ),
-			$this->expectedObject( 'customer.billing.address2', $this->maybe( $customer->get_billing_address_2() ) ),
-			$this->expectedObject( 'customer.billing.city', $this->maybe( $customer->get_billing_city() ) ),
-			$this->expectedObject( 'customer.billing.state', $this->maybe( $customer->get_billing_state() ) ),
-			$this->expectedObject( 'customer.billing.postcode', $this->maybe( $customer->get_billing_postcode() ) ),
-			$this->expectedObject( 'customer.billing.country', $this->maybe( $customer->get_billing_country() ) ),
-			$this->expectedObject( 'customer.billing.email', $this->maybe( $customer->get_billing_email() ) ),
-			$this->expectedObject( 'customer.billing.phone', $this->maybe( $customer->get_billing_phone() ) ),
-			$this->expectedObject( 'customer.shipping.firstName', $this->maybe( $customer->get_shipping_first_name() ) ),
-			$this->expectedObject( 'customer.shipping.lastName', $this->maybe( $customer->get_shipping_last_name() ) ),
-			$this->expectedObject( 'customer.shipping.company', $this->maybe( $customer->get_shipping_company() ) ),
-			$this->expectedObject( 'customer.shipping.address1', $this->maybe( $customer->get_shipping_address_1() ) ),
-			$this->expectedObject( 'customer.shipping.address2', $this->maybe( $customer->get_shipping_address_2() ) ),
-			$this->expectedObject( 'customer.shipping.city', $this->maybe( $customer->get_shipping_city() ) ),
-			$this->expectedObject( 'customer.shipping.state', $this->maybe( $customer->get_shipping_state() ) ),
-			$this->expectedObject( 'customer.shipping.postcode', $this->maybe( $customer->get_shipping_postcode() ) ),
-			$this->expectedObject( 'customer.shipping.country', $this->maybe( $customer->get_shipping_country() ) ),
-			$this->expectedObject( 'customer.isPayingCustomer', $customer->get_is_paying_customer() ),
 			$this->expectedObject(
-				'customer.jwtAuthToken',
-				! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user ) )
-					? \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user )
-					: null
-			),
-			$this->expectedObject(
-				'customer.jwtRefreshToken',
-				! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user ) )
-					? \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user )
-					: null
+				'customer',
+				array(
+					$this->expectedField( 'id', $this->toRelayId( 'customer', $id ) ),
+					$this->expectedField( 'databaseId', $id ),
+					$this->expectedField( 'isVatExempt', $customer->get_is_vat_exempt() ),
+					$this->expectedField( 'hasCalculatedShipping', $customer->has_calculated_shipping() ),
+					$this->expectedField( 'calculatedShipping', $customer->get_calculated_shipping() ),
+					$this->expectedField( 'orderCount', $customer->get_order_count() ),
+					$this->expectedField( 'totalSpent', (float) $customer->get_total_spent() ),
+					$this->expectedField( 'username', $customer->get_username() ),
+					$this->expectedField( 'email', $customer->get_email() ),
+					$this->expectedField( 'firstName', $this->maybe( $customer->get_first_name() ) ),
+					$this->expectedField( 'lastName', $this->maybe( $customer->get_last_name() ) ),
+					$this->expectedField( 'displayName', $customer->get_display_name() ),
+					$this->expectedField( 'role', $customer->get_role() ),
+					$this->expectedField( 'date', (string) $customer->get_date_created() ),
+					$this->expectedField( 'modified', (string) $customer->get_date_modified() ),
+					$this->expectedField(
+						'lastOrder.databaseId',
+						$customer->get_last_order()
+							? $customer->get_last_order()->get_id()
+							: self::IS_NULL
+					),
+					$this->expectedObject(
+						'billing',
+						array(
+							$this->expectedField( 'firstName', $this->maybe( $billing['first_name'] ) ),
+							$this->expectedField( 'lastName', $this->maybe( $billing['last_name'] ) ),
+							$this->expectedField( 'company', $this->maybe( $billing['company'] ) ),
+							$this->expectedField( 'address1', $this->maybe( $billing['address_1'] ) ),
+							$this->expectedField( 'address2', $this->maybe( $billing['address_2'] ) ),
+							$this->expectedField( 'city', $this->maybe( $billing['city'] ) ),
+							$this->expectedField( 'postcode', $this->maybe( $billing['postcode'] ) ),
+							$this->expectedField( 'email', $this->maybe( $billing['email'] ) ),
+							$this->expectedField( 'phone', $this->maybe( $billing['phone'] ) ),
+						)
+					),
+					$this->expectedObject(
+						'shipping',
+						array(
+							$this->expectedField( 'firstName', $this->maybe( $shipping['first_name'] ) ),
+							$this->expectedField( 'lastName', $this->maybe( $shipping['last_name'] ) ),
+							$this->expectedField( 'company', $this->maybe( $shipping['company'] ) ),
+							$this->expectedField( 'address1', $this->maybe( $shipping['address_1'] ) ),
+							$this->expectedField( 'address2', $this->maybe( $shipping['address_2'] ) ),
+							$this->expectedField( 'city', $this->maybe( $shipping['city'] ) ),
+							$this->expectedField( 'postcode', $this->maybe( $shipping['postcode'] ) ),
+						)
+					),
+					$this->expectedField( 'isPayingCustomer', $customer->get_is_paying_customer() ),
+					$this->expectedField(
+						'jwtAuthToken',
+						! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user ) )
+							? \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user )
+							: null
+					),
+					$this->expectedField(
+						'jwtRefreshToken',
+						! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user ) )
+							? \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user )
+							: null
+					),
+				)
 			),
 		);
 	}
@@ -97,9 +118,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 						address1
 						address2
 						city
-						state
 						postcode
-						country
 						email
 						phone
 					}
@@ -110,9 +129,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 						address1
 						address2
 						city
-						state
 						postcode
-						country
 					}
 					isPayingCustomer
 					jwtAuthToken
@@ -131,7 +148,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedErrorPath( 'customer' ),
-			$this->expectedObject( 'customer', 'null' )
+			$this->expectedField( 'customer', self::IS_NULL )
 		);
 
 		$this->assertQueryError( $response, $expected );
@@ -166,9 +183,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$expected  = array_merge(
 			array(
 				$this->expectedErrorPath( 'customer.jwtAuthToken' ),
-				$this->expectedObject( 'customer.jwtAuthToken', 'null' ),
+				$this->expectedField( 'customer.jwtAuthToken', self::IS_NULL ),
 				$this->expectedErrorPath( 'customer.jwtRefreshToken' ),
-				$this->expectedObject( 'customer.jwtRefreshToken', 'null' )
+				$this->expectedField( 'customer.jwtRefreshToken', self::IS_NULL )
 			),
 			$this->expectedCustomerData( $new_customer_id )
 		);
@@ -216,7 +233,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedErrorPath( 'customer' ),
-			$this->expectedObject( 'customer', 'null' )
+			$this->expectedField( 'customer', self::IS_NULL )
 		);
 
 		$this->assertQueryError( $response, $expected );
@@ -269,7 +286,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAs( $users[0] );
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = array( $this->expectedObject( 'customers.nodes', array() ) );
+		$expected = array( $this->expectedField( 'customers.nodes', array() ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -281,10 +298,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[0] ),
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[1] ),
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[2] ),
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[3] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[0] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -297,7 +314,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$variables = array( 'search' => 'megaman8080' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.nodes.0.databaseId', $users[0] ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $users[0] ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -310,7 +327,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$variables = array( 'include' => array( $users[2]) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.nodes.0.databaseId', $users[2] ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $users[2] ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -323,10 +340,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$variables = array( 'exclude' => array( $users[2] ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[0] ),
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[1] ),
-			$this->expectedObject( 'customers.nodes.#.databaseId', $users[3] ),
-			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[2] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[0] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
+			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
+			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -339,10 +356,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$variables = array( 'email' => 'gotcha@example.com' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
-			$this->expectedObject( 'customers.nodes.0.databaseId', $users[0] ),
-			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[1] ),
-			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[2] ),
-			$this->not()->expectedObject( 'customers.nodes.#.databaseId', $users[3] ),
+			$this->expectedField( 'customers.nodes.0.databaseId', $users[0] ),
+			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
+			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
+			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -365,7 +382,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		);
 		$expected  = array();
 		foreach ( $all_users as $index => $user_id ) {
-			$expected[] = $this->expectedObject(
+			$expected[] = $this->expectedField(
 				"customers.nodes.{$index}.databaseId",
 				absint( $user_id )
 			);
@@ -403,7 +420,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			$this->expectedObject( 'customer.orders.nodes.#.databaseId', $order_1 ),
+			$this->expectedField( 'customer.orders.nodes.#.databaseId', $order_1 ),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );

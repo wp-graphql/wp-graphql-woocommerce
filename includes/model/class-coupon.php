@@ -21,7 +21,7 @@ class Coupon extends WC_Post {
 	/**
 	 * Coupon constructor
 	 *
-	 * @param int $id - shop_coupon post-type ID.
+	 * @param int|\WC_Data $id - shop_coupon post-type ID.
 	 */
 	public function __construct( $id ) {
 		$data = new WC_Coupon( $id );

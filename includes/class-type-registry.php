@@ -128,5 +128,8 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Mutation\Review_Write::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Review_Update::register_mutation();
 		\WPGraphQL\WooCommerce\Mutation\Review_Delete_Restore::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Coupon_Create::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Coupon_Update::register_mutation();
+		\WPGraphQL\WooCommerce\Mutation\Coupon_Delete::register_mutation();
 	}
 }
