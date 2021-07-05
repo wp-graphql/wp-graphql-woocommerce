@@ -53,7 +53,6 @@ install_local_test_library() {
 		codeception/module-rest \
 		codeception/util-universalframework \
 		wp-graphql/wp-graphql-testcase \
-		php-coveralls/php-coveralls \
 		stripe/stripe-php
 }
 
@@ -65,7 +64,6 @@ remove_local_test_library() {
 		codeception/util-universalframework \
 		lucatume/wp-browser \
 		phpunit/phpunit \
-		php-coveralls/php-coveralls \
 		stripe/stripe-php
 
 	composer update
