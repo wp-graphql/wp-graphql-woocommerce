@@ -46,10 +46,7 @@ class Coupons {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_coupon' );
 
 					if ( ! self::should_execute() ) {
-						return array(
-							'nodes' => array(),
-							'edges' => array(),
-						);
+						return array();
 					}
 
 					return $resolver->get_connection();
