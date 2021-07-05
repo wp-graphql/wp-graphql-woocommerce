@@ -33,3 +33,12 @@ node_modules
 *.sql
 *.tar.gz
 *.zip
+.*
+bin
+docs
+local
+tests
+netlify.toml
+docker-compose.yml
+codeception.yml
+Dockerfile
