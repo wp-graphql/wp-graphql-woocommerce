@@ -110,11 +110,7 @@ class Orders {
 	private static function get_customer_order_connection( $resolver, $customer ) {
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
 		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return array(
-				'pageInfo' => null,
-				'nodes'    => array(),
-				'edges'    => array(),
-			);
+			return array();
 		}
 
 		// If the querying user has a "billing email" set filter orders by user's billing email, otherwise filter by user's ID.
