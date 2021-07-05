@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set +u
+
 install_wordpress() {
 	if [ -f $WP_CORE_DIR/wp-config.php ]; then
 		echo "Wordpress already installed."
@@ -47,7 +49,7 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev phpunit/phpunit:<=${PHPUNIT_VERSION}
+	composer require --dev phpunit/phpunit:${PHPUNIT_VERSION} \
 		lucatume/wp-browser \
 		codeception/module-asserts \
 		codeception/module-rest \
