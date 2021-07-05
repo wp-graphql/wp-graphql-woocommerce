@@ -324,7 +324,7 @@ class Cart_Type {
 
 							return $attributes;
 						},
-					)
+					),
 				),
 				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id       = $source['product_id'];
