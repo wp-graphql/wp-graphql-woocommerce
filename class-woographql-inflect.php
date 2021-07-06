@@ -9,6 +9,9 @@
  * @link https://gist.github.com/tbrianjones/ba0460cc1d55f357e00b
  * @package WPGraphQL\WooCommerce
  * @since 0.0.4
+ * @deprecated v0.10.2
+ *
+ * Will be removed in v0.11.0. Functionality will be no longer in use.
  */
 
 if ( ! class_exists( 'WooGraphQL_Inflect' ) ) :
