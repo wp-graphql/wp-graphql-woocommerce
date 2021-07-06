@@ -14,24 +14,42 @@
 4. (Optional) Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
 5. (Optional) Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) to add an extra layer of security using HTTP CORS and some of WPGraphQL advanced functionality.
 
-## What does this plugin do?
+## What can you do with this extension?
 
-It adds WooCommerce functionality to the WPGraphQL schema using WooCommerce's [CRUD](https://github.com/woocommerce/woocommerce/wiki/CRUD-Objects-in-3.0) objects.
+- Query your shops products and variations with complex filtering options.
+- Query customers, orders, coupons, and refunds (*).
+- Manage a customer's session with JWTs and cart/customer queries and mutations(*).
+- Create orders manually (*), automatically with the checkout mutation, or pass a customer's session to the WooCommerce checkout page in your theme for complete payment gateway support (#).
 
-## Features
+(*) These operations have user restrictions. Please read up on authenticating an user with [here](https://www.wpgraphql.com/docs/authentication-and-authorization/), then view [this React/Apollo example](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/88) with the added on usage of customer session Token.
 
-- Query **product**, **product variations**, **customers**, **coupons**, **orders**, **refunds** and **more** with complex filtering options.
-- Manipulate customer session data using customer and cart mutations while managing customer session token using HTTP headers or cookies *(not recommended)*. *[HTTP header example w/ React/Apollo](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/88)*
-- Create orders using the `order` mutations with the `checkout` mutation.
+(#) This is the recommended method on checkout. You can read it's usage in [this](https://jacobarriola.com/post/hosted-woocommerce-checkout-headless-application#load-the-session-in-woocommerce) excellent write-up by @jacobarriola
+
+## Why don't the WooCommerce CPT GraphQL types support all the same features as most WordPress CPTs that WPGraphQL exposes?
+
+The CPTs as well as most of the data objects that WooCommerce defines are wrapped in a object managers distributed by a data store system.
+
+This data store system allows for each individual data object to be defined however needed. What this means is, although by out of the box objects like **products**, **orders**, and **coupons** are defined as WordPress CPTs they don't have to be.
+
+This is what also enables WooCommerce to store most meta connected to these CPTs in separate tables. The object data doesn't even have to be in the same database if the object's data store designed to manage somewhere else, but we are getting out of the scope of this question.
+
+What does all this :point_up: have to do with WooCommerce's CPTs' functionality? Well, the object managers distributed by the data store are WooGraphQL first point of contact for pretty much everything. Unlike the most common CPTs which use a **WP_Post** object as their data source and a **WPGraphQL\Model\Post** object as their model, WooGraphQL uses object managers as the data source for the CPTs and each individual has it's own model with it's own set of permissions and restrictions.
+
+This has led to some friction is certain areas of the schema where WooGraphQL support is lacking. I'm sorry for the inconvience, myself and whole **WPGraphQL** org are working to reduce this friction and WooGraphQL properly integrated with all **WPGraphQL** + **WPGraphQL ACF** features.
+
+Thank you for your patience
+@kidunot89
 
 ## Future Features
 
-- Payment Processing
-- Adminstrator mutations. Eg. Creating and deleting products, coupons, and refunds.
+- Product CRUD mutations.
+- And some other stuff I'm sure :thinking_face:
 
 ## Playground
 
-Feel free to test out the extension using this [GraphiQL Playground](https://woographql.com/playground). The playground allows you to execute queries and mutations, as well as view the schema.
+Feel free to test out the extension using this [GraphiQL Playground](https://woographql.com/playground). The playground allows you to execute queries and mutations, as well as view the schema (*).
+
+(*) I have a tendency to forget to update the playground between releases :sweat_smile:, so if you believe this to be the case look me up somewhere on this page and lemme know :man_shrugging:
 
 ## Wanna help support WooGraphQL's future.
 
