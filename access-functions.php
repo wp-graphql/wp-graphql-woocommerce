@@ -4,6 +4,9 @@
  *
  * @package WPGraphQL\WooCommerce
  * @since 0.0.1
+ * @deprecated v0.10.2
+ *
+ * Will be removed in v0.11.0. Some functions will be relocated.
  */
 
 /**
