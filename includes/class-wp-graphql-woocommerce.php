@@ -137,14 +137,56 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private function includes() {
 
-			// Autoload Required Classes.
-			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && false !== WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
-				require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
+			/**
+			 * WPGRAPHQL_AUTOLOAD can be set to "false" to prevent the autoloader from running.
+			 * In most cases, this is not something that should be disabled, but some environments
+			 * may bootstrap their dependencies in a global autoloader that will autoload files
+			 * before we get to this point, and requiring the autoloader again can trigger fatal errors.
+			 *
+			 * The codeception tests are an example of an environment where adding the autoloader again causes issues
+			 * so this is set to false for tests.
+			 */
+			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true === WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
+				if ( file_exists( WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+					// Autoload Required Classes.
+					require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
+				}
+
+				/**
+				 * If GraphQL class doesn't exist, then dependencies cannot be
+				 * detected. This likely means the user cloned the repo from Github
+				 * but did not run `composer install`
+				 */
+				if ( ! class_exists( 'Firebase\JWT\JWT' ) ) {
+					add_action(
+						'admin_notices',
+						function () {
+							if ( ! current_user_can( 'manage_options' ) ) {
+								return;
+							}
+
+							echo sprintf(
+								'<div class="notice notice-error">' .
+								'<p>%s</p>' .
+								'</div>',
+								esc_html__(
+									'WooGraphQL appears to have been installed without it\'s dependencies. It will not work properly until dependencies are installed. This likely means you have cloned WPGraphQL from Github and need to run the command `composer install`.',
+									'wp-graphql-woocommerce'
+								)
+							);
+						}
+					);
+
+					return false;
+				}
 			}
 
 			// Required non-autoloaded classes.
 			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'access-functions.php';
 			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'class-woographql-inflect.php';
+			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'includes/functions.php';
+
+			return true;
 		}
 
 		/**

@@ -51,7 +51,7 @@ Feel free to test out the extension using this [GraphiQL Playground](https://woo
 
 (*) I have a tendency to forget to update the playground between releases :sweat_smile:, so if you believe this to be the case look me up somewhere on this page and lemme know :man_shrugging:
 
-## Wanna help support WooGraphQL's future.
+## Wanna help support WooGraphQL's future
 
 - Sponsor **@kidunot89** *(WooGraphQL Creator/Developer)* on **[Github](https://github.com/sponsors/kidunot89)**
 - Sponsor **WooGraphQL** on **[OpenCollective](https://opencollective.com/woographql)**

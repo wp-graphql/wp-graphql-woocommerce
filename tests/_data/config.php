@@ -9,7 +9,7 @@ if ( ! defined( 'GRAPHQL_DEBUG' ) ) {
 }
 
 if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && false !== getenv( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) ) {
-    define( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD', getenv( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) );
+    define( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD', true );
 }
 
 if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
