@@ -11,6 +11,7 @@ namespace WPGraphQL\WooCommerce;
 use WPGraphQL\WooCommerce\Model\Coupon;
 use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Product_Variation;
 
 /**
  * Class ACF_Schema_Filters
@@ -65,6 +66,9 @@ class ACF_Schema_Filters {
 					break;
 				case 'product':
 					$source = new Product( $post->ID );
+					break;
+				case 'product_variation':
+					$source = new Product_Variation( $post->ID );
 					break;
 			}
 		}
