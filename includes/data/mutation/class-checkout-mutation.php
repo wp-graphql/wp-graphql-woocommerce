@@ -9,6 +9,8 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use WP_Error;
+
 use function WC;
 
 /**
@@ -496,7 +498,7 @@ class Checkout_Mutation {
 		}
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		do_action( 'woocommerce_after_checkout_validation', $data );
+		do_action( 'woocommerce_after_checkout_validation', $data, new WP_Error() );
 	}
 
 	/**
