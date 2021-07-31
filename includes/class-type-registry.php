@@ -87,9 +87,10 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Rate_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Cart_Error_Types::register();
 
+
 		// Object fields.
-		\WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
-		\WPGraphQL\WooCommerce\Type\WPObject\Root_Query::register_fields();
+		 \WPGraphQL\WooCommerce\Type\WPObject\Product_Category_Type::register_fields();
+		 \WPGraphQL\WooCommerce\Type\WPObject\Root_Query::register_fields( $type_registry );
 
 		// Connections.
 		\WPGraphQL\WooCommerce\Connection\Posts::register_connections();

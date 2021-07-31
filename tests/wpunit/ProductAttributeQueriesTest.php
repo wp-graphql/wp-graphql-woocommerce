@@ -9,6 +9,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
     private $variation_ids;
 
     public function setUp(): void {
+	    WPGraphQL::clear_schema();
         parent::setUp();
 
         $this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -21,6 +22,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
     }
 
     public function tearDown(): void {
+	    WPGraphQL::clear_schema();
         parent::tearDown();
     }
 

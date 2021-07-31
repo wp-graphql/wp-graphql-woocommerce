@@ -193,6 +193,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 * Sets up WooGraphQL schema.
 		 */
 		private function setup() {
+
 			// Setup minor integrations.
 			\WPGraphQL\WooCommerce\Functions\setup_minor_integrations();
 
@@ -210,7 +211,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 
 			// Initialize WooGraphQL TypeRegistry.
 			$registry = new \WPGraphQL\WooCommerce\Type_Registry();
-			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
+			add_action( get_graphql_register_action(), array( $registry, 'init' ), 10, 1 );
 		}
 	}
 

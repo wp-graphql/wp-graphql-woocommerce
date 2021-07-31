@@ -5,6 +5,7 @@ use WPGraphQL\Type\WPEnumType;
 class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
     public function setUp(): void {
         // before
+	    WPGraphQL::clear_schema();
         parent::setUp();
 
         // Create users.
@@ -101,7 +102,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
     public function tearDown(): void {
         // your tear down methods here
-
+	    WPGraphQL::clear_schema();
         // then
         parent::tearDown();
     }

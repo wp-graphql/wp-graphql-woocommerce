@@ -254,6 +254,7 @@ class Product_Types {
 			array(
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
+				'eagerlyLoadType' => true,
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_pricing_and_tax_fields(),
@@ -274,6 +275,7 @@ class Product_Types {
 			array(
 				'description' => __( 'A variable product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
+				'eagerlyLoadType' => true,
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_pricing_and_tax_fields(),
@@ -293,6 +295,7 @@ class Product_Types {
 			array(
 				'description' => __( 'A external product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
+				'eagerlyLoadType' => true,
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_pricing_and_tax_fields(),
@@ -320,6 +323,7 @@ class Product_Types {
 			array(
 				'description' => __( 'A group product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
+				'eagerlyLoadType' => true,
 				'fields'      => array_merge(
 					Product::get_fields(),
 					array(

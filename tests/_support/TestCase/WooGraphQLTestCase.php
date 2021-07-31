@@ -31,6 +31,8 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
+		$this->clearSchema();
+
 		// Load factories.
 		$factories = array(
 			'Product',
@@ -59,7 +61,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 	public function tearDown(): void {
 		\WC()->cart->empty_cart( true );
-
+		$this->clearSchema();
 		// then
 		parent::tearDown();
 	}

@@ -11,6 +11,8 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 	private $order_helper;
 
     public function setUp(): void {
+
+	    WPGraphQL::clear_schema();
         parent::setUp();
 
         $this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
@@ -22,7 +24,7 @@ class OrderItemQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function tearDown(): void {
         // your tear down methods here
-
+	    WPGraphQL::clear_schema();
         // then
         parent::tearDown();
     }

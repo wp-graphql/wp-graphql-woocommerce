@@ -414,14 +414,18 @@ class Root_Query {
 			)
 		);
 
+		return;
+
 		// Product queries.
 		$product_types = apply_filters(
 			'woographql_register_product_queries',
 			array_keys( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
+
 		foreach ( $product_types as $type ) {
 			$field_name = "{$type}Product";
 			$type_name  = ucfirst( $type ) . 'Product';
+
 			register_graphql_field(
 				'RootQuery',
 				$field_name,

@@ -6,6 +6,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function setUp(): void {
         // before
+	    WPGraphQL::clear_schema();
         parent::setUp();
 
         // Create users.
@@ -28,6 +29,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function tearDown(): void {
         // Clear cart.
+	    WPGraphQL::clear_schema();
 		WC()->cart->empty_cart( true );
 
         // then

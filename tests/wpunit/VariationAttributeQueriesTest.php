@@ -7,6 +7,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
     private $variation_id;
 
     public function setUp(): void {
+	    WPGraphQL::clear_schema();
         // before
         parent::setUp();
 
@@ -21,7 +22,7 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 
     public function tearDown(): void {
         // your tear down methods here
-
+	    WPGraphQL::clear_schema();
         // then
         parent::tearDown();
     }
