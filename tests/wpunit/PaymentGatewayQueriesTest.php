@@ -66,6 +66,8 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 
 		// Reload gateways.
 		\WC()->payment_gateways->init();
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function tearDown(): void {

@@ -55,6 +55,8 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		// Create test users.
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
 		$this->customer     = $this->factory->customer->create();
+
+		$this->clearSchema();
 	}
 
 	public function tearDown(): void {

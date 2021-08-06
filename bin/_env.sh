@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set +u
 
 if [[ -z "$DB_NAME" ]]; then

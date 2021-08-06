@@ -66,6 +66,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 			case 'TAX_RATE':
 				$loader = array( $this, 'load_tax_rate_from_id' );
 				break;
+			case 'ORDER_ITEM':
+				$loader = array( $this, 'load_order_item_from_id' );
+				break;
 			default:
 				/**
 				 * For adding custom key types to this loader
@@ -151,5 +154,24 @@ class WC_Db_Loader extends AbstractDataLoader {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Returns the order item connected the provided IDs.
+	 *
+	 * @param int $id - Order item IDs.
+	 *
+	 * @return \WPGraphQL\Model\Order_Item|null
+	 */
+	public function load_order_item_from_id( $id ) {
+		$item = \WC()->order_factory::get_order_item( $id );
+
+		if ( false === $item ) {
+			return null;
+		}
+
+		$item = new \WPGraphQL\WooCommerce\ModelOrder_Item( $item );
+
+		return $item;
 	}
 }

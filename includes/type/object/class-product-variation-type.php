@@ -235,6 +235,8 @@ class Product_Variation_Type {
 							return ! empty( $source->image_id ) ? DataSource::resolve_post_object( $source->image_id, $context ) : null;
 						},
 					),
+
+					'metaData'          => Meta_Data_Type::get_metadata_field_definition(),
 				),
 			)
 		);

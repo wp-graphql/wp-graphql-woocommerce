@@ -11,6 +11,8 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
@@ -119,7 +121,31 @@ class Customer_Type {
 							return null;
 						},
 					),
+
+					'metaData'              => Meta_Data_Type::get_metadata_field_definition(),
 				),
+				'connections' => array(
+					'downloadableItems' => array(
+						'toType'         => 'DownloadableItem',
+						'connectionArgs' => array(
+							'active'                => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to downloadable items that can be downloaded now.', 'wp-graphql-woocommerce' ),
+							),
+							'expired'               => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to downloadable items that are expired.', 'wp-graphql-woocommerce' ),
+							),
+							'hasDownloadsRemaining' => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to downloadable items that have downloads remaining.', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							return Factory::resolve_downloadable_item_connection( $source, $args, $context, $info );
+						},
+					),
+				)
 			)
 		);
 

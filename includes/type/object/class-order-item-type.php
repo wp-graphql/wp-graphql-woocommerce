@@ -303,6 +303,8 @@ class Order_Item_Type {
 					'type'        => 'Int',
 					'description' => __( 'The Id of the order the order item belongs to.', 'wp-graphql-woocommerce' ),
 				),
+
+				'metaData'   => Meta_Data_Type::get_metadata_field_definition(),
 			),
 			$fields
 		);
