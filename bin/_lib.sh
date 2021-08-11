@@ -21,14 +21,15 @@ install_wordpress() {
 
 	# Install Wordpress + integrated plugins for testing/development.
 	composer install
-	composer require --dev composer/installers \
+	composer require --dev -W \
+		composer/installers:~1.0 \
 		johnpbloch/wordpress:~${WP_VERSION} \
         wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
-		wp-cli/wp-cli-bundle
+		wp-cli/wp-cli-bundle 
 }
 
 remove_wordpress() {

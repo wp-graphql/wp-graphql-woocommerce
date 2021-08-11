@@ -415,13 +415,22 @@ class Root_Query {
 		);
 
 		// Product queries.
-		$product_types = apply_filters(
+		$product_type_keys = apply_filters(
 			'woographql_register_product_queries',
 			array_keys( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
-		foreach ( $product_types as $type ) {
-			$field_name = "{$type}Product";
-			$type_name  = ucfirst( $type ) . 'Product';
+
+		$product_types = \WP_GraphQL_WooCommerce::get_enabled_product_types();
+
+		foreach ( $product_type_keys as $type_key ) {
+
+			$field_name = "{$type_key}Product";
+			$type_name  = $product_types[ $type_key ] ?? null;
+
+			if ( empty( $type_name ) ) {
+				continue;
+			}
+
 			register_graphql_field(
 				'RootQuery',
 				$field_name,
@@ -434,7 +443,7 @@ class Root_Query {
 							'description' => sprintf(
 								/* translators: %s: product type */
 								__( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ),
-								$type
+								$type_name
 							),
 						),
 						'idType' => array(
@@ -442,7 +451,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						),
 					),
-					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type ) {
+					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_name ) {
 						$id = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -471,9 +480,9 @@ class Root_Query {
 						if ( empty( $product_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
-						} elseif ( \WC()->product_factory->get_product_type( $product_id ) !== $type ) {
+						} elseif ( \WC()->product_factory->get_product_type( $product_id ) !== $type_name ) {
 							/* translators: Invalid product type message %1$s: Product ID, %2$s: Product type */
-							throw new UserError( sprintf( __( 'This product of ID %1$s is not a %2$s product', 'wp-graphql-woocommerce' ), $product_id, $type ) );
+							throw new UserError( sprintf( __( 'This product of ID %1$s is not a %2$s product', 'wp-graphql-woocommerce' ), $product_id, $type_name ) );
 						} elseif ( get_post( $product_id )->post_type !== 'product' ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
