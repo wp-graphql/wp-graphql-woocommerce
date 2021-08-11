@@ -14,6 +14,7 @@ use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
@@ -68,6 +69,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 				break;
 			case 'ORDER_ITEM':
 				$loader = array( $this, 'load_order_item_from_id' );
+				break;
+			case 'SHIPPING_METHOD':
+				$loader = array( $this, 'load_shipping_method_from_id' );
 				break;
 			default:
 				/**
@@ -154,6 +158,31 @@ class WC_Db_Loader extends AbstractDataLoader {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Returns the shipping method Model for the shipping method ID.
+	 *
+	 * @param int $id - Shipping method ID.
+	 *
+	 * @return Shipping_Method
+	 * @access public
+	 * @throws UserError Invalid object.
+	 */
+	public function load_shipping_method_from_id( $id ) {
+
+		$wc_shipping = \WC_Shipping::instance();
+		$methods     = $wc_shipping->get_shipping_methods();
+		if ( empty( $methods[ $id ] ) ) {
+			throw new UserError(
+			/* translators: shipping method ID */
+				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
+			);
+		}
+
+		$method = $methods[ $id ];
+
+		return new Shipping_Method( $method );
 	}
 
 	/**

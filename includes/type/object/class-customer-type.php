@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Downloadable_Item_Connection_Resolver;
 
 /**
  * Class Customer_Type
@@ -142,7 +143,9 @@ class Customer_Type {
 							),
 						),
 						'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							return Factory::resolve_downloadable_item_connection( $source, $args, $context, $info );
+							$resolver = new Downloadable_Item_Connection_Resolver( $source, $args, $context, $info );
+
+							return $resolver->get_connection();
 						},
 					),
 				)

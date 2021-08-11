@@ -12,7 +12,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 
 /**
  * Class Product_Attributes
@@ -54,8 +54,10 @@ class Variation_Attributes {
 				'toType'         => 'VariationAttribute',
 				'fromFieldName'  => 'attributes',
 				'connectionArgs' => array(),
-				'resolve'        => function( $root, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_variation_attribute_connection( $root, $args, $context, $info );
+				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new Variation_Attribute_Connection_Resolver();
+
+					return $resolver->resolve( $source, $args, $context, $info );
 				},
 			),
 			$args

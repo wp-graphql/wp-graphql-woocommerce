@@ -256,7 +256,8 @@ class Core_Schema_Filters {
 		$loaders['tax_rate']          = &$tax_rate_loader;
 		$order_item_loader            = new WC_Db_Loader( $context, 'ORDER_ITEM' );
 		$loaders['order_item']        = &$order_item_loader;
-
+		$shipping_item_loader         = new WC_Db_Loader( $context, 'SHIPPING_METHOD' );
+		$loaders['shipping_method']   = &$shipping_item_loader;
 		return $loaders;
 	}
 

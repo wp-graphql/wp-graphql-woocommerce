@@ -11,7 +11,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
 
 /**
  * Class - PaymentGateways
@@ -40,7 +40,9 @@ class Payment_Gateways {
 				'fromFieldName'  => 'paymentGateways',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_payment_gateway_connection( $source, $args, $context, $info );
+					$resolver = new Payment_Gateway_Connection_Resolver();
+
+					return $resolver->resolve( $source, $args, $context, $info );
 				},
 			),
 			$args
