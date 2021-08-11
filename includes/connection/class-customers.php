@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\UserConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Customers

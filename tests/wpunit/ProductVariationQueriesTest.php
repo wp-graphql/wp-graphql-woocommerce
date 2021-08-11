@@ -15,6 +15,8 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->product_helper = $this->getModule('\Helper\Wpunit')->product();
 		$this->helper         = $this->getModule('\Helper\Wpunit')->product_variation();
 		$this->products       = $this->helper->create( $this->product_helper->create_variable() );
+
+		\WPGraphQL::clear_schema();
     }
 
     public function tearDown(): void {

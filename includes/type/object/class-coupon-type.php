@@ -106,6 +106,7 @@ class Coupon_Type {
 						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'Only customers with a matching email address can use the coupon', 'wp-graphql-woocommerce' ),
 					),
+					'metaData'           => Meta_Data_Type::get_metadata_field_definition(),
 				),
 			)
 		);

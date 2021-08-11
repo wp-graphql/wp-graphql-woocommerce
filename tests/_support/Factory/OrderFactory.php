@@ -298,12 +298,12 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order = \wc_get_order( $order );
 
 		if ( empty( $args['rate_id'] ) ) {
-			$rate_id = TaxRateHelper::instance()->create();
+			$rate_id = $this->factory->tax_rate->create();
 		} else {
 			$rate_id = $args['rate_id'];
 		}
 
-		$item = new WC_Order_Item_Tax();
+		$item = new \WC_Order_Item_Tax();
 		$item->set_props(
 			array_merge(
 				array(

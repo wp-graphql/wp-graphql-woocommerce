@@ -11,14 +11,32 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Downloadable_Item_Connection_Resolver;
 
 /**
  * Class Order_Type
  */
 class Order_Type {
+	/**
+	 * Order Item connection resolver callback
+	 *
+	 * @param \WPGraphQL\Model\Order $source   Source order.
+	 * @param array                  $args     Connection args.
+	 * @param AppContext             $context  AppContext instance.
+	 * @param ResolveInfo            $info     ResolveInfo instance.
+	 *
+	 * @return array
+	 */
+	public static function resolve_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		$resolver = new Order_Item_Connection_Resolver( $source, $args, $context, $info );
+
+		return $resolver->get_connection();
+	}
 
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
@@ -321,6 +339,56 @@ class Order_Type {
 					'needsProcessing'       => array(
 						'type'        => 'Boolean',
 						'description' => __( 'If order needs processing before it can be completed', 'wp-graphql-woocommerce' ),
+					),
+					'metaData'              => Meta_Data_Type::get_metadata_field_definition(),
+				),
+				'connections' => array(
+					'taxLines'          => array(
+						'toType'         => 'TaxLine',
+						'connectionArgs' => array(),
+						'resolve'        => array( __CLASS__, 'resolve_item_connection' ),
+					),
+					'feeLines'          => array(
+						'toType'         => 'FeeLine',
+						'connectionArgs' => array(),
+						'resolve'        => array( __CLASS__, 'resolve_item_connection' ),
+					),
+					'shippingLines'     => array(
+						'toType'         => 'ShippingLine',
+						'connectionArgs' => array(),
+						'resolve'        => array( __CLASS__, 'resolve_item_connection' ),
+					),
+					'couponLines'       => array(
+						'toType'         => 'CouponLine',
+						'connectionArgs' => array(),
+						'resolve'        => array( __CLASS__, 'resolve_item_connection' ),
+					),
+					'lineItems'         => array(
+						'toType'         => 'LineItem',
+						'connectionArgs' => array(),
+						'resolve'        => array( __CLASS__, 'resolve_item_connection' ),
+					),
+					'downloadableItems' => array(
+						'toType'         => 'DownloadableItem',
+						'connectionArgs' => array(
+							'active'                => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to downloadable items that can be downloaded now.', 'wp-graphql-woocommerce' ),
+							),
+							'expired'               => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to downloadable items that are expired.', 'wp-graphql-woocommerce' ),
+							),
+							'hasDownloadsRemaining' => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to downloadable items that have downloads remaining.', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$resolver = new Downloadable_Item_Connection_Resolver( $source, $args, $context, $info );
+
+							return $resolver->get_connection();
+						},
 					),
 				),
 			)

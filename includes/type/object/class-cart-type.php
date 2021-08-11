@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -30,7 +31,6 @@ class Cart_Type {
 		self::register_cart_tax();
 		self::register_applied_coupon();
 		self::register_cart_item();
-		self::register_cart_item_connections();
 		self::register_cart();
 	}
 
@@ -234,6 +234,51 @@ class Cart_Type {
 						},
 					),
 				),
+				'connections' => array(
+					'contents' => array(
+						'toType'           => 'CartItem',
+						'connectionArgs'   => array(
+							'needsShipping' => array(
+								'type'        => 'Boolean',
+								'description' => __( 'Limit results to cart items that require shipping', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'connectionFields' => array(
+							'itemCount'    => array(
+								'type'        => 'Int',
+								'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
+								'resolve'     => function( $source ) {
+									if ( empty( $source['edges'] ) ) {
+										return 0;
+									}
+
+									$items = array_values( $source['edges'][0]['source']->get_cart() );
+									if ( empty( $items ) ) {
+										return 0;
+									}
+
+									return array_sum( array_column( $items, 'quantity' ) );
+								},
+							),
+							'productCount' => array(
+								'type'        => 'Int',
+								'description' => __( 'Total number of different products in the cart', 'wp-graphql-woocommerce' ),
+								'resolve'     => function( $source ) {
+									if ( empty( $source['edges'] ) ) {
+										return 0;
+									}
+
+									return count( array_values( $source['edges'][0]['source']->get_cart() ) );
+								},
+							),
+						),
+						'resolve'          => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$resolver = new Cart_Item_Connection_Resolver( $source, $args, $context, $info );
+
+							return $resolver->get_connection();
+						},
+					),
+				),
 			)
 		);
 	}
@@ -293,91 +338,137 @@ class Cart_Type {
 							return \wc_graphql_price( $price );
 						},
 					),
-				),
-			)
-		);
-	}
-
-	/**
-	 * Registers one-to-one connections for CartItem.
-	 */
-	public static function register_cart_item_connections() {
-		register_graphql_connection(
-			array(
-				'fromType'      => 'CartItem',
-				'toType'        => 'Product',
-				'fromFieldName' => 'product',
-				'oneToOne'      => true,
-				'edgeFields'    => array(
-					'simpleVariations' => array(
-						'type'        => array( 'list_of' => 'SimpleAttribute' ),
-						'description' => __( 'Simple variation attribute data', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
-							$attributes = array();
-
-							$variation             = $source['node'];
-							$cart_item_data        = $source['source'];
-							$simple_attribute_data = $cart_item_data['variation'];
-							foreach ( $simple_attribute_data as $name => $value ) {
-								$attributes[] = compact( 'name', 'value' );
-							}
-
-							return $attributes;
-						},
-					),
-				),
-				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$id       = $source['product_id'];
-					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
-
-					return $resolver->one_to_one()
-						->set_query_arg( 'p', $id )
-						->get_connection();
-				},
-			)
-		);
-
-		register_graphql_connection(
-			array(
-				'fromType'      => 'CartItem',
-				'toType'        => 'ProductVariation',
-				'fromFieldName' => 'variation',
-				'oneToOne'      => true,
-				'edgeFields'    => array(
-					'attributes' => array(
-						'type'        => array( 'list_of' => 'VariationAttribute' ),
-						'description' => __( 'Attributes of the variation.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
-							$attributes = array();
-
-							$variation           = $source['node'];
-							$cart_item_data      = $source['source'];
-							$cart_variation_data = $cart_item_data['variation'];
-							foreach ( $variation->attributes as $name => $default_value ) {
-								if ( isset( $cart_variation_data[ "attribute_{$name}" ] ) ) {
-									$attributes[ $name ] = $cart_variation_data[ "attribute_{$name}" ];
-								} else {
-									$attributes[ $name ] = $default_value;
+					'extraData'   => array(
+						'type'        => array( 'list_of' => 'MetaData' ),
+						'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
+						'args'        => array(
+							'key'    => array(
+								'type'        => 'String',
+								'description' => __( 'Retrieve meta by key', 'wp-graphql-woocommerce' ),
+							),
+							'keysIn' => array(
+								'type'        => array( 'list_of' => 'String' ),
+								'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
+							),
+						),
+						'resolve'     => function( $source, array $args ) {
+							// Check if "key" argument set and assigns to target "keys" array.
+							if ( ! empty( $args['key'] ) && ! empty( $source[ $args['key'] ] ) ) {
+								$keys = array( $args['key'] );
+							} elseif ( ! empty( $args['keysIn'] ) ) { // Check if "keysIn" argument set and assigns to target "keys" array.
+								$keys = array();
+								foreach ( $args['keysIn'] as $key ) {
+									if ( ! empty( $source[ $key ] ) ) {
+										$keys[] = $key;
+									}
 								}
+							} else { // If no arguments set, all extra data keys are assigns to target "keys" array.
+								$keys = array_diff(
+									array_keys( $source ),
+									array(
+										'key',
+										'product_id',
+										'variation_id',
+										'variation',
+										'quantity',
+										'data',
+										'data_hash',
+										'line_tax_data',
+										'line_subtotal',
+										'line_subtotal_tax',
+										'line_total',
+										'line_tax',
+									)
+								);
+							}
+							// Create meta ID prefix.
+							$id_prefix = apply_filters( 'graphql_woocommerce_cart_meta_id_prefix', 'cart_' );
+
+							// Format meta data for resolution.
+							$data = array();
+							foreach ( $keys as $key ) {
+								$data[] = (object) array(
+									'id'    => "{$id_prefix}_{$key}",
+									'key'   => $key,
+									'value' => is_array( $source[ $key ] ) ? wp_json_encode( $source[ $key ] ) : $source[ $key ],
+								);
 							}
 
-							return Variation_Attribute_Connection_Resolver::to_data_array( $attributes, $variation->ID );
+							return $data;
 						},
 					),
 				),
-				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$id       = $source['variation_id'];
-					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+				'connections' => array(
+					'product'   => array(
+						'toType'     => 'Product',
+						'oneToOne'   => true,
+						'edgeFields' => array(
+							'simpleVariations' => array(
+								'type'        => array( 'list_of' => 'SimpleAttribute' ),
+								'description' => __( 'Simple variation attribute data', 'wp-graphql-woocommerce' ),
+								'resolve'     => function( $source ) {
+									$attributes = array();
 
-					if ( ! $id ) {
-						return null;
-					}
+									$variation             = $source['node'];
+									$cart_item_data        = $source['source'];
+									$simple_attribute_data = $cart_item_data['variation'];
+									foreach ( $simple_attribute_data as $name => $value ) {
+										$attributes[] = compact( 'name', 'value' );
+									}
 
-					return $resolver->one_to_one()
-						->set_query_arg( 'post_type', 'product_variation' )
-						->set_query_arg( 'p', $id )
-						->get_connection();
-				},
+									return $attributes;
+								},
+							),
+						),
+						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$id       = $source['product_id'];
+							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+							return $resolver->one_to_one()
+								->set_query_arg( 'p', $id )
+								->get_connection();
+						},
+					),
+					'variation' => array(
+						'toType'     => 'ProductVariation',
+						'oneToOne'   => true,
+						'edgeFields' => array(
+							'attributes' => array(
+								'type'        => array( 'list_of' => 'VariationAttribute' ),
+								'description' => __( 'Attributes of the variation.', 'wp-graphql-woocommerce' ),
+								'resolve'     => function( $source ) {
+									$attributes = array();
+
+									$variation           = $source['node'];
+									$cart_item_data      = $source['source'];
+									$cart_variation_data = $cart_item_data['variation'];
+									foreach ( $variation->attributes as $name => $default_value ) {
+										if ( isset( $cart_variation_data[ "attribute_{$name}" ] ) ) {
+											$attributes[ $name ] = $cart_variation_data[ "attribute_{$name}" ];
+										} else {
+											$attributes[ $name ] = $default_value;
+										}
+									}
+
+									return Variation_Attribute_Connection_Resolver::to_data_array( $attributes, $variation->ID );
+								},
+							),
+						),
+						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$id       = $source['variation_id'];
+							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+							if ( ! $id ) {
+								return null;
+							}
+
+							return $resolver->one_to_one()
+								->set_query_arg( 'post_type', 'product_variation' )
+								->set_query_arg( 'p', $id )
+								->get_connection();
+						},
+					),
+				),
 			)
 		);
 	}

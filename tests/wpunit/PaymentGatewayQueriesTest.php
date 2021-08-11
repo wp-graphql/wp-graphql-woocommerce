@@ -1,15 +1,10 @@
 <?php
 
-class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
-{
+class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase{
 
 	public function setUp(): void {
 		// before
 		parent::setUp();
-
-		// Create users.
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
 
 		// Enable payment gateway.
 		update_option(
@@ -68,13 +63,6 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 		\WC()->payment_gateways->init();
 	}
 
-	public function tearDown(): void {
-		// your tear down methods here
-
-		// then
-		parent::tearDown();
-	}
-
 	// tests
 	public function testPaymentGatewaysQueryAndWhereArgs() {
 		$query = '
@@ -94,26 +82,19 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 		 *
 		 * tests query.
 		 */
-		$actual   = graphql( array( 'query' => $query ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
-			'data' => array(
-				'paymentGateways' => array(
-					'nodes' => array(
-						array(
-							'id'          => 'bacs',
-							'title'       => 'Direct bank transfer',
-							'icon'        => null,
-						),
-					),
-				),
-			),
+			$this->expectedNode(
+				'paymentGateways.nodes',
+				array(
+					$this->expectedField( 'id', 'bacs' ),
+					$this->expectedField( 'title', 'Direct bank transfer' ),
+					$this->expectedField( 'icon', self::IS_NULL ),
+				)
+			)
 		);
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
@@ -121,105 +102,59 @@ class PaymentGatewayQueriesTest extends \Codeception\TestCase\WPTestCase
 		 * tests query and "all" where argument response, expects errors due lack of capabilities.
 		 */
 		$variables = array( 'all' => true );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedErrorPath( 'paymentGateways' ),
+			$this->expectedField( 'paymentGateways', self::IS_NULL )
+		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertArrayHasKey( 'errors', $actual );
+		$this->assertQueryError( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
 		 * tests query and "all" where argument response with proper capabilities.
 		 */
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 		$variables = array( 'all' => true );
-		$actual    = graphql( array( 'query' => $query, 'variables' => $variables ) );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = array(
-			'data' => array(
-				'paymentGateways' => array(
-					'nodes' => array(
-						array(
-							'id'     => 'bacs',
-							'title'  => 'Direct bank transfer',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'cheque',
-							'title'  => 'Check payments',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'cod',
-							'title'  => 'Cash on delivery',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'paypal',
-							'title'  => 'PayPal',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe',
-							'title'  => 'Credit Card (Stripe)',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_sepa',
-							'title'  => 'SEPA Direct Debit',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_bancontact',
-							'title'  => 'Bancontact',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_sofort',
-							'title'  => 'SOFORT',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_giropay',
-							'title'  => 'Giropay',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_eps',
-							'title'  => 'EPS',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_ideal',
-							'title'  => 'iDeal',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_p24',
-							'title'  => 'Przelewy24 (P24)',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_alipay',
-							'title'  => 'Alipay',
-							'icon'   => null,
-						),
-						array(
-							'id'     => 'stripe_multibanco',
-							'title'  => 'Multibanco',
-							'icon'   => null,
-						),
-					),
-				),
+			$this->expectedNode(
+				'paymentGateways.nodes',
+				array(
+					$this->expectedField( 'id', 'bacs' ),
+					$this->expectedField( 'title', 'Direct bank transfer' ),
+					$this->expectedField( 'icon', self::IS_NULL ),
+				)
+			),
+			$this->expectedNode(
+				'paymentGateways.nodes',
+				array(
+					$this->expectedField( 'id', 'cheque' ),
+					$this->expectedField( 'title', 'Check payments' ),
+					$this->expectedField( 'icon', self::IS_NULL ),
+				)
+			),
+			$this->expectedNode(
+				'paymentGateways.nodes',
+				array(
+					$this->expectedField( 'id', 'cod' ),
+					$this->expectedField( 'title', 'Cash on delivery' ),
+					$this->expectedField( 'icon', self::IS_NULL ),
+				)
+			),
+			$this->expectedNode(
+				'paymentGateways.nodes',
+				array(
+					$this->expectedField( 'id', 'stripe' ),
+					$this->expectedField( 'title', 'Credit Card (Stripe)' ),
+					$this->expectedField( 'icon', self::IS_NULL ),
+				)
 			),
 		);
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 }

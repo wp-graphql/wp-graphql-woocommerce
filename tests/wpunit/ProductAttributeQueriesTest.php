@@ -18,6 +18,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         $this->product_id       = $this->helper->create_variable();
         $this->variation_ids    = $this->variation_helper->create( $this->product_id )['variations'];
 
+        \WPGraphQL::clear_schema();
     }
 
     public function tearDown(): void {

@@ -12,7 +12,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
 
 /**
  * Class Product_Attributes
@@ -61,8 +61,10 @@ class Product_Attributes {
 				'toType'         => 'ProductAttribute',
 				'fromFieldName'  => 'attributes',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $root, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_product_attribute_connection( $root, $args, $context, $info );
+				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new Product_Attribute_Connection_Resolver();
+
+					return $resolver->resolve( $source, $args, $context, $info );
 				},
 			),
 			$args

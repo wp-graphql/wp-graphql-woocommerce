@@ -97,6 +97,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
         // Clear cart.
         WC()->cart->empty_cart( true );
         wp_logout();
+
+        \WPGraphQL::clear_schema();
     }
 
     public function tearDown(): void {
@@ -1031,7 +1033,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     )
                                 ),
                             ),
-                            'shippingLines' => null,
+                            'shippingLines' => array( 'nodes' => array() ),
                             'taxLines'      => array(
                                 'nodes' => array_reverse(
                                     array_map(

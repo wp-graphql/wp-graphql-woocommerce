@@ -257,6 +257,7 @@ class Product {
 					return ! empty( $permalink ) ? $permalink : null;
 				},
 			),
+			'metaData'          => \WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::get_metadata_field_definition(),
 		);
 	}
 }

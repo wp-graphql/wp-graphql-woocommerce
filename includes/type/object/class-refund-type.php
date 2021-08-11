@@ -62,6 +62,8 @@ class Refund_Type {
 						'type'        => 'String',
 						'description' => __( 'The date of the refund', 'wp-graphql-woocommerce' ),
 					),
+
+					'metaData'   => Meta_Data_Type::get_metadata_field_definition(),
 				),
 			)
 		);

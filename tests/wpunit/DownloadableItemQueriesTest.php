@@ -1,42 +1,23 @@
 <?php
 
-class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
-{
+class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase{
 
     public function setUp(): void {
         // before
         parent::setUp();
 
-        // your set up methods here
-        $this->customers = $this->getModule('\Helper\Wpunit')->customer();
-        $this->orders    = $this->getModule('\Helper\Wpunit')->order();
-        $this->products  = $this->getModule('\Helper\Wpunit')->product();
-
         update_option( 'woocommerce_downloads_grant_access_after_payment', 'yes' );
-        $this->customer  = $this->customers->create();
     }
-
-    public function tearDown(): void {
-        // your tear down methods here
-
-        // then
-        parent::tearDown();
-    }
-
-    public function set_user( $user ) {
-		wp_set_current_user( $user );
-		WC()->customer = new WC_Customer( get_current_user_id(), true );
-	}
 
     // tests
     public function testOrderToDownloadableItemsQuery() {
-        $downloadable_product = $this->products->create_simple(
+        $downloadable_product = $this->factory->product->createSimple(
             array(
                 'downloadable' => true,
-                'downloads'    => array( $this->products->create_download() )
+                'downloads'    => array( $this->factory->product->createDownload() )
             )
         );
-        $order_id = $this->orders->create(
+        $order_id = $this->factory->order->createNew(
             array(
                 'status'      => 'completed',
                 'customer_id' => $this->customer,
@@ -53,6 +34,9 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 
         // Force download permission updated.
         wc_downloadable_product_permissions( $order_id, true );
+
+        $order              = wc_get_order( $order_id );
+        $downloadable_items = $order->get_downloadable_items();
 
         $query = '
             query {
@@ -85,53 +69,65 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		 *
 		 * tests query results
 		 */
-		$this->set_user( $this->customer );
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-            'data' => array(
-                'customer' => array(
-                    'orders' => array(
-                        'nodes' => array(
+		$this->loginAsCustomer();
+		$response = $this->graphql( compact( 'query' ) );
+        $expected = array_map(
+            function( $item ) {
+                return $this->expectedNode(
+                    'customer.orders.nodes',
+                    array(
+                        $this->expectedNode(
+                            'downloadableItems.nodes',
                             array(
-                                'downloadableItems' => array( 'nodes' => $this->orders->print_downloadables( $order_id ) ),
-                            ),
+                                $this->expectedField( 'url', $item['download_url'] ),
+                                $this->expectedField( 'accessExpires', $item['access_expires'] ),
+                                $this->expectedField( 'downloadId', $item['download_id'] ),
+                                $this->expectedField(
+                                    'downloadsRemaining',
+                                    isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
+                                        ? $item['downloads_remaining']
+                                        : self::IS_NULL
+                                ),
+                                $this->expectedField( 'name', $item['download_name'] ),
+                                $this->expectedField( 'product.databaseId', $item['product_id'] ),
+                                $this->expectedField( 'download.downloadId', $item['download_id'] ),
+                            )
                         ),
                     ),
-                ),
-            ),
+                    0
+                );
+            },
+            $downloadable_items
         );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
     }
 
 
     public function testOrderToDownloadableItemsQueryArgs() {
-        $valid_product        = $this->products->create_simple(
+        $valid_product        = $this->factory->product->createSimple(
             array(
                 'downloadable' => true,
-                'downloads'    => array( $this->products->create_download() )
+                'downloads'    => array( $this->factory->product->createDownload() )
             )
         );
-        $downloadable_product = $this->products->create_simple(
+        $downloadable_product = $this->factory->product->createSimple(
             array(
                 'download_expiry' => 5,
                 'download_limit'  => 3,
                 'downloadable'    => true,
-                'downloads'       => array( $this->products->create_download() )
+                'downloads'       => array( $this->factory->product->createDownload() )
             )
         );
-        $downloaded_product   = $this->products->create_simple(
+        $downloaded_product   = $this->factory->product->createSimple(
             array(
                 'download_limit' => 0,
                 'downloadable'   => true,
-                'downloads'      => array( $this->products->create_download() )
+                'downloads'      => array( $this->factory->product->createDownload() )
             )
         );
 
-        $order_id = $this->orders->create(
+        $order_id = $this->factory->order->createNew(
             array(
                 'status'      => 'completed',
                 'customer_id' => $this->customer,
@@ -158,11 +154,11 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
         wc_downloadable_product_permissions( $order_id, true );
 
         $query = '
-            query($input: OrderToDownloadableItemConnectionWhereArgs) {
+            query($active: Boolean, $hasDownloadsRemaining: Boolean) {
                 customer {
                     orders {
                         nodes {
-                            downloadableItems(where: $input) {
+                            downloadableItems(where: { active: $active, hasDownloadsRemaining: $hasDownloadsRemaining }) {
                                 nodes {
                                     product {
                                         databaseId
@@ -180,159 +176,131 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		 *
 		 * tests "active" whereArg
 		 */
-		$this->set_user( $this->customer );
-		$actual   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => array( 'input' => array( 'active' => true ) ),
-            )
-        );
-		$expected = array(
-            'data' => array(
-                'customer' => array(
-                    'orders' => array(
-                        'nodes' => array(
-                            array(
-                                'downloadableItems' => array(
-                                    'nodes' => array_map(
-                                        function( $product_id ) {
-                                            return array( 'product' => array( 'databaseId' => $product_id ) );
-                                        },
-                                        array( $valid_product, $downloadable_product )
-                                    ),
-                                ),
-                            ),
-                        ),
+		$this->loginAsCustomer();
+        $variables = array( 'active' => true );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+            $this->expectedNode(
+                'customer.orders.nodes',
+                array(
+                    $this->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $valid_product ) )
+                    ),
+                    $this->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
+                    ),
+                    $this->not()->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
                     ),
                 ),
+                0
             ),
         );
 
-        // use --debug flag to view.
-		codecept_debug( $actual );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Two
 		 *
 		 * tests "active" whereArg reversed
 		 */
-        $actual   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => array( 'input' => array( 'active' => false ) ),
-            )
-        );
-		$expected = array(
-            'data' => array(
-                'customer' => array(
-                    'orders' => array(
-                        'nodes' => array(
-                            array(
-                                'downloadableItems' => array(
-                                    'nodes' => array_map(
-                                        function( $product_id ) {
-                                            return array( 'product' => array( 'databaseId' => $product_id ) );
-                                        },
-                                        array( $downloaded_product )
-                                    ),
-                                ),
-                            ),
-                        ),
+        $variables = array( 'active' => false );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+        $expected  = array(
+            $this->expectedNode(
+                'customer.orders.nodes',
+                array(
+                    $this->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
+                    ),
+                    $this->not()->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $valid_product ) )
+                    ),
+                    $this->not()->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
                     ),
                 ),
+                0
             ),
         );
 
-        // use --debug flag to view.
-		codecept_debug( $actual );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Three
 		 *
 		 * tests "hasDownloadsRemaining" whereArg
 		 */
-		$actual   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => array( 'input' => array( 'hasDownloadsRemaining' => true ) )
-            )
-        );
-		$expected = array(
-            'data' => array(
-                'customer' => array(
-                    'orders' => array(
-                        'nodes' => array(
-                            array(
-                                'downloadableItems' => array(
-                                    'nodes' => array_map(
-                                        function( $product_id ) {
-                                            return array( 'product' => array( 'databaseId' => $product_id ) );
-                                        },
-                                        array( $valid_product, $downloadable_product )
-                                    ),
-                                ),
-                            ),
-                        ),
+        $variables = array( 'hasDownloadsRemaining' => true );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+        $expected  = array(
+            $this->expectedNode(
+                'customer.orders.nodes',
+                array(
+                    $this->not()->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
+                    ),
+                    $this->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $valid_product ) )
+                    ),
+                    $this->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
                     ),
                 ),
+                0
             ),
         );
 
-        // use --debug flag to view.
-		codecept_debug( $actual );
-
-        $this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
 
         /**
 		 * Assertion Four
 		 *
 		 * tests "hasDownloadsRemaining" whereArg reversed
 		 */
-        $actual   = graphql(
-            array(
-                'query'     => $query,
-                'variables' => array( 'input' => array( 'hasDownloadsRemaining' => false ) )
-            )
-        );
-		$expected = array(
-            'data' => array(
-                'customer' => array(
-                    'orders' => array(
-                        'nodes' => array(
-                            array(
-                                'downloadableItems' => array(
-                                    'nodes' => array_map(
-                                        function( $product_id ) {
-                                            return array( 'product' => array( 'databaseId' => $product_id ) );
-                                        },
-                                        array( $downloaded_product )
-                                    ),
-                                ),
-                            ),
-                        ),
+        $variables = array( 'hasDownloadsRemaining' => false );
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $expected  = array(
+            $this->expectedNode(
+                'customer.orders.nodes',
+                array(
+                    $this->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
+                    ),
+                    $this->not()->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $valid_product ) )
+                    ),
+                    $this->not()->expectedNode(
+                        'downloadableItems.nodes',
+                        array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
                     ),
                 ),
+                0
             ),
         );
 
-        // use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
     }
 
     public function testCustomerToDownloadableItemsQuery() {
-        $downloadable_product = $this->products->create_simple(
+        $downloadable_product = $this->factory->product->createSimple(
             array(
                 'downloadable' => true,
-                'downloads'    => array( $this->products->create_download() )
+                'downloads'    => array( $this->factory->product->createDownload() )
             )
         );
-        $order_id = $this->orders->create(
+        $order_id = $this->factory->order->createNew(
             array(
                 'status'      => 'completed',
                 'customer_id' => $this->customer,
@@ -349,6 +317,8 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 
         // Force download permission updated.
         wc_downloadable_product_permissions( $order_id, true );
+
+        $downloadable_items = \wc_get_customer_available_downloads( $this->customer );
 
         $query = '
             query {
@@ -377,20 +347,32 @@ class DownloadableItemQueriesTest extends \Codeception\TestCase\WPTestCase
 		 *
 		 * tests query results
 		 */
-		$this->set_user( $this->customer );
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-            'data' => array(
-                'customer' => array(
-                    'downloadableItems' => array( 'nodes' => $this->customers->print_downloadables( $this->customer ) ),
-                ),
-            ),
+		$this->loginAsCustomer();
+        $response = $this->graphql( compact( 'query' ) );
+        $expected  = array_map(
+            function( $item ) {
+                return $this->expectedNode(
+                    'customer.downloadableItems.nodes',
+                    array(
+                        $this->expectedField( 'url', $item['download_url'] ),
+                        $this->expectedField( 'accessExpires', $item['access_expires'] ),
+                        $this->expectedField( 'downloadId', $item['download_id'] ),
+                        $this->expectedField(
+                            'downloadsRemaining',
+                            isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
+                                ? $item['downloads_remaining']
+                                : self::IS_NULL
+                        ),
+                        $this->expectedField( 'name', $item['download_name'] ),
+                        $this->expectedField( 'product.databaseId', $item['product_id'] ),
+                        $this->expectedField( 'download.downloadId', $item['download_id'] ),
+                    ),
+                    0
+                );
+            },
+            $downloadable_items
         );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+        $this->assertQuerySuccessful( $response, $expected );
     }
-
 }

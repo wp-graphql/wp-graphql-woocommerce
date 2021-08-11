@@ -65,13 +65,14 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPInterface\Cart_Error::register_interface( $type_registry );
 
 		// Objects.
+		\WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Downloadable_Item_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Coupon_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Types::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Attribute_Types::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Variation_Type::register();
-		\WPGraphQL\WooCommerce\Type\WPObject\Order_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Order_Item_Type::register();
-		\WPGraphQL\WooCommerce\Type\WPObject\Downloadable_Item_Type::register();
+		\WPGraphQL\WooCommerce\Type\WPObject\Order_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Refund_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Product_Download_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Customer_Type::register();
@@ -82,7 +83,6 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Type\WPObject\Simple_Attribute_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Variation_Attribute_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Payment_Gateway_Type::register();
-		\WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Package_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Shipping_Rate_Type::register();
 		\WPGraphQL\WooCommerce\Type\WPObject\Cart_Error_Types::register();
@@ -98,14 +98,11 @@ class Type_Registry {
 		\WPGraphQL\WooCommerce\Connection\Coupons::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Products::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Orders::register_connections();
-		\WPGraphQL\WooCommerce\Connection\Order_Items::register_connections();
-		\WPGraphQL\WooCommerce\Connection\Downloadable_Items::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Product_Attributes::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Variation_Attributes::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Customers::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Tax_Rates::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Shipping_Methods::register_connections();
-		\WPGraphQL\WooCommerce\Connection\Cart_Items::register_connections();
 		\WPGraphQL\WooCommerce\Connection\Payment_Gateways::register_connections();
 
 		// Mutations.

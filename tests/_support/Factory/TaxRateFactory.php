@@ -54,7 +54,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 				'tax_rate_priority' => 1,
 				'tax_rate_compound' => 1,
 				'tax_rate_shipping' => 1,
-				'tax_rate_order'    => $this->get_index(),
+				'tax_rate_order'    => 0,
 			),
 			$rate_args
 		);

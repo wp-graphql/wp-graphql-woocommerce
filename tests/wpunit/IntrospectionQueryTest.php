@@ -12,7 +12,7 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 		}
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
-		WPGraphQL::clear_schema();
+		\WPGraphQL::clear_schema();
     }
 
     public function tearDown(): void {
