@@ -81,7 +81,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
                             array(
                                 $this->expectedField( 'url', $item['download_url'] ),
                                 $this->expectedField( 'accessExpires', $item['access_expires'] ),
-                                $this->expectedField( 'downloadId', $item['download_id'], ),
+                                $this->expectedField( 'downloadId', $item['download_id'] ),
                                 $this->expectedField(
                                     'downloadsRemaining',
                                     isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
@@ -356,7 +356,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
                     array(
                         $this->expectedField( 'url', $item['download_url'] ),
                         $this->expectedField( 'accessExpires', $item['access_expires'] ),
-                        $this->expectedField( 'downloadId', $item['download_id'], ),
+                        $this->expectedField( 'downloadId', $item['download_id'] ),
                         $this->expectedField(
                             'downloadsRemaining',
                             isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
