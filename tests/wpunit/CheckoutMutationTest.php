@@ -1033,7 +1033,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
                                     )
                                 ),
                             ),
-                            'shippingLines' => null,
+                            'shippingLines' => array( 'nodes' => array() ),
                             'taxLines'      => array(
                                 'nodes' => array_reverse(
                                     array_map(

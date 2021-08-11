@@ -12,7 +12,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
 
 /**
  * Class - Tax_Rates
@@ -42,7 +42,9 @@ class Tax_Rates {
 				'fromFieldName'  => 'taxRates',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					return Factory::resolve_tax_rate_connection( $source, $args, $context, $info );
+					$resolver = new Tax_Rate_Connection_Resolver( $source, $args, $context, $info );
+
+					return $resolver->get_connection();
 				},
 			),
 			$args
