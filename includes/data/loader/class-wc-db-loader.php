@@ -170,7 +170,6 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 * @throws UserError Invalid object.
 	 */
 	public function load_shipping_method_from_id( $id ) {
-
 		$wc_shipping = \WC_Shipping::instance();
 		$methods     = $wc_shipping->get_shipping_methods();
 		if ( empty( $methods[ $id ] ) ) {

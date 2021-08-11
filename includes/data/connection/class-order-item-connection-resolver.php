@@ -135,7 +135,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				$item->get_id(),
 				new \WPGraphQL\WooCommerce\Model\Order_Item( $item )
 			);
-		}		
+		}
 
 		return array_map( $get_item_id, $items );
 	}

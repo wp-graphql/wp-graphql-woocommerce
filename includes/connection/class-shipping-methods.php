@@ -13,7 +13,6 @@ namespace WPGraphQL\WooCommerce\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class - Shipping_Methods
@@ -44,6 +43,7 @@ class Shipping_Methods {
 				'connectionArgs' => array(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Shipping_Method_Connection_Resolver( $source, $args, $context, $info );
+
 					return $resolver->get_connection();
 				},
 			),

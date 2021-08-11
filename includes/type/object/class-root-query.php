@@ -423,7 +423,6 @@ class Root_Query {
 		$product_types = \WP_GraphQL_WooCommerce::get_enabled_product_types();
 
 		foreach ( $product_type_keys as $type_key ) {
-
 			$field_name = "{$type_key}Product";
 			$type_name  = $product_types[ $type_key ] ?? null;
 

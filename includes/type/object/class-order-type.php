@@ -25,16 +25,16 @@ class Order_Type {
 	/**
 	 * Order Item connection resolver callback
 	 *
-	 * @param \WPGraphQL\Model\Order $source  Source order.
-	 * @param array $args                     Connection args.
-	 * @param AppContext $context             AppContext instance.
-	 * @param ResolveInfo $info               ResolveInfo instance.
-	 * 
+	 * @param \WPGraphQL\Model\Order $source   Source order.
+	 * @param array                  $args     Connection args.
+	 * @param AppContext             $context  AppContext instance.
+	 * @param ResolveInfo            $info     ResolveInfo instance.
+	 *
 	 * @return array
 	 */
 	public static function resolve_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Order_Item_Connection_Resolver( $source, $args, $context, $info );
-						
+
 		return $resolver->get_connection();
 	}
 
@@ -389,8 +389,8 @@ class Order_Type {
 
 							return $resolver->get_connection();
 						},
-					)
-				)
+					),
+				),
 			)
 		);
 	}

@@ -148,7 +148,7 @@ class Customer_Type {
 							return $resolver->get_connection();
 						},
 					),
-				)
+				),
 			)
 		);
 

@@ -80,7 +80,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Validates offset.
 	 *
-	 * @param mixed $offset
+	 * @param mixed $offset  Decoded query cursor.
 	 *
 	 * @return bool
 	 */

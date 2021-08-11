@@ -52,6 +52,11 @@ class Meta_Data_Type {
 		);
 	}
 
+	/**
+	 * Definition/Resolution of the metaData field used across the schema.
+	 *
+	 * @return array
+	 */
 	public static function get_metadata_field_definition() {
 		return array(
 			'type'        => array( 'list_of' => 'MetaData' ),
