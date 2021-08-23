@@ -115,7 +115,10 @@ class Customer_Type {
 						'type'        => 'String',
 						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-								return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+							if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
+										return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+							}
+										return null;
 						},
 					),
 
