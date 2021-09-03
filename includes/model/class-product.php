@@ -78,7 +78,7 @@ class Product extends WC_Post {
 		sort( $prices, SORT_NUMERIC );
 
 		if ( $raw ) {
-			return implode( ', ', $prices['price'] );
+			return implode( ', ', $prices );
 		}
 
 		return \wc_graphql_price_range( current( $prices ), end( $prices ) );
