@@ -323,6 +323,7 @@ class Products {
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Product',
 				'fromFieldName'  => 'products',
+				'queryClass'     => '\WC_Product_Query',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
