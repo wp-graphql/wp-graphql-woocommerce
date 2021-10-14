@@ -132,8 +132,14 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Cart contents total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = ! is_null( $source->get_cart_contents_total() )
-								? $source->get_cart_contents_total()
+							if ( $source->display_prices_including_tax() ) {
+								$cart_subtotal = $source->get_subtotal() + $source->get_subtotal_tax();
+							} else {
+								$cart_subtotal = $source->get_subtotal();
+							}
+							
+							$price = ! is_null( $cart_subtotal )
+								? $cart_subtotal
 								: 0;
 							return \wc_graphql_price( $price );
 						},
@@ -326,7 +332,9 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
+							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
+							$tax = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+							$price = $price_without_tax + $tax;               
 							return \wc_graphql_price( $price );
 						},
 					),
