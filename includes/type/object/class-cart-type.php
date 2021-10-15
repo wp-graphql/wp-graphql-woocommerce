@@ -137,7 +137,7 @@ class Cart_Type {
 							} else {
 								$cart_subtotal = $source->get_subtotal();
 							}
-							
+
 							$price = ! is_null( $cart_subtotal )
 								? $cart_subtotal
 								: 0;
@@ -334,7 +334,7 @@ class Cart_Type {
 						'resolve'     => function( $source ) {
 							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
 							$tax = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
-							$price = $price_without_tax + $tax;               
+							$price = $price_without_tax + $tax;
 							return \wc_graphql_price( $price );
 						},
 					),
