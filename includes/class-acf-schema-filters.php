@@ -54,21 +54,49 @@ class ACF_Schema_Filters {
 	 * @return mixed|null
 	 */
 	public static function resolve_post_object_source( $source, $value ) {
-		$post = get_post( $value );
-		if ( $post instanceof \WP_Post ) {
-			switch ( $post->post_type ) {
-				case 'shop_coupon':
-					$source = new Coupon( $post->ID );
-					break;
-				case 'shop_order':
-					$source = new Order( $post->ID );
-					break;
-				case 'product':
-					$source = new Product( $post->ID );
-					break;
+		$return = [];
+		if ( ! empty( $value ) ) {
+			if ( is_array( $value )) {
+				foreach ( $value as $idx => $id ) {
+					$post = get_post( $id );
+
+					if ( $post instanceof \WP_Post ) {
+						switch ( $post->post_type ) {
+							case 'shop_coupon':
+								$return[] = new Coupon( $post->ID );
+								break;
+							case 'shop_order':
+								$return[] = new Order( $post->ID );
+								break;
+							case 'product':
+								$return[] = new Product( $post->ID );
+								break;
+							default:
+								$return[] = $source[$idx];
+						}
+					}
+				}
+			} else {
+				$post = get_post ( absint( $value ));
+
+				if ( $post instanceof \WP_Post ) {
+					switch ( $post->post_type ) {
+						case 'shop_coupon':
+							$return = new Coupon( $post->ID );
+							break;
+						case 'shop_order':
+							$return = new Order( $post->ID );
+							break;
+						case 'product':
+							$return = new Product( $post->ID );
+							break;
+						default:
+							$return = $source;
+					}
+				}
 			}
 		}
 
-		return $source;
+		return $return;
 	}
 }
