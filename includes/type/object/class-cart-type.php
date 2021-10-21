@@ -14,7 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
-use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
@@ -430,9 +430,10 @@ class Cart_Type {
 						),
 						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$id       = $source['product_id'];
-							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
-							return $resolver->one_to_one()
+							return $resolver
+								->one_to_one()
 								->set_query_arg( 'p', $id )
 								->get_connection();
 						},
@@ -464,14 +465,14 @@ class Cart_Type {
 						),
 						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$id       = $source['variation_id'];
-							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
 							if ( ! $id ) {
 								return null;
 							}
 
-							return $resolver->one_to_one()
-								->set_query_arg( 'post_type', 'product_variation' )
+							return $resolver
+								->one_to_one()
 								->set_query_arg( 'p', $id )
 								->get_connection();
 						},
