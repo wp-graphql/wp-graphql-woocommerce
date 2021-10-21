@@ -101,6 +101,9 @@ class Review_Write {
 			$resolver = CommentCreate::mutate_and_get_payload();
 
 			$payload = $resolver( $input, $context, $info );
+			if ( is_a( $payload, UserError::class ) ) {
+				throw $payload;
+			}
 
 			// Set product rating upon successful creation of the review.
 			if ( $payload['success'] ) {
