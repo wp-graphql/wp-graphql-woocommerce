@@ -76,18 +76,18 @@ class Review_Update {
 				'type'             => 'review',
 				'id'               => 1,
 				'rating'           => 1,
-				'clientMutationId' => 1
+				'clientMutationId' => 1,
 			);
 
 			$payload       = array();
 			$id_parts      = ! empty( $input['id'] ) ? Relay::fromGlobalId( $input['id'] ) : null;
 			$payload['id'] = isset( $id_parts['id'] ) && absint( $id_parts['id'] ) ? absint( $id_parts['id'] ) : null;
-			
+
 			if ( empty( $payload['id'] ) ) {
-				throw new UserError( __( 'The Review could not be updated', 'wp-graphql' ) );
+				throw new UserError( __( 'The Review could not be updated', 'wp-graphql-woocommerce' ) );
 			}
 
-			if ( $input !== array_intersect_key( $input, $skip ) ) {
+			if ( array_intersect_key( $input, $skip ) !== $input ) {
 				$resolver = CommentUpdate::mutate_and_get_payload();
 
 				$payload = $resolver( $input, $context, $info );
