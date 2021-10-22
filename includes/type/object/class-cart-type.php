@@ -618,6 +618,14 @@ class Cart_Type {
 							return \wc_graphql_price( $tax );
 						},
 					),
+					'description'    => array(
+						'type'        => 'String',
+						'description' => __( 'Description of applied coupon', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args ) {
+							$coupon = new \WC_Coupon( $source );
+							return $coupon->get_description();
+						},
+					),
 				),
 			)
 		);
