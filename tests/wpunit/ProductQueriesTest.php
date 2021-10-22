@@ -480,6 +480,8 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				$maxPrice: Float,
 				$orderby: [ProductsOrderbyInput]
 				$taxonomyFilter: ProductTaxonomyInput
+				$include: [Int]
+				$exclude: [Int]
 			) {
 				products( where: {
 					slugIn: $slugIn,
@@ -497,6 +499,8 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					maxPrice: $maxPrice,
 					orderby: $orderby
 					taxonomyFilter: $taxonomyFilter
+					include: $include
+					exclude: $exclude
 				} ) {
 					nodes {
 						... on SimpleProduct {
@@ -800,6 +804,62 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			ARRAY_FILTER_USE_BOTH
 		);
 
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion 17-18
+		 *
+		 * tests "include" where argument
+		 */
+		$variables = array(
+			'include' => array( $product_ids[0] )
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedNode(
+				'products.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_ids[0] ) )
+			)
+		);
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = array(
+			'include' => array( 1000 )
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedField(
+				'products.nodes',
+				[]
+			)
+		);
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion 19-20
+		 *
+		 * tests "exclude" where argument
+		 */
+		$variables = array(
+			'exclude' => array( $product_ids[0] )
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->not()->expectedNode(
+				'products.nodes',
+				array( 'id' => $this->toRelayId( 'product', $product_ids[0] ) )
+			)
+		);
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = array( 'exclude' => $product_ids );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array(
+			$this->expectedField(
+				'products.nodes',
+				[]
+			)
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 

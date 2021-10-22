@@ -538,6 +538,11 @@ class Products {
 			return $query_args;
 		}
 
+		$query_args = array_merge(
+			$query_args,
+			map_shared_input_fields_to_wp_query( $where_args )
+		);
+
 		$remove = array(
 			'cat',
 			'category_name',
