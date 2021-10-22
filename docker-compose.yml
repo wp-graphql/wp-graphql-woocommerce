@@ -79,6 +79,7 @@ services:
       - .:/var/www/html/wp-content/plugins/wp-graphql-woocommerce
       - ./codeception.dist.yml:/var/www/html/wp-content/plugins/wp-graphql-woocommerce/codeception.yml
       - ./local/public:/var/www/html # WP core files.
+      - ./local/.htaccess:/var/www/html/.htaccess
       - ./.log/run_tests:/var/log/apache2
     env_file: .env.testing
     environment:
