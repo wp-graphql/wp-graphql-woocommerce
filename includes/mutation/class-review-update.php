@@ -72,17 +72,30 @@ class Review_Update {
 			// Set comment type to "review".
 			$input['type'] = 'review';
 
-			$resolver = CommentUpdate::mutate_and_get_payload();
+			$skip = array(
+				'type'             => 'review',
+				'id'               => 1,
+				'rating'           => 1,
+				'clientMutationId' => 1,
+			);
 
-			$payload = $resolver( $input, $context, $info );
+			$payload       = array();
+			$id_parts      = ! empty( $input['id'] ) ? Relay::fromGlobalId( $input['id'] ) : null;
+			$payload['id'] = isset( $id_parts['id'] ) && absint( $id_parts['id'] ) ? absint( $id_parts['id'] ) : null;
+
+			if ( empty( $payload['id'] ) ) {
+				throw new UserError( __( 'The Review could not be updated', 'wp-graphql-woocommerce' ) );
+			}
+
+			if ( array_intersect_key( $input, $skip ) !== $input ) {
+				$resolver = CommentUpdate::mutate_and_get_payload();
+
+				$payload = $resolver( $input, $context, $info );
+			}
 
 			// Check if product rating needs updating.
 			if ( ! empty( $payload['id'] ) && isset( $input['rating'] ) ) {
-				$success = update_comment_meta( $payload['id'], 'rating', $input['rating'] );
-
-				if ( ! $success ) {
-					throw UserError( __( 'Failed to update review rating', 'wp-graphql-woocommerce' ) );
-				}
+				update_comment_meta( $payload['id'], 'rating', $input['rating'] );
 			}
 
 			return $payload;

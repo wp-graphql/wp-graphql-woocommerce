@@ -105,7 +105,7 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_slug() ) ? $this->wc_data->get_slug() : null;
 				},
 				'name'                => function() {
-					return ! empty( $this->wc_data->get_name() ) ? $this->wc_data->get_name() : null;
+					return ! empty( $this->wc_data->get_name() ) ? html_entity_decode( $this->wc_data->get_name() ) : null;
 				},
 				'date'                => function() {
 					return ! empty( $this->wc_data ) ? $this->wc_data->get_date_created() : null;
