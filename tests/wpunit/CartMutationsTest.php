@@ -427,7 +427,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			$this->factory->coupon->create(
                 array(
                     'amount'      => 0.5,
-                    'product_ids' => array( $product_id )
+                    'product_ids' => array( $product_id ),
+					'description' => 'lorem ipsum dolor',
                 )
             )
         );
@@ -445,6 +446,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
                     cart {
                         appliedCoupons {
 							code
+							description
                         }
                         contents {
                             nodes {
@@ -484,7 +486,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedNode(
 					'applyCoupon.cart.appliedCoupons',
 					array(
-						'code' => $coupon_code,
+						'code'        => $coupon_code,
+						'description' => 'lorem ipsum dolor',
 					)
 				),
 				$this->expectedNode(
