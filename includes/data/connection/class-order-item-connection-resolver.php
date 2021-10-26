@@ -91,6 +91,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		$items = array();
 		foreach ( $this->source->get_items( $type ) as $id => $item ) {
 			$item->cached_order = $this->source;
+			$item->cached_id    = $id;
 			$items[]            = $item;
 		}
 
@@ -104,7 +105,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		$cursor = $this->get_offset();
+		$cursor = absint( $this->get_offset() );
 		$first  = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 		$last   = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 
