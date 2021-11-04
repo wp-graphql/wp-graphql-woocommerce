@@ -136,12 +136,14 @@ class Core_Schema_Filters {
 			$args['show_in_graphql']            = true;
 			$args['graphql_single_name']        = 'ProductVariation';
 			$args['graphql_plural_name']        = 'ProductVariations';
+			$args['publicly_queryable']         = true;
 			$args['skip_graphql_type_registry'] = true;
 		}
 		if ( 'shop_coupon' === $post_type ) {
 			$args['show_in_graphql']            = true;
 			$args['graphql_single_name']        = 'Coupon';
 			$args['graphql_plural_name']        = 'Coupons';
+			$args['publicly_queryable']         = true;
 			$args['skip_graphql_type_registry'] = true;
 		}
 		if ( 'shop_order' === $post_type ) {
