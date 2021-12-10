@@ -23,7 +23,7 @@ class Product_Attribute {
 			'ProductAttribute',
 			array(
 				'description' => __( 'Product attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces' => array( 'Node' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => self::get_fields(),
 				'resolveType' => function( $value ) use ( &$type_registry ) {
 					if ( $value->is_taxonomy() ) {

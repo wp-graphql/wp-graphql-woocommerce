@@ -23,7 +23,7 @@ class Payment_Gateway_Type {
 			'PaymentGateway',
 			array(
 				'description' => __( 'A payment gateway object', 'wp-graphql-woocommerce' ),
-				'interfaces' => array( 'Node' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'          => array(
 						'type'        => array( 'non_null' => 'ID' ),

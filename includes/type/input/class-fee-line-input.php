@@ -21,7 +21,6 @@ class Fee_Line_Input {
 			'FeeLineInput',
 			array(
 				'description' => __( 'Fee line data.', 'wp-graphql-woocommerce' ),
-				'interfaces' => array( 'Node' ),
 				'fields'      => array(
 					'id'        => array(
 						'type'        => 'ID',

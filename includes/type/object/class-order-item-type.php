@@ -48,8 +48,8 @@ class Order_Item_Type {
 						},
 					),
 				),
-				// Interfaces
-				array( 'Node' )
+				// Interfaces.
+				array( 'Node' ),
 			),
 			'FeeLine'      => array(
 				// Description.
@@ -85,8 +85,8 @@ class Order_Item_Type {
 						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
 					),
 				),
-				// Interfaces
-				array( 'Node' )
+				// Interfaces.
+				array( 'Node' ),
 			),
 			'ShippingLine' => array(
 				// Description.
@@ -121,7 +121,7 @@ class Order_Item_Type {
 						},
 					),
 				),
-				// Interfaces
+				// Interfaces.
 				array( 'Node' ),
 			),
 			'TaxLine'      => array(
@@ -157,7 +157,7 @@ class Order_Item_Type {
 						},
 					),
 				),
-				// Interfaces
+				// Interfaces.
 				array( 'Node' ),
 			),
 			'LineItem'     => array(
@@ -232,7 +232,7 @@ class Order_Item_Type {
 						},
 					),
 				),
-				// Interfaces
+				// Interfaces.
 				array( 'Node' ),
 			),
 		);
@@ -289,6 +289,7 @@ class Order_Item_Type {
 						'resolve'     => function( $source ) {
 							$item               = \WC_Order_Factory::get_order_item( $source['ID'] );
 							$item->cached_order = $source;
+
 							return ! empty( $item ) ? Factory::resolve_order_item( $item ) : null;
 						},
 					),
@@ -301,6 +302,7 @@ class Order_Item_Type {
 	 * Returns type fields definition
 	 *
 	 * @param array $fields - type specific fields.
+	 *
 	 * @return array
 	 */
 	private static function get_fields( $fields = array() ) {
@@ -314,7 +316,6 @@ class Order_Item_Type {
 					'type'        => 'Int',
 					'description' => __( 'The Id of the order the order item belongs to.', 'wp-graphql-woocommerce' ),
 				),
-
 				'metaData'   => Meta_Data_Type::get_metadata_field_definition(),
 			),
 			$fields

@@ -23,7 +23,7 @@ class Shipping_Rate_Type {
 			'ShippingRate',
 			array(
 				'description' => __( 'Shipping rate object', 'wp-graphql-woocommerce' ),
-				'interfaces' => array( 'Node' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'         => array(
 						'type'        => array( 'non_null' => 'ID' ),
