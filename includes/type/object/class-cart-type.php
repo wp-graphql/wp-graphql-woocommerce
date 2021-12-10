@@ -297,6 +297,7 @@ class Cart_Type {
 			'CartItem',
 			array(
 				'description' => __( 'A item in the cart', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'key'         => array(
 						'type'        => array( 'non_null' => 'ID' ),
@@ -490,6 +491,7 @@ class Cart_Type {
 			'CartFee',
 			array(
 				'description' => __( 'An additional fee', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'       => array(
 						'type'        => array( 'non_null' => 'ID' ),
@@ -545,6 +547,7 @@ class Cart_Type {
 			'CartTax',
 			array(
 				'description' => __( 'An itemized cart tax item', 'wp-graphql-woocommerce' ),
+				'interfaces'  => array( 'Node' ),
 				'fields'      => array(
 					'id'         => array(
 						'type'        => array( 'non_null' => 'ID' ),

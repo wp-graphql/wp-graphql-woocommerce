@@ -23,7 +23,7 @@ class Variation_Attribute_Type {
 			'VariationAttribute',
 			array(
 				'description' => __( 'A product variation attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Attribute' ),
+				'interfaces'  => array( 'Node', 'Attribute' ),
 				'fields'      => array(
 					'id'          => array(
 						'type'        => array( 'non_null' => 'ID' ),

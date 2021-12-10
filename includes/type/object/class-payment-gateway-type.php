@@ -23,9 +23,10 @@ class Payment_Gateway_Type {
 			'PaymentGateway',
 			array(
 				'description' => __( 'A payment gateway object', 'wp-graphql-woocommerce' ),
+				'interfaces' => array( 'Node' ),
 				'fields'      => array(
 					'id'          => array(
-						'type'        => array( 'non_null' => 'String' ),
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'gateway\'s title', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;

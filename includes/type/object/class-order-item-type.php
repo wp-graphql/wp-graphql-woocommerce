@@ -48,6 +48,8 @@ class Order_Item_Type {
 						},
 					),
 				),
+				// Interfaces
+				array( 'Node' )
 			),
 			'FeeLine'      => array(
 				// Description.
@@ -83,6 +85,8 @@ class Order_Item_Type {
 						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
 					),
 				),
+				// Interfaces
+				array( 'Node' )
 			),
 			'ShippingLine' => array(
 				// Description.
@@ -117,6 +121,8 @@ class Order_Item_Type {
 						},
 					),
 				),
+				// Interfaces
+				array( 'Node' ),
 			),
 			'TaxLine'      => array(
 				// Description.
@@ -151,6 +157,8 @@ class Order_Item_Type {
 						},
 					),
 				),
+				// Interfaces
+				array( 'Node' ),
 			),
 			'LineItem'     => array(
 				// Description.
@@ -224,6 +232,8 @@ class Order_Item_Type {
 						},
 					),
 				),
+				// Interfaces
+				array( 'Node' ),
 			),
 		);
 
@@ -234,6 +244,7 @@ class Order_Item_Type {
 				array(
 					'description' => $config[0],
 					'fields'      => self::get_fields( $config[1] ),
+					'interfaces'  => isset( $config[2] ) && is_array( $config[2] ) ? $config[2] : null,
 				)
 			);
 		}
