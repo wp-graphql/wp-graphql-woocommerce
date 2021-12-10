@@ -44,11 +44,7 @@ class Product_Attribute {
 	public static function get_fields() {
 		return array(
 			'id'          => array(
-				'type'        => array( 'non_null' => 'ID' ),
 				'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
-				'resolve'     => function ( $attribute ) {
-					return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : null;
-				},
 			),
 			'attributeId' => array(
 				'type'        => array( 'non_null' => 'Int' ),

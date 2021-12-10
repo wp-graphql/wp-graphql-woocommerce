@@ -24,6 +24,11 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => array( 'ProductAttribute' ),
 				'fields'      => array(
+					'id'    => array(
+						'resolve' => function( $attribute ) {
+							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : null;
+						},
+					),
 					'scope' => array(
 						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
@@ -42,6 +47,11 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => array( 'ProductAttribute' ),
 				'fields'      => array(
+					'id'    => array(
+						'resolve' => function( $attribute ) {
+							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : null;
+						},
+					),
 					'scope' => array(
 						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
