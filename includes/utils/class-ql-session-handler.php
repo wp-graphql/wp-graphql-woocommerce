@@ -400,7 +400,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * For refreshing session data mid-request when changes occur in concurrent requests.
 	 */
 	public function reload_data() {
-		\WC_Cache_Helper::incr_cache_prefix( WC_SESSION_CACHE_GROUP );
+		\WC_Cache_Helper::invalidate_cache_group( WC_SESSION_CACHE_GROUP );
 		$this->_data = $this->get_session( $this->_customer_id );
 	}
 }
