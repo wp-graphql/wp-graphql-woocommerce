@@ -1,12 +1,22 @@
 # Changelog
 
+## [v0.10.7](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.10.7) (2022-01-25)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.10.6...v0.10.7)
+
+**Fixed:**
+
+- fix: change deprecated incr\_cache\_prefix [\#598](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/598) ([fabiojundev](https://github.com/fabiojundev))
+- \[Bugfix\] Update order status [\#595](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/595) ([victormattosvm](https://github.com/victormattosvm))
+- Update class-root-query.php [\#584](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/584) ([stevezehngut](https://github.com/stevezehngut))
+
 ## [v0.10.6](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.10.6) (2021-11-04)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.10.5...v0.10.6)
 
 **Fixed:**
 
-- hotfix: Fixes breaks created by WPGraphQL v1.6.3 [\#580](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/580) ([kidunot89](https://github.com/kidunot89))
+- hotfix: Fixes breaks created by WPGraphQL v1.6.7 [\#580](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/580) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.10.5](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.10.5) (2021-10-26)
 
