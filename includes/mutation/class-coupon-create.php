@@ -209,6 +209,13 @@ class Coupon_Create {
 				case 'description':
 					$coupon->set_description( wp_filter_post_kses( $value ) );
 					break;
+				case 'amount':
+					if ( $coupon_args['discountType'] == 'PERCENT' ){
+						$coupon->set_discount_type( 'PERCENT' );
+					}
+
+					$coupon->set_amount( $value );
+					break;
 				default:
 					if ( is_callable( array( $coupon, "set_{$key}" ) ) ) {
 						$coupon->{"set_{$key}"}( $value );
