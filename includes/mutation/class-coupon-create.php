@@ -210,8 +210,8 @@ class Coupon_Create {
 					$coupon->set_description( wp_filter_post_kses( $value ) );
 					break;
 				case 'amount':
-					if ( $coupon_args['discountType'] && 'PERCENT' === $coupon_args['discountType'] ) {
-						$coupon->set_discount_type( 'PERCENT' );
+					if ( $coupon_args['discount_type'] ) {
+						$coupon->set_discount_type( $coupon_args['discount_type'] );
 					}
 
 					$coupon->set_amount( $value );
