@@ -232,7 +232,7 @@ class Order_Mutation {
 
 			case 'fee':
 				return array(
-					'name'      => 'order_item_name',
+					'name'      => 'name',
 					'taxClass'  => 'tax_class',
 					'taxStatus' => 'tax_status',
 				);
