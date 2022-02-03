@@ -40,7 +40,7 @@ ARG PHPUNIT_VERSION="<=8.1"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle:* \
-    lucatume/wp-browser:^2.1 \
+    lucatume/wp-browser:^3.1 \
     codeception/module-asserts \
     codeception/module-cli \
     codeception/module-db \
