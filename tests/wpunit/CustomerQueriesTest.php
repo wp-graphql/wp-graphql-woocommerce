@@ -7,7 +7,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$customer = new \WC_Customer( $id );
 		$customer->read_meta_data( true );
 
-		$wp_user  = get_user_by( 'ID', $id );
+		$wp_user = get_user_by( 'ID', $id );
 
 		if ( ! $customer->get_id() ) {
 			throw new \Exception( 'Invalid customer ID provided.' );
@@ -148,11 +148,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedErrorPath( 'customer' ),
-			$this->expectedField( 'customer', self::IS_NULL )
+			$this->expectedField( 'customer', self::IS_NULL ),
 		);
 
 		$this->assertQueryError( $response, $expected );
-
 
 		// Clear customer cache.
 		$this->clearLoaderCache( 'wc_customer' );
@@ -185,7 +184,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				$this->expectedErrorPath( 'customer.jwtAuthToken' ),
 				$this->expectedField( 'customer.jwtAuthToken', self::IS_NULL ),
 				$this->expectedErrorPath( 'customer.jwtRefreshToken' ),
-				$this->expectedField( 'customer.jwtRefreshToken', self::IS_NULL )
+				$this->expectedField( 'customer.jwtRefreshToken', self::IS_NULL ),
 			),
 			$this->expectedCustomerData( $new_customer_id )
 		);
@@ -233,7 +232,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedErrorPath( 'customer' ),
-			$this->expectedField( 'customer', self::IS_NULL )
+			$this->expectedField( 'customer', self::IS_NULL ),
 		);
 
 		$this->assertQueryError( $response, $expected );
@@ -246,8 +245,8 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$users = array(
 			$this->factory->customer->create(
 				array(
-					'email' => 'gotcha@example.com',
-					'username' => 'megaman8080'
+					'email'    => 'gotcha@example.com',
+					'username' => 'megaman8080',
 				)
 			),
 			$this->factory->customer->create(),
@@ -324,7 +323,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "include" where argument.
 		 */
-		$variables = array( 'include' => array( $users[2]) );
+		$variables = array( 'include' => array( $users[2] ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[2] ),
@@ -369,7 +368,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "orderby" and "order" where arguments.
 		 */
-		$variables = array( 'orderby' => 'USERNAME', 'order' => 'ASC' );
+		$variables = array(
+			'orderby' => 'USERNAME',
+			'order'   => 'ASC',
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$all_users = get_users(

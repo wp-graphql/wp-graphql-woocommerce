@@ -3,34 +3,34 @@
 class CartTransactionQueueCest {
 	private $product_catalog;
 
-    public function _before( FunctionalTester $I ) {
-        // Create Products
-        $this->product_catalog = $I->getCatalog();
+	public function _before( FunctionalTester $I ) {
+		// Create Products
+		$this->product_catalog = $I->getCatalog();
 	}
 
 	public function _addTshirtToCart( FunctionalTester $I, $headers = array() ) {
 		/**
-         * Add t-shirt to the cart
-         */
-        $success = $I->addToCart(
-            array(
-                'clientMutationId' => 'someId',
-                'productId'        => $this->product_catalog['t-shirt'],
-                'quantity'         => 5,
+		 * Add t-shirt to the cart
+		 */
+		$success = $I->addToCart(
+			array(
+				'clientMutationId' => 'someId',
+				'productId'        => $this->product_catalog['t-shirt'],
+				'quantity'         => 5,
 			),
 			$headers
 		);
 
 		$I->assertArrayNotHasKey( 'errors', $success );
-        $I->assertArrayHasKey('data', $success );
-        $I->assertArrayHasKey('addToCart', $success['data'] );
-        $I->assertArrayHasKey('cartItem', $success['data']['addToCart'] );
-        $I->assertArrayHasKey('key', $success['data']['addToCart']['cartItem'] );
+		$I->assertArrayHasKey( 'data', $success );
+		$I->assertArrayHasKey( 'addToCart', $success['data'] );
+		$I->assertArrayHasKey( 'cartItem', $success['data']['addToCart'] );
+		$I->assertArrayHasKey( 'key', $success['data']['addToCart']['cartItem'] );
 		$key = $success['data']['addToCart']['cartItem']['key'];
 
 		/**
-         * Assert existence and validity of "woocommerce-session" HTTP header.
-         */
+		 * Assert existence and validity of "woocommerce-session" HTTP header.
+		 */
 		$I->seeHttpHeaderOnce( 'woocommerce-session' );
 		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
 
@@ -41,7 +41,7 @@ class CartTransactionQueueCest {
 		$I->setupStoreAndUsers();
 
 		// Begin Tests.
-		$I->wantTo('login');
+		$I->wantTo( 'login' );
 		$login_input = array(
 			'clientMutationId' => 'someId',
 			'username'         => 'jimbo1234',
@@ -52,12 +52,12 @@ class CartTransactionQueueCest {
 
 		// Validate response.
 		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey('data', $success );
-		$I->assertArrayHasKey('login', $success['data'] );
-		$I->assertArrayHasKey('customer', $success['data']['login'] );
-		$I->assertArrayHasKey('authToken', $success['data']['login'] );
-		$I->assertArrayHasKey('refreshToken', $success['data']['login'] );
-		$I->assertArrayHasKey('sessionToken', $success['data']['login'] );
+		$I->assertArrayHasKey( 'data', $success );
+		$I->assertArrayHasKey( 'login', $success['data'] );
+		$I->assertArrayHasKey( 'customer', $success['data']['login'] );
+		$I->assertArrayHasKey( 'authToken', $success['data']['login'] );
+		$I->assertArrayHasKey( 'refreshToken', $success['data']['login'] );
+		$I->assertArrayHasKey( 'sessionToken', $success['data']['login'] );
 
 		// Retrieve JWT Authorization Token for later use.
 		$auth_token = $success['data']['login']['authToken'];
@@ -77,8 +77,8 @@ class CartTransactionQueueCest {
 		return compact( 'auth_token', 'key', 'session_token' );
 	}
 
-    // tests
-    public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I ) {
+	// tests
+	public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I ) {
 		$I->wantTo( 'Add Item to cart' );
 		extract( $this->_startAuthenticatedSession( $I ) );
 
@@ -132,7 +132,7 @@ class CartTransactionQueueCest {
 				}
 			}
 		';
-		$cart_query                     = '
+		$cart_query                      = '
 			query {
 				cart {
 					contents {
@@ -145,14 +145,17 @@ class CartTransactionQueueCest {
 			}
 		';
 
-		$requests = array(
+		$requests           = array(
 			array(
 				'query'     => $update_item_quantities_mutation,
 				'variables' => array(
 					'input' => array(
 						'clientMutationId' => 'some_id',
 						'items'            => array(
-							array( 'key' => $key, 'quantity' => 3 ),
+							array(
+								'key'      => $key,
+								'quantity' => 3,
+							),
 						),
 					),
 				),
@@ -163,7 +166,10 @@ class CartTransactionQueueCest {
 					'input' => array(
 						'clientMutationId' => 'some_id',
 						'items'            => array(
-							array( 'key' => $key, 'quantity' => 4 ),
+							array(
+								'key'      => $key,
+								'quantity' => 4,
+							),
 						),
 					),
 				),
@@ -173,7 +179,7 @@ class CartTransactionQueueCest {
 				'variables' => array(
 					'input' => array(
 						'clientMutationId' => 'some_id',
-						'keys'             => array( $key )
+						'keys'             => array( $key ),
 					),
 				),
 			),
@@ -185,7 +191,7 @@ class CartTransactionQueueCest {
 						'keys'             => array( $key ),
 					),
 				),
-			)
+			),
 		);
 		$expected_responses = array(
 			array(
@@ -195,14 +201,14 @@ class CartTransactionQueueCest {
 						array(
 							'key'      => $key,
 							'quantity' => 3,
-						)
+						),
 					),
 					'removed'          => array(),
 					'items'            => array(
 						array(
 							'key'      => $key,
 							'quantity' => 3,
-						)
+						),
 					),
 				),
 			),
@@ -213,21 +219,21 @@ class CartTransactionQueueCest {
 						array(
 							'key'      => $key,
 							'quantity' => 4,
-						)
+						),
 					),
 					'removed'          => array(),
 					'items'            => array(
 						array(
 							'key'      => $key,
 							'quantity' => 4,
-						)
+						),
 					),
 				),
 			),
 			array(
 				'removeItemsFromCart' => array(
 					'clientMutationId' => 'some_id',
-					'cart' => array(
+					'cart'             => array(
 						'contents' => array(
 							'nodes' => array(),
 						),
@@ -237,12 +243,12 @@ class CartTransactionQueueCest {
 			array(
 				'restoreCartItems' => array(
 					'clientMutationId' => 'some_id',
-					'cart' => array(
+					'cart'             => array(
 						'contents' => array(
 							'nodes' => array(
 								array(
 									'key'      => $key,
-									'quantity' => 4
+									'quantity' => 4,
 								),
 							),
 						),
@@ -262,13 +268,13 @@ class CartTransactionQueueCest {
 
 		$iterator = function( $requests ) use ( $client ) {
 			$stagger = 1000;
-			foreach( $requests as $index => $payload ) {
+			foreach ( $requests as $index => $payload ) {
 				yield function() use ( $client, $stagger, $index, $payload ) {
 					$body      = json_encode( $payload );
 					$delay     = $stagger * $index + 1;
 					$connected = false;
 					$progress  = function( $downloadTotal, $downloadedBytes, $uploadTotal, $uploadedBytes ) use ( $index, &$connected ) {
-						if ( $uploadTotal === $uploadedBytes && $downloadTotal === 0 && ! $connected ) {
+						if ( $uploadTotal === $uploadedBytes && 0 === $downloadTotal && ! $connected ) {
 							\codecept_debug( "Session mutation request $index connected @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
 							$connected = true;
 						}
@@ -283,7 +289,7 @@ class CartTransactionQueueCest {
 			$iterator( $requests ),
 			array(
 				'concurrency' => 5,
-				'fulfilled' => function ( $response, $index ) use ( $I, $expected_responses ) {
+				'fulfilled'   => function ( $response, $index ) use ( $I, $expected_responses ) {
 					\codecept_debug( "Finished session mutation request $index @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
 
 					$expected = $expected_responses[ $index ];
@@ -298,5 +304,5 @@ class CartTransactionQueueCest {
 		$promise = $pool->promise();
 
 		$promise->wait();
-    }
+	}
 }

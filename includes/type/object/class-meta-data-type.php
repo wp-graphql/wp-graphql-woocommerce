@@ -90,7 +90,8 @@ class Meta_Data_Type {
 							}
 						);
 					}
-				} elseif ( ! empty( $args['keysIn'] ) ) { // Check "keysIn" argument and format meta_data objects.
+				} elseif ( ! empty( $args['keysIn'] ) ) {
+					// Check "keysIn" argument and format meta_data objects.
 					$keys = $args['keysIn'];
 
 					$found = array();
@@ -109,7 +110,8 @@ class Meta_Data_Type {
 							}
 						}
 					);
-				} else { // If no arguments set return all meta (in accordance with unique flag).
+				} else {
+					// If no arguments set return all meta (in accordance with unique flag).
 					$found = array();
 					$data = array_filter(
 						$source->get_meta_data(),
@@ -124,7 +126,7 @@ class Meta_Data_Type {
 							return true;
 						}
 					);
-				}
+				}//end if
 
 				return ! empty( $data ) ? $data : null;
 			},

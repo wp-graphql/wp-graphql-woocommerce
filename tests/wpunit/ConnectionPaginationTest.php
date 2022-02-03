@@ -4,28 +4,30 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 	public function toCursor( $id ) {
 		if ( $id instanceof \WC_Product_Download ) {
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			return base64_encode( 'arrayconnection:' . $id['id'] );
 		}
 
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return base64_encode( 'arrayconnection:' . $id );
 	}
 
-    // tests
-    public function testCouponsPagination() {
+	// tests
+	public function testCouponsPagination() {
 		$coupons = array(
-            $this->factory->coupon->create(),
 			$this->factory->coupon->create(),
 			$this->factory->coupon->create(),
-            $this->factory->coupon->create(),
 			$this->factory->coupon->create(),
-        );
+			$this->factory->coupon->create(),
+			$this->factory->coupon->create(),
+		);
 
-        usort(
-            $coupons,
-            function( $key_a, $key_b ) {
+		usort(
+			$coupons,
+			function( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
-        );
+		);
 
 		$query = '
 			query ($first: Int, $last: Int, $after: String, $before: String) {
@@ -43,14 +45,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			}
         ';
 
-        $this->loginAsShopManager();
+		$this->loginAsShopManager();
 
-        /**
+		/**
 		 * Assertion One
 		 *
 		 * Test "first" parameter.
 		 */
-        $variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'coupons.pageInfo.hasPreviousPage', false ),
@@ -61,14 +63,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[1] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'first' => 3,
 			'after' => $this->toCursor( $coupons[1] ),
 		);
@@ -83,7 +85,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'coupons.nodes.2.databaseId', $coupons[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
@@ -91,8 +93,8 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		 * Test "last" parameter.
 		 */
 		\WPGraphQL::set_is_graphql_request( true );
-        $variables = array(
-			'last'   => 2,
+		$variables = array(
+			'last' => 2,
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
@@ -104,14 +106,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[4] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
+		// $this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
 		 *
 		 * Test "before" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'last'   => 2,
 			'before' => $this->toCursor( $coupons[3] ),
 		);
@@ -125,24 +127,24 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[2] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
-    }
+		// $this->assertQuerySuccessful( $response, $expected );
+	}
 
-    public function testProductsPagination() {
-        $products = array(
-            $this->factory->product->createSimple(),
-            $this->factory->product->createSimple(),
-            $this->factory->product->createSimple(),
-            $this->factory->product->createSimple(),
-            $this->factory->product->createSimple(),
-        );
+	public function testProductsPagination() {
+		$products = array(
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+		);
 
-        usort(
-            $products,
-            function( $key_a, $key_b ) {
+		usort(
+			$products,
+			function( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
-        );
+		);
 
 		$query = '
 			query ($first: Int, $last: Int, $after: String, $before: String) {
@@ -160,12 +162,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			}
         ';
 
-        /**
+		/**
 		 * Assertion One
 		 *
 		 * Test "first" parameter.
 		 */
-        $variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', false ),
@@ -176,14 +178,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'products.nodes.1.databaseId', $products[1] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'first' => 3,
 			'after' => $this->toCursor( $products[1] ),
 		);
@@ -198,14 +200,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'products.nodes.2.databaseId', $products[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
 		 * Test "last" parameter.
 		 */
-        $variables = array( 'last' => 2 );
+		$variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
@@ -216,14 +218,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'products.nodes.1.databaseId', $products[4] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
+		// $this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
 		 *
 		 * Test "before" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'last'   => 2,
 			'before' => $this->toCursor( $products[3] ),
 		);
@@ -237,10 +239,10 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'products.nodes.1.databaseId', $products[2] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
-    }
+		// $this->assertQuerySuccessful( $response, $expected );
+	}
 
-    public function testOrdersPagination() {
+	public function testOrdersPagination() {
 		$this->loginAsShopManager();
 
 		$query      = new \WC_Order_Query();
@@ -251,20 +253,20 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		unset( $old_orders );
 		unset( $query );
 
-        $orders = array(
-            $this->factory->order->createNew(),
+		$orders = array(
 			$this->factory->order->createNew(),
 			$this->factory->order->createNew(),
-            $this->factory->order->createNew(),
 			$this->factory->order->createNew(),
-        );
+			$this->factory->order->createNew(),
+			$this->factory->order->createNew(),
+		);
 
-        usort(
-            $orders,
-            function( $key_a, $key_b ) {
+		usort(
+			$orders,
+			function( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
-        );
+		);
 
 		$query = '
 			query ($first: Int, $last: Int, $after: String, $before: String) {
@@ -282,12 +284,12 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			}
         ';
 
-        /**
+		/**
 		 * Assertion One
 		 *
 		 * Test "first" parameter.
 		 */
-        $variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'orders.pageInfo.hasPreviousPage', false ),
@@ -298,14 +300,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'orders.nodes.1.databaseId', $orders[1] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'first' => 3,
 			'after' => $this->toCursor( $orders[1] ),
 		);
@@ -320,14 +322,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'orders.nodes.2.databaseId', $orders[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
 		 * Test "last" parameter.
 		 */
-        $variables = array( 'last' => 2 );
+		$variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'orders.pageInfo.hasPreviousPage', true ),
@@ -338,14 +340,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'orders.nodes.1.databaseId', $orders[4] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
+		// $this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Four
 		 *
 		 * Test "before" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'last'   => 2,
 			'before' => $this->toCursor( $orders[3] ),
 		);
@@ -359,25 +361,25 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'orders.nodes.1.databaseId', $orders[2] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
-    }
+		// $this->assertQuerySuccessful( $response, $expected );
+	}
 
-    public function testRefundsPagination() {
-        $order   = $this->factory->order->createNew();
-        $refunds = array(
-            $this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+	public function testRefundsPagination() {
+		$order   = $this->factory->order->createNew();
+		$refunds = array(
 			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
 			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
-            $this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
 			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
-        );
+			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+			$this->factory->refund->createNew( $order, array( 'amount' => 0.5 ) ),
+		);
 
-        usort(
-            $refunds,
-            function( $key_a, $key_b ) {
+		usort(
+			$refunds,
+			function( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
-        );
+		);
 
 		$query = '
 			query ($first: Int, $last: Int, $after: String, $before: String) {
@@ -395,14 +397,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			}
         ';
 
-        $this->loginAsShopManager();
+		$this->loginAsShopManager();
 
-        /**
+		/**
 		 * Assertion One
 		 *
 		 * Test "first" parameter.
 		 */
-        $variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'refunds.pageInfo.hasPreviousPage', false ),
@@ -413,14 +415,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[1] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'first' => 3,
 			'after' => $this->toCursor( $refunds[1] ),
 		);
@@ -435,14 +437,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'refunds.nodes.2.databaseId', $refunds[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
 		 * Test "last" parameter.
 		 */
-        $variables = array( 'last' => 2 );
+		$variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'refunds.pageInfo.hasPreviousPage', true ),
@@ -453,14 +455,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[4] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
+		// $this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Four
 		 *
 		 * Test "before" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'last'   => 2,
 			'before' => $this->toCursor( $refunds[3] ),
 		);
@@ -474,17 +476,17 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[2] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
-    }
+		// $this->assertQuerySuccessful( $response, $expected );
+	}
 
-    public function testCustomersPagination() {
-        $some_customers = array(
-            $this->factory->customer->create(),
-            $this->factory->customer->create(),
-            $this->factory->customer->create(),
-            $this->factory->customer->create(),
-            $this->factory->customer->create(),
-        );
+	public function testCustomersPagination() {
+		$some_customers = array(
+			$this->factory->customer->create(),
+			$this->factory->customer->create(),
+			$this->factory->customer->create(),
+			$this->factory->customer->create(),
+			$this->factory->customer->create(),
+		);
 
 		$customers = get_users(
 			array(
@@ -497,7 +499,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 		$customers = array_map( 'absint', $customers );
 
-        $query = '
+		$query = '
             query ($first: Int, $last: Int, $after: String, $before: String) {
                 customers(first: $first, last: $last, after: $after, before: $before) {
                     nodes {
@@ -514,14 +516,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
             }
         ';
 
-        $this->loginAsShopManager();
+		$this->loginAsShopManager();
 
-        /**
+		/**
 		 * Assertion One
 		 *
 		 * Test "first" parameter.
 		 */
-        $variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'customers.pageInfo.hasPreviousPage', false ),
@@ -532,14 +534,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customers.pageInfo.endCursor', $this->toCursor( $customers[1] ) ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'first' => 3,
 			'after' => $this->toCursor( $customers[1] ),
 		);
@@ -553,14 +555,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customers.nodes.2.databaseId', $customers[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
 		 * Test "last" parameter.
 		 */
-        $variables = array( 'last' => 2 );
+		$variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'customers.pageInfo.hasPreviousPage', true ),
@@ -571,14 +573,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customers.nodes.1.databaseId', $customers[4] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
+		// $this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Four
 		 *
 		 * Test "before" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'last'   => 2,
 			'before' => $this->toCursor( $customers[3] ),
 		);
@@ -592,11 +594,11 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customers.nodes.1.databaseId', $customers[2] ),
 		);
 
-        //$this->assertQuerySuccessful( $response, $expected );
-    }
+		// $this->assertQuerySuccessful( $response, $expected );
+	}
 
-    public function testDownloadableItemsPagination() {
-        $customer_id         = $this->factory->customer->create();
+	public function testDownloadableItemsPagination() {
+		$customer_id = $this->factory->customer->create();
 
 		$downloads = array(
 			$this->factory->product->createDownload(),
@@ -606,42 +608,42 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->factory->product->createDownload(),
 
 		);
-        $products = array_map(
+		$products = array_map(
 			function( $download ) {
 				return $this->factory->product->createSimple(
 					array(
 						'downloadable' => true,
-						'downloads'    => array( $download )
+						'downloads'    => array( $download ),
 					)
 				);
 			},
 			$downloads
 		);
 
-        $order_id = $this->factory->order->createNew(
-            array(
-                'status'      => 'completed',
-                'customer_id' => $customer_id,
-            ),
-            array(
-                'line_items' => array_map(
-                    function( $product_id ) {
-                        return array(
-                            'product' => $product_id,
-                            'qty'     => 1,
-                        );
-                    },
-                    $products
-                ),
-            )
-        );
+		$order_id = $this->factory->order->createNew(
+			array(
+				'status'      => 'completed',
+				'customer_id' => $customer_id,
+			),
+			array(
+				'line_items' => array_map(
+					function( $product_id ) {
+						return array(
+							'product' => $product_id,
+							'qty'     => 1,
+						);
+					},
+					$products
+				),
+			)
+		);
 
 		$order = \wc_get_order( $order_id );
 
-        // Force download permission updated.
-        wc_downloadable_product_permissions( $order_id, true );
+		// Force download permission updated.
+		wc_downloadable_product_permissions( $order_id, true );
 
-        $query = '
+		$query = '
             query ($first: Int, $last: Int, $after: String, $before: String) {
                 customer {
                     orders {
@@ -666,14 +668,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
             }
         ';
 
-        $this->loginAs( $customer_id );
+		$this->loginAs( $customer_id );
 
-         /**
+		/**
 		 * Assertion One
 		 *
 		 * Test "first" parameter.
 		 */
-        $variables = array( 'first' => 2 );
+		$variables = array( 'first' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', false ),
@@ -684,14 +686,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[1] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "after" parameter.
 		 */
-        $variables = array(
+		$variables = array(
 			'first' => 3,
 			'after' => $this->toCursor( $downloads[1] ),
 		);
@@ -706,14 +708,14 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
 		 *
 		 * Test "last" parameter.
 		 */
-        $variables = array( 'last' => 2 );
+		$variables = array( 'last' => 2 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.pageInfo.hasPreviousPage', true ),
@@ -724,15 +726,15 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.1.product.databaseId', $products[4] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
-        /**
+		/**
 		 * Assertion Two
 		 *
 		 * Test "before" parameter.
 		 */
-        $variables = array(
-			'last' => 3,
+		$variables = array(
+			'last'   => 3,
 			'before' => $this->toCursor( $downloads[3] ),
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
@@ -746,6 +748,6 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'customer.orders.nodes.0.downloadableItems.nodes.2.product.databaseId', $products[2] ),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
-    }
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

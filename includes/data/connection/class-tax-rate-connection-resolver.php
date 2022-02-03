@@ -133,7 +133,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 					$this->query_args['order']
 				)
 			); // @codingStandardsIgnoreEnd
-		}
+		}//end if
 
 		$results = array_map(
 			function( $rate ) {

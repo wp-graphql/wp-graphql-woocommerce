@@ -60,11 +60,11 @@ class WC_Terms extends TermObjects {
 									)
 								)
 							);
-						}
-					}
-				}
-			}
-		}
+						}//end if
+					}//end foreach
+				}//end if
+			}//end foreach
+		}//end if
 
 		// From Coupons to ProductCategory connections.
 		$tax_object = get_taxonomy( 'product_cat' );

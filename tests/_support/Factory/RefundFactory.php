@@ -14,7 +14,7 @@ use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
  * Refund factory class for testing.
  */
 class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = array(
@@ -42,7 +42,7 @@ class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
 			$object = $this->get_object_by_id( $object );
 		}
 
-		foreach( $fields as $field => $field_value ) {
+		foreach ( $fields as $field => $field_value ) {
 			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s coupon field.', $field, $object->get_type() )

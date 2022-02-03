@@ -101,7 +101,7 @@ class Checkout_Mutation {
 					$data[ $key ] = self::get_value( $key );
 				}
 			}
-		}
+		}//end foreach
 
 		if ( in_array( 'shipping', $skipped, true ) && ( \WC()->cart->needs_shipping_address() || \wc_ship_to_billing_address_only() ) ) {
 			foreach ( self::get_checkout_fields( 'shipping' ) as $field => $input_key ) {
@@ -290,7 +290,7 @@ class Checkout_Mutation {
 
 			// Also, recalculate cart totals to reveal any role-based discounts that were unavailable before registering.
 			WC()->cart->calculate_totals();
-		}
+		}//end if
 
 		// On multisite, ensure user exists on current site, if not add them before allowing login.
 		if ( $customer_id && is_multisite() && is_user_logged_in() && ! is_user_member_of_blog() ) {
@@ -331,7 +331,7 @@ class Checkout_Mutation {
 			do_action( 'woocommerce_checkout_update_customer', $customer, $data );
 
 			$customer->save();
-		}
+		}//end if
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_checkout_update_user_meta', $customer_id, $data );
@@ -439,8 +439,8 @@ class Checkout_Mutation {
 						}
 					}
 				}
-			}
-		}
+			}//end foreach
+		}//end foreach
 	}
 
 	/**
@@ -485,7 +485,7 @@ class Checkout_Mutation {
 					}
 				}
 			}
-		}
+		}//end if
 
 		if ( WC()->cart->needs_payment() ) {
 			$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
@@ -649,7 +649,7 @@ class Checkout_Mutation {
 					),
 				);
 			}
-		}
+		}//end if
 
 		return $order_id;
 	}

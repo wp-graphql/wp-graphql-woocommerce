@@ -13,14 +13,8 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
 		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
-		$this->helper       = $this->getModule('\Helper\Wpunit')->tax_rate();
+		$this->helper       = $this->getModule( '\Helper\Wpunit' )->tax_rate();
 		$this->rate         = $this->helper->create();
-	}
-
-	public function tearDown(): void {
-		// your tear down methods here
-		// then
-		parent::tearDown();
 	}
 
 	// tests
@@ -50,11 +44,11 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 *
-		 * tests query, "id" query arg, and results
+		 * Tests query, "id" query arg, and results
 		 */
 		$variables = array( 'id' => $id );
-		$actual = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
+		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
+		$expected  = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -64,14 +58,14 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Two
 		 *
-		 * tests query, "rateId" query arg, and results
+		 * Tests query, "rateId" query arg, and results
 		 */
 		$variables = array(
 			'id'     => $this->rate,
 			'idType' => 'DATABASE_ID',
 		);
-		$actual = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
+		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
+		$expected  = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -125,7 +119,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 *
-		 * tests query
+		 * Tests query
 		 */
 		$actual   = graphql( array( 'query' => $query ) );
 		$expected = array(
@@ -136,9 +130,9 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
 						},
 						$rates
-					)
-				)
-			)
+					),
+				),
+			),
 		);
 
 		// use --debug flag to view.
@@ -149,7 +143,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Two
 		 *
-		 * tests "class" where arg
+		 * Tests "class" where arg
 		 */
 		$variables = array( 'class' => 'REDUCED_RATE' );
 		$actual    = graphql(
@@ -174,9 +168,9 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 								}
 							)
 						)
-					)
-				)
-			)
+					),
+				),
+			),
 		);
 
 		// use --debug flag to view.
@@ -187,7 +181,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Three
 		 *
-		 * tests "postCode" where arg
+		 * Tests "postCode" where arg
 		 */
 		$variables = array( 'postCode' => '23451' );
 		$actual    = graphql(
@@ -204,9 +198,9 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
 						},
 						array( $rates[2] )
-					)
-				)
-			)
+					),
+				),
+			),
 		);
 
 		// use --debug flag to view.
@@ -217,7 +211,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion Four
 		 *
-		 * tests "postCodeIn" where arg
+		 * Tests "postCodeIn" where arg
 		 */
 		$variables = array( 'postCodeIn' => array( '123456', '23451' ) );
 		$actual    = graphql(
@@ -233,10 +227,10 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 						function( $id ) {
 							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
 						},
-						array( $rates[1],$rates[2] )
-					)
-				)
-			)
+						array( $rates[1], $rates[2] )
+					),
+				),
+			),
 		);
 
 		// use --debug flag to view.

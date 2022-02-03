@@ -14,20 +14,22 @@ use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
  * Tax Rate factory class for testing.
  */
 class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = array(
 			'zone_name' => '',
 		);
-		$this->dummy = Dummy::instance();
+		$this->dummy                          = Dummy::instance();
 	}
 
 	public function create_object( $args ) {
-		if ( is_wp_error( $args ) ) codecept_debug( $args );
+		if ( is_wp_error( $args ) ) {
+			codecept_debug( $args );
+		}
 
 		$rate_args = array();
-		$fields = array(
+		$fields    = array(
 			'country'  => 'tax_rate_country',
 			'state'    => 'tax_rate_state',
 			'rate'     => 'tax_rate',
@@ -39,8 +41,8 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 			'class'    => 'tax_rate_class',
 		);
 
-		foreach( $args as $key => $value ) {
-			if ( in_array( $key, array_keys( $fields ) ) ) {
+		foreach ( $args as $key => $value ) {
+			if ( in_array( $key, array_keys( $fields ), true ) ) {
 				$rate_args[ $fields[ $key ] ] = $value;
 			}
 		}
@@ -50,7 +52,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 				'tax_rate_country'  => 'US',
 				'tax_rate_state'    => '*',
 				'tax_rate'          => 20.0000,
-				'tax_rate_name'     => "VAT",
+				'tax_rate_name'     => 'VAT',
 				'tax_rate_priority' => 1,
 				'tax_rate_compound' => 1,
 				'tax_rate_shipping' => 1,

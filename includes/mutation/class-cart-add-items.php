@@ -137,8 +137,8 @@ class Cart_Add_Items {
 
 					// Capture error.
 					$failure[] = compact( 'cart_item_data', 'reason' );
-				}
-			}
+				}//end try
+			}//end foreach
 
 			// Log captured errors.
 			if ( ! empty( $failure ) ) {

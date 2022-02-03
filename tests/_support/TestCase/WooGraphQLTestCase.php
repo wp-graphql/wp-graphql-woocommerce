@@ -3,6 +3,7 @@
  * WPGraphQL test case
  *
  * For testing WPGraphQL responses.
+ *
  * @since 0.8.0
  * @package Tests\WPGraphQL\TestCase
  */
@@ -45,8 +46,8 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		);
 
 		foreach ( $factories as $factory ) {
-			$factory_name  = strtolower( preg_replace( '/\B([A-Z])/', '_$1', $factory ) );
-			$factory_class = '\\Tests\\WPGraphQL\\WooCommerce\\Factory\\' . $factory . 'Factory';
+			$factory_name                   = strtolower( preg_replace( '/\B([A-Z])/', '_$1', $factory ) );
+			$factory_class                  = '\\Tests\\WPGraphQL\\WooCommerce\\Factory\\' . $factory . 'Factory';
 			$this->factory->{$factory_name} = new $factory_class( $this->factory );
 		}
 

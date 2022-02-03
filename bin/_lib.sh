@@ -33,8 +33,12 @@ install_wordpress() {
 }
 
 remove_wordpress() {
-	# Remove Wordpress + integrated plugins.
-	wp plugin uninstall woocommerce --deactivate --path=${WP_CORE_DIR}
+	# Uninstall woocommerce plugins.
+	if [ -f $WP_CORE_DIR/wp-config.php ]; then
+		wp plugin uninstall woocommerce --deactivate --path=${WP_CORE_DIR}
+	fi
+
+	# Remove WordPress dependencies
 	composer remove --dev wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
@@ -50,8 +54,8 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev phpunit/phpunit:${PHPUNIT_VERSION} \
-		lucatume/wp-browser \
+	composer require --dev \
+		lucatume/wp-browser:* \
 		codeception/module-asserts \
 		codeception/module-rest \
 		codeception/util-universalframework \
@@ -66,7 +70,6 @@ remove_local_test_library() {
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
-		phpunit/phpunit \
 		stripe/stripe-php
 
 	composer update

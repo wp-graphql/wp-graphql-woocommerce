@@ -164,7 +164,7 @@ class Checkout {
 			} catch ( Exception $e ) {
 				Order_Mutation::purge( $order );
 				throw new UserError( $e->getMessage() );
-			}
+			}//end try
 		};
 	}
 }

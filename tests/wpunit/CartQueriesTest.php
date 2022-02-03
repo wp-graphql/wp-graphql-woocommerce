@@ -2,6 +2,7 @@
 
 class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	private function key_to_cursor( $key ) {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		return base64_encode( 'arrayconnection:' . $key );
 	}
 
@@ -33,26 +34,26 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			$this->expectedObject(
 				$path,
 				array(
-					$this->expectedField( "key", $item['key'] ),
-					$this->expectedField( "product.node.id", $this->toRelayId( 'product', $item['product_id'] ) ),
-					$this->expectedField( "product.node.databaseId", $item['product_id'] ),
+					$this->expectedField( 'key', $item['key'] ),
+					$this->expectedField( 'product.node.id', $this->toRelayId( 'product', $item['product_id'] ) ),
+					$this->expectedField( 'product.node.databaseId', $item['product_id'] ),
 					$this->expectedField(
-						"variation.node.id",
+						'variation.node.id',
 						! empty( $item['variation_id'] )
 							? $this->toRelayId( 'product_variation', $item['variation_id'] )
 							: 'NULL'
 					),
 					$this->expectedField(
-						"variation.node.databaseId",
+						'variation.node.databaseId',
 						! empty( $item['variation_id'] ) ? $item['variation_id'] : 'NULL'
 					),
-					$this->expectedField( "quantity", $item['quantity'] ),
-					$this->expectedField( "subtotal", \wc_graphql_price( $item['line_subtotal'] ) ),
-					$this->expectedField( "subtotalTax", \wc_graphql_price( $item['line_subtotal_tax'] ) ),
-					$this->expectedField( "total", \wc_graphql_price( $item['line_total'] ) ),
-					$this->expectedField( "tax", \wc_graphql_price( $item['line_tax'] ) ),
+					$this->expectedField( 'quantity', $item['quantity'] ),
+					$this->expectedField( 'subtotal', \wc_graphql_price( $item['line_subtotal'] ) ),
+					$this->expectedField( 'subtotalTax', \wc_graphql_price( $item['line_subtotal_tax'] ) ),
+					$this->expectedField( 'total', \wc_graphql_price( $item['line_total'] ) ),
+					$this->expectedField( 'tax', \wc_graphql_price( $item['line_tax'] ) ),
 				)
-			)
+			),
 		);
 	}
 
@@ -62,11 +63,11 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		$this->factory->cart->add(
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 2,
+				'quantity'   => 2,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 1,
+				'quantity'   => 1,
 			)
 		);
 
@@ -107,7 +108,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 	}
 
 	public function testCartItemQuery() {
-		$cart = \WC()->cart;
+		$cart       = \WC()->cart;
 		$variations = $this->factory->product_variation->createSome();
 
 		$key = $cart->add_to_cart(
@@ -153,7 +154,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 * Assertion One
 		 */
 		$variables = array( 'key' => $key );
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $this->getExpectedCartItemData( 'cartItem', $key ) );
 	}
@@ -164,15 +165,15 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 				'product_id' => $this->factory->product->createSimple(
 					array( 'virtual' => true )
 				),
-				'quantity'  => 2,
+				'quantity'   => 2,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 1,
+				'quantity'   => 1,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 10,
+				'quantity'   => 10,
 			)
 		);
 
@@ -206,7 +207,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		$response = $this->graphql( compact( 'query' ) );
 
 		$expected = array();
-		foreach( $keys as $key ) {
+		foreach ( $keys as $key ) {
 			$expected[] = $this->expectedNode( 'cart.contents.nodes', array( 'key' => $key ) );
 		}
 
@@ -250,7 +251,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		WC()->cart->add_fee( 'Test fee', 30.50 );
 		$fee_ids = array_keys( WC()->cart->get_fees() );
 
-		$query   = '
+		$query = '
 			query ($id: ID!) {
 				cartFee(id: $id) {
 					id
@@ -269,7 +270,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		$variables = array( 'id' => $fee_ids[0] );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		$fee  = ( \WC()->cart->get_fees() )[ $fee_ids[0] ];
+		$fee = ( \WC()->cart->get_fees() )[ $fee_ids[0] ];
 
 		$this->assertQuerySuccessful(
 			$response,
@@ -302,10 +303,10 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		/**
 		 * Assertion One
 		 */
-		$response  = $this->graphql( compact( 'query' ) );
+		$response = $this->graphql( compact( 'query' ) );
 
 		$expected = array();
-		foreach( \WC()->cart->get_fees() as $fee_id => $value ) {
+		foreach ( \WC()->cart->get_fees() as $fee_id => $value ) {
 			$expected[] = $this->expectedNode( 'cart.fees', array( 'id' => $fee_id ) );
 		}
 
@@ -362,7 +363,10 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "first" parameter.
 		 */
-		$variables = array( 'first' => 2, 'after' => '' );
+		$variables = array(
+			'first' => 2,
+			'after' => '',
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedField( 'cart.contents.itemCount', 6 ),
@@ -380,7 +384,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 				'cart.contents.edges',
 				array( $this->expectedField( 'key', $cart_items[1] ) ),
 				1
-			)
+			),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -392,7 +396,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 */
 		$variables = array(
 			'first' => 2,
-			'after' => $this->key_to_cursor( $cart_items[1] )
+			'after' => $this->key_to_cursor( $cart_items[1] ),
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
@@ -409,7 +413,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 				'cart.contents.edges',
 				array( $this->expectedField( 'key', $cart_items[3] ) ),
 				1
-			)
+			),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -435,7 +439,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 				'cart.contents.edges',
 				array( $this->expectedField( 'key', $cart_items[4] ) ),
 				1
-			)
+			),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -446,7 +450,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 * Tests "before" parameter.
 		 */
 		$variables = array(
-			'last' => 4,
+			'last'   => 4,
 			'before' => $this->key_to_cursor( $cart_items[3] ),
 		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
@@ -470,7 +474,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 				'cart.contents.edges',
 				array( $this->expectedField( 'key', $cart_items[2] ) ),
 				2
-			)
+			),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );

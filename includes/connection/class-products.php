@@ -230,10 +230,11 @@ class Products {
 			$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 			$tax_query = array(
-				array( // WPCS: slow query ok.
-					'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					'field'    => 'term_id',
-					'terms'    => $source->term_id,
+				array(
+					// WPCS: slow query ok.
+												'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						'field'                            => 'term_id',
+						'terms'                            => $source->term_id,
 				),
 			);
 			$resolver->set_query_arg( 'tax_query', $tax_query );
@@ -307,7 +308,7 @@ class Products {
 					)
 				)
 			);
-		}
+		}//end foreach
 	}
 
 	/**
@@ -370,8 +371,8 @@ class Products {
 						$resolver->set_query_arg( 'meta_type', 'NUMERIC' );
 						break 2;
 				}
-			}
-		}
+			}//end foreach
+		}//end if
 
 		return $resolver;
 	}
@@ -622,9 +623,9 @@ class Products {
 							'operator' => $operator,
 						);
 						break;
-				}
-			}
-		}
+				}//end switch
+			}//end if
+		}//end foreach
 
 		if ( 1 < count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
@@ -676,7 +677,7 @@ class Products {
 					'operator' => 'NOT IN',
 				);
 			}
-		}
+		}//end if
 
 		// Handle visibility.
 		$post_type_obj = get_post_type_object( $post_type );
@@ -714,8 +715,8 @@ class Products {
 						'operator' => 'AND',
 					);
 					break;
-			}
-		}
+			}//end switch
+		}//end if
 
 		// Process "taxonomyFilter".
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
@@ -749,7 +750,7 @@ class Products {
 							)
 						);
 					}
-				}
+				}//end foreach
 
 				if ( ! empty( $tax_groups ) ) {
 					array_push( $tax_query, ...$tax_groups );
@@ -758,11 +759,12 @@ class Products {
 				if ( 1 < count( $tax_groups ) ) {
 					$tax_query['relation'] = $relation;
 				}
-			}
-		}
+			}//end if
+		}//end if
 
 		if ( ! empty( $tax_query ) ) {
-			$query_args['tax_query'] = $tax_query; // WPCS: slow query ok.
+			$query_args['tax_query'] = $tax_query;
+			// WPCS: slow query ok.
 		}
 
 		$meta_query = array();
@@ -804,7 +806,8 @@ class Products {
 		}
 
 		if ( ! empty( $meta_query ) ) {
-			$query_args['meta_query'] = $meta_query; // WPCS: slow query ok.
+			$query_args['meta_query'] = $meta_query;
+			// WPCS: slow query ok.
 		}
 
 		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
