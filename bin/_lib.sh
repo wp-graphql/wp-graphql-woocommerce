@@ -54,7 +54,7 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev \
+	composer require --dev phpunit/phpunit:${PHPUNIT_VERSION} \
 		lucatume/wp-browser:* \
 		codeception/module-asserts \
 		codeception/module-rest \
