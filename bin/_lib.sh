@@ -46,7 +46,7 @@ remove_wordpress() {
         wpackagist-plugin/woocommerce \
 		johnpbloch/wordpress \
 		composer/installers \
-		wp-cli/wp-cli-bundle
+		wp-cli/wp-cli-bundle:*
 
 	composer update
 }
