@@ -184,17 +184,15 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Assert prices.
 		$prices = $this->product_helper->field( $this->products['product'], 'variation_prices', array( true ) );
-		$this->assertTrue(
-			\wc_graphql_price( current( $prices['price'] ) === $product_data['price'] )
-				. ' - '
-				. \wc_graphql_price( end( $prices['price'] ) )
-		);
-
-		$this->assertTrue(
-			\wc_graphql_price( current( $prices['regular_price'] ) === $product_data['regularPrice'] )
+		$expected_price = \wc_graphql_price( current( $prices['price'] ) )
 			. ' - '
-			. \wc_graphql_price( end( $prices['regular_price'] ) )
-		);
+			. \wc_graphql_price( end( $prices['price'] ) );
+		$this->assertTrue( $expected_price == $product_data['price']);
+
+		$expected_price = \wc_graphql_price( current( $prices['regular_price'] ) )
+			. ' - '
+			. \wc_graphql_price( end( $prices['regular_price'] ) );
+		$this->assertTrue( $expected_price === $product_data['regularPrice'] );
 
 		$this->assertTrue( null === $product_data['salePrice'] );
 
