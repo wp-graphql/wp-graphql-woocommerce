@@ -52,8 +52,7 @@ RUN composer global require --optimize-autoloader \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
-	wp-graphql/wp-graphql-testcase \
-	"phpunit/phpunit:${PHPUNIT_VERSION}"
+	wp-graphql/wp-graphql-testcase
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
