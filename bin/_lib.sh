@@ -55,7 +55,7 @@ install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
 	composer require --dev \
-		lucatume/wp-browser:* \
+		lucatume/wp-browser \
 		codeception/module-asserts \
 		codeception/module-rest \
 		codeception/util-universalframework \
