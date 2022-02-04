@@ -173,3 +173,44 @@ function wc_graphql_price_range( $from, $to ) {
 
 	return apply_filters( 'graphql_woocommerce_format_price_range', $price, $from, $to );
 }
+
+	/**
+	 * Converts a camel case formatted string to a underscore formatted string.
+	 *
+	 * @param string  $string      String to be formatted.
+	 * @param boolean $capitalize  Capitalize first letter of string.
+	 *
+	 * @return string
+	 */
+function wc_graphql_underscore_to_camel_case( $string, $capitalize = false ) {
+	$str = str_replace( ' ', '', ucwords( str_replace( '-', ' ', $string ) ) );
+
+	if ( ! $capitalize ) {
+		$str[0] = strtolower( $str[0] );
+	}
+
+	return $str;
+}
+
+		/**
+		 * Converts a camel case formatted string to a underscore formatted string.
+		 *
+		 * @param string $string  String to be formatted.
+		 *
+		 * @return string
+		 */
+function wc_graphql_camel_case_to_underscore( $string ) {
+	preg_match_all(
+		'!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!',
+		$string,
+		$matches
+	);
+
+	$ret = $matches[0];
+
+	foreach ( $ret as &$match ) {
+		$match = strtoupper( $match ) === $match ? strtolower( $match ) : lcfirst( $match );
+	}
+
+	return implode( '_', $ret );
+}

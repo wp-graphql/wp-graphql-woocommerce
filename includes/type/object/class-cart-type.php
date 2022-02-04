@@ -363,14 +363,16 @@ class Cart_Type {
 							// Check if "key" argument set and assigns to target "keys" array.
 							if ( ! empty( $args['key'] ) && ! empty( $source[ $args['key'] ] ) ) {
 								$keys = array( $args['key'] );
-							} elseif ( ! empty( $args['keysIn'] ) ) { // Check if "keysIn" argument set and assigns to target "keys" array.
+							} elseif ( ! empty( $args['keysIn'] ) ) {
+								// Check if "keysIn" argument set and assigns to target "keys" array.
 								$keys = array();
 								foreach ( $args['keysIn'] as $key ) {
 									if ( ! empty( $source[ $key ] ) ) {
 										$keys[] = $key;
 									}
 								}
-							} else { // If no arguments set, all extra data keys are assigns to target "keys" array.
+							} else {
+								// If no arguments set, all extra data keys are assigns to target "keys" array.
 								$keys = array_diff(
 									array_keys( $source ),
 									array(
@@ -388,7 +390,7 @@ class Cart_Type {
 										'line_tax',
 									)
 								);
-							}
+							}//end if
 							// Create meta ID prefix.
 							$id_prefix = apply_filters( 'graphql_woocommerce_cart_meta_id_prefix', 'cart_' );
 

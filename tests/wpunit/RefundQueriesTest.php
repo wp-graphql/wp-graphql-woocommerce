@@ -69,8 +69,8 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		 * Test query and results for users with required caps
 		 */
 		$this->loginAsShopManager();
-		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = $this->expectedRefundData( $refund_id );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = $this->expectedRefundData( $refund_id );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -99,7 +99,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			'id'     => $relay_id,
 			'idType' => 'ID',
 		);
-		$response    = $this->graphql( compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array( $this->expectedField( 'refund.id', $relay_id ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -123,7 +123,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 	public function testRefundsQueryAndWhereArgs() {
 		$order_id = $this->factory->order->createNew();
-		$refunds = array(
+		$refunds  = array(
 			$this->factory->refund->createNew( $order_id ),
 			$this->factory->refund->createNew( $this->factory->order->createNew() ),
 			$this->factory->refund->createNew( $this->factory->order->createNew(), array( 'status' => 'pending' ) ),
@@ -183,7 +183,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		 * Note: This argument is functionally useless Refunds' "post_status" is always set to "completed".
 		 */
 		$variables = array( 'statuses' => array( 'completed' ) );
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = array(
 			$this->expectedNode( 'refunds.nodes', array( 'databaseId' => $refunds[0] ) ),
@@ -201,7 +201,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		 * Test "orderIn" where argument
 		 */
 		$variables = array( 'orderIn' => array( $order_id ) );
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = array(
 			$this->expectedNode( 'refunds.nodes', array( 'databaseId' => $refunds[0] ) ),
@@ -214,11 +214,17 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$order_id = $this->factory->order->createNew();
 		$refunds  = array(
 			$this->factory->refund->createNew( $order_id, array( 'amount' => 0.5 ) ),
-			$this->factory->refund->createNew( $order_id, array( 'status' => 'pending', 'amount' => 0.5 ) ),
+			$this->factory->refund->createNew(
+				$order_id,
+				array(
+					'status' => 'pending',
+					'amount' => 0.5,
+				)
+			),
 			$this->factory->refund->createNew( $this->factory->order->createNew() ),
 		);
 
-		$query   = '
+		$query = '
 			query ( $id: ID! ) {
 				order(id: $id) {
 					refunds {
@@ -232,7 +238,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$this->loginAsShopManager();
 		$variables = array( 'id' => $this->toRelayId( 'shop_order', $order_id ) );
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = array(
 			$this->expectedNode( 'order.refunds.nodes', array( 'databaseId' => $refunds[0] ) ),
@@ -247,10 +253,16 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$refunds  = array(
 			$this->factory->refund->createNew( $this->factory->order->createNew() ),
 			$this->factory->refund->createNew( $order_id, array( 'amount' => 0.5 ) ),
-			$this->factory->refund->createNew( $order_id, array( 'status' => 'pending', 'amount' => 0.5 ) ),
+			$this->factory->refund->createNew(
+				$order_id,
+				array(
+					'status' => 'pending',
+					'amount' => 0.5,
+				)
+			),
 		);
 
-		$query   = '
+		$query = '
 			query {
 				customer {
 					refunds {

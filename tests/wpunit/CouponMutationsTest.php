@@ -2,9 +2,9 @@
 
 class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-    // Tests
-    public function testCreateCoupon() {
-        $query = '
+	// Tests
+	public function testCreateCoupon() {
+		$query = '
 			mutation($input: CreateCouponInput!) {
 				createCoupon(input: $input) {
 					coupon {
@@ -35,10 +35,10 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = array(
 			$this->expectedErrorPath( 'createCoupon' ),
-			$this->expectedField( 'createCoupon', self::IS_NULL )
+			$this->expectedField( 'createCoupon', self::IS_NULL ),
 		);
 
-        $this->assertQueryError( $response, $expected );
+		$this->assertQueryError( $response, $expected );
 
 		/**
 		 * Assertion Two
@@ -69,13 +69,13 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
-    }
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 
-    public function testUpdateCoupon() {
-        $coupon_id = $this->factory->coupon->create();
+	public function testUpdateCoupon() {
+		$coupon_id = $this->factory->coupon->create();
 
-		$query     = '
+		$query = '
 			mutation($input: UpdateCouponInput!) {
 				updateCoupon(input: $input) {
 					coupon {
@@ -105,10 +105,10 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = array(
 			$this->expectedErrorPath( 'updateCoupon' ),
-			$this->expectedField( 'updateCoupon', self::IS_NULL )
+			$this->expectedField( 'updateCoupon', self::IS_NULL ),
 		);
 
-        $this->assertQueryError( $response, $expected );
+		$this->assertQueryError( $response, $expected );
 
 		/**
 		 * Assertion Two
@@ -139,11 +139,11 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			),
 		);
 
-        $this->assertQuerySuccessful( $response, $expected );
-    }
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 
 	public function testDeleteCoupon() {
-        $coupon_id = $this->factory->coupon->create();
+		$coupon_id = $this->factory->coupon->create();
 
 		$query = '
 			mutation($input: DeleteCouponInput!) {
@@ -171,7 +171,7 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = array(
 			$this->expectedErrorPath( 'deleteCoupon' ),
-			$this->expectedField( 'deleteCoupon', self::IS_NULL )
+			$this->expectedField( 'deleteCoupon', self::IS_NULL ),
 		);
 
 		$this->assertQueryError( $response, $expected );
@@ -203,5 +203,5 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
-    }
+	}
 }

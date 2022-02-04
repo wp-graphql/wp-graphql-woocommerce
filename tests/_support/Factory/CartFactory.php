@@ -24,7 +24,7 @@ class CartFactory {
 	public function add( ...$products ) {
 		$keys = array();
 
-		foreach( $products as $product ) {
+		foreach ( $products as $product ) {
 			if ( gettype( $product ) === 'array' ) {
 				if ( empty( $product['product_id'] ) ) {
 					codecept_debug( $product );

@@ -251,8 +251,8 @@ class Order_Item extends Model {
 						)
 					);
 					break;
-			}
-		}
+			}//end switch
+		}//end if
 
 		parent::prepare_fields();
 	}

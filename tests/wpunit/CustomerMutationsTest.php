@@ -6,7 +6,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		update_option( 'users_can_register', 1 );
-		$this->helper = $this->getModule('\Helper\Wpunit')->customer();
+		$this->helper = $this->getModule( '\Helper\Wpunit' )->customer();
 
 		// Register Info
 		$this->first_name = 'Peter';
@@ -78,26 +78,29 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	private function empty_shipping() {
 		return array(
 			'firstName' => null,
-            'lastName'  => null,
-            'company'   => null,
-            'address1'  => null,
-            'address2'  => null,
-            'city'      => null,
-            'state'     => null,
-            'postcode'  => null,
-            'country'   => null,
+			'lastName'  => null,
+			'company'   => null,
+			'address1'  => null,
+			'address2'  => null,
+			'city'      => null,
+			'state'     => null,
+			'postcode'  => null,
+			'country'   => null,
 		);
 	}
 
 	private function empty_billing() {
 		return array_merge(
 			$this->empty_shipping(),
-			array( 'email' => null, 'phone' => null )
+			array(
+				'email' => null,
+				'phone' => null,
+			)
 		);
 	}
 
 	private function registerCustomer( $input ) {
-		$mutation   = '
+		$mutation = '
 			mutation register( $input: RegisterCustomerInput! ) {
 				registerCustomer( input: $input ) {
 					clientMutationId
@@ -154,7 +157,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	private function updateCustomer( $input ) {
-		$mutation   = '
+		$mutation = '
 			mutation update( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					clientMutationId
@@ -199,7 +202,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$actual    = graphql(
 			array(
 				'query'          => $mutation,
-				'operation_name' =>'update',
+				'operation_name' => 'update',
 				'variables'      => $variables,
 			)
 		);
@@ -247,7 +250,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					),
 					'viewer'           => array(
 						'userId' => $user->ID,
-					)
+					),
 				),
 			),
 		);
@@ -296,7 +299,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					),
 					'viewer'           => array(
 						'userId' => $user->ID,
-					)
+					),
 				),
 			),
 		);
@@ -349,7 +352,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					),
 					'viewer'           => array(
 						'userId' => $user->ID,
-					)
+					),
 				),
 			),
 		);
@@ -399,7 +402,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					),
 					'viewer'           => array(
 						'userId' => $user->ID,
-					)
+					),
 				),
 			),
 		);
@@ -562,7 +565,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 					),
 					'viewer'           => array(
 						'userId' => $user->ID,
-					)
+					),
 				),
 			),
 		);
@@ -576,7 +579,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test "metaData" input field with "registerCustomer" mutation.
 		 */
-		$query      = '
+		$query     = '
 			mutation( $input: RegisterCustomerInput! ) {
 				registerCustomer( input: $input ) {
 					customer {
@@ -600,7 +603,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'value' => 'test_meta_value',
 					),
 				),
-			)
+			),
 		);
 
 		$actual = graphql( compact( 'query', 'variables' ) );
@@ -619,8 +622,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							array(
 								'key'   => 'test_meta_key',
 								'value' => 'test_meta_value',
-							)
-						)
+							),
+						),
 					),
 				),
 			),
@@ -633,7 +636,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test "metaData" input field with "updateCustomer" mutation.
 		 */
-		$query      = '
+		$query     = '
 			mutation( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					customer {
@@ -657,7 +660,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'value' => 'new_meta_value',
 					),
 				),
-			)
+			),
 		);
 
 		$actual = graphql( compact( 'query', 'variables' ) );
@@ -673,8 +676,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							array(
 								'key'   => 'test_meta_key',
 								'value' => 'new_meta_value',
-							)
-						)
+							),
+						),
 					),
 				),
 			),
@@ -687,7 +690,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test "metaData" input field with "updateCustomer" mutation on the session user.
 		 */
-		$query      = '
+		$query     = '
 			mutation( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					customer {
@@ -709,7 +712,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'value' => 'test_meta_value',
 					),
 				),
-			)
+			),
 		);
 
 		$actual = graphql( compact( 'query', 'variables' ) );
@@ -724,8 +727,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							array(
 								'key'   => 'test_meta_key',
 								'value' => 'test_meta_value',
-							)
-						)
+							),
+						),
 					),
 				),
 			),

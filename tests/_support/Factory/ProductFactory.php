@@ -14,7 +14,7 @@ use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
  * Product factory class for testing.
  */
 class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = array(
@@ -23,9 +23,11 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function create_object( $args ) {
-		if ( is_wp_error( $args ) ) codecept_debug( $args );
-		$product_class = $args['product_class' ];
-		unset( $args['product_class'] );;
+		if ( is_wp_error( $args ) ) {
+			codecept_debug( $args );
+		}
+		$product_class = $args['product_class'];
+		unset( $args['product_class'] );
 
 		$product = new $product_class();
 
@@ -47,7 +49,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			$object = $this->get_object_by_id( $object );
 		}
 
-		foreach( $fields as $field => $field_value ) {
+		foreach ( $fields as $field => $field_value ) {
 			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s product field.', $field, $object->get_type() )
@@ -100,7 +102,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			'sku'           => uniqid(),
 			'product_url'   => 'http://woocommerce.com',
 			'button_text'   => 'Buy external product',
-			'product_class'     => '\WC_Product_External',
+			'product_class' => '\WC_Product_External',
 		);
 
 		return $this->create( $args, $generation_definitions );
@@ -128,10 +130,10 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		$name = Dummy::instance()->product();
 
 		$generation_definitions = array(
-			'name'           => $name,
-			'slug'           => $this->slugify( $name ),
-			'sku'            => uniqid(),
-			'product_class'  => '\WC_Product_Variable',
+			'name'          => $name,
+			'slug'          => $this->slugify( $name ),
+			'sku'           => uniqid(),
+			'product_class' => '\WC_Product_Variable',
 		);
 
 		$args = array_merge(
@@ -215,7 +217,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			$result = term_exists( $term, $attribute->slug );
 
 			if ( ! $result ) {
-				$result = wp_insert_term( $term, $attribute->slug );
+				$result               = wp_insert_term( $term, $attribute->slug );
 				$return['term_ids'][] = absint( $result['term_id'] );
 			} else {
 				$return['term_ids'][] = absint( $result['term_id'] );
@@ -227,7 +229,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	private function setVariationAttributes( \WC_Product_Variable $product, array $attribute_data = array() ) {
 		$attributes = array();
-		foreach( $attribute_data as $index => $data ) {
+		foreach ( $attribute_data as $index => $data ) {
 			$attribute = new \WC_Product_Attribute();
 			$attribute->set_id( $data['attribute_id'] );
 			$attribute->set_name( $data['attribute_taxonomy'] );
@@ -261,7 +263,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 					'upsell_ids'     => $upsell_ids,
 				)
 			),
-			'related'   => array( $related_product_id ),
+			'related'    => array( $related_product_id ),
 			'cross_sell' => $cross_sell_ids,
 			'upsell'     => $upsell_ids,
 		);
@@ -284,7 +286,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			'onbackorder' => 'ON_BACKORDER',
 		);
 
-		if ( in_array( $status, array_keys( $statuses ) ) ) {
+		if ( in_array( $status, array_keys( $statuses ), true ) ) {
 			return $statuses[ $status ];
 		}
 
@@ -295,7 +297,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		if ( term_exists( $term, 'product_cat' ) ) {
 			$term = get_term( $term, 'product_cat', ARRAY_A );
 		} else {
-			$args = [];
+			$args = array();
 			if ( $parent_id ) {
 				$args['parent'] = $parent_id;
 			}
@@ -347,6 +349,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	 * Simple slugify function
 	 *
 	 * Copied and cleaned up from
+	 *
 	 * @link https://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string
 	 *
 	 * @param string $text

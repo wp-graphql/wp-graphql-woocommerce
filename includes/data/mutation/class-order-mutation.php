@@ -153,8 +153,8 @@ class Order_Mutation {
 				 * @param ResolveInfo $info      Request ResolveInfo instance.
 				 */
 				do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $items, $order_id, $context, $info );
-			}
-		}
+			}//end if
+		}//end foreach
 	}
 
 	/**
@@ -236,7 +236,7 @@ class Order_Mutation {
 					'taxClass'  => 'tax_class',
 					'taxStatus' => 'tax_status',
 				);
-		}
+		}//end switch
 	}
 
 	/**
@@ -315,13 +315,13 @@ class Order_Mutation {
 					}
 					break;
 				default:
-					$prop = \WooGraphQL_Inflect::camel_case_to_underscore( $key );
+					$prop = \wc_graphql_camel_case_to_underscore( $key );
 					if ( is_callable( array( $order, "set_{$prop}" ) ) ) {
 						$order->{"set_{$prop}"}( $value );
 					}
 					break;
-			}
-		}
+			}//end switch
+		}//end foreach
 
 		/**
 		 * Action called before changes to order meta are saved.

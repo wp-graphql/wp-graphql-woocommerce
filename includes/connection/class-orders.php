@@ -259,7 +259,7 @@ class Orders {
 						'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
 					),
 				);
-		}
+		}//end switch
 	}
 
 	/**
@@ -364,10 +364,11 @@ class Orders {
 						}
 				}
 			}
-		}
+		}//end foreach
 
 		if ( ! empty( $meta_query ) ) {
-			$query_args['meta_query'] = $meta_query; // WPCS: slow query ok.
+			$query_args['meta_query'] = $meta_query;
+			// WPCS: slow query ok.
 		}
 
 		$key_mapping = array(

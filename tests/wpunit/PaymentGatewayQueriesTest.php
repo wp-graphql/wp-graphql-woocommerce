@@ -1,6 +1,6 @@
 <?php
 
-class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase{
+class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
 	public function setUp(): void {
 		// before
@@ -30,33 +30,33 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		);
 
 		delete_option(
-            'woocommerce_stripe_settings',
-            array(
-                'enabled'                       => 'no',
-                'title'                         => 'Credit Card (Stripe)',
-                'description'                   => 'Pay with your credit card via Stripe',
-                'webhook'                       => '',
-                'testmode'                      => 'yes',
-                'test_publishable_key'          => defined( 'STRIPE_API_PUBLISHABLE_KEY' )
-                    ? STRIPE_API_PUBLISHABLE_KEY
-                    : getenv( 'STRIPE_API_PUBLISHABLE_KEY' ),
-                'test_secret_key'               => defined( 'STRIPE_API_SECRET_KEY' )
-                    ? STRIPE_API_SECRET_KEY
-                    : getenv( 'STRIPE_API_SECRET_KEY' ),
-                'test_webhook_secret'           => '',
-                'publishable_key'               => '',
-                'secret_key'                    => '',
-                'webhook_secret'                => '',
-                'inline_cc_form'                => 'no',
-                'statement_descriptor'          => '',
-                'capture'                       => 'yes',
-                'payment_request'               => 'yes',
-                'payment_request_button_type'   => 'buy',
-                'payment_request_button_theme'  => 'dark',
-                'payment_request_button_height' => '44',
-                'saved_cards'                   => 'yes',
-                'logging'                       => 'no',
-            )
+			'woocommerce_stripe_settings',
+			array(
+				'enabled'                       => 'no',
+				'title'                         => 'Credit Card (Stripe)',
+				'description'                   => 'Pay with your credit card via Stripe',
+				'webhook'                       => '',
+				'testmode'                      => 'yes',
+				'test_publishable_key'          => defined( 'STRIPE_API_PUBLISHABLE_KEY' )
+					? STRIPE_API_PUBLISHABLE_KEY
+					: getenv( 'STRIPE_API_PUBLISHABLE_KEY' ),
+				'test_secret_key'               => defined( 'STRIPE_API_SECRET_KEY' )
+					? STRIPE_API_SECRET_KEY
+					: getenv( 'STRIPE_API_SECRET_KEY' ),
+				'test_webhook_secret'           => '',
+				'publishable_key'               => '',
+				'secret_key'                    => '',
+				'webhook_secret'                => '',
+				'inline_cc_form'                => 'no',
+				'statement_descriptor'          => '',
+				'capture'                       => 'yes',
+				'payment_request'               => 'yes',
+				'payment_request_button_type'   => 'buy',
+				'payment_request_button_theme'  => 'dark',
+				'payment_request_button_height' => '44',
+				'saved_cards'                   => 'yes',
+				'logging'                       => 'no',
+			)
 		);
 
 		// Reload gateways.
@@ -80,7 +80,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		/**
 		 * Assertion One
 		 *
-		 * tests query.
+		 * Tests query.
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array(
@@ -91,7 +91,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 					$this->expectedField( 'title', 'Direct bank transfer' ),
 					$this->expectedField( 'icon', self::IS_NULL ),
 				)
-			)
+			),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -99,13 +99,13 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		/**
 		 * Assertion Two
 		 *
-		 * tests query and "all" where argument response, expects errors due lack of capabilities.
+		 * Tests query and "all" where argument response, expects errors due lack of capabilities.
 		 */
 		$variables = array( 'all' => true );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array(
 			$this->expectedErrorPath( 'paymentGateways' ),
-			$this->expectedField( 'paymentGateways', self::IS_NULL )
+			$this->expectedField( 'paymentGateways', self::IS_NULL ),
 		);
 
 		$this->assertQueryError( $response, $expected );
@@ -113,7 +113,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		/**
 		 * Assertion Three
 		 *
-		 * tests query and "all" where argument response with proper capabilities.
+		 * Tests query and "all" where argument response with proper capabilities.
 		 */
 		$this->loginAsShopManager();
 		$variables = array( 'all' => true );

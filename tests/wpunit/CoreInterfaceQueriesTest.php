@@ -1,21 +1,14 @@
 <?php
 
 class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
-    public function setUp(): void {
-        // before
-        parent::setUp();
+	public function setUp(): void {
+		// before
+		parent::setUp();
 
 		// your set up methods here
-		$this->products   = $this->getModule('\Helper\Wpunit')->product();
-		$this->variations = $this->getModule('\Helper\Wpunit')->product_variation();
-		$this->orders     = $this->getModule('\Helper\Wpunit')->order();
-    }
-
-    public function tearDown(): void {
-        // your tear down methods here
-
-        // then
-        parent::tearDown();
+		$this->products   = $this->getModule( '\Helper\Wpunit' )->product();
+		$this->variations = $this->getModule( '\Helper\Wpunit' )->product_variation();
+		$this->orders     = $this->getModule( '\Helper\Wpunit' )->order();
 	}
 
 	public function graphql() {
@@ -27,20 +20,20 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		return $results;
 	}
 
-    // tests
-    public function testProductAsNodeWithComments() {
+	// tests
+	public function testProductAsNodeWithComments() {
 		// Create product and review to be queried.
 		$product_id = $this->products->create_simple();
 		$comment_id = $this->factory()->comment->create(
-            array(
-                'comment_author'       => 'Rude customer',
-                'comment_author_email' => 'rude-guy@example.com',
-                'comment_post_ID'      => $product_id,
-                'comment_content'      => 'It came covered in poop!!!',
-                'comment_approved'     => 1,
-                'comment_type'         => 'review',
-            )
-        );
+			array(
+				'comment_author'       => 'Rude customer',
+				'comment_author_email' => 'rude-guy@example.com',
+				'comment_post_ID'      => $product_id,
+				'comment_content'      => 'It came covered in poop!!!',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			)
+		);
 		update_comment_meta( $comment_id, 'rating', 1 );
 
 		// Define query and variables.
@@ -83,7 +76,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$order->add_order_note( 'testcustomernote', 1, true );
 
 		// Define query and variables.
-		$query    = '
+		$query     = '
 			query ( $id: ID! ) {
 				order( id: $id, idType: DATABASE_ID ) {
 					id
@@ -187,10 +180,10 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$attachment_id = $this->factory()->attachment->create(
 			array(
 				'post_mime_type' => 'image/gif',
-				'post_author' => $this->admin
+				'post_author'    => $this->admin,
 			)
 		);
-		$product_id = $this->products->create_simple( array( 'image_id' => $attachment_id ) );
+		$product_id    = $this->products->create_simple( array( 'image_id' => $attachment_id ) );
 
 		// Define query and variables.
 		$query     = '
@@ -270,7 +263,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
 					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
-					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?: null,
+					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?? null,
 					'status'                    => $wp_product->post_status,
 					'slug'                      => $wp_product->post_name,
 					'modified'                  => (string) $wc_product->get_date_modified(),
@@ -377,7 +370,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
 					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
-					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?: null,
+					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?? null,
 					'status'                    => $wp_product->post_status,
 					'slug'                      => $wp_product->post_name,
 					'modified'                  => (string) $wc_product->get_date_modified(),
@@ -401,7 +394,6 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testQueryProductWithNodeByUri() {
-
 	}
 
 }

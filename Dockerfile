@@ -39,21 +39,20 @@ ENV PATH "$PATH:~/.composer/vendor/bin"
 ARG PHPUNIT_VERSION="<=8.1"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
-	wp-cli/wp-cli-bundle \
+	wp-cli/wp-cli-bundle:* \
     lucatume/wp-browser \
-    codeception/module-asserts \
-    codeception/module-cli \
-    codeception/module-db \
-    codeception/module-filesystem \
-    codeception/module-phpbrowser \
-    codeception/module-rest \
-    codeception/module-webdriver \
-    codeception/util-universalframework \
+    codeception/module-asserts:^1.0 \
+    codeception/module-cli:^1.0  \
+    codeception/module-db:^1.0  \
+    codeception/module-filesystem:^1.0  \
+    codeception/module-phpbrowser:^1.0  \
+    codeception/module-rest:^1.0  \
+    codeception/module-webdriver:^1.0  \
+    codeception/util-universalframework:^1.0  \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
-	wp-graphql/wp-graphql-testcase \
-	"phpunit/phpunit:${PHPUNIT_VERSION}"
+	wp-graphql/wp-graphql-testcase
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh

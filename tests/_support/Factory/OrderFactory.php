@@ -14,7 +14,7 @@ use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
  * Order factory class for testing.
  */
 class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = array(
@@ -30,7 +30,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	public function create_object( $args ) {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1'; // Required, else wc_create_order throws an exception
-        $order 					= \wc_create_order( $args );
+		$order                  = \wc_create_order( $args );
 
 		if ( is_wp_error( $order ) ) {
 			throw new \Exception( $order->get_error_message( $args->get_error_code() ) );
@@ -49,7 +49,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			$object = $this->get_object_by_id( $object );
 		}
 
-		foreach( $fields as $field => $field_value ) {
+		foreach ( $fields as $field => $field_value ) {
 			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s coupon field.', $field, $object->get_type() )
@@ -80,11 +80,12 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		try {
 			// Add line items
 			if ( ! empty( $items['line_items'] ) ) {
-				foreach( $items['line_items'] as $item ) {
+				foreach ( $items['line_items'] as $item ) {
 					$order = $this->add_line_item( $order, $item, false );
 				}
 			} else {
-				for ( $i = 0; $i < rand( 1, 3 ); $i++ ) {
+				$random_amount = rand( 1, 3 );
+				for ( $i = 0; $i < $random_amount; $i++ ) {
 					$order = $this->add_line_item(
 						$order,
 						array(
@@ -105,12 +106,14 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			$shipping_taxes = \WC_Tax::calc_shipping_tax( '10', \WC_Tax::get_shipping_tax_rates() );
 			$rate           = new \WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );
 			$item           = new \WC_Order_Item_Shipping();
-			$item->set_props( array(
-				'method_title' => $rate->label,
-				'method_id'    => $rate->id,
-				'total'        => \wc_format_decimal( $rate->cost ),
-				'taxes'        => $rate->taxes,
-			) );
+			$item->set_props(
+				array(
+					'method_title' => $rate->label,
+					'method_id'    => $rate->id,
+					'total'        => \wc_format_decimal( $rate->cost ),
+					'taxes'        => $rate->taxes,
+				)
+			);
 			foreach ( $rate->get_meta_data() as $key => $value ) {
 				$item->add_meta_data( $key, $value, true );
 			}
@@ -130,7 +133,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 			// Save and return ID.
 			return $order->save();
-		} catch( \Exception $e ) {
+		} catch ( \Exception $e ) {
 			$order->delete( true );
 
 			throw new \Exception( $e->getMessage() );
@@ -221,8 +224,8 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		if ( empty( $coupon_id ) ) {
 			// Get order product IDs
 			$product_ids = array();
-			foreach( $order->get_items() as $item ) {
-				if ( ! in_array( $item->get_product_id(), $product_ids ) ) {
+			foreach ( $order->get_items() as $item ) {
+				if ( ! in_array( $item->get_product_id(), $product_ids, true ) ) {
 					$product_ids[] = $item->get_product_id();
 				}
 			}
@@ -254,17 +257,17 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		// Set the array for tax calculations.
 		$calculate_tax_for = array(
-			'country' => $country_code,
-			'state' => '',
+			'country'  => $country_code,
+			'state'    => '',
 			'postcode' => '',
-			'city' => ''
+			'city'     => '',
 		);
 
 		$imported_total_fee = 8.4342;
 
 		// Create and add fee to order.
 		$item = new \WC_Order_Item_Fee();
-		$item->set_name( "Fee" ); // Generic fee name
+		$item->set_name( 'Fee' ); // Generic fee name
 		$item->set_amount( $imported_total_fee ); // Fee amount
 		$item->set_tax_class( '' ); // default for ''
 		$item->set_tax_status( 'taxable' ); // or 'none'
@@ -334,11 +337,11 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order->save();
 	}
 
-    public function set_to_customer_billing_address( $order, $customer, $save = true ) {
-        $order = \wc_get_order( $order );
+	public function set_to_customer_billing_address( $order, $customer, $save = true ) {
+		$order    = \wc_get_order( $order );
 		$customer = new \WC_Customer( $customer );
 
-        // Set billing address
+		// Set billing address
 		$order->set_billing_first_name( $customer->get_first_name() );
 		$order->set_billing_last_name( $customer->get_last_name() );
 		$order->set_billing_company( $customer->get_billing_company() );
@@ -349,20 +352,20 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order->set_billing_postcode( $customer->get_billing_postcode() );
 		$order->set_billing_country( $customer->get_billing_country() );
 		$order->set_billing_email( $customer->get_billing_email() );
-        $order->set_billing_phone( $customer->get_billing_phone() );
+		$order->set_billing_phone( $customer->get_billing_phone() );
 
-        if ( $save ) {
-            return $order->save();
+		if ( $save ) {
+			return $order->save();
 		}
 
 		return $order;
-    }
+	}
 
-    public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
-        $order = \wc_get_order( $order );
+	public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
+		$order    = \wc_get_order( $order );
 		$customer = new \WC_Customer( $customer );
 
-        // Set shipping address
+		// Set shipping address
 		$order->set_shipping_first_name( $customer->get_first_name() );
 		$order->set_shipping_last_name( $customer->get_last_name() );
 		$order->set_shipping_company( $customer->get_shipping_company() );
@@ -371,14 +374,14 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order->set_shipping_city( $customer->get_shipping_city() );
 		$order->set_shipping_state( $customer->get_shipping_state() );
 		$order->set_shipping_postcode( $customer->get_shipping_postcode() );
-        $order->set_shipping_country( $customer->get_shipping_country() );
+		$order->set_shipping_country( $customer->get_shipping_country() );
 
-        if ( $save ) {
-            return $order->save();
+		if ( $save ) {
+			return $order->save();
 		}
 
 		return $order;
-    }
+	}
 
 	public function delete_order( $id ) {
 		$object = $this->get_object_by_id( $id );

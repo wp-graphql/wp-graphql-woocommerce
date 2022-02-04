@@ -226,7 +226,7 @@ class Core_Schema_Filters {
 			$singular_name               = graphql_format_field_name( $taxonomy );
 			$args['show_in_graphql']     = true;
 			$args['graphql_single_name'] = $singular_name;
-			$args['graphql_plural_name'] = \WooGraphQL_Inflect::pluralize( $singular_name );
+			$args['graphql_plural_name'] = 'all' . ucFirst( $singular_name );
 		}
 
 		return $args;

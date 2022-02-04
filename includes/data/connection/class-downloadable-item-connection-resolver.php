@@ -88,7 +88,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 					return $has_downloads_remaining === $downloads_remaining;
 				};
 			}
-		}
+		}//end if
 
 		/**
 		 * Filter the $query_args to allow folks to customize queries programmatically.

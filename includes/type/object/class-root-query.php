@@ -493,6 +493,6 @@ class Root_Query {
 					},
 				)
 			);
-		}
+		}//end foreach
 	}
 }

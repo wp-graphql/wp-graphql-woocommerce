@@ -115,6 +115,6 @@ class Coupon extends WC_Post {
 			);
 
 			$this->fields = array_merge( $this->fields, $fields );
-		}
+		}//end if
 	}
 }

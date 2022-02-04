@@ -126,7 +126,7 @@ class Customer extends Model {
 					return ( ! empty( $this->data->get_last_order() ) ) ? $this->data->get_last_order()->get_id() : null;
 				},
 			);
-		}
+		}//end if
 
 		parent::prepare_fields();
 	}

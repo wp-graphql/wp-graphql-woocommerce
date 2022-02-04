@@ -159,7 +159,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 				break;
 			default:
 				break;
-		}
+		}//end switch
 
 		/**
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
