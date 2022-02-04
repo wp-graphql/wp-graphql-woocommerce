@@ -206,10 +206,10 @@ class Order_Item_Type {
 				// Connections.
 				array(
 					'product'   => array(
-						'toType'     => 'Product',
-						'oneToOne'   => true,
-						'resolve'    => function ( $source, array $args, AppContext $context, $info ) {
-							$id       = $source->productId;
+						'toType'   => 'Product',
+						'oneToOne' => true,
+						'resolve'  => function ( $source, array $args, AppContext $context, $info ) {
+							$id       = $source->productId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 							return $resolver
@@ -219,10 +219,10 @@ class Order_Item_Type {
 						},
 					),
 					'variation' => array(
-						'toType'     => 'ProductVariation',
-						'oneToOne'   => true,
-						'resolve'    => function ( $source, array $args, AppContext $context, $info ) {
-							$id       = $source->variationId;
+						'toType'   => 'ProductVariation',
+						'oneToOne' => true,
+						'resolve'  => function ( $source, array $args, AppContext $context, $info ) {
+							$id       = $source->variationId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
 							if ( ! $id ) {
