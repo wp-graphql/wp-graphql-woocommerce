@@ -46,9 +46,7 @@ remove_wordpress() {
         wpackagist-plugin/woocommerce \
 		johnpbloch/wordpress \
 		composer/installers \
-		wp-cli/wp-cli-bundle:*
-
-	composer update
+		wp-cli/wp-cli-bundle
 }
 
 install_local_test_library() {
@@ -56,9 +54,9 @@ install_local_test_library() {
 	composer install
 	composer require --dev \
 		lucatume/wp-browser \
-		codeception/module-asserts \
-		codeception/module-rest \
-		codeception/util-universalframework \
+		codeception/module-asserts:^1.0 \
+		codeception/module-rest:^1.0 \
+		codeception/util-universalframework:^1.0  \
 		wp-graphql/wp-graphql-testcase \
 		stripe/stripe-php
 }
@@ -71,8 +69,6 @@ remove_local_test_library() {
 		codeception/util-universalframework \
 		lucatume/wp-browser \
 		stripe/stripe-php
-
-	composer update
 }
 
 install_db() {
