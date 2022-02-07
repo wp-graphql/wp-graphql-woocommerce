@@ -37,7 +37,11 @@
     "config": {
         "optimize-autoloader": true,
         "process-timeout": 0,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true,
+            "johnpbloch/wordpress-core-installer": true
+        }
     },
     "autoload": {
         "files": [

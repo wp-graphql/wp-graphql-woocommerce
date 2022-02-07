@@ -28,23 +28,23 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			$this->expectedField( 'coupon.emailRestrictions', $this->maybe( $coupon->get_email_restrictions(), self::IS_NULL ) ),
 		);
 
-		foreach( $coupon->get_product_ids() as $product_id ) {
+		foreach ( $coupon->get_product_ids() as $product_id ) {
 			$expected[] = $this->expectedNode( 'coupon.products.nodes', array( 'databaseId' => $product_id ) );
 		}
 
-		foreach( $coupon->get_excluded_product_ids() as $product_id ) {
+		foreach ( $coupon->get_excluded_product_ids() as $product_id ) {
 			$expected[] = $this->expectedNode( 'coupon.excludedProducts.nodes', array( 'databaseId' => $product_id ) );
 		}
 
-		foreach( $coupon->get_product_categories() as $category_id ) {
+		foreach ( $coupon->get_product_categories() as $category_id ) {
 			$expected[] = $this->expectedNode( 'coupon.productCategories.nodes', array( 'productCategoryId' => $category_id ) );
 		}
 
-		foreach( $coupon->get_excluded_product_categories() as $category_id ) {
+		foreach ( $coupon->get_excluded_product_categories() as $category_id ) {
 			$expected[] = $this->expectedNode( 'coupon.excludedProductCategories.nodes', array( 'productCategoryId' => $category_id ) );
 		}
 
-		foreach( $coupon->get_used_by() as $customer_id ) {
+		foreach ( $coupon->get_used_by() as $customer_id ) {
 			$expected[] = $this->expectedNode( 'coupon.usedBy.nodes', array( 'databaseId' => $customer_id ) );
 		}
 
@@ -55,11 +55,11 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 	public function testCouponQuery() {
 		$coupon_id = $this->factory->coupon->create(
 			array(
-				'code'          => '10off',
-				'amount'        => 10,
-				'discount_type' => 'percent',
-				'product_ids'   => array( $this->factory->product->createSimple() ),
-				'excluded_product_ids'   => array( $this->factory->product->createSimple() )
+				'code'                 => '10off',
+				'amount'               => 10,
+				'discount_type'        => 'percent',
+				'product_ids'          => array( $this->factory->product->createSimple() ),
+				'excluded_product_ids' => array( $this->factory->product->createSimple() ),
 			)
 		);
 

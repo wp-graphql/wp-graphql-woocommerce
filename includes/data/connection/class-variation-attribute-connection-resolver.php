@@ -52,8 +52,8 @@ class Variation_Attribute_Connection_Resolver {
 						'value'       => $term->name,
 					);
 				}
-			}
-		}
+			}//end foreach
+		}//end if
 
 		return $attributes;
 	}

@@ -14,7 +14,7 @@ use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
  * Product variation factory class for testing.
  */
 class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = array(
@@ -23,7 +23,9 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function create_object( $args ) {
-		if ( is_wp_error( $args ) ) codecept_debug( $args );
+		if ( is_wp_error( $args ) ) {
+			codecept_debug( $args );
+		}
 
 		$variation_class = $args['variation_class'];
 		unset( $args['variation_class'] );
@@ -46,7 +48,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 			$object = $this->get_object_by_id( $object );
 		}
 
-		foreach( $fields as $field => $field_value ) {
+		foreach ( $fields as $field => $field_value ) {
 			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s product field.', $field, $object->get_type() )
@@ -71,7 +73,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		// Create variation stub data.
 		$variation_data = array(
 			array(
-				'attributes'   => array( 'pa_size' => 'small' ),
+				'attributes'    => array( 'pa_size' => 'small' ),
 				'image_id'      => null,
 				'downloads'     => array( $this->factory->product->createDownload() ),
 				'regular_price' => 10,
@@ -93,12 +95,12 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 				'image_id'      => null,
 				'downloads'     => array(),
 				'regular_price' => 20,
-			)
+			),
 		);
 
 		$variations = array();
-		foreach( $variation_data as $data ) {
-			$args = array_merge( $data, $args );
+		foreach ( $variation_data as $data ) {
+			$args      = array_merge( $data, $args );
 			$variation = $this->create_and_get(
 				$args,
 				array(

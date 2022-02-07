@@ -149,6 +149,6 @@ class Id_Type_Enums {
 					'value'       => 'uri',
 					'description' => __( 'Identify a resource by the URI.', 'wp-graphql-woocommerce' ),
 				);
-		}
+		}//end switch
 	}
 }

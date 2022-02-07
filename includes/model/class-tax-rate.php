@@ -97,6 +97,6 @@ class Tax_Rate extends Model {
 					return ! is_null( $this->data->tax_rate_class ) ? $this->data->tax_rate_class : '';
 				},
 			);
-		}
+		}//end if
 	}
 }

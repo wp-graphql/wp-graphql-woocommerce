@@ -66,7 +66,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 
 				/* translators: no model assigned error message */
 				throw new UserError( sprintf( __( 'No Model is register to the custom post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
-		}
+		}//end switch
 	}
 
 	/**
@@ -202,7 +202,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 					return self::resolve_model( $post_type, $key );
 				}
 			);
-		}
+		}//end foreach
 
 		return ! empty( $loaded_posts ) ? $loaded_posts : array();
 	}

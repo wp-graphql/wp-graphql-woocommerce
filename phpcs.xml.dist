@@ -42,13 +42,35 @@
 		</properties>
 	</rule>
 
+	<!-- Rules to exclude for test files -->
+	<rule ref="WordPress.NamingConventions">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.PHP.CommentedOutCode.Found">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.PHP.DontExtract">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
 	<!-- What to scan -->
 	<file>wp-graphql-woocommerce.php</file>
 	<file>access-functions.php</file>
-	<file>class-inflect.php</file>
 	<file>includes/</file>
 	<exclude-pattern>/vendor/</exclude-pattern>
 	<exclude-pattern>/node_modules/</exclude-pattern>
 	<exclude-pattern>local/*</exclude-pattern>
-	<exclude-pattern>/tests/</exclude-pattern>
+	<exclude-pattern>/tests/_support/Helper/crud-helpers</exclude-pattern>
 </ruleset>

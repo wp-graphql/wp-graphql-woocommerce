@@ -214,8 +214,8 @@ class Coupon_Create {
 						$coupon->{"set_{$key}"}( $value );
 					}
 					break;
-			}
-		}
+			}//end switch
+		}//end foreach
 
 		return array( 'id' => $coupon->save() );
 	}

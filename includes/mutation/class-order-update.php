@@ -138,7 +138,7 @@ class Order_Update {
 
 			// Set status.
 			if ( ! empty( $input['status'] ) ) {
-				$order->set_status( $input['status'] );
+				$order->update_status( $input['status'] );
 			}
 
 			// Actions for after the order is saved.

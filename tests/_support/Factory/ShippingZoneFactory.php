@@ -14,17 +14,19 @@ use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
  * Shipping method factory class for testing.
  */
 class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = array(
 			'zone_name' => '',
 		);
-		$this->dummy = Dummy::instance();
+		$this->dummy                          = Dummy::instance();
 	}
 
 	public function create_object( $args ) {
-		if ( is_wp_error( $args ) ) codecept_debug( $args );
+		if ( is_wp_error( $args ) ) {
+			codecept_debug( $args );
+		}
 
 		$object = new \WC_Shipping_Zone();
 
@@ -41,8 +43,6 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		if ( ! $object instanceof \WC_Customer && 0 !== absint( $object ) ) {
 			$object = $this->get_object_by_id( $object );
 		}
-
-
 	}
 
 	public function get_object_by_id( $id ) {

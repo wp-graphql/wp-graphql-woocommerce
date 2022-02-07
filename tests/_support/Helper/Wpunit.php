@@ -81,7 +81,7 @@ class Wpunit extends \Codeception\Module {
 
 	public function get_nodes( $ids, $crud ) {
 		$nodes = array();
-		foreach( $ids as $id ) {
+		foreach ( $ids as $id ) {
 			$nodes[] = $crud->get_query_data( $id );
 		}
 

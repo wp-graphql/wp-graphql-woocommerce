@@ -88,7 +88,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 						sprintf( __( 'Loader type invalid: %s', 'wp-graphql-woocommerce' ), $this->loader_type )
 					);
 				}
-		}
+		}//end switch
 
 		$loaded_items = array();
 
@@ -157,7 +157,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 			return new Tax_Rate( $rate );
 		} else {
 			return null;
-		}
+		}//end if
 	}
 
 	/**

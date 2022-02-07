@@ -163,7 +163,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
 			$this->_data        = $this->get_session_data();
 			$this->set_customer_session_token( true );
-		}
+		}//end if
 	}
 
 	/**
@@ -209,7 +209,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			}
 		} catch ( \Exception $error ) {
 			return new \WP_Error( 'invalid_token', $error->getMessage() );
-		}
+		}//end try
 
 		return $token;
 	}
@@ -400,7 +400,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * For refreshing session data mid-request when changes occur in concurrent requests.
 	 */
 	public function reload_data() {
-		\WC_Cache_Helper::incr_cache_prefix( WC_SESSION_CACHE_GROUP );
+		\WC_Cache_Helper::invalidate_cache_group( WC_SESSION_CACHE_GROUP );
 		$this->_data = $this->get_session( $this->_customer_id );
 	}
 }

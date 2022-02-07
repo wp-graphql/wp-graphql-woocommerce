@@ -69,7 +69,7 @@ class Product_Attribute_Connection_Resolver {
 				default:
 					throw new UserError( __( 'Invalid product attribute type provided', 'wp-graphql-woocommerce' ) );
 			}
-		}
+		}//end if
 
 		return $items;
 	}

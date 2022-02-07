@@ -117,7 +117,8 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		if ( isset( $query_args['orderby'] ) && 'meta_value_num' === $query_args['orderby'] ) {
 			$query_args['orderby'] = array(
-				'meta_value' => empty( $query_args['order'] ) ? 'DESC' : $query_args['order'], // WPCS: slow query OK.
+				'meta_value' => empty( $query_args['order'] ) ? 'DESC' : $query_args['order'],
+			// WPCS: slow query OK.
 			);
 			unset( $query_args['order'] );
 			$query_args['meta_type'] = 'NUMERIC';

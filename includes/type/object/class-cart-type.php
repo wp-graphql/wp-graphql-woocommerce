@@ -14,7 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
-use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
@@ -132,8 +132,14 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Cart contents total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = ! is_null( $source->get_cart_contents_total() )
-								? $source->get_cart_contents_total()
+							if ( $source->display_prices_including_tax() ) {
+								$cart_subtotal = $source->get_subtotal() + $source->get_subtotal_tax();
+							} else {
+								$cart_subtotal = $source->get_subtotal();
+							}
+
+							$price = ! is_null( $cart_subtotal )
+								? $cart_subtotal
 								: 0;
 							return \wc_graphql_price( $price );
 						},
@@ -326,7 +332,9 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
+							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
+							$tax = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+							$price = $price_without_tax + $tax;
 							return \wc_graphql_price( $price );
 						},
 					),
@@ -355,14 +363,16 @@ class Cart_Type {
 							// Check if "key" argument set and assigns to target "keys" array.
 							if ( ! empty( $args['key'] ) && ! empty( $source[ $args['key'] ] ) ) {
 								$keys = array( $args['key'] );
-							} elseif ( ! empty( $args['keysIn'] ) ) { // Check if "keysIn" argument set and assigns to target "keys" array.
+							} elseif ( ! empty( $args['keysIn'] ) ) {
+								// Check if "keysIn" argument set and assigns to target "keys" array.
 								$keys = array();
 								foreach ( $args['keysIn'] as $key ) {
 									if ( ! empty( $source[ $key ] ) ) {
 										$keys[] = $key;
 									}
 								}
-							} else { // If no arguments set, all extra data keys are assigns to target "keys" array.
+							} else {
+								// If no arguments set, all extra data keys are assigns to target "keys" array.
 								$keys = array_diff(
 									array_keys( $source ),
 									array(
@@ -380,7 +390,7 @@ class Cart_Type {
 										'line_tax',
 									)
 								);
-							}
+							}//end if
 							// Create meta ID prefix.
 							$id_prefix = apply_filters( 'graphql_woocommerce_cart_meta_id_prefix', 'cart_' );
 
@@ -422,9 +432,10 @@ class Cart_Type {
 						),
 						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$id       = $source['product_id'];
-							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
-							return $resolver->one_to_one()
+							return $resolver
+								->one_to_one()
 								->set_query_arg( 'p', $id )
 								->get_connection();
 						},
@@ -456,14 +467,14 @@ class Cart_Type {
 						),
 						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$id       = $source['variation_id'];
-							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
 							if ( ! $id ) {
 								return null;
 							}
 
-							return $resolver->one_to_one()
-								->set_query_arg( 'post_type', 'product_variation' )
+							return $resolver
+								->one_to_one()
 								->set_query_arg( 'p', $id )
 								->get_connection();
 						},
@@ -607,6 +618,14 @@ class Cart_Type {
 						'resolve'     => function( $source, array $args ) {
 							$tax = Factory::resolve_cart()->get_coupon_discount_tax_amount( $source );
 							return \wc_graphql_price( $tax );
+						},
+					),
+					'description'    => array(
+						'type'        => 'String',
+						'description' => __( 'Description of applied coupon', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source, array $args ) {
+							$coupon = new \WC_Coupon( $source );
+							return $coupon->get_description();
 						},
 					),
 				),

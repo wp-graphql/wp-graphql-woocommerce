@@ -290,7 +290,7 @@ class Factory {
 			case is_a( $node, Tax_Rate::class ):
 				$type = 'TaxRate';
 				break;
-		}
+		}//end switch
 
 		return $type;
 	}

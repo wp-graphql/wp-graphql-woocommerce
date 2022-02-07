@@ -105,7 +105,7 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_slug() ) ? $this->wc_data->get_slug() : null;
 				},
 				'name'                => function() {
-					return ! empty( $this->wc_data->get_name() ) ? $this->wc_data->get_name() : null;
+					return ! empty( $this->wc_data->get_name() ) ? html_entity_decode( $this->wc_data->get_name() ) : null;
 				},
 				'date'                => function() {
 					return ! empty( $this->wc_data ) ? $this->wc_data->get_date_created() : null;
@@ -266,7 +266,7 @@ class Product extends WC_Post {
 						return ! is_null( $this->wc_data->get_tax_class() ) ? $this->wc_data->get_tax_class() : '';
 					},
 				);
-			}
+			}//end if
 
 			if (
 				apply_filters(
@@ -320,7 +320,7 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
 					},
 				);
-			}
+			}//end if
 
 			switch ( true ) {
 				case apply_filters( "graphql_{$type}_product_model_use_virtual_data_fields", 'simple' === $type ):
@@ -396,7 +396,7 @@ class Product extends WC_Post {
 						},
 					);
 					break;
-			}
+			}//end switch
 
 			/**
 			 * Defines aliased fields
@@ -416,6 +416,6 @@ class Product extends WC_Post {
 			);
 
 			$this->fields = array_merge( $this->fields, $fields );
-		}
+		}//end if
 	}
 }

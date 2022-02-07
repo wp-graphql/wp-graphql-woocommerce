@@ -152,7 +152,7 @@ class Cart_Update_Item_Quantities {
 				}
 			} catch ( Exception $e ) {
 				throw new UserError( $e->getMessage() );
-			}
+			}//end try
 
 			do_action(
 				'graphql_woocommerce_before_set_item_quantities',

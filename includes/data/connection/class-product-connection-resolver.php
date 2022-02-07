@@ -162,7 +162,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( ! current_user_can( $post_type_obj->cap->read_private_posts ) ) {
 			if ( empty( $query_args['tax_query'] ) ) {
-				$query_args['tax_query'] = array(); // WPCS: slow query ok.
+				$query_args['tax_query'] = array();
+				// WPCS: slow query ok.
 			}
 
 			/**
@@ -188,7 +189,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			if ( ! empty( $catalog_visibility ) ) {
 				$query_args['tax_query'][] = $catalog_visibility;
 			}
-		}
+		}//end if
 
 		/**
 		 * If the query is a search, the source is not another Post, and the parent input $arg is not
@@ -351,9 +352,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 							'operator' => $operator,
 						);
 						break;
-				}
-			}
-		}
+				}//end switch
+			}//end if
+		}//end foreach
 
 		if ( 1 < count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
@@ -405,7 +406,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					'operator' => 'NOT IN',
 				);
 			}
-		}
+		}//end if
 
 		// Handle visibility.
 		$post_type_obj = get_post_type_object( $this->post_type );
@@ -443,8 +444,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						'operator' => 'AND',
 					);
 					break;
-			}
-		}
+			}//end switch
+		}//end if
 
 		// Process "taxonomyFilter".
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
@@ -474,15 +475,16 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				}
 
 				$tax_query[] = $sub_tax_query;
-			}
-		}
+			}//end foreach
+		}//end if
 
 		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
 		}
 
 		if ( ! empty( $tax_query ) ) {
-			$args['tax_query'] = $tax_query; // WPCS: slow query ok.
+			$args['tax_query'] = $tax_query;
+			// WPCS: slow query ok.
 		}
 
 		$meta_query = array();
@@ -524,7 +526,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( ! empty( $meta_query ) ) {
-			$args['meta_query'] = $meta_query; // WPCS: slow query ok.
+			$args['meta_query'] = $meta_query;
+			// WPCS: slow query ok.
 		}
 
 		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {

@@ -124,7 +124,7 @@ class Cart_Fill {
 						}
 
 						$errors[] = $cart_error;
-					}
+					}//end foreach
 
 					return $errors;
 				},
@@ -181,8 +181,8 @@ class Cart_Fill {
 
 					// Capture error.
 					$invalid_cart_items[] = compact( 'cart_item_data', 'reason' );
-				}
-			}
+				}//end try
+			}//end foreach
 
 			// Log captured errors.
 			if ( ! empty( $invalid_cart_items ) ) {
@@ -217,12 +217,12 @@ class Cart_Fill {
 					}
 
 					$invalid_coupons[] = compact( 'code', 'reason' );
-				}
+				}//end foreach
 
 				if ( ! empty( $invalid_coupons ) ) {
 					graphql_debug( $invalid_coupons, array( 'type' => 'INVALID_COUPONS' ) );
 				}
-			}
+			}//end if
 
 			$chosen_shipping_methods = array();
 			if ( ! empty( $input['shippingMethods'] ) ) {
@@ -253,7 +253,7 @@ class Cart_Fill {
 				if ( ! empty( $invalid_shipping_methods ) ) {
 					graphql_debug( $invalid_shipping_methods, array( 'type' => 'INVALID_SHIPPING_METHODS' ) );
 				}
-			}
+			}//end if
 
 			// Recalculate totals.
 			\WC()->cart->calculate_totals();

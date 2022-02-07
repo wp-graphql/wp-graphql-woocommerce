@@ -29,12 +29,16 @@ install_wordpress() {
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
-		wp-cli/wp-cli-bundle 
+		wp-cli/wp-cli-bundle:*
 }
 
 remove_wordpress() {
-	# Remove Wordpress + integrated plugins.
-	wp plugin uninstall woocommerce --deactivate --path=${WP_CORE_DIR}
+	# Uninstall woocommerce plugins.
+	if [ -f $WP_CORE_DIR/wp-config.php ]; then
+		wp plugin uninstall woocommerce --deactivate --path=${WP_CORE_DIR}
+	fi
+
+	# Remove WordPress dependencies
 	composer remove --dev wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
@@ -43,18 +47,16 @@ remove_wordpress() {
 		johnpbloch/wordpress \
 		composer/installers \
 		wp-cli/wp-cli-bundle
-
-	composer update
 }
 
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev phpunit/phpunit:${PHPUNIT_VERSION} \
+	composer require --dev \
 		lucatume/wp-browser \
-		codeception/module-asserts \
-		codeception/module-rest \
-		codeception/util-universalframework \
+		codeception/module-asserts:^1.0 \
+		codeception/module-rest:^1.0 \
+		codeception/util-universalframework:^1.0  \
 		wp-graphql/wp-graphql-testcase \
 		stripe/stripe-php
 }
@@ -66,10 +68,7 @@ remove_local_test_library() {
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
-		phpunit/phpunit \
 		stripe/stripe-php
-
-	composer update
 }
 
 install_db() {

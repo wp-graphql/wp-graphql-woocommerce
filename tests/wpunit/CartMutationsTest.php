@@ -1,8 +1,8 @@
 <?php
 
 class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-    // tests
-    public function testAddToCartMutationWithProduct() {
+	// tests
+	public function testAddToCartMutationWithProduct() {
 		$product_id = $this->factory->product->createSimple();
 
 		$query = '
@@ -33,15 +33,15 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$variables = array(
 			'input' => array(
-                'clientMutationId' => 'someId',
-                'productId'        => $product_id,
-                'quantity'         => 2,
-            ),
+				'clientMutationId' => 'someId',
+				'productId'        => $product_id,
+				'quantity'         => 2,
+			),
 		);
 
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-        // Confirm valid response
+		// Confirm valid response
 		$this->assertIsValidQueryResponse( $response );
 
 		// Get/validate cart item key.
@@ -50,8 +50,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		// Get cart item data.
 		$cart      = \WC()->cart;
-        $cart_item = $cart->get_cart_item( $cart_item_key );
-        $this->assertNotEmpty( $cart_item );
+		$cart_item = $cart->get_cart_item( $cart_item_key );
+		$this->assertNotEmpty( $cart_item );
 
 		$this->assertQuerySuccessful(
 			$response,
@@ -66,12 +66,12 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedField( 'addToCart.cartItem.tax', wc_graphql_price( $cart_item['line_tax'] ) ),
 			)
 		);
-    }
+	}
 
-    public function testAddToCartMutationWithProductVariation() {
-		$ids      = $this->factory->product_variation->createSome();
+	public function testAddToCartMutationWithProductVariation() {
+		$ids = $this->factory->product_variation->createSome();
 
-		$query     = '
+		$query = '
 			mutation( $input: AddToCartInput! ) {
 				addToCart( input: $input ) {
 					clientMutationId
@@ -99,9 +99,9 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$variables = array(
 			'input' => array(
-                'clientMutationId' => 'someId',
-                'productId'        => $ids['product'],
-                'quantity'         => 3,
+				'clientMutationId' => 'someId',
+				'productId'        => $ids['product'],
+				'quantity'         => 3,
 				'variationId'      => $ids['variations'][0],
 				'variation'        => array(
 					array(
@@ -109,12 +109,12 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'attributeValue' => 'red',
 					),
 				),
-            )
+			),
 		);
 
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-        // Confirm valid response
+		// Confirm valid response
 		$this->assertIsValidQueryResponse( $response );
 
 		// Get/validate cart item key.
@@ -123,8 +123,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		// Get cart item data.
 		$cart      = \WC()->cart;
-        $cart_item = $cart->get_cart_item( $cart_item_key );
-        $this->assertNotEmpty( $cart_item );
+		$cart_item = $cart->get_cart_item( $cart_item_key );
+		$this->assertNotEmpty( $cart_item );
 
 		$this->assertQuerySuccessful(
 			$response,
@@ -140,30 +140,30 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedField( 'addToCart.cartItem.tax', wc_graphql_price( $cart_item['line_tax'] ) ),
 			)
 		);
-    }
+	}
 
-    public function testUpdateCartItemQuantitiesMutation() {
-        // Create/add some products to the cart.
-        $cart_item_data = array(
+	public function testUpdateCartItemQuantitiesMutation() {
+		// Create/add some products to the cart.
+		$cart_item_data = array(
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 2,
+				'quantity'   => 2,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 5,
+				'quantity'   => 5,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 1,
+				'quantity'   => 1,
 			),
 		);
 
 		// Store cart item keys for use in mutation.
 		$keys = $this->factory->cart->add( ...$cart_item_data );
 
-        // Define mutation.
-        $query = '
+		// Define mutation.
+		$query = '
             mutation( $input: UpdateItemQuantitiesInput! ) {
                 updateItemQuantities( input: $input ) {
                     clientMutationId
@@ -188,45 +188,90 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			'input' => array(
 				'clientMutationId' => 'someId',
 				'items'            => array(
-					array( 'key' => $keys[0], 'quantity' => 4 ),
-					array( 'key' => $keys[1], 'quantity' => 2 ),
-					array( 'key' => $keys[2], 'quantity' => 0 ),
+					array(
+						'key'      => $keys[0],
+						'quantity' => 4,
+					),
+					array(
+						'key'      => $keys[1],
+						'quantity' => 2,
+					),
+					array(
+						'key'      => $keys[2],
+						'quantity' => 0,
+					),
 				),
 			),
 		);
 
 		// Execute mutation.
-        $response = $this->graphql( compact( 'query', 'variables' ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful(
 			$response,
 			array(
 				$this->expectedField( 'updateItemQuantities.clientMutationId', 'someId' ),
-				$this->expectedNode( 'updateItemQuantities.updated', array( 'key' => $keys[0], 'quantity' => 4 ) ),
-				$this->expectedNode( 'updateItemQuantities.updated', array( 'key' => $keys[1], 'quantity' => 2 ) ),
-				$this->expectedNode( 'updateItemQuantities.removed', array( 'key' => $keys[2], 'quantity' => 1 ) ),
-				$this->expectedNode( 'updateItemQuantities.items', array( 'key' => $keys[0], 'quantity' => 4 ) ),
-				$this->expectedNode( 'updateItemQuantities.items', array( 'key' => $keys[1], 'quantity' => 2 ) ),
-				$this->expectedNode( 'updateItemQuantities.items', array( 'key' => $keys[2], 'quantity' => 1 ) ),
+				$this->expectedNode(
+					'updateItemQuantities.updated',
+					array(
+						'key'      => $keys[0],
+						'quantity' => 4,
+					)
+				),
+				$this->expectedNode(
+					'updateItemQuantities.updated',
+					array(
+						'key'      => $keys[1],
+						'quantity' => 2,
+					)
+				),
+				$this->expectedNode(
+					'updateItemQuantities.removed',
+					array(
+						'key'      => $keys[2],
+						'quantity' => 1,
+					)
+				),
+				$this->expectedNode(
+					'updateItemQuantities.items',
+					array(
+						'key'      => $keys[0],
+						'quantity' => 4,
+					)
+				),
+				$this->expectedNode(
+					'updateItemQuantities.items',
+					array(
+						'key'      => $keys[1],
+						'quantity' => 2,
+					)
+				),
+				$this->expectedNode(
+					'updateItemQuantities.items',
+					array(
+						'key'      => $keys[2],
+						'quantity' => 1,
+					)
+				),
 			)
 		);
-    }
+	}
 
-    public function testRemoveItemsFromCartMutation() {
+	public function testRemoveItemsFromCartMutation() {
 		// Create/add some products to the cart.
-        $cart_item_data = array(
+		$cart_item_data = array(
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 2,
+				'quantity'   => 2,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 5,
+				'quantity'   => 5,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 1,
-			)
+				'quantity'   => 1,
+			),
 		);
 
 		// Store cart item keys for use in mutation.
@@ -245,24 +290,24 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		// Define expected response data.
 		$expected = array( $this->expectedField( 'removeItemsFromCart.clientMutationId', 'someId' ) );
-		foreach( $keys as $key ) {
+		foreach ( $keys as $key ) {
 			$expected[] = $this->expectedNode( 'removeItemsFromCart.cartItems', compact( 'key' ) );
 		}
 
 		$variables = array(
 			'input' => array(
-                'clientMutationId' => 'someId',
-                'keys'             => $keys,
-            )
+				'clientMutationId' => 'someId',
+				'keys'             => $keys,
+			),
 		);
 
 		// Execute mutation w/ "keys" array.
-        $response = $this->graphql( compact( 'query', 'variables' ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
 		// Confirm none of the items in cart.
-		foreach( $keys as $key ) {
+		foreach ( $keys as $key ) {
 			$this->assertEmpty(
 				\WC()->cart->get_cart_item( $key ),
 				"{$key} still in cart after \"removeItemsFromCart\" mutation."
@@ -274,9 +319,9 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$variables = array(
 			'input' => array(
-                'clientMutationId' => 'someId',
-                'all'              => true
-            ),
+				'clientMutationId' => 'someId',
+				'all'              => true,
+			),
 		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
@@ -284,31 +329,31 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->assertQuerySuccessful( $response, $expected );
 
 		// Confirm none of the items in cart.
-		foreach( $keys as $key ) {
+		foreach ( $keys as $key ) {
 			$this->assertEmpty(
 				\WC()->cart->get_cart_item( $key ),
 				"{$key} still in cart after \"removeItemsFromCart\" mutation with \"all\" flag."
 			);
 		}
-    }
+	}
 
-    public function testRestoreCartItemsMutation() {
-        // Create/add some products to the cart.
+	public function testRestoreCartItemsMutation() {
+		// Create/add some products to the cart.
 		$cart_item_data = array(
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 2,
+				'quantity'   => 2,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 5,
+				'quantity'   => 5,
 			),
 			array(
 				'product_id' => $this->factory->product->createSimple(),
-				'quantity'  => 1,
-			)
+				'quantity'   => 1,
+			),
 		);
-		$keys = $this->factory->cart->add( ...$cart_item_data );
+		$keys           = $this->factory->cart->add( ...$cart_item_data );
 		$this->factory->cart->remove( ...$keys );
 
 		$query = '
@@ -324,37 +369,37 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$variables = array(
 			'input' => array(
-                'clientMutationId' => 'someId',
-                'keys'             => $keys,
-            )
+				'clientMutationId' => 'someId',
+				'keys'             => $keys,
+			),
 		);
 
-        $response = $this->graphql( compact( 'query', 'variables' ) );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = array( $this->expectedField( 'restoreCartItems.clientMutationId', 'someId' ) );
-		foreach( $keys as $key ) {
+		foreach ( $keys as $key ) {
 			$expected[] = $this->expectedNode( 'restoreCartItems.cartItems', compact( 'key' ) );
 		}
 
 		$this->assertQuerySuccessful( $response, $expected );
 
 		// Confirm items in cart.
-		foreach( $keys as $key ) {
+		foreach ( $keys as $key ) {
 			$this->assertNotEmpty(
 				\WC()->cart->get_cart_item( $key ),
 				"{$key} not found in cart after \"restoreCartItems\" mutation."
 			);
 		}
-    }
+	}
 
-    public function testEmptyCartMutation() {
-        // Create/add some products to the cart.
+	public function testEmptyCartMutation() {
+		// Create/add some products to the cart.
 		$product_id    = $this->factory->product->createSimple();
-        $cart          = \WC()->cart;
-        $cart_item_key = $cart->add_to_cart( $product_id, 1 );
+		$cart          = \WC()->cart;
+		$cart_item_key = $cart->add_to_cart( $product_id, 1 );
 		$cart_item     = $cart->get_cart_item( $cart_item_key );
 
-        $query = '
+		$query = '
             mutation( $input: EmptyCartInput! ) {
                 emptyCart( input: $input ) {
                     clientMutationId
@@ -384,10 +429,10 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             }
         ';
 
-        $variables = array(
-            'input' => array( 'clientMutationId' => 'someId' ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		$variables = array(
+			'input' => array( 'clientMutationId' => 'someId' ),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful(
 			$response,
@@ -413,38 +458,40 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			)
 		);
 
-        $this->assertTrue( \WC()->cart->is_empty() );
-    }
+		$this->assertTrue( \WC()->cart->is_empty() );
+	}
 
-    public function testApplyCouponMutation() {
-        // Create products.
-        $product_id = $this->factory->product->createSimple(
-            array( 'regular_price' => 100 )
-        );
+	public function testApplyCouponMutation() {
+		// Create products.
+		$product_id = $this->factory->product->createSimple(
+			array( 'regular_price' => 100 )
+		);
 
-        // Create coupon.
-        $coupon_code = wc_get_coupon_code_by_id(
+		// Create coupon.
+		$coupon_code = wc_get_coupon_code_by_id(
 			$this->factory->coupon->create(
-                array(
-                    'amount'      => 0.5,
-                    'product_ids' => array( $product_id )
-                )
-            )
-        );
+				array(
+					'amount'      => 0.5,
+					'product_ids' => array( $product_id ),
+					'description' => 'lorem ipsum dolor',
+				)
+			)
+		);
 
-        // Add items to carts.
-        $cart          = \WC()->cart;
-        $cart_item_key = $cart->add_to_cart( $product_id, 1 );
+		// Add items to carts.
+		$cart          = \WC()->cart;
+		$cart_item_key = $cart->add_to_cart( $product_id, 1 );
 
-        $old_total = \WC()->cart->get_cart_contents_total();
+		$old_total = \WC()->cart->get_cart_contents_total();
 
-        $query = '
+		$query = '
             mutation( $input: ApplyCouponInput! ) {
                 applyCoupon( input: $input ) {
                     clientMutationId
                     cart {
                         appliedCoupons {
 							code
+							description
                         }
                         contents {
                             nodes {
@@ -466,16 +513,16 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             }
         ';
 
-        $variables = array(
-            'input' => array(
-                'clientMutationId' => 'someId',
-                'code'             => $coupon_code,
-            ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'code'             => $coupon_code,
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-        // Get updated cart item.
-        $cart_item = $cart->get_cart_item( $cart_item_key );
+		// Get updated cart item.
+		$cart_item = $cart->get_cart_item( $cart_item_key );
 
 		$this->assertQuerySuccessful(
 			$response,
@@ -484,67 +531,73 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedNode(
 					'applyCoupon.cart.appliedCoupons',
 					array(
-						'code' => $coupon_code,
+						'code'        => $coupon_code,
+						'description' => 'lorem ipsum dolor',
 					)
 				),
 				$this->expectedNode(
 					'applyCoupon.cart.contents.nodes',
 					array(
-						'key'          => $cart_item['key'],
-						'product'      => array(
+						'key'         => $cart_item['key'],
+						'product'     => array(
 							'node' => array(
 								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
 							),
 						),
-						'quantity'     => $cart_item['quantity'],
-						'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
-						'subtotalTax'  => wc_graphql_price( $cart_item['line_subtotal_tax'] ),
-						'total'        => wc_graphql_price( $cart_item['line_total'] ),
-						'tax'          => wc_graphql_price( $cart_item['line_tax'] ),
+						'quantity'    => $cart_item['quantity'],
+						'subtotal'    => wc_graphql_price( $cart_item['line_subtotal'] ),
+						'subtotalTax' => wc_graphql_price( $cart_item['line_subtotal_tax'] ),
+						'total'       => wc_graphql_price( $cart_item['line_total'] ),
+						'tax'         => wc_graphql_price( $cart_item['line_tax'] ),
 					)
 				),
 			)
 		);
 
-        $new_total = \WC()->cart->get_cart_contents_total();
+		$new_total = \WC()->cart->get_cart_contents_total();
 
-        // Use --debug to view.
-        codecept_debug( array( 'old' => $old_total, 'new' => $new_total ) );
+		// Use --debug to view.
+		codecept_debug(
+			array(
+				'old' => $old_total,
+				'new' => $new_total,
+			)
+		);
 
-        $this->assertTrue( $old_total > $new_total );
-    }
+		$this->assertTrue( $old_total > $new_total );
+	}
 
-    public function testApplyCouponMutationWithInvalidCoupons() {
-        $cart = WC()->cart;
+	public function testApplyCouponMutationWithInvalidCoupons() {
+		$cart = WC()->cart;
 
-        // Create products.
-        $product_id = $this->factory->product->createSimple();
+		// Create products.
+		$product_id = $this->factory->product->createSimple();
 
-        // Create invalid coupon codes.
-        $coupon_id = $this->factory->coupon->create(
-            array( 'product_ids' => array( $product_id ) )
-        );
-        $expired_coupon_code = wc_get_coupon_code_by_id(
-            $this->factory->coupon->create(
-                array(
-                    'product_ids'  => array( $product_id ),
-                    'date_expires' => time() - 20,
-                )
-            )
-        );
-        $applied_coupon_code = wc_get_coupon_code_by_id(
-            $this->factory->coupon->create(
-                array( 'product_ids' => array( $product_id ) )
-            )
-        );
+		// Create invalid coupon codes.
+		$coupon_id           = $this->factory->coupon->create(
+			array( 'product_ids' => array( $product_id ) )
+		);
+		$expired_coupon_code = wc_get_coupon_code_by_id(
+			$this->factory->coupon->create(
+				array(
+					'product_ids'  => array( $product_id ),
+					'date_expires' => time() - 20,
+				)
+			)
+		);
+		$applied_coupon_code = wc_get_coupon_code_by_id(
+			$this->factory->coupon->create(
+				array( 'product_ids' => array( $product_id ) )
+			)
+		);
 
-        // Add items to carts.
-        $cart_item_key = $cart->add_to_cart( $product_id, 1 );
-        $cart->apply_coupon( $applied_coupon_code );
+		// Add items to carts.
+		$cart_item_key = $cart->add_to_cart( $product_id, 1 );
+		$cart->apply_coupon( $applied_coupon_code );
 
-        $old_total = \WC()->cart->get_cart_contents_total();
+		$old_total = \WC()->cart->get_cart_contents_total();
 
-        $query = '
+		$query = '
             mutation( $input: ApplyCouponInput! ) {
                 applyCoupon( input: $input ) {
                     clientMutationId
@@ -552,72 +605,72 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             }
         ';
 
-        /**
-         * Assertion One
-         *
-         * Can't pass coupon ID as coupon 'code'. Mutation should fail.
-         */
-        $variables = array(
-            'input' => array(
-                'clientMutationId' => 'someId',
-                'code'             => '$coupon_id',
-            ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		/**
+		 * Assertion One
+		 *
+		 * Can't pass coupon ID as coupon 'code'. Mutation should fail.
+		 */
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'code'             => '$coupon_id',
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-        $this->assertNotEmpty( $response['errors'] );
-        $this->assertEmpty( $response['data']['applyCoupon'] );
+		$this->assertNotEmpty( $response['errors'] );
+		$this->assertEmpty( $response['data']['applyCoupon'] );
 
-        /**
-         * Assertion Two
-         *
-         * Can't pass expired coupon code. Mutation should fail.
-         */
-        $variables = array(
-            'input' => array(
-                'clientMutationId' => 'someId',
-                'code'             => $expired_coupon_code,
-            ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		/**
+		 * Assertion Two
+		 *
+		 * Can't pass expired coupon code. Mutation should fail.
+		 */
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'code'             => $expired_coupon_code,
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-        $this->assertNotEmpty( $response['errors'] );
-        $this->assertEmpty( $response['data']['applyCoupon'] );
+		$this->assertNotEmpty( $response['errors'] );
+		$this->assertEmpty( $response['data']['applyCoupon'] );
 
-        /**
-         * Assertion Three
-         *
-         * Can't pass coupon already applied to the cart. Mutation should fail.
-         */
-        $variables = array(
-            'input' => array(
-                'clientMutationId' => 'someId',
-                'code'             => $applied_coupon_code,
-            ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		/**
+		 * Assertion Three
+		 *
+		 * Can't pass coupon already applied to the cart. Mutation should fail.
+		 */
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'code'             => $applied_coupon_code,
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-        $this->assertNotEmpty( $response['errors'] );
-        $this->assertEmpty( $response['data']['applyCoupon'] );
+		$this->assertNotEmpty( $response['errors'] );
+		$this->assertEmpty( $response['data']['applyCoupon'] );
 
-        $this->assertEquals( $old_total, \WC()->cart->get_cart_contents_total() );
-    }
+		$this->assertEquals( $old_total, \WC()->cart->get_cart_contents_total() );
+	}
 
-    public function testRemoveCouponMutation() {
-        // Create product and coupon.
-        $product_id  = $this->factory->product->createSimple();
-        $coupon_code = wc_get_coupon_code_by_id(
-            $this->factory->coupon->create(
-                array( 'product_ids' => array( $product_id ) )
-            )
-        );
+	public function testRemoveCouponMutation() {
+		// Create product and coupon.
+		$product_id  = $this->factory->product->createSimple();
+		$coupon_code = wc_get_coupon_code_by_id(
+			$this->factory->coupon->create(
+				array( 'product_ids' => array( $product_id ) )
+			)
+		);
 
 		// Add item and coupon to cart and get total..
-        $cart          = \WC()->cart;
-        $cart_item_key = $cart->add_to_cart( $product_id, 3 );
-        $cart->apply_coupon( $coupon_code );
+		$cart          = \WC()->cart;
+		$cart_item_key = $cart->add_to_cart( $product_id, 3 );
+		$cart->apply_coupon( $coupon_code );
 
-        $query = '
+		$query = '
             mutation removeCoupons( $input: RemoveCouponsInput! ) {
                 removeCoupons( input: $input ) {
                     clientMutationId
@@ -645,15 +698,15 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             }
         ';
 
-        $variables = array(
-            'input' => array(
-                'clientMutationId' => 'someId',
-                'codes'            => array( $coupon_code ),
-            ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'codes'            => array( $coupon_code ),
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-        // Get updated cart item.
+		// Get updated cart item.
 		$cart_item = \WC()->cart->get_cart_item( $cart_item_key );
 
 		$this->assertQuerySuccessful(
@@ -664,38 +717,38 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedNode(
 					'removeCoupons.cart.contents.nodes',
 					array(
-						'key'          => $cart_item['key'],
-						'product'      => array(
+						'key'         => $cart_item['key'],
+						'product'     => array(
 							'node' => array(
 								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
-							)
+							),
 						),
-						'quantity'     => $cart_item['quantity'],
-						'subtotal'     => wc_graphql_price( $cart_item['line_subtotal'] ),
-						'subtotalTax'  => wc_graphql_price( $cart_item['line_subtotal_tax'] ),
-						'total'        => wc_graphql_price( $cart_item['line_total'] ),
-						'tax'          => wc_graphql_price( $cart_item['line_tax'] ),
+						'quantity'    => $cart_item['quantity'],
+						'subtotal'    => wc_graphql_price( $cart_item['line_subtotal'] ),
+						'subtotalTax' => wc_graphql_price( $cart_item['line_subtotal_tax'] ),
+						'total'       => wc_graphql_price( $cart_item['line_total'] ),
+						'tax'         => wc_graphql_price( $cart_item['line_tax'] ),
 					)
 				),
 			)
 		);
-    }
+	}
 
-    public function testAddFeeMutation() {
-        // Create product and coupon.
-        $product_id  = $this->factory->product->createSimple();
-        $coupon_code = wc_get_coupon_code_by_id(
-            $this->factory->coupon->create(
-                array( 'product_ids' => array( $product_id ) )
-            )
-        );
+	public function testAddFeeMutation() {
+		// Create product and coupon.
+		$product_id  = $this->factory->product->createSimple();
+		$coupon_code = wc_get_coupon_code_by_id(
+			$this->factory->coupon->create(
+				array( 'product_ids' => array( $product_id ) )
+			)
+		);
 
-        // Add item and coupon to cart.
-        $cart = \WC()->cart;
-        $cart->add_to_cart( $product_id, 3 );
-        $cart->apply_coupon( $coupon_code );
+		// Add item and coupon to cart.
+		$cart = \WC()->cart;
+		$cart->add_to_cart( $product_id, 3 );
+		$cart->apply_coupon( $coupon_code );
 
-        $query = '
+		$query = '
             mutation( $input: AddFeeInput! ) {
                 addFee( input: $input ) {
                     clientMutationId
@@ -711,18 +764,18 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
             }
         ';
 
-        $variables = array(
-            'input' => array(
-                'clientMutationId' => 'someId',
-                'name'             => 'extra_fee',
-                'amount'           => 49.99,
-            ),
-        );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
-        $this->assertArrayHasKey( 'errors', $response );
+		$variables = array(
+			'input' => array(
+				'clientMutationId' => 'someId',
+				'name'             => 'extra_fee',
+				'amount'           => 49.99,
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertArrayHasKey( 'errors', $response );
 
-        wp_set_current_user( $this->shop_manager );
-        $response  = $this->graphql( compact( 'query', 'variables' ) );
+		wp_set_current_user( $this->shop_manager );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$cart = WC()->cart;
 		$fee  = ( $cart->get_fees() )['extra_fee'];
@@ -748,7 +801,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 	public function testAddToCartMutationErrors() {
 		// Create products.
-        $product_id    = $this->factory->product->createSimple(
+		$product_id    = $this->factory->product->createSimple(
 			array(
 				'manage_stock'   => true,
 				'stock_quantity' => 1,
@@ -764,12 +817,12 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$attribute->set_position( 3 );
 		$attribute->set_visible( true );
 		$attribute->set_variation( true );
-		$attributes = array_values( $product->get_attributes() );
+		$attributes   = array_values( $product->get_attributes() );
 		$attributes[] = $attribute;
 		$product->set_attributes( $attributes );
 		$product->save();
 
-		$query     = '
+		$query = '
 			mutation( $input: AddToCartInput! ) {
 				addToCart( input: $input ) {
 					clientMutationId
@@ -796,7 +849,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		';
 
 		\WC()->session->set( 'wc_notices', null );
-		$variables = array(
+		$variables          = array(
 			'input' => array(
 				'clientMutationId' => 'someId',
 				'productId'        => $variation_ids['product'],
@@ -804,18 +857,18 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				'variationId'      => $variation_ids['variations'][0],
 			),
 		);
-		$missing_attributes = $this->graphql( compact( 'query', 'variables'  ) );
+		$missing_attributes = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertArrayHasKey( 'errors', $missing_attributes );
 
 		\WC()->session->set( 'wc_notices', null );
-		$variables = array(
+		$variables        = array(
 			'input' => array(
-                'clientMutationId' => 'someId',
-                'productId'        => $product_id,
-                'quantity'         => 5,
-            ),
+				'clientMutationId' => 'someId',
+				'productId'        => $product_id,
+				'quantity'         => 5,
+			),
 		);
-		$not_enough_stock = $this->graphql( compact( 'query', 'variables'  ) );
+		$not_enough_stock = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertArrayHasKey( 'errors', $not_enough_stock );
 	}
 
@@ -830,7 +883,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$attribute->set_position( 3 );
 		$attribute->set_visible( true );
 		$attribute->set_variation( true );
-		$attributes = array_values( $product->get_attributes() );
+		$attributes   = array_values( $product->get_attributes() );
 		$attributes[] = $attribute;
 		$product->set_attributes( $attributes );
 		$product->save();
@@ -868,8 +921,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'attributeName'  => 'color',
 						'attributeValue' => 'green',
 					),
-				)
-			)
+				),
+			),
 		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
@@ -893,7 +946,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						)
 					),
 				)
-			)
+			),
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -910,7 +963,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$attribute->set_position( 3 );
 		$attribute->set_visible( true );
 		$attribute->set_variation( true );
-		$attributes = array_values( $product->get_attributes() );
+		$attributes   = array_values( $product->get_attributes() );
 		$attributes[] = $attribute;
 		$product->set_attributes( $attributes );
 		$product->save();
@@ -962,7 +1015,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 					),
 					array(
 						'productId' => $invalid_product,
-						'quantity'  => 4
+						'quantity'  => 4,
 					),
 					array(
 						'productId'   => $variation_ids['product'],
@@ -977,8 +1030,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 								'attributeName'  => 'color',
 								'attributeValue' => 'green',
 							),
-						)
-					)
+						),
+					),
 				),
 			),
 		);
@@ -993,7 +1046,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 					'addCartItems.added',
 					array(
 						'product'   => array(
-							'node' => array( 'databaseId' => $product_one )
+							'node' => array( 'databaseId' => $product_one ),
 						),
 						'variation' => null,
 						'quantity'  => 2,
@@ -1003,10 +1056,10 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 					'addCartItems.added',
 					array(
 						'product'   => array(
-							'node' => array( 'databaseId' => $variation_ids['product'] )
+							'node' => array( 'databaseId' => $variation_ids['product'] ),
 						),
 						'variation' => array(
-							'node' => array( 'databaseId' => $variation_ids['variations'][1] )
+							'node' => array( 'databaseId' => $variation_ids['variations'][1] ),
 						),
 						'quantity'  => 3,
 					)
@@ -1020,7 +1073,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'quantity'    => 5,
 						'variationId' => $variation_ids['variations'][0],
 						'variation'   => null,
-						'extraData'   => null
+						'extraData'   => null,
 					)
 				),
 				$this->expectedNode(
@@ -1032,7 +1085,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'quantity'    => 4,
 						'variationId' => null,
 						'variation'   => null,
-						'extraData'   => null
+						'extraData'   => null,
 					)
 				),
 			)
@@ -1041,26 +1094,26 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 	public function testFillCartMutationAndErrors() {
 		// Create products.
-        $product_one = $this->factory->product->createSimple( array( 'regular_price' => 100 ) );
+		$product_one = $this->factory->product->createSimple( array( 'regular_price' => 100 ) );
 		$product_two = $this->factory->product->createSimple( array( 'regular_price' => 40 ) );
 
-        // Create coupons.
-        $coupon_code_one = wc_get_coupon_code_by_id(
+		// Create coupons.
+		$coupon_code_one = wc_get_coupon_code_by_id(
 			$this->factory->coupon->create(
 				array(
 					'amount'      => 0.5,
-					'product_ids' => array( $product_one )
+					'product_ids' => array( $product_one ),
 				)
 			)
 		);
 		$coupon_code_two = wc_get_coupon_code_by_id(
-            $this->factory->coupon->create(
-                array(
-                    'amount'      => 0.2,
-                    'product_ids' => array( $product_two )
-                )
-            )
-        );
+			$this->factory->coupon->create(
+				array(
+					'amount'      => 0.2,
+					'product_ids' => array( $product_two ),
+				)
+			)
+		);
 
 		$invalid_product         = 1000;
 		$invalid_coupon          = 'failed';
@@ -1128,8 +1181,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'quantity'  => 4,
 					),
 				),
-				'coupons'           => array( $coupon_code_one, $coupon_code_two, $invalid_coupon ),
-				'shippingMethods'   => array( 'legacy_flat_rate', $invalid_shipping_method ),
+				'coupons'          => array( $coupon_code_one, $coupon_code_two, $invalid_coupon ),
+				'shippingMethods'  => array( 'legacy_flat_rate', $invalid_shipping_method ),
 			),
 		);
 

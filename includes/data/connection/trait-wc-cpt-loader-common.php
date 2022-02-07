@@ -88,14 +88,15 @@ trait WC_CPT_Loader_Common {
 					// Handle meta fields.
 				} elseif ( in_array( $orderby_input['field'], $this->ordering_meta(), true ) ) {
 					$args['orderby']['meta_value_num'] = $orderby_input['order'];
-					$args['meta_key']                  = esc_sql( $orderby_input['field'] ); // WPCS: slow query ok.
+					$args['meta_key']                  = esc_sql( $orderby_input['field'] );
+					// WPCS: slow query ok.
 
 					// Handle post object fields.
 				} elseif ( ! empty( $orderby_input['field'] ) ) {
 					$args['orderby'][ esc_sql( $orderby_input['field'] ) ] = esc_sql( $orderby_input['order'] );
 				}
-			}
-		}
+			}//end foreach
+		}//end if
 
 		if ( ! empty( $input['dateQuery'] ) ) {
 			$args['date_query'] = $input['dateQuery'];
