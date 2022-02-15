@@ -150,6 +150,7 @@ class Checkout {
 					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
 				}
 
+				$order = \WC_Order_Factory::get_order( $order_id );
 				/**
 				 * Action called after checking out.
 				 *
@@ -158,7 +159,7 @@ class Checkout {
 				 * @param AppContext  $context Request AppContext instance.
 				 * @param ResolveInfo $info    Request ResolveInfo instance.
 				 */
-				do_action( 'graphql_woocommerce_after_checkout', $order_id, $input, $context, $info );
+				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 
 				return array_merge( array( 'id' => $order_id ), $results );
 			} catch ( Exception $e ) {
