@@ -45,6 +45,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_query_args() {
 		// TODO: Implement get_query_args() method.
+		return array();
 	}
 
 	/**
