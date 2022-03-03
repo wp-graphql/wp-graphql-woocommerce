@@ -76,7 +76,8 @@ class OrderHelper extends WCG_Helper {
 			$customer_id = $args['customer_id'];
 		}
 
-        ShippingMethodHelper::create_legacy_flat_rate_instance();
+		$shipping_method_helper = ShippingMethodHelper::instance();
+        $shipping_method_helper->create_legacy_flat_rate_instance();
 
         // Create order
 		$order_data = array_merge(
