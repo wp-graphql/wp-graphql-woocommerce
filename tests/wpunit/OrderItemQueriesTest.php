@@ -257,15 +257,17 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                             }
                             taxStatus
                             product {
-                                ... on SimpleProduct {
-                                    id
-                                }
-                                ... on VariableProduct {
-                                    id
-                                }
+								node {
+									... on SimpleProduct {
+										id
+									}
+									... on VariableProduct {
+										id
+									}
+								}
                             }
                             variation {
-                                id
+                                node { id }
                             }
                         }
                     }
@@ -301,12 +303,12 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
 						$this->expectedField( 'itemDownloads', null ),
 						$this->expectedField( 'taxStatus', strtoupper( $item->get_tax_status() ) ),
-						$this->expectedField( 'product.id', $this->toRelayId( 'product', $item->get_product_id() ) ),
+						$this->expectedField( 'product.node.id', $this->toRelayId( 'product', $item->get_product_id() ) ),
 						$this->expectedField(
-							'variation.id',
+							'variation.node.id',
 							! empty( $item->get_variation_id() )
 								? $this->toRelayId( 'product_variation', $item->get_variation_id() )
-								: null
+								: self::IS_NULL
 						),
 					)
 				);

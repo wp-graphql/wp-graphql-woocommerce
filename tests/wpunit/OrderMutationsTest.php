@@ -187,15 +187,17 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                                 totalTax
                                 taxStatus
                                 product {
-                                    ... on SimpleProduct {
-                                        id
-                                    }
-                                    ... on VariableProduct {
-                                        id
-                                    }
+									node {
+										... on SimpleProduct {
+											id
+										}
+										... on VariableProduct {
+											id
+										}
+									}
                                 }
                                 variation {
-                                    id
+                                    node { id }
                                 }
                             }
                         }
@@ -436,10 +438,12 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
 												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ),
+												'product'  => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
 												'variation' => ! empty( $item->get_variation_id() )
 													? array(
-														'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
+														'node' => array(
+															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
+														),
 													)
 													: null,
 											);
@@ -758,10 +762,12 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
 												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ),
+												'product'  => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
 												'variation' => ! empty( $item->get_variation_id() )
 													? array(
-														'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
+														'node' => array(
+															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
+														),
 													)
 													: null,
 											);

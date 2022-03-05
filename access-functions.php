@@ -96,7 +96,8 @@ function wc_graphql_get_order_statuses() {
  * @return string
  */
 function wc_graphql_price( $price, $args = array() ) {
-	$args = apply_filters(
+	$price = floatval( $price );
+	$args  = apply_filters(
 		'wc_price_args', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		wp_parse_args(
 			$args,

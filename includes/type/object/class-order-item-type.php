@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 /**
  * Class Order_Item_Type
@@ -201,26 +202,37 @@ class Order_Item_Type {
 						'type'        => 'TaxStatusEnum',
 						'description' => __( 'Line item\'s taxes', 'wp-graphql-woocommerce' ),
 					),
-					'product'       => array(
-						'type'        => 'Product',
-						'description' => 'Line item\'s product object',
-						'resolve'     => function( $item, array $args, AppContext $context ) {
-							// @codingStandardsIgnoreStart
-							return ! empty( $item->productId )
-								? Factory::resolve_crud_object( $item->productId, $context )
-								: null;
-							// @codingStandardsIgnoreEnd
+				),
+				// Connections.
+				array(
+					'product'   => array(
+						'toType'   => 'Product',
+						'oneToOne' => true,
+						'resolve'  => function ( $source, array $args, AppContext $context, $info ) {
+							$id       = $source->productId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
+
+							return $resolver
+								->one_to_one()
+								->set_query_arg( 'p', $id )
+								->get_connection();
 						},
 					),
-					'variation'     => array(
-						'type'        => 'ProductVariation',
-						'description' => 'Line item\'s product variation object',
-						'resolve'     => function( $item, array $args, AppContext $context ) {
-							// @codingStandardsIgnoreStart
-							return ! empty( $item->variationId )
-								? Factory::resolve_crud_object( $item->variationId, $context )
-								: null;
-							// @codingStandardsIgnoreEnd
+					'variation' => array(
+						'toType'   => 'ProductVariation',
+						'oneToOne' => true,
+						'resolve'  => function ( $source, array $args, AppContext $context, $info ) {
+							$id       = $source->variationId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
+
+							if ( ! $id ) {
+								return null;
+							}
+
+							return $resolver
+								->one_to_one()
+								->set_query_arg( 'p', $id )
+								->get_connection();
 						},
 					),
 				),
@@ -234,6 +246,7 @@ class Order_Item_Type {
 				array(
 					'description' => $config[0],
 					'fields'      => self::get_fields( $config[1] ),
+					'connections' => ! empty( $config[2] ) ? $config[2] : null,
 				)
 			);
 		}

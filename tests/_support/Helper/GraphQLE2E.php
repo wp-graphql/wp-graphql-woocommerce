@@ -573,10 +573,14 @@ class GraphQLE2E extends \Codeception\Module {
                                 totalTax
                                 taxStatus
                                 product {
-                                    id
+                                    node {
+										id 
+									}
                                 }
                                 variation {
-                                    id
+                                    node {
+										id 
+									}
                                 }
                             }
                         }
