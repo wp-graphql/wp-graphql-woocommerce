@@ -354,11 +354,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 		// 14 Days.
 		$this->_session_expiration = apply_filters(
 			'graphql_woocommerce_cart_session_expire',
-			// time() + ( 3600 * 336 )
-			time() + ( 60 )
+			time() + ( 3600 * 336 )
 		);
 		// 13 Days.
-		$this->_session_expiring = $this->_session_expiration - ( /* 3600 * 60 */ 30 );
+		$this->_session_expiring = $this->_session_expiration - ( 3600 * 60 );
 	}
 
 	/**
