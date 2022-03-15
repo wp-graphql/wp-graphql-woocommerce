@@ -55,7 +55,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$decoded_new_token = JWT::decode( $new_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) );
 
 		// Assert new token is different than old token.
-		//$this->assertNotEquals( $old_token, $new_token, "New token should not match token from last request." );
+		$this->assertNotEquals( $old_token, $new_token, "New token should not match token from last request." );
 		$this->assertGreaterThan( $decoded_old_token->exp, $decoded_new_token->exp );
 	}
 
