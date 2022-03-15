@@ -48,6 +48,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		// Initialize session token for next request.
 		$session->init_session_token();
 		$new_token         = $session->build_token();
+		JWT::$leeway = 60;
 		$decoded_new_token = JWT::decode( $new_token, 'graphql-woo-cart-session', array( 'HS256' ) );
 
 		// Assert new token is different than old token.
@@ -102,6 +103,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$session->init_session_token();
 		$token = $session->build_token();
 
+		JWT::$leeway = 60;
 		$decode_token = JWT::decode( $token, 'graphql-woo-cart-session', array( 'HS256' ) );
 		$this->assertObjectHasAttribute( 'iat', $decode_token );
 		$this->assertObjectHasAttribute( 'exp', $decode_token );
