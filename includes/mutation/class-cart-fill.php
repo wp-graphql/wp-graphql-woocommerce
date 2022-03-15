@@ -194,9 +194,9 @@ class Cart_Fill {
 				throw new UserError( __( 'Failed to add any cart items. Please check input.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$applied = array();
+			$applied         = array();
+			$invalid_coupons = array();
 			if ( ! empty( $input['coupons'] ) ) {
-				$invalid_coupons = array();
 				foreach ( $input['coupons'] as $code ) {
 					$reason = '';
 					// If validate and successful applied to cart, return payload.
@@ -224,7 +224,8 @@ class Cart_Fill {
 				}
 			}//end if
 
-			$chosen_shipping_methods = array();
+			$chosen_shipping_methods  = array();
+			$invalid_shipping_methods = array();
 			if ( ! empty( $input['shippingMethods'] ) ) {
 				$posted_shipping_methods = $input['shippingMethods'];
 
@@ -232,7 +233,6 @@ class Cart_Fill {
 				$chosen_shipping_methods = \WC()->session->get( 'chosen_shipping_methods' );
 
 				// Update current shipping methods.
-				$invalid_shipping_methods = array();
 				foreach ( $posted_shipping_methods as $package => $chosen_method ) {
 					if ( empty( $chosen_method ) ) {
 						continue;
