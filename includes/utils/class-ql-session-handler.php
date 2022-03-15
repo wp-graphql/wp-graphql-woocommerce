@@ -144,7 +144,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
 		} else {
-			
+
 			// If token invalid throw warning.
 			if ( is_wp_error( $token ) ) {
 				add_filter(
@@ -368,8 +368,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 			unset( $this->_token_to_be_sent );
 		}
 		wc_empty_cart();
-		$this->_data        = array();
-		$this->_dirty       = false;
+		$this->_data  = array();
+		$this->_dirty = false;
 
 		// Start new session.
 		$this->set_session_expiration();
@@ -395,7 +395,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		// Update if user recently authenticated.
 		if ( is_user_logged_in() && get_current_user_id() !== $this->_customer_id ) {
 			$this->_customer_id = get_current_user_id();
-			$this->_dirty = true;
+			$this->_dirty       = true;
 		}
 
 		// Bail if no changes.

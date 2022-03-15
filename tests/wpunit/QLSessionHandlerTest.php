@@ -7,140 +7,140 @@ use Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-    public function setUp(): void {
-		// before
-		parent::setUp();
-
-	}
-
-    public function tearDown(): void {
-        unset( $_SERVER );
+	public function tearDown(): void {
+		unset( $_SERVER );
 
 		// after
 		parent::tearDown();
-
 	}
 
-    // Tests
-    public function test_initializes() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
+	// Tests
+	public function test_initializes() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
 
-        $this->assertInstanceOf(QL_Session_Handler::class, $session);
-    }
+		$this->assertInstanceOf( QL_Session_Handler::class, $session );
+	}
 
-    public function test_init_session_token() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
+	public function test_init_session_token() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
 
-        $this->assertFalse( $session->has_session(), 'Shouldn\'t have a session yet' );
-        $session->init_session_token();
-        $this->assertTrue( $session->has_session(), 'Should have session.' );
+		// Assert session hasn't started.
+		$this->assertFalse( $session->has_session(), 'Shouldn\'t have a session yet' );
 
-        // Sent token to HTTP header to simulate a new request.
-        $old_token         = $session->build_token();
-        $decoded_old_token = JWT::decode( $old_token, 'graphql-woo-cart-session', array( 'HS256' ) );
-        $_SERVER[ 'HTTP_WOOCOMMERCE_SESSION' ] = 'Session ' . $old_token;
+		// Initialize session.
+		$session->init_session_token();
 
-        // Stale for 5 seconds so timers can update.
-        usleep( 500000 );
+		// Assert session has started.
+		$this->assertTrue( $session->has_session(), 'Should have session.' );
 
-        // Initialize session token for next request.
-        $session->init_session_token();
-        $new_token         = $session->build_token();
-        $decoded_new_token = JWT::decode( $new_token, 'graphql-woo-cart-session', array( 'HS256' ) );
+		// Get token for future request.
+		$old_token         = $session->build_token();
+		$decoded_old_token = JWT::decode( $old_token, 'graphql-woo-cart-session', array( 'HS256' ) );
 
-        // Assert new token is different than old token.
-        //$this->assertNotEquals( $old_token, $new_token, "New token should not match token from last request." );
-        $this->assertGreaterThan($decoded_old_token->exp, $decoded_new_token->exp );
-    }
+		// Sent token to HTTP header to simulate a new request.
+		$_SERVER['HTTP_WOOCOMMERCE_SESSION'] = 'Session ' . $old_token;
 
-    public function test_get_session_token() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
+		// Stale for 5 seconds so timers can update.
+		usleep( 500000 );
 
-        // Expect token to be null.
-        $null_token = $session->get_session_token();
-        $this->assertFalse( $null_token, 'No token should exist.' );
+		// Initialize session token for next request.
+		$session->init_session_token();
+		$new_token         = $session->build_token();
+		$decoded_new_token = JWT::decode( $new_token, 'graphql-woo-cart-session', array( 'HS256' ) );
 
-        // Set token in header.
-        $session->init_session_token();
-        $_SERVER[ 'HTTP_WOOCOMMERCE_SESSION' ] = 'Session ' . $session->build_token();
+		// Assert new token is different than old token.
+		//$this->assertNotEquals( $old_token, $new_token, "New token should not match token from last request." );
+		$this->assertGreaterThan( $decoded_old_token->exp, $decoded_new_token->exp );
+	}
 
-        // Expect token to be value.
-        $token = $session->get_session_token();
-        $this->assertObjectHasAttribute( 'iat', $token );
-        $this->assertObjectHasAttribute( 'exp', $token );
-        $this->assertObjectHasAttribute( 'data', $token );
-    }
+	public function test_get_session_token() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
 
-    public function test_get_session_header() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
-        $session->init_session_token();
+		// Expect token to be null.
+		$null_token = $session->get_session_token();
+		$this->assertFalse( $null_token, 'No token should exist.' );
 
-        // Get the Auth header.
-        $null_header = $session->get_session_header();
+		// Set token in header.
+		$session->init_session_token();
+		$_SERVER['HTTP_WOOCOMMERCE_SESSION'] = 'Session ' . $session->build_token();
 
-        $this->assertFalse( $null_header, 'No HTTP Header with session token should exist.' );
+		// Expect token to be value.
+		$token = $session->get_session_token();
+		$this->assertObjectHasAttribute( 'iat', $token );
+		$this->assertObjectHasAttribute( 'exp', $token );
+		$this->assertObjectHasAttribute( 'data', $token );
+	}
 
-        // Set token in header.
-        $_SERVER[ 'HTTP_WOOCOMMERCE_SESSION' ] = 'Session ' . $session->build_token();
+	public function test_get_session_header() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
+		$session->init_session_token();
 
-        $this->assertIsString( $session->get_session_header() );
-    }
+		// Get the Auth header.
+		$null_header = $session->get_session_header();
 
-    public function test_build_token() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
+		$this->assertFalse( $null_header, 'No HTTP Header with session token should exist.' );
 
-        // Should be invalid if run before initialization.
-        $invalid_token = $session->build_token();
-        $this->assertFalse( $invalid_token, 'Should be an invalid session token' );
+		// Set token in header.
+		$_SERVER['HTTP_WOOCOMMERCE_SESSION'] = 'Session ' . $session->build_token();
 
-        // Should valid when run after initialization.
-        $session->init_session_token();
-        $token = $session->build_token();
+		$this->assertIsString( $session->get_session_header() );
+	}
 
-        $decode_token = JWT::decode( $token, 'graphql-woo-cart-session', array( 'HS256' ) );
-        $this->assertObjectHasAttribute( 'iat', $decode_token );
-        $this->assertObjectHasAttribute( 'exp', $decode_token );
-        $this->assertObjectHasAttribute( 'data', $decode_token );
+	public function test_build_token() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
 
-        $this->assertEquals( $token, $session->build_token() );
-    }
+		// Should be invalid if run before initialization.
+		$invalid_token = $session->build_token();
+		$this->assertFalse( $invalid_token, 'Should be an invalid session token' );
 
-    public function test_set_customer_session_token() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
+		// Should valid when run after initialization.
+		$session->init_session_token();
+		$token = $session->build_token();
 
-        // Should fail to set headers if run before initialization.
-        $session->set_customer_session_token( true );
-        $graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
-        $this->assertArrayNotHasKey( 'woocommerce-session', $graphql_response_headers );
+		$decode_token = JWT::decode( $token, 'graphql-woo-cart-session', array( 'HS256' ) );
+		$this->assertObjectHasAttribute( 'iat', $decode_token );
+		$this->assertObjectHasAttribute( 'exp', $decode_token );
+		$this->assertObjectHasAttribute( 'data', $decode_token );
 
-        // Should success when run after initialization.
-        $session->init_session_token();
-        $graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
-        $this->assertArrayHasKey( 'woocommerce-session', $graphql_response_headers );
-    }
+		$this->assertEquals( $token, $session->build_token() );
+	}
 
-    public function test_forget_session() {
-        // Create session handler.
-        $session = new QL_Session_Handler();
-        $session->init_session_token();
+	public function test_set_customer_session_token() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
 
-        // Get old token
-        $old_token = $session->build_token();
-        $this->assertIsString( $old_token );
+		// Should fail to set headers if run before initialization.
+		$session->set_customer_session_token( true );
+		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
+		$this->assertArrayNotHasKey( 'woocommerce-session', $graphql_response_headers );
 
-        // Forget session
-        $session->forget_session();
+		// Should success when run after initialization.
+		$session->init_session_token();
+		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
+		$this->assertArrayHasKey( 'woocommerce-session', $graphql_response_headers );
+	}
 
-        // Get new token.
-        $new_token = $session->build_token();
-        $this->assertIsString( $old_token );
+	public function test_forget_session() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
+		$session->init_session_token();
 
-        $this->assertNotEquals( $old_token, $new_token, 'Tokens should not match' );
-    }
+		// Get old token
+		$old_token = $session->build_token();
+		$this->assertIsString( $old_token );
+
+		// Forget session
+		$session->forget_session();
+
+		// Get new token.
+		$new_token = $session->build_token();
+		$this->assertIsString( $old_token );
+
+		$this->assertNotEquals( $old_token, $new_token, 'Tokens should not match' );
+	}
 }
