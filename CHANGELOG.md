@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.11.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.0) (2022-03-15)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.10.7...v0.11.0)
+
+**Breaking changes:**
+
+- fix: QLSessionHandler behaviour changes and QLSessionHandlerTest wpunit test added [\#616](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/616) ([kidunot89](https://github.com/kidunot89))
+- feat: "product" and "variation" connections added to LineItem type [\#604](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/604) ([kidunot89](https://github.com/kidunot89))
+- fix: Product Attribute naming conventions changed [\#603](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/603) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: warnings in fillCart with empty coupons/shippingMethods [\#613](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/613) ([khlieng](https://github.com/khlieng))
+
+**Other Changes:**
+
+- add return array to get\_query\_args because without this endpoint show error [\#610](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/610) ([krystianjj](https://github.com/krystianjj))
+- Get $order in checkout mutation [\#605](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/605) ([oskarmodig](https://github.com/oskarmodig))
+- Fix Fee name not showing [\#602](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/602) ([scottyzen](https://github.com/scottyzen))
+
 ## [v0.10.7](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.10.7) (2022-01-25)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.10.6...v0.10.7)
