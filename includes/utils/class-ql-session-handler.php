@@ -140,7 +140,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 			// Update session expiration on each action.
 			$this->set_session_expiration();
-			if ( $token->exp < $this->set_session_expiration ) {
+			if ( $token->exp < $this->_session_expiration ) {
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
 		} else {
@@ -354,10 +354,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 		// 14 Days.
 		$this->_session_expiration = apply_filters(
 			'graphql_woocommerce_cart_session_expire',
-			time() + ( 3600 * 336 )
+			time() + ( 60 * 60 * 24 * 14 ) // Seconds * Minutes * Hours * Days
 		);
 		// 13 Days.
-		$this->_session_expiring = $this->_session_expiration - ( 3600 * 60 );
+		$this->_session_expiring = $this->_session_expiration - ( 60 * 60 * 24 ); //  Seconds * Minutes * Hours
 	}
 
 	/**
