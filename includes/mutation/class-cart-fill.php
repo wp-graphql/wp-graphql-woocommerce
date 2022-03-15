@@ -194,7 +194,7 @@ class Cart_Fill {
 				throw new UserError( __( 'Failed to add any cart items. Please check input.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$applied = array();
+			$applied         = array();
 			$invalid_coupons = array();
 			if ( ! empty( $input['coupons'] ) ) {
 				foreach ( $input['coupons'] as $code ) {
@@ -224,7 +224,7 @@ class Cart_Fill {
 				}
 			}//end if
 
-			$chosen_shipping_methods = array();
+			$chosen_shipping_methods  = array();
 			$invalid_shipping_methods = array();
 			if ( ! empty( $input['shippingMethods'] ) ) {
 				$posted_shipping_methods = $input['shippingMethods'];
