@@ -138,9 +138,9 @@ class QL_Session_Handler extends WC_Session_Handler {
 				$this->set_customer_session_token( true );
 			}
 
-			// Update session if its close to expiring.
-			if ( time() > $this->_session_expiring ) {
-				$this->set_session_expiration();
+			// Update session expiration on each action.
+			$this->set_session_expiration();
+			if ( $token->exp < $this->set_session_expiration ) {
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
 			}
 		} else {
@@ -241,6 +241,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @return string
 	 */
 	public function build_token() {
+		if ( empty( $this->_session_issued ) ) {
+			return false;
+		}
+
 		/**
 		 * Determine the "not before" value for use in the token
 		 *
@@ -311,7 +315,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @param bool $set Should the session cookie be set.
 	 */
 	public function set_customer_session_token( $set ) {
-		if ( $set ) {
+		if ( ! empty( $this->_session_issued ) && $set ) {
 			/**
 			 * Set callback session token for use in the HTTP response header and customer/user "sessionToken" field.
 			 */
@@ -353,7 +357,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			time() + ( 3600 * 336 )
 		);
 		// 13 Days.
-		$this->_session_expiring = $this->_session_expiration - ( 3600 * 24 );
+		$this->_session_expiring = $this->_session_expiration - ( 3600 * 60 );
 	}
 
 	/**
@@ -364,9 +368,14 @@ class QL_Session_Handler extends WC_Session_Handler {
 			unset( $this->_token_to_be_sent );
 		}
 		wc_empty_cart();
-		$this->_data        = array();
-		$this->_dirty       = false;
-		$this->_customer_id = $this->generate_customer_id();
+		$this->_data  = array();
+		$this->_dirty = false;
+
+		// Start new session.
+		$this->set_session_expiration();
+
+		// Get Customer ID.
+		$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
 	}
 
 	/**
@@ -386,6 +395,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		// Update if user recently authenticated.
 		if ( is_user_logged_in() && get_current_user_id() !== $this->_customer_id ) {
 			$this->_customer_id = get_current_user_id();
+			$this->_dirty       = true;
 		}
 
 		// Bail if no changes.
