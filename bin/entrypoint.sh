@@ -73,7 +73,7 @@ fi
 
 if ! wp config has GRAPHQL_WOOCOMMERCE_SECRET_KEY --allow-root; then
 	echo "Adding WooGraphQL JWT Session Handler salt..."
-	wp config set GRAPHQL_WOOCOMMERCE_SECRET_KEY 'graphql-woo-cart-session' --allow-root
+	wp config set GRAPHQL_WOOCOMMERCE_SECRET_KEY 'test' --allow-root
 fi
 
 if wp config has GRAPHQL_DEBUG --allow-root; then

@@ -6,6 +6,10 @@
 use Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
+if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
+	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'graphql-woo-cart-session' );
+}
+
 class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function tearDown(): void {
 		unset( $_SERVER );
@@ -37,7 +41,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Get token for future request.
 		$old_token         = $session->build_token();
-		$decoded_old_token = JWT::decode( $old_token, 'graphql-woo-cart-session', array( 'HS256' ) );
+		$decoded_old_token = JWT::decode( $old_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) );
 
 		// Sent token to HTTP header to simulate a new request.
 		$_SERVER['HTTP_WOOCOMMERCE_SESSION'] = 'Session ' . $old_token;
@@ -49,7 +53,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$session->init_session_token();
 		$new_token         = $session->build_token();
 		JWT::$leeway = 60;
-		$decoded_new_token = JWT::decode( $new_token, 'graphql-woo-cart-session', array( 'HS256' ) );
+		$decoded_new_token = JWT::decode( $new_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) );
 
 		// Assert new token is different than old token.
 		//$this->assertNotEquals( $old_token, $new_token, "New token should not match token from last request." );
@@ -104,7 +108,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$token = $session->build_token();
 
 		JWT::$leeway = 60;
-		$decode_token = JWT::decode( $token, 'graphql-woo-cart-session', array( 'HS256' ) );
+		$decode_token = JWT::decode( $token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) );
 		$this->assertObjectHasAttribute( 'iat', $decode_token );
 		$this->assertObjectHasAttribute( 'exp', $decode_token );
 		$this->assertObjectHasAttribute( 'data', $decode_token );
