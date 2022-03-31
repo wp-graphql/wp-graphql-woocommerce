@@ -293,8 +293,8 @@ class Cart_Type {
 							$source->calculate_totals();
 							$price = isset( $source->get_totals()['total'] )
 								? apply_filters( 'graphql_woocommerce_cart_get_total', $source->get_totals()['total'] )
-								: null;
-							
+								: 0;
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
@@ -492,8 +492,8 @@ class Cart_Type {
 							),
 						),
 						'resolve'     => function( $source, array $args ) {
-							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : null;
-							$tax = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : 0;
+							$tax = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
 							$price = $price_without_tax + $tax;
 							
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -513,7 +513,7 @@ class Cart_Type {
 							),
 						),
 						'resolve'     => function( $source, array $args ) {
-							$price = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : null;
+							$price = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
 							
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
