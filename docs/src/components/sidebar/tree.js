@@ -36,6 +36,13 @@ const calculateTreeData = edges => {
   const {sidebar: {forcedNavOrder = []}} = config;
   const tmp = [...forcedNavOrder];
   tmp.reverse();
+  const sortAlphabetical = (a, b) => {
+    if (a.label < b.label)
+      return -1;
+    if (a.label > b.label)
+      return 1;
+    return 0;
+  }
   return tmp.reduce((accu, slug) => {
     const parts = slug.split('/');
     let {items: prevItems} = accu;
@@ -52,15 +59,15 @@ const calculateTreeData = edges => {
       prevItems = tmp.items;
     }
     // sort items alphabetically.
-    prevItems.map((item) => {
+    prevItems.map(item => {
       item.items = item.items
-        .sort(function (a, b) {
-          if (a.label < b.label)
-            return -1;
-          if (a.label > b.label)
-            return 1;
-          return 0;
-        });
+        .sort(sortAlphabetical)
+        // Go third-level deep
+        .map(subItem => {
+          subItem.items = subItem.items.sort(sortAlphabetical);
+          return subItem;
+        })
+      return item;
     })
     const index = prevItems.findIndex(({label}) => label === parts[parts.length - 1]);
     accu.items.unshift(prevItems.splice(index, 1)[0]);
