@@ -28,7 +28,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^6.1.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.5",

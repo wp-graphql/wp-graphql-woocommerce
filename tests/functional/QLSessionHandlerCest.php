@@ -1,6 +1,7 @@
 <?php
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 class QLSessionHandlerCest {
 	private $product_catalog;
 
@@ -9,7 +10,7 @@ class QLSessionHandlerCest {
 		$this->product_catalog = $I->getCatalog();
 
 		if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
-			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'test' );
+			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestest' );
 		}
 	}
 
@@ -42,7 +43,7 @@ class QLSessionHandlerCest {
 		// Decode token
 		JWT::$leeway = 60;
 		$token_data  = ! empty( $session_token )
-			? JWT::decode( $session_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) )
+			? JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) )
 			: null;
 
 		$I->assertNotEmpty( $token_data );
@@ -213,7 +214,7 @@ class QLSessionHandlerCest {
 
 		// Decode token
 		$token_data = ! empty( $valid_token )
-			? JWT::decode( $valid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) )
+			? JWT::decode( $valid_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) )
 			: null;
 
 		/**
@@ -222,7 +223,7 @@ class QLSessionHandlerCest {
 		 */
 		$invalid_token                    = $token_data;
 		$invalid_token->data->customer_id = '';
-		$invalid_token                    = JWT::encode( $invalid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY );
+		$invalid_token                    = JWT::encode( (array) $invalid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' );
 
 		$failed = $I->addToCart(
 			array(
@@ -241,7 +242,7 @@ class QLSessionHandlerCest {
 		 */
 		$invalid_token      = $token_data;
 		$invalid_token->iss = '';
-		$invalid_token      = JWT::encode( $invalid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY );
+		$invalid_token      = JWT::encode( (array) $invalid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' );
 
 		$failed = $I->removeItemsFromCart(
 			array(
@@ -417,7 +418,7 @@ class QLSessionHandlerCest {
 		// Decode token
 		JWT::$leeway = 60;
 		$token_data  = ! empty( $session_token )
-			? JWT::decode( $session_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, array( 'HS256' ) )
+			? JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) )
 			: null;
 
 		$I->assertNotEmpty( $token_data );
