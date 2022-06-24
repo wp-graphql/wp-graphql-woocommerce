@@ -4,7 +4,7 @@ metaTitle: "WooGraphQL Guides/Tutorials | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Guides and tips that ease the WooGraphQL development process"
 ---
 
-import Link from '../../src/components/link'
+import Link from '../src/components/link'
 
 This tutorial series is design to help get you started on WooGraphQL-backed e-commerce application development, walking through the creation of a few components commonly found in e-commerce applications.
 

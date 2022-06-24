@@ -4,8 +4,6 @@ metaTitle: "Understanding a WooGraphQL-managed session | WooGraphQL Docs | AxisT
 metaDescription: "Learn in-depth about managing a WooCommerce user session in a JavaScript application"
 ---
 
-import Link from '../src/components/link'
-
 Typically, GraphQL requests don't have an effect on the **context of the PHP environment**. This is due to any context hardly ever being needed when querying for public data. However, when dealing with private data, it's best practice to hide values, fields, or possibly types behind some kind of context.
 
 When I refer to **context of the PHP environment**, I'm referring to any preset values assigned PHP globals and storages like PHP sessions and PHP cookies, when the WPGraphQL server begin to process the query.
