@@ -9,6 +9,8 @@
  */
 namespace Tests\WPGraphQL\WooCommerce\TestCase;
 
+use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Register as Download_Directories;
+
 class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * Holds the User ID of an user with the "shop_manager" role.
@@ -57,6 +59,10 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
 		$this->customer     = $this->factory->customer->create();
 
+		// For these tests, we are not concerned with Approved Download Directory functionality.
+		wc_get_container()->get( Download_Directories::class )->set_mode( Download_Directories::MODE_DISABLED );
+
+		// Clear cached schema.
 		$this->clearSchema();
 	}
 

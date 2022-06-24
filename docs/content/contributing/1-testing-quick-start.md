@@ -45,7 +45,6 @@ Until the documentation is in full effect, it's recommended that a [GraphiQL](ht
   GRAPHQL_JWT_AUTH_SECRET_KEY=testingtesting123
   STRIPE_API_PUBLISHABLE_KEY=""
   STRIPE_API_SECRET_KEY=""
-  PHPUNIT_VERSION=":<=9.4.4"
   ```
   - Typical you should only have to change the **WordPress database configurations** to use local testing.
 3. Once you have finished modifying the `.env` file. Run `composer install-test-env` from the project directory. This will install WordPress + Codeception w/ WPBrowser, as well as setup the database if needed.

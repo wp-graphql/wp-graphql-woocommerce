@@ -82,6 +82,8 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 						id
 						databaseId
 						code
+						amount
+						discountType
 					}
 				}
 			}

@@ -9,6 +9,7 @@
 namespace WPGraphQL\WooCommerce\Utils;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use GraphQL\Error\UserError;
 use WC_Session_Handler;
 
@@ -191,7 +192,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 			JWT::$leeway = 60;
 
 			$secret = $this->get_secret_key();
-			$token  = ! empty( $token ) ? JWT::decode( $token, $secret, array( 'HS256' ) ) : null;
+			$key    = new Key( $secret, 'HS256' );
+			$token  = ! empty( $token ) ? JWT::decode( $token, $key ) : null;
 
 			// Check if token was successful decoded.
 			if ( ! $token ) {

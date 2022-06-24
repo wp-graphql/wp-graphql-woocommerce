@@ -355,7 +355,10 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 					'customer.downloadableItems.nodes',
 					array(
 						$this->expectedField( 'url', $item['download_url'] ),
-						$this->expectedField( 'accessExpires', $item['access_expires'] ),
+						$this->expectedField(
+							'accessExpires',
+							! empty( $item['access_expires'] ) ? $item['access_expires'] : self::IS_NULL
+						),
 						$this->expectedField( 'downloadId', $item['download_id'] ),
 						$this->expectedField(
 							'downloadsRemaining',
