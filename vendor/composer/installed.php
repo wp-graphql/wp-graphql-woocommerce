@@ -1,33 +1,32 @@
-<?php return array (
-  'root' => 
-  array (
-    'pretty_version' => 'dev-develop',
-    'version' => 'dev-develop',
-    'aliases' => 
-    array (
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'type' => 'wordpress-plugin',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => '9e2630672087b2acb100e3c372cde2763a75eb8c',
+        'name' => 'wp-graphql/wp-graphql-woocommerce',
+        'dev' => false,
     ),
-    'reference' => '4b2c8c8f7165d203c74070424aff0c8a0d3ecb6b',
-    'name' => 'wp-graphql/wp-graphql-woocommerce',
-  ),
-  'versions' => 
-  array (
-    'firebase/php-jwt' => 
-    array (
-      'pretty_version' => 'v5.2.1',
-      'version' => '5.2.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
+    'versions' => array(
+        'firebase/php-jwt' => array(
+            'pretty_version' => 'v6.1.0',
+            'version' => '6.1.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../firebase/php-jwt',
+            'aliases' => array(),
+            'reference' => 'fbb2967a3a68b07e37678c00c0cf51165051495f',
+            'dev_requirement' => false,
+        ),
+        'wp-graphql/wp-graphql-woocommerce' => array(
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'type' => 'wordpress-plugin',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => '9e2630672087b2acb100e3c372cde2763a75eb8c',
+            'dev_requirement' => false,
+        ),
     ),
-    'wp-graphql/wp-graphql-woocommerce' => 
-    array (
-      'pretty_version' => 'dev-develop',
-      'version' => 'dev-develop',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '4b2c8c8f7165d203c74070424aff0c8a0d3ecb6b',
-    ),
-  ),
 );

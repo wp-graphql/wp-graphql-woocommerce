@@ -1,24 +1,51 @@
 ---
-title: "WooGraphQL Session Management"
-metaTitle: "Why is understanding a WooGraphQL's session management important? | WooGraphQL Docs | AxisTaylor"
-metaDescription: "Learn the responsibilites and capabilities of the custom session handler WooGraphQL uses."
+title: "What is a JWT and a WooCommerce Session Token?"
+metaTitle: "What is a JWT-Auth token and WooCommerce Session Token? | WooGraphQL Docs | AxisTaylor"
+metaDescription: "Learn the uses and differences between a JWT-Auth token and WooCommerce Session token."
 ---
 
-Typically, GraphQL requests don't have an effect on the **context of the PHP environment**. This is due to any context hardly ever being needed when querying for public data. However, when dealing with private data, it's best practice to hide values, fields, or possibly types behind some kind of context.
+A JWT _(pronounced "jot")_ refers to any JSON Web Token (JWT) sent through the "Authorization" or any other HTTP header for the purpose of authenticating the end-user before the core logic of the HTTP request has executed.
 
-When I refer to **context of the PHP environment**, I'm referring to any preset values assigned PHP globals and storages like PHP sessions and PHP cookies, when the WPGraphQL server begin to process the query.
+A WooCommerce session token is a JWT created by WooGraphQL for the sole purpose of identifying the WooCommerce customer session of the end-user.
 
-To elaborate further, **user context** could be any preset value related to end-user whose browser sent the request. These values can be used by WordPress to do common tasks like authenticate the end-user or identify some data object related the end-user.
+> **Small note:** As I said, there are multiple solutions available but throughout this documentation you'll find references to the **WPGraphQL-JWT-Authentication** plugin, so that will be the JWT solution discussed here.
 
-In HTTP requests made when navigating links on a WordPress site, those common tasks are managed by cookies created in previous requests and saved to the end-user's computer. These cookies are then sent by the end-user's browser along with any HTTP request sent to WordPress from within the WordPress domain.
+They both work by storing the user/customer ID along with some info about who made it and whose to receive the token into an object and encrypting that into a string a.k.a. a JWT.
+WPGraphQL-JWT-Authentication and WooGraphQL makes these tokens available through way of queryable fields
 
-On the other hand, when dealing with an decoupled front-end application that makes GraphQL requests from external origins and domains, using cookies to manage the **user context** of these requests is difficult to setup and not always possible. Sending JSON Web Tokens as HTTP headers in the GraphQL request is the recommended solution for creating context.
+```graphql
+query {
+  customer {
+    jwtAuthToken # JWT User Authentication token
+    sessionToken # WooCommerce Session token
+  }
+}
+```
 
-JSON Web Token (JWT) solutions for the purpose of WordPress user authentication are available. Most commonly in the form of plugins, that authenticate the end-user by decoding and reading JWTs sent through the "Authorization" HTTP header container the end-user's WordPress User ID.
-## Why is this important?
+However, the user context typically has to be already be setup before this fields are accessible.
 
-WooGraphQL has the ability to take advantage of JWTs build and distribute in-house to provide a gateway to WooCommerce's functionality that rely user context.
+Most of the time the way to generate a JWTs that will setup the user context in all future requests is to run a mutation the changes the context by authenticating an user or creating a session.
 
-This includes the shopping cart, shipping calculator and guest data/orders.
+For instance the `login()` mutation provided by the **WPGraphQL-JWT-Authentication** plugin is perfect for this, and when used with WooGraphQL the following mutation can be used.
 
-The shopping cart data and guest data are saved temporarily in the WordPress database, so rolling your own objects for these client-side won't be necessary if using methods demonstrated throughout this section.
+```graphql
+mutation {
+  login(input: {clientMutationId: "someId", username: "admin", password: "password"}) {
+    customer {
+      jwtAuthToken # JWT User Authentication token
+      sessionToken # WooCommerce Session token
+    }
+  }
+}
+```
+
+After retrieving these tokens they are to be provided as headers "Authorization" and "woocommerce-session" for all future request until you wish to end the end-user session by means of logging out or expiration.
+There are a number of ways to do this so I won't be going into too much detail here, but if using a client-side library like Apollo or Relay, just lookup how to access the middleware layer for your library of choice.
+
+Once you set the newly created tokens in their proper headers and a new request is made. Before the `init` hook is executed the tokens are decrypted and their identifiers verified, then this is where the tokens differ.
+
+The JWT generated by **WPGraphQL-JWT-Authentication** is rather simple. Essentially, you can just say it runs `wp_set_current_user()` on the encrypted user ID.
+
+The WooCommerce session token also simple but with a little complexity. It searches the database for session data connected to the encrypted customer ID. _Please note: the customer ID maybe a guest ID that doesn't have a correspending user ID. Good to know_
+
+**WPGraphQL-JWT-Authentication** tokens and WooCommerce session tokens can both be used to identify an end-user's WooCommerce session but it's recommended that you use both, unless you intend to support guest checkout only then you can use just the WooCommerce session token.

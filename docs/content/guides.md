@@ -4,11 +4,13 @@ metaTitle: "WooGraphQL Guides/Tutorials | WooGraphQL Docs | AxisTaylor"
 metaDescription: "Guides and tips that ease the WooGraphQL development process"
 ---
 
-import Link from '../src/components/link'
+import Link from '../../src/components/link'
 
-# React + Apollo Tutorials
-1. <Link to="/guides/react/1-creating-the-product-list">Creating the Product List</Link>
-2. <Link to="/guides/react/2-creating-the-product-page">Creating the Product Page</Link>
-3. <Link to="/guides/react/3-creating-the-cart">Creating the Cart</Link>
-4. <Link to="/guides/react/4-advanced-cart-mutation-tips">Advanced Cart Mutation Tips</Link>
-5. <Link to="/guides/react/5-creating-the-checkout-page">Creating the Checkout Page</Link>
+This tutorial series is design to help get you started on WooGraphQL-backed e-commerce application development, walking through the creation of a few components commonly found in e-commerce applications.
+
+## Sections
+1. <Link to="/guides/1-index">Creating the Product List</Link>
+2. <Link to="/guides/2-index">Creating the Product Page</Link>
+3. <Link to="/guides/3-index">Creating the Cart</Link>
+4. <Link to="/guides/4-index">Advanced Cart Mutation Tips</Link>
+5. <Link to="/guides/5-index">Creating the Checkout Page</Link>
