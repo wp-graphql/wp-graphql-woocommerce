@@ -11,7 +11,7 @@ import algoliasearch from "algoliasearch/lite";
 import config from "../../../config.js";
 
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
+import { css } from "@emotion/react";
 import { PoweredBy } from "./styles"
 import { Search } from "styled-icons/fa-solid/Search"
 import Input from "./input"

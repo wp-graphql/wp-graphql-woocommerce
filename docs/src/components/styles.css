@@ -431,9 +431,9 @@ pre {
   fill: #663399 !important;
 }
 
-.firstLevel ul .item ul .item {
+/* .firstLevel ul .item ul .item {
   border-left: 1px solid #e6ecf1;
-}
+} */
 
 .sideBarUL .item{
   list-style: none;

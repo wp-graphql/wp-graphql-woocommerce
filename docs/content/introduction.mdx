@@ -4,8 +4,6 @@ metaTitle: "Introduction | WooGraphQL Docs | AxisTaylor"
 metaDescription: "What is WooGraphQL and why use it?"
 ---
 
-import Link from '../src/components/link'
-
 # What is WooGraphQL?
 
 WPGraphQL WooCommerce, WooGraphQL for short, is a WPGraphQL/WooCommerce extension that exposes WooCommerce along with its functionality to the GraphQL server created by WPGraphQL, making it possible to create better-written and more performant client-side applications.
@@ -83,7 +81,7 @@ You can also add items to cart, create orders, and more, using the mutations tha
 WooGraphQL has neither the team nor the development hours that WooCommerce (WC) REST does, but there are advantages in both application performance and design.
 
 ## GraphQL vs REST
-- The shapes of the data object returned by WC REST are limited and more times than not include data that you don’t require. GraphQL only retrieves the data you want making requests speedy and efficient. 
+- The shapes of the data object returned by WC REST are limited and more times than not include data that you don’t require. GraphQL only retrieves the data you want making requests speedy and efficient.
 - WC REST relies heavily on page-based pagination as do most WordPress REST APIs. If the store has a large amount of products, database requests with take much longer to process. WooGraphQL manipulates WordPress’ core querying functions implement [cursor-based pagination](https://dev.to/jackmarchant/offset-and-cursor-pagination-explained-b89), which handles large amount of products more efficiently.
 
 ## It comes with a Cart

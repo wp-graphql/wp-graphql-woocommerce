@@ -7,6 +7,7 @@ import { Layout, Link } from "$components";
 import NextPrevious from '../components/NextPrevious';
 import '../components/styles.css';
 import config from '../../config';
+import gitHub from '../components/images/github.svg';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
 
@@ -49,7 +50,6 @@ export default class MDXRuntimeTest extends Component {
         siteMetadata: { docsLocation, title }
       }
     } = data;
-    const gitHub = require('../components/images/github.svg');
 
     const navItems = allMdx.edges
       .map(({ node }) => node.fields.slug)

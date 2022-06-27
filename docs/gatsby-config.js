@@ -23,6 +23,12 @@ const plugins = [
     }
   },
   {
+    resolve: `gatsby-source-filesystem`,
+    options: {
+      path: `${__dirname}/src/assets`,
+    },
+  },
+  {
     resolve: `gatsby-transformer-remark`,
     options: {
       plugins: [
@@ -36,15 +42,9 @@ const plugins = [
     },
   },
   {
-    resolve: `gatsby-source-filesystem`,
-    options: {
-      path: `${__dirname}/src/assets`,
-    },
-  },
-  {
     resolve: 'gatsby-plugin-mdx',
     options: {
-      remarkPlugins: [capitalize, emoji],
+      remarkPlugins: [emoji],
       gatsbyRemarkPlugins: [
         {
           resolve: "gatsby-remark-images",

@@ -8,7 +8,9 @@ import config from '../../config.js';
 import Loadable from 'react-loadable';
 import LoadingProvider from './mdxComponents/loading';
 
-const help = require('./images/help.svg');
+import help from './images/help.svg';
+import logoImg from'./images/logo.svg';
+import twitter from './images/twitter.svg';
 const isSearchEnabled = config.header.search && config.header.search.enabled ? true : false;
 
 let searchIndices = [];
@@ -58,8 +60,7 @@ const Header = ({location}) => (
         }
         `}
     render={(data) => {
-      const logoImg = require('./images/logo.svg');
-      const twitter = require('./images/twitter.svg');
+
       const {
         site: {
           siteMetadata: {

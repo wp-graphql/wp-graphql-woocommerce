@@ -28,7 +28,6 @@ const config = {
 	"sidebar": {
 		"forcedNavOrder": [
 			"/introduction",
-			"/playground",
 			"/guides",
       "/session",
 			"/contributing"
@@ -36,10 +35,9 @@ const config = {
     	"collapsedNav": [
       		"/guides",
           "/session",
-          "/session/4-index"
     	],
 		"links": [
-      { "text": "Github", "link": "https://github.com/wp-graphql/wp-graphql-woocommerce" },
+      { "text": "GitHub", "link": "https://github.com/wp-graphql/wp-graphql-woocommerce" },
 			{ "text": "WPGraphQL", "link": "https://wpgraphql.com"},
 			{ "text": "WPGraphQL Documentation", "link": "https://wpgraphql.com/docs"},
 			{ "text": "AxisTaylor", "link": "https://axistaylor.com"},

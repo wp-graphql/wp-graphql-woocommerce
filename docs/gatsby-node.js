@@ -49,7 +49,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
     resolve: {
       modules: [path.resolve(__dirname, "src"), "node_modules"],
-      alias: { 
+      alias: {
         $components: path.resolve(__dirname, "src/components"),
         buble: '@philpl/buble' // to reduce bundle size
       }
@@ -57,9 +57,9 @@ exports.onCreateWebpackConfig = ({ actions }) => {
   });
 };
 
-exports.onCreateBabelConfig = ({ actions }) => {
+exports.onCreateBabelConfig = function onCreateBabelConfig({ actions }) {
   actions.setBabelPlugin({
-    name: "@babel/plugin-proposal-export-default-from"
+    name: "@babel/plugin-proposal-export-default-from",
   });
 };
 
