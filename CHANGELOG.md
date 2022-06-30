@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.11.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.1) (2022-06-30)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.11.0...v0.11.1)
+
+**New Features:**
+
+- chore: PHP-JWT upgraded to v6.1.0 [\#633](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/633) ([kidunot89](https://github.com/kidunot89))
+- feat: "id" field added to "MetaDataInput" type [\#631](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/631) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.11.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.0) (2022-03-15)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.10.7...v0.11.0)
@@ -13,9 +22,6 @@
 **Fixed:**
 
 - fix: warnings in fillCart with empty coupons/shippingMethods [\#613](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/613) ([khlieng](https://github.com/khlieng))
-
-**Other Changes:**
-
 - add return array to get\_query\_args because without this endpoint show error [\#610](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/610) ([krystianjj](https://github.com/krystianjj))
 - Get $order in checkout mutation [\#605](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/605) ([oskarmodig](https://github.com/oskarmodig))
 - Fix Fee name not showing [\#602](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/602) ([scottyzen](https://github.com/scottyzen))
