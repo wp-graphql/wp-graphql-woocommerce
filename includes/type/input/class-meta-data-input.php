@@ -22,6 +22,10 @@ class Meta_Data_Input {
 			array(
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 				'fields'      => array(
+					'id'    => array(
+						'type'        => 'String',
+						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
+					),
 					'key'   => array(
 						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
