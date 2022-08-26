@@ -62,7 +62,7 @@ if ( ! function_exists( 'wc_graphql_map_tax_statements' ) ) {
 
 		return array_values( $taxes );
 	}
-}
+}//end if
 
 if ( ! function_exists( 'wc_graphql_get_order_statuses' ) ) {
 	/**
@@ -157,7 +157,7 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 		 */
 		return apply_filters( 'graphql_woocommerce_price', $return, $price, $args, $unformatted_price, $symbol );
 	}
-}
+}//end if
 
 if ( ! function_exists( 'wc_graphql_price_range' ) ) {
 	/**
@@ -182,7 +182,7 @@ if ( ! function_exists( 'wc_graphql_price_range' ) ) {
 
 		return apply_filters( 'graphql_woocommerce_format_price_range', $price, $from, $to );
 	}
-}
+}//end if
 
 if ( ! function_exists( 'wc_graphql_underscore_to_camel_case' ) ) {
 	/**
@@ -227,7 +227,7 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 
 		return implode( '_', $ret );
 	}
-}
+}//end if
 
 
 
@@ -237,6 +237,6 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 
 
 
-	
+
 
 
