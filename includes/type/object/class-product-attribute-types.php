@@ -50,7 +50,7 @@ class Product_Attribute_Types {
 						},
 					],
 					'label' => [
-						'type'        => [ 'non_null' => 'String' ],
+						'type'        => 'String',
 						'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
@@ -58,7 +58,7 @@ class Product_Attribute_Types {
 						},
 					],
 					'name'  => [
-						'type'        => [ 'non_null' => 'String' ],
+						'type'        => 'String',
 						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
@@ -66,7 +66,7 @@ class Product_Attribute_Types {
 						},
 					],
 					'slug'  => [
-						'type'        => [ 'non_null' => 'String' ],
+						'type'        => 'String',
 						'description' => __( 'Product attribute slug', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
 							return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
