@@ -13,7 +13,7 @@ fi
 
 DB_HOST=${DB_HOST-localhost}
 DB_PASS=${DB_PASSWORD-""}
-WP_VERSION=${WP_VERSION-5}
+WP_VERSION=${WP_VERSION-6}
 PROJECT_ROOT_DIR=$(pwd)
 WP_CORE_DIR=${WP_CORE_DIR:-local/public}
 PLUGINS_DIR=${PLUGINS_DIR:-"$WP_CORE_DIR/wp-content/plugins"}
