@@ -57,14 +57,14 @@ class Product_Attribute {
 				},
 			],
 			'name'        => [
-				'type'        => [ 'non_null' => 'String' ],
+				'type'        => 'String',
 				'description' => __( 'Attribute name', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $attribute ) {
 					return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 				},
 			],
 			'label'       => [
-				'type'        => [ 'non_null' => 'String' ],
+				'type'        => 'String',
 				'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $attribute ) {
 					return ! empty( $attribute->get_name() ) ? ucwords( $attribute->get_name() ) : null;
@@ -79,21 +79,21 @@ class Product_Attribute {
 				},
 			],
 			'position'    => [
-				'type'        => [ 'non_null' => 'Int' ],
+				'type'        => 'Int',
 				'description' => __( 'Attribute position', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $attribute ) {
 					return ! is_null( $attribute->get_position() ) ? $attribute->get_position() : null;
 				},
 			],
 			'visible'     => [
-				'type'        => [ 'non_null' => 'Boolean' ],
+				'type'        => 'Boolean',
 				'description' => __( 'Is attribute visible', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $attribute ) {
 					return ! is_null( $attribute->get_visible() ) ? $attribute->get_visible() : null;
 				},
 			],
 			'variation'   => [
-				'type'        => [ 'non_null' => 'Boolean' ],
+				'type'        => 'Boolean',
 				'description' => __( 'Is attribute on product variation', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $attribute ) {
 					return ! is_null( $attribute->get_variation() ) ? $attribute->get_variation() : null;
