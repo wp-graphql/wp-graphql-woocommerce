@@ -17,9 +17,9 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array(
+		$this->default_generation_definitions = [
 			'zone_name' => '',
-		);
+		];
 		$this->dummy                          = Dummy::instance();
 	}
 
@@ -31,7 +31,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		$object = new \WC_Shipping_Zone();
 
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( array( $object, "set_{$key}" ) ) ) {
+			if ( is_callable( [ $object, "set_{$key}" ] ) ) {
 				$object->{"set_{$key}"}( $value );
 			}
 		}
@@ -63,38 +63,38 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		return false;
 	}
 
-	public function createLegacyFlatRate( $args = array() ) {
+	public function createLegacyFlatRate( $args = [] ) {
 		$flat_rate_settings = array_merge(
-			array(
+			[
 				'enabled'      => 'yes',
 				'title'        => 'Flat rate',
 				'availability' => 'all',
 				'countries'    => '',
 				'tax_status'   => 'taxable',
 				'cost'         => '10',
-			),
+			],
 			$args
 		);
 		update_option( 'woocommerce_flat_rate_settings', $flat_rate_settings );
-		update_option( 'woocommerce_flat_rate', array() );
+		update_option( 'woocommerce_flat_rate', [] );
 		\WC_Cache_Helper::get_transient_version( 'shipping', true );
 		\WC()->shipping()->load_shipping_methods();
 
 		return 'legacy_flat_rate';
 	}
 
-	public function createLegacyFreeShipping( $args = array() ) {
+	public function createLegacyFreeShipping( $args = [] ) {
 		$free_shipping_settings = array_merge(
-			array(
+			[
 				'enabled'      => 'yes',
 				'title'        => 'Free shipping',
 				'availability' => 'all',
 				'countries'    => '',
-			),
+			],
 			$args
 		);
 		update_option( 'woocommerce_free_shipping_settings', $free_shipping_settings );
-		update_option( 'woocommerce_free_shipping', array() );
+		update_option( 'woocommerce_free_shipping', [] );
 		\WC_Cache_Helper::get_transient_version( 'shipping', true );
 		WC()->shipping()->load_shipping_methods();
 

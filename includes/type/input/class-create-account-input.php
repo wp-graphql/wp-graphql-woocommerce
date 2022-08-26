@@ -19,19 +19,19 @@ class Create_Account_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'CreateAccountInput',
-			array(
+			[
 				'description' => __( 'Customer account credentials', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'username' => array(
-						'type'        => array( 'non_null' => 'String' ),
+				'fields'      => [
+					'username' => [
+						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Customer username', 'wp-graphql-woocommerce' ),
-					),
-					'password' => array(
-						'type'        => array( 'non_null' => 'String' ),
+					],
+					'password' => [
+						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Customer password', 'wp-graphql-woocommerce' ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

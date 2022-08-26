@@ -21,11 +21,11 @@ class Simple_Attribute_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'SimpleAttribute',
-			array(
+			[
 				'description' => __( 'A simple attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Attribute' ),
-				'fields'      => array(),
-			)
+				'interfaces'  => [ 'Attribute' ],
+				'fields'      => [],
+			]
 		);
 	}
 }

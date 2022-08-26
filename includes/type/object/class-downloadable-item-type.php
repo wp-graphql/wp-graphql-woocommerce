@@ -25,31 +25,31 @@ class Downloadable_Item_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'DownloadableItem',
-			array(
+			[
 				'description' => __( 'A downloadable item', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'downloadId'         => array(
-						'type'        => array( 'non_null' => 'String' ),
+				'fields'      => [
+					'downloadId'         => [
+						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source['download_id'] ) ? $source['download_id'] : null;
 						},
-					),
-					'url'                => array(
+					],
+					'url'                => [
 						'type'        => 'String',
 						'description' => __( 'Download URL of the downloadable item.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source['download_url'] ) ? $source['download_url'] : null;
 						},
-					),
-					'name'               => array(
+					],
+					'name'               => [
 						'type'        => 'String',
 						'description' => __( 'Name of the downloadable item.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source['download_name'] ) ? $source['download_name'] : null;
 						},
-					),
-					'downloadsRemaining' => array(
+					],
+					'downloadsRemaining' => [
 						'type'        => 'Int',
 						'description' => __( 'Number of times the item can be downloaded.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
@@ -57,22 +57,22 @@ class Downloadable_Item_Type {
 								? $source['downloads_remaining']
 								: null;
 						},
-					),
-					'accessExpires'      => array(
+					],
+					'accessExpires'      => [
 						'type'        => 'String',
 						'description' => __( 'The date the downloadable item expires', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source['access_expires'] ) ? $source['access_expires'] : null;
 						},
-					),
-					'product'            => array(
+					],
+					'product'            => [
 						'type'        => 'Product',
 						'description' => __( 'Product of downloadable item.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source['product_id'], $context );
 						},
-					),
-					'download'           => array(
+					],
+					'download'           => [
 						'type'        => 'ProductDownload',
 						'description' => __( 'ProductDownload of the downloadable item', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
@@ -88,7 +88,7 @@ class Downloadable_Item_Type {
 							}
 
 							$download_data = $files[ $download_id ];
-							$download = new WC_Product_Download();
+							$download      = new WC_Product_Download();
 							$download->set_id( $download_id );
 							$download->set_name(
 								$download_data['name']
@@ -107,9 +107,9 @@ class Downloadable_Item_Type {
 
 							return $download;
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

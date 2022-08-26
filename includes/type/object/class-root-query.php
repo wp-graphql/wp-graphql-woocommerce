@@ -13,6 +13,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - Root_Query
@@ -24,15 +25,15 @@ class Root_Query {
 	public static function register_fields() {
 		register_graphql_fields(
 			'RootQuery',
-			array(
-				'cart'             => array(
+			[
+				'cart'             => [
 					'type'        => 'Cart',
-					'args'        => array(
-						'recalculateTotals' => array(
+					'args'        => [
+						'recalculateTotals' => [
 							'type'        => 'Boolean',
 							'description' => __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $_, $args ) {
 						$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
@@ -47,14 +48,14 @@ class Root_Query {
 
 						return $cart;
 					},
-				),
-				'cartItem'         => array(
+				],
+				'cartItem'         => [
 					'type'        => 'CartItem',
-					'args'        => array(
-						'key' => array(
-							'type' => array( 'non_null' => 'ID' ),
-						),
-					),
+					'args'        => [
+						'key' => [
+							'type' => [ 'non_null' => 'ID' ],
+						],
+					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {
 						$item = Factory::resolve_cart_item( $args['key'], $context );
@@ -64,14 +65,14 @@ class Root_Query {
 
 						return $item;
 					},
-				),
-				'cartFee'          => array(
+				],
+				'cartFee'          => [
 					'type'        => 'CartFee',
-					'args'        => array(
-						'id' => array(
-							'type' => array( 'non_null' => 'ID' ),
-						),
-					),
+					'args'        => [
+						'id' => [
+							'type' => [ 'non_null' => 'ID' ],
+						],
+					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args ) {
 						$fee = Factory::resolve_cart_fee( $args['id'] );
@@ -81,17 +82,17 @@ class Root_Query {
 
 						return $fee;
 					},
-				),
-				'coupon'           => array(
+				],
+				'coupon'           => [
 					'type'        => 'Coupon',
 					'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array( 'type' => array( 'non_null' => 'ID' ) ),
-						'idType' => array(
+					'args'        => [
+						'id'     => [ 'type' => [ 'non_null' => 'ID' ] ],
+						'idType' => [
 							'type'        => 'CouponIdTypeEnum',
 							'description' => __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -124,20 +125,20 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $coupon_id, $context );
 					},
-				),
-				'customer'         => array(
+				],
+				'customer'         => [
 					'type'        => 'Customer',
 					'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'         => array(
+					'args'        => [
+						'id'         => [
 							'type'        => 'ID',
 							'description' => __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' ),
-						),
-						'customerId' => array(
+						],
+						'customerId' => [
 							'type'        => 'Int',
 							'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
 						$customer_id = 0;
 						if ( ! empty( $args['id'] ) ) {
@@ -164,20 +165,20 @@ class Root_Query {
 
 						return Factory::resolve_session_customer();
 					},
-				),
-				'order'            => array(
+				],
+				'order'            => [
 					'type'        => 'Order',
 					'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array(
+					'args'        => [
+						'id'     => [
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the order', 'wp-graphql-woocommerce' ),
-						),
-						'idType' => array(
+						],
+						'idType' => [
 							'type'        => 'OrderIdTypeEnum',
 							'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -209,17 +210,17 @@ class Root_Query {
 						}
 
 						// Check if user authorized to view order.
-						$post_type = get_post_type_object( 'shop_order' );
+						$post_type     = get_post_type_object( 'shop_order' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
 						if ( get_current_user_id() ) {
 							$orders = wc_get_orders(
-								array(
+								[
 									'type'          => 'shop_order',
-									'post__in'      => array( $order_id ),
+									'post__in'      => [ $order_id ],
 									'customer_id'   => get_current_user_id(),
 									'no_rows_found' => true,
 									'return'        => 'ids',
-								)
+								]
 							);
 
 							if ( in_array( $order_id, $orders, true ) ) {
@@ -231,20 +232,20 @@ class Root_Query {
 
 						return $order;
 					},
-				),
-				'productVariation' => array(
+				],
+				'productVariation' => [
 					'type'        => 'ProductVariation',
 					'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array(
+					'args'        => [
+						'id'     => [
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' ),
-						),
-						'idType' => array(
+						],
+						'idType' => [
 							'type'        => 'ProductVariationIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -274,20 +275,20 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $variation_id, $context );
 					},
-				),
-				'refund'           => array(
+				],
+				'refund'           => [
 					'type'        => 'Refund',
 					'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array(
-							'type'        => array( 'non_null' => 'ID' ),
+					'args'        => [
+						'id'     => [
+							'type'        => [ 'non_null' => 'ID' ],
 							'description' => __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' ),
-						),
-						'idType' => array(
+						],
+						'idType' => [
 							'type'        => 'RefundIdTypeEnum',
 							'description' => __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -316,19 +317,19 @@ class Root_Query {
 						}
 
 						// Check if user authorized to view order.
-						$post_type = get_post_type_object( 'shop_order_refund' );
+						$post_type     = get_post_type_object( 'shop_order_refund' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
 						if ( get_current_user_id() ) {
 							$refund   = \wc_get_order( $refund_id );
 							$order_id = $refund->get_parent_id();
 							$orders   = wc_get_orders(
-								array(
+								[
 									'type'          => 'shop_order',
-									'post__in'      => array( $order_id ),
+									'post__in'      => [ $order_id ],
 									'customer_id'   => get_current_user_id(),
 									'no_rows_found' => true,
 									'return'        => 'ids',
-								)
+								]
 							);
 
 							if ( in_array( $order_id, $orders, true ) ) {
@@ -340,20 +341,20 @@ class Root_Query {
 
 						return $refund;
 					},
-				),
-				'shippingMethod'   => array(
+				],
+				'shippingMethod'   => [
 					'type'        => 'ShippingMethod',
 					'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array(
+					'args'        => [
+						'id'     => [
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' ),
-						),
-						'idType' => array(
+						],
+						'idType' => [
 							'type'        => 'ShippingMethodIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -375,20 +376,20 @@ class Root_Query {
 
 						return Factory::resolve_shipping_method( $method_id );
 					},
-				),
-				'taxRate'          => array(
+				],
+				'taxRate'          => [
 					'type'        => 'TaxRate',
 					'description' => __( 'A tax rate object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array(
+					'args'        => [
+						'id'     => [
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the tax rate', 'wp-graphql-woocommerce' ),
-						),
-						'idType' => array(
+						],
+						'idType' => [
 							'type'        => 'TaxRateIdTypeEnum',
 							'description' => __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -410,17 +411,17 @@ class Root_Query {
 
 						return Factory::resolve_tax_rate( $rate_id, $context );
 					},
-				),
-			)
+				],
+			]
 		);
 
 		// Product queries.
 		$product_type_keys = apply_filters(
 			'woographql_register_product_queries',
-			array_keys( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
+			array_keys( WP_GraphQL_WooCommerce::get_enabled_product_types() )
 		);
 
-		$product_types = \WP_GraphQL_WooCommerce::get_enabled_product_types();
+		$product_types = WP_GraphQL_WooCommerce::get_enabled_product_types();
 
 		foreach ( $product_type_keys as $type_key ) {
 			$field_name = "{$type_key}Product";
@@ -433,25 +434,25 @@ class Root_Query {
 			register_graphql_field(
 				'RootQuery',
 				$field_name,
-				array(
+				[
 					'type'        => $type_name,
 					'description' => __( 'A simple product object', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'id'     => array(
+					'args'        => [
+						'id'     => [
 							'type'        => 'ID',
 							'description' => sprintf(
 								/* translators: %s: product type */
 								__( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ),
 								$type_name
 							),
-						),
-						'idType' => array(
+						],
+						'idType' => [
 							'type'        => 'ProductIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key ) {
-						$id = isset( $args['id'] ) ? $args['id'] : null;
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
 						$product_id = null;
@@ -460,7 +461,7 @@ class Root_Query {
 								$product_id = \wc_get_product_id_by_sku( $id );
 								break;
 							case 'slug':
-								$post = get_page_by_path( $id, OBJECT, 'product' );
+								$post       = get_page_by_path( $id, OBJECT, 'product' );
 								$product_id = ! empty( $post ) ? absint( $post->ID ) : 0;
 								break;
 							case 'database_id':
@@ -491,7 +492,7 @@ class Root_Query {
 
 						return $product;
 					},
-				)
+				]
 			);
 		}//end foreach
 	}

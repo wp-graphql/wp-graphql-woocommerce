@@ -22,7 +22,7 @@ install_wordpress() {
 	# Install Wordpress + integrated plugins for testing/development.
 	composer install
 	composer require --dev -W \
-		composer/installers:~1.0 \
+		composer/installers \
 		johnpbloch/wordpress:~${WP_VERSION} \
         wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce \
@@ -52,13 +52,14 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev \
+	composer require --dev --with-all-dependencies \
 		lucatume/wp-browser \
 		codeception/module-asserts:^1.0 \
-		codeception/module-rest:^1.0 \
+		codeception/module-rest:^2.0 \
 		codeception/util-universalframework:^1.0  \
-		wp-graphql/wp-graphql-testcase \
+		wp-graphql/wp-graphql-testcase:^2.3 \
 		stripe/stripe-php
+
 }
 
 remove_local_test_library() {

@@ -29,10 +29,10 @@ class Wpunit extends \Codeception\Module {
 	 */
 	public function _beforeSuite( $settings = null ) {
 		$helper = $this->product();
-		$helper->create_attribute( 'size', array( 'small', 'medium', 'large' ) );
-		$helper->create_attribute( 'color', array( 'red', 'blue', 'green' ) );
+		$helper->create_attribute( 'size', [ 'small', 'medium', 'large' ] );
+		$helper->create_attribute( 'color', [ 'red', 'blue', 'green' ] );
 		codecept_debug( 'ATTRIBUTES_LOADED' );
-		add_action( 'init_graphql_request', array( __CLASS__, 'shortcode_test_init' ) );
+		add_action( 'init_graphql_request', [ __CLASS__, 'shortcode_test_init' ] );
 		codecept_debug( 'SHORTCODE_INITIALIZED' );
 		\Stripe\Stripe::setApiKey(
 			defined( 'STRIPE_API_SECRET_KEY' ) ? STRIPE_API_SECRET_KEY : getenv( 'STRIPE_API_SECRET_KEY' )
@@ -80,12 +80,12 @@ class Wpunit extends \Codeception\Module {
 	}
 
 	public function get_nodes( $ids, $crud ) {
-		$nodes = array();
+		$nodes = [];
 		foreach ( $ids as $id ) {
 			$nodes[] = $crud->get_query_data( $id );
 		}
 
-		return array( 'nodes' => $nodes );
+		return [ 'nodes' => $nodes ];
 	}
 
 	public function clear_loader_cache( $loader_name ) {
@@ -94,7 +94,7 @@ class Wpunit extends \Codeception\Module {
 	}
 
 	public static function shortcode_test_init() {
-		add_shortcode( 'shortcode_test', array( __CLASS__, 'shortcode_test_handler' ) );
+		add_shortcode( 'shortcode_test', [ __CLASS__, 'shortcode_test_handler' ] );
 	}
 
 	public static function shortcode_test_handler( $atts ) {

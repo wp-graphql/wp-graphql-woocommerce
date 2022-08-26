@@ -29,11 +29,11 @@ class Order_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateOrder',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -45,20 +45,20 @@ class Order_Update {
 	public static function get_input_fields() {
 		return array_merge(
 			Order_Create::get_input_fields(),
-			array(
-				'id'         => array(
+			[
+				'id'         => [
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
-				),
-				'orderId'    => array(
+				],
+				'orderId'    => [
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
-				),
-				'customerId' => array(
+				],
+				'customerId' => [
 					'type'        => 'Int',
 					'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -68,14 +68,14 @@ class Order_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'order' => array(
+		return [
+			'order' => [
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return new Order( $payload['id'] );
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Order_Update {
 			}
 
 			// Check if authorized to update this order.
-			if ( ! Order_Mutation::authorized( 'update', $order_id, $input, $context, $info ) ) {
+			if ( ! Order_Mutation::authorized( $input, $context, $info, 'update', $order_id ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to update an order.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -160,7 +160,7 @@ class Order_Update {
 			 */
 			do_action( 'graphql_woocommerce_after_order_update', $order, $input, $context, $info );
 
-			return array( 'id' => $order->get_id() );
+			return [ 'id' => $order->get_id() ];
 		};
 	}
 }

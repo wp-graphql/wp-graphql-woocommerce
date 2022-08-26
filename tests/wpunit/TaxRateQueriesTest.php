@@ -11,8 +11,8 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
 		$this->helper       = $this->getModule( '\Helper\Wpunit' )->tax_rate();
 		$this->rate         = $this->helper->create();
 	}
@@ -46,9 +46,9 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests query, "id" query arg, and results
 		 */
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected  = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
+		$expected  = [ 'data' => [ 'taxRate' => $this->helper->print_query( $this->rate ) ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -60,12 +60,12 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests query, "rateId" query arg, and results
 		 */
-		$variables = array(
+		$variables = [
 			'id'     => $this->rate,
 			'idType' => 'DATABASE_ID',
-		);
+		];
 		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected  = array( 'data' => array( 'taxRate' => $this->helper->print_query( $this->rate ) ) );
+		$expected  = [ 'data' => [ 'taxRate' => $this->helper->print_query( $this->rate ) ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -74,10 +74,10 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testTaxesQuery() {
-		$rates = array(
+		$rates = [
 			$this->rate,
 			$this->helper->create(
-				array(
+				[
 					'country'  => 'US',
 					'state'    => 'AL',
 					'city'     => 'Montgomery',
@@ -88,10 +88,10 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'compound' => '1',
 					'shipping' => '1',
 					'class'    => 'reduced-rate',
-				)
+				]
 			),
 			$this->helper->create(
-				array(
+				[
 					'country'  => 'US',
 					'state'    => 'VA',
 					'city'     => 'Norfolk',
@@ -102,9 +102,9 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'compound' => '1',
 					'shipping' => '1',
 					'class'    => 'zero-rate',
-				)
+				]
 			),
-		);
+		];
 
 		$query = '
 			query ( $class: TaxClassEnum, $postCode: String, $postCodeIn: [String] ) {
@@ -121,19 +121,19 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests query
 		 */
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-			'data' => array(
-				'taxRates' => array(
+		$actual   = graphql( [ 'query' => $query ] );
+		$expected = [
+			'data' => [
+				'taxRates' => [
 					'nodes' => array_map(
 						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
+							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
 						},
 						$rates
 					),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -145,19 +145,19 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests "class" where arg
 		 */
-		$variables = array( 'class' => 'REDUCED_RATE' );
+		$variables = [ 'class' => 'REDUCED_RATE' ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'taxRates' => array(
+		$expected  = [
+			'data' => [
+				'taxRates' => [
 					'nodes' => array_map(
 						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
+							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
 						},
 						array_values(
 							array_filter(
@@ -169,9 +169,9 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 							)
 						)
 					),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -183,25 +183,25 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests "postCode" where arg
 		 */
-		$variables = array( 'postCode' => '23451' );
+		$variables = [ 'postCode' => '23451' ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'taxRates' => array(
+		$expected  = [
+			'data' => [
+				'taxRates' => [
 					'nodes' => array_map(
 						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
+							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
 						},
-						array( $rates[2] )
+						[ $rates[2] ]
 					),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -213,25 +213,25 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests "postCodeIn" where arg
 		 */
-		$variables = array( 'postCodeIn' => array( '123456', '23451' ) );
+		$variables = [ 'postCodeIn' => [ '123456', '23451' ] ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'taxRates' => array(
+		$expected  = [
+			'data' => [
+				'taxRates' => [
 					'nodes' => array_map(
 						function( $id ) {
-							return array( 'id' => Relay::toGlobalId( 'tax_rate', $id ) );
+							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
 						},
-						array( $rates[1], $rates[2] )
+						[ $rates[1], $rates[2] ]
 					),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

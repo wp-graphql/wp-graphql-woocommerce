@@ -29,7 +29,7 @@ trait WC_CPT_Loader_Common {
 		if ( ! empty( wp_cache_get( $offset, 'posts' ) ) ) {
 			return true;
 		}
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		return $wpdb->get_var( $wpdb->prepare( "SELECT EXISTS (SELECT 1 FROM $wpdb->posts WHERE ID = %d)", $offset ) );
 	}
 
@@ -41,7 +41,7 @@ trait WC_CPT_Loader_Common {
 	 * @return array
 	 */
 	public function sanitize_common_inputs( array $input ) {
-		$args = array();
+		$args = [];
 		if ( ! empty( $input['include'] ) ) {
 			$args['post__in'] = $input['include'];
 		}
@@ -56,7 +56,7 @@ trait WC_CPT_Loader_Common {
 
 		if ( ! empty( $input['parentIn'] ) ) {
 			if ( ! isset( $args['post_parent__in'] ) ) {
-				$args['post_parent__in'] = array();
+				$args['post_parent__in'] = [];
 			}
 			$args['post_parent__in'] = array_merge( $args['post_parent__in'], $input['parentIn'] );
 		}
@@ -73,14 +73,14 @@ trait WC_CPT_Loader_Common {
 		 * Map the orderby inputArgs to the WP_Query
 		 */
 		if ( ! empty( $input['orderby'] ) && is_array( $input['orderby'] ) ) {
-			$args['orderby'] = array();
+			$args['orderby'] = [];
 			foreach ( $input['orderby'] as $orderby_input ) {
 				/**
 				 * These orderby options should not include the order parameter.
 				 */
 				if ( in_array(
 					$orderby_input['field'],
-					array( 'post__in', 'post_name__in', 'post_parent__in' ),
+					[ 'post__in', 'post_name__in', 'post_parent__in' ],
 					true
 				) ) {
 					$args['orderby'] = esc_sql( $orderby_input['field'] );
@@ -88,7 +88,8 @@ trait WC_CPT_Loader_Common {
 					// Handle meta fields.
 				} elseif ( in_array( $orderby_input['field'], $this->ordering_meta(), true ) ) {
 					$args['orderby']['meta_value_num'] = $orderby_input['order'];
-					$args['meta_key']                  = esc_sql( $orderby_input['field'] );
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$args['meta_key'] = esc_sql( $orderby_input['field'] );
 					// WPCS: slow query ok.
 
 					// Handle post object fields.

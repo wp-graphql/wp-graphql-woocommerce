@@ -121,12 +121,12 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Should fail to set headers if run before initialization.
 		$session->set_customer_session_token( true );
-		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
+		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', [] );
 		$this->assertArrayNotHasKey( 'woocommerce-session', $graphql_response_headers );
 
 		// Should success when run after initialization.
 		$session->init_session_token();
-		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
+		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', [] );
 		$this->assertArrayHasKey( 'woocommerce-session', $graphql_response_headers );
 	}
 

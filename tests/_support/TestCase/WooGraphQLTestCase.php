@@ -35,7 +35,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		parent::setUp();
 
 		// Load factories.
-		$factories = array(
+		$factories = [
 			'Product',
 			'ProductVariation',
 			'Cart',
@@ -45,7 +45,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			'TaxRate',
 			'Order',
 			'Refund',
-		);
+		];
 
 		foreach ( $factories as $factory ) {
 			$factory_name                   = strtolower( preg_replace( '/\B([A-Z])/', '_$1', $factory ) );
@@ -56,7 +56,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->factory->shipping_zone->createLegacyFlatRate();
 
 		// Create test users.
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
 		$this->customer     = $this->factory->customer->create();
 
 		// For these tests, we are not concerned with Approved Download Directory functionality.

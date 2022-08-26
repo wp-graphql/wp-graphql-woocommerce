@@ -28,7 +28,7 @@ class Orders {
 		// From Customer To Orders.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'fromType'      => 'Customer',
 					'fromFieldName' => 'orders',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -36,25 +36,25 @@ class Orders {
 
 						return self::get_customer_order_connection( $resolver, $source );
 					},
-				)
+				]
 			)
 		);
 
 		// From RootQuery To Refunds.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
-				),
+				],
 				'shop_order_refund'
 			)
 		);
 		// From Order To Refunds.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'fromType'       => 'Order',
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
@@ -66,14 +66,14 @@ class Orders {
 
 						return $resolver->get_connection();
 					},
-				),
+				],
 				'shop_order_refund'
 			)
 		);
 		// From Customer To Refunds.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'fromType'       => 'Customer',
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
@@ -82,18 +82,18 @@ class Orders {
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
 
 						$customer_orders = \wc_get_orders(
-							array(
+							[
 								'customer_id'   => $source->ID,
 								'no_rows_found' => true,
 								'return'        => 'ids',
-							)
+							]
 						);
 
 						$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $customer_orders ) );
 
 						return $resolver->get_connection();
 					},
-				),
+				],
 				'shop_order_refund'
 			)
 		);
@@ -110,7 +110,7 @@ class Orders {
 	private static function get_customer_order_connection( $resolver, $customer ) {
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
 		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return array();
+			return [];
 		}
 
 		// If the querying user has a "billing email" set filter orders by user's billing email, otherwise filter by user's ID.
@@ -135,11 +135,11 @@ class Orders {
 	private static function get_customer_refund_connection( $resolver, $customer ) {
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
 		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return array(
+			return [
 				'pageInfo' => null,
-				'nodes'    => array(),
-				'edges'    => array(),
-			);
+				'nodes'    => [],
+				'edges'    => [],
+			];
 		}
 	}
 
@@ -152,12 +152,12 @@ class Orders {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array(), $post_type = 'shop_order' ): array {
+	public static function get_connection_config( $args = [], $post_type = 'shop_order' ): array {
 		// Get Post type object for use in connection resolve function.
 		$post_object = get_post_type_object( $post_type );
 
 		return array_merge(
-			array(
+			[
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
@@ -180,11 +180,11 @@ class Orders {
 					 * and return the connection.
 					 */
 					if ( 'shop_order_refund' === $post_object->name ) {
-						$empty_results = array(
+						$empty_results = [
 							'pageInfo' => null,
-							'nodes'    => array(),
-							'edges'    => array(),
-						);
+							'nodes'    => [],
+							'edges'    => [],
+						];
 
 						return $not_manager
 							? $empty_results
@@ -195,7 +195,7 @@ class Orders {
 						? self::get_customer_order_connection( $resolver, \WC()->customer )
 						: $resolver->get_connection();
 				},
-			),
+			],
 			$args
 		);
 	}
@@ -211,54 +211,54 @@ class Orders {
 			case 'private':
 				return array_merge(
 					get_wc_cpt_connection_args(),
-					array(
-						'statuses'    => array(
-							'type'        => array( 'list_of' => 'OrderStatusEnum' ),
+					[
+						'statuses'    => [
+							'type'        => [ 'list_of' => 'OrderStatusEnum' ],
 							'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
-						),
-						'customerId'  => array(
+						],
+						'customerId'  => [
 							'type'        => 'Int',
 							'description' => __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' ),
-						),
-						'customersIn' => array(
-							'type'        => array( 'list_of' => 'Int' ),
+						],
+						'customersIn' => [
+							'type'        => [ 'list_of' => 'Int' ],
 							'description' => __( 'Limit result set to orders assigned a specific group of customers.', 'wp-graphql-woocommerce' ),
-						),
-						'productId'   => array(
+						],
+						'productId'   => [
 							'type'        => 'Int',
 							'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
-						),
-						'orderby'     => array(
-							'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
+						],
+						'orderby'     => [
+							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
 							'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-						),
-					)
+						],
+					]
 				);
 
 			case 'public':
 			default:
-				return array(
-					'statuses'  => array(
-						'type'        => array( 'list_of' => 'OrderStatusEnum' ),
+				return [
+					'statuses'  => [
+						'type'        => [ 'list_of' => 'OrderStatusEnum' ],
 						'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
-					),
-					'productId' => array(
+					],
+					'productId' => [
 						'type'        => 'Int',
 						'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
-					),
-					'orderby'   => array(
-						'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
+					],
+					'orderby'   => [
+						'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
 						'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-					),
-					'search'    => array(
+					],
+					'search'    => [
 						'type'        => 'String',
 						'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-					),
-					'dateQuery' => array(
+					],
+					'dateQuery' => [
 						'type'        => 'DateQueryInput',
 						'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
-					),
-				);
+					],
+				];
 		}//end switch
 	}
 
@@ -270,16 +270,16 @@ class Orders {
 	public static function get_refund_connection_args(): array {
 		return array_merge(
 			get_wc_cpt_connection_args(),
-			array(
-				'statuses' => array(
-					'type'        => array( 'list_of' => 'String' ),
+			[
+				'statuses' => [
+					'type'        => [ 'list_of' => 'String' ],
 					'description' => __( 'Limit result set to refunds assigned a specific status.', 'wp-graphql-woocommerce' ),
-				),
-				'orderIn'  => array(
-					'type'        => array( 'list_of' => 'Int' ),
+				],
+				'orderIn'  => [
+					'type'        => [ 'list_of' => 'Int' ],
 					'description' => __( 'Limit result set to refunds from a specific group of order IDs.', 'wp-graphql-woocommerce' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -295,9 +295,9 @@ class Orders {
 	 * @return array
 	 */
 	public static function post_object_connection_query_args( $query_args, $source, $args, $context, $info ) {
-		$post_types      = array( 'shop_order', 'shop_order_refund' );
+		$post_types      = [ 'shop_order', 'shop_order_refund' ];
 		$not_order_query = is_string( $query_args['post_type'] )
-			? empty( array_intersect( $post_types, array( $query_args['post_type'] ) ) )
+			? empty( array_intersect( $post_types, [ $query_args['post_type'] ] ) )
 			: empty( array_intersect( $post_types, $query_args['post_type'] ) );
 
 		if ( $not_order_query ) {
@@ -328,8 +328,8 @@ class Orders {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
-		$post_types = array( 'shop_order', 'shop_order_refund' );
-		if ( empty( array_intersect( $post_types, is_string( $post_type ) ? array( $post_type ) : $post_type ) ) ) {
+		$post_types = [ 'shop_order', 'shop_order_refund' ];
+		if ( empty( array_intersect( $post_types, is_string( $post_type ) ? [ $post_type ] : $post_type ) ) ) {
 			return $query_args;
 		}
 
@@ -341,8 +341,8 @@ class Orders {
 		);
 
 		// Process order meta inputs.
-		$metas      = array( 'customerId', 'customersIn' );
-		$meta_query = array();
+		$metas      = [ 'customerId', 'customersIn' ];
+		$meta_query = [];
 		foreach ( $metas as $field ) {
 			if ( isset( $query_args[ $field ] ) ) {
 				$value = $query_args[ $field ];
@@ -350,31 +350,31 @@ class Orders {
 					case 'customerId':
 					case 'customersIn':
 						if ( is_null( $value ) ) {
-							$meta_query[] = array(
+							$meta_query[] = [
 								'key'     => '_customer_user',
 								'value'   => 0,
 								'compare' => '=',
-							);
+							];
 						} else {
-							$meta_query[] = array(
+							$meta_query[] = [
 								'key'     => '_customer_user',
 								'value'   => $value,
 								'compare' => is_array( $value ) ? 'IN' : '=',
-							);
+							];
 						}
 				}
 			}
 		}//end foreach
 
 		if ( ! empty( $meta_query ) ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = $meta_query;
-			// WPCS: slow query ok.
 		}
 
-		$key_mapping = array(
+		$key_mapping = [
 			'statuses' => 'post_status',
 			'orderIn'  => 'post_parent__in',
-		);
+		];
 
 		$prefixer = function( $status ) {
 			$statuses = array_keys( \wc_get_order_statuses() );
@@ -407,6 +407,7 @@ class Orders {
 
 		// Search by product.
 		if ( ! empty( $where_args['productId'] ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$order_ids = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT order_id
@@ -418,7 +419,7 @@ class Orders {
 			);
 
 			// Force WP_Query return empty if don't found any order.
-			$query_args['post__in'] = ! empty( $order_ids ) ? $order_ids : array( 0 );
+			$query_args['post__in'] = ! empty( $order_ids ) ? $order_ids : [ 0 ];
 		}
 
 		// Search.

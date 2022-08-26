@@ -28,11 +28,11 @@ class Coupon_Create {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'createCoupon',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => array( __CLASS__, 'mutate_and_get_payload' ),
-			)
+				'mutateAndGetPayload' => [ __CLASS__, 'mutate_and_get_payload' ],
+			]
 		);
 	}
 
@@ -42,88 +42,88 @@ class Coupon_Create {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'code'                      => array(
-				'type'        => array( 'non_null' => 'String' ),
+		return [
+			'code'                      => [
+				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'Coupon code.', 'wp-graphql-woocommerce' ),
-			),
-			'amount'                    => array(
+			],
+			'amount'                    => [
 				'type'        => 'Float',
 				'description' => __( 'The amount of discount. Should always be numeric, even if setting a percentage.', 'wp-graphql-woocommerce' ),
-			),
-			'discountType'              => array(
+			],
+			'discountType'              => [
 				'type'        => 'DiscountTypeEnum',
 				'description' => __( 'Determines the type of discount that will be applied.', 'wp-graphql-woocommerce' ),
-			),
-			'description'               => array(
+			],
+			'description'               => [
 				'type'        => 'String',
 				'description' => __( 'Coupon description.', 'wp-graphql-woocommerce' ),
-			),
-			'dateExpires'               => array(
+			],
+			'dateExpires'               => [
 				'type'        => 'String',
 				'description' => __( 'The date the coupon expires, in the site\'s timezone.', 'wp-graphql-woocommerce' ),
-			),
-			'dateExpiresGmt'            => array(
+			],
+			'dateExpiresGmt'            => [
 				'type'        => 'String',
 				'description' => __( 'The date the coupon expires, as GMT.', 'wp-graphql-woocommerce' ),
-			),
-			'individualUse'             => array(
+			],
+			'individualUse'             => [
 				'type'        => 'Boolean',
 				'description' => __( 'If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.', 'wp-graphql-woocommerce' ),
-			),
-			'productIds'                => array(
-				'type'        => array( 'list_of' => 'Int' ),
+			],
+			'productIds'                => [
+				'type'        => [ 'list_of' => 'Int' ],
 				'description' => __( 'List of product IDs the coupon can be used on.', 'wp-graphql-woocommerce' ),
-			),
-			'excludedProductIds'        => array(
-				'type'        => array( 'list_of' => 'Int' ),
+			],
+			'excludedProductIds'        => [
+				'type'        => [ 'list_of' => 'Int' ],
 				'description' => __( 'List of product IDs the coupon cannot be used on.', 'wp-graphql-woocommerce' ),
-			),
-			'usageLimit'                => array(
+			],
+			'usageLimit'                => [
 				'type'        => 'Int',
 				'description' => __( 'How many times the coupon can be used in total.', 'wp-graphql-woocommerce' ),
-			),
-			'usageLimitPerUser'         => array(
+			],
+			'usageLimitPerUser'         => [
 				'type'        => 'Int',
 				'description' => __( 'How many times the coupon can be used per customer.', 'wp-graphql-woocommerce' ),
-			),
-			'limitUsageToXItems'        => array(
+			],
+			'limitUsageToXItems'        => [
 				'type'        => 'Int',
 				'description' => __( 'Max number of items in the cart the coupon can be applied to.', 'wp-graphql-woocommerce' ),
-			),
-			'freeShipping'              => array(
+			],
+			'freeShipping'              => [
 				'type'        => 'Boolean',
 				'description' => __( 'If true and if the free shipping method requires a coupon, this coupon will enable free shipping.', 'wp-graphql-woocommerce' ),
-			),
-			'productCategories'         => array(
-				'type'        => array( 'list_of' => 'Int' ),
+			],
+			'productCategories'         => [
+				'type'        => [ 'list_of' => 'Int' ],
 				'description' => __( 'List of category IDs the coupon applies to.', 'wp-graphql-woocommerce' ),
-			),
-			'excludedProductCategories' => array(
-				'type'        => array( 'list_of' => 'Int' ),
+			],
+			'excludedProductCategories' => [
+				'type'        => [ 'list_of' => 'Int' ],
 				'description' => __( 'List of category IDs the coupon does not apply to.', 'wp-graphql-woocommerce' ),
-			),
-			'excludeSaleItems'          => array(
+			],
+			'excludeSaleItems'          => [
 				'type'        => 'Boolean',
 				'description' => __( 'If true, this coupon will not be applied to items that have sale prices.', 'wp-graphql-woocommerce' ),
-			),
-			'minimumAmount'             => array(
+			],
+			'minimumAmount'             => [
 				'type'        => 'String',
 				'description' => __( 'Minimum order amount that needs to be in the cart before coupon applies.', 'wp-graphql-woocommerce' ),
-			),
-			'maximumAmount'             => array(
+			],
+			'maximumAmount'             => [
 				'type'        => 'String',
 				'description' => __( 'Maximum order amount allowed when using the coupon.', 'wp-graphql-woocommerce' ),
-			),
-			'emailRestrictions'         => array(
-				'type'        => array( 'list_of' => 'String' ),
+			],
+			'emailRestrictions'         => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'List of email addresses that can use this coupon.', 'wp-graphql-woocommerce' ),
-			),
-			'metaData'                  => array(
-				'type'        => array( 'list_of' => 'MetaDataInput' ),
+			],
+			'metaData'                  => [
+				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -132,20 +132,20 @@ class Coupon_Create {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'coupon' => array(
+		return [
+			'coupon' => [
 				'type'    => 'Coupon',
 				'resolve' => function( $payload ) {
 					return new Coupon( $payload['id'] );
 				},
-			),
-			'code'   => array(
+			],
+			'code'   => [
 				'type'    => 'String',
 				'resolve' => function( $payload ) {
 					return $payload['code'];
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -210,13 +210,13 @@ class Coupon_Create {
 					$coupon->set_description( wp_filter_post_kses( $value ) );
 					break;
 				default:
-					if ( is_callable( array( $coupon, "set_{$key}" ) ) ) {
+					if ( is_callable( [ $coupon, "set_{$key}" ] ) ) {
 						$coupon->{"set_{$key}"}( $value );
 					}
 					break;
 			}//end switch
 		}//end foreach
 
-		return array( 'id' => $coupon->save() );
+		return [ 'id' => $coupon->save() ];
 	}
 }

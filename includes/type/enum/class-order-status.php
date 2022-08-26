@@ -18,7 +18,7 @@ class Order_Status {
 	public static function register() {
 		$statuses = \wc_get_order_statuses();
 
-		$values = array();
+		$values = [];
 		foreach ( $statuses as $status => $description ) {
 			$split_status_slug = explode( 'wc-', $status );
 			$value             = array_pop( $split_status_slug );
@@ -28,10 +28,10 @@ class Order_Status {
 
 		register_graphql_enum_type(
 			'OrderStatusEnum',
-			array(
+			[
 				'description' => __( 'Order status enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			)
+			]
 		);
 	}
 }

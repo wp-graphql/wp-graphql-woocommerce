@@ -11,8 +11,8 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
 		$this->helper       = $this->getModule( '\Helper\Wpunit' )->shipping_method();
 		$this->method       = 'flat_rate';
 	}
@@ -37,17 +37,17 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test "ID" ID type.
 		 */
-		$variables = array(
+		$variables = [
 			'id'     => $id,
 			'idType' => 'ID',
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array( 'data' => array( 'shippingMethod' => $this->helper->print_query( $this->method ) ) );
+		$expected  = [ 'data' => [ 'shippingMethod' => $this->helper->print_query( $this->method ) ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -59,17 +59,17 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test "DATABASE_ID" ID type.
 		 */
-		$variables = array(
+		$variables = [
 			'id'     => $this->method,
 			'idType' => 'DATABASE_ID',
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array( 'data' => array( 'shippingMethod' => $this->helper->print_query( $this->method ) ) );
+		$expected  = [ 'data' => [ 'shippingMethod' => $this->helper->print_query( $this->method ) ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -82,7 +82,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$methods     = array_values(
 			array_map(
 				function( $method ) {
-					return array( 'id' => Relay::toGlobalId( 'shipping_method', $method->id ) );
+					return [ 'id' => Relay::toGlobalId( 'shipping_method', $method->id ) ];
 				},
 				$wc_shipping->get_shipping_methods()
 			)
@@ -104,7 +104,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests query
 		 */
 		$actual   = do_graphql_request( $query, 'shippingMethodQuery' );
-		$expected = array( 'data' => array( 'shippingMethods' => array( 'nodes' => $methods ) ) );
+		$expected = [ 'data' => [ 'shippingMethods' => [ 'nodes' => $methods ] ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

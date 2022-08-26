@@ -6,10 +6,12 @@
  * @since 0.0.1
  */
 
+namespace WPGraphQL\WooCommerce;
+
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
+if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 	/**
 	 * Class WP_GraphQL_WooCommerce
@@ -54,13 +56,13 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		public static function get_post_types() {
 			return apply_filters(
 				'graphql_woocommerce_post_types',
-				array(
+				[
 					'product',
 					'product_variation',
 					'shop_coupon',
 					'shop_order',
 					'shop_order_refund',
-				)
+				]
 			);
 		}
 
@@ -72,12 +74,12 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		public static function get_enabled_product_types() {
 			return apply_filters(
 				'graphql_woocommerce_product_types',
-				array(
+				[
 					'simple'   => 'SimpleProduct',
 					'variable' => 'VariableProduct',
 					'external' => 'ExternalProduct',
 					'grouped'  => 'GroupProduct',
-				)
+				]
 			);
 		}
 
@@ -91,7 +93,7 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			$attribute_taxonomies = \wc_get_attribute_taxonomies();
 
 			// Get taxonomy names.
-			$attributes = array();
+			$attributes = [];
 			foreach ( $attribute_taxonomies as $tax ) {
 				$attributes[] = 'pa_' . $tax->attribute_name;
 			}
@@ -136,6 +138,178 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 * @since  0.0.1
 		 */
 		private function includes() {
+			$include_directory_path = get_includes_directory();
+
+			// Include util class files.
+			require $include_directory_path . 'utils/class-ql-session-handler.php';
+			require $include_directory_path . 'utils/class-session-transaction-manager.php';
+
+			// Include models class files.
+			require $include_directory_path . 'model/class-customer.php';
+			require $include_directory_path . 'model/class-wc-post.php';
+			require $include_directory_path . 'model/class-coupon.php';
+			require $include_directory_path . 'model/class-product.php';
+			require $include_directory_path . 'model/class-product-variation.php';
+			require $include_directory_path . 'model/class-order.php';
+			require $include_directory_path . 'model/class-refund.php';
+			require $include_directory_path . 'model/class-order-item.php';
+			require $include_directory_path . 'model/class-shipping-method.php';
+			require $include_directory_path . 'model/class-tax-rate.php';
+
+			// Include data loaders class files.
+			require $include_directory_path . 'data/loader/class-wc-cpt-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-customer-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-db-loader.php';
+
+			// Include connection resolver trait/class files.
+			require $include_directory_path . 'data/connection/trait-wc-db-loader-common.php';
+			require $include_directory_path . 'data/connection/class-cart-item-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-downloadable-item-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-order-item-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-payment-gateway-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-product-attribute-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-shipping-method-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-tax-rate-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-variation-attribute-connection-resolver.php';
+
+			// Include deprecated resolver trait/class files.
+			require $include_directory_path . 'data/connection/trait-wc-cpt-loader-common.php';
+			require $include_directory_path . 'data/connection/class-coupon-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-product-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-refund-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-order-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-customer-connection-resolver.php';
+
+			// Include mutation processor class files.
+			require $include_directory_path . 'data/mutation/class-cart-mutation.php';
+			require $include_directory_path . 'data/mutation/class-checkout-mutation.php';
+			require $include_directory_path . 'data/mutation/class-coupon-mutation.php';
+			require $include_directory_path . 'data/mutation/class-customer-mutation.php';
+			require $include_directory_path . 'data/mutation/class-order-mutation.php';
+
+			// Include factory class file.
+			require $include_directory_path . 'data/class-factory.php';
+
+			// Include enum type class files.
+			require $include_directory_path . 'type/enum/class-backorders.php';
+			require $include_directory_path . 'type/enum/class-cart-error-type.php';
+			require $include_directory_path . 'type/enum/class-catalog-visibility.php';
+			require $include_directory_path . 'type/enum/class-countries.php';
+			require $include_directory_path . 'type/enum/class-customer-connection-orderby-enum.php';
+			require $include_directory_path . 'type/enum/class-discount-type.php';
+			require $include_directory_path . 'type/enum/class-id-type-enums.php';
+			require $include_directory_path . 'type/enum/class-manage-stock.php';
+			require $include_directory_path . 'type/enum/class-order-status.php';
+			require $include_directory_path . 'type/enum/class-post-type-orderby-enum.php';
+			require $include_directory_path . 'type/enum/class-orders-orderby-enum.php';
+			require $include_directory_path . 'type/enum/class-products-orderby-enum.php';
+			require $include_directory_path . 'type/enum/class-pricing-field-format.php';
+			require $include_directory_path . 'type/enum/class-product-attribute-types.php';
+			require $include_directory_path . 'type/enum/class-product-category-display.php';
+			require $include_directory_path . 'type/enum/class-product-taxonomy.php';
+			require $include_directory_path . 'type/enum/class-product-types.php';
+			require $include_directory_path . 'type/enum/class-stock-status.php';
+			require $include_directory_path . 'type/enum/class-tax-class.php';
+			require $include_directory_path . 'type/enum/class-tax-rate-connection-orderby-enum.php';
+			require $include_directory_path . 'type/enum/class-tax-status.php';
+			require $include_directory_path . 'type/enum/class-taxonomy-operator.php';
+
+			// Include interface type class files.
+			require $include_directory_path . 'type/interface/class-attribute.php';
+			require $include_directory_path . 'type/interface/class-cart-error.php';
+			require $include_directory_path . 'type/interface/class-product-attribute.php';
+			require $include_directory_path . 'type/interface/class-product.php';
+
+			// Include object type class files.
+			require $include_directory_path . 'type/object/class-cart-error-types.php';
+			require $include_directory_path . 'type/object/class-cart-type.php';
+			require $include_directory_path . 'type/object/class-coupon-type.php';
+			require $include_directory_path . 'type/object/class-customer-address-type.php';
+			require $include_directory_path . 'type/object/class-customer-type.php';
+			require $include_directory_path . 'type/object/class-downloadable-item-type.php';
+			require $include_directory_path . 'type/object/class-meta-data-type.php';
+			require $include_directory_path . 'type/object/class-order-item-type.php';
+			require $include_directory_path . 'type/object/class-order-type.php';
+			require $include_directory_path . 'type/object/class-payment-gateway-type.php';
+			require $include_directory_path . 'type/object/class-product-attribute-types.php';
+			require $include_directory_path . 'type/object/class-product-category-type.php';
+			require $include_directory_path . 'type/object/class-product-download-type.php';
+			require $include_directory_path . 'type/object/class-product-types.php';
+			require $include_directory_path . 'type/object/class-product-variation-type.php';
+			require $include_directory_path . 'type/object/class-refund-type.php';
+			require $include_directory_path . 'type/object/class-root-query.php';
+			require $include_directory_path . 'type/object/class-shipping-method-type.php';
+			require $include_directory_path . 'type/object/class-shipping-package-type.php';
+			require $include_directory_path . 'type/object/class-shipping-rate-type.php';
+			require $include_directory_path . 'type/object/class-simple-attribute-type.php';
+			require $include_directory_path . 'type/object/class-tax-rate-type.php';
+			require $include_directory_path . 'type/object/class-variation-attribute-type.php';
+
+			// Include input type class files.
+			require $include_directory_path . 'type/input/class-cart-item-input.php';
+			require $include_directory_path . 'type/input/class-cart-item-quantity-input.php';
+			require $include_directory_path . 'type/input/class-create-account-input.php';
+			require $include_directory_path . 'type/input/class-customer-address-input.php';
+			require $include_directory_path . 'type/input/class-fee-line-input.php';
+			require $include_directory_path . 'type/input/class-line-item-input.php';
+			require $include_directory_path . 'type/input/class-meta-data-input.php';
+			require $include_directory_path . 'type/input/class-orderby-inputs.php';
+			require $include_directory_path . 'type/input/class-product-attribute-input.php';
+			require $include_directory_path . 'type/input/class-product-taxonomy-filter-input.php';
+			require $include_directory_path . 'type/input/class-product-taxonomy-input.php';
+			require $include_directory_path . 'type/input/class-shipping-line-input.php';
+			require $include_directory_path . 'type/input/class-tax-rate-connection-orderby-input.php';
+
+			// Include mutation type class files.
+			require $include_directory_path . 'mutation/class-cart-add-fee.php';
+			require $include_directory_path . 'mutation/class-cart-add-item.php';
+			require $include_directory_path . 'mutation/class-cart-add-items.php';
+			require $include_directory_path . 'mutation/class-cart-apply-coupon.php';
+			require $include_directory_path . 'mutation/class-cart-empty.php';
+			require $include_directory_path . 'mutation/class-cart-fill.php';
+			require $include_directory_path . 'mutation/class-cart-remove-coupons.php';
+			require $include_directory_path . 'mutation/class-cart-remove-items.php';
+			require $include_directory_path . 'mutation/class-cart-restore-items.php';
+			require $include_directory_path . 'mutation/class-cart-update-item-quantities.php';
+			require $include_directory_path . 'mutation/class-cart-update-shipping-method.php';
+			require $include_directory_path . 'mutation/class-checkout.php';
+			require $include_directory_path . 'mutation/class-coupon-create.php';
+			require $include_directory_path . 'mutation/class-coupon-delete.php';
+			require $include_directory_path . 'mutation/class-coupon-update.php';
+			require $include_directory_path . 'mutation/class-customer-register.php';
+			require $include_directory_path . 'mutation/class-customer-update.php';
+			require $include_directory_path . 'mutation/class-order-create.php';
+			require $include_directory_path . 'mutation/class-order-delete-items.php';
+			require $include_directory_path . 'mutation/class-order-delete.php';
+			require $include_directory_path . 'mutation/class-order-update.php';
+			require $include_directory_path . 'mutation/class-review-write.php';
+			require $include_directory_path . 'mutation/class-review-delete-restore.php';
+			require $include_directory_path . 'mutation/class-review-update.php';
+
+			// Include connection class/function files.
+			require $include_directory_path . 'connection/wc-cpt-connection-args.php';
+			require $include_directory_path . 'connection/class-comments.php';
+			require $include_directory_path . 'connection/class-coupons.php';
+			require $include_directory_path . 'connection/class-customers.php';
+			require $include_directory_path . 'connection/class-orders.php';
+			require $include_directory_path . 'connection/class-payment-gateways.php';
+			require $include_directory_path . 'connection/class-posts.php';
+			require $include_directory_path . 'connection/class-product-attributes.php';
+			require $include_directory_path . 'connection/class-products.php';
+			require $include_directory_path . 'connection/class-shipping-methods.php';
+			require $include_directory_path . 'connection/class-tax-rates.php';
+			require $include_directory_path . 'connection/class-variation-attributes.php';
+			require $include_directory_path . 'connection/class-wc-terms.php';
+
+			// Include main plugin class files.
+			require $include_directory_path . 'class-core-schema-filters.php';
+			require $include_directory_path . 'class-jwt-auth-schema-filters.php';
+			require $include_directory_path . 'class-woocommerce-filters.php';
+			require $include_directory_path . 'class-acf-schema-filters.php';
+			require $include_directory_path . 'class-type-registry.php';
+
+			// Required extra plugin function file.
+			require $include_directory_path . 'functions.php';
 
 			/**
 			 * WPGRAPHQL_AUTOLOAD can be set to "false" to prevent the autoloader from running.
@@ -147,9 +321,9 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 			 * so this is set to false for tests.
 			 */
 			if ( defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && true === WPGRAPHQL_WOOCOMMERCE_AUTOLOAD ) {
-				if ( file_exists( WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+				if ( file_exists( get_vendor_directory() . 'autoload.php' ) ) {
 					// Autoload Required Classes.
-					require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'vendor/autoload.php';
+					require_once get_vendor_directory() . 'autoload.php';
 				}
 
 				/**
@@ -176,16 +350,8 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 							);
 						}
 					);
-
-					return false;
-				}//end if
+				}
 			}//end if
-
-			// Required non-autoloaded classes.
-			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'access-functions.php';
-			require_once WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR . 'includes/functions.php';
-
-			return true;
 		}
 
 		/**
@@ -193,23 +359,23 @@ if ( ! class_exists( 'WP_GraphQL_WooCommerce' ) ) :
 		 */
 		private function setup() {
 			// Setup minor integrations.
-			\WPGraphQL\WooCommerce\Functions\setup_minor_integrations();
+			Functions\setup_minor_integrations();
 
 			// Register WooCommerce filters.
-			\WPGraphQL\WooCommerce\WooCommerce_Filters::setup();
+			WooCommerce_Filters::setup();
 
 			// Register WPGraphQL core filters.
-			\WPGraphQL\WooCommerce\Core_Schema_Filters::add_filters();
+			Core_Schema_Filters::add_filters();
 
 			// Register WPGraphQL ACF filters.
-			\WPGraphQL\WooCommerce\ACF_Schema_Filters::add_filters();
+			ACF_Schema_Filters::add_filters();
 
 			// Register WPGraphQL JWT Authentication filters.
-			\WPGraphQL\WooCommerce\JWT_Auth_Schema_Filters::add_filters();
+			JWT_Auth_Schema_Filters::add_filters();
 
 			// Initialize WooGraphQL TypeRegistry.
-			$registry = new \WPGraphQL\WooCommerce\Type_Registry();
-			add_action( 'graphql_register_types', array( $registry, 'init' ), 10, 1 );
+			$registry = new Type_Registry();
+			add_action( 'graphql_register_types', [ $registry, 'init' ], 10, 1 );
 		}
 	}
 

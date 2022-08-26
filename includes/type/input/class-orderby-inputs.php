@@ -24,17 +24,17 @@ class Orderby_Inputs {
 	public static function register_orderby_input( $base_name ) {
 		register_graphql_input_type(
 			$base_name . 'OrderbyInput',
-			array(
+			[
 				'description' => __( 'Options for ordering the connection', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'field' => array(
-						'type' => array( 'non_null' => $base_name . 'OrderbyEnum' ),
-					),
-					'order' => array(
+				'fields'      => [
+					'field' => [
+						'type' => [ 'non_null' => $base_name . 'OrderbyEnum' ],
+					],
+					'order' => [
 						'type' => 'OrderEnum',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 
@@ -42,11 +42,11 @@ class Orderby_Inputs {
 	 * Registers type
 	 */
 	public static function register() {
-		$input_types = array(
+		$input_types = [
 			'PostType',
 			'Products',
 			'Orders',
-		);
+		];
 
 		foreach ( $input_types as $name ) {
 			self::register_orderby_input( $name );

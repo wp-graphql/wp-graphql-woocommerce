@@ -27,40 +27,40 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 	protected static function values() {
 		return array_merge(
 			self::post_type_values(),
-			array(
-				'PRICE'         => array(
+			[
+				'PRICE'         => [
 					'value'       => '_price',
 					'description' => __( 'Order by product\'s current price', 'wp-graphql-woocommerce' ),
-				),
-				'REGULAR_PRICE' => array(
+				],
+				'REGULAR_PRICE' => [
 					'value'       => '_regular_price',
 					'description' => __( 'Order by product\'s regular price', 'wp-graphql-woocommerce' ),
-				),
-				'SALE_PRICE'    => array(
+				],
+				'SALE_PRICE'    => [
 					'value'       => '_sale_price',
 					'description' => __( 'Order by product\'s sale price', 'wp-graphql-woocommerce' ),
-				),
-				'REVIEW_COUNT'  => array(
+				],
+				'REVIEW_COUNT'  => [
 					'value'       => '_wc_rating_count',
 					'description' => __( 'Order by number of reviews on product', 'wp-graphql-woocommerce' ),
-				),
-				'RATING'        => array(
+				],
+				'RATING'        => [
 					'value'       => '_wc_average_rating',
 					'description' => __( 'Order by product average rating', 'wp-graphql-woocommerce' ),
-				),
-				'ON_SALE_FROM'  => array(
+				],
+				'ON_SALE_FROM'  => [
 					'value'       => '_sale_price_dates_from',
 					'description' => __( 'Order by date product sale starts', 'wp-graphql-woocommerce' ),
-				),
-				'ON_SALE_TO'    => array(
+				],
+				'ON_SALE_TO'    => [
 					'value'       => '_sale_price_dates_to',
 					'description' => __( 'Order by date product sale ends', 'wp-graphql-woocommerce' ),
-				),
-				'TOTAL_SALES'   => array(
+				],
+				'TOTAL_SALES'   => [
 					'value'       => 'total_sales',
 					'description' => __( 'Order by total sales of products sold', 'wp-graphql-woocommerce' ),
-				),
-			)
+				],
+			]
 		);
 	}
 }

@@ -29,11 +29,11 @@ class Review_Write {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'writeReview',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -48,12 +48,12 @@ class Review_Write {
 
 		return array_merge(
 			$comment_input_fields,
-			array(
-				'rating' => array(
-					'type'        => array( 'non_null' => 'Int' ),
+			[
+				'rating' => [
+					'type'        => [ 'non_null' => 'Int' ],
 					'description' => __( 'Product rating', 'wp-graphql-woocommerce' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -63,8 +63,8 @@ class Review_Write {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'rating' => array(
+		return [
+			'rating' => [
 				'type'        => 'Float',
 				'description' => __( 'The product rating of the review that was created', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $payload ) {
@@ -73,8 +73,8 @@ class Review_Write {
 					}
 					return (float) get_comment_meta( $payload['id'], 'rating', true );
 				},
-			),
-			'review' => array(
+			],
+			'review' => [
 				'type'        => 'Comment',
 				'description' => __( 'The product review that was created', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $payload, $args, AppContext $context ) {
@@ -84,8 +84,8 @@ class Review_Write {
 					$comment = get_comment( $payload['id'] );
 					return new Comment( $comment );
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**

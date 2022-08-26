@@ -28,7 +28,7 @@ class WC_Customer_Loader extends AbstractDataLoader {
 		if ( empty( $keys ) ) {
 			return $keys;
 		}
-		$all_customers = array();
+		$all_customers = [];
 
 		/**
 		 * Prepare the args for the query. We're provided a specific
@@ -38,13 +38,13 @@ class WC_Customer_Loader extends AbstractDataLoader {
 		 * to the count of the keys provided. The query must also return results
 		 * in the same order the keys were provided in.
 		 */
-		$args = array(
+		$args = [
 			'include'     => $keys,
 			'number'      => count( $keys ),
 			'orderby'     => 'include',
 			'count_total' => false,
 			'fields'      => 'ids',
-		);
+		];
 
 		/**
 		 * Query for the users and get the results
@@ -56,7 +56,7 @@ class WC_Customer_Loader extends AbstractDataLoader {
 		 * If no users are returned, return an empty array
 		 */
 		if ( empty( $customers ) || ! is_array( $customers ) ) {
-			return array();
+			return [];
 		}
 
 		foreach ( $keys as $key ) {

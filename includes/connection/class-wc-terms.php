@@ -17,7 +17,7 @@ use WPGraphQL\Connection\TermObjects;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
 use WPGraphQL;
-use WP_GraphQL_WooCommerce;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - WC_Terms
@@ -44,7 +44,7 @@ class WC_Terms extends TermObjects {
 							register_graphql_connection(
 								self::get_connection_config(
 									$tax_object,
-									array(
+									[
 										'fromType'      => $post_type_object->graphql_single_name,
 										'toType'        => $tax_object->graphql_single_name,
 										'fromFieldName' => $tax_object->graphql_plural_name,
@@ -53,11 +53,11 @@ class WC_Terms extends TermObjects {
 
 											$term_ids = \wc_get_object_terms( $source->ID, $tax_object->name, 'term_id' );
 
-											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : array( '0' ) );
+											$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : [ '0' ] );
 
 											return $resolver->get_connection();
 										},
-									)
+									]
 								)
 							);
 						}//end if
@@ -71,7 +71,7 @@ class WC_Terms extends TermObjects {
 		register_graphql_connection(
 			self::get_connection_config(
 				$tax_object,
-				array(
+				[
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'productCategories',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
@@ -80,27 +80,27 @@ class WC_Terms extends TermObjects {
 
 						return $resolver->get_connection();
 					},
-				)
+				]
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
 				$tax_object,
-				array(
+				[
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProductCategories',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
-						$resolver   = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
+						$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 						$resolver->set_query_arg( 'term_taxonomy_id', $source->excluded_product_category_ids );
 
 						return $resolver->get_connection();
 					},
-				)
+				]
 			)
 		);
 
 		register_graphql_connection(
-			array(
+			[
 				'fromType'       => 'GlobalProductAttribute',
 				'toType'         => 'TermNode',
 				'queryClass'     => 'WP_Term_Query',
@@ -115,7 +115,7 @@ class WC_Terms extends TermObjects {
 					$resolver->set_query_arg( 'slug', $source->get_slugs() );
 					return $resolver->get_connection();
 				},
-			)
+			]
 		);
 	}
 }

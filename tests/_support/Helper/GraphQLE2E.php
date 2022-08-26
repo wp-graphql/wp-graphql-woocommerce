@@ -19,7 +19,7 @@ class GraphQLE2E extends \Codeception\Module {
 			return $rest->grabHttpHeader( $headers );
 		}
 
-		$response_headers = array();
+		$response_headers = [];
 		foreach ( $headers as $header ) {
 			$rest->seeHttpHeaderOnce( $header );
 			$response_headers[] = $rest->grabHttpHeader( $header );
@@ -33,7 +33,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function login( $input, $request_headers = array() ) {
+	public function login( $input, $request_headers = [] ) {
 		$mutation = '
             mutation ( $input: LoginInput! ) {
                 login( input: $input ) {
@@ -64,7 +64,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 *
 	 * @return array
 	 */
-	public function addToCart( $input, $request_headers = array() ) {
+	public function addToCart( $input, $request_headers = [] ) {
 		// Add to cart mutation
 		$mutation = '
             mutation ( $input: AddToCartInput! ) {
@@ -107,7 +107,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 *
 	 * @return array
 	 */
-	public function updateItemQuantities( $input, $request_headers = array() ) {
+	public function updateItemQuantities( $input, $request_headers = [] ) {
 		// Update cart items mutation
 		$mutation = '
             mutation updateItemQuantities( $input: UpdateItemQuantitiesInput! ) {
@@ -143,7 +143,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function removeItemsFromCart( $input, $request_headers = array() ) {
+	public function removeItemsFromCart( $input, $request_headers = [] ) {
 		// Remove item from cart mutation
 		$mutation = '
             mutation ( $input: RemoveItemsFromCartInput! ) {
@@ -185,7 +185,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function restoreCartItems( $input, $request_headers = array() ) {
+	public function restoreCartItems( $input, $request_headers = [] ) {
 		$mutation = '
             mutation restoreCartItems( $input: RestoreCartItemsInput! ) {
                 restoreCartItems( input: $input ) {
@@ -226,7 +226,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function emptyCart( $input, $request_headers = array() ) {
+	public function emptyCart( $input, $request_headers = [] ) {
 		$mutation = '
             mutation emptyCart( $input: EmptyCartInput! ) {
                 emptyCart( input: $input ) {
@@ -271,7 +271,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function addFee( $input, $request_headers = array() ) {
+	public function addFee( $input, $request_headers = [] ) {
 		$mutation = '
             mutation addFee( $input: AddFeeInput! ) {
                 addFee( input: $input ) {
@@ -302,7 +302,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function applyCoupon( $input, $request_headers = array() ) {
+	public function applyCoupon( $input, $request_headers = [] ) {
 		$mutation = '
             mutation applyCoupon( $input: ApplyCouponInput! ) {
                 applyCoupon( input: $input ) {
@@ -345,7 +345,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function removeCoupons( $input, $request_headers = array() ) {
+	public function removeCoupons( $input, $request_headers = [] ) {
 		$mutation = '
             mutation removeCoupons( $input: RemoveCouponsInput! ) {
                 removeCoupons( input: $input ) {
@@ -386,7 +386,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @param string $session_header
 	 * @return array
 	 */
-	public function updateShippingMethod( $input, $request_headers = array() ) {
+	public function updateShippingMethod( $input, $request_headers = [] ) {
 		// updateShippingMethod mutation.
 		$mutation = '
             mutation ($input: UpdateShippingMethodInput!){
@@ -427,7 +427,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 *
 	 * @return array
 	 */
-	public function checkout( $input, $request_headers = array() ) {
+	public function checkout( $input, $request_headers = [] ) {
 		// Checkout mutation.
 		$mutation = '
             mutation checkout( $input: CheckoutInput! ) {
@@ -611,7 +611,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 *
 	 * @return array
 	 */
-	public function sendGraphQLRequest( $query, $input, $request_headers = array() ) {
+	public function sendGraphQLRequest( $query, $input, $request_headers = [] ) {
 		$rest = $this->getModule( 'REST' );
 
 		// Add item to cart.
@@ -626,10 +626,10 @@ class GraphQLE2E extends \Codeception\Module {
 		$rest->sendPost(
 			'/graphql',
 			json_encode(
-				array(
+				[
 					'query'     => $query,
-					'variables' => array( 'input' => $input ),
-				)
+					'variables' => [ 'input' => $input ],
+				]
 			)
 		);
 
@@ -662,44 +662,44 @@ class GraphQLE2E extends \Codeception\Module {
 	public function getCatalog() {
 		$this->_setupStore();
 
-		$product_catalog = array();
-		$products        = array(
-			array(
+		$product_catalog = [];
+		$products        = [
+			[
 				'post_title' => 't-shirt',
-				'meta_input' => array(
+				'meta_input' => [
 					'_price'         => 45,
 					'_regular_price' => 45,
-				),
-			),
-			array(
+				],
+			],
+			[
 				'post_title' => 'jeans',
-				'meta_input' => array(
+				'meta_input' => [
 					'_price'         => 60,
 					'_regular_price' => 60,
-				),
-			),
-			array(
+				],
+			],
+			[
 				'post_title' => 'belt',
-				'meta_input' => array(
+				'meta_input' => [
 					'_price'         => 45,
 					'_regular_price' => 45,
-				),
-			),
-			array(
+				],
+			],
+			[
 				'post_title' => 'shoes',
-				'meta_input' => array(
+				'meta_input' => [
 					'_price'         => 115,
 					'_regular_price' => 115,
-				),
-			),
-			array(
+				],
+			],
+			[
 				'post_title' => 'socks',
-				'meta_input' => array(
+				'meta_input' => [
 					'_price'         => 20,
 					'_regular_price' => 20,
-				),
-			),
-		);
+				],
+			],
+		];
 		foreach ( $products as $product ) {
 			$this->haveAProductInTheDatabase( $product, $product_id );
 			$product_catalog[ $product['post_title'] ] = $product_id;
@@ -724,13 +724,13 @@ class GraphQLE2E extends \Codeception\Module {
 		// Enable payment gateway.
 		update_option(
 			'woocommerce_bacs_settings',
-			array(
+			[
 				'enabled'      => 'yes',
 				'title'        => 'Direct bank transfer',
 				'description'  => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.',
 				'instructions' => 'Instructions that will be added to the thank you page and emails.',
 				'account'      => '',
-			)
+			]
 		);
 
 		// Additional cart fees.
@@ -793,10 +793,10 @@ class GraphQLE2E extends \Codeception\Module {
 		// Create Product
 		$product_id = $wpdb->havePostInDatabase(
 			array_replace_recursive(
-				array(
+				[
 					'post_type'  => 'product',
 					'post_title' => 't-shirt',
-					'meta_input' => array(
+					'meta_input' => [
 						'_visibility'             => 'visible',
 						'_sku'                    => '',
 						'_price'                  => '100',
@@ -817,38 +817,38 @@ class GraphQLE2E extends \Codeception\Module {
 						'_length'                 => '',
 						'_width'                  => '',
 						'_height'                 => '',
-						'_upsell_ids'             => array(),
-						'_cross_sell_ids'         => array(),
+						'_upsell_ids'             => [],
+						'_cross_sell_ids'         => [],
 						'_purchase_note'          => '',
-						'_default_attributes'     => array(),
-						'_product_attributes'     => array(),
+						'_default_attributes'     => [],
+						'_product_attributes'     => [],
 						'_virtual'                => false,
 						'_downloadable'           => false,
 						'_download_limit'         => -1,
 						'_download_expiry'        => -1,
 						'_featured'               => false,
-						'_wc_rating_counts'       => array(),
+						'_wc_rating_counts'       => [],
 						'_wc_average_rating'      => 0,
 						'_wc_review_count'        => 0,
-					),
-				),
+					],
+				],
 				$args
 			)
 		);
 
 		if ( ! $term_id ) {
 			$term_id = $wpdb->grabTermIdFromDatabase(
-				array(
+				[
 					'name' => $term,
 					'slug' => $term,
-				)
+				]
 			);
 		}
 		$term_taxonomy_id = $wpdb->grabTermTaxonomyIdFromDatabase(
-			array(
+			[
 				'term_id'  => $term_id,
 				'taxonomy' => 'product_type',
-			)
+			]
 		);
 		$wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
 	}
@@ -861,10 +861,10 @@ class GraphQLE2E extends \Codeception\Module {
 		$userId = $wpdb->haveUserInDatabase(
 			'jimbo1234',
 			'customer',
-			array(
+			[
 				'user_pass'  => 'password',
 				'user_email' => 'jimbo1234@example.com',
-			)
+			]
 		);
 	}
 }

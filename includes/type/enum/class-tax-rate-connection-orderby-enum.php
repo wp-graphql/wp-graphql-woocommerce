@@ -18,13 +18,13 @@ class Tax_Rate_Connection_Orderby_Enum {
 	public static function register() {
 		register_graphql_enum_type(
 			'TaxRateConnectionOrderbyEnum',
-			array(
+			[
 				'description' => __( 'Field to order the connection by', 'wp-graphql-woocommerce' ),
-				'values'      => array(
-					'ID'    => array( 'value' => 'id' ),
-					'ORDER' => array( 'value' => 'order' ),
-				),
-			)
+				'values'      => [
+					'ID'    => [ 'value' => 'id' ],
+					'ORDER' => [ 'value' => 'order' ],
+				],
+			]
 		);
 	}
 }

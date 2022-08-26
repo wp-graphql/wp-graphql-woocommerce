@@ -26,36 +26,36 @@ class Post_Type_Orderby_Enum {
 	 * @return array
 	 */
 	protected static function post_type_values() {
-		return array(
-			'SLUG'       => array(
+		return [
+			'SLUG'       => [
 				'value'       => 'post_name',
 				'description' => __( 'Order by slug', 'wp-graphql-woocommerce' ),
-			),
-			'MODIFIED'   => array(
+			],
+			'MODIFIED'   => [
 				'value'       => 'post_modified',
 				'description' => __( 'Order by last modified date', 'wp-graphql-woocommerce' ),
-			),
-			'DATE'       => array(
+			],
+			'DATE'       => [
 				'value'       => 'post_date',
 				'description' => __( 'Order by publish date', 'wp-graphql-woocommerce' ),
-			),
-			'PARENT'     => array(
+			],
+			'PARENT'     => [
 				'value'       => 'post_parent',
 				'description' => __( 'Order by parent ID', 'wp-graphql-woocommerce' ),
-			),
-			'IN'         => array(
+			],
+			'IN'         => [
 				'value'       => 'post__in',
 				'description' => __( 'Preserve the ID order given in the IN array', 'wp-graphql-woocommerce' ),
-			),
-			'NAME_IN'    => array(
+			],
+			'NAME_IN'    => [
 				'value'       => 'post_name__in',
 				'description' => __( 'Preserve slug order given in the NAME_IN array', 'wp-graphql-woocommerce' ),
-			),
-			'MENU_ORDER' => array(
+			],
+			'MENU_ORDER' => [
 				'value'       => 'menu_order',
 				'description' => __( 'Order by the menu order value', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Post_Type_Orderby_Enum {
 		$name = static::$name;
 		register_graphql_enum_type(
 			$name . 'OrderByEnum',
-			array(
+			[
 				'description' => sprintf(
 					/* translators: ordering enumeration description */
 					__( 'Fields to order the %s connection by', 'wp-graphql-woocommerce' ),
@@ -82,7 +82,7 @@ class Post_Type_Orderby_Enum {
 				),
 				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 				'values'      => apply_filters( "{$name}_orderby_enum_values", static::values() ),
-			)
+			]
 		);
 	}
 }

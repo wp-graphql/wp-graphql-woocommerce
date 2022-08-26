@@ -8,8 +8,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		// Create users.
-		$this->shop_manager    = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->simple_customer = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager    = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->simple_customer = $this->factory->user->create( [ 'role' => 'customer' ] );
 
 		// Get helper instances
 		$this->order     = $this->getModule( '\Helper\Wpunit' )->order();
@@ -29,18 +29,18 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		// Enable payment gateways.
 		update_option(
 			'woocommerce_bacs_settings',
-			array(
+			[
 				'enabled'      => 'yes',
 				'title'        => 'Direct bank transfer',
 				'description'  => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.',
 				'instructions' => 'Instructions that will be added to the thank you page and emails.',
 				'account'      => '',
-			)
+			]
 		);
 
 		update_option(
 			'woocommerce_stripe_settings',
-			array(
+			[
 				'enabled'                       => 'yes',
 				'title'                         => 'Credit Card (Stripe)',
 				'description'                   => 'Pay with your credit card via Stripe',
@@ -65,7 +65,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'payment_request_button_height' => '44',
 				'saved_cards'                   => 'yes',
 				'logging'                       => 'no',
-			)
+			]
 		);
 
 		// Additional cart fees.
@@ -80,7 +80,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 
 		// Create a tax rate.
 		$this->tax->create(
-			array(
+			[
 				'country'  => '',
 				'state'    => '',
 				'rate'     => 20.000,
@@ -89,7 +89,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'compound' => '0',
 				'shipping' => '1',
 				'class'    => '',
-			)
+			]
 		);
 		// Create sample order to be used as a parent order.
 		$this->order_id = $this->order->create();
@@ -279,11 +279,11 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$actual = graphql(
-			array(
+			[
 				'query'          => $mutation,
 				'operation_name' => 'checkout',
-				'variables'      => array( 'input' => $input ),
-			)
+				'variables'      => [ 'input' => $input ],
+			]
 		);
 
 		return $actual;
@@ -295,13 +295,13 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		WC()->customer->set_billing_company( 'Harris Teeter' );
 
 		$variable    = $this->variation->create( $this->product->create_variable() );
-		$product_ids = array(
+		$product_ids = [
 			$this->product->create_simple(),
 			$this->product->create_simple(),
 			$variable['product'],
-		);
+		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( array( 'product_ids' => $product_ids ) )
+			$this->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
@@ -310,16 +310,16 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 			$product_ids[2],
 			2,
 			$variable['variations'][0],
-			array( 'attribute_pa_color' => 'red' )
+			[ 'attribute_pa_color' => 'red' ]
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = array(
+		$input = [
 			'clientMutationId' => 'someId',
 			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => array( 'flat rate' ),
+			'shippingMethod'   => [ 'flat rate' ],
 			'customerNote'     => 'Test customer note',
-			'billing'          => array(
+			'billing'          => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -330,8 +330,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'email'     => 'superfreak500@gmail.com',
 				'phone'     => '555-555-1234',
 				'overwrite' => true,
-			),
-			'shipping'         => array(
+			],
+			'shipping'         => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -339,14 +339,14 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'state'     => 'NY',
 				'postcode'  => '12345',
 				'country'   => 'US',
-			),
-			'metaData'         => array(
-				array(
+			],
+			'metaData'         => [
+				[
 					'key'   => 'test_key',
 					'value' => 'test value',
-				),
-			),
-		);
+				],
+			],
+		];
 
 		/**
 		 * Assertion One
@@ -367,49 +367,49 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		// Get Available payment gateways.
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		$expected = array(
-			'data' => array(
-				'checkout' => array(
+		$expected = [
+			'data' => [
+				'checkout' => [
 					'clientMutationId' => 'someId',
 					'order'            => array_merge(
 						$this->order->print_query( $order->get_id() ),
-						array(
-							'metaData'      => array(
-								array(
+						[
+							'metaData'      => [
+								[
 									'key'   => 'is_vat_exempt',
 									'value' => 'no',
-								),
-								array(
+								],
+								[
 									'key'   => 'test_key',
 									'value' => 'test value',
-								),
+								],
 								// array(
 								// 'key'   => '_new_order_email_sent',
 								// 'value' => 'true'
 								// )
-							),
-							'couponLines'   => array(
+							],
+							'couponLines'   => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'code'     => $item->get_code(),
 												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
 												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
 												'coupon'   => null,
-											);
+											];
 										},
 										$order->get_items( 'coupon' )
 									)
 								),
-							),
-							'feeLines'      => array(
+							],
+							'feeLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'amount'   => $item->get_amount(),
@@ -420,17 +420,17 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'taxClass' => ! empty( $item->get_tax_class() )
 													? WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'fee' )
 									)
 								),
-							),
-							'shippingLines' => array(
+							],
+							'shippingLines' => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'methodTitle' => $item->get_method_title(),
@@ -443,34 +443,34 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 														? WPEnumType::get_safe_name( 'inherit cart' )
 														: WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'shipping' )
 									)
 								),
-							),
-							'taxLines'      => array(
+							],
+							'taxLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'rateCode' => $item->get_rate_code(),
 												'label'    => $item->get_label(),
 												'taxTotal' => $item->get_tax_total(),
 												'shippingTaxTotal' => $item->get_shipping_tax_total(),
 												'isCompound' => $item->is_compound(),
-												'taxRate'  => array( 'databaseId' => $item->get_rate_id() ),
-											);
+												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
+											];
 										},
 										$order->get_items( 'tax' )
 									)
 								),
-							),
-							'lineItems'     => array(
+							],
+							'lineItems'     => [
 								'nodes' => array_values(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'productId' => $item->get_product_id(),
 												'variationId' => ! empty( $item->get_variation_id() )
 													? $item->get_variation_id()
@@ -484,43 +484,43 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
 												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
+												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
 												'variation' => ! empty( $item->get_variation_id() )
-													? array(
-														'node' => array(
+													? [
+														'node' => [
 															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														),
-													)
+														],
+													]
 													: null,
-											);
+											];
 										},
 										$order->get_items()
 									)
 								),
-							),
-						)
+							],
+						]
 					),
-					'customer'         => array(
+					'customer'         => [
 						'id' => $this->customer->to_relay_id( $order->get_customer_id() ),
-					),
+					],
 					'result'           => 'success',
 					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				),
-			),
-		);
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testCheckoutMutationWithNewAccount() {
 		$variable    = $this->variation->create( $this->product->create_variable() );
-		$product_ids = array(
+		$product_ids = [
 			$this->product->create_simple(),
 			$this->product->create_simple(),
 			$variable['product'],
-		);
+		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( array( 'product_ids' => $product_ids ) )
+			$this->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
@@ -528,15 +528,15 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 			$product_ids[2],
 			2,
 			$variable['variations'][0],
-			array( 'attribute_pa_color' => 'red' )
+			[ 'attribute_pa_color' => 'red' ]
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = array(
+		$input = [
 			'clientMutationId' => 'someId',
 			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => array( 'flat rate' ),
-			'billing'          => array(
+			'shippingMethod'   => [ 'flat rate' ],
+			'billing'          => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'company'   => 'Harris Teeter',
@@ -547,12 +547,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'country'   => 'US',
 				'email'     => 'superfreak500@gmail.com',
 				'phone'     => '555-555-1234',
-			),
-			'account'          => array(
+			],
+			'account'          => [
 				'username' => 'test_user_1',
 				'password' => 'test_pass',
-			),
-		);
+			],
+		];
 
 		/**
 		 * Assertion One
@@ -573,41 +573,41 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		// Get Available payment gateways.
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		$expected = array(
-			'data' => array(
-				'checkout' => array(
+		$expected = [
+			'data' => [
+				'checkout' => [
 					'clientMutationId' => 'someId',
 					'order'            => array_merge(
 						$this->order->print_query( $order->get_id() ),
-						array(
-							'metaData'      => array(
-								array(
+						[
+							'metaData'      => [
+								[
 									'key'   => 'is_vat_exempt',
 									'value' => 'no',
-								),
-							),
-							'couponLines'   => array(
+								],
+							],
+							'couponLines'   => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'code'     => $item->get_code(),
 												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
 												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
 												'coupon'   => null,
-											);
+											];
 										},
 										$order->get_items( 'coupon' )
 									)
 								),
-							),
-							'feeLines'      => array(
+							],
+							'feeLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'amount'   => $item->get_amount(),
@@ -618,17 +618,17 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'taxClass' => ! empty( $item->get_tax_class() )
 													? WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'fee' )
 									)
 								),
-							),
-							'shippingLines' => array(
+							],
+							'shippingLines' => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'methodTitle' => $item->get_method_title(),
@@ -641,34 +641,34 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 														? WPEnumType::get_safe_name( 'inherit cart' )
 														: WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'shipping' )
 									)
 								),
-							),
-							'taxLines'      => array(
+							],
+							'taxLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'rateCode' => $item->get_rate_code(),
 												'label'    => $item->get_label(),
 												'taxTotal' => $item->get_tax_total(),
 												'shippingTaxTotal' => $item->get_shipping_tax_total(),
 												'isCompound' => $item->is_compound(),
-												'taxRate'  => array( 'databaseId' => $item->get_rate_id() ),
-											);
+												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
+											];
 										},
 										$order->get_items( 'tax' )
 									)
 								),
-							),
-							'lineItems'     => array(
+							],
+							'lineItems'     => [
 								'nodes' => array_values(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'productId' => $item->get_product_id(),
 												'variationId' => ! empty( $item->get_variation_id() )
 													? $item->get_variation_id()
@@ -682,30 +682,30 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
 												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
+												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
 												'variation' => ! empty( $item->get_variation_id() )
-													? array(
-														'node' => array(
+													? [
+														'node' => [
 															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														),
-													)
+														],
+													]
 													: null,
-											);
+											];
 										},
 										$order->get_items()
 									)
 								),
-							),
-						)
+							],
+						]
 					),
-					'customer'         => array(
+					'customer'         => [
 						'id' => $this->customer->to_relay_id( $order->get_customer_id() ),
-					),
+					],
 					'result'           => 'success',
 					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				),
-			),
-		);
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -713,13 +713,13 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 	public function testCheckoutMutationWithNoAccount() {
 		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
 		$variable    = $this->variation->create( $this->product->create_variable() );
-		$product_ids = array(
+		$product_ids = [
 			$this->product->create_simple(),
 			$this->product->create_simple(),
 			$variable['product'],
-		);
+		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( array( 'product_ids' => $product_ids ) )
+			$this->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
@@ -727,15 +727,15 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 			$product_ids[2],
 			2,
 			$variable['variations'][0],
-			array( 'attribute_pa_color' => 'red' )
+			[ 'attribute_pa_color' => 'red' ]
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = array(
+		$input = [
 			'clientMutationId' => 'someId',
 			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => array( 'flat rate' ),
-			'billing'          => array(
+			'shippingMethod'   => [ 'flat rate' ],
+			'billing'          => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -745,8 +745,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'country'   => 'US',
 				'email'     => 'superfreak500@gmail.com',
 				'phone'     => '555-555-1234',
-			),
-			'shipping'         => array(
+			],
+			'shipping'         => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -754,8 +754,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'state'     => 'NY',
 				'postcode'  => '12345',
 				'country'   => 'US',
-			),
-		);
+			],
+		];
 
 		/**
 		 * Assertion One
@@ -776,41 +776,41 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		// Get Available payment gateways.
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		$expected = array(
-			'data' => array(
-				'checkout' => array(
+		$expected = [
+			'data' => [
+				'checkout' => [
 					'clientMutationId' => 'someId',
 					'order'            => array_merge(
 						$this->order->print_query( $order->get_id() ),
-						array(
-							'metaData'      => array(
-								array(
+						[
+							'metaData'      => [
+								[
 									'key'   => 'is_vat_exempt',
 									'value' => 'no',
-								),
-							),
-							'couponLines'   => array(
+								],
+							],
+							'couponLines'   => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'code'     => $item->get_code(),
 												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
 												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
 												'coupon'   => null,
-											);
+											];
 										},
 										$order->get_items( 'coupon' )
 									)
 								),
-							),
-							'feeLines'      => array(
+							],
+							'feeLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'amount'   => $item->get_amount(),
@@ -821,17 +821,17 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'taxClass' => ! empty( $item->get_tax_class() )
 													? WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'fee' )
 									)
 								),
-							),
-							'shippingLines' => array(
+							],
+							'shippingLines' => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'methodTitle' => $item->get_method_title(),
@@ -844,34 +844,34 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 														? WPEnumType::get_safe_name( 'inherit cart' )
 														: WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'shipping' )
 									)
 								),
-							),
-							'taxLines'      => array(
+							],
+							'taxLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'rateCode' => $item->get_rate_code(),
 												'label'    => $item->get_label(),
 												'taxTotal' => $item->get_tax_total(),
 												'shippingTaxTotal' => $item->get_shipping_tax_total(),
 												'isCompound' => $item->is_compound(),
-												'taxRate'  => array( 'databaseId' => $item->get_rate_id() ),
-											);
+												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
+											];
 										},
 										$order->get_items( 'tax' )
 									)
 								),
-							),
-							'lineItems'     => array(
+							],
+							'lineItems'     => [
 								'nodes' => array_values(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'productId' => $item->get_product_id(),
 												'variationId' => ! empty( $item->get_variation_id() )
 													? $item->get_variation_id()
@@ -885,62 +885,62 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
 												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
+												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
 												'variation' => ! empty( $item->get_variation_id() )
-													? array(
-														'node' => array(
+													? [
+														'node' => [
 															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														),
-													)
+														],
+													]
 													: null,
-											);
+											];
 										},
 										$order->get_items()
 									)
 								),
-							),
-						)
+							],
+						]
 					),
 					'customer'         => null,
 					'result'           => 'success',
 					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				),
-			),
-		);
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
 
 	public function testCheckoutMutationWithPrepaidOrder() {
 		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
-		$product_ids = array(
+		$product_ids = [
 			$this->product->create_simple(
-				array(
+				[
 					'virtual'      => true,
 					'downloadable' => true,
-				)
+				]
 			),
 			$this->product->create_simple(
-				array(
+				[
 					'virtual'      => true,
 					'downloadable' => true,
-				)
+				]
 			),
-		);
+		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( array( 'product_ids' => $product_ids ) )
+			$this->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = array(
+		$input = [
 			'clientMutationId' => 'someId',
 			'paymentMethod'    => 'bacs',
 			'isPaid'           => true,
 			'transactionId'    => 'transaction_id',
-			'shippingMethod'   => array( 'flat rate' ),
-			'billing'          => array(
+			'shippingMethod'   => [ 'flat rate' ],
+			'billing'          => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -950,8 +950,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'country'   => 'US',
 				'email'     => 'superfreak500@gmail.com',
 				'phone'     => '555-555-1234',
-			),
-			'shipping'         => array(
+			],
+			'shipping'         => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -959,8 +959,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'state'     => 'NY',
 				'postcode'  => '12345',
 				'country'   => 'US',
-			),
-		);
+			],
+		];
 
 		/**
 		 * Assertion One
@@ -982,41 +982,41 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		// Get Available payment gateways.
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		$expected = array(
-			'data' => array(
-				'checkout' => array(
+		$expected = [
+			'data' => [
+				'checkout' => [
 					'clientMutationId' => 'someId',
 					'order'            => array_merge(
 						$this->order->print_query( $order->get_id() ),
-						array(
-							'metaData'      => array(
-								array(
+						[
+							'metaData'      => [
+								[
 									'key'   => 'is_vat_exempt',
 									'value' => 'no',
-								),
-							),
-							'couponLines'   => array(
+								],
+							],
+							'couponLines'   => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'code'     => $item->get_code(),
 												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
 												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
 												'coupon'   => null,
-											);
+											];
 										},
 										$order->get_items( 'coupon' )
 									)
 								),
-							),
-							'feeLines'      => array(
+							],
+							'feeLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
 												'amount'   => $item->get_amount(),
@@ -1027,35 +1027,35 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'taxClass' => ! empty( $item->get_tax_class() )
 													? WPEnumType::get_safe_name( $item->get_tax_class() )
 													: 'STANDARD',
-											);
+											];
 										},
 										$order->get_items( 'fee' )
 									)
 								),
-							),
-							'shippingLines' => array( 'nodes' => array() ),
-							'taxLines'      => array(
+							],
+							'shippingLines' => [ 'nodes' => [] ],
+							'taxLines'      => [
 								'nodes' => array_reverse(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'rateCode' => $item->get_rate_code(),
 												'label'    => $item->get_label(),
 												'taxTotal' => $item->get_tax_total(),
 												'shippingTaxTotal' => $item->get_shipping_tax_total(),
 												'isCompound' => $item->is_compound(),
-												'taxRate'  => array( 'databaseId' => $item->get_rate_id() ),
-											);
+												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
+											];
 										},
 										$order->get_items( 'tax' )
 									)
 								),
-							),
-							'lineItems'     => array(
+							],
+							'lineItems'     => [
 								'nodes' => array_values(
 									array_map(
 										function( $item ) {
-											return array(
+											return [
 												'productId' => $item->get_product_id(),
 												'variationId' => ! empty( $item->get_variation_id() )
 													? $item->get_variation_id()
@@ -1069,28 +1069,28 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
 												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
+												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
 												'variation' => ! empty( $item->get_variation_id() )
-													? array(
-														'node' => array(
+													? [
+														'node' => [
 															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														),
-													)
+														],
+													]
 													: null,
-											);
+											];
 										},
 										$order->get_items()
 									)
 								),
-							),
-						)
+							],
+						]
 					),
 					'customer'         => null,
 					'result'           => 'success',
 					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				),
-			),
-		);
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -1103,7 +1103,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 	 * @return array
 	 */
 	private function create_stripe_customer( $email ) {
-		$customer = \Stripe\Customer::create( array( 'email' => $email ) );
+		$customer = \Stripe\Customer::create( [ 'email' => $email ] );
 
 		// use --debug flag to view.
 		codecept_debug( $customer );
@@ -1121,7 +1121,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 	private function create_stripe_source( $customer ) {
 		$source = \Stripe\Customer::createSource(
 			$customer['id'],
-			array( 'source' => 'tok_visa' )
+			[ 'source' => 'tok_visa' ]
 		);
 
 		// use --debug flag to view.
@@ -1143,13 +1143,13 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	private function create_stripe_payment_intent( $amount, $customer ) {
 		$payment_intent = \Stripe\PaymentIntent::create(
-			array(
+			[
 				'amount'               => $amount,
 				'currency'             => 'gbp',
-				'payment_method_types' => array( 'card' ),
+				'payment_method_types' => [ 'card' ],
 				'customer'             => $customer['id'],
 				'payment_method'       => $customer['invoice_settings']['default_payment_method'],
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -1161,10 +1161,10 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 	public function testCheckoutMutationWithStripe() {
 		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
 		// Add items to the cart.
-		$product_ids = array(
+		$product_ids = [
 			$this->product->create_simple(),
 			$this->product->create_simple(),
-		);
+		];
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
 
@@ -1178,11 +1178,11 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 			$this->markTestSkipped( $e->getMessage() );
 		}
 
-		$input = array(
+		$input = [
 			'clientMutationId' => 'someId',
 			'paymentMethod'    => 'stripe',
 			'shippingMethod'   => 'flat rate',
-			'billing'          => array(
+			'billing'          => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -1192,22 +1192,22 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'country'   => 'US',
 				'email'     => 'superfreak500@gmail.com',
 				'phone'     => '555-555-1234',
-			),
-			'metaData'         => array(
-				array(
+			],
+			'metaData'         => [
+				[
 					'key'   => '_stripe_source_id',
 					'value' => $stripe_source['id'],
-				),
-				array(
+				],
+				[
 					'key'   => '_stripe_customer_id',
 					'value' => $stripe_customer['id'],
-				),
-				array(
+				],
+				[
 					'key'   => '_stripe_intent_id',
 					'value' => $payment_intent['id'],
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// Remove "metaData" value field and "redirect" link from the mutation output.
 		$modified_mutation = '
@@ -1268,27 +1268,27 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		// Get Available payment gateways.
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		$expected = array(
-			'data' => array(
-				'checkout' => array(
+		$expected = [
+			'data' => [
+				'checkout' => [
 					'clientMutationId' => 'someId',
-					'order'            => array(
+					'order'            => [
 						'databaseId' => $order->get_id(),
-						'metaData'   => array(
-							array( 'key' => 'is_vat_exempt' ),
-							array( 'key' => '_stripe_source_id' ),
-							array( 'key' => '_stripe_customer_id' ),
-							array( 'key' => '_stripe_intent_id' ),
-							array( 'key' => '_stripe_charge_captured' ),
-							array( 'key' => '_stripe_fee' ),
-							array( 'key' => '_stripe_net' ),
-							array( 'key' => '_stripe_currency' ),
-						),
-						'lineItems'  => array(
+						'metaData'   => [
+							[ 'key' => 'is_vat_exempt' ],
+							[ 'key' => '_stripe_source_id' ],
+							[ 'key' => '_stripe_customer_id' ],
+							[ 'key' => '_stripe_intent_id' ],
+							[ 'key' => '_stripe_charge_captured' ],
+							[ 'key' => '_stripe_fee' ],
+							[ 'key' => '_stripe_net' ],
+							[ 'key' => '_stripe_currency' ],
+						],
+						'lineItems'  => [
 							'nodes' => array_values(
 								array_map(
 									function( $item ) {
-										return array(
+										return [
 											'productId'   => $item->get_product_id(),
 											'variationId' => ! empty( $item->get_variation_id() )
 												? $item->get_variation_id()
@@ -1302,25 +1302,25 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 											'total'       => ! empty( $item->get_total() ) ? $item->get_total() : null,
 											'totalTax'    => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
 											'taxStatus'   => strtoupper( $item->get_tax_status() ),
-											'product'     => array( 'node' => array( 'id' => $this->product->to_relay_id( $item->get_product_id() ) ) ),
+											'product'     => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
 											'variation'   => ! empty( $item->get_variation_id() )
-												? array(
-													'node' => array(
+												? [
+													'node' => [
 														'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-													),
-												)
+													],
+												]
 												: null,
-										);
+										];
 									},
 									$order->get_items()
 								)
 							),
-						),
-					),
+						],
+					],
 					'result'           => 'success',
-				),
-			),
-		);
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -1329,10 +1329,10 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
 
 		$product_id = $this->product->create_simple(
-			array(
+			[
 				'manage_stock'   => true,
 				'stock_quantity' => 3,
-			)
+			]
 		);
 
 		$key = WC()->cart->add_to_cart( $product_id, 3 );
@@ -1343,11 +1343,11 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Ensure that checkout failed when stock is too low.
 		 */
-		$input  = array(
+		$input  = [
 			'clientMutationId' => 'someId',
 			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => array( 'flat rate' ),
-			'billing'          => array(
+			'shippingMethod'   => [ 'flat rate' ],
+			'billing'          => [
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'company'   => 'Harris Teeter',
@@ -1358,12 +1358,12 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'country'   => 'US',
 				'email'     => 'superfreak500@gmail.com',
 				'phone'     => '555-555-1234',
-			),
-			'account'          => array(
+			],
+			'account'          => [
 				'username' => 'test_user_1',
 				'password' => 'test_pass',
-			),
-		);
+			],
+		];
 		$failed = $this->checkout( $input );
 
 		// use --debug flag to view.

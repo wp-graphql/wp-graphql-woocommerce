@@ -21,14 +21,14 @@ class Shipping_Package_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'ShippingPackage',
-			array(
+			[
 				'description' => __( 'Shipping package object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'packageDetails'             => array(
+				'fields'      => [
+					'packageDetails'             => [
 						'type'        => 'String',
 						'description' => __( 'Shipping package details', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$product_names = array();
+							$product_names = [];
 							foreach ( $source['contents'] as $item_id => $values ) {
 								$product_names[ $item_id ] = html_entity_decode( $values['data']->get_name() . ' &times;' . $values['quantity'] );
 							}
@@ -38,24 +38,24 @@ class Shipping_Package_Type {
 
 							return implode( ', ', $product_names );
 						},
-					),
-					'rates'                      => array(
-						'type'        => array( 'list_of' => 'ShippingRate' ),
+					],
+					'rates'                      => [
+						'type'        => [ 'list_of' => 'ShippingRate' ],
 						'description' => __( 'Shipping package rates', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source['rates'] ) ? $source['rates'] : null;
 						},
-					),
-					'supportsShippingCalculator' => array(
+					],
+					'supportsShippingCalculator' => [
 						'type'        => 'Boolean',
 						'description' => __( 'This shipping package supports the shipping calculator.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 							return apply_filters( 'woocommerce_shipping_show_shipping_calculator', true, $source['index'], $source );
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

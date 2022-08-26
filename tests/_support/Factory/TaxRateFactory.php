@@ -17,9 +17,9 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array(
+		$this->default_generation_definitions = [
 			'zone_name' => '',
-		);
+		];
 		$this->dummy                          = Dummy::instance();
 	}
 
@@ -28,8 +28,8 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 			codecept_debug( $args );
 		}
 
-		$rate_args = array();
-		$fields    = array(
+		$rate_args = [];
+		$fields    = [
 			'country'  => 'tax_rate_country',
 			'state'    => 'tax_rate_state',
 			'rate'     => 'tax_rate',
@@ -39,7 +39,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 			'shipping' => 'tax_rate_shipping',
 			'order'    => 'tax_rate_order',
 			'class'    => 'tax_rate_class',
-		);
+		];
 
 		foreach ( $args as $key => $value ) {
 			if ( in_array( $key, array_keys( $fields ), true ) ) {
@@ -48,7 +48,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		$rate_args = array_merge(
-			array(
+			[
 				'tax_rate_country'  => 'US',
 				'tax_rate_state'    => '*',
 				'tax_rate'          => 20.0000,
@@ -57,7 +57,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 				'tax_rate_compound' => 1,
 				'tax_rate_shipping' => 1,
 				'tax_rate_order'    => 0,
-			),
+			],
 			$rate_args
 		);
 
@@ -80,6 +80,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		// Get locales from a tax rate.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$locales = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT location_code, location_type
@@ -91,7 +92,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		foreach ( $locales as $locale ) {
 			if ( empty( $rate->{'tax_rate_' . $locale->location_type} ) ) {
-				$rate->{'tax_rate_' . $locale->location_type} = array();
+				$rate->{'tax_rate_' . $locale->location_type} = [];
 			}
 			$rate->{'tax_rate_' . $locale->location_type}[] = $locale->location_code;
 		}

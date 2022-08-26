@@ -26,64 +26,64 @@ class Tax_Rate_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'TaxRate',
-			array(
+			[
 				'description' => __( 'A Tax rate object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Node' ),
-				'fields'      => array(
-					'id'         => array(
-						'type'        => array( 'non_null' => 'ID' ),
+				'interfaces'  => [ 'Node' ],
+				'fields'      => [
+					'id'         => [
+						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
-					),
-					'databaseId' => array(
+					],
+					'databaseId' => [
 						'type'        => 'Int',
 						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
-					),
-					'country'    => array(
+					],
+					'country'    => [
 						'type'        => 'String',
 						'description' => __( 'Country ISO 3166 code.', 'wp-graphql-woocommerce' ),
-					),
-					'state'      => array(
+					],
+					'state'      => [
 						'type'        => 'String',
 						'description' => __( 'State code.', 'wp-graphql-woocommerce' ),
-					),
-					'postcode'   => array(
-						'type'        => array( 'list_of' => 'String' ),
+					],
+					'postcode'   => [
+						'type'        => [ 'list_of' => 'String' ],
 						'description' => __( 'Postcode/ZIP.', 'wp-graphql-woocommerce' ),
-					),
-					'city'       => array(
-						'type'        => array( 'list_of' => 'String' ),
+					],
+					'city'       => [
+						'type'        => [ 'list_of' => 'String' ],
 						'description' => __( 'City name.', 'wp-graphql-woocommerce' ),
-					),
-					'rate'       => array(
+					],
+					'rate'       => [
 						'type'        => 'String',
 						'description' => __( 'Tax rate.', 'wp-graphql-woocommerce' ),
-					),
-					'name'       => array(
+					],
+					'name'       => [
 						'type'        => 'String',
 						'description' => __( 'Tax rate name.', 'wp-graphql-woocommerce' ),
-					),
-					'priority'   => array(
+					],
+					'priority'   => [
 						'type'        => 'Int',
 						'description' => __( 'Tax priority.', 'wp-graphql-woocommerce' ),
-					),
-					'compound'   => array(
+					],
+					'compound'   => [
 						'type'        => 'Boolean',
 						'description' => __( 'Whether or not this is a compound rate.', 'wp-graphql-woocommerce' ),
-					),
-					'shipping'   => array(
+					],
+					'shipping'   => [
 						'type'        => 'Boolean',
 						'description' => __( 'Whether or not this tax rate also gets applied to shipping.', 'wp-graphql-woocommerce' ),
-					),
-					'order'      => array(
+					],
+					'order'      => [
 						'type'        => 'Int',
 						'description' => __( 'Indicates the order that will appear in queries.', 'wp-graphql-woocommerce' ),
-					),
-					'class'      => array(
+					],
+					'class'      => [
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class. Default is standard.', 'wp-graphql-woocommerce' ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

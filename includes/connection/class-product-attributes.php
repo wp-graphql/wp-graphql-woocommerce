@@ -29,20 +29,20 @@ class Product_Attributes {
 		// From Product to LocalProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'toType'        => 'LocalProductAttribute',
 					'fromFieldName' => 'localAttributes',
-				)
+				]
 			)
 		);
 
 		// From Product to GlobalProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'toType'        => 'GlobalProductAttribute',
 					'fromFieldName' => 'globalAttributes',
-				)
+				]
 			)
 		);
 	}
@@ -54,9 +54,9 @@ class Product_Attributes {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ): array {
+	public static function get_connection_config( $args = [] ): array {
 		return array_merge(
-			array(
+			[
 				'fromType'       => 'Product',
 				'toType'         => 'ProductAttribute',
 				'fromFieldName'  => 'attributes',
@@ -66,7 +66,7 @@ class Product_Attributes {
 
 					return $resolver->resolve( $source, $args, $context, $info );
 				},
-			),
+			],
 			$args
 		);
 	}
@@ -77,11 +77,11 @@ class Product_Attributes {
 	 * @return array
 	 */
 	public static function get_connection_args(): array {
-		return array(
-			'type' => array(
+		return [
+			'type' => [
 				'type'        => 'ProductAttributeTypesEnum',
 				'description' => __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 }

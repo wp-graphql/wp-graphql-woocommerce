@@ -27,14 +27,14 @@ class Customer_Mutation {
 	 * @return array
 	 */
 	public static function prepare_customer_props( $input, $mutation ) {
-		$customer_args = array();
+		$customer_args = [];
 
 		if ( ! empty( $input['billing'] ) ) {
-			$customer_args['billing'] = self::address_input_mapping( 'billing', $input['billing'] );
+			$customer_args['billing'] = self::address_input_mapping( $input['billing'], 'billing' );
 		}
 
 		if ( ! empty( $input['shipping'] ) ) {
-			$customer_args['shipping'] = self::address_input_mapping( 'shipping', $input['shipping'] );
+			$customer_args['shipping'] = self::address_input_mapping( $input['shipping'], 'shipping' );
 		}
 
 		/**
@@ -52,26 +52,26 @@ class Customer_Mutation {
 	/**
 	 * Formats CustomerAddressInput into a address object to be used by WC_Customer object
 	 *
-	 * @param string $type  Address type.
 	 * @param array  $input Customer address input.
+	 * @param string $type  Address type.
 	 *
 	 * @return array;
 	 */
-	public static function address_input_mapping( $type = 'billing', $input ) {
+	public static function address_input_mapping( $input, $type = 'billing' ) {
 		// Map GQL input to address props array.
-		$key_mapping = array(
+		$key_mapping = [
 			'firstName' => 'first_name',
 			'lastName'  => 'last_name',
 			'address1'  => 'address_1',
 			'address2'  => 'address_2',
-		);
+		];
 
-		$skip = apply_filters( 'graphql_woocommerce_customer_address_input_mapping_skipped', array( 'overwrite' ) );
+		$skip = apply_filters( 'graphql_woocommerce_customer_address_input_mapping_skipped', [ 'overwrite' ] );
 
 		$type    = 'empty_' . $type;
 		$address = ! empty( $input['overwrite'] ) && true === $input['overwrite']
 			? self::{$type}()
-			: array();
+			: [];
 		foreach ( $input as $input_field => $value ) {
 			if ( in_array( $input_field, array_keys( $key_mapping ), true ) ) {
 				$address[ $key_mapping[ $input_field ] ] = $value;
@@ -91,7 +91,7 @@ class Customer_Mutation {
 	 * @return array
 	 */
 	public static function empty_shipping() {
-		return array(
+		return [
 			'first_name' => '',
 			'last_name'  => '',
 			'company'    => '',
@@ -101,7 +101,7 @@ class Customer_Mutation {
 			'state'      => '',
 			'postcode'   => '',
 			'country'    => '',
-		);
+		];
 	}
 
 	/**
@@ -112,10 +112,10 @@ class Customer_Mutation {
 	public static function empty_billing() {
 		return array_merge(
 			self::empty_shipping(),
-			array(
+			[
 				'email' => '',
 				'phone' => '',
-			)
+			]
 		);
 	}
 

@@ -21,46 +21,46 @@ class Shipping_Rate_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'ShippingRate',
-			array(
+			[
 				'description' => __( 'Shipping rate object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'id'         => array(
-						'type'        => array( 'non_null' => 'ID' ),
+				'fields'      => [
+					'id'         => [
+						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Shipping rate ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->get_id() ) ? $source->get_id() : null;
 						},
-					),
-					'methodId'   => array(
-						'type'        => array( 'non_null' => 'ID' ),
+					],
+					'methodId'   => [
+						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Shipping method ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->get_method_id() ) ? $source->get_method_id() : null;
 						},
-					),
-					'instanceId' => array(
+					],
+					'instanceId' => [
 						'type'        => 'Int',
 						'description' => __( 'Shipping instance ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->get_instance_id() ) ? $source->get_instance_id() : null;
 						},
-					),
-					'label'      => array(
+					],
+					'label'      => [
 						'type'        => 'String',
 						'description' => __( 'Shipping rate label', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->get_label() ) ? $source->get_label() : null;
 						},
-					),
-					'cost'       => array(
+					],
+					'cost'       => [
 						'type'        => 'String',
 						'description' => __( 'Shipping rate cost', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source->get_cost() ) ? $source->get_cost() : null;
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

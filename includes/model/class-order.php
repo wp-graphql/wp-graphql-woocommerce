@@ -131,8 +131,8 @@ class Order extends WC_Post {
 	 *
 	 * @return array
 	 */
-	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = array() ) {
-		return array(
+	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = [] ) {
+		return [
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
@@ -165,7 +165,7 @@ class Order extends WC_Post {
 			'downloadable_items',
 			'commentCount',
 			'commentStatus',
-		);
+		];
 	}
 
 	/**
@@ -175,7 +175,7 @@ class Order extends WC_Post {
 		if ( empty( $this->fields ) ) {
 			parent::init();
 
-			$fields = array(
+			$fields = [
 				'id'                    => function() {
 					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order', $this->wc_data->get_id() ) : null;
 				},
@@ -217,84 +217,84 @@ class Order extends WC_Post {
 				},
 				'discountTotal'         => function() {
 					$price = ! empty( $this->wc_data->get_discount_total() ) ? $this->wc_data->get_discount_total() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'discountTotalRaw'      => array(
+				'discountTotalRaw'      => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_discount_total() ) ? $this->wc_data->get_discount_total() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'discountTax'           => function() {
 					$price = ! empty( $this->wc_data->get_discount_tax() ) ? $this->wc_data->get_discount_tax() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'discountTaxRaw'        => array(
+				'discountTaxRaw'        => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_discount_tax() ) ? $this->wc_data->get_discount_tax() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'shippingTotal'         => function() {
 					$price = ! empty( $this->wc_data->get_shipping_total() ) ? $this->wc_data->get_shipping_total() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'shippingTotalRaw'      => array(
+				'shippingTotalRaw'      => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_shipping_total() ) ? $this->wc_data->get_shipping_total() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'shippingTax'           => function() {
 					$price = ! empty( $this->wc_data->get_shipping_tax() ) ? $this->wc_data->get_shipping_tax() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'shippingTaxRaw'        => array(
+				'shippingTaxRaw'        => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_shipping_tax() ) ? $this->wc_data->get_shipping_tax() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'cartTax'               => function() {
 					$price = ! empty( $this->wc_data->get_cart_tax() ) ? $this->wc_data->get_cart_tax() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'cartTaxRaw'            => array(
+				'cartTaxRaw'            => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_cart_tax() ) ? $this->wc_data->get_cart_tax() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'total'                 => function() {
 					$price = ! empty( $this->wc_data->get_total() ) ? $this->wc_data->get_total() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'totalRaw'              => array(
+				'totalRaw'              => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_total() ) ? $this->wc_data->get_total() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'totalTax'              => function() {
 					$price = ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'totalTaxRaw'           => array(
+				'totalTaxRaw'           => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'subtotal'              => function() {
 					$price = ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : null;
-					return \wc_graphql_price( $price, array( 'currency' => $this->wc_data->get_currency() ) );
+					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'subtotalRaw'           => array(
+				'subtotalRaw'           => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : 0;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 				'orderNumber'           => function() {
 					return ! empty( $this->wc_data->get_order_number() ) ? $this->wc_data->get_order_number() : null;
 				},
@@ -365,32 +365,34 @@ class Order extends WC_Post {
 				 * and some fields act as aliases/decorator for existing fields.
 				 */
 				'commentCount'          => function() {
-					remove_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
+					remove_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
-					$args  = array(
+					$args = [
 						'post_id' => $this->ID,
 						'approve' => 'approve',
 						'fields'  => 'ids',
 						'type'    => '',
-					);
+					];
 
 					if ( ! current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ) {
-						$args += array(
+						$args += [
+							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 							'meta_key'   => 'is_customer_note',
+							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 							'meta_value' => true,
-						);
+						];
 					}
 
 					$notes = get_comments( $args );
 
-					add_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
+					add_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
 					return count( $notes );
 				},
 				'commentStatus'         => function() {
 					return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ? 'open' : 'closed';
 				},
-			);
+			];
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}//end if

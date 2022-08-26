@@ -100,17 +100,17 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
-		$query_args = array(
+		$query_args = [
 			'post_type'     => 'shop_order_refund',
 			'no_rows_found' => true,
 			'return'        => 'ids',
 			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
-		);
+		];
 
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = array();
+		$input_fields = [];
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -148,11 +148,11 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 			case is_a( $this->source, Customer::class ):
 				if ( 'refunds' === $this->info->fieldName ) {
 					$customer_orders               = \wc_get_orders(
-						array(
+						[
 							'customer_id'   => $this->source->ID,
 							'no_rows_found' => true,
 							'return'        => 'ids',
-						)
+						]
 					);
 					$query_args['post_parent__in'] = array_map( 'absint', $customer_orders );
 				}
@@ -197,7 +197,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids() {
-		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
+		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function ordering_meta() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -222,11 +222,11 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$args = $this->sanitize_common_inputs( $where_args );
 
-		$key_mapping = array(
+		$key_mapping = [
 			'post_parent'         => 'parent',
 			'post_parent__not_in' => 'parent_exclude',
 			'post__not_in'        => 'exclude',
-		);
+		];
 
 		foreach ( $key_mapping as $key => $field ) {
 			if ( isset( $args[ $key ] ) ) {

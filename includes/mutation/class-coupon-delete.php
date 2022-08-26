@@ -27,11 +27,11 @@ class Coupon_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteCoupon',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => array( __CLASS__, 'mutate_and_get_payload' ),
-			)
+				'mutateAndGetPayload' => [ __CLASS__, 'mutate_and_get_payload' ],
+			]
 		);
 	}
 
@@ -41,16 +41,16 @@ class Coupon_Delete {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'id'          => array(
-				'type'        => array( 'non_null' => 'ID' ),
+		return [
+			'id'          => [
+				'type'        => [ 'non_null' => 'ID' ],
 				'description' => __( 'Unique identifier for the object.', 'wp-graphql-woocommerce' ),
-			),
-			'forceDelete' => array(
+			],
+			'forceDelete' => [
 				'type'        => 'Boolean',
 				'description' => __( 'Delete the object. Set to "false" by default.', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -61,14 +61,14 @@ class Coupon_Delete {
 	public static function get_output_fields() {
 		return array_merge(
 			Coupon_Create::get_output_fields(),
-			array(
-				'coupon' => array(
+			[
+				'coupon' => [
 					'type'    => 'Coupon',
 					'resolve' => function( $payload ) {
 						return ! empty( $payload['coupon'] ) ? $payload['coupon'] : null;
 					},
-				),
-			)
+				],
+			]
 		);
 	}
 

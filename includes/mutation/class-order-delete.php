@@ -29,11 +29,11 @@ class Order_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteOrder',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -44,20 +44,20 @@ class Order_Delete {
 	 */
 	public static function get_input_fields() {
 		return array_merge(
-			array(
-				'id'          => array(
+			[
+				'id'          => [
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
-				),
-				'orderId'     => array(
+				],
+				'orderId'     => [
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
-				),
-				'forceDelete' => array(
+				],
+				'forceDelete' => [
 					'type'        => 'Boolean',
 					'description' => __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -67,14 +67,14 @@ class Order_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'order' => array(
+		return [
+			'order' => [
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return $payload['order'];
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Order_Delete {
 			}
 
 			// Check if authorized to delete this order.
-			if ( ! Order_Mutation::authorized( 'delete', $order_id, $input, $context, $info ) ) {
+			if ( ! Order_Mutation::authorized( $input, $context, $info, 'delete', $order_id ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -154,7 +154,7 @@ class Order_Delete {
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $order, $input, $context, $info );
 
-			return array( 'order' => $order );
+			return [ 'order' => $order ];
 		};
 	}
 }

@@ -38,12 +38,12 @@ function woographql_swp_result_possible_types( array $type_names ) {
 					return 'Product' !== $type_name;
 				}
 			),
-			array(
+			[
 				'SimpleProduct',
 				'VariableProduct',
 				'GroupProduct',
 				'ExternalProduct',
-			)
+			]
 		);
 	}
 

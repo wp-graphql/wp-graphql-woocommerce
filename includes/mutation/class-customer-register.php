@@ -29,11 +29,11 @@ class Customer_Register {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'registerCustomer',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -45,24 +45,24 @@ class Customer_Register {
 	public static function get_input_fields() {
 		$result = array_merge(
 			UserRegister::get_input_fields(),
-			array(
-				'billing'               => array(
+			[
+				'billing'               => [
 					'type'        => 'CustomerAddressInput',
 					'description' => __( 'Customer billing information', 'wp-graphql-woocommerce' ),
-				),
-				'shipping'              => array(
+				],
+				'shipping'              => [
 					'type'        => 'CustomerAddressInput',
 					'description' => __( 'Customer shipping address', 'wp-graphql-woocommerce' ),
-				),
-				'shippingSameAsBilling' => array(
+				],
+				'shippingSameAsBilling' => [
 					'type'        => 'Boolean',
 					'description' => __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' ),
-				),
-				'metaData'              => array(
+				],
+				'metaData'              => [
 					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
-					'type'        => array( 'list_of' => 'MetaDataInput' ),
-				),
-			)
+					'type'        => [ 'list_of' => 'MetaDataInput' ],
+				],
+			]
 		);
 
 		// Make the username field optional.
@@ -77,21 +77,21 @@ class Customer_Register {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'customer' => array(
+		return [
+			'customer' => [
 				'type'    => 'Customer',
 				'resolve' => function ( $payload ) {
 					return new Customer( $payload['id'] );
 				},
-			),
-			'viewer'   => array(
+			],
+			'viewer'   => [
 				'type'    => 'User',
 				'resolve' => function ( $payload ) {
 					$user = get_user_by( 'ID', $payload['id'] );
 					return new User( $user );
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -190,7 +190,7 @@ class Customer_Register {
 			}
 
 			// Return payload.
-			return array( 'id' => $user_id );
+			return [ 'id' => $user_id ];
 		};
 	}
 }

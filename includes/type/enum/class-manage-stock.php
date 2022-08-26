@@ -16,18 +16,18 @@ class Manage_Stock {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = array(
-			'TRUE'   => array( 'value' => true ),
-			'FALSE'  => array( 'value' => false ),
-			'PARENT' => array( 'value' => 'parent' ),
-		);
+		$values = [
+			'TRUE'   => [ 'value' => true ],
+			'FALSE'  => [ 'value' => false ],
+			'PARENT' => [ 'value' => 'parent' ],
+		];
 
 		register_graphql_enum_type(
 			'ManageStockEnum',
-			array(
+			[
 				'description' => __( 'Product manage stock enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			)
+			]
 		);
 	}
 }

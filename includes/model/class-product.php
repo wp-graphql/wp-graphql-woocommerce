@@ -94,7 +94,7 @@ class Product extends WC_Post {
 			parent::init();
 
 			$type   = $this->wc_data->get_type();
-			$fields = array(
+			$fields = [
 				'id'                  => function() {
 					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'product', $this->wc_data->get_id() ) : null;
 				},
@@ -178,18 +178,18 @@ class Product extends WC_Post {
 				/**
 				 * Editor/Shop Manager only fields
 				 */
-				'catalogVisibility'   => array(
+				'catalogVisibility'   => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_catalog_visibility() ) ? $this->wc_data->get_catalog_visibility() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
-				'totalSales'          => array(
+				],
+				'totalSales'          => [
 					'callback'   => function() {
 						return ! is_null( $this->wc_data->get_total_sales() ) ? $this->wc_data->get_total_sales() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				),
+				],
 
 				/**
 				 * Connection resolvers fields
@@ -200,25 +200,25 @@ class Product extends WC_Post {
 				'upsell_ids'          => function() {
 					return ! empty( $this->wc_data->get_upsell_ids() )
 						? array_map( 'absint', $this->wc_data->get_upsell_ids() )
-						: array( '0' );
+						: [ '0' ];
 				},
 				'attributes'          => function() {
-					return ! empty( $this->wc_data->get_attributes() ) ? $this->wc_data->get_attributes() : array();
+					return ! empty( $this->wc_data->get_attributes() ) ? $this->wc_data->get_attributes() : [];
 				},
 				'default_attributes'  => function() {
-					return ! empty( $this->wc_data->get_default_attributes() ) ? $this->wc_data->get_default_attributes() : array( '0' );
+					return ! empty( $this->wc_data->get_default_attributes() ) ? $this->wc_data->get_default_attributes() : [ '0' ];
 				},
 				'image_id'            => function () {
 					return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_image_id() : null;
 				},
 				'gallery_image_ids'   => function() {
-					return ! empty( $this->wc_data->get_gallery_image_ids() ) ? $this->wc_data->get_gallery_image_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_gallery_image_ids() ) ? $this->wc_data->get_gallery_image_ids() : [ '0' ];
 				},
 				'category_ids'        => function() {
-					return ! empty( $this->wc_data->get_category_ids() ) ? $this->wc_data->get_category_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_category_ids() ) ? $this->wc_data->get_category_ids() : [ '0' ];
 				},
 				'tag_ids'             => function() {
-					return ! empty( $this->wc_data->get_tag_ids() ) ? $this->wc_data->get_tag_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_tag_ids() ) ? $this->wc_data->get_tag_ids() : [ '0' ];
 				},
 				'parent_id'           => function() {
 					return ! empty( $this->wc_data->get_parent_id() ) ? $this->wc_data->get_parent_id() : null;
@@ -226,7 +226,7 @@ class Product extends WC_Post {
 				'post'                => function() {
 					return ! empty( $this->wc_data->post ) ? $this->wc_data->post : null;
 				},
-			);
+			];
 
 			if (
 				apply_filters(
@@ -234,7 +234,7 @@ class Product extends WC_Post {
 					'grouped' !== $this->wc_data->get_type()
 				)
 			) {
-				$fields += array(
+				$fields += [
 					'price'           => function() {
 						return ! empty( $this->wc_data->get_price() )
 							? \wc_graphql_price( $this->wc_data->get_price() )
@@ -265,7 +265,7 @@ class Product extends WC_Post {
 					'taxClass'        => function() {
 						return ! is_null( $this->wc_data->get_tax_class() ) ? $this->wc_data->get_tax_class() : '';
 					},
-				);
+				];
 			}//end if
 
 			if (
@@ -274,7 +274,7 @@ class Product extends WC_Post {
 					'simple' === $type || 'variable' === $type
 				)
 			) {
-				$fields += array(
+				$fields += [
 					'manageStock'       => function() {
 						return ! is_null( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
 					},
@@ -314,17 +314,17 @@ class Product extends WC_Post {
 					'cross_sell_ids'    => function() {
 						return ! empty( $this->wc_data->get_cross_sell_ids() )
 							? array_map( 'absint', $this->wc_data->get_cross_sell_ids() )
-							: array( '0' );
+							: [ '0' ];
 					},
 					'stockStatus'       => function() {
 						return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
 					},
-				);
+				];
 			}//end if
 
 			switch ( true ) {
 				case apply_filters( "graphql_{$type}_product_model_use_virtual_data_fields", 'simple' === $type ):
-					$fields += array(
+					$fields += [
 						'virtual'        => function() {
 							return ! is_null( $this->wc_data->is_virtual() ) ? $this->wc_data->is_virtual() : null;
 						},
@@ -340,10 +340,10 @@ class Product extends WC_Post {
 						'downloads'      => function() {
 							return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;
 						},
-					);
+					];
 					break;
 				case apply_filters( "graphql_{$type}_product_model_use_variation_pricing_fields", 'variable' === $type ):
-					$fields = array(
+					$fields = [
 						'price'           => function() {
 							return $this->get_variation_price();
 						},
@@ -356,7 +356,7 @@ class Product extends WC_Post {
 						'variation_ids'   => function() {
 							return ! empty( $this->wc_data->get_children() )
 								? array_map( 'absint', $this->wc_data->get_children() )
-								: array( '0' );
+								: [ '0' ];
 						},
 						'priceRaw'        => function() {
 							return $this->get_variation_price( '', true );
@@ -367,20 +367,20 @@ class Product extends WC_Post {
 						'salePriceRaw'    => function() {
 							return $this->get_variation_price( 'sale', true );
 						},
-					) + $fields;
+					] + $fields;
 					break;
 				case apply_filters( "graphql_{$type}_product_model_use_external_fields", 'external' === $type ):
-					$fields += array(
+					$fields += [
 						'externalUrl' => function() {
 							return ! empty( $this->wc_data->get_product_url() ) ? $this->wc_data->get_product_url() : null;
 						},
 						'buttonText'  => function() {
 							return ! empty( $this->wc_data->get_button_text() ) ? $this->wc_data->get_button_text() : null;
 						},
-					);
+					];
 					break;
 				case apply_filters( "graphql_{$type}_product_model_use_grouped_fields", 'grouped' === $type ):
-					$fields += array(
+					$fields += [
 						'addToCartText'        => function() {
 							return ! empty( $this->wc_data->add_to_cart_text() ) ? $this->wc_data->add_to_cart_text() : null;
 						},
@@ -392,9 +392,9 @@ class Product extends WC_Post {
 						'grouped_ids'          => function() {
 							return ! empty( $this->wc_data->get_children() )
 								? array_map( 'absint', $this->wc_data->get_children() )
-								: array( '0' );
+								: [ '0' ];
 						},
-					);
+					];
 					break;
 			}//end switch
 
@@ -404,7 +404,7 @@ class Product extends WC_Post {
 			 * These fields are used primarily by WPGraphQL core Node* interfaces
 			 * and some fields act as aliases/decorator for existing fields.
 			 */
-			$fields += array(
+			$fields += [
 				'commentCount'  => function() {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					return $this->reviewCount;
@@ -413,7 +413,7 @@ class Product extends WC_Post {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					return $this->reviewsAllowed ? 'open' : 'closed';
 				},
-			);
+			];
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}//end if

@@ -14,7 +14,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$this->username   = 'spidersRLoose67';
 		$this->pass       = 'c@nalSt_@ll_DaY';
 		$this->email      = 'peter.parker@dailybugle.com';
-		$this->billing    = array(
+		$this->billing    = [
 			'firstName' => 'May',
 			'lastName'  => 'Parker',
 			'address1'  => '20 Ingram St',
@@ -24,8 +24,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'country'   => 'US',
 			'email'     => 'superfreak500@gmail.com',
 			'phone'     => '555-555-1234',
-		);
-		$this->shipping   = array(
+		];
+		$this->shipping   = [
 			'firstName' => 'Peter',
 			'lastName'  => 'Parker',
 			'address1'  => '202 Canal St',
@@ -34,13 +34,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'state'     => 'NY',
 			'postcode'  => '12310',
 			'country'   => 'US',
-		);
+		];
 
 		// Update Info
 		$this->new_first_name = 'Ben';
 		$this->new_last_name  = 'Wallace';
 		$this->new_email      = 'we0utHere32@gmail.com';
-		$this->new_billing    = array(
+		$this->new_billing    = [
 			'firstName' => 'Jim',
 			'lastName'  => 'Bean',
 			'address1'  => '45 Vodka Rd',
@@ -50,8 +50,8 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'country'   => 'US',
 			'email'     => '4daKnock0ut@yahoo.com',
 			'phone'     => '757-422-0989',
-		);
-		$this->new_shipping   = array(
+		];
+		$this->new_shipping   = [
 			'firstName' => 'Ben',
 			'lastName'  => 'Wallace',
 			'address1'  => '478 Vodka Rd',
@@ -59,7 +59,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'state'     => 'VA',
 			'postcode'  => '23451',
 			'country'   => 'US',
-		);
+		];
 	}
 
 	public function tearDown(): void {
@@ -76,7 +76,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	private function empty_shipping() {
-		return array(
+		return [
 			'firstName' => null,
 			'lastName'  => null,
 			'company'   => null,
@@ -86,16 +86,16 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			'state'     => null,
 			'postcode'  => null,
 			'country'   => null,
-		);
+		];
 	}
 
 	private function empty_billing() {
 		return array_merge(
 			$this->empty_shipping(),
-			array(
+			[
 				'email' => null,
 				'phone' => null,
-			)
+			]
 		);
 	}
 
@@ -144,13 +144,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'input' => $input );
+		$variables = [ 'input' => $input ];
 		$actual    = graphql(
-			array(
+			[
 				'query'          => $mutation,
 				'operation_name' => 'register',
 				'variables'      => $variables,
-			)
+			]
 		);
 
 		return $actual;
@@ -198,13 +198,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'input' => $input );
+		$variables = [ 'input' => $input ];
 		$actual    = graphql(
-			array(
+			[
 				'query'          => $mutation,
 				'operation_name' => 'update',
 				'variables'      => $variables,
-			)
+			]
 		);
 
 		return $actual;
@@ -217,14 +217,14 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$actual = $this->registerCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'username'         => $this->username,
 				'password'         => $this->pass,
 				'email'            => $this->email,
 				'firstName'        => $this->first_name,
 				'lastName'         => $this->last_name,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -233,13 +233,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = array(
-			'data' => array(
-				'registerCustomer' => array(
+		$expected = [
+			'data' => [
+				'registerCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
@@ -247,13 +247,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'lastName'   => $this->last_name,
 						'billing'    => $this->empty_billing(),
 						'shipping'   => $this->empty_shipping(),
-					),
-					'viewer'           => array(
+					],
+					'viewer'           => [
 						'userId' => $user->ID,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -265,7 +265,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation with customer billing information.
 		 */
 		$actual = $this->registerCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'username'         => $this->username,
 				'password'         => $this->pass,
@@ -273,7 +273,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				'firstName'        => $this->first_name,
 				'lastName'         => $this->last_name,
 				'billing'          => $this->billing,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -282,13 +282,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = array(
-			'data' => array(
-				'registerCustomer' => array(
+		$expected = [
+			'data' => [
+				'registerCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
@@ -296,13 +296,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'lastName'   => $this->last_name,
 						'billing'    => array_merge( $this->empty_billing(), $this->billing ),
 						'shipping'   => $this->empty_shipping(),
-					),
-					'viewer'           => array(
+					],
+					'viewer'           => [
 						'userId' => $user->ID,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -314,7 +314,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation using "shippingSameAsBilling" field.
 		 */
 		$actual = $this->registerCustomer(
-			array(
+			[
 				'clientMutationId'      => 'someId',
 				'username'              => $this->username,
 				'password'              => $this->pass,
@@ -323,7 +323,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				'lastName'              => $this->last_name,
 				'billing'               => $this->billing,
 				'shippingSameAsBilling' => true,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -332,13 +332,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = array(
-			'data' => array(
-				'registerCustomer' => array(
+		$expected = [
+			'data' => [
+				'registerCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
@@ -349,13 +349,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							$this->empty_shipping(),
 							array_intersect_key( $this->billing, $this->empty_shipping() )
 						),
-					),
-					'viewer'           => array(
+					],
+					'viewer'           => [
 						'userId' => $user->ID,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -367,7 +367,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation with customer shipping information.
 		 */
 		$actual = $this->registerCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'username'         => $this->username,
 				'password'         => $this->pass,
@@ -376,7 +376,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				'lastName'         => $this->last_name,
 				'billing'          => $this->billing,
 				'shipping'         => $this->shipping,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -385,13 +385,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = array(
-			'data' => array(
-				'registerCustomer' => array(
+		$expected = [
+			'data' => [
+				'registerCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
@@ -399,13 +399,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'lastName'   => $this->last_name,
 						'billing'    => array_merge( $this->empty_billing(), $this->billing ),
 						'shipping'   => array_merge( $this->empty_shipping(), $this->shipping ),
-					),
-					'viewer'           => array(
+					],
+					'viewer'           => [
 						'userId' => $user->ID,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -417,7 +417,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$this->registerCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'username'         => $this->username,
 				'password'         => $this->pass,
@@ -426,34 +426,34 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				'lastName'         => $this->last_name,
 				'billing'          => $this->billing,
 				'shipping'         => $this->shipping,
-			)
+			]
 		);
 
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$actual = $this->updateCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'id'               => $this->helper->to_relay_id( $user->ID ),
 				'email'            => $this->new_email,
 				'firstName'        => $this->new_first_name,
 				'lastName'         => $this->new_last_name,
-				'billing'          => array_merge( $this->new_billing, array( 'overwrite' => true ) ),
-				'shipping'         => array_merge( $this->new_shipping, array( 'overwrite' => true ) ),
-			)
+				'billing'          => array_merge( $this->new_billing, [ 'overwrite' => true ] ),
+				'shipping'         => array_merge( $this->new_shipping, [ 'overwrite' => true ] ),
+			]
 		);
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$expected = array(
-			'data' => array(
-				'updateCustomer' => array(
+		$expected = [
+			'data' => [
+				'updateCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->new_email,
 						'username'   => $this->username,
@@ -461,10 +461,10 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'lastName'   => $this->new_last_name,
 						'billing'    => array_merge( $this->empty_billing(), $this->new_billing ),
 						'shipping'   => array_merge( $this->empty_shipping(), $this->new_shipping ),
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -476,7 +476,7 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$this->registerCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'username'         => $this->username,
 				'password'         => $this->pass,
@@ -485,30 +485,30 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				'lastName'         => $this->last_name,
 				'billing'          => $this->billing,
 				'shipping'         => $this->shipping,
-			)
+			]
 		);
 
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$actual = $this->updateCustomer(
-			array(
+			[
 				'clientMutationId'      => 'someId',
 				'id'                    => $this->helper->to_relay_id( $user->ID ),
 				'shippingSameAsBilling' => true,
-			)
+			]
 		);
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$expected = array(
-			'data' => array(
-				'updateCustomer' => array(
+		$expected = [
+			'data' => [
+				'updateCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $this->username,
@@ -519,10 +519,10 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 							$this->empty_shipping(),
 							array_intersect_key( $this->billing, $this->empty_shipping() )
 						),
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -534,12 +534,12 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests mutation without a providing an username and password.
 		 */
 		$actual = $this->registerCustomer(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'email'            => $this->email,
 				'firstName'        => $this->first_name,
 				'lastName'         => $this->last_name,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -548,13 +548,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = array(
-			'data' => array(
-				'registerCustomer' => array(
+		$expected = [
+			'data' => [
+				'registerCustomer' => [
 					'clientMutationId' => 'someId',
 					'authToken'        => \WPGraphQL\JWT_Authentication\Auth::get_token( $user ),
 					'refreshToken'     => \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ),
-					'customer'         => array(
+					'customer'         => [
 						'databaseId' => $user->ID,
 						'email'      => $this->email,
 						'username'   => $user->user_login,
@@ -562,13 +562,13 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 						'lastName'   => $this->last_name,
 						'billing'    => $this->empty_billing(),
 						'shipping'   => $this->empty_shipping(),
-					),
-					'viewer'           => array(
+					],
+					'viewer'           => [
 						'userId' => $user->ID,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}
@@ -593,18 +593,18 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = array(
-			'input' => array(
+		$variables = [
+			'input' => [
 				'clientMutationId' => 'some_id',
 				'email'            => 'user@woographql.test',
-				'metaData'         => array(
-					array(
+				'metaData'         => [
+					[
 						'key'   => 'test_meta_key',
 						'value' => 'test_meta_value',
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 		codecept_debug( $actual );
@@ -612,22 +612,22 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$user = get_user_by( 'email', 'user@woographql.test' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = array(
-			'data' => array(
-				'registerCustomer' => array(
-					'customer' => array(
+		$expected = [
+			'data' => [
+				'registerCustomer' => [
+					'customer' => [
 						'databaseId' => $user->ID,
 						'email'      => 'user@woographql.test',
-						'metaData'   => array(
-							array(
+						'metaData'   => [
+							[
 								'key'   => 'test_meta_key',
 								'value' => 'test_meta_value',
-							),
-						),
-					),
-				),
-			),
-		);
+							],
+						],
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 
@@ -650,38 +650,38 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = array(
-			'input' => array(
+		$variables = [
+			'input' => [
 				'clientMutationId' => 'some_id',
 				'id'               => \GraphQLRelay\Relay::toGlobalId( 'customer', $user->ID ),
-				'metaData'         => array(
-					array(
+				'metaData'         => [
+					[
 						'key'   => 'test_meta_key',
 						'value' => 'new_meta_value',
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 		codecept_debug( $actual );
 
-		$expected = array(
-			'data' => array(
-				'updateCustomer' => array(
-					'customer' => array(
+		$expected = [
+			'data' => [
+				'updateCustomer' => [
+					'customer' => [
 						'databaseId' => $user->ID,
 						'email'      => 'user@woographql.test',
-						'metaData'   => array(
-							array(
+						'metaData'   => [
+							[
 								'key'   => 'test_meta_key',
 								'value' => 'new_meta_value',
-							),
-						),
-					),
-				),
-			),
-		);
+							],
+						],
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 
@@ -703,36 +703,36 @@ class CustomerMutationsTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = array(
-			'input' => array(
+		$variables = [
+			'input' => [
 				'clientMutationId' => 'some_id',
-				'metaData'         => array(
-					array(
+				'metaData'         => [
+					[
 						'key'   => 'test_meta_key',
 						'value' => 'test_meta_value',
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 		codecept_debug( $actual );
 
-		$expected = array(
-			'data' => array(
-				'updateCustomer' => array(
-					'customer' => array(
+		$expected = [
+			'data' => [
+				'updateCustomer' => [
+					'customer' => [
 						'id'       => 'guest',
-						'metaData' => array(
-							array(
+						'metaData' => [
+							[
 								'key'   => 'test_meta_key',
 								'value' => 'test_meta_value',
-							),
-						),
-					),
-				),
-			),
-		);
+							],
+						],
+					],
+				],
+			],
+		];
 
 		$this->assertEquals( $expected, $actual );
 	}

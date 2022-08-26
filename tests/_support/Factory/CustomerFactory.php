@@ -17,7 +17,7 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array();
+		$this->default_generation_definitions = [];
 		$this->dummy                          = Dummy::instance();
 	}
 
@@ -41,10 +41,10 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		$phone      = $this->dummy->telephone();
 
 		$args = array_merge(
-			array(
-				'billing'  => array(),
-				'shipping' => array(),
-			),
+			[
+				'billing'  => [],
+				'shipping' => [],
+			],
 			$args
 		);
 
@@ -70,7 +70,7 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		// Set data.
 		$customer->set_props(
 			array_merge(
-				array(
+				[
 					'email'              => $email,
 					'first_name'         => $first_name,
 					'last_name'          => $last_name,
@@ -78,7 +78,7 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 					'role'               => 'customer',
 					'username'           => $username,
 					'is_paying_customer' => false,
-				),
+				],
 				$args
 			)
 		);
@@ -97,7 +97,7 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $field => $field_value ) {
-			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
+			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s coupon field.', $field, $object->get_type() )
 				);

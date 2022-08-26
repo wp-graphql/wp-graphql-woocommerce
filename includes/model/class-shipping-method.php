@@ -25,13 +25,13 @@ class Shipping_Method extends Model {
 	 */
 	public function __construct( $method ) {
 		$this->data                = $method;
-		$allowed_restricted_fields = array(
+		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
-		);
+		];
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'shipping_method_restricted_cap', '' );
@@ -53,7 +53,7 @@ class Shipping_Method extends Model {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = array(
+			$this->fields = [
 				'ID'          => function() {
 					return $this->data->id;
 				},
@@ -69,7 +69,7 @@ class Shipping_Method extends Model {
 				'description' => function() {
 					return ! empty( $this->data->method_description ) ? $this->data->method_description : null;
 				},
-			);
+			];
 		}
 	}
 }

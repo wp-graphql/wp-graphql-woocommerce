@@ -21,7 +21,7 @@ class Cart_Error {
 	public static function register_interface( &$type_registry ) {
 		register_graphql_interface_type(
 			'CartError',
-			array(
+			[
 				'description' => __( 'An error that occurred when updating the cart', 'wp-graphql-woocommerce' ),
 				'fields'      => self::get_fields(),
 				'resolveType' => function( array $value ) use ( &$type_registry ) {
@@ -34,7 +34,7 @@ class Cart_Error {
 							return $type_registry->get_type( 'ShippingMethodError' );
 					}
 				},
-			)
+			]
 		);
 	}
 
@@ -44,21 +44,21 @@ class Cart_Error {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return array(
-			'type'    => array(
-				'type'        => array( 'non_null' => 'CartErrorType' ),
+		return [
+			'type'    => [
+				'type'        => [ 'non_null' => 'CartErrorType' ],
 				'description' => __( 'Type of error', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( array $error ) {
 					return ! empty( $error['type'] ) ? $error['type'] : null;
 				},
-			),
-			'reasons' => array(
-				'type'        => array( 'list_of' => 'String' ),
+			],
+			'reasons' => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'Reason for error', 'wp-graphql-woocommerce' ),
 				'resolve'     => function ( $error ) {
-					return ! empty( $error['reasons'] ) ? $error['reasons'] : array( 'Reasons for error unknown, sorry.' );
+					return ! empty( $error['reasons'] ) ? $error['reasons'] : [ 'Reasons for error unknown, sorry.' ];
 				},
-			),
-		);
+			],
+		];
 	}
 }

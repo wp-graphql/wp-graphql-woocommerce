@@ -39,7 +39,7 @@ final class Dummy {
 		$fn = $this->firstname();
 		$ln = $this->lastname();
 
-		$dump = array(
+		$dump = [
 			'primaryText'   => $this->words( 6 ),
 			'secondaryText' => $this->sentence(),
 			'userid'        => $this->number(),
@@ -66,13 +66,13 @@ final class Dummy {
 			'state'         => $this->state(),
 			'zipcode'       => $this->zipcode(),
 			'telephone'     => $this->telephone(),
-		);
+		];
 
 		return( $dump );
 	}
 
 	public function dump( $qty = 5 ) {
-		$a = array();
+		$a = [];
 
 		for ( $b = 0;$b < $qty;$b++ ) {
 			$a[] = $this->all();
@@ -122,10 +122,10 @@ final class Dummy {
 	}
 
 	public function words( $max = 5, $cmin = 2, $cmax = 6 ) {
-		$t = array();
+		$t = [];
 
 		for ( $a = 0; $a <= ( $max - 1 ); $a++ ) {
-			$t[] = str_replace( array( ',', '.' ), array( '', '' ), $this->text( $cmin, ( $cmax + 2 ), true ) );
+			$t[] = str_replace( [ ',', '.' ], [ '', '' ], $this->text( $cmin, ( $cmax + 2 ), true ) );
 		}
 
 		return( implode( ' ', $t ) );
@@ -143,7 +143,7 @@ final class Dummy {
 	}
 
 	public function image( $w = 300, $h = 300 ) {
-		$c = array( 'city', 'people', 'animals', 'food', 'business', 'cats', 'technics', 'sports' );
+		$c = [ 'city', 'people', 'animals', 'food', 'business', 'cats', 'technics', 'sports' ];
 		shuffle( $c );
 		$u = 'http://lorempixel.com/' . $w . '/' . $h . '/' . current( $c );
 
@@ -155,7 +155,7 @@ final class Dummy {
 	}
 
 	public function price( $min = 2, $max = 500 ) {
-		$c = array( '00', '99', '49', '00', '50', '29' );
+		$c = [ '00', '99', '49', '00', '50', '29' ];
 		shuffle( $c );
 		$p = rand( $min, $max ) . '.' . current( $c );
 		return( $p );
@@ -220,7 +220,7 @@ final class Dummy {
 	public function email( $u = false ) {
 		if ( ! $u ) {
 			$u = $this->username(); }
-		$m = array( '@gmail.com', '@hotmail.com', '@yahoo.com', '@aol.com', '@redlinederby.com' );
+		$m = [ '@gmail.com', '@hotmail.com', '@yahoo.com', '@aol.com', '@redlinederby.com' ];
 		shuffle( $m );
 		$m = current( $m );
 
@@ -241,7 +241,7 @@ final class Dummy {
 	}
 
 	public function state( $full = false ) {
-		$list = array(
+		$list = [
 			'AL' => 'Alabama',
 			'AK' => 'Alaska',
 			'AZ' => 'Arizona',
@@ -293,7 +293,7 @@ final class Dummy {
 			'WV' => 'West Virginia',
 			'WI' => 'Wisconsin',
 			'WY' => 'Wyoming',
-		);
+		];
 		$abbv = array_rand( $list, 1 );
 
 		if ( $full ) {

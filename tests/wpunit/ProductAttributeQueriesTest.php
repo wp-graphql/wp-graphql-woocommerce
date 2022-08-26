@@ -11,8 +11,8 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->shop_manager     = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer         = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager     = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->customer         = $this->factory->user->create( [ 'role' => 'customer' ] );
 		$this->helper           = $this->getModule( '\Helper\Wpunit' )->product();
 		$this->variation_helper = $this->getModule( '\Helper\Wpunit' )->product_variation();
 		$this->product_id       = $this->helper->create_variable();
@@ -45,22 +45,22 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-		$variables = array( 'id' => $this->helper->to_relay_id( $this->product_id ) );
+		$variables = [ 'id' => $this->helper->to_relay_id( $this->product_id ) ];
 		$actual    = graphql(
-			array(
+			[
 				'query'          => $query,
 				'operation_name' => 'attributeQuery',
 				'variables'      => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'product' => array(
+		$expected  = [
+			'data' => [
+				'product' => [
 					'id'         => $this->helper->to_relay_id( $this->product_id ),
 					'attributes' => $this->helper->print_attributes( $this->product_id ),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -85,31 +85,31 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-		$variables = array( 'color' => 'red' );
+		$variables = [ 'color' => 'red' ];
 		$actual    = graphql(
-			array(
+			[
 				'query'          => $query,
 				'operation_name' => 'attributeConnectionQuery',
 				'variables'      => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'allPaColor' => array(
-					'nodes' => array(
-						array(
-							'products' => array(
-								'nodes' => array(
-									array(
+		$expected  = [
+			'data' => [
+				'allPaColor' => [
+					'nodes' => [
+						[
+							'products' => [
+								'nodes' => [
+									[
 										'id' => $this->helper->to_relay_id( $this->product_id ),
-									),
-								),
-							),
-						),
-					),
-				),
-			),
-		);
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -132,25 +132,25 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-		$variables = array( 'size' => 'small' );
+		$variables = [ 'size' => 'small' ];
 		$actual    = graphql(
-			array(
+			[
 				'query'          => $query,
 				'operation_name' => 'attributeConnectionQuery',
 				'variables'      => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'allPaSize' => array(
-					'nodes' => array(
-						array(
-							'variations' => array(
+		$expected  = [
+			'data' => [
+				'allPaSize' => [
+					'nodes' => [
+						[
+							'variations' => [
 								'nodes' => $this->variation_helper->print_nodes(
 									$this->variation_ids,
-									array(
+									[
 										'filter' => function( $id ) {
-											$variation = new \WC_Product_Variation( $id );
+											$variation       = new \WC_Product_Variation( $id );
 											$small_attribute = array_filter(
 												$variation->get_attributes(),
 												function( $attribute ) {
@@ -159,14 +159,14 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 											);
 											return ! empty( $small_attribute );
 										},
-									)
+									]
 								),
-							),
-						),
-					),
-				),
-			),
-		);
+							],
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

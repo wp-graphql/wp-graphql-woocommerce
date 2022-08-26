@@ -8,7 +8,7 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 
 		$settings = get_option( 'graphql_general_settings' );
 		if ( ! $settings ) {
-			$settings = array();
+			$settings = [];
 		}
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
@@ -35,7 +35,7 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 	// Test introspection query.
 	public function testIntrospectionQuery() {
 		$query   = \GraphQL\Type\Introspection::getIntrospectionQuery();
-		$results = graphql( array( 'query' => $query ) );
+		$results = graphql( [ 'query' => $query ] );
 
 		$this->assertArrayNotHasKey( 'errors', $results );
 	}

@@ -17,15 +17,15 @@ class Order_Mutation {
 	/**
 	 * Filterable authentication function.
 	 *
-	 * @param string       $mutation  Mutation being executed.
-	 * @param integer|null $order_id  Order ID.
 	 * @param array        $input     Input data describing order.
 	 * @param AppContext   $context   AppContext instance.
 	 * @param ResolveInfo  $info      ResolveInfo instance.
+	 * @param string       $mutation  Mutation being executed.
+	 * @param integer|null $order_id  Order ID.
 	 *
 	 * @return boolean
 	 */
-	public static function authorized( $mutation = 'create', $order_id = null, $input, $context, $info ) {
+	public static function authorized( $input, $context, $info, $mutation = 'create', $order_id = null ) {
 		$post_type_object = get_post_type_object( 'shop_order' );
 
 		return apply_filters(
@@ -54,16 +54,16 @@ class Order_Mutation {
 	 * @throws UserError  Error creating order.
 	 */
 	public static function create_order( $input, $context, $info ) {
-		$order_keys = array(
+		$order_keys = [
 			'status'       => 'status',
 			'customerId'   => 'customer_id',
 			'customerNote' => 'customer_note',
 			'parent'       => 'parent',
 			'createdVia'   => 'created_via',
 			'orderId'      => 'order_id',
-		);
+		];
 
-		$args = array();
+		$args = [];
 		foreach ( $input as $key => $value ) {
 			if ( array_key_exists( $key, $order_keys ) ) {
 				$args[ $order_keys[ $key ] ] = $value;
@@ -107,13 +107,13 @@ class Order_Mutation {
 	 * @param ResolveInfo $info      ResolveInfo instance.
 	 */
 	public static function add_items( $input, $order_id, $context, $info ) {
-		$item_group_keys = array(
+		$item_group_keys = [
 			'lineItems'     => 'line_item',
 			'shippingLines' => 'shipping',
 			'feeLines'      => 'fee',
-		);
+		];
 
-		$item_groups = array();
+		$item_groups = [];
 		foreach ( $input as $key => $items ) {
 			if ( array_key_exists( $key, $item_group_keys ) ) {
 				$type = $item_group_keys[ $key ];
@@ -132,7 +132,7 @@ class Order_Mutation {
 					// Create Order item.
 					$item_id = ( ! empty( $item_data['id'] ) && \WC_Order_Factory::get_order_item( $item_data['id'] ) )
 						? $item_data['id']
-						: \wc_add_order_item( $order_id, array( 'order_item_type' => $type ) );
+						: \wc_add_order_item( $order_id, [ 'order_item_type' => $type ] );
 
 					// Continue if order item creation failed.
 					if ( ! $item_id ) {
@@ -168,7 +168,7 @@ class Order_Mutation {
 	 */
 	protected static function map_input_to_item( $item_id, $input, $item_keys, $context, $info ) {
 		$order_item = \WC_Order_Factory::get_order_item( $item_id );
-		$args       = array();
+		$args       = [];
 		$meta_data  = null;
 		foreach ( $input as $key => $value ) {
 			if ( array_key_exists( $key, $item_keys ) ) {
@@ -185,14 +185,14 @@ class Order_Mutation {
 			$product          = ( ! empty( $order_item['product_id'] ) )
 				? wc_get_product( $order_item['product_id'] )
 				: wc_get_product( self::get_product_id( $args ) );
-			$total            = wc_get_price_excluding_tax( $product, array( 'qty' => $args['quantity'] ) );
+			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ] );
 			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
 			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;
 		}
 
 		// Set item props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( array( $order_item, "set_{$key}" ) ) ) {
+			if ( is_callable( [ $order_item, "set_{$key}" ] ) ) {
 				$order_item->{"set_{$key}"}( $value );
 			}
 		}
@@ -216,26 +216,26 @@ class Order_Mutation {
 	protected static function get_order_item_keys( $type ) {
 		switch ( $type ) {
 			case 'line_item':
-				return array(
+				return [
 					'productId'   => 'product_id',
 					'variationId' => 'variation_id',
 					'taxClass'    => 'tax_class',
-				);
+				];
 
 			case 'shipping':
-				return array(
+				return [
 					'name'        => 'order_item_name',
 					'methodTitle' => 'method_title',
 					'methodId'    => 'method_id',
 					'instanceId'  => 'instance_id',
-				);
+				];
 
 			case 'fee':
-				return array(
+				return [
 					'name'      => 'name',
 					'taxClass'  => 'tax_class',
 					'taxStatus' => 'tax_status',
-				);
+				];
 		}//end switch
 	}
 
@@ -316,7 +316,7 @@ class Order_Mutation {
 					break;
 				default:
 					$prop = \wc_graphql_camel_case_to_underscore( $key );
-					if ( is_callable( array( $order, "set_{$prop}" ) ) ) {
+					if ( is_callable( [ $order, "set_{$prop}" ] ) ) {
 						$order->{"set_{$prop}"}( $value );
 					}
 					break;
@@ -346,9 +346,9 @@ class Order_Mutation {
 	protected static function update_address( $address, $order_id, $type = 'billing' ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
 
-		$formatted_address = Customer_Mutation::address_input_mapping( $type, $address );
+		$formatted_address = Customer_Mutation::address_input_mapping( $address, $type );
 		foreach ( $formatted_address as $key => $value ) {
-			if ( is_callable( array( $order, "set_{$type}_{$key}" ) ) ) {
+			if ( is_callable( [ $order, "set_{$type}_{$key}" ] ) ) {
 				$order->{"set_{$type}_{$key}"}( $value );
 			}
 		}
@@ -413,7 +413,7 @@ class Order_Mutation {
 	 * @throws UserError  Failed to delete order.
 	 */
 	public static function purge( $order, $force_delete = true ) {
-		if ( is_callable( array( $order, 'delete' ) ) ) {
+		if ( is_callable( [ $order, 'delete' ] ) ) {
 			return $order->delete( $force_delete );
 		}
 

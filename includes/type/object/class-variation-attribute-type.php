@@ -21,25 +21,25 @@ class Variation_Attribute_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'VariationAttribute',
-			array(
+			[
 				'description' => __( 'A product variation attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array( 'Attribute' ),
-				'fields'      => array(
-					'id'          => array(
-						'type'        => array( 'non_null' => 'ID' ),
+				'interfaces'  => [ 'Attribute' ],
+				'fields'      => [
+					'id'          => [
+						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'The Global ID of the attribute.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['id'] ) ? $source['id'] : null;
 						},
-					),
-					'attributeId' => array(
+					],
+					'attributeId' => [
 						'type'        => 'Int',
 						'description' => __( 'The Database ID of the attribute.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
 						},
-					),
-					'label'       => array(
+					],
+					'label'       => [
 						'type'        => 'String',
 						'description' => __( 'Label of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
@@ -50,23 +50,23 @@ class Variation_Attribute_Type {
 							$slug = \wc_attribute_taxonomy_slug( $source['name'] );
 							return ucwords( str_replace( '_', ' ', $slug ) );
 						},
-					),
-					'name'        => array(
+					],
+					'name'        => [
 						'type'        => 'String',
 						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
-					),
-					'value'       => array(
+					],
+					'value'       => [
 						'type'        => 'String',
 						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

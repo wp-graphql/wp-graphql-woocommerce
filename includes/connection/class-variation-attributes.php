@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 
 /**
@@ -27,14 +28,14 @@ class Variation_Attributes {
 		register_graphql_connection( self::get_connection_config() );
 
 		// From product types.
-		$product_types = array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() );
+		$product_types = array_values( WP_GraphQL_WooCommerce::get_enabled_product_types() );
 		foreach ( $product_types as $product_type ) {
 			register_graphql_connection(
 				self::get_connection_config(
-					array(
+					[
 						'fromType'      => $product_type,
 						'fromFieldName' => 'defaultAttributes',
-					)
+					]
 				)
 			);
 		}
@@ -47,19 +48,19 @@ class Variation_Attributes {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ): array {
+	public static function get_connection_config( $args = [] ): array {
 		return array_merge(
-			array(
+			[
 				'fromType'       => 'ProductVariation',
 				'toType'         => 'VariationAttribute',
 				'fromFieldName'  => 'attributes',
-				'connectionArgs' => array(),
+				'connectionArgs' => [],
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Variation_Attribute_Connection_Resolver();
 
 					return $resolver->resolve( $source, $args, $context, $info );
 				},
-			),
+			],
 			$args
 		);
 	}

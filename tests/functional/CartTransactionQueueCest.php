@@ -8,16 +8,16 @@ class CartTransactionQueueCest {
 		$this->product_catalog = $I->getCatalog();
 	}
 
-	public function _addTshirtToCart( FunctionalTester $I, $headers = array() ) {
+	public function _addTshirtToCart( FunctionalTester $I, $headers = [] ) {
 		/**
 		 * Add t-shirt to the cart
 		 */
 		$success = $I->addToCart(
-			array(
+			[
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['t-shirt'],
 				'quantity'         => 5,
-			),
+			],
 			$headers
 		);
 
@@ -42,11 +42,11 @@ class CartTransactionQueueCest {
 
 		// Begin Tests.
 		$I->wantTo( 'login' );
-		$login_input = array(
+		$login_input = [
 			'clientMutationId' => 'someId',
 			'username'         => 'jimbo1234',
 			'password'         => 'password',
-		);
+		];
 
 		$success = $I->login( $login_input );
 
@@ -67,10 +67,10 @@ class CartTransactionQueueCest {
 		// You can also retrieve the token from the "woocommerce-session" HTTP response header.
 		$initial_session_token = $success['data']['login']['sessionToken'];
 
-		$headers = array(
+		$headers = [
 			'Authorization'       => "Bearer {$auth_token}",
 			'woocommerce-session' => "Session {$initial_session_token}",
-		);
+		];
 
 		extract( $this->_addTshirtToCart( $I, $headers ) );
 
@@ -145,124 +145,124 @@ class CartTransactionQueueCest {
 			}
 		';
 
-		$requests           = array(
-			array(
+		$requests           = [
+			[
 				'query'     => $update_item_quantities_mutation,
-				'variables' => array(
-					'input' => array(
+				'variables' => [
+					'input' => [
 						'clientMutationId' => 'some_id',
-						'items'            => array(
-							array(
+						'items'            => [
+							[
 								'key'      => $key,
 								'quantity' => 3,
-							),
-						),
-					),
-				),
-			),
-			array(
+							],
+						],
+					],
+				],
+			],
+			[
 				'query'     => $update_item_quantities_mutation,
-				'variables' => array(
-					'input' => array(
+				'variables' => [
+					'input' => [
 						'clientMutationId' => 'some_id',
-						'items'            => array(
-							array(
+						'items'            => [
+							[
 								'key'      => $key,
 								'quantity' => 4,
-							),
-						),
-					),
-				),
-			),
-			array(
+							],
+						],
+					],
+				],
+			],
+			[
 				'query'     => $remove_item_mutation,
-				'variables' => array(
-					'input' => array(
+				'variables' => [
+					'input' => [
 						'clientMutationId' => 'some_id',
-						'keys'             => array( $key ),
-					),
-				),
-			),
-			array(
+						'keys'             => [ $key ],
+					],
+				],
+			],
+			[
 				'query'     => $restore_item_mutation,
-				'variables' => array(
-					'input' => array(
+				'variables' => [
+					'input' => [
 						'clientMutationId' => 'some_id',
-						'keys'             => array( $key ),
-					),
-				),
-			),
-		);
-		$expected_responses = array(
-			array(
-				'updateItemQuantities' => array(
+						'keys'             => [ $key ],
+					],
+				],
+			],
+		];
+		$expected_responses = [
+			[
+				'updateItemQuantities' => [
 					'clientMutationId' => 'some_id',
-					'updated'          => array(
-						array(
+					'updated'          => [
+						[
 							'key'      => $key,
 							'quantity' => 3,
-						),
-					),
-					'removed'          => array(),
-					'items'            => array(
-						array(
+						],
+					],
+					'removed'          => [],
+					'items'            => [
+						[
 							'key'      => $key,
 							'quantity' => 3,
-						),
-					),
-				),
-			),
-			array(
-				'updateItemQuantities' => array(
+						],
+					],
+				],
+			],
+			[
+				'updateItemQuantities' => [
 					'clientMutationId' => 'some_id',
-					'updated'          => array(
-						array(
+					'updated'          => [
+						[
 							'key'      => $key,
 							'quantity' => 4,
-						),
-					),
-					'removed'          => array(),
-					'items'            => array(
-						array(
+						],
+					],
+					'removed'          => [],
+					'items'            => [
+						[
 							'key'      => $key,
 							'quantity' => 4,
-						),
-					),
-				),
-			),
-			array(
-				'removeItemsFromCart' => array(
+						],
+					],
+				],
+			],
+			[
+				'removeItemsFromCart' => [
 					'clientMutationId' => 'some_id',
-					'cart'             => array(
-						'contents' => array(
-							'nodes' => array(),
-						),
-					),
-				),
-			),
-			array(
-				'restoreCartItems' => array(
+					'cart'             => [
+						'contents' => [
+							'nodes' => [],
+						],
+					],
+				],
+			],
+			[
+				'restoreCartItems' => [
 					'clientMutationId' => 'some_id',
-					'cart'             => array(
-						'contents' => array(
-							'nodes' => array(
-								array(
+					'cart'             => [
+						'contents' => [
+							'nodes' => [
+								[
 									'key'      => $key,
 									'quantity' => 4,
-								),
-							),
-						),
-					),
-				),
-			),
-		);
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 
 		$base_uri = getenv( 'WORDPRESS_URL' ) ? getenv( 'WORDPRESS_URL' ) : 'http://localhost';
-		$headers  = array(
+		$headers  = [
 			'Content-Type'        => 'application/json',
 			'Authorization'       => "Bearer ${auth_token}",
 			'woocommerce-session' => "Session {$session_token}",
-		);
+		];
 		$timeout  = 300;
 		$client   = new \GuzzleHttp\Client( compact( 'base_uri', 'headers', 'timeout' ) );
 
@@ -287,7 +287,7 @@ class CartTransactionQueueCest {
 		$pool = new \GuzzleHttp\Pool(
 			$client,
 			$iterator( $requests ),
-			array(
+			[
 				'concurrency' => 5,
 				'fulfilled'   => function ( $response, $index ) use ( $I, $expected_responses ) {
 					\codecept_debug( "Finished session mutation request $index @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
@@ -298,7 +298,7 @@ class CartTransactionQueueCest {
 					\codecept_debug( $body );
 					$I->assertEquals( $expected, $body['data'] );
 				},
-			)
+			]
 		);
 
 		$promise = $pool->promise();

@@ -25,11 +25,11 @@ class Cart_Apply_Coupon {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'applyCoupon',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -39,12 +39,12 @@ class Cart_Apply_Coupon {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'code' => array(
-				'type'        => array( 'non_null' => 'String' ),
+		return [
+			'code' => [
+				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -53,15 +53,15 @@ class Cart_Apply_Coupon {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'applied' => array(
+		return [
+			'applied' => [
 				'type'    => 'AppliedCoupon',
 				'resolve' => function( $payload ) {
 					return $payload['code'];
 				},
-			),
+			],
 			'cart'    => Cart_Mutation::get_cart_field( true ),
-		);
+		];
 	}
 
 	/**
@@ -76,7 +76,7 @@ class Cart_Apply_Coupon {
 			$reason = '';
 			// If validate and successful applied to cart, return payload.
 			if ( Cart_Mutation::validate_coupon( $input['code'], $reason ) && \WC()->cart->apply_coupon( $input['code'] ) ) {
-				return array( 'code' => $input['code'] );
+				return [ 'code' => $input['code'] ];
 			}
 
 			// If any session error notices, capture them.

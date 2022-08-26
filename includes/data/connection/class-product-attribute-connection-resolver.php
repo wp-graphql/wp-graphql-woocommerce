@@ -35,7 +35,7 @@ class Product_Attribute_Connection_Resolver {
 	 * @return array
 	 */
 	private function get_items( $attributes, $source, $args, $context, $info ) {
-		$items = array();
+		$items = [];
 		foreach ( $attributes as $attribute_name => $data ) {
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			$data->_relay_id = base64_encode(
@@ -86,7 +86,7 @@ class Product_Attribute_Connection_Resolver {
 		$attributes = $this->get_items( $source->attributes, $source, $args, $context, $info );
 
 		$connection = Relay::connectionFromArray( $attributes, $args );
-		$nodes      = array();
+		$nodes      = [];
 		if ( ! empty( $connection['edges'] ) && is_array( $connection['edges'] ) ) {
 			foreach ( $connection['edges'] as $edge ) {
 				$nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;

@@ -41,7 +41,7 @@ class Payment_Gateway_Connection_Resolver {
 		}
 
 		$connection = Relay::connectionFromArray( array_values( $gateways ), $args );
-		$nodes      = array();
+		$nodes      = [];
 		if ( ! empty( $connection['edges'] ) && is_array( $connection['edges'] ) ) {
 			foreach ( $connection['edges'] as $edge ) {
 				$nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;

@@ -9,8 +9,8 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		// Create users.
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
 
 		// Assign helpers.
 		$this->cart        = $this->getModule( '\Helper\Wpunit' )->cart();
@@ -40,25 +40,25 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	private function createObjects() {
-		$data = array(
-			'meta_data' => array(
-				array(
+		$data = [
+			'meta_data' => [
+				[
 					'id'    => 0,
 					'key'   => 'meta_1',
 					'value' => 'test_meta_1',
-				),
-				array(
+				],
+				[
 					'id'    => 0,
 					'key'   => 'meta_2',
 					'value' => 'test_meta_2',
-				),
-				array(
+				],
+				[
 					'id'    => 0,
 					'key'   => 'meta_1',
 					'value' => 75,
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// Create Coupon with meta data.
 		$this->coupon_id = $this->coupons->create( $data );
@@ -67,7 +67,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->customer_id = $this->customers->create( $data );
 
 		// Create Order and Refund with meta data.
-		$this->order_id = $this->orders->create( array_merge( $data, array( 'customer_id' => $this->customer ) ) );
+		$this->order_id = $this->orders->create( array_merge( $data, [ 'customer_id' => $this->customer ] ) );
 		$this->order_items->add_fee( $this->order_id, $data );
 		$this->refund_id = $this->refunds->create( $this->order_id, $data );
 
@@ -76,23 +76,23 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->variation_ids = $this->variations->create( $this->product_id, $data );
 
 		// Add Cart Item with extra data.
-		$cart_meta_data = array(
+		$cart_meta_data = [
 			'meta_1' => 'test_meta_1',
 			'meta_2' => 'test_meta_2',
-		);
+		];
 
 		// Clear cart.
 		WC()->cart->empty_cart( true );
 
 		// Add item to cart.
 		$this->cart_item_key = $this->cart->add(
-			array(
+			[
 				'product_id'     => $this->variation_ids['product'],
 				'quantity'       => 2,
 				'variation_id'   => $this->variation_ids['variations'][0],
-				'variation'      => array( 'attribute_pa_color' => 'red' ),
+				'variation'      => [ 'attribute_pa_color' => 'red' ],
 				'cart_item_data' => $cart_meta_data,
-			)
+			]
 		)[0];
 	}
 
@@ -119,30 +119,30 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/o filter
 		 */
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => array(
-							array(
+		$actual   = graphql( [ 'query' => $query ] );
+		$expected = [
+			'data' => [
+				'cart' => [
+					'contents' => [
+						'nodes' => [
+							[
 								'key'       => $this->cart_item_key,
-								'extraData' => array(
-									array(
+								'extraData' => [
+									[
 										'key'   => 'meta_1',
 										'value' => 'test_meta_1',
-									),
-									array(
+									],
+									[
 										'key'   => 'meta_2',
 										'value' => 'test_meta_2',
-									),
-								),
-							),
-						),
-					),
-				),
-			),
-		);
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -154,32 +154,32 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/ "key" filter
 		 */
-		$variables = array( 'key' => 'meta_2' );
+		$variables = [ 'key' => 'meta_2' ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => array(
-							array(
+		$expected  = [
+			'data' => [
+				'cart' => [
+					'contents' => [
+						'nodes' => [
+							[
 								'key'       => $this->cart_item_key,
-								'extraData' => array(
-									array(
+								'extraData' => [
+									[
 										'key'   => 'meta_2',
 										'value' => 'test_meta_2',
-									),
-								),
-							),
-						),
-					),
-				),
-			),
-		);
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -191,32 +191,32 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/ "keysIn" filter
 		 */
-		$variables = array( 'keysIn' => array( 'meta_2' ) );
+		$variables = [ 'keysIn' => [ 'meta_2' ] ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'cart' => array(
-					'contents' => array(
-						'nodes' => array(
-							array(
+		$expected  = [
+			'data' => [
+				'cart' => [
+					'contents' => [
+						'nodes' => [
+							[
 								'key'       => $this->cart_item_key,
-								'extraData' => array(
-									array(
+								'extraData' => [
+									[
 										'key'   => 'meta_2',
 										'value' => 'test_meta_2',
-									),
-								),
-							),
-						),
-					),
-				),
-			),
-		);
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -244,30 +244,30 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Query w/o filters
 		 */
 		wp_set_current_user( $this->shop_manager );
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'coupon' => array(
+		$expected  = [
+			'data' => [
+				'coupon' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -279,29 +279,29 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/ "key" filter
 		 */
-		$variables = array(
+		$variables = [
 			'id'  => $id,
 			'key' => 'meta_2',
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'coupon' => array(
+		$expected  = [
+			'data' => [
+				'coupon' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -313,29 +313,29 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/ "keysIn" filter
 		 */
-		$variables = array(
+		$variables = [
 			'id'     => $id,
-			'keysIn' => array( 'meta_2' ),
-		);
+			'keysIn' => [ 'meta_2' ],
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'coupon' => array(
+		$expected  = [
+			'data' => [
+				'coupon' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -347,34 +347,34 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/ "key" filter and "multiple" set to true to get non-unique results.
 		 */
-		$variables = array(
+		$variables = [
 			'id'       => $id,
 			'key'      => 'meta_1',
 			'multiple' => true,
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'coupon' => array(
+		$expected  = [
+			'data' => [
+				'coupon' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_1',
 							'value' => '75',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -386,34 +386,34 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/ "keysIn" filter and "multiple" set to true to get non-unique results.
 		 */
-		$variables = array(
+		$variables = [
 			'id'       => $id,
-			'keysIn'   => array( 'meta_1' ),
+			'keysIn'   => [ 'meta_1' ],
 			'multiple' => true,
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'coupon' => array(
+		$expected  = [
+			'data' => [
+				'coupon' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_1',
 							'value' => '75',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -425,37 +425,37 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Query w/o filters and "multiple" set to true to get non-unique results.
 		 */
-		$variables = array(
+		$variables = [
 			'id'       => $id,
 			'multiple' => true,
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'coupon' => array(
+		$expected  = [
+			'data' => [
+				'coupon' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_1',
 							'value' => '75',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -480,24 +480,24 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Assertion One
 		 */
 		$this->set_user( $this->customer_id );
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-			'data' => array(
-				'customer' => array(
+		$actual   = graphql( [ 'query' => $query ] );
+		$expected = [
+			'data' => [
+				'customer' => [
 					'id'       => Relay::toGlobalId( 'customer', $this->customer_id ),
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -533,46 +533,46 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'order' => array(
+		$expected  = [
+			'data' => [
+				'order' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-					'feeLines' => array(
-						'nodes' => array(
-							array(
-								'metaData' => array(
-									array(
+						],
+					],
+					'feeLines' => [
+						'nodes' => [
+							[
+								'metaData' => [
+									[
 										'key'   => 'meta_1',
 										'value' => 'test_meta_1',
-									),
-									array(
+									],
+									[
 										'key'   => 'meta_2',
 										'value' => 'test_meta_2',
-									),
-								),
-							),
-						),
-					),
-				),
-			),
-		);
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -599,30 +599,30 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'product' => array(
+		$expected  = [
+			'data' => [
+				'product' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -647,30 +647,30 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 */
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'productVariation' => array(
+		$expected  = [
+			'data' => [
+				'productVariation' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -696,30 +696,30 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Assertion One
 		 */
 		wp_set_current_user( $this->customer );
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'refund' => array(
+		$expected  = [
+			'data' => [
+				'refund' => [
 					'id'       => $id,
-					'metaData' => array(
-						array(
+					'metaData' => [
+						[
 							'key'   => 'meta_1',
 							'value' => 'test_meta_1',
-						),
-						array(
+						],
+						[
 							'key'   => 'meta_2',
 							'value' => 'test_meta_2',
-						),
-					),
-				),
-			),
-		);
+						],
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
