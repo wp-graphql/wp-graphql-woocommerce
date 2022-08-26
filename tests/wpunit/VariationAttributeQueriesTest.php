@@ -10,8 +10,8 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
-		$this->shop_manager = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer     = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
 		$this->product      = $this->getModule( '\Helper\Wpunit' )->product();
 		$this->variation    = $this->getModule( '\Helper\Wpunit' )->product_variation();
 		$ids                = $this->variation->create( $this->product->create_variable() );
@@ -44,21 +44,21 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test query and results
 		 */
-		$variables = array( 'id' => $this->variation->to_relay_id( $this->variation_id ) );
+		$variables = [ 'id' => $this->variation->to_relay_id( $this->variation_id ) ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'productVariation' => array(
+		$expected  = [
+			'data' => [
+				'productVariation' => [
 					'id'         => $this->variation->to_relay_id( $this->variation_id ),
 					'attributes' => $this->variation->print_attributes( $this->variation_id ),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -90,21 +90,21 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test query and results
 		 */
-		$variables = array( 'id' => $this->product->to_relay_id( $this->product_id ) );
+		$variables = [ 'id' => $this->product->to_relay_id( $this->product_id ) ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'product' => array(
+		$expected  = [
+			'data' => [
+				'product' => [
 					'id'                => $this->product->to_relay_id( $this->product_id ),
 					'defaultAttributes' => $this->variation->print_attributes( $this->product_id, 'PRODUCT' ),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

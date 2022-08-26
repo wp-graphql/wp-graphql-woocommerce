@@ -38,7 +38,7 @@ class Product_Types {
 	 * @return array
 	 */
 	public static function get_product_interfaces() {
-		return array(
+		return [
 			'Node',
 			'Product',
 			'NodeWithComments',
@@ -46,7 +46,7 @@ class Product_Types {
 			'NodeWithFeaturedImage',
 			'ContentNode',
 			'UniformResourceIdentifiable',
-		);
+		];
 	}
 
 	/**
@@ -56,34 +56,34 @@ class Product_Types {
 	 *
 	 * @return array
 	 */
-	public static function get_inventory_fields( $fields = array() ) {
+	public static function get_inventory_fields( $fields = [] ) {
 		return array_merge(
-			array(
-				'manageStock'       => array(
+			[
+				'manageStock'       => [
 					'type'        => 'Boolean',
 					'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
-				),
-				'stockQuantity'     => array(
+				],
+				'stockQuantity'     => [
 					'type'        => 'Int',
 					'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),
-				),
-				'backorders'        => array(
+				],
+				'backorders'        => [
 					'type'        => 'BackordersEnum',
 					'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
-				),
-				'soldIndividually'  => array(
+				],
+				'soldIndividually'  => [
 					'type'        => 'Boolean',
 					'description' => __( 'If should be sold individually', 'wp-graphql-woocommerce' ),
-				),
-				'backordersAllowed' => array(
+				],
+				'backordersAllowed' => [
 					'type'        => 'Boolean',
 					'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
-				),
-				'stockStatus'       => array(
+				],
+				'stockStatus'       => [
 					'type'        => 'StockStatusEnum',
 					'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
-				),
-			),
+				],
+			],
 			$fields
 		);
 	}
@@ -95,38 +95,38 @@ class Product_Types {
 	 *
 	 * @return array
 	 */
-	public static function get_shipping_fields( $fields = array() ) {
+	public static function get_shipping_fields( $fields = [] ) {
 		return array_merge(
-			array(
-				'weight'           => array(
+			[
+				'weight'           => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s weight', 'wp-graphql-woocommerce' ),
-				),
-				'length'           => array(
+				],
+				'length'           => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s length', 'wp-graphql-woocommerce' ),
-				),
-				'width'            => array(
+				],
+				'width'            => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s width', 'wp-graphql-woocommerce' ),
-				),
-				'height'           => array(
+				],
+				'height'           => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s height', 'wp-graphql-woocommerce' ),
-				),
-				'shippingClassId'  => array(
+				],
+				'shippingClassId'  => [
 					'type'        => 'Int',
 					'description' => __( 'shipping class ID', 'wp-graphql-woocommerce' ),
-				),
-				'shippingRequired' => array(
+				],
+				'shippingRequired' => [
 					'type'        => 'Boolean',
 					'description' => __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' ),
-				),
-				'shippingTaxable'  => array(
+				],
+				'shippingTaxable'  => [
 					'type'        => 'Boolean',
 					'description' => __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' ),
-				),
-			),
+				],
+			],
 			$fields
 		);
 	}
@@ -138,18 +138,18 @@ class Product_Types {
 	 *
 	 * @return array
 	 */
-	public static function get_pricing_and_tax_fields( $fields = array() ) {
+	public static function get_pricing_and_tax_fields( $fields = [] ) {
 		return array_merge(
-			array(
-				'price'        => array(
+			[
+				'price'        => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'format' => array(
+					'args'        => [
+						'format' => [
 							'type'        => 'PricingFieldFormatEnum',
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
@@ -158,16 +158,16 @@ class Product_Types {
 							return $source->price;
 						}
 					},
-				),
-				'regularPrice' => array(
+				],
+				'regularPrice' => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'format' => array(
+					'args'        => [
+						'format' => [
 							'type'        => 'PricingFieldFormatEnum',
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
@@ -177,16 +177,16 @@ class Product_Types {
 							return $source->regularPrice;
 						}
 					},
-				),
-				'salePrice'    => array(
+				],
+				'salePrice'    => [
 					'type'        => 'String',
 					'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
-					'args'        => array(
-						'format' => array(
+					'args'        => [
+						'format' => [
 							'type'        => 'PricingFieldFormatEnum',
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-						),
-					),
+						],
+					],
 					'resolve'     => function( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
@@ -196,16 +196,16 @@ class Product_Types {
 							return $source->salePrice;
 						}
 					},
-				),
-				'taxStatus'    => array(
+				],
+				'taxStatus'    => [
 					'type'        => 'TaxStatusEnum',
 					'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
-				),
-				'taxClass'     => array(
+				],
+				'taxClass'     => [
 					'type'        => 'TaxClassEnum',
 					'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
-				),
-			),
+				],
+			],
 			$fields
 		);
 	}
@@ -217,30 +217,30 @@ class Product_Types {
 	 *
 	 * @return array
 	 */
-	public static function get_virtual_data_fields( $fields = array() ) {
+	public static function get_virtual_data_fields( $fields = [] ) {
 		return array_merge(
-			array(
-				'virtual'        => array(
+			[
+				'virtual'        => [
 					'type'        => 'Boolean',
 					'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
-				),
-				'downloadExpiry' => array(
+				],
+				'downloadExpiry' => [
 					'type'        => 'Int',
 					'description' => __( 'Download expiry', 'wp-graphql-woocommerce' ),
-				),
-				'downloadable'   => array(
+				],
+				'downloadable'   => [
 					'type'        => 'Boolean',
 					'description' => __( 'Is downloadable?', 'wp-graphql-woocommerce' ),
-				),
-				'downloadLimit'  => array(
+				],
+				'downloadLimit'  => [
 					'type'        => 'Int',
 					'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
-				),
-				'downloads'      => array(
-					'type'        => array( 'list_of' => 'ProductDownload' ),
+				],
+				'downloads'      => [
+					'type'        => [ 'list_of' => 'ProductDownload' ],
 					'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
-				),
-			),
+				],
+			],
 			$fields
 		);
 	}
@@ -251,7 +251,7 @@ class Product_Types {
 	private static function register_simple_product_type() {
 		register_graphql_object_type(
 			'SimpleProduct',
-			array(
+			[
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
@@ -261,7 +261,7 @@ class Product_Types {
 					self::get_shipping_fields(),
 					self::get_virtual_data_fields()
 				),
-			)
+			]
 		);
 	}
 
@@ -271,7 +271,7 @@ class Product_Types {
 	private static function register_variable_product_type() {
 		register_graphql_object_type(
 			'VariableProduct',
-			array(
+			[
 				'description' => __( 'A variable product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
@@ -280,7 +280,7 @@ class Product_Types {
 					self::get_inventory_fields(),
 					self::get_shipping_fields()
 				),
-			)
+			]
 		);
 	}
 
@@ -290,24 +290,24 @@ class Product_Types {
 	private static function register_external_product_type() {
 		register_graphql_object_type(
 			'ExternalProduct',
-			array(
+			[
 				'description' => __( 'A external product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
 					self::get_pricing_and_tax_fields(),
-					array(
-						'externalUrl' => array(
+					[
+						'externalUrl' => [
 							'type'        => 'String',
 							'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
-						),
-						'buttonText'  => array(
+						],
+						'buttonText'  => [
 							'type'        => 'String',
 							'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
-						),
-					)
+						],
+					]
 				),
-			)
+			]
 		);
 	}
 
@@ -317,26 +317,26 @@ class Product_Types {
 	private static function register_group_product_type() {
 		register_graphql_object_type(
 			'GroupProduct',
-			array(
+			[
 				'description' => __( 'A group product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
-					array(
-						'addToCartText'        => array(
+					[
+						'addToCartText'        => [
 							'type'        => 'String',
 							'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
-						),
-						'addToCartDescription' => array(
+						],
+						'addToCartDescription' => [
 							'type'        => 'String',
 							'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
-						),
-						'price'                => array(
+						],
+						'price'                => [
 							'type'        => 'String',
 							'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
 							'resolve'     => function( $source ) {
 								$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
-								$child_prices     = array();
+								$child_prices     = [];
 								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ), 'wc_products_array_filter_visible_grouped' );
 
 								foreach ( $children as $child ) {
@@ -363,10 +363,10 @@ class Product_Types {
 
 								return \wc_graphql_price( $min_price );
 							},
-						),
-					)
+						],
+					]
 				),
-			)
+			]
 		);
 	}
 }

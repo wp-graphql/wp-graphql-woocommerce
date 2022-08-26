@@ -33,7 +33,7 @@ class Refund extends Order {
 		if ( empty( $this->fields ) ) {
 			Post::init();
 
-			$fields = array(
+			$fields = [
 				'id'             => function() {
 					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', $this->wc_data->get_id() ) : null;
 				},
@@ -46,16 +46,16 @@ class Refund extends Order {
 				'reason'         => function() {
 					return ! empty( $this->wc_data->get_reason() ) ? $this->wc_data->get_reason() : null;
 				},
-				'refunded_by_id' => array(
+				'refunded_by_id' => [
 					'callback'   => function() {
 						return ! empty( $this->wc_data->get_refunded_by() ) ? $this->wc_data->get_refunded_by() : null;
 					},
 					'capability' => 'list_users',
-				),
+				],
 				'date'           => function() {
 					return ! empty( $this->wc_data->get_date_modified() ) ? $this->wc_data->get_date_modified() : null;
 				},
-			);
+			];
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}//end if

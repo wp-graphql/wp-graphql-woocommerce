@@ -64,8 +64,8 @@ class Session_Transaction_Manager {
 	public function __construct( &$session_handler ) {
 		$this->session_handler = $session_handler;
 
-		add_action( 'graphql_before_resolve_field', array( $this, 'update_transaction_queue' ), 10, 4 );
-		add_action( 'graphql_process_http_request_response', array( $this, 'pop_transaction_id' ), 20 );
+		add_action( 'graphql_before_resolve_field', [ $this, 'update_transaction_queue' ], 10, 4 );
+		add_action( 'graphql_process_http_request_response', [ $this, 'pop_transaction_id' ], 20 );
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Session_Transaction_Manager {
 		 */
 		return \apply_filters(
 			'woographql_session_mutations',
-			array(
+			[
 				'addToCart',
 				'updateItemQuantities',
 				'addFee',
@@ -103,7 +103,7 @@ class Session_Transaction_Manager {
 				'updateItemQuantities',
 				'updateShippingMethod',
 				'updateCustomer',
-			)
+			]
 		);
 	}
 
@@ -184,7 +184,7 @@ class Session_Transaction_Manager {
 		// Get transaction queue.
 		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 		if ( ! $transaction_queue ) {
-			$transaction_queue = array();
+			$transaction_queue = [];
 		}
 
 		// If transaction ID not in queue, add it, and start transaction.
@@ -232,7 +232,7 @@ class Session_Transaction_Manager {
 	 *
 	 * @param array $queue  Transaction queue.
 	 */
-	public function save_transaction_queue( $queue = array() ) {
+	public function save_transaction_queue( $queue = [] ) {
 		// If queue empty delete transient and bail.
 		if ( empty( $queue ) ) {
 			delete_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );

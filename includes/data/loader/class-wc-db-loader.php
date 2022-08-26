@@ -59,19 +59,19 @@ class WC_Db_Loader extends AbstractDataLoader {
 		$loader = null;
 		switch ( $this->loader_type ) {
 			case 'CART_ITEM':
-				$loader = array( $this, 'load_cart_item_from_key' );
+				$loader = [ $this, 'load_cart_item_from_key' ];
 				break;
 			case 'DOWNLOADABLE_ITEM':
-				$loader = array( $this, 'load_downloadable_item_from_id' );
+				$loader = [ $this, 'load_downloadable_item_from_id' ];
 				break;
 			case 'TAX_RATE':
-				$loader = array( $this, 'load_tax_rate_from_id' );
+				$loader = [ $this, 'load_tax_rate_from_id' ];
 				break;
 			case 'ORDER_ITEM':
-				$loader = array( $this, 'load_order_item_from_id' );
+				$loader = [ $this, 'load_order_item_from_id' ];
 				break;
 			case 'SHIPPING_METHOD':
-				$loader = array( $this, 'load_shipping_method_from_id' );
+				$loader = [ $this, 'load_shipping_method_from_id' ];
 				break;
 			default:
 				/**
@@ -90,7 +90,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 				}
 		}//end switch
 
-		$loaded_items = array();
+		$loaded_items = [];
 
 		/**
 		 * Loop over the keys and return an array of items.
@@ -99,7 +99,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 			$loaded_items[ $key ] = call_user_func( $loader, $key );
 		}
 
-		return ! empty( $loaded_items ) ? $loaded_items : array();
+		return ! empty( $loaded_items ) ? $loaded_items : [];
 	}
 
 	/**
@@ -139,6 +139,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
 		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
 			// Get locales from a tax rate.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$locales = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT location_code, location_type
@@ -150,7 +151,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 
 			foreach ( $locales as $locale ) {
 				if ( empty( $rate->{'tax_rate_' . $locale->location_type} ) ) {
-					$rate->{'tax_rate_' . $locale->location_type} = array();
+					$rate->{'tax_rate_' . $locale->location_type} = [];
 				}
 				$rate->{'tax_rate_' . $locale->location_type}[] = $locale->location_code;
 			}

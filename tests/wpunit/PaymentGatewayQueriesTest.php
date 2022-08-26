@@ -9,29 +9,29 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		// Enable payment gateway.
 		update_option(
 			'woocommerce_bacs_settings',
-			array(
+			[
 				'enabled'      => 'yes',
 				'title'        => 'Direct bank transfer',
 				'description'  => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.',
 				'instructions' => 'Instructions that will be added to the thank you page and emails.',
 				'account'      => '',
-			)
+			]
 		);
 
 		update_option(
 			'woocommerce_cheque_settings',
-			array(
+			[
 				'enabled'      => 'no',
 				'title'        => 'Check payments',
 				'description'  => 'Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.',
 				'instructions' => 'Instructions that will be added to the thank you page and emails.',
 				'account'      => '',
-			)
+			]
 		);
 
 		delete_option(
 			'woocommerce_stripe_settings',
-			array(
+			[
 				'enabled'                       => 'no',
 				'title'                         => 'Credit Card (Stripe)',
 				'description'                   => 'Pay with your credit card via Stripe',
@@ -56,7 +56,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				'payment_request_button_height' => '44',
 				'saved_cards'                   => 'yes',
 				'logging'                       => 'no',
-			)
+			]
 		);
 
 		// Reload gateways.
@@ -83,16 +83,16 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 * Tests query.
 		 */
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = array(
+		$expected = [
 			$this->expectedNode(
 				'paymentGateways.nodes',
-				array(
+				[
 					$this->expectedField( 'id', 'bacs' ),
 					$this->expectedField( 'title', 'Direct bank transfer' ),
 					$this->expectedField( 'icon', self::IS_NULL ),
-				)
+				]
 			),
-		);
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -101,12 +101,12 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 *
 		 * Tests query and "all" where argument response, expects errors due lack of capabilities.
 		 */
-		$variables = array( 'all' => true );
+		$variables = [ 'all' => true ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array(
+		$expected  = [
 			$this->expectedErrorPath( 'paymentGateways' ),
 			$this->expectedField( 'paymentGateways', self::IS_NULL ),
-		);
+		];
 
 		$this->assertQueryError( $response, $expected );
 
@@ -116,43 +116,43 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 * Tests query and "all" where argument response with proper capabilities.
 		 */
 		$this->loginAsShopManager();
-		$variables = array( 'all' => true );
+		$variables = [ 'all' => true ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		$expected = array(
+		$expected = [
 			$this->expectedNode(
 				'paymentGateways.nodes',
-				array(
+				[
 					$this->expectedField( 'id', 'bacs' ),
 					$this->expectedField( 'title', 'Direct bank transfer' ),
 					$this->expectedField( 'icon', self::IS_NULL ),
-				)
+				]
 			),
 			$this->expectedNode(
 				'paymentGateways.nodes',
-				array(
+				[
 					$this->expectedField( 'id', 'cheque' ),
 					$this->expectedField( 'title', 'Check payments' ),
 					$this->expectedField( 'icon', self::IS_NULL ),
-				)
+				]
 			),
 			$this->expectedNode(
 				'paymentGateways.nodes',
-				array(
+				[
 					$this->expectedField( 'id', 'cod' ),
 					$this->expectedField( 'title', 'Cash on delivery' ),
 					$this->expectedField( 'icon', self::IS_NULL ),
-				)
+				]
 			),
 			$this->expectedNode(
 				'paymentGateways.nodes',
-				array(
+				[
 					$this->expectedField( 'id', 'stripe' ),
 					$this->expectedField( 'title', 'Credit Card (Stripe)' ),
 					$this->expectedField( 'icon', self::IS_NULL ),
-				)
+				]
 			),
-		);
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

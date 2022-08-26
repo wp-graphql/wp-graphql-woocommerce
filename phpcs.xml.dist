@@ -42,6 +42,12 @@
 		</properties>
 	</rule>
 
+	<!-- Enforce Short array syntax `[]`  -->
+	<rule ref="WordPress">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
 	<!-- Rules to exclude for test files -->
 	<rule ref="WordPress.NamingConventions">
 		<exclude-pattern>/tests/</exclude-pattern>

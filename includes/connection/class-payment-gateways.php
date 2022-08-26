@@ -32,9 +32,9 @@ class Payment_Gateways {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ): array {
+	public static function get_connection_config( $args = [] ): array {
 		return array_merge(
-			array(
+			[
 				'fromType'       => 'RootQuery',
 				'toType'         => 'PaymentGateway',
 				'fromFieldName'  => 'paymentGateways',
@@ -44,7 +44,7 @@ class Payment_Gateways {
 
 					return $resolver->resolve( $source, $args, $context, $info );
 				},
-			),
+			],
 			$args
 		);
 	}
@@ -55,11 +55,11 @@ class Payment_Gateways {
 	 * @return array
 	 */
 	public static function get_connection_args(): array {
-		return array(
-			'all' => array(
+		return [
+			'all' => [
 				'type'        => 'Boolean',
 				'description' => __( 'Include disabled payment gateways?', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 }

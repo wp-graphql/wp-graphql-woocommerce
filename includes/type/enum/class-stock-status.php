@@ -16,18 +16,18 @@ class Stock_Status {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = array(
-			'IN_STOCK'     => array( 'value' => 'instock' ),
-			'OUT_OF_STOCK' => array( 'value' => 'outofstock' ),
-			'ON_BACKORDER' => array( 'value' => 'onbackorder' ),
-		);
+		$values = [
+			'IN_STOCK'     => [ 'value' => 'instock' ],
+			'OUT_OF_STOCK' => [ 'value' => 'outofstock' ],
+			'ON_BACKORDER' => [ 'value' => 'onbackorder' ],
+		];
 
 		register_graphql_enum_type(
 			'StockStatusEnum',
-			array(
+			[
 				'description' => __( 'Product stock status enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			)
+			]
 		);
 	}
 }

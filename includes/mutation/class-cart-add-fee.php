@@ -26,11 +26,11 @@ class Cart_Add_Fee {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'addFee',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -40,24 +40,24 @@ class Cart_Add_Fee {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array(
-			'name'     => array(
-				'type'        => array( 'non_null' => 'String' ),
+		$input_fields = [
+			'name'     => [
+				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'Unique name for the fee.', 'wp-graphql-woocommerce' ),
-			),
-			'amount'   => array(
+			],
+			'amount'   => [
 				'type'        => 'Float',
 				'description' => __( 'Fee amount', 'wp-graphql-woocommerce' ),
-			),
-			'taxable'  => array(
+			],
+			'taxable'  => [
 				'type'        => 'Boolean',
 				'description' => __( 'Is the fee taxable?', 'wp-graphql-woocommerce' ),
-			),
-			'taxClass' => array(
+			],
+			'taxClass' => [
 				'type'        => 'TaxClassEnum',
 				'description' => __( 'The tax class for the fee if taxable.', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 
 		return $input_fields;
 	}
@@ -68,16 +68,16 @@ class Cart_Add_Fee {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'cartFee' => array(
+		return [
+			'cartFee' => [
 				'type'    => 'CartFee',
 				'resolve' => function ( $payload ) {
 					$fees = \WC()->cart->get_fees();
 					return $fees[ $payload['id'] ];
 				},
-			),
+			],
 			'cart'    => Cart_Mutation::get_cart_field( true ),
-		);
+		];
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Cart_Add_Fee {
 			\WC()->cart->add_fee( ...$cart_fee_args );
 
 			// Return payload.
-			return array( 'id' => \sanitize_title( $input['name'] ) );
+			return [ 'id' => \sanitize_title( $input['name'] ) ];
 		};
 	}
 }

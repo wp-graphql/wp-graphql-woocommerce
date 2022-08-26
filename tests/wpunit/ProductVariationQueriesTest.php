@@ -10,8 +10,8 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->shop_manager   = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
-		$this->customer       = $this->factory->user->create( array( 'role' => 'customer' ) );
+		$this->shop_manager   = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
+		$this->customer       = $this->factory->user->create( [ 'role' => 'customer' ] );
 		$this->product_helper = $this->getModule( '\Helper\Wpunit' )->product();
 		$this->helper         = $this->getModule( '\Helper\Wpunit' )->product_variation();
 		$this->products       = $this->helper->create( $this->product_helper->create_variable() );
@@ -74,17 +74,17 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests "ID" ID type.
 		 */
-		$variables = array(
+		$variables = [
 			'id'     => $id,
 			'idType' => 'ID',
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
+		$expected  = [ 'data' => [ 'productVariation' => $this->helper->print_query( $variation_id ) ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -98,18 +98,18 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests "DATABASE_ID" ID type.
 		 */
-		$variables = array(
+		$variables = [
 			'id'     => $variation_id,
 			'idType' => 'DATABASE_ID',
 
-		);
+		];
 		$actual   = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected = array( 'data' => array( 'productVariation' => $this->helper->print_query( $variation_id ) ) );
+		$expected = [ 'data' => [ 'productVariation' => $this->helper->print_query( $variation_id ) ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -156,12 +156,12 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Test query with no arguments
 		 */
 		wp_set_current_user( $this->shop_manager );
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -174,7 +174,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		foreach ( $variations as $vid ) {
 			$this->assertTrue(
 				in_array(
-					array( 'id' => $this->helper->to_relay_id( $vid ) ),
+					[ 'id' => $this->helper->to_relay_id( $vid ) ],
 					$product_data['variations']['nodes'],
 					true
 				),
@@ -183,7 +183,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		// Assert prices.
-		$prices         = $this->product_helper->field( $this->products['product'], 'variation_prices', array( true ) );
+		$prices         = $this->product_helper->field( $this->products['product'], 'variation_prices', [ true ] );
 		$expected_price = \wc_graphql_price( current( $prices['price'] ) )
 			. ' - '
 			. \wc_graphql_price( end( $prices['price'] ) );
@@ -201,15 +201,15 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test "minPrice" where argument
 		 */
-		$variables = array(
+		$variables = [
 			'id'       => $id,
 			'minPrice' => 15,
-		);
+		];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
 
 		// use --debug flag to view.
@@ -227,7 +227,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		foreach ( array_filter( $variations, $filter ) as $vid ) {
 			$this->assertTrue(
 				in_array(
-					array( 'id' => $this->helper->to_relay_id( $vid ) ),
+					[ 'id' => $this->helper->to_relay_id( $vid ) ],
 					$product_data['variations']['nodes'],
 					true
 				),
@@ -249,26 +249,26 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'productVariation' => array(
+		$expected  = [
+			'data' => [
+				'productVariation' => [
 					'id'    => $id,
-					'image' => array(
+					'image' => [
 						'id' => Relay::toGlobalId(
 							'post',
 							$this->helper->field( $this->products['variations'][1], 'image_id' )
 						),
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
@@ -297,21 +297,21 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			}
 		';
 
-		$variables = array( 'id' => $id );
+		$variables = [ 'id' => $id ];
 		$actual    = graphql(
-			array(
+			[
 				'query'     => $query,
 				'variables' => $variables,
-			)
+			]
 		);
-		$expected  = array(
-			'data' => array(
-				'productVariation' => array(
+		$expected  = [
+			'data' => [
+				'productVariation' => [
 					'id'        => $id,
 					'downloads' => $this->helper->print_downloads( $this->products['variations'][0] ),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );

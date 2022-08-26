@@ -28,29 +28,29 @@ class Variation_Attribute_Connection_Resolver {
 	 *
 	 * @return array
 	 */
-	public static function to_data_array( $attrs = array(), $parent_id = 0 ) {
-		$attributes = array();
-		if ( array( '0' ) !== $attrs ) {
+	public static function to_data_array( $attrs = [], $parent_id = 0 ) {
+		$attributes = [];
+		if ( [ '0' ] !== $attrs ) {
 			foreach ( $attrs as $name => $value ) {
 				$term = \get_term_by( 'slug', $value, $name );
 				if ( empty( $term ) ) {
-					$attributes[] = array(
+					$attributes[] = [
 						// ID create for caching only, not object retrieval.
 						// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 						'id'          => base64_encode( $parent_id . '||' . $name . '||' . $value ),
 						'attributeId' => 0,
 						'name'        => $name,
 						'value'       => $value,
-					);
+					];
 				} else {
-					$attributes[] = array(
+					$attributes[] = [
 						// ID create for caching only, not object retrieval.
 						// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 						'id'          => base64_encode( $parent_id . '||' . $name . '||' . $value ),
 						'attributeId' => $term->term_id,
 						'name'        => $term->taxonomy,
 						'value'       => $term->name,
-					);
+					];
 				}
 			}//end foreach
 		}//end if
@@ -74,7 +74,7 @@ class Variation_Attribute_Connection_Resolver {
 		}
 
 		$connection = Relay::connectionFromArray( $attributes, $args );
-		$nodes      = array();
+		$nodes      = [];
 		if ( ! empty( $connection['edges'] ) && is_array( $connection['edges'] ) ) {
 			foreach ( $connection['edges'] as $edge ) {
 				$nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;

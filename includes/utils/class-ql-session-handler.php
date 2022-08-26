@@ -97,13 +97,13 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->init_session_token();
 		$this->transaction_manager = Session_Transaction_Manager::get( $this );
 
-		add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
-		add_action( 'graphql_after_resolve_field', array( $this, 'save_if_dirty' ), 10, 4 );
-		add_action( 'shutdown', array( $this, 'save_data' ) );
-		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
+		add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
+		add_action( 'graphql_after_resolve_field', [ $this, 'save_if_dirty' ], 10, 4 );
+		add_action( 'shutdown', [ $this, 'save_data' ] );
+		add_action( 'wp_logout', [ $this, 'destroy_session' ] );
 
 		if ( ! is_user_logged_in() ) {
-			add_filter( 'nonce_user_logged_out', array( $this, 'maybe_update_nonce_user_logged_out' ), 10, 2 );
+			add_filter( 'nonce_user_logged_out', [ $this, 'maybe_update_nonce_user_logged_out' ], 10, 2 );
 		}
 	}
 
@@ -262,15 +262,15 @@ class QL_Session_Handler extends WC_Session_Handler {
 		);
 
 		// Configure the token array, which will be encoded.
-		$token = array(
+		$token = [
 			'iss'  => get_bloginfo( 'url' ),
 			'iat'  => $this->_session_issued,
 			'nbf'  => $not_before,
 			'exp'  => $this->_session_expiration,
-			'data' => array(
+			'data' => [
 				'customer_id' => $this->_customer_id,
-			),
-		);
+			],
+		];
 
 		/**
 		 * Filter the token, allowing for individual systems to configure the token as needed
@@ -371,7 +371,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			unset( $this->_token_to_be_sent );
 		}
 		wc_empty_cart();
-		$this->_data  = array();
+		$this->_data  = [];
 		$this->_dirty = false;
 
 		// Start new session.

@@ -98,15 +98,16 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
-		$query_args = array(
+		$query_args = [
 			'post_type'      => 'shop_coupon',
 			'post_status'    => 'any',
 			'perm'           => 'readable',
 			'no_rows_found'  => true,
 			'fields'         => 'ids',
+			// phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 			'post_parent'    => 0,
-		);
+		];
 
 		/**
 		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
@@ -131,7 +132,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = array();
+		$input_fields = [];
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -184,7 +185,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : array();
+		return ! empty( $this->query->posts ) ? $this->query->posts : [];
 	}
 
 	/**
@@ -193,7 +194,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function ordering_meta() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -211,7 +212,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( ! empty( $where_args['code'] ) ) {
 			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );
-			$ids              = $id ? array( $id ) : array( '0' );
+			$ids              = $id ? [ $id ] : [ '0' ];
 			$args['post__in'] = isset( $args['post__in'] )
 			? array_intersect( $ids, $args['post__in'] )
 			: $ids;

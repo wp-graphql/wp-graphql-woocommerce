@@ -22,25 +22,25 @@ class Core_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs.
-		add_filter( 'register_post_type_args', array( __CLASS__, 'register_post_types' ), 10, 2 );
-		add_filter( 'graphql_post_entities_allowed_post_types', array( __CLASS__, 'skip_type_registry' ), 10 );
+		add_filter( 'register_post_type_args', [ __CLASS__, 'register_post_types' ], 10, 2 );
+		add_filter( 'graphql_post_entities_allowed_post_types', [ __CLASS__, 'skip_type_registry' ], 10 );
 
 		// Registers WooCommerce taxonomies.
-		add_filter( 'register_taxonomy_args', array( __CLASS__, 'register_taxonomy_args' ), 10, 2 );
+		add_filter( 'register_taxonomy_args', [ __CLASS__, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
-		add_filter( 'graphql_data_loaders', array( __CLASS__, 'graphql_data_loaders' ), 10, 2 );
+		add_filter( 'graphql_data_loaders', [ __CLASS__, 'graphql_data_loaders' ], 10, 2 );
 
 		// Add node resolvers.
 		add_filter(
 			'graphql_resolve_node',
-			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node' ),
+			[ '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node' ],
 			10,
 			4
 		);
 		add_filter(
 			'graphql_resolve_node_type',
-			array( '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node_type' ),
+			[ '\WPGraphQL\WooCommerce\Data\Factory', 'resolve_node_type' ],
 			10,
 			2
 		);
@@ -48,70 +48,70 @@ class Core_Schema_Filters {
 		// Filter Unions.
 		add_filter(
 			'graphql_wp_union_type_config',
-			array( __CLASS__, 'inject_union_types' ),
+			[ __CLASS__, 'inject_union_types' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'graphql_union_resolve_type',
-			array( __CLASS__, 'inject_type_resolver' ),
+			[ __CLASS__, 'inject_type_resolver' ],
 			10,
 			3
 		);
 
 		add_filter(
 			'graphql_interface_resolve_type',
-			array( __CLASS__, 'inject_type_resolver' ),
+			[ __CLASS__, 'inject_type_resolver' ],
 			10,
 			3
 		);
 
 		add_filter(
 			'graphql_dataloader_pre_get_model',
-			array( '\WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader', 'inject_post_loader_models' ),
+			[ '\WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader', 'inject_post_loader_models' ],
 			10,
 			3
 		);
 
 		add_filter(
 			'graphql_dataloader_get_model',
-			array( '\WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader', 'inject_user_loader_models' ),
+			[ '\WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader', 'inject_user_loader_models' ],
 			10,
 			3
 		);
 
 		add_filter(
 			'graphql_post_object_connection_query_args',
-			array( '\WPGraphQL\WooCommerce\Connection\Orders', 'post_object_connection_query_args' ),
+			[ '\WPGraphQL\WooCommerce\Connection\Orders', 'post_object_connection_query_args' ],
 			10,
 			5
 		);
 
 		add_filter(
 			'graphql_map_input_fields_to_wp_query',
-			array( '\WPGraphQL\WooCommerce\Connection\Coupons', 'map_input_fields_to_wp_query' ),
+			[ '\WPGraphQL\WooCommerce\Connection\Coupons', 'map_input_fields_to_wp_query' ],
 			10,
 			7
 		);
 
 		add_filter(
 			'graphql_map_input_fields_to_wp_query',
-			array( '\WPGraphQL\WooCommerce\Connection\Products', 'map_input_fields_to_wp_query' ),
+			[ '\WPGraphQL\WooCommerce\Connection\Products', 'map_input_fields_to_wp_query' ],
 			10,
 			7
 		);
 
 		add_filter(
 			'graphql_map_input_fields_to_wp_query',
-			array( '\WPGraphQL\WooCommerce\Connection\Orders', 'map_input_fields_to_wp_query' ),
+			[ '\WPGraphQL\WooCommerce\Connection\Orders', 'map_input_fields_to_wp_query' ],
 			10,
 			7
 		);
 
 		add_filter(
 			'graphql_map_input_fields_to_wp_user_query',
-			array( '\WPGraphQL\WooCommerce\Connection\Customers', 'map_input_fields_to_wp_query' ),
+			[ '\WPGraphQL\WooCommerce\Connection\Customers', 'map_input_fields_to_wp_query' ],
 			10,
 			6
 		);
@@ -173,10 +173,10 @@ class Core_Schema_Filters {
 		return array_diff(
 			$post_types,
 			get_post_types(
-				array(
+				[
 					'show_in_graphql'            => true,
 					'skip_graphql_type_registry' => true,
-				)
+				]
 			)
 		);
 	}
@@ -221,7 +221,7 @@ class Core_Schema_Filters {
 		}
 
 		// Filter product attributes taxonomies.
-		$attributes = \WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
+		$attributes = WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
 		if ( in_array( $taxonomy, $attributes, true ) ) {
 			$singular_name               = graphql_format_field_name( $taxonomy );
 			$args['show_in_graphql']     = true;
@@ -280,7 +280,7 @@ class Core_Schema_Filters {
 						return 'Product' !== $type;
 					}
 				),
-				array_values( \WP_GraphQL_WooCommerce::get_enabled_product_types() )
+				array_values( WP_GraphQL_WooCommerce::get_enabled_product_types() )
 			);
 			$refresh_callback    = true;
 		}
@@ -288,9 +288,9 @@ class Core_Schema_Filters {
 		// Update 'types' callback.
 		if ( $refresh_callback ) {
 			$config['types'] = function () use ( $config, $wp_union ) {
-				$prepared_types = array();
+				$prepared_types = [];
 				if ( ! empty( $config['typeNames'] ) && is_array( $config['typeNames'] ) ) {
-					$prepared_types = array();
+					$prepared_types = [];
 					foreach ( $config['typeNames'] as $type_name ) {
 						$prepared_types[] = $wp_union->type_registry->get_type( $type_name );
 					}

@@ -39,21 +39,8 @@
         "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
-            "composer/installers": true,
             "johnpbloch/wordpress-core-installer": true
         }
-    },
-    "autoload": {
-        "files": [
-            "includes/connection/wc-cpt-connection-args.php",
-            "includes/functions.php"
-        ],
-        "psr-4": {
-            "WPGraphQL\\WooCommerce\\": "includes/"
-        },
-        "classmap": [
-            "includes/"
-        ]
     },
     "autoload-dev": {
         "files": [

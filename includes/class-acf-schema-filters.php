@@ -22,8 +22,8 @@ class ACF_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs && taxonomies.
-		add_filter( 'graphql_acf_get_root_id', array( __CLASS__, 'resolve_crud_root_id' ), 10, 2 );
-		add_filter( 'graphql_acf_post_object_source', array( __CLASS__, 'resolve_post_object_source' ), 10, 2 );
+		add_filter( 'graphql_acf_get_root_id', [ __CLASS__, 'resolve_crud_root_id' ], 10, 2 );
+		add_filter( 'graphql_acf_post_object_source', [ __CLASS__, 'resolve_post_object_source' ], 10, 2 );
 	}
 
 	/**

@@ -28,21 +28,21 @@ class Review_Delete_Restore {
 		// Trash/Delete mutation.
 		register_graphql_mutation(
 			'deleteReview',
-			array(
+			[
 				'inputFields'         => self::get_input_fields( true ),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 
 		// Restore mutation.
 		register_graphql_mutation(
 			'restoreReview',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields( true ),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -54,20 +54,20 @@ class Review_Delete_Restore {
 	 * @return array
 	 */
 	public static function get_input_fields( $delete = false ) {
-		$fields = array(
-			'id' => array(
-				'type'        => array(
+		$fields = [
+			'id' => [
+				'type'        => [
 					'non_null' => 'ID',
-				),
+				],
 				'description' => __( 'The ID of the target product review', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 
 		if ( $delete ) {
-			$fields['forceDelete'] = array(
+			$fields['forceDelete'] = [
 				'type'        => 'Boolean',
 				'description' => __( 'Whether the product review should be force deleted instead of being moved to the trash', 'wp-graphql-woocommerce' ),
-			);
+			];
 		}
 
 		return $fields;
@@ -81,8 +81,8 @@ class Review_Delete_Restore {
 	 * @return array
 	 */
 	public static function get_output_fields( $restore = false ) {
-		return array(
-			'rating'     => array(
+		return [
+			'rating'     => [
 				'type'        => 'Float',
 				'description' => __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $payload ) {
@@ -92,8 +92,8 @@ class Review_Delete_Restore {
 
 					return floatval( $payload['rating'] );
 				},
-			),
-			'affectedId' => array(
+			],
+			'affectedId' => [
 				'type'        => 'Id',
 				'description' => __( 'The affected product review ID', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $payload ) {
@@ -101,8 +101,8 @@ class Review_Delete_Restore {
 
 					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', absint( $deleted->comment_ID ) ) : null;
 				},
-			),
-			'review'     => array(
+			],
+			'review'     => [
 				'type'        => 'Comment',
 				'description' => __( 'The affected product review', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $payload, $args, AppContext $context, ResolveInfo $info ) use ( $restore ) {
@@ -118,8 +118,8 @@ class Review_Delete_Restore {
 
 					return $payload['commentObject'];
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**

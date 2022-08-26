@@ -8,7 +8,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 	public function getExpectedCartData() {
 		$cart = WC()->cart;
-		return array(
+		return [
 			$this->expectedField( 'cart.subtotal', \wc_graphql_price( $cart->get_subtotal() ) ),
 			$this->expectedField( 'cart.subtotalTax', \wc_graphql_price( $cart->get_subtotal_tax() ) ),
 			$this->expectedField( 'cart.discountTotal', \wc_graphql_price( $cart->get_discount_total() ) ),
@@ -24,16 +24,16 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			$this->expectedField( 'cart.isEmpty', $cart->is_empty() ),
 			$this->expectedField( 'cart.displayPricesIncludeTax', $cart->display_prices_including_tax() ),
 			$this->expectedField( 'cart.needsShippingAddress', $cart->needs_shipping_address() ),
-		);
+		];
 	}
 
 	public function getExpectedCartItemData( $path, $cart_item_key ) {
 		$cart = WC()->cart;
 		$item = $cart->get_cart_item( $cart_item_key );
-		return array(
+		return [
 			$this->expectedObject(
 				$path,
-				array(
+				[
 					$this->expectedField( 'key', $item['key'] ),
 					$this->expectedField( 'product.node.id', $this->toRelayId( 'product', $item['product_id'] ) ),
 					$this->expectedField( 'product.node.databaseId', $item['product_id'] ),
@@ -52,23 +52,23 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 					$this->expectedField( 'subtotalTax', \wc_graphql_price( $item['line_subtotal_tax'] ) ),
 					$this->expectedField( 'total', \wc_graphql_price( $item['line_total'] ) ),
 					$this->expectedField( 'tax', \wc_graphql_price( $item['line_tax'] ) ),
-				)
+				]
 			),
-		);
+		];
 	}
 
 	// tests
 	public function testCartQuery() {
 		$cart = WC()->cart;
 		$this->factory->cart->add(
-			array(
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 2,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			)
+			]
 		);
 
 		$query = '
@@ -115,7 +115,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			$variations['product'],
 			3,
 			$variations['variations'][0],
-			array( 'attribute_pa_color' => 'red' )
+			[ 'attribute_pa_color' => 'red' ]
 		);
 
 		$query = '
@@ -153,7 +153,7 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		/**
 		 * Assertion One
 		 */
-		$variables = array( 'key' => $key );
+		$variables = [ 'key' => $key ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $this->getExpectedCartItemData( 'cartItem', $key ) );
@@ -161,28 +161,28 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 	public function testCartItemConnection() {
 		$keys = $this->factory->cart->add(
-			array(
+			[
 				'product_id' => $this->factory->product->createSimple(
-					array( 'virtual' => true )
+					[ 'virtual' => true ]
 				),
 				'quantity'   => 2,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 10,
-			)
+			]
 		);
 
 		$code = \wc_get_coupon_code_by_id(
 			$this->factory->coupon->create(
-				array(
+				[
 					'amount'        => 45.50,
 					'discount_type' => 'fixed_cart',
-				)
+				]
 			)
 		);
 		$cart = \WC()->cart;
@@ -206,9 +206,9 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 		$response = $this->graphql( compact( 'query' ) );
 
-		$expected = array();
+		$expected = [];
 		foreach ( $keys as $key ) {
-			$expected[] = $this->expectedNode( 'cart.contents.nodes', array( 'key' => $key ) );
+			$expected[] = $this->expectedNode( 'cart.contents.nodes', [ 'key' => $key ] );
 		}
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -218,15 +218,15 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "needsShipping" parameter.
 		 */
-		$variables = array( 'needsShipping' => true );
+		$variables = [ 'needsShipping' => true ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful(
 			$response,
-			array(
-				$this->expectedNode( 'cart.contents.nodes', array( 'key' => $keys[1] ) ),
-				$this->expectedNode( 'cart.contents.nodes', array( 'key' => $keys[2] ) ),
-			)
+			[
+				$this->expectedNode( 'cart.contents.nodes', [ 'key' => $keys[1] ] ),
+				$this->expectedNode( 'cart.contents.nodes', [ 'key' => $keys[2] ] ),
+			]
 		);
 
 		/**
@@ -234,14 +234,14 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "needsShipping" parameter reversed.
 		 */
-		$variables = array( 'needsShipping' => false );
+		$variables = [ 'needsShipping' => false ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful(
 			$response,
-			array(
-				$this->expectedNode( 'cart.contents.nodes', array( 'key' => $keys[0] ) ),
-			)
+			[
+				$this->expectedNode( 'cart.contents.nodes', [ 'key' => $keys[0] ] ),
+			]
 		);
 	}
 
@@ -267,21 +267,21 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		/**
 		 * Assertion One
 		 */
-		$variables = array( 'id' => $fee_ids[0] );
+		$variables = [ 'id' => $fee_ids[0] ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$fee = ( \WC()->cart->get_fees() )[ $fee_ids[0] ];
 
 		$this->assertQuerySuccessful(
 			$response,
-			array(
+			[
 				$this->expectedField( 'cartFee.id', $fee->id ),
 				$this->expectedField( 'cartFee.name', $fee->name ),
 				$this->expectedField( 'cartFee.taxClass', $this->maybe( $fee->tax_class ) ),
 				$this->expectedField( 'cartFee.taxable', $fee->taxable ),
 				$this->expectedField( 'cartFee.amount', (float) $fee->amount ),
 				$this->expectedField( 'cartFee.total', (float) $fee->total ),
-			)
+			]
 		);
 	}
 
@@ -305,9 +305,9 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 
-		$expected = array();
+		$expected = [];
 		foreach ( \WC()->cart->get_fees() as $fee_id => $value ) {
-			$expected[] = $this->expectedNode( 'cart.fees', array( 'id' => $fee_id ) );
+			$expected[] = $this->expectedNode( 'cart.fees', [ 'id' => $fee_id ] );
 		}
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -315,26 +315,26 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 	public function testCartItemPagination() {
 		$cart_items = $this->factory->cart->add(
-			array(
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 2,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			),
-			array(
+			],
+			[
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			)
+			]
 		);
 
 		$query = '
@@ -363,29 +363,29 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "first" parameter.
 		 */
-		$variables = array(
+		$variables = [
 			'first' => 2,
 			'after' => '',
-		);
+		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array(
+		$expected  = [
 			$this->expectedField( 'cart.contents.itemCount', 6 ),
 			$this->expectedField( 'cart.contents.productCount', 5 ),
 			$this->expectedField( 'cart.contents.pageInfo.hasNextPage', true ),
 			$this->expectedField( 'cart.contents.pageInfo.hasPreviousPage', false ),
-			$this->expectedField( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[0] ) ),
-			$this->expectedField( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[1] ) ),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[0] ) ),
+				[ $this->expectedField( 'key', $cart_items[0] ) ],
 				0
 			),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[1] ) ),
+				[ $this->expectedField( 'key', $cart_items[1] ) ],
 				1
 			),
-		);
+			$this->expectedField( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[0] ) ),
+			$this->expectedField( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[1] ) ),
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -394,27 +394,27 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "after" parameter.
 		 */
-		$variables = array(
+		$variables = [
 			'first' => 2,
 			'after' => $this->key_to_cursor( $cart_items[1] ),
-		);
+		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array(
+		$expected  = [
 			$this->expectedField( 'cart.contents.pageInfo.hasNextPage', true ),
 			$this->expectedField( 'cart.contents.pageInfo.hasPreviousPage', true ),
 			$this->expectedField( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[2] ) ),
 			$this->expectedField( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[3] ) ),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[2] ) ),
+				[ $this->expectedField( 'key', $cart_items[2] ) ],
 				0
 			),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[3] ) ),
+				[ $this->expectedField( 'key', $cart_items[3] ) ],
 				1
 			),
-		);
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -423,24 +423,24 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "last" parameter.
 		 */
-		$variables = array( 'last' => 2 );
+		$variables = [ 'last' => 2 ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array(
+		$expected  = [
 			$this->expectedField( 'cart.contents.pageInfo.hasNextPage', false ),
 			$this->expectedField( 'cart.contents.pageInfo.hasPreviousPage', true ),
-			$this->expectedField( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[3] ) ),
-			$this->expectedField( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[4] ) ),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[3] ) ),
+				[ $this->expectedField( 'key', $cart_items[3] ) ],
 				0
 			),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[4] ) ),
+				[ $this->expectedField( 'key', $cart_items[4] ) ],
 				1
 			),
-		);
+			$this->expectedField( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[3] ) ),
+			$this->expectedField( 'cart.contents.edges.1.cursor', $this->key_to_cursor( $cart_items[4] ) ),
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -449,12 +449,12 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		 *
 		 * Tests "before" parameter.
 		 */
-		$variables = array(
+		$variables = [
 			'last'   => 4,
 			'before' => $this->key_to_cursor( $cart_items[3] ),
-		);
+		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = array(
+		$expected  = [
 			$this->expectedField( 'cart.contents.pageInfo.hasNextPage', true ),
 			$this->expectedField( 'cart.contents.pageInfo.hasPreviousPage', false ),
 			$this->expectedField( 'cart.contents.edges.0.cursor', $this->key_to_cursor( $cart_items[0] ) ),
@@ -462,20 +462,20 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			$this->expectedField( 'cart.contents.edges.2.cursor', $this->key_to_cursor( $cart_items[2] ) ),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[0] ) ),
+				[ $this->expectedField( 'key', $cart_items[0] ) ],
 				0
 			),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[1] ) ),
+				[ $this->expectedField( 'key', $cart_items[1] ) ],
 				1
 			),
 			$this->expectedEdge(
 				'cart.contents.edges',
-				array( $this->expectedField( 'key', $cart_items[2] ) ),
+				[ $this->expectedField( 'key', $cart_items[2] ) ],
 				2
 			),
-		);
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

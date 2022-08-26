@@ -46,7 +46,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_query_args() {
-		$query_args = array( 'filters' => array() );
+		$query_args = [ 'filters' => [] ];
 		if ( ! empty( $this->args['where'] ) ) {
 			$where_args = $this->args['where'];
 			if ( isset( $where_args['needsShipping'] ) ) {
@@ -86,27 +86,6 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		$cursor = $this->get_offset();
-		$first  = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
-		$last   = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
-
-		// MUST DO FOR SANITY ~ If last, reverse list for correct slicing.
-		if ( $last ) {
-			$cart_items = array_reverse( $cart_items );
-		}
-
-		// Set offset.
-		$offset = $cursor
-			? array_search( $cursor, array_column( $cart_items, 'key' ), true )
-			: 0;
-
-		// If cursor set, move index up one to ensure cursor not included in keys.
-		if ( $cursor ) {
-			$offset++;
-		}
-
-		$cart_items = array_slice( $cart_items, $offset, $this->query_amount + 1 );
-
 		// Cache cart items for later.
 		foreach ( $cart_items as $item ) {
 			$this->loader->prime( $item['key'], $item );
@@ -117,12 +96,12 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Return an array of items from the query
-	 *
-	 * @return array
+	 * {@inheritDoc}
 	 */
-	public function get_ids() {
-		return ! empty( $this->query ) ? $this->query : array();
+	public function get_ids_from_query() {
+		$ids = ! empty( $this->query ) ? $this->query : [];
+
+		return $ids;
 	}
 
 	/**
@@ -146,36 +125,5 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	protected function is_valid_model( $model ) {
 		return ! empty( $model ) && ! empty( $model['key'] ) && ! empty( $model['product_id'] );
-	}
-
-	/**
-	 * Get_offset
-	 *
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		/**
-		 * Defaults
-		 */
-		$offset = 0;
-
-		/**
-		 * Get the $after offset
-		 */
-		if ( ! empty( $this->args['after'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
-		}
-
-		/**
-		 * Return the higher of the two values
-		 */
-		return $offset;
 	}
 }

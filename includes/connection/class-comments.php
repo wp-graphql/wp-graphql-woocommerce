@@ -25,12 +25,12 @@ class Comments extends \WPGraphQL\Connection\Comments {
 		// From Products.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'fromType'         => 'Product',
 					'toType'           => 'Comment',
 					'fromFieldName'    => 'reviews',
-					'connectionFields' => array(
-						'averageRating' => array(
+					'connectionFields' => [
+						'averageRating' => [
 							'type'        => 'Float',
 							'description' => __( 'Average review rating for this product.', 'wp-graphql-woocommerce' ),
 							'resolve'     => function( $source ) {
@@ -40,10 +40,10 @@ class Comments extends \WPGraphQL\Connection\Comments {
 								$product = $source['edges'][0]['source'];
 								return $product->averageRating; // @codingStandardsIgnoreLine
 							},
-						),
-					),
-					'edgeFields'       => array(
-						'rating' => array(
+						],
+					],
+					'edgeFields'       => [
+						'rating' => [
 							'type'        => 'Float',
 							'description' => __( 'Review rating', 'wp-graphql-woocommerce' ),
 							'resolve'     => function( $source ) {
@@ -52,8 +52,8 @@ class Comments extends \WPGraphQL\Connection\Comments {
 								$rating = get_comment_meta( $review->commentId, 'rating', true );
 								return $rating ? $rating : 0;
 							},
-						),
-					),
+						],
+					],
 					'resolve'          => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new \WPGraphQL\Data\Connection\CommentConnectionResolver( $source, $args, $context, $info );
 
@@ -62,19 +62,19 @@ class Comments extends \WPGraphQL\Connection\Comments {
 
 						return $resolver->get_connection();
 					},
-				)
+				]
 			)
 		);
 
 		// From Orders.
 		register_graphql_connection(
 			self::get_connection_config(
-				array(
+				[
 					'fromType'      => 'Order',
 					'toType'        => 'Comment',
 					'fromFieldName' => 'orderNotes',
-					'edgeFields'    => array(
-						'isCustomerNote' => array(
+					'edgeFields'    => [
+						'isCustomerNote' => [
 							'type'        => 'Boolean',
 							'description' => __( 'Is this a customer note?', 'wp-graphql-woocommerce' ),
 							'resolve'     => function( $source ) {
@@ -82,8 +82,8 @@ class Comments extends \WPGraphQL\Connection\Comments {
 								// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 								return get_comment_meta( $note->commentId, 'is_customer_note', true );
 							},
-						),
-					),
+						],
+					],
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new \WPGraphQL\Data\Connection\CommentConnectionResolver( $source, $args, $context, $info );
 
@@ -96,15 +96,15 @@ class Comments extends \WPGraphQL\Connection\Comments {
 							$resolver->set_query_arg( 'meta_value', true );
 						}
 
-						remove_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
+						remove_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
 						$connection = $resolver->get_connection();
 
-						add_filter( 'comments_clauses', array( 'WC_Comments', 'exclude_order_comments' ) );
+						add_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
 						return $connection;
 					},
-				)
+				]
 			)
 		);
 	}

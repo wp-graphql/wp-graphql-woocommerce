@@ -68,7 +68,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['graphql_cursor_offset']  = $cursor_offset;
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 
-		$input_fields = array();
+		$input_fields = [];
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -96,17 +96,17 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		 * Map the orderby inputArgs to the WP_User_Query
 		 */
 		if ( ! empty( $this->args['where']['orderby'] ) && is_array( $this->args['where']['orderby'] ) ) {
-			$query_args['orderby'] = array();
+			$query_args['orderby'] = [];
 			foreach ( $this->args['where']['orderby'] as $orderby_input ) {
 				/**
 				 * These orderby options should not include the order parameter.
 				 */
-				if ( in_array( $orderby_input['field'], array( 'login__in', 'nicename__in' ), true ) ) {
+				if ( in_array( $orderby_input['field'], [ 'login__in', 'nicename__in' ], true ) ) {
 					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
 				} elseif ( ! empty( $orderby_input['field'] ) ) {
-					$query_args['orderby'] = array(
+					$query_args['orderby'] = [
 						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
-					);
+					];
 				}
 			}
 		}
@@ -116,10 +116,10 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		 * graphql_wp_term_query_cursor_pagination_support knowns how to handle
 		 */
 		if ( isset( $query_args['orderby'] ) && 'meta_value_num' === $query_args['orderby'] ) {
-			$query_args['orderby'] = array(
+			$query_args['orderby'] = [
+				//phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value' => empty( $query_args['order'] ) ? 'DESC' : $query_args['order'],
-			// WPCS: slow query OK.
-			);
+			];
 			unset( $query_args['order'] );
 			$query_args['meta_type'] = 'NUMERIC';
 		}
@@ -167,7 +167,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_ids() {
 		$results = $this->get_query()->get_results();
-		return ! empty( $results ) ? $results : array();
+		return ! empty( $results ) ? $results : [];
 	}
 
 	/**
@@ -181,16 +181,16 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = array();
+		$args = [];
 
-		$key_mapping = array(
+		$key_mapping = [
 			'search'    => 'search',
 			'exclude'   => 'exclude',
 			'include'   => 'include',
 			'role'      => 'role',
 			'roleIn'    => 'role__in',
 			'roleNotIn' => 'role__not_in',
-		);
+		];
 
 		foreach ( $key_mapping as $key => $field ) {
 			if ( ! empty( $where_args[ $key ] ) ) {
@@ -201,7 +201,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		// Filter by email.
 		if ( ! empty( $where_args['email'] ) ) {
 			$args['search']         = $where_args['email'];
-			$args['search_columns'] = array( 'user_email' );
+			$args['search_columns'] = [ 'user_email' ];
 		}
 
 		/**
@@ -236,7 +236,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( wp_cache_get( $offset, 'users' ) ) ) {
 			return true;
 		}
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		return $wpdb->get_var( $wpdb->prepare( "SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $offset ) );
 	}
 }

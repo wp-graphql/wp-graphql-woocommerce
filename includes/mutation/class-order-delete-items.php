@@ -28,11 +28,11 @@ class Order_Delete_Items {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteOrderItems',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -43,20 +43,20 @@ class Order_Delete_Items {
 	 */
 	public static function get_input_fields() {
 		return array_merge(
-			array(
-				'id'      => array(
+			[
+				'id'      => [
 					'type'        => 'ID',
 					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
-				),
-				'orderId' => array(
+				],
+				'orderId' => [
 					'type'        => 'Int',
 					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
-				),
-				'itemIds' => array(
-					'type'        => array( 'list_of' => 'Int' ),
+				],
+				'itemIds' => [
+					'type'        => [ 'list_of' => 'Int' ],
 					'description' => __( 'ID Order items being deleted', 'wp-graphql-woocommerce' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -66,14 +66,14 @@ class Order_Delete_Items {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'order' => array(
+		return [
+			'order' => [
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return $payload['order'];
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -98,7 +98,7 @@ class Order_Delete_Items {
 			}
 
 			// Check if authorized to delete items on this order.
-			if ( ! Order_Mutation::authorized( 'delete-items', $order_id, $input, $context, $info ) ) {
+			if ( ! Order_Mutation::authorized( $input, $context, $info, 'delete-items', $order_id ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -153,7 +153,7 @@ class Order_Delete_Items {
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $ids, $working_order, $input, $context, $info );
 
-			return array( 'order' => $order );
+			return [ 'order' => $order ];
 		};
 	}
 }

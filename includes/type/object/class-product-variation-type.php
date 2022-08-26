@@ -27,52 +27,52 @@ class Product_Variation_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'ProductVariation',
-			array(
+			[
 				'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => array(
+				'interfaces'  => [
 					'Node',
 					'NodeWithFeaturedImage',
 					'ContentNode',
 					'UniformResourceIdentifiable',
-				),
-				'fields'      => array(
-					'id'                => array(
-						'type'        => array( 'non_null' => 'ID' ),
+				],
+				'fields'      => [
+					'id'                => [
+						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'The globally unique identifier for the product variation', 'wp-graphql-woocommerce' ),
-					),
-					'databaseId'        => array(
-						'type'        => array( 'non_null' => 'Int' ),
+					],
+					'databaseId'        => [
+						'type'        => [ 'non_null' => 'Int' ],
 						'description' => __( 'The ID of the refund in the database', 'wp-graphql-woocommerce' ),
-					),
-					'name'              => array(
+					],
+					'name'              => [
 						'type'        => 'String',
 						'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
-					),
-					'date'              => array(
+					],
+					'date'              => [
 						'type'        => 'String',
 						'description' => __( 'Date variation created', 'wp-graphql-woocommerce' ),
-					),
-					'modified'          => array(
+					],
+					'modified'          => [
 						'type'        => 'String',
 						'description' => __( 'Date variation last updated', 'wp-graphql-woocommerce' ),
-					),
-					'description'       => array(
+					],
+					'description'       => [
 						'type'        => 'String',
 						'description' => __( 'Product description', 'wp-graphql-woocommerce' ),
-					),
-					'sku'               => array(
+					],
+					'sku'               => [
 						'type'        => 'String',
 						'description' => __( 'Product variation SKU (Stock-keeping unit)', 'wp-graphql-woocommerce' ),
-					),
-					'price'             => array(
+					],
+					'price'             => [
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s active price', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, $args ) {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								// @codingStandardsIgnoreLine.
@@ -81,16 +81,16 @@ class Product_Variation_Type {
 								return $source->price;
 							}
 						},
-					),
-					'regularPrice'      => array(
+					],
+					'regularPrice'      => [
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s regular price', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, $args ) {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								// @codingStandardsIgnoreLine.
@@ -100,16 +100,16 @@ class Product_Variation_Type {
 								return $source->regularPrice;
 							}
 						},
-					),
-					'salePrice'         => array(
+					],
+					'salePrice'         => [
 						'type'        => 'String',
 						'description' => __( 'Product variation\'s sale price', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, $args ) {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								// @codingStandardsIgnoreLine.
@@ -119,126 +119,126 @@ class Product_Variation_Type {
 								return $source->salePrice;
 							}
 						},
-					),
-					'dateOnSaleFrom'    => array(
+					],
+					'dateOnSaleFrom'    => [
 						'type'        => 'String',
 						'description' => __( 'Date on sale from', 'wp-graphql-woocommerce' ),
-					),
-					'dateOnSaleTo'      => array(
+					],
+					'dateOnSaleTo'      => [
 						'type'        => 'String',
 						'description' => __( 'Date on sale to', 'wp-graphql-woocommerce' ),
-					),
-					'onSale'            => array(
+					],
+					'onSale'            => [
 						'type'        => 'Boolean',
 						'description' => __( 'Is variation on sale?', 'wp-graphql-woocommerce' ),
-					),
-					'status'            => array(
+					],
+					'status'            => [
 						'type'        => 'String',
 						'description' => __( 'Variation status', 'wp-graphql-woocommerce' ),
-					),
-					'purchasable'       => array(
+					],
+					'purchasable'       => [
 						'type'        => 'Boolean',
 						'description' => __( 'If product variation can be bought', 'wp-graphql-woocommerce' ),
-					),
-					'virtual'           => array(
+					],
+					'virtual'           => [
 						'type'        => 'Boolean',
 						'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
-					),
-					'downloadable'      => array(
+					],
+					'downloadable'      => [
 						'type'        => 'Boolean',
 						'description' => __( 'Is downloadable?', 'wp-graphql-woocommerce' ),
-					),
-					'downloads'         => array(
-						'type'        => array( 'list_of' => 'ProductDownload' ),
+					],
+					'downloads'         => [
+						'type'        => [ 'list_of' => 'ProductDownload' ],
 						'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
-					),
-					'downloadLimit'     => array(
+					],
+					'downloadLimit'     => [
 						'type'        => 'Int',
 						'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
-					),
-					'downloadExpiry'    => array(
+					],
+					'downloadExpiry'    => [
 						'type'        => 'Int',
 						'description' => __( 'Download expiry', 'wp-graphql-woocommerce' ),
-					),
-					'taxStatus'         => array(
+					],
+					'taxStatus'         => [
 						'type'        => 'TaxStatusEnum',
 						'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
-					),
-					'taxClass'          => array(
+					],
+					'taxClass'          => [
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Product variation tax class', 'wp-graphql-woocommerce' ),
-					),
-					'manageStock'       => array(
+					],
+					'manageStock'       => [
 						'type'        => 'ManageStockEnum',
 						'description' => __( 'if/how product variation stock is managed', 'wp-graphql-woocommerce' ),
-					),
-					'stockQuantity'     => array(
+					],
+					'stockQuantity'     => [
 						'type'        => 'Int',
 						'description' => __( 'Product variation stock quantity', 'wp-graphql-woocommerce' ),
-					),
-					'stockStatus'       => array(
+					],
+					'stockStatus'       => [
 						'type'        => 'StockStatusEnum',
 						'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
-					),
-					'backorders'        => array(
+					],
+					'backorders'        => [
 						'type'        => 'BackordersEnum',
 						'description' => __( 'Product variation backorders', 'wp-graphql-woocommerce' ),
-					),
-					'backordersAllowed' => array(
+					],
+					'backordersAllowed' => [
 						'type'        => 'Boolean',
 						'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
-					),
-					'weight'            => array(
+					],
+					'weight'            => [
 						'type'        => 'String',
 						'description' => __( 'Product variation weight', 'wp-graphql-woocommerce' ),
-					),
-					'length'            => array(
+					],
+					'length'            => [
 						'type'        => 'String',
 						'description' => __( 'Product variation length', 'wp-graphql-woocommerce' ),
-					),
-					'width'             => array(
+					],
+					'width'             => [
 						'type'        => 'String',
 						'description' => __( 'Product variation width', 'wp-graphql-woocommerce' ),
-					),
-					'height'            => array(
+					],
+					'height'            => [
 						'type'        => 'String',
 						'description' => __( 'Product variation height', 'wp-graphql-woocommerce' ),
-					),
-					'menuOrder'         => array(
+					],
+					'menuOrder'         => [
 						'type'        => 'Int',
 						'description' => __( 'Menu order', 'wp-graphql-woocommerce' ),
-					),
-					'purchaseNote'      => array(
+					],
+					'purchaseNote'      => [
 						'type'        => 'String',
 						'description' => __( 'Product variation purchase_note', 'wp-graphql-woocommerce' ),
-					),
-					'shippingClass'     => array(
+					],
+					'shippingClass'     => [
 						'type'        => 'String',
 						'description' => __( 'Product variation shipping class', 'wp-graphql-woocommerce' ),
-					),
-					'catalogVisibility' => array(
+					],
+					'catalogVisibility' => [
 						'type'        => 'CatalogVisibilityEnum',
 						'description' => __( 'Product variation catalog visibility', 'wp-graphql-woocommerce' ),
-					),
-					'hasAttributes'     => array(
+					],
+					'hasAttributes'     => [
 						'type'        => 'Boolean',
 						'description' => __( 'Does product variation have any visible attributes', 'wp-graphql-woocommerce' ),
-					),
-					'type'              => array(
+					],
+					'type'              => [
 						'type'        => 'ProductTypesEnum',
 						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
-					),
-					'image'             => array(
+					],
+					'image'             => [
 						'type'        => 'MediaItem',
 						'description' => __( 'Product variation main image', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
 							return ! empty( $source->image_id ) ? DataSource::resolve_post_object( $source->image_id, $context ) : null;
 						},
-					),
+					],
 
 					'metaData'          => Meta_Data_Type::get_metadata_field_definition(),
-				),
-			)
+				],
+			]
 		);
 	}
 }

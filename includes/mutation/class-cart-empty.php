@@ -26,13 +26,13 @@ class Cart_Empty {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'emptyCart',
-			array(
-				'inputFields'         => array(
-					'clearPersistentCart' => array( 'type' => 'Boolean' ),
-				),
+			[
+				'inputFields'         => [
+					'clearPersistentCart' => [ 'type' => 'Boolean' ],
+				],
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -42,15 +42,15 @@ class Cart_Empty {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
+		return [
 			'deletedCart' => Cart_Mutation::get_cart_field(),
-			'cart'        => array(
+			'cart'        => [
 				'type'    => 'Cart',
 				'resolve' => function () {
 					return \WC()->cart;
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -93,7 +93,7 @@ class Cart_Empty {
 			 */
 			do_action( 'graphql_woocommerce_after_empty_cart', $cloned_cart, $input, $context, $info );
 
-			return array( 'cart' => $cloned_cart );
+			return [ 'cart' => $cloned_cart ];
 		};
 	}
 }

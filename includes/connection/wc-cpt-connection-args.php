@@ -14,40 +14,40 @@ namespace WPGraphQL\WooCommerce\Connection;
  * @return array
  */
 function get_wc_cpt_connection_args(): array {
-	return array(
-		'search'      => array(
+	return [
+		'search'      => [
 			'type'        => 'String',
 			'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-		),
-		'exclude'     => array(
-			'type'        => array( 'list_of' => 'Int' ),
+		],
+		'exclude'     => [
+			'type'        => [ 'list_of' => 'Int' ],
 			'description' => __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' ),
-		),
-		'include'     => array(
-			'type'        => array( 'list_of' => 'Int' ),
+		],
+		'include'     => [
+			'type'        => [ 'list_of' => 'Int' ],
 			'description' => __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' ),
-		),
-		'orderby'     => array(
-			'type'        => array( 'list_of' => 'PostTypeOrderbyInput' ),
+		],
+		'orderby'     => [
+			'type'        => [ 'list_of' => 'PostTypeOrderbyInput' ],
 			'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-		),
-		'dateQuery'   => array(
+		],
+		'dateQuery'   => [
 			'type'        => 'DateQueryInput',
 			'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
-		),
-		'parent'      => array(
+		],
+		'parent'      => [
 			'type'        => 'Int',
 			'description' => __( 'Use ID to return only children. Use 0 to return only top-level items.', 'wp-graphql-woocommerce' ),
-		),
-		'parentIn'    => array(
-			'type'        => array( 'list_of' => 'Int' ),
+		],
+		'parentIn'    => [
+			'type'        => [ 'list_of' => 'Int' ],
 			'description' => __( 'Specify objects whose parent is in an array.', 'wp-graphql-woocommerce' ),
-		),
-		'parentNotIn' => array(
-			'type'        => array( 'list_of' => 'Int' ),
+		],
+		'parentNotIn' => [
+			'type'        => [ 'list_of' => 'Int' ],
 			'description' => __( 'Specify objects whose parent is not in an array.', 'wp-graphql-woocommerce' ),
-		),
-	);
+		],
+	];
 }
 
 /**
@@ -58,8 +58,8 @@ function get_wc_cpt_connection_args(): array {
  *
  * @return array
  */
-function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = array() ) {
-	$args = array();
+function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = [] ) {
+	$args = [];
 	if ( ! empty( $input['include'] ) ) {
 		$args['post__in'] = $input['include'];
 	}
@@ -74,7 +74,7 @@ function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = arr
 
 	if ( ! empty( $input['parentIn'] ) ) {
 		if ( ! isset( $args['post_parent__in'] ) ) {
-			$args['post_parent__in'] = array();
+			$args['post_parent__in'] = [];
 		}
 		$args['post_parent__in'] = array_merge( $args['post_parent__in'], $input['parentIn'] );
 	}
@@ -91,14 +91,14 @@ function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = arr
 	 * Map the orderby inputArgs to the WP_Query
 	 */
 	if ( ! empty( $input['orderby'] ) && is_array( $input['orderby'] ) ) {
-		$args['orderby'] = array();
+		$args['orderby'] = [];
 		foreach ( $input['orderby'] as $orderby_input ) {
 			/**
 			 * These orderby options should not include the order parameter.
 			 */
 			if ( in_array(
 				$orderby_input['field'],
-				array( 'post__in', 'post_name__in', 'post_parent__in' ),
+				[ 'post__in', 'post_name__in', 'post_parent__in' ],
 				true
 			) ) {
 				$args['orderby'] = esc_sql( $orderby_input['field'] );
@@ -106,8 +106,8 @@ function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = arr
 				// Handle meta fields.
 			} elseif ( in_array( $orderby_input['field'], $ordering_meta, true ) ) {
 				$args['orderby']['meta_value_num'] = $orderby_input['order'];
-				$args['meta_key']                  = esc_sql( $orderby_input['field'] );
-				// WPCS: slow query ok.
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$args['meta_key'] = esc_sql( $orderby_input['field'] );
 
 				// Handle post object fields.
 			} elseif ( ! empty( $orderby_input['field'] ) ) {

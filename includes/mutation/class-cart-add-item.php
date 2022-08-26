@@ -26,11 +26,11 @@ class Cart_Add_Item {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'addToCart',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -40,28 +40,28 @@ class Cart_Add_Item {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'productId'   => array(
-				'type'        => array( 'non_null' => 'Int' ),
+		return [
+			'productId'   => [
+				'type'        => [ 'non_null' => 'Int' ],
 				'description' => __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' ),
-			),
-			'quantity'    => array(
+			],
+			'quantity'    => [
 				'type'        => 'Int',
 				'description' => __( 'Cart item quantity', 'wp-graphql-woocommerce' ),
-			),
-			'variationId' => array(
+			],
+			'variationId' => [
 				'type'        => 'Int',
 				'description' => __( 'Cart item product variation database ID or global ID', 'wp-graphql-woocommerce' ),
-			),
-			'variation'   => array(
-				'type'        => array( 'list_of' => 'ProductAttributeInput' ),
+			],
+			'variation'   => [
+				'type'        => [ 'list_of' => 'ProductAttributeInput' ],
 				'description' => __( 'Cart item product variation attributes', 'wp-graphql-woocommerce' ),
-			),
-			'extraData'   => array(
+			],
+			'extraData'   => [
 				'type'        => 'String',
 				'description' => __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -70,17 +70,17 @@ class Cart_Add_Item {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'cartItem' => array(
+		return [
+			'cartItem' => [
 				'type'    => 'CartItem',
 				'resolve' => function ( $payload ) {
 					$item = \WC()->cart->get_cart_item( $payload['key'] );
 
 					return $item;
 				},
-			),
+			],
 			'cart'     => Cart_Mutation::get_cart_field( true ),
-		);
+		];
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Cart_Add_Item {
 
 			// If cart item key valid return payload.
 			if ( false !== $cart_item_key ) {
-				return array( 'key' => $cart_item_key );
+				return [ 'key' => $cart_item_key ];
 			}
 
 			// Process errors.

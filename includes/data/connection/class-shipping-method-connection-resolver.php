@@ -45,7 +45,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_query_args() {
 		// TODO: Implement get_query_args() method.
-		return array();
+		return [];
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|mixed
 	 */
 	public function get_ids() {
-		return ! empty( $this->query ) ? $this->query : array();
+		return ! empty( $this->query ) ? $this->query : [];
 	}
 
 	/**

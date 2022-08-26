@@ -24,11 +24,11 @@ class Cart_Remove_Coupons {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'removeCoupons',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -38,12 +38,12 @@ class Cart_Remove_Coupons {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'codes' => array(
-				'type'        => array( 'list_of' => 'String' ),
+		return [
+			'codes' => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -52,9 +52,9 @@ class Cart_Remove_Coupons {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
+		return [
 			'cart' => Cart_Mutation::get_cart_field(),
-		);
+		];
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Cart_Remove_Coupons {
 			}
 
 			// Return payload.
-			return array( 'cart' => \WC()->cart );
+			return [ 'cart' => \WC()->cart ];
 		};
 	}
 }

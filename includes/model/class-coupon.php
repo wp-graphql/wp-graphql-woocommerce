@@ -36,7 +36,7 @@ class Coupon extends WC_Post {
 		if ( empty( $this->fields ) ) {
 			parent::init();
 
-			$fields = array(
+			$fields = [
 				'id'                            => function() {
 					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->wc_data->get_id() ) : null;
 				},
@@ -98,21 +98,21 @@ class Coupon extends WC_Post {
 				 * Note: underscore naming style is used as a quick identifier
 				 */
 				'product_ids'                   => function() {
-					return ! empty( $this->wc_data->get_product_ids() ) ? $this->wc_data->get_product_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_product_ids() ) ? $this->wc_data->get_product_ids() : [ '0' ];
 				},
 				'excluded_product_ids'          => function() {
-					return ! empty( $this->wc_data->get_excluded_product_ids() ) ? $this->wc_data->get_excluded_product_ids() : array( '0' );
+					return ! empty( $this->wc_data->get_excluded_product_ids() ) ? $this->wc_data->get_excluded_product_ids() : [ '0' ];
 				},
 				'product_category_ids'          => function() {
-					return ! empty( $this->wc_data->get_product_categories() ) ? $this->wc_data->get_product_categories() : array( '0' );
+					return ! empty( $this->wc_data->get_product_categories() ) ? $this->wc_data->get_product_categories() : [ '0' ];
 				},
 				'excluded_product_category_ids' => function() {
-					return ! empty( $this->wc_data->get_excluded_product_categories() ) ? $this->wc_data->get_excluded_product_categories() : array( '0' );
+					return ! empty( $this->wc_data->get_excluded_product_categories() ) ? $this->wc_data->get_excluded_product_categories() : [ '0' ];
 				},
 				'used_by_ids'                   => function() {
-					return ! empty( $this->wc_data->get_used_by() ) ? $this->wc_data->get_used_by() : array( '0' );
+					return ! empty( $this->wc_data->get_used_by() ) ? $this->wc_data->get_used_by() : [ '0' ];
 				},
-			);
+			];
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}//end if

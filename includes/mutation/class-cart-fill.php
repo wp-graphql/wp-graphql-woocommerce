@@ -26,11 +26,11 @@ class Cart_Fill {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'fillCart',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -40,20 +40,20 @@ class Cart_Fill {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'shippingMethods' => array(
-				'type'        => array( 'list_of' => 'String' ),
+		return [
+			'shippingMethods' => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'Shipping methods to be used.', 'wp-graphql-woocommerce' ),
-			),
-			'coupons'         => array(
-				'type'        => array( 'list_of' => 'String' ),
+			],
+			'coupons'         => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'Coupons to be applied to the cart', 'wp-graphql-woocommerce' ),
-			),
-			'items'           => array(
-				'type'        => array( 'list_of' => 'CartItemInput' ),
+			],
+			'items'           => [
+				'type'        => [ 'list_of' => 'CartItemInput' ],
 				'description' => __( 'Cart items to be added', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -62,36 +62,36 @@ class Cart_Fill {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'added'                 => array(
-				'type'    => array( 'list_of' => 'CartItem' ),
+		return [
+			'added'                 => [
+				'type'    => [ 'list_of' => 'CartItem' ],
 				'resolve' => function ( $payload ) {
-					$items = array();
+					$items = [];
 					foreach ( $payload['added'] as $key ) {
 						$items[] = \WC()->cart->get_cart_item( $key );
 					}
 
 					return $items;
 				},
-			),
-			'applied'               => array(
-				'type'    => array( 'list_of' => 'AppliedCoupon' ),
+			],
+			'applied'               => [
+				'type'    => [ 'list_of' => 'AppliedCoupon' ],
 				'resolve' => function( $payload ) {
 					$codes = $payload['applied'];
 					return ! empty( $codes ) ? $codes : null;
 				},
-			),
-			'chosenShippingMethods' => array(
-				'type'    => array( 'list_of' => 'String' ),
+			],
+			'chosenShippingMethods' => [
+				'type'    => [ 'list_of' => 'String' ],
 				'resolve' => function( $payload ) {
 					$methods = $payload['chosen_shipping_methods'];
 					return ! empty( $methods ) ? $methods : null;
 				},
-			),
-			'cartErrors'            => array(
-				'type'    => array( 'list_of' => 'CartError' ),
+			],
+			'cartErrors'            => [
+				'type'    => [ 'list_of' => 'CartError' ],
 				'resolve' => function ( $payload ) {
-					$errors = array();
+					$errors         = [];
 					$all_error_data = array_merge(
 						$payload['invalid_cart_items'],
 						$payload['invalid_coupons'],
@@ -105,14 +105,14 @@ class Cart_Fill {
 								$cart_error['type'] = 'INVALID_CART_ITEM';
 								break;
 							case isset( $error_data['code'] ):
-								$cart_error         = array( 'code' => $error_data['code'] );
+								$cart_error         = [ 'code' => $error_data['code'] ];
 								$cart_error['type'] = 'INVALID_COUPON';
 								break;
 							case isset( $error_data['package'] ):
-								$cart_error         = array(
+								$cart_error         = [
 									'package'       => $error_data['package'],
 									'chosen_method' => $error_data['chosen_method'],
-								);
+								];
 								$cart_error['type'] = 'INVALID_SHIPPING_METHOD';
 								break;
 						}
@@ -120,7 +120,7 @@ class Cart_Fill {
 						if ( ! empty( $error_data['reasons'] ) ) {
 							$cart_error['reasons'] = $error_data['reasons'];
 						} elseif ( $error_data['reason'] ) {
-							$cart_error['reasons'] = array( $error_data['reason'] );
+							$cart_error['reasons'] = [ $error_data['reason'] ];
 						}
 
 						$errors[] = $cart_error;
@@ -128,9 +128,9 @@ class Cart_Fill {
 
 					return $errors;
 				},
-			),
+			],
 			'cart'                  => Cart_Mutation::get_cart_field( true ),
-		);
+		];
 	}
 
 	/**
@@ -148,8 +148,8 @@ class Cart_Fill {
 			}
 
 			// Validate cart item input.
-			$added              = array();
-			$invalid_cart_items = array();
+			$added              = [];
+			$invalid_cart_items = [];
 			foreach ( $input['items'] as $cart_item_data ) {
 				try {
 					// Prepare args for "add_to_cart" from input data.
@@ -186,7 +186,7 @@ class Cart_Fill {
 
 			// Log captured errors.
 			if ( ! empty( $invalid_cart_items ) ) {
-				graphql_debug( $invalid_cart_items, array( 'type' => 'INVALID_CART_ITEMS' ) );
+				graphql_debug( $invalid_cart_items, [ 'type' => 'INVALID_CART_ITEMS' ] );
 			}
 
 			// Throw error, if no items added.
@@ -194,8 +194,8 @@ class Cart_Fill {
 				throw new UserError( __( 'Failed to add any cart items. Please check input.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$applied         = array();
-			$invalid_coupons = array();
+			$applied         = [];
+			$invalid_coupons = [];
 			if ( ! empty( $input['coupons'] ) ) {
 				foreach ( $input['coupons'] as $code ) {
 					$reason = '';
@@ -220,12 +220,12 @@ class Cart_Fill {
 				}//end foreach
 
 				if ( ! empty( $invalid_coupons ) ) {
-					graphql_debug( $invalid_coupons, array( 'type' => 'INVALID_COUPONS' ) );
+					graphql_debug( $invalid_coupons, [ 'type' => 'INVALID_COUPONS' ] );
 				}
 			}//end if
 
-			$chosen_shipping_methods  = array();
-			$invalid_shipping_methods = array();
+			$chosen_shipping_methods  = [];
+			$invalid_shipping_methods = [];
 			if ( ! empty( $input['shippingMethods'] ) ) {
 				$posted_shipping_methods = $input['shippingMethods'];
 
@@ -251,7 +251,7 @@ class Cart_Fill {
 				\WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
 
 				if ( ! empty( $invalid_shipping_methods ) ) {
-					graphql_debug( $invalid_shipping_methods, array( 'type' => 'INVALID_SHIPPING_METHODS' ) );
+					graphql_debug( $invalid_shipping_methods, [ 'type' => 'INVALID_SHIPPING_METHODS' ] );
 				}
 			}//end if
 

@@ -34,19 +34,19 @@ class Shipping_Methods {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = array() ): array {
+	public static function get_connection_config( $args = [] ): array {
 		return array_merge(
-			array(
+			[
 				'fromType'       => 'RootQuery',
 				'toType'         => 'ShippingMethod',
 				'fromFieldName'  => 'shippingMethods',
-				'connectionArgs' => array(),
+				'connectionArgs' => [],
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Shipping_Method_Connection_Resolver( $source, $args, $context, $info );
 
 					return $resolver->get_connection();
 				},
-			),
+			],
 			$args
 		);
 	}

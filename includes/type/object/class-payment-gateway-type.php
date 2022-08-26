@@ -21,39 +21,39 @@ class Payment_Gateway_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'PaymentGateway',
-			array(
+			[
 				'description' => __( 'A payment gateway object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'id'          => array(
-						'type'        => array( 'non_null' => 'String' ),
+				'fields'      => [
+					'id'          => [
+						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'gateway\'s title', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
-					),
-					'title'       => array(
+					],
+					'title'       => [
 						'type'        => 'String',
 						'description' => __( 'gateway\'s title', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->title ) ? $source->title : null;
 						},
-					),
-					'description' => array(
+					],
+					'description' => [
 						'type'        => 'String',
 						'description' => __( 'gateway\'s description', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->description ) ? $source->description : null;
 						},
-					),
-					'icon'        => array(
+					],
+					'icon'        => [
 						'type'        => 'String',
 						'description' => __( 'gateway\'s icon', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							return ! empty( $source->icon ) ? $source->icon : null;
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

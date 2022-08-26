@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Data\Loader;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Coupon;
 use WPGraphQL\WooCommerce\Model\Product;
@@ -83,7 +84,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			return $keys;
 		}
 
-		$wc_post_types = \WP_GraphQL_WooCommerce::get_post_types();
+		$wc_post_types = WP_GraphQL_WooCommerce::get_post_types();
 		/**
 		 * Prepare the args for the query. We're provided a specific
 		 * set of IDs, so we want to query as efficiently as possible with
@@ -92,16 +93,17 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		 * to the count of the keys provided. The query must also return results
 		 * in the same order the keys were provided in.
 		 */
-		$args = array(
+		$args = [
 			'post_type'           => $wc_post_types,
 			'post_status'         => 'any',
+			//phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page
 			'posts_per_page'      => count( $keys ),
 			'post__in'            => $keys,
 			'orderby'             => 'post__in',
 			'no_found_rows'       => true,
 			'split_the_query'     => false,
 			'ignore_sticky_posts' => true,
-		);
+		];
 
 		/**
 		 * Ensure that WP_Query doesn't first ask for IDs since we already have them.
@@ -119,7 +121,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		);
 		new \WP_Query( $args );
 
-		$loaded_posts = array();
+		$loaded_posts = [];
 
 		/**
 		 * Loop over the posts and return an array of all_posts,
@@ -156,13 +158,13 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				case 'shop_order':
 					$customer_id = get_post_meta( $key, '_customer_user', true );
 					if ( ! empty( $customer_id ) ) {
-						$this->context->getLoader( 'wc_customer' )->buffer( array( $customer_id ) );
+						$this->context->getLoader( 'wc_customer' )->buffer( [ $customer_id ] );
 					}
 					break;
 				case 'product_variation':
 				case 'shop_refund':
 					$parent_id = get_post_field( 'post_parent', $key );
-					$this->buffer( array( $parent_id ) );
+					$this->buffer( [ $parent_id ] );
 					break;
 			}
 
@@ -204,7 +206,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			);
 		}//end foreach
 
-		return ! empty( $loaded_posts ) ? $loaded_posts : array();
+		return ! empty( $loaded_posts ) ? $loaded_posts : [];
 	}
 
 	/**

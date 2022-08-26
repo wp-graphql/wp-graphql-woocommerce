@@ -39,8 +39,8 @@ abstract class WC_Post extends Post {
 		$post = get_post( $data->get_id() );
 
 		// Add $allowed_restricted_fields.
-		if ( ! has_filter( 'graphql_allowed_fields_on_restricted_type', array( static::class, 'add_allowed_restricted_fields' ) ) ) {
-			add_filter( 'graphql_allowed_fields_on_restricted_type', array( static::class, 'add_allowed_restricted_fields' ), 10, 2 );
+		if ( ! has_filter( 'graphql_allowed_fields_on_restricted_type', [ static::class, 'add_allowed_restricted_fields' ] ) ) {
+			add_filter( 'graphql_allowed_fields_on_restricted_type', [ static::class, 'add_allowed_restricted_fields' ], 10, 2 );
 		}
 
 		// Execute Post Model constructor.
@@ -71,14 +71,14 @@ abstract class WC_Post extends Post {
 	 *
 	 * @return array
 	 */
-	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = array() ) {
-		return array(
+	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = [] ) {
+		return [
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
-		);
+		];
 	}
 
 	/**
@@ -92,7 +92,7 @@ abstract class WC_Post extends Post {
 	 * @throws BadMethodCallException Method not found on WC data object.
 	 */
 	public function __call( $method, $args ) {
-		if ( \is_callable( array( $this->wc_data, $method ) ) ) {
+		if ( \is_callable( [ $this->wc_data, $method ] ) ) {
 			return $this->wc_data->$method( ...$args );
 		}
 

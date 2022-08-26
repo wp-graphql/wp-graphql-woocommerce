@@ -19,51 +19,51 @@ class Line_Item_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'LineItemInput',
-			array(
+			[
 				'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'id'          => array(
+				'fields'      => [
+					'id'          => [
 						'type'        => 'ID',
 						'description' => __( 'Line Item ID', 'wp-graphql-woocommerce' ),
-					),
-					'name'        => array(
+					],
+					'name'        => [
 						'type'        => 'String',
 						'description' => __( 'Line name', 'wp-graphql-woocommerce' ),
-					),
-					'productId'   => array(
+					],
+					'productId'   => [
 						'type'        => 'Int',
 						'description' => __( 'Product ID.', 'wp-graphql-woocommerce' ),
-					),
-					'variationId' => array(
+					],
+					'variationId' => [
 						'type'        => 'Int',
 						'description' => __( 'Variation ID, if applicable.', 'wp-graphql-woocommerce' ),
-					),
-					'quantity'    => array(
+					],
+					'quantity'    => [
 						'type'        => 'Int',
 						'description' => __( 'Quantity ordered.', 'wp-graphql-woocommerce' ),
-					),
-					'taxClass'    => array(
+					],
+					'taxClass'    => [
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Tax class of product.', 'wp-graphql-woocommerce' ),
-					),
-					'subtotal'    => array(
+					],
+					'subtotal'    => [
 						'type'        => 'String',
 						'description' => __( 'Line subtotal (before discounts).', 'wp-graphql-woocommerce' ),
-					),
-					'total'       => array(
+					],
+					'total'       => [
 						'type'        => 'String',
 						'description' => __( 'Line total (after discounts).', 'wp-graphql-woocommerce' ),
-					),
-					'metaData'    => array(
-						'type'        => array( 'list_of' => 'MetaDataInput' ),
+					],
+					'metaData'    => [
+						'type'        => [ 'list_of' => 'MetaDataInput' ],
 						'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
-					),
-					'sku'         => array(
+					],
+					'sku'         => [
 						'type'        => 'string',
 						'description' => __( 'Product SKU.', 'wp-graphql-woocommerce' ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

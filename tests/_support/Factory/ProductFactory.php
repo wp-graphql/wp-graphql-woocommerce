@@ -17,9 +17,9 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array(
+		$this->default_generation_definitions = [
 			'product_class' => '\WC_Product_Simple',
-		);
+		];
 	}
 
 	public function create_object( $args ) {
@@ -32,7 +32,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		$product = new $product_class();
 
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( array( $product, "set_{$key}" ) ) ) {
+			if ( is_callable( [ $product, "set_{$key}" ] ) ) {
 				$product->{"set_{$key}"}( $value );
 			}
 		}
@@ -50,7 +50,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $field => $field_value ) {
-			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
+			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s product field.', $field, $object->get_type() )
 				);
@@ -66,12 +66,12 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		return \wc_get_product( absint( $product_id ) );
 	}
 
-	public function createSimple( $args = array() ) {
+	public function createSimple( $args = [] ) {
 		$name          = Dummy::instance()->product();
 		$price         = Dummy::instance()->price( 15, 200 );
 		$regular_price = $price;
 
-		$generation_definitions = array(
+		$generation_definitions = [
 			'name'              => $name,
 			'slug'              => $this->slugify( $name ),
 			'regular_price'     => $regular_price,
@@ -86,16 +86,16 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			'description'       => '[shortcode_test]',
 			'short_description' => Dummy::instance()->sentence(),
 			'product_class'     => '\WC_Product_Simple',
-		);
+		];
 
 		return $this->create( $args, $generation_definitions );
 	}
 
-	public function createExternal( $args = array() ) {
+	public function createExternal( $args = [] ) {
 		$name  = Dummy::instance()->product();
 		$price = Dummy::instance()->price( 15, 200 );
 
-		$generation_definitions = array(
+		$generation_definitions = [
 			'name'          => $name,
 			'slug'          => $this->slugify( $name ),
 			'regular_price' => $price,
@@ -103,53 +103,53 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			'product_url'   => 'http://woocommerce.com',
 			'button_text'   => 'Buy external product',
 			'product_class' => '\WC_Product_External',
-		);
+		];
 
 		return $this->create( $args, $generation_definitions );
 	}
 
-	public function createGrouped( $args = array() ) {
+	public function createGrouped( $args = [] ) {
 		$name = Dummy::instance()->product() . 'Group';
 
-		$generation_definitions = array(
+		$generation_definitions = [
 			'name'          => $name,
 			'slug'          => $this->slugify( $name ),
 			'sku'           => uniqid(),
 			'product_class' => '\WC_Product_Grouped',
-		);
+		];
 
 		$args = array_merge(
-			array( 'children' => array( $this->createSimple() ) ),
+			[ 'children' => [ $this->createSimple() ] ],
 			$args
 		);
 
 		return $this->create( $args, $generation_definitions );
 	}
 
-	public function createVariable( $args = array() ) {
+	public function createVariable( $args = [] ) {
 		$name = Dummy::instance()->product();
 
-		$generation_definitions = array(
+		$generation_definitions = [
 			'name'          => $name,
 			'slug'          => $this->slugify( $name ),
 			'sku'           => uniqid(),
 			'product_class' => '\WC_Product_Variable',
-		);
+		];
 
 		$args = array_merge(
-			array(
-				'attribute_data' => array(
-					$this->createAttribute( 'size', array( 'small', 'medium', 'large' ) ), // Create Size attribute.
-					$this->createAttribute( 'color', array( 'red', 'blue', 'green' ) ), // Create Color attribute.
-				),
-			),
+			[
+				'attribute_data' => [
+					$this->createAttribute( 'size', [ 'small', 'medium', 'large' ] ), // Create Size attribute.
+					$this->createAttribute( 'color', [ 'red', 'blue', 'green' ] ), // Create Color attribute.
+				],
+			],
 			$args
 		);
 
 		return $this->create( $args, $generation_definitions );
 	}
 
-	public function createAttribute( $raw_name = 'size', $terms = array( 'small' ) ) {
+	public function createAttribute( $raw_name = 'size', $terms = [ 'small' ] ) {
 		global $wpdb, $wc_product_attributes;
 
 		// Make sure caches are clean.
@@ -170,35 +170,35 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 			$taxonomy_name = wc_attribute_taxonomy_name( $attribute_name );
 
 			$attribute_id = wc_create_attribute(
-				array(
+				[
 					'name'         => $raw_name,
 					'slug'         => $attribute_name,
 					'type'         => 'select',
 					'order_by'     => 'menu_order',
 					'has_archives' => 0,
-				)
+				]
 			);
 
 			// Register as taxonomy.
 			register_taxonomy(
 				$taxonomy_name,
-				apply_filters( 'woocommerce_taxonomy_objects_' . $taxonomy_name, array( 'product' ) ),
+				apply_filters( 'woocommerce_taxonomy_objects_' . $taxonomy_name, [ 'product' ] ),
 				apply_filters(
 					'woocommerce_taxonomy_args_' . $taxonomy_name,
-					array(
-						'labels'       => array(
+					[
+						'labels'       => [
 							'name' => $raw_name,
-						),
+						],
 						'hierarchical' => false,
 						'show_ui'      => false,
 						'query_var'    => true,
 						'rewrite'      => false,
-					)
+					]
 				)
 			);
 
 			// Set product attributes global.
-			$wc_product_attributes = array();
+			$wc_product_attributes = [];
 
 			foreach ( wc_get_attribute_taxonomies() as $taxonomy ) {
 				$wc_product_attributes[ wc_attribute_taxonomy_name( $taxonomy->attribute_name ) ] = $taxonomy;
@@ -206,12 +206,12 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		$attribute = wc_get_attribute( $attribute_id );
-		$return    = array(
+		$return    = [
 			'attribute_name'     => $attribute->name,
 			'attribute_taxonomy' => $attribute->slug,
 			'attribute_id'       => $attribute_id,
-			'term_ids'           => array(),
-		);
+			'term_ids'           => [],
+		];
 
 		foreach ( $terms as $term ) {
 			$result = term_exists( $term, $attribute->slug );
@@ -227,8 +227,8 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		return $return;
 	}
 
-	private function setVariationAttributes( \WC_Product_Variable $product, array $attribute_data = array() ) {
-		$attributes = array();
+	private function setVariationAttributes( \WC_Product_Variable $product, array $attribute_data = [] ) {
+		$attributes = [];
 		foreach ( $attribute_data as $index => $data ) {
 			$attribute = new \WC_Product_Attribute();
 			$attribute->set_id( $data['attribute_id'] );
@@ -243,30 +243,30 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		$product->set_attributes( $attributes );
 	}
 
-	public function createRelated( $args = array() ) {
-		$cross_sell_ids     = array(
+	public function createRelated( $args = [] ) {
+		$cross_sell_ids     = [
 			$this->createSimple(),
 			$this->createSimple(),
-		);
-		$upsell_ids         = array(
+		];
+		$upsell_ids         = [
 			$this->createSimple(),
 			$this->createSimple(),
-		);
-		$tag_ids            = array( $this->createProductTag( 'related' ) );
-		$related_product_id = $this->createSimple( array( 'tag_ids' => $tag_ids ) );
+		];
+		$tag_ids            = [ $this->createProductTag( 'related' ) ];
+		$related_product_id = $this->createSimple( [ 'tag_ids' => $tag_ids ] );
 
-		return array(
+		return [
 			'product'    => $this->createSimple(
-				array(
+				[
 					'tag_ids'        => $tag_ids,
 					'cross_sell_ids' => $cross_sell_ids,
 					'upsell_ids'     => $upsell_ids,
-				)
+				]
 			),
-			'related'    => array( $related_product_id ),
+			'related'    => [ $related_product_id ],
 			'cross_sell' => $cross_sell_ids,
 			'upsell'     => $upsell_ids,
-		);
+		];
 	}
 
 	public function createProductTag( $term ) {
@@ -280,11 +280,11 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function getStockStatusEnum( $status ) {
-		$statuses = array(
+		$statuses = [
 			'instock'     => 'IN_STOCK',
 			'outofstock'  => 'OUT_OF_STOCK',
 			'onbackorder' => 'ON_BACKORDER',
-		);
+		];
 
 		if ( in_array( $status, array_keys( $statuses ), true ) ) {
 			return $statuses[ $status ];
@@ -297,7 +297,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		if ( term_exists( $term, 'product_cat' ) ) {
 			$term = get_term( $term, 'product_cat', ARRAY_A );
 		} else {
-			$args = array();
+			$args = [];
 			if ( $parent_id ) {
 				$args['parent'] = $parent_id;
 			}
@@ -315,17 +315,17 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		if ( $id ) {
 			$product = \wc_get_product( $id );
-			$product->set_downloads( array( $download ) );
+			$product->set_downloads( [ $download ] );
 			$product->save();
 		}
 
 		return $download;
 	}
 
-	public function createReview( $product_id, $args = array() ) {
+	public function createReview( $product_id, $args = [] ) {
 		$firstName = Dummy::instance()->firstname();
 		$data      = array_merge(
-			array(
+			[
 				'comment_post_ID'      => $product_id,
 				'comment_author'       => $firstName,
 				'comment_author_email' => "{$firstName}@example.com",
@@ -333,7 +333,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 				'comment_content'      => Dummy::instance()->text(),
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			),
+			],
 			$args
 		);
 

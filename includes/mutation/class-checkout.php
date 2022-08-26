@@ -30,11 +30,11 @@ class Checkout {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'checkout',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -44,48 +44,48 @@ class Checkout {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array(
-			'paymentMethod'          => array(
+		return [
+			'paymentMethod'          => [
 				'type'        => 'String',
 				'description' => __( 'Payment method ID.', 'wp-graphql-woocommerce' ),
-			),
-			'shippingMethod'         => array(
-				'type'        => array( 'list_of' => 'String' ),
+			],
+			'shippingMethod'         => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'Order shipping method', 'wp-graphql-woocommerce' ),
-			),
-			'shipToDifferentAddress' => array(
+			],
+			'shipToDifferentAddress' => [
 				'type'        => 'Boolean',
 				'description' => __( 'Ship to a separate address', 'wp-graphql-woocommerce' ),
-			),
-			'billing'                => array(
+			],
+			'billing'                => [
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order billing address', 'wp-graphql-woocommerce' ),
-			),
-			'shipping'               => array(
+			],
+			'shipping'               => [
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order shipping address', 'wp-graphql-woocommerce' ),
-			),
-			'account'                => array(
+			],
+			'account'                => [
 				'type'        => 'CreateAccountInput',
 				'description' => __( 'Create new customer account', 'wp-graphql-woocommerce' ),
-			),
-			'transactionId'          => array(
+			],
+			'transactionId'          => [
 				'type'        => 'String',
 				'description' => __( 'Order transaction ID', 'wp-graphql-woocommerce' ),
-			),
-			'isPaid'                 => array(
+			],
+			'isPaid'                 => [
 				'type'        => 'Boolean',
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
-			),
-			'metaData'               => array(
-				'type'        => array( 'list_of' => 'MetaDataInput' ),
+			],
+			'metaData'               => [
+				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
-			),
-			'customerNote'           => array(
+			],
+			'customerNote'           => [
 				'type'        => 'String',
 				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -94,32 +94,32 @@ class Checkout {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'order'    => array(
+		return [
+			'order'    => [
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return new Order( $payload['id'] );
 				},
-			),
-			'customer' => array(
+			],
+			'customer' => [
 				'type'    => 'Customer',
 				'resolve' => function() {
 					return is_user_logged_in() ? new Customer( get_current_user_id() ) : null;
 				},
-			),
-			'result'   => array(
+			],
+			'result'   => [
 				'type'    => 'String',
 				'resolve' => function( $payload ) {
 					return $payload['result'];
 				},
-			),
-			'redirect' => array(
+			],
+			'redirect' => [
 				'type'    => 'String',
 				'resolve' => function( $payload ) {
 					return $payload['redirect'];
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Checkout {
 				 */
 				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 
-				return array_merge( array( 'id' => $order_id ), $results );
+				return array_merge( [ 'id' => $order_id ], $results );
 			} catch ( Exception $e ) {
 				Order_Mutation::purge( $order );
 				throw new UserError( $e->getMessage() );

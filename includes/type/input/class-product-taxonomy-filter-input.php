@@ -19,27 +19,27 @@ class Product_Taxonomy_Filter_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'ProductTaxonomyFilterInput',
-			array(
+			[
 				'description' => __( 'Product filter', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-					'taxonomy' => array(
-						'type'        => array( 'non_null' => 'ProductTaxonomyEnum' ),
+				'fields'      => [
+					'taxonomy' => [
+						'type'        => [ 'non_null' => 'ProductTaxonomyEnum' ],
 						'description' => __( 'Which field to select taxonomy term by.', 'wp-graphql-woocommerce' ),
-					),
-					'terms'    => array(
-						'type'        => array( 'list_of' => 'String' ),
+					],
+					'terms'    => [
+						'type'        => [ 'list_of' => 'String' ],
 						'description' => __( 'A list of term slugs', 'wp-graphql-woocommerce' ),
-					),
-					'ids'      => array(
-						'type'        => array( 'list_of' => 'Int' ),
+					],
+					'ids'      => [
+						'type'        => [ 'list_of' => 'Int' ],
 						'description' => __( 'A list of term ids', 'wp-graphql-woocommerce' ),
-					),
-					'operator' => array(
+					],
+					'operator' => [
 						'type'        => 'TaxonomyOperatorEnum',
 						'description' => __( 'Filter operation type', 'wp-graphql-woocommerce' ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

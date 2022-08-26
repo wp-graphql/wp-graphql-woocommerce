@@ -18,16 +18,16 @@ class Taxonomy_Operator {
 	public static function register() {
 		register_graphql_enum_type(
 			'TaxonomyOperatorEnum',
-			array(
+			[
 				'description' => __( 'Taxonomy query operators', 'wp-graphql-woocommerce' ),
-				'values'      => array(
-					'IN'         => array( 'value' => 'IN' ),
-					'NOT_IN'     => array( 'value' => 'NOT IN' ),
-					'AND'        => array( 'value' => 'AND' ),
-					'EXISTS'     => array( 'value' => 'EXISTS' ),
-					'NOT_EXISTS' => array( 'value' => 'NOT EXISTS' ),
-				),
-			)
+				'values'      => [
+					'IN'         => [ 'value' => 'IN' ],
+					'NOT_IN'     => [ 'value' => 'NOT IN' ],
+					'AND'        => [ 'value' => 'AND' ],
+					'EXISTS'     => [ 'value' => 'EXISTS' ],
+					'NOT_EXISTS' => [ 'value' => 'NOT EXISTS' ],
+				],
+			]
 		);
 	}
 }

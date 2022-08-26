@@ -99,12 +99,12 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
-		$query_args = array(
+		$query_args = [
 			'post_type'     => 'shop_order',
 			'no_rows_found' => true,
 			'return'        => 'ids',
 			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
-		);
+		];
 
 		/**
 		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
@@ -129,7 +129,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = array();
+		$input_fields = [];
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -182,7 +182,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids() {
-		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
+		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
 	}
 
 	/**
@@ -191,14 +191,14 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function ordering_meta() {
-		return array(
+		return [
 			'_order_key',
 			'_cart_discount',
 			'_order_total',
 			'_order_tax',
 			'_date_paid',
 			'_date_completed',
-		);
+		];
 	}
 
 	/**
@@ -215,11 +215,11 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		global $wpdb;
 		$args = $this->sanitize_common_inputs( $where_args );
 
-		$key_mapping = array(
+		$key_mapping = [
 			'post_parent'         => 'parent',
 			'post_parent__not_in' => 'parent_exclude',
 			'post__not_in'        => 'exclude',
-		);
+		];
 
 		foreach ( $key_mapping as $key => $field ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -246,6 +246,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Search by product.
 		if ( ! empty( $where_args['productId'] ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$order_ids = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT order_id
@@ -257,7 +258,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			);
 
 			// Force WP_Query return empty if don't found any order.
-			$args['post__in'] = ! empty( $order_ids ) ? $order_ids : array( 0 );
+			$args['post__in'] = ! empty( $order_ids ) ? $order_ids : [ 0 ];
 		}
 
 		// Search.

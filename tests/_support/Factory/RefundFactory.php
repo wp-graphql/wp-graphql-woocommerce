@@ -17,13 +17,13 @@ class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array(
+		$this->default_generation_definitions = [
 			'amount'         => 0,
 			'order_id'       => 0,
 			'reason'         => 'defective',
 			'refund_payment' => false,
 			'restock_items'  => false,
-		);
+		];
 	}
 
 	public function create_object( $args ) {
@@ -43,7 +43,7 @@ class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $field => $field_value ) {
-			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
+			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s coupon field.', $field, $object->get_type() )
 				);
@@ -59,7 +59,7 @@ class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
 		return \wc_get_order( $id );
 	}
 
-	public function createNew( $order, $args = array() ) {
+	public function createNew( $order, $args = [] ) {
 		$order = \wc_get_order( $order );
 
 		if ( empty( $order ) ) {
@@ -68,13 +68,13 @@ class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		return $this->create(
 			array_merge(
-				array(
+				[
 					'amount'         => floatval( $order->get_total() ),
 					'order_id'       => $order->get_id(),
 					'reason'         => 'defective',
 					'refund_payment' => false,
 					'restock_items'  => false,
-				),
+				],
 				$args
 			)
 		);

@@ -25,13 +25,13 @@ class Tax_Rate extends Model {
 	 */
 	public function __construct( $rate ) {
 		$this->data                = $rate;
-		$allowed_restricted_fields = array(
+		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
-		);
+		];
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'tax_rate_restricted_cap', '' );
@@ -53,7 +53,7 @@ class Tax_Rate extends Model {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = array(
+			$this->fields = [
 				'ID'         => function() {
 					return $this->data->tax_rate_id;
 				},
@@ -70,10 +70,10 @@ class Tax_Rate extends Model {
 					return ! empty( $this->data->tax_rate_state ) ? $this->data->tax_rate_state : null;
 				},
 				'city'       => function() {
-					return ! empty( $this->data->tax_rate_city ) ? $this->data->tax_rate_city : array( '*' );
+					return ! empty( $this->data->tax_rate_city ) ? $this->data->tax_rate_city : [ '*' ];
 				},
 				'postcode'   => function() {
-					return ! empty( $this->data->tax_rate_postcode ) ? $this->data->tax_rate_postcode : array( '*' );
+					return ! empty( $this->data->tax_rate_postcode ) ? $this->data->tax_rate_postcode : [ '*' ];
 				},
 				'rate'       => function() {
 					return ! empty( $this->data->tax_rate ) ? $this->data->tax_rate : null;
@@ -96,7 +96,7 @@ class Tax_Rate extends Model {
 				'class'      => function() {
 					return ! is_null( $this->data->tax_rate_class ) ? $this->data->tax_rate_class : '';
 				},
-			);
+			];
 		}//end if
 	}
 }

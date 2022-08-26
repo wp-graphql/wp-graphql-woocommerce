@@ -29,11 +29,11 @@ class Order_Create {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'createOrder',
-			array(
+			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			)
+			]
 		);
 	}
 
@@ -43,72 +43,72 @@ class Order_Create {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = array(
-			'parentId'           => array(
+		$input_fields = [
+			'parentId'           => [
 				'type'        => 'Int',
 				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
-			),
-			'currency'           => array(
+			],
+			'currency'           => [
 				'type'        => 'String',
 				'description' => __( 'Currency the order was created with, in ISO format.', 'wp-graphql-woocommerce' ),
-			),
-			'customerId'         => array(
+			],
+			'customerId'         => [
 				'type'        => 'Int',
 				'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
-			),
-			'customerNote'       => array(
+			],
+			'customerNote'       => [
 				'type'        => 'String',
 				'description' => __( 'Note left by customer during checkout.', 'wp-graphql-woocommerce' ),
-			),
-			'coupons'            => array(
-				'type'        => array( 'list_of' => 'String' ),
+			],
+			'coupons'            => [
+				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'Coupons codes to be applied to order', 'wp-graphql-woocommerce' ),
-			),
-			'status'             => array(
+			],
+			'status'             => [
 				'type'        => 'OrderStatusEnum',
 				'description' => __( 'Order status', 'wp-graphql-woocommerce' ),
-			),
-			'paymentMethod'      => array(
+			],
+			'paymentMethod'      => [
 				'type'        => 'String',
 				'description' => __( 'Payment method ID.', 'wp-graphql-woocommerce' ),
-			),
-			'paymentMethodTitle' => array(
+			],
+			'paymentMethodTitle' => [
 				'type'        => 'String',
 				'description' => __( 'Payment method title.', 'wp-graphql-woocommerce' ),
-			),
-			'transactionId'      => array(
+			],
+			'transactionId'      => [
 				'type'        => 'String',
 				'description' => __( 'Order transaction ID', 'wp-graphql-woocommerce' ),
-			),
-			'billing'            => array(
+			],
+			'billing'            => [
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order billing address', 'wp-graphql-woocommerce' ),
-			),
-			'shipping'           => array(
+			],
+			'shipping'           => [
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order shipping address', 'wp-graphql-woocommerce' ),
-			),
-			'lineItems'          => array(
-				'type'        => array( 'list_of' => 'LineItemInput' ),
+			],
+			'lineItems'          => [
+				'type'        => [ 'list_of' => 'LineItemInput' ],
 				'description' => __( 'Order line items', 'wp-graphql-woocommerce' ),
-			),
-			'shippingLines'      => array(
-				'type'        => array( 'list_of' => 'ShippingLineInput' ),
+			],
+			'shippingLines'      => [
+				'type'        => [ 'list_of' => 'ShippingLineInput' ],
 				'description' => __( 'Order shipping lines', 'wp-graphql-woocommerce' ),
-			),
-			'feeLines'           => array(
-				'type'        => array( 'list_of' => 'FeeLineInput' ),
+			],
+			'feeLines'           => [
+				'type'        => [ 'list_of' => 'FeeLineInput' ],
 				'description' => __( 'Order shipping lines', 'wp-graphql-woocommerce' ),
-			),
-			'metaData'           => array(
-				'type'        => array( 'list_of' => 'MetaDataInput' ),
+			],
+			'metaData'           => [
+				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
-			),
-			'isPaid'             => array(
+			],
+			'isPaid'             => [
 				'type'        => 'Boolean',
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
-			),
-		);
+			],
+		];
 
 		return $input_fields;
 	}
@@ -119,20 +119,20 @@ class Order_Create {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return array(
-			'order'   => array(
+		return [
+			'order'   => [
 				'type'    => 'Order',
 				'resolve' => function( $payload ) {
 					return new Order( $payload['id'] );
 				},
-			),
-			'orderId' => array(
+			],
+			'orderId' => [
 				'type'    => 'Int',
 				'resolve' => function( $payload ) {
 					return $payload['id'];
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -143,7 +143,7 @@ class Order_Create {
 	public static function mutate_and_get_payload() {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			// Check if authorized to create this order.
-			if ( ! Order_Mutation::authorized( 'create', null, $input, $context, $info ) ) {
+			if ( ! Order_Mutation::authorized( $input, $context, $info, 'create', null ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to create an order.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -195,7 +195,7 @@ class Order_Create {
 				 */
 				do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 
-				return array( 'id' => $order->get_id() );
+				return [ 'id' => $order->get_id() ];
 			} catch ( Exception $e ) {
 				Order_Mutation::purge( $order );
 				throw new UserError( $e->getMessage() );

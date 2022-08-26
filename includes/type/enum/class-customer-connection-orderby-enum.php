@@ -18,35 +18,35 @@ class Customer_Connection_Orderby_Enum {
 	public static function register() {
 		register_graphql_enum_type(
 			'CustomerConnectionOrderbyEnum',
-			array(
+			[
 				'description' => __( 'Field to order the connection by', 'wp-graphql-woocommerce' ),
-				'values'      => array(
-					'ID'              => array(
+				'values'      => [
+					'ID'              => [
 						'value'       => 'ID',
 						'description' => __( 'Order by customer ID', 'wp-graphql-woocommerce' ),
-					),
-					'INCLUDE'         => array(
+					],
+					'INCLUDE'         => [
 						'value'       => 'include',
 						'description' => __( 'Order by include field', 'wp-graphql-woocommerce' ),
-					),
-					'NAME'            => array(
+					],
+					'NAME'            => [
 						'value'       => 'display_name',
 						'description' => __( 'Order by customer display name', 'wp-graphql-woocommerce' ),
-					),
-					'USERNAME'        => array(
+					],
+					'USERNAME'        => [
 						'value'       => 'username',
 						'description' => __( 'Order by customer username', 'wp-graphql-woocommerce' ),
-					),
-					'EMAIL'           => array(
+					],
+					'EMAIL'           => [
 						'value'       => 'email',
 						'description' => __( 'Order by customer email', 'wp-graphql-woocommerce' ),
-					),
-					'REGISTERED_DATE' => array(
+					],
+					'REGISTERED_DATE' => [
 						'value'       => 'registered',
 						'description' => __( 'Order by customer registration date', 'wp-graphql-woocommerce' ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

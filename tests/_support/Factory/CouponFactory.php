@@ -17,9 +17,9 @@ class CouponFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = array(
+		$this->default_generation_definitions = [
 			'coupon_class' => '\WC_Coupon',
-		);
+		];
 	}
 
 	public function create_object( $args ) {
@@ -34,13 +34,13 @@ class CouponFactory extends \WP_UnitTest_Factory_For_Thing {
 		$amount = Dummy::instance()->number( 0, 75 );
 		$coupon->set_props(
 			array_merge(
-				array(
+				[
 					'code'          => $amount . 'off',
 					'amount'        => floatval( $amount ),
 					'date_expires'  => null,
 					'discount_type' => 'percent',
 					'description'   => 'Test coupon',
-				),
+				],
 				$args
 			)
 		);
@@ -59,7 +59,7 @@ class CouponFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $field => $field_value ) {
-			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
+			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s coupon field.', $field, $object->get_type() )
 				);
