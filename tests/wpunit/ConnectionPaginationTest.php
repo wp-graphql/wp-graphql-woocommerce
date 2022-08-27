@@ -106,7 +106,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[4] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
@@ -127,7 +127,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'coupons.nodes.1.databaseId', $coupons[2] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductsPagination() {
@@ -218,7 +218,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'products.nodes.1.databaseId', $products[4] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
@@ -239,7 +239,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'products.nodes.1.databaseId', $products[2] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testOrdersPagination() {
@@ -340,7 +340,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'orders.nodes.1.databaseId', $orders[4] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
@@ -361,7 +361,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'orders.nodes.1.databaseId', $orders[2] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testRefundsPagination() {
@@ -455,7 +455,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[4] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
@@ -476,7 +476,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			$this->expectedField( 'refunds.nodes.1.databaseId', $refunds[2] ),
 		];
 
-		// $this->assertQuerySuccessful( $response, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCustomersPagination() {
