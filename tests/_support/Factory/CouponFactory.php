@@ -31,7 +31,7 @@ class CouponFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		$coupon = new $coupon_class();
 
-		$amount = Dummy::instance()->number( 0, 75 );
+		$amount = Dummy::instance()->number( 25, 75 );
 		$coupon->set_props(
 			array_merge(
 				[

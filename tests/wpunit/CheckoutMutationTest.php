@@ -2,29 +2,21 @@
 
 use WPGraphQL\Type\WPEnumType;
 
-class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
+class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function setUp(): void {
 		// before
 		parent::setUp();
 
-		// Create users.
-		$this->shop_manager    = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
-		$this->simple_customer = $this->factory->user->create( [ 'role' => 'customer' ] );
-
-		// Get helper instances
-		$this->order     = $this->getModule( '\Helper\Wpunit' )->order();
-		$this->coupon    = $this->getModule( '\Helper\Wpunit' )->coupon();
-		$this->product   = $this->getModule( '\Helper\Wpunit' )->product();
-		$this->variation = $this->getModule( '\Helper\Wpunit' )->product_variation();
-		$this->cart      = $this->getModule( '\Helper\Wpunit' )->cart();
-		$this->tax       = $this->getModule( '\Helper\Wpunit' )->tax_rate();
-		$this->customer  = $this->getModule( '\Helper\Wpunit' )->customer();
+		$this->loginAs( 0 );
 
 		// Turn on tax calculations and store shipping countries. Important!
 		update_option( 'woocommerce_ship_to_countries', 'all' );
 		update_option( 'woocommerce_prices_include_tax', 'no' );
 		update_option( 'woocommerce_calc_taxes', 'yes' );
 		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
+
+		// Turn on guest checkout.
+		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
 
 		// Enable payment gateways.
 		update_option(
@@ -79,7 +71,7 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Create a tax rate.
-		$this->tax->create(
+		$this->factory->tax_rate->create(
 			[
 				'country'  => '',
 				'state'    => '',
@@ -91,217 +83,253 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 				'class'    => '',
 			]
 		);
-		// Create sample order to be used as a parent order.
-		$this->order_id = $this->order->create();
-
-		// Clear cart.
-		WC()->cart->empty_cart( true );
-		wp_logout();
-
-		\WPGraphQL::clear_schema();
 	}
 
-	private function checkout( $input, $mutation = null ) {
-		if ( ! $mutation ) {
-			$mutation = '
-                mutation checkout( $input: CheckoutInput! ) {
-                    checkout( input: $input ) {
-                        clientMutationId
-                        order {
-                            id
-                            databaseId
-                            currency
-                            orderVersion
-                            date
-                            modified
-                            status
-                            discountTotal
-                            discountTax
-                            shippingTotal
-                            shippingTax
-                            cartTax
-                            total
-                            totalTax
-                            subtotal
-                            orderNumber
-                            orderKey
-                            createdVia
-                            pricesIncludeTax
-                            parent {
-                                id
-                            }
-                            customer {
-                                id
-                            }
-                            customerIpAddress
-                            customerUserAgent
-                            customerNote
-                            billing {
-                                firstName
-                                lastName
-                                company
-                                address1
-                                address2
-                                city
-                                state
-                                postcode
-                                country
-                                email
-                                phone
-                            }
-                            shipping {
-                                firstName
-                                lastName
-                                company
-                                address1
-                                address2
-                                city
-                                state
-                                postcode
-                                country
-                            }
-                            paymentMethod
-                            paymentMethodTitle
-                            transactionId
-                            dateCompleted
-                            datePaid
-                            cartHash
-                            shippingAddressMapUrl
-                            hasBillingAddress
-                            hasShippingAddress
-                            isDownloadPermitted
-                            needsShippingAddress
-                            hasDownloadableItem
-                            downloadableItems {
-                                nodes {
-                                    url
-                                    accessExpires
-                                    downloadId
-                                    downloadsRemaining
-                                    name
-                                    product {
-                                        databaseId
-                                    }
-                                    download {
-                                        downloadId
-                                    }
-                                }
-                            }
-                            needsPayment
-                            needsProcessing
-                            metaData {
-                                key
-                                value
-                            }
-                            couponLines {
-                                nodes {
-                                    databaseId
-                                    orderId
-                                    code
-                                    discount
-                                    discountTax
-                                    coupon {
-                                        id
-                                    }
-                                }
-                            }
-                            feeLines {
-                                nodes {
-                                    databaseId
-                                    orderId
-                                    amount
-                                    name
-                                    taxStatus
-                                    total
-                                    totalTax
-                                    taxClass
-                                }
-                            }
-                            shippingLines {
-                                nodes {
-                                    databaseId
-                                    orderId
-                                    methodTitle
-                                    total
-                                    totalTax
-                                    taxClass
-                                }
-                            }
-                            taxLines {
-                                nodes {
-                                    rateCode
-                                    label
-                                    taxTotal
-                                    shippingTaxTotal
-                                    isCompound
-                                    taxRate {
-                                        databaseId
-                                    }
-                                }
-                            }
-                            lineItems {
-                                nodes {
-                                    productId
-                                    variationId
-                                    quantity
-                                    taxClass
-                                    subtotal
-                                    subtotalTax
-                                    total
-                                    totalTax
-                                    taxStatus
-                                    product {
-										node {
-											... on SimpleProduct {
-												id
-											}
-											... on VariableProduct {
-												id
-											}
+	private function getCheckoutMutation() {
+		return '
+			mutation checkout( $input: CheckoutInput! ) {
+				checkout( input: $input ) {
+					clientMutationId
+					order {
+						id
+						databaseId
+						currency
+						orderVersion
+						date
+						modified
+						status
+						discountTotal
+						discountTax
+						shippingTotal
+						shippingTax
+						cartTax
+						total
+						totalTax
+						subtotal
+						orderNumber
+						orderKey
+						createdVia
+						pricesIncludeTax
+						parent {
+							id
+						}
+						customer {
+							id
+						}
+						customerIpAddress
+						customerUserAgent
+						customerNote
+						billing {
+							firstName
+							lastName
+							company
+							address1
+							address2
+							city
+							state
+							postcode
+							country
+							email
+							phone
+						}
+						shipping {
+							firstName
+							lastName
+							company
+							address1
+							address2
+							city
+							state
+							postcode
+							country
+						}
+						paymentMethod
+						paymentMethodTitle
+						transactionId
+						dateCompleted
+						datePaid
+						cartHash
+						shippingAddressMapUrl
+						hasBillingAddress
+						hasShippingAddress
+						isDownloadPermitted
+						needsShippingAddress
+						hasDownloadableItem
+						downloadableItems {
+							nodes {
+								url
+								accessExpires
+								downloadId
+								downloadsRemaining
+								name
+								product {
+									databaseId
+								}
+								download {
+									downloadId
+								}
+							}
+						}
+						needsPayment
+						needsProcessing
+						metaData {
+							key
+							value
+						}
+						couponLines {
+							nodes {
+								databaseId
+								orderId
+								code
+								discount
+								discountTax
+								coupon {
+									id
+								}
+							}
+						}
+						feeLines {
+							nodes {
+								databaseId
+								orderId
+								amount
+								name
+								taxStatus
+								total
+								totalTax
+								taxClass
+							}
+						}
+						shippingLines {
+							nodes {
+								databaseId
+								orderId
+								methodTitle
+								total
+								totalTax
+								taxClass
+							}
+						}
+						taxLines {
+							nodes {
+								rateCode
+								label
+								taxTotal
+								shippingTaxTotal
+								isCompound
+								taxRate {
+									databaseId
+								}
+							}
+						}
+						lineItems {
+							nodes {
+								productId
+								variationId
+								quantity
+								taxClass
+								subtotal
+								subtotalTax
+								total
+								totalTax
+								taxStatus
+								product {
+									node {
+										... on SimpleProduct {
+											id
 										}
-                                    }
-                                    variation {
-										node {
-                                        	id
+										... on VariableProduct {
+											id
 										}
-                                    }
-                                }
-                            }
-                        }
-                        customer {
-                            id
-                        }
-                        result
-                        redirect
-                    }
-                }
-            ';
-		}
+									}
+								}
+								variation {
+									node {
+										id
+									}
+								}
+							}
+						}
+					}
+					customer {
+						id
+					}
+					result
+					redirect
+				}
+			}
+		';
+	}
 
-		$actual = graphql(
+	private function getCartQuery() {
+		return '
+			query {
+				cart {
+					contents {
+						nodes {
+							key
+						}
+					}
+					total
+				}
+			}
+		';
+	}
+
+	private function getCheckoutInput( $overwrite = [] ) {
+		return array_merge(
 			[
-				'query'          => $mutation,
-				'operation_name' => 'checkout',
-				'variables'      => [ 'input' => $input ],
-			]
+				'paymentMethod'  => 'bacs',
+				'shippingMethod' => [ 'flat rate' ],
+				'customerNote'   => 'Test customer note',
+				'billing'        => [
+					'firstName' => 'May',
+					'lastName'  => 'Parker',
+					'address1'  => '20 Ingram St',
+					'city'      => 'New York City',
+					'state'     => 'NY',
+					'postcode'  => '12345',
+					'country'   => 'US',
+					'email'     => 'superfreak500@gmail.com',
+					'phone'     => '555-555-1234',
+					'overwrite' => true,
+				],
+				'shipping'       => [
+					'firstName' => 'May',
+					'lastName'  => 'Parker',
+					'address1'  => '20 Ingram St',
+					'city'      => 'New York City',
+					'state'     => 'NY',
+					'postcode'  => '12345',
+					'country'   => 'US',
+				],
+				'metaData'       => [
+					[
+						'key'   => 'test_key',
+						'value' => 'test value',
+					],
+				],
+			],
+			$overwrite
 		);
-
-		return $actual;
 	}
 
 	// tests
 	public function testCheckoutMutation() {
-		wp_set_current_user( $this->simple_customer );
+		$this->loginAsCustomer();
 		WC()->customer->set_billing_company( 'Harris Teeter' );
+		WC()->customer->save();
 
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		$variable    = $this->factory->product_variation->createSome();
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create(
+				[ 'product_ids' => $product_ids ]
+			)
 		);
 
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
@@ -314,214 +342,149 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = [
-			'clientMutationId' => 'someId',
-			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => [ 'flat rate' ],
-			'customerNote'     => 'Test customer note',
-			'billing'          => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-				'email'     => 'superfreak500@gmail.com',
-				'phone'     => '555-555-1234',
-				'overwrite' => true,
-			],
-			'shipping'         => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-			],
-			'metaData'         => [
-				[
-					'key'   => 'test_key',
-					'value' => 'test value',
-				],
-			],
-		];
+		$variables = [ 'input' => $this->getCheckoutInput() ];
+		$query     = $this->getCheckoutMutation();
 
 		/**
 		 * Assertion One
 		 *
 		 * Test mutation and input.
 		 */
-		$actual = $this->checkout( $input );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'checkout', $actual['data'] );
-		$this->assertArrayHasKey( 'order', $actual['data']['checkout'] );
-		$this->assertArrayHasKey( 'id', $actual['data']['checkout']['order'] );
-		$order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
-
-		// Get Available payment gateways.
-		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			'data' => [
-				'checkout' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'metaData'      => [
-								[
-									'key'   => 'is_vat_exempt',
-									'value' => 'no',
-								],
-								[
-									'key'   => 'test_key',
-									'value' => 'test value',
-								],
-								// array(
-								// 'key'   => '_new_order_email_sent',
-								// 'value' => 'true'
-								// )
-							],
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => null,
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => $item->get_amount(),
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-					'customer'         => [
-						'id' => $this->customer->to_relay_id( $order->get_customer_id() ),
-					],
-					'result'           => 'success',
-					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				],
-			],
+			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.status', 'ON_HOLD' ),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[
+					$this->expectedField( 'key', 'test_key' ),
+					$this->expectedField( 'value', 'test value' ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.couponLines.nodes',
+				[
+					$this->expectedField( 'code', $coupon->get_code() ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'discount', self::NOT_NULL ),
+					$this->expectedField( 'discountTax', self::NOT_NULL ),
+					$this->expectedField( 'coupon', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.feeLines.nodes',
+				[
+					$this->expectedField( 'name', 'Surcharge' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'amount', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.shippingLines.nodes',
+				[
+					$this->expectedField( 'methodTitle', 'Flat rate' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.taxLines.nodes',
+				[
+					$this->expectedField( 'label', 'VAT' ),
+					$this->expectedField( 'rateCode', self::NOT_NULL ),
+					$this->expectedField( 'taxTotal', self::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
+					$this->expectedField( 'isCompound', self::NOT_NULL ),
+					$this->expectedField( 'taxRate', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[0] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[2] ),
+					$this->expectedField( 'variationId', self::NOT_NULL ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedField(
+				'checkout.customer.id',
+				$this->toRelayId( 'customer', $this->customer )
+			),
+			$this->expectedField( 'checkout.result', 'success' ),
+			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
 		];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Confirm cart empty after successful checkout.
+		$query    = $this->getCartQuery();
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'cart.contents.nodes', [] ),
+			$this->expectedField( 'cart.total', '$0.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCheckoutMutationWithNewAccount() {
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		$variable    = $this->factory->product_variation->createSome();
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create(
+				[ 'product_ids' => $product_ids ]
+			)
 		);
+
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
 		WC()->cart->add_to_cart(
@@ -532,195 +495,144 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = [
-			'clientMutationId' => 'someId',
-			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => [ 'flat rate' ],
-			'billing'          => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'company'   => 'Harris Teeter',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-				'email'     => 'superfreak500@gmail.com',
-				'phone'     => '555-555-1234',
-			],
-			'account'          => [
+		$input     = [
+			'account' => [
 				'username' => 'test_user_1',
 				'password' => 'test_pass',
 			],
 		];
+		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
+		$query     = $this->getCheckoutMutation();
 
 		/**
 		 * Assertion One
 		 *
 		 * Test mutation and input.
 		 */
-		$actual = $this->checkout( $input );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'checkout', $actual['data'] );
-		$this->assertArrayHasKey( 'order', $actual['data']['checkout'] );
-		$this->assertArrayHasKey( 'id', $actual['data']['checkout']['order'] );
-		$order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
-
-		// Get Available payment gateways.
-		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			'data' => [
-				'checkout' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'metaData'      => [
-								[
-									'key'   => 'is_vat_exempt',
-									'value' => 'no',
-								],
-							],
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => null,
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => $item->get_amount(),
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-					'customer'         => [
-						'id' => $this->customer->to_relay_id( $order->get_customer_id() ),
-					],
-					'result'           => 'success',
-					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				],
-			],
+			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.status', 'ON_HOLD' ),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[
+					$this->expectedField( 'key', 'test_key' ),
+					$this->expectedField( 'value', 'test value' ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.feeLines.nodes',
+				[
+					$this->expectedField( 'name', 'Surcharge' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'amount', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.shippingLines.nodes',
+				[
+					$this->expectedField( 'methodTitle', 'Flat rate' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.taxLines.nodes',
+				[
+					$this->expectedField( 'label', 'VAT' ),
+					$this->expectedField( 'rateCode', self::NOT_NULL ),
+					$this->expectedField( 'taxTotal', self::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
+					$this->expectedField( 'isCompound', self::NOT_NULL ),
+					$this->expectedField( 'taxRate', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[0] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[2] ),
+					$this->expectedField( 'variationId', self::NOT_NULL ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedField( 'checkout.customer.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.result', 'success' ),
+			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
 		];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Confirm cart empty after successful checkout.
+		$query    = $this->getCartQuery();
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'cart.contents.nodes', [] ),
+			$this->expectedField( 'cart.total', '$0.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCheckoutMutationWithNoAccount() {
-		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		WC()->customer->set_billing_email( 'superfreak500@gmail.com' );
+		WC()->customer->save();
+
+		$variable    = $this->factory->product_variation->createSome();
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create(
+				[ 'product_ids' => $product_ids ]
+			)
 		);
+
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
 		WC()->cart->add_to_cart(
@@ -731,368 +643,241 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input = [
-			'clientMutationId' => 'someId',
-			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => [ 'flat rate' ],
-			'billing'          => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-				'email'     => 'superfreak500@gmail.com',
-				'phone'     => '555-555-1234',
-			],
-			'shipping'         => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-			],
-		];
+		$variables = [ 'input' => $this->getCheckoutInput() ];
+		$query     = $this->getCheckoutMutation();
 
 		/**
 		 * Assertion One
 		 *
 		 * Test mutation and input.
 		 */
-		$actual = $this->checkout( $input );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'checkout', $actual['data'] );
-		$this->assertArrayHasKey( 'order', $actual['data']['checkout'] );
-		$this->assertArrayHasKey( 'id', $actual['data']['checkout']['order'] );
-		$order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
-
-		// Get Available payment gateways.
-		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			'data' => [
-				'checkout' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'metaData'      => [
-								[
-									'key'   => 'is_vat_exempt',
-									'value' => 'no',
-								],
-							],
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => null,
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => $item->get_amount(),
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-					'customer'         => null,
-					'result'           => 'success',
-					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				],
-			],
+			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.status', 'ON_HOLD' ),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[
+					$this->expectedField( 'key', 'test_key' ),
+					$this->expectedField( 'value', 'test value' ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.feeLines.nodes',
+				[
+					$this->expectedField( 'name', 'Surcharge' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'amount', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.shippingLines.nodes',
+				[
+					$this->expectedField( 'methodTitle', 'Flat rate' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.taxLines.nodes',
+				[
+					$this->expectedField( 'label', 'VAT' ),
+					$this->expectedField( 'rateCode', self::NOT_NULL ),
+					$this->expectedField( 'taxTotal', self::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
+					$this->expectedField( 'isCompound', self::NOT_NULL ),
+					$this->expectedField( 'taxRate', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[0] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[2] ),
+					$this->expectedField( 'variationId', self::NOT_NULL ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedField( 'checkout.customer', self::IS_NULL ),
+			$this->expectedField( 'checkout.result', 'success' ),
+			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
 		];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Confirm cart empty after successful checkout.
+		$query    = $this->getCartQuery();
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'cart.contents.nodes', [] ),
+			$this->expectedField( 'cart.total', '$0.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCheckoutMutationWithPrepaidOrder() {
-		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
+		WC()->customer->set_billing_email( 'superfreak500@gmail.com' );
+		WC()->customer->save();
+
 		$product_ids = [
-			$this->product->create_simple(
+			$this->factory->product->createSimple(
 				[
 					'virtual'      => true,
 					'downloadable' => true,
 				]
 			),
-			$this->product->create_simple(
+			$this->factory->product->createSimple(
 				[
 					'virtual'      => true,
 					'downloadable' => true,
 				]
 			),
 		];
-		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+
+		$coupon = new WC_Coupon(
+			$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
+
 		WC()->cart->add_to_cart( $product_ids[0], 3 );
 		WC()->cart->add_to_cart( $product_ids[1], 6 );
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
 		$input = [
-			'clientMutationId' => 'someId',
-			'paymentMethod'    => 'bacs',
-			'isPaid'           => true,
-			'transactionId'    => 'transaction_id',
-			'shippingMethod'   => [ 'flat rate' ],
-			'billing'          => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-				'email'     => 'superfreak500@gmail.com',
-				'phone'     => '555-555-1234',
-			],
-			'shipping'         => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-			],
+			'isPaid'        => true,
+			'transactionId' => 'transaction_id',
 		];
+
+		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
+		$query     = $this->getCheckoutMutation();
 
 		/**
 		 * Assertion One
 		 *
 		 * Test mutation and input.
 		 */
-		$actual = $this->checkout( $input );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'checkout', $actual['data'] );
-		$this->assertArrayHasKey( 'order', $actual['data']['checkout'] );
-		$this->assertArrayHasKey( 'id', $actual['data']['checkout']['order'] );
-		$this->assertEquals( 'COMPLETED', $actual['data']['checkout']['order']['status'] );
-		$order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
-
-		// Get Available payment gateways.
-		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			'data' => [
-				'checkout' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'metaData'      => [
-								[
-									'key'   => 'is_vat_exempt',
-									'value' => 'no',
-								],
-							],
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => null,
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => $item->get_amount(),
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [ 'nodes' => [] ],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-					'customer'         => null,
-					'result'           => 'success',
-					'redirect'         => $available_gateways['bacs']->process_payment( $order->get_id() )['redirect'],
-				],
-			],
+			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.status', 'COMPLETED' ),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[
+					$this->expectedField( 'key', 'test_key' ),
+					$this->expectedField( 'value', 'test value' ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.feeLines.nodes',
+				[
+					$this->expectedField( 'name', 'Surcharge' ),
+					$this->expectedField( 'databaseId', self::NOT_NULL ),
+					$this->expectedField( 'orderId', self::NOT_NULL ),
+					$this->expectedField( 'amount', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.taxLines.nodes',
+				[
+					$this->expectedField( 'label', 'VAT' ),
+					$this->expectedField( 'rateCode', self::NOT_NULL ),
+					$this->expectedField( 'taxTotal', self::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
+					$this->expectedField( 'isCompound', self::NOT_NULL ),
+					$this->expectedField( 'taxRate', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[0] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedField( 'checkout.customer', self::IS_NULL ),
+			$this->expectedField( 'checkout.result', 'success' ),
+			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
 		];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Confirm cart empty after successful checkout.
+		$query    = $this->getCartQuery();
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'cart.contents.nodes', [] ),
+			$this->expectedField( 'cart.total', '$0.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	/**
@@ -1159,14 +944,16 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testCheckoutMutationWithStripe() {
-		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
+		WC()->customer->set_billing_email( 'superfreak500@gmail.com' );
+		WC()->customer->save();
+
 		// Add items to the cart.
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 		];
-		WC()->cart->add_to_cart( $product_ids[0], 3 );
-		WC()->cart->add_to_cart( $product_ids[1], 6 );
+		WC()->cart->add_to_cart( $product_ids[0], 1 );
+		WC()->cart->add_to_cart( $product_ids[1], 1 );
 
 		$amount = (int) floatval( WC()->cart->get_cart_contents_total() + WC()->cart->get_cart_contents_tax() ) * 100;
 
@@ -1179,21 +966,8 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$input = [
-			'clientMutationId' => 'someId',
-			'paymentMethod'    => 'stripe',
-			'shippingMethod'   => 'flat rate',
-			'billing'          => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-				'email'     => 'superfreak500@gmail.com',
-				'phone'     => '555-555-1234',
-			],
-			'metaData'         => [
+			'paymentMethod' => 'stripe',
+			'metaData'      => [
 				[
 					'key'   => '_stripe_source_id',
 					'value' => $stripe_source['id'],
@@ -1209,12 +983,16 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 			],
 		];
 
+		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
 		// Remove "metaData" value field and "redirect" link from the mutation output.
-		$modified_mutation = '
+		$query = '
             mutation checkout( $input: CheckoutInput! ) {
                 checkout( input: $input ) {
                     clientMutationId
                     order {
+						id
+						status
+						total
                         databaseId
                         metaData { key }
                         lineItems {
@@ -1254,81 +1032,70 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test mutation and input.
 		 */
-		$actual = $this->checkout( $input, $modified_mutation );
-
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'checkout', $actual['data'] );
-		$this->assertArrayHasKey( 'order', $actual['data']['checkout'] );
-		$this->assertArrayHasKey( 'databaseId', $actual['data']['checkout']['order'] );
-		$order = \WC_Order_Factory::get_order( $actual['data']['checkout']['order']['databaseId'] );
-
-		// Get Available payment gateways.
-		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-
+		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			'data' => [
-				'checkout' => [
-					'clientMutationId' => 'someId',
-					'order'            => [
-						'databaseId' => $order->get_id(),
-						'metaData'   => [
-							[ 'key' => 'is_vat_exempt' ],
-							[ 'key' => '_stripe_source_id' ],
-							[ 'key' => '_stripe_customer_id' ],
-							[ 'key' => '_stripe_intent_id' ],
-							[ 'key' => '_stripe_charge_captured' ],
-							[ 'key' => '_stripe_fee' ],
-							[ 'key' => '_stripe_net' ],
-							[ 'key' => '_stripe_currency' ],
-						],
-						'lineItems'  => [
-							'nodes' => array_values(
-								array_map(
-									function( $item ) {
-										return [
-											'productId'   => $item->get_product_id(),
-											'variationId' => ! empty( $item->get_variation_id() )
-												? $item->get_variation_id()
-												: null,
-											'quantity'    => $item->get_quantity(),
-											'taxClass'    => ! empty( $item->get_tax_class() )
-												? strtoupper( $item->get_tax_class() )
-												: 'STANDARD',
-											'subtotal'    => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-											'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-											'total'       => ! empty( $item->get_total() ) ? $item->get_total() : null,
-											'totalTax'    => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-											'taxStatus'   => strtoupper( $item->get_tax_status() ),
-											'product'     => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-											'variation'   => ! empty( $item->get_variation_id() )
-												? [
-													'node' => [
-														'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-													],
-												]
-												: null,
-										];
-									},
-									$order->get_items()
-								)
-							),
-						],
-					],
-					'result'           => 'success',
-				],
-			],
+			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.status', 'PROCESSING' ),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[ $this->expectedField( 'key', '_stripe_source_id' ) ]
+			),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[ $this->expectedField( 'key', '_stripe_customer_id' ) ]
+			),
+			$this->expectedNode(
+				'checkout.order.metaData',
+				[ $this->expectedField( 'key', '_stripe_intent_id' ) ]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[0] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedNode(
+				'checkout.order.lineItems.nodes',
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
+					$this->expectedField( 'quantity', self::NOT_NULL ),
+					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'subtotal', self::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
+					$this->expectedField( 'total', self::NOT_NULL ),
+					$this->expectedField( 'totalTax', self::NOT_NULL ),
+					$this->expectedField( 'taxStatus', self::NOT_NULL ),
+					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+				]
+			),
+			$this->expectedField( 'checkout.result', 'success' ),
 		];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Confirm cart empty after successful checkout.
+		$query    = $this->getCartQuery();
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'cart.contents.nodes', [] ),
+			$this->expectedField( 'cart.total', '$0.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCheckoutMutationCartItemValidation() {
 		add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
 
-		$product_id = $this->product->create_simple(
+		$product_id = $this->factory->product->createSimple(
 			[
 				'manage_stock'   => true,
 				'stock_quantity' => 3,
@@ -1338,37 +1105,23 @@ class CheckoutMutationTest extends \Codeception\TestCase\WPTestCase {
 		$key = WC()->cart->add_to_cart( $product_id, 3 );
 		WC()->cart->set_quantity( $key, 5 );
 
-		/**
-		 * Assertion One
-		 *
-		 * Ensure that checkout failed when stock is too low.
-		 */
-		$input  = [
-			'clientMutationId' => 'someId',
-			'paymentMethod'    => 'bacs',
-			'shippingMethod'   => [ 'flat rate' ],
-			'billing'          => [
-				'firstName' => 'May',
-				'lastName'  => 'Parker',
-				'company'   => 'Harris Teeter',
-				'address1'  => '20 Ingram St',
-				'city'      => 'New York City',
-				'state'     => 'NY',
-				'postcode'  => '12345',
-				'country'   => 'US',
-				'email'     => 'superfreak500@gmail.com',
-				'phone'     => '555-555-1234',
-			],
-			'account'          => [
+		$input     = [
+			'account' => [
 				'username' => 'test_user_1',
 				'password' => 'test_pass',
 			],
 		];
-		$failed = $this->checkout( $input );
+		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
+		$query     = $this->getCheckoutMutation();
 
-		// use --debug flag to view.
-		codecept_debug( $failed );
+				/**
+		 * Assertion One
+		 *
+		 * Ensure that checkout failed when stock is too low.
+		 */
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [ $this->expectedField( 'checkout', self::IS_NULL ) ];
 
-		$this->assertArrayHasKey( 'errors', $failed );
+		$this->assertQueryError( $response, $expected );
 	}
 }

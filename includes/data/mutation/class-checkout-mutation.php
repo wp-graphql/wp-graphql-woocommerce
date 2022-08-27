@@ -541,7 +541,6 @@ class Checkout_Mutation {
 	protected static function process_order_without_payment( $order_id, $transaction_id = '' ) {
 		$order = wc_get_order( $order_id );
 		$order->payment_complete( $transaction_id );
-		wc_empty_cart();
 
 		return [
 			'result'   => 'success',
@@ -650,6 +649,10 @@ class Checkout_Mutation {
 				];
 			}
 		}//end if
+
+		if ( 'success' === $results['result'] ) {
+			wc_empty_cart();
+		}
 
 		return $order_id;
 	}
