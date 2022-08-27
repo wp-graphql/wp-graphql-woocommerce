@@ -194,7 +194,7 @@ class Customers {
 	 *
 	 * @param array                      $connection  Resolved connection.
 	 * @param AbstractConnectionResolver $resolver  Resolver class.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function upgrade_models( $connection, $resolver ) {
@@ -202,12 +202,14 @@ class Customers {
 			$nodes = [];
 			$edges = [];
 			foreach ( $connection['nodes'] as $node ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				$nodes[] = new Customer( $node->databaseId );
 			}
-	
+
 			foreach ( $connection['edges'] as $edge ) {
 				$edges[] = array_merge(
 					$edge,
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					[ 'node' => new Customer( $edge['node']->databaseId ) ]
 				);
 			}
