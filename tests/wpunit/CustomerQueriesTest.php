@@ -273,6 +273,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				} ) {
 					nodes{
 						databaseId
+						billing { email }
 					}
 				}
 			}
@@ -301,6 +302,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
+			$this->expectedField( 'customers.nodes.0.billing.email', self::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.1.billing.email', self::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.2.billing.email', self::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.3.billing.email', self::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -314,6 +319,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[0] ),
+			$this->expectedField( 'customers.nodes.0.billing.email', self::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -327,6 +333,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[2] ),
+			$this->expectedField( 'customers.nodes.0.billing.email', self::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -342,6 +349,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[0] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
+			$this->expectedField( 'customers.nodes.0.billing.email', self::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.1.billing.email', self::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.2.billing.email', self::NOT_NULL ),
 			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
 		];
 

@@ -11,7 +11,9 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\Data\Connection\UserConnectionResolver;
+use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class - Customers
@@ -184,5 +186,36 @@ class Customers {
 		);
 
 		return $query_args;
+	}
+
+	/**
+	 * Temporary function until necessary functionality
+	 * has been added to the UserConnectionResolver
+	 *
+	 * @param array                      $connection  Resolved connection.
+	 * @param AbstractConnectionResolver $resolver  Resolver class.
+	 * 
+	 * @return array
+	 */
+	public static function upgrade_models( $connection, $resolver ) {
+		if ( 'customers' === $resolver->getInfo()->fieldName ) {
+			$nodes = [];
+			$edges = [];
+			foreach ( $connection['nodes'] as $node ) {
+				$nodes[] = new Customer( $node->databaseId );
+			}
+	
+			foreach ( $connection['edges'] as $edge ) {
+				$edges[] = array_merge(
+					$edge,
+					[ 'node' => new Customer( $edge['node']->databaseId ) ]
+				);
+			}
+
+			$connection['nodes'] = $nodes;
+			$connection['edges'] = $edges;
+		}
+
+		return $connection;
 	}
 }

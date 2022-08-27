@@ -115,6 +115,13 @@ class Core_Schema_Filters {
 			10,
 			6
 		);
+
+		add_filter(
+			'graphql_connection',
+			[ '\WPGraphQL\WooCommerce\Connection\Customers', 'upgrade_models' ],
+			10,
+			2
+		);
 	}
 
 	/**
