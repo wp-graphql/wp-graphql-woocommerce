@@ -7,7 +7,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		// before
 		parent::setUp();
 
-		$this->loginAs(0);
+		$this->loginAs( 0 );
 
 		// Turn on tax calculations and store shipping countries. Important!
 		update_option( 'woocommerce_ship_to_countries', 'all' );
@@ -279,10 +279,10 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 	private function getCheckoutInput( $overwrite = [] ) {
 		return array_merge(
 			[
-				'paymentMethod'    => 'bacs',
-				'shippingMethod'   => [ 'flat rate' ],
-				'customerNote'     => 'Test customer note',
-				'billing'          => [
+				'paymentMethod'  => 'bacs',
+				'shippingMethod' => [ 'flat rate' ],
+				'customerNote'   => 'Test customer note',
+				'billing'        => [
 					'firstName' => 'May',
 					'lastName'  => 'Parker',
 					'address1'  => '20 Ingram St',
@@ -294,7 +294,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 					'phone'     => '555-555-1234',
 					'overwrite' => true,
 				],
-				'shipping'         => [
+				'shipping'       => [
 					'firstName' => 'May',
 					'lastName'  => 'Parker',
 					'address1'  => '20 Ingram St',
@@ -303,7 +303,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 					'postcode'  => '12345',
 					'country'   => 'US',
 				],
-				'metaData'         => [
+				'metaData'       => [
 					[
 						'key'   => 'test_key',
 						'value' => 'test value',
@@ -341,7 +341,6 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			[ 'attribute_pa_color' => 'red' ]
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
-
 
 		$variables = [ 'input' => $this->getCheckoutInput() ];
 		$query     = $this->getCheckoutMutation();
@@ -411,7 +410,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
-					$this->expectedField('productId', $product_ids[0] ),
+					$this->expectedField( 'productId', $product_ids[0] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -424,8 +423,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
-				[ 
-					$this->expectedField('productId', $product_ids[1] ),
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -464,10 +463,10 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Confirm cart empty after successful checkout.
 		$query    = $this->getCartQuery();
-		$response = $this->graphql( compact ( 'query' ) );
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
 			$this->expectedField( 'cart.contents.nodes', [] ),
-			$this->expectedField( 'cart.total', "$0.00" ),
+			$this->expectedField( 'cart.total', '$0.00' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -496,15 +495,14 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		);
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
-		$input   = [
-			'account'          => [
+		$input     = [
+			'account' => [
 				'username' => 'test_user_1',
 				'password' => 'test_pass',
-			]
+			],
 		];
 		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
 		$query     = $this->getCheckoutMutation();
-
 
 		/**
 		 * Assertion One
@@ -560,7 +558,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
-					$this->expectedField('productId', $product_ids[0] ),
+					$this->expectedField( 'productId', $product_ids[0] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -573,8 +571,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
-				[ 
-					$this->expectedField('productId', $product_ids[1] ),
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -610,10 +608,10 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Confirm cart empty after successful checkout.
 		$query    = $this->getCartQuery();
-		$response = $this->graphql( compact ( 'query' ) );
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
 			$this->expectedField( 'cart.contents.nodes', [] ),
-			$this->expectedField( 'cart.total', "$0.00" ),
+			$this->expectedField( 'cart.total', '$0.00' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -622,7 +620,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 	public function testCheckoutMutationWithNoAccount() {
 		WC()->customer->set_billing_email( 'superfreak500@gmail.com' );
 		WC()->customer->save();
-		
+
 		$variable    = $this->factory->product_variation->createSome();
 		$product_ids = [
 			$this->factory->product->createSimple(),
@@ -702,7 +700,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
-					$this->expectedField('productId', $product_ids[0] ),
+					$this->expectedField( 'productId', $product_ids[0] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -715,8 +713,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
-				[ 
-					$this->expectedField('productId', $product_ids[1] ),
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -752,10 +750,10 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Confirm cart empty after successful checkout.
 		$query    = $this->getCartQuery();
-		$response = $this->graphql( compact ( 'query' ) );
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
 			$this->expectedField( 'cart.contents.nodes', [] ),
-			$this->expectedField( 'cart.total', "$0.00" ),
+			$this->expectedField( 'cart.total', '$0.00' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -764,7 +762,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 	public function testCheckoutMutationWithPrepaidOrder() {
 		WC()->customer->set_billing_email( 'superfreak500@gmail.com' );
 		WC()->customer->save();
-		
+
 		$product_ids = [
 			$this->factory->product->createSimple(
 				[
@@ -780,7 +778,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 		];
 
-		$coupon      = new WC_Coupon(
+		$coupon = new WC_Coupon(
 			$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 
@@ -789,8 +787,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		WC()->cart->apply_coupon( $coupon->get_code() );
 
 		$input = [
-			'isPaid'           => true,
-			'transactionId'    => 'transaction_id',
+			'isPaid'        => true,
+			'transactionId' => 'transaction_id',
 		];
 
 		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
@@ -839,7 +837,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
-					$this->expectedField('productId', $product_ids[0] ),
+					$this->expectedField( 'productId', $product_ids[0] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -852,8 +850,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
-				[ 
-					$this->expectedField('productId', $product_ids[1] ),
+				[
+					$this->expectedField( 'productId', $product_ids[1] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
 					$this->expectedField( 'subtotal', self::NOT_NULL ),
@@ -873,10 +871,10 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Confirm cart empty after successful checkout.
 		$query    = $this->getCartQuery();
-		$response = $this->graphql( compact ( 'query' ) );
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
 			$this->expectedField( 'cart.contents.nodes', [] ),
-			$this->expectedField( 'cart.total', "$0.00" ),
+			$this->expectedField( 'cart.total', '$0.00' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -968,8 +966,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		}
 
 		$input = [
-			'paymentMethod'    => 'stripe',
-			'metaData'         => [
+			'paymentMethod' => 'stripe',
+			'metaData'      => [
 				[
 					'key'   => '_stripe_source_id',
 					'value' => $stripe_source['id'],
@@ -1066,7 +1064,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
-				[ 
+				[
 					$this->expectedField( 'productId', $product_ids[1] ),
 					$this->expectedField( 'quantity', self::NOT_NULL ),
 					$this->expectedField( 'taxClass', self::NOT_NULL ),
@@ -1085,10 +1083,10 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Confirm cart empty after successful checkout.
 		$query    = $this->getCartQuery();
-		$response = $this->graphql( compact ( 'query' ) );
+		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
 			$this->expectedField( 'cart.contents.nodes', [] ),
-			$this->expectedField( 'cart.total', "$0.00" ),
+			$this->expectedField( 'cart.total', '$0.00' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -1107,9 +1105,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$key = WC()->cart->add_to_cart( $product_id, 3 );
 		WC()->cart->set_quantity( $key, 5 );
 
-
-		$input  = [
-			'account'          => [
+		$input     = [
+			'account' => [
 				'username' => 'test_user_1',
 				'password' => 'test_pass',
 			],

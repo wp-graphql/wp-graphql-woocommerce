@@ -650,7 +650,7 @@ class Checkout_Mutation {
 			}
 		}//end if
 
-		if ( $results['result'] === 'success') {
+		if ( 'success' === $results['result'] ) {
 			wc_empty_cart();
 		}
 
