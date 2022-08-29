@@ -122,6 +122,66 @@ abstract class WC_Post extends Post {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	protected function is_post_private( $post_object = null ) {
+		$post_type_object = $this->post_type_object;
+
+		if ( empty( $post_object ) ) {
+			$post_object = $this->data;
+		}
+
+		if ( empty( $post_object ) ) {
+			return true;
+		}
+
+		/**
+		 * If the status is NOT publish and the user does NOT have capabilities to edit posts,
+		 * consider the post private.
+		 */
+		if ( ! isset( $post_type_object->cap->edit_posts ) || ! current_user_can( $post_type_object->cap->edit_posts ) ) {
+			return true;
+		}
+
+		/**
+		 * If the owner of the content is the current user
+		 */
+		if ( ( true === $this->owner_matches_current_user() ) && 'revision' !== $post_object->post_type ) {
+			return false;
+		}
+
+		if ( 'private' === $this->data->post_status && ( ! isset( $post_type_object->cap->read_private_posts ) || ! current_user_can( $post_type_object->cap->read_private_posts ) ) ) {
+			return true;
+		}
+
+		if ( 'auto-draft' === $this->data->post_status ) {
+			$parent = get_post( (int) $this->data->post_parent );
+
+			if ( empty( $parent ) ) {
+				return true;
+			}
+
+			$parent_post_type_obj = $post_type_object;
+
+			if ( empty( $parent_post_type_obj ) ) {
+				return true;
+			}
+
+			if ( 'private' === $parent->post_status ) {
+				$cap = isset( $parent_post_type_obj->cap->read_private_posts ) ? $parent_post_type_obj->cap->read_private_posts : 'read_private_posts';
+			} else {
+				$cap = isset( $parent_post_type_obj->cap->edit_post ) ? $parent_post_type_obj->cap->edit_post : 'edit_post';
+			}
+
+			if ( ! current_user_can( $cap, $parent->ID ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns the source WP_Post instance.
 	 *
 	 * @return \WP_Post
