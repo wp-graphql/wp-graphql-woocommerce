@@ -122,7 +122,11 @@ abstract class WC_Post extends Post {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Method for determining if the data should be considered private or not
+	 *
+	 * @param WP_Post $post_object The object of the post we need to verify permissions for.
+	 *
+	 * @return bool
 	 */
 	protected function is_post_private( $post_object = null ) {
 		$post_type_object = $this->post_type_object;
@@ -176,7 +180,7 @@ abstract class WC_Post extends Post {
 			if ( ! current_user_can( $cap, $parent->ID ) ) {
 				return true;
 			}
-		}
+		}//end if
 
 		return false;
 	}
