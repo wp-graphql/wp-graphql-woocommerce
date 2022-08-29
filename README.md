@@ -6,13 +6,25 @@
 
 [![Automated-Testing](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Automated-Testing/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Automated-Testing%22) [![Coding-Standards](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Coding-Standards/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Coding-Standards%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
 
-## Quick Install
+## Install
+### Installing manually
 
-1. Install & activate [WooCommerce](https://woocommerce.com/)
-2. Install & activate [WPGraphQL](https://www.wpgraphql.com/)
-3. Download the latest release from [here](https://github.com/wp-graphql/wp-graphql-woocommerce/releases) or Clone / download the zip of this repository into your WordPress plugin directory, run `composer install` in plugin directory & activate the **WP GraphQL WooCommerce** plugin.
-4. (Optional) Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
-5. (Optional) Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) to add an extra layer of security using HTTP CORS and some of WPGraphQL advanced functionality.
+1. Install and activate [WPGraphQL](https://wpgraphql.com/) and [WooCommerce](https://woocommerce.com/)
+2. Download wp-graphql-woocommerce.zip file under the Assets section for the most stable [release](https://github.com/wp-graphql/wp-graphql-woocommerce/releases) from the repository into your WordPress plugin directory & activate the plugin.
+3. Set your GraphQL client endpoint to the GraphQL endpoint of your site. Typically, this is your-store.domain/graphql.
+
+### Installing w/ Composer
+
+_This is the recommend way for users using unique installations like WP Bedrock or SpinupWP._
+
+1. Install [WordPress](https://composer.rarst.net/) and [WooCommerce](https://wpackagist.org/search?q=woocommerce&type=plugin&search=).
+2. Install WPGraphQL and WooGraphQL by running `composer require wp-graphql/wp-graphql wp-graphql/wp-graphql-woocommerce`
+3. Set your GraphQL client endpoint to the GraphQL endpoint of your site. Typically, this is `your-store.domain/graphql`. _NOTE: for typically Bedrock or SpinupWP setups it'll be `your-store.domain/wp/graphql` by default.
+
+### Optional extras
+
+- Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
+- Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) to add an extra layer of security using HTTP CORS and some of WPGraphQL advanced functionality.
 
 ## What can you do with this extension?
 
