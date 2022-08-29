@@ -1,5 +1,26 @@
 # Changelog
 
+## [v0.11.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.2) (2022-08-29)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.11.1...v0.11.2)
+
+**New Features:**
+
+- feat: Add filter hook to stock status enum [\#634](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/634) ([matthijs166](https://github.com/matthijs166))
+
+**Fixed:**
+
+- fix: is\_post\_private overrode in WC\_Post model abstract class [\#651](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/651) ([kidunot89](https://github.com/kidunot89))
+- fix: temporary customers node fix applied and tested. [\#650](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/650) ([kidunot89](https://github.com/kidunot89))
+- fix: Cart emptied after checkout [\#649](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/649) ([kidunot89](https://github.com/kidunot89))
+- fix: Most product attribute fields made nullable [\#648](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/648) ([kidunot89](https://github.com/kidunot89))
+- chore: WPGraphQL v1.9.x connection resolver support added and autoloader removed. [\#647](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/647) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- chore: Old docs removed. New logo added. [\#652](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/652) ([kidunot89](https://github.com/kidunot89))
+- \(Query\) Format currency in cart type [\#619](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/619) ([victormattosvm](https://github.com/victormattosvm))
+
 ## [v0.11.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.1) (2022-06-30)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.11.0...v0.11.1)
