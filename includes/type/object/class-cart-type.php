@@ -46,76 +46,76 @@ class Cart_Type {
 					'subtotal'                 => [
 						'type'        => 'String',
 						'description' => __( 'Cart subtotal', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
 
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'subtotalTax'              => [
 						'type'        => 'String',
 						'description' => __( 'Cart subtotal tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
 
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'discountTotal'            => [
 						'type'        => 'String',
 						'description' => __( 'Cart discount total', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_discount_total() ) ? $source->get_discount_total() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'discountTax'              => [
 						'type'        => 'String',
 						'description' => __( 'Cart discount tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_discount_tax() ) ? $source->get_discount_tax() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
@@ -159,50 +159,50 @@ class Cart_Type {
 					'shippingTotal'            => [
 						'type'        => 'String',
 						'description' => __( 'Cart shipping total', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_shipping_total() ) ? $source->get_shipping_total() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'shippingTax'              => [
 						'type'        => 'String',
 						'description' => __( 'Cart shipping tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_shipping_tax() ) ? $source->get_shipping_tax() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'contentsTotal'            => [
 						'type'        => 'String',
 						'description' => __( 'Cart contents total', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							if ( $source->display_prices_including_tax() ) {
 								$cart_subtotal = $source->get_subtotal() + $source->get_subtotal_tax();
@@ -213,82 +213,82 @@ class Cart_Type {
 							$price = ! is_null( $cart_subtotal )
 								? $cart_subtotal
 								: 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'contentsTax'              => [
 						'type'        => 'String',
 						'description' => __( 'Cart contents tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_cart_contents_tax() )
 								? $source->get_cart_contents_tax()
 								: 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'feeTotal'                 => [
 						'type'        => 'String',
 						'description' => __( 'Cart fee total', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_fee_total() ) ? $source->get_fee_total() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'feeTax'                   => [
 						'type'        => 'String',
 						'description' => __( 'Cart fee tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_fee_tax() ) ? $source->get_fee_tax() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'total'                    => [
 						'type'        => 'String',
 						'description' => __( 'Cart total after calculation', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$source->calculate_totals();
 							$price = isset( $source->get_totals()['total'] )
@@ -298,26 +298,26 @@ class Cart_Type {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'totalTax'                 => [
 						'type'        => 'String',
 						'description' => __( 'Cart total tax amount', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = ! is_null( $source->get_total_tax() ) ? $source->get_total_tax() : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
@@ -447,78 +447,78 @@ class Cart_Type {
 					'subtotal'    => [
 						'type'        => 'String',
 						'description' => __( 'Item\'s subtotal', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = isset( $source['line_subtotal'] ) ? floatval( $source['line_subtotal'] ) : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'subtotalTax' => [
 						'type'        => 'String',
 						'description' => __( 'Item\'s subtotal tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = isset( $source['line_subtotal_tax'] ) ? floatval( $source['line_subtotal_tax'] ) : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'total'       => [
 						'type'        => 'String',
 						'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : 0;
-							$tax = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
-							$price = $price_without_tax + $tax;
-							
+							$tax               = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
+							$price             = $price_without_tax + $tax;
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
 					'tax'         => [
 						'type'        => 'String',
 						'description' => __( 'Item\'s tax', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$price = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $price;
 							}
-							
+
 							return \wc_graphql_price( $price );
 						},
 					],
@@ -748,23 +748,23 @@ class Cart_Type {
 					'amount'     => [
 						'type'        => 'String',
 						'description' => __( 'Tax amount', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$amount = ! empty( $source->amount ) ? $source->amount : null;
 
-							if( ! $amount ){
+							if ( ! $amount ) {
 								return null;
 							}
-														
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $amount;
 							}
-							
+
 							return \wc_graphql_price( $amount );
 						},
 					],
@@ -796,7 +796,7 @@ class Cart_Type {
 								'type'        => 'Boolean',
 								'description' => __( 'Exclude Taxes (Default "true")', 'wp-graphql-woocommerce' ),
 							],
-							'format' => [
+							'format'     => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
@@ -805,30 +805,30 @@ class Cart_Type {
 						'resolve'     => function( $source, array $args ) {
 							$ex_tax = ! empty( $args['excludeTax'] ) ? $args['excludeTax'] : true;
 							$amount = Factory::resolve_cart()->get_coupon_discount_amount( $source, $ex_tax );
-														
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $amount;
 							}
-							
+
 							return \wc_graphql_price( $amount );
 						},
 					],
 					'discountTax'    => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Taxes on discount applied with this coupon', 'wp-graphql-woocommerce' ),
-						'args'        => array(
-							'format' => array(
+						'args'        => [
+							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-							),
-						),
+							],
+						],
 						'resolve'     => function( $source, array $args ) {
 							$tax = Factory::resolve_cart()->get_coupon_discount_tax_amount( $source );
-							
+
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $tax;
 							}
-							
+
 							return \wc_graphql_price( $tax );
 						},
 					],

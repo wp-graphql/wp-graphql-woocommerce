@@ -24,6 +24,18 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			$this->expectedField( 'cart.isEmpty', $cart->is_empty() ),
 			$this->expectedField( 'cart.displayPricesIncludeTax', $cart->display_prices_including_tax() ),
 			$this->expectedField( 'cart.needsShippingAddress', $cart->needs_shipping_address() ),
+			$this->expectedField( 'cart.rawSubtotal', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawSubtotalTax', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawDiscountTotal', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawDiscountTax', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawShippingTotal', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawShippingTax', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawContentsTotal', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawContentsTax', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawFeeTotal', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawFeeTax', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawtotal', self::NOT_NULL ),
+			$this->expectedField( 'cart.rawTotalTax', self::NOT_NULL ),
 		];
 	}
 
@@ -95,6 +107,18 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 						amount
 						label
 					}
+					rawSubtotal: subtotal(format: RAW)
+					rawSubtotalTax: subtotalTax(format: RAW)
+					rawDiscountTotal: discountTotal(format: RAW) 
+					rawDiscountTax: discountTax(format: RAW)
+					rawShippingTotal: shippingTotal(format:RAW)
+					rawShippingTax: shippingTax(format: RAW)
+					rawContentsTotal: contentsTotal(format: RAW)
+					rawContentsTax: contentsTax(format: RAW)
+					rawFeeTotal: feeTotal(format: RAW)
+					rawFeeTax: feeTax(format: RAW)
+					rawtotal: total(format: RAW)
+					rawTotalTax: totalTax(format: RAW)
 				}
 			}
 		';
