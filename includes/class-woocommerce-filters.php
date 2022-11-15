@@ -44,7 +44,7 @@ class WooCommerce_Filters {
 	 * @return string
 	 */
 	public static function woocommerce_session_handler( $session_class ) {
-		if ( \WPGraphQL\Router::is_graphql_request() ) {
+		if ( \WPGraphQL\Router::is_graphql_http_request() ) {
 			$session_class = '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
 		}
 
