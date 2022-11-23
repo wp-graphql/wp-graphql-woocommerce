@@ -148,14 +148,14 @@ class Product_Variation extends WC_Post {
 				'type'              => function() {
 					return ! empty( $this->wc_data->get_type() ) ? $this->wc_data->get_type() : null;
 				},
-				'priceRaw'          => function() {
+				'priceRaw'			=> function() {
 					return ! empty( $this->wc_data->get_price() ) ? $this->wc_data->get_price() : null;
 				},
-				'regularPriceRaw' 	=> function() {
+				'regularPriceRaw'	=> function() {
 					return ! empty( $this->wc_data->get_regular_price() ) ? $this->wc_data->get_regular_price() : null;
 				},
 
-				'salePriceRaw'      => function() {
+				'salePriceRaw'		=> function() {
 					return ! empty( $this->wc_data->get_sale_price() ) ? $this->wc_data->get_sale_price() : null;
 				},
 
