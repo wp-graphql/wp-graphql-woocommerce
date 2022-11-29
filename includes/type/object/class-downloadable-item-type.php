@@ -27,6 +27,7 @@ class Downloadable_Item_Type {
 			'DownloadableItem',
 			[
 				'description' => __( 'A downloadable item', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'downloadId'         => [
 						'type'        => [ 'non_null' => 'String' ],

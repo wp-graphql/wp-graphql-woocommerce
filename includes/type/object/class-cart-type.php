@@ -429,6 +429,7 @@ class Cart_Type {
 			'CartItem',
 			[
 				'description' => __( 'A item in the cart', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'key'         => [
 						'type'        => [ 'non_null' => 'ID' ],
