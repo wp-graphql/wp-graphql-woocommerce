@@ -27,3 +27,4 @@ php-coveralls.phar
 codeception.yml
 .editorconfig
 plugin-build
+local
