@@ -47,12 +47,12 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'variables' => $variables,
 			]
 		);
-		$expected  = [ 'data' => [ 'shippingMethod' => $this->helper->print_query( $this->method ) ] ];
+		$expected  = [ 'shippingMethod' => $this->helper->print_query( $this->method ) ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Two
@@ -69,12 +69,12 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'variables' => $variables,
 			]
 		);
-		$expected  = [ 'data' => [ 'shippingMethod' => $this->helper->print_query( $this->method ) ] ];
+		$expected  = [ 'shippingMethod' => $this->helper->print_query( $this->method ) ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testShippingMethodsQuery() {
@@ -104,11 +104,11 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests query
 		 */
 		$actual   = do_graphql_request( $query, 'shippingMethodQuery' );
-		$expected = [ 'data' => [ 'shippingMethods' => [ 'nodes' => $methods ] ] ];
+		$expected = [ 'shippingMethods' => [ 'nodes' => $methods ] ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 }

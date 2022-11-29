@@ -334,131 +334,129 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$order = \WC_Order_Factory::get_order( $actual['data']['createOrder']['order']['databaseId'] );
 
 		$expected = [
-			'data' => [
-				'createOrder' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => [
-													'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
-												],
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => $item->get_amount(),
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-				],
+			'createOrder' => [
+				'clientMutationId' => 'someId',
+				'order'            => array_merge(
+					$this->order->print_query( $order->get_id() ),
+					[
+						'couponLines'   => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'databaseId' => $item->get_id(),
+											'orderId'  => $item->get_order_id(),
+											'code'     => $item->get_code(),
+											'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
+											'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
+											'coupon'   => [
+												'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
+											],
+										];
+									},
+									$order->get_items( 'coupon' )
+								)
+							),
+						],
+						'feeLines'      => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'databaseId' => $item->get_id(),
+											'orderId'  => $item->get_order_id(),
+											'amount'   => $item->get_amount(),
+											'name'     => $item->get_name(),
+											'taxStatus' => strtoupper( $item->get_tax_status() ),
+											'total'    => $item->get_total(),
+											'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+											'taxClass' => ! empty( $item->get_tax_class() )
+												? WPEnumType::get_safe_name( $item->get_tax_class() )
+												: 'STANDARD',
+										];
+									},
+									$order->get_items( 'fee' )
+								)
+							),
+						],
+						'shippingLines' => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'databaseId' => $item->get_id(),
+											'orderId'  => $item->get_order_id(),
+											'methodTitle' => $item->get_method_title(),
+											'total'    => $item->get_total(),
+											'totalTax' => ! empty( $item->get_total_tax() )
+												? $item->get_total_tax()
+												: null,
+											'taxClass' => ! empty( $item->get_tax_class() )
+												? $item->get_tax_class() === 'inherit'
+													? WPEnumType::get_safe_name( 'inherit cart' )
+													: WPEnumType::get_safe_name( $item->get_tax_class() )
+												: 'STANDARD',
+										];
+									},
+									$order->get_items( 'shipping' )
+								)
+							),
+						],
+						'taxLines'      => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'rateCode' => $item->get_rate_code(),
+											'label'    => $item->get_label(),
+											'taxTotal' => $item->get_tax_total(),
+											'shippingTaxTotal' => $item->get_shipping_tax_total(),
+											'isCompound' => $item->is_compound(),
+											'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
+										];
+									},
+									$order->get_items( 'tax' )
+								)
+							),
+						],
+						'lineItems'     => [
+							'nodes' => array_values(
+								array_map(
+									function( $item ) {
+										return [
+											'productId' => $item->get_product_id(),
+											'variationId' => ! empty( $item->get_variation_id() )
+												? $item->get_variation_id()
+												: null,
+											'quantity' => $item->get_quantity(),
+											'taxClass' => ! empty( $item->get_tax_class() )
+												? strtoupper( $item->get_tax_class() )
+												: 'STANDARD',
+											'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
+											'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
+											'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
+											'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+											'taxStatus' => strtoupper( $item->get_tax_status() ),
+											'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
+											'variation' => ! empty( $item->get_variation_id() )
+												? [
+													'node' => [
+														'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
+													],
+												]
+												: null,
+										];
+									},
+									$order->get_items()
+								)
+							),
+						],
+					]
+				),
 			],
 		];
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testUpdateOrderMutation() {
@@ -658,132 +656,130 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$order = \WC_Order_Factory::get_order( $order->get_id() );
 
 		$expected = [
-			'data' => [
-				'updateOrder' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => [
-													'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
-												],
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => ! empty( $item->get_amount() ) ? $item->get_amount() : null,
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										function( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-				],
+			'updateOrder' => [
+				'clientMutationId' => 'someId',
+				'order'            => array_merge(
+					$this->order->print_query( $order->get_id() ),
+					[
+						'couponLines'   => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'databaseId' => $item->get_id(),
+											'orderId'  => $item->get_order_id(),
+											'code'     => $item->get_code(),
+											'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
+											'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
+											'coupon'   => [
+												'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
+											],
+										];
+									},
+									$order->get_items( 'coupon' )
+								)
+							),
+						],
+						'feeLines'      => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'databaseId' => $item->get_id(),
+											'orderId'  => $item->get_order_id(),
+											'amount'   => ! empty( $item->get_amount() ) ? $item->get_amount() : null,
+											'name'     => $item->get_name(),
+											'taxStatus' => strtoupper( $item->get_tax_status() ),
+											'total'    => $item->get_total(),
+											'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+											'taxClass' => ! empty( $item->get_tax_class() )
+												? WPEnumType::get_safe_name( $item->get_tax_class() )
+												: 'STANDARD',
+										];
+									},
+									$order->get_items( 'fee' )
+								)
+							),
+						],
+						'shippingLines' => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'databaseId' => $item->get_id(),
+											'orderId'  => $item->get_order_id(),
+											'methodTitle' => $item->get_method_title(),
+											'total'    => $item->get_total(),
+											'totalTax' => ! empty( $item->get_total_tax() )
+												? $item->get_total_tax()
+												: null,
+											'taxClass' => ! empty( $item->get_tax_class() )
+												? $item->get_tax_class() === 'inherit'
+													? WPEnumType::get_safe_name( 'inherit cart' )
+													: WPEnumType::get_safe_name( $item->get_tax_class() )
+												: 'STANDARD',
+										];
+									},
+									$order->get_items( 'shipping' )
+								)
+							),
+						],
+						'taxLines'      => [
+							'nodes' => array_reverse(
+								array_map(
+									function( $item ) {
+										return [
+											'rateCode' => $item->get_rate_code(),
+											'label'    => $item->get_label(),
+											'taxTotal' => $item->get_tax_total(),
+											'shippingTaxTotal' => $item->get_shipping_tax_total(),
+											'isCompound' => $item->is_compound(),
+											'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
+										];
+									},
+									$order->get_items( 'tax' )
+								)
+							),
+						],
+						'lineItems'     => [
+							'nodes' => array_values(
+								array_map(
+									function( $item ) {
+										return [
+											'productId' => $item->get_product_id(),
+											'variationId' => ! empty( $item->get_variation_id() )
+												? $item->get_variation_id()
+												: null,
+											'quantity' => $item->get_quantity(),
+											'taxClass' => ! empty( $item->get_tax_class() )
+												? strtoupper( $item->get_tax_class() )
+												: 'STANDARD',
+											'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
+											'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
+											'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
+											'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
+											'taxStatus' => strtoupper( $item->get_tax_status() ),
+											'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
+											'variation' => ! empty( $item->get_variation_id() )
+												? [
+													'node' => [
+														'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
+													],
+												]
+												: null,
+										];
+									},
+									$order->get_items()
+								)
+							),
+						],
+					]
+				),
 			],
 		];
 
-		$this->assertEquals( $expected, $actual );
-		$this->assertNotEquals( $initial_response, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
+		$this->assertNotEquals( $initial_response, $actual['data'] );
 	}
 
 	public function testDeleteOrderMutation() {

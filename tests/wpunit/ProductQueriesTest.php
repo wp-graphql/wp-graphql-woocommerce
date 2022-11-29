@@ -713,6 +713,11 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		// No need to reassign the $expected for this assertion.
 
+		codecept_debug( [
+			'response' => $response,
+			'expected' => $expected,
+		]);
+
 		$this->assertQuerySuccessful( $response, $expected );
 
 		/**

@@ -84,7 +84,6 @@ class Product_Attribute_Connection_Resolver {
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$attributes = $this->get_items( $source->attributes, $source, $args, $context, $info );
-
 		$connection = Relay::connectionFromArray( $attributes, $args );
 		$nodes      = [];
 		if ( ! empty( $connection['edges'] ) && is_array( $connection['edges'] ) ) {

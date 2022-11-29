@@ -52,18 +52,16 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'productVariation' => [
-					'id'         => $this->variation->to_relay_id( $this->variation_id ),
-					'attributes' => $this->variation->print_attributes( $this->variation_id ),
-				],
+			'productVariation' => [
+				'id'         => $this->variation->to_relay_id( $this->variation_id ),
+				'attributes' => $this->variation->print_attributes( $this->variation_id ),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testProductToVariationAttributeQuery() {
@@ -98,18 +96,16 @@ class VariationAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'product' => [
-					'id'                => $this->product->to_relay_id( $this->product_id ),
-					'defaultAttributes' => $this->variation->print_attributes( $this->product_id, 'PRODUCT' ),
-				],
+			'product' => [
+				'id'                => $this->product->to_relay_id( $this->product_id ),
+				'defaultAttributes' => $this->variation->print_attributes( $this->product_id, 'PRODUCT' ),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 }

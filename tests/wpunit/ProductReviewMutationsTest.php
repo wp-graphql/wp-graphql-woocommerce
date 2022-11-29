@@ -55,17 +55,15 @@ class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		$actual   = $this->run_mutation( 'writeReview', $input );
 		$expected = [
-			'data' => [
-				'writeReview' => [
-					'clientMutationId' => 'some_id',
-					'rating'           => 1.0,
-					'review'           => [
-						'content' => 'It came covered in poop!!!',
-					],
+			'writeReview' => [
+				'clientMutationId' => 'some_id',
+				'rating'           => 1.0,
+				'review'           => [
+					'content' => 'It came covered in poop!!!',
 				],
 			],
 		];
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testUpdateReviewMutation() {
@@ -91,17 +89,15 @@ class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		$actual   = $this->run_mutation( 'updateReview', $input );
 		$expected = [
-			'data' => [
-				'updateReview' => [
-					'clientMutationId' => 'some_id',
-					'rating'           => 5.0,
-					'review'           => [
-						'content' => 'Turns out it was Nutella. My bad =P',
-					],
+			'updateReview' => [
+				'clientMutationId' => 'some_id',
+				'rating'           => 5.0,
+				'review'           => [
+					'content' => 'Turns out it was Nutella. My bad =P',
 				],
 			],
 		];
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testDeleteReviewMutation() {
@@ -125,17 +121,15 @@ class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		$actual   = $this->run_mutation( 'deleteReview', $input );
 		$expected = [
-			'data' => [
-				'deleteReview' => [
-					'clientMutationId' => 'some_id',
-					'rating'           => 1.0,
-					'review'           => [
-						'content' => 'It came covered in poop!!!',
-					],
+			'deleteReview' => [
+				'clientMutationId' => 'some_id',
+				'rating'           => 1.0,
+				'review'           => [
+					'content' => 'It came covered in poop!!!',
 				],
 			],
 		];
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testRestoreReviewMutation() {
@@ -162,16 +156,14 @@ class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
 
 		$actual   = $this->run_mutation( 'restoreReview', $input );
 		$expected = [
-			'data' => [
-				'restoreReview' => [
-					'clientMutationId' => 'some_id',
-					'rating'           => 1.0,
-					'review'           => [
-						'content' => 'It came covered in poop!!!',
-					],
+			'restoreReview' => [
+				'clientMutationId' => 'some_id',
+				'rating'           => 1.0,
+				'review'           => [
+					'content' => 'It came covered in poop!!!',
 				],
 			],
 		];
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 }

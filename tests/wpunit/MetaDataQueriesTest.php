@@ -121,21 +121,19 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$actual   = graphql( [ 'query' => $query ] );
 		$expected = [
-			'data' => [
-				'cart' => [
-					'contents' => [
-						'nodes' => [
-							[
-								'key'       => $this->cart_item_key,
-								'extraData' => [
-									[
-										'key'   => 'meta_1',
-										'value' => 'test_meta_1',
-									],
-									[
-										'key'   => 'meta_2',
-										'value' => 'test_meta_2',
-									],
+			'cart' => [
+				'contents' => [
+					'nodes' => [
+						[
+							'key'       => $this->cart_item_key,
+							'extraData' => [
+								[
+									'key'   => 'meta_1',
+									'value' => 'test_meta_1',
+								],
+								[
+									'key'   => 'meta_2',
+									'value' => 'test_meta_2',
 								],
 							],
 						],
@@ -147,7 +145,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Two
@@ -162,17 +160,15 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'cart' => [
-					'contents' => [
-						'nodes' => [
-							[
-								'key'       => $this->cart_item_key,
-								'extraData' => [
-									[
-										'key'   => 'meta_2',
-										'value' => 'test_meta_2',
-									],
+			'cart' => [
+				'contents' => [
+					'nodes' => [
+						[
+							'key'       => $this->cart_item_key,
+							'extraData' => [
+								[
+									'key'   => 'meta_2',
+									'value' => 'test_meta_2',
 								],
 							],
 						],
@@ -184,7 +180,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Three
@@ -199,17 +195,15 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'cart' => [
-					'contents' => [
-						'nodes' => [
-							[
-								'key'       => $this->cart_item_key,
-								'extraData' => [
-									[
-										'key'   => 'meta_2',
-										'value' => 'test_meta_2',
-									],
+			'cart' => [
+				'contents' => [
+					'nodes' => [
+						[
+							'key'       => $this->cart_item_key,
+							'extraData' => [
+								[
+									'key'   => 'meta_2',
+									'value' => 'test_meta_2',
 								],
 							],
 						],
@@ -221,7 +215,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testCouponMetaDataQueries() {
@@ -252,18 +246,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'coupon' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'coupon' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -272,7 +264,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Two
@@ -290,14 +282,12 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'coupon' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'coupon' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -306,7 +296,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Three
@@ -324,14 +314,12 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'coupon' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'coupon' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -340,7 +328,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Four
@@ -359,18 +347,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'coupon' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_1',
-							'value' => '75',
-						],
+			'coupon' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_1',
+						'value' => '75',
 					],
 				],
 			],
@@ -379,7 +365,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Five
@@ -398,18 +384,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'coupon' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_1',
-							'value' => '75',
-						],
+			'coupon' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_1',
+						'value' => '75',
 					],
 				],
 			],
@@ -418,7 +402,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Six
@@ -436,22 +420,20 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'coupon' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
-						[
-							'key'   => 'meta_1',
-							'value' => '75',
-						],
+			'coupon' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
+					],
+					[
+						'key'   => 'meta_1',
+						'value' => '75',
 					],
 				],
 			],
@@ -460,7 +442,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testCustomerMetaDataQueries() {
@@ -482,18 +464,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$this->set_user( $this->customer_id );
 		$actual   = graphql( [ 'query' => $query ] );
 		$expected = [
-			'data' => [
-				'customer' => [
-					'id'       => Relay::toGlobalId( 'customer', $this->customer_id ),
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'customer' => [
+				'id'       => Relay::toGlobalId( 'customer', $this->customer_id ),
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -502,7 +482,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testOrderMetaDataQueries() {
@@ -541,31 +521,29 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'order' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'order' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
 					],
-					'feeLines' => [
-						'nodes' => [
-							[
-								'metaData' => [
-									[
-										'key'   => 'meta_1',
-										'value' => 'test_meta_1',
-									],
-									[
-										'key'   => 'meta_2',
-										'value' => 'test_meta_2',
-									],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
+					],
+				],
+				'feeLines' => [
+					'nodes' => [
+						[
+							'metaData' => [
+								[
+									'key'   => 'meta_1',
+									'value' => 'test_meta_1',
+								],
+								[
+									'key'   => 'meta_2',
+									'value' => 'test_meta_2',
 								],
 							],
 						],
@@ -577,7 +555,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testProductMetaDataQueries() {
@@ -607,18 +585,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'product' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'product' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -627,7 +603,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testProductVariationMetaDataQueries() {
@@ -655,18 +631,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'productVariation' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'productVariation' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -675,7 +649,7 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testRefundMetaDataQueries() {
@@ -704,18 +678,16 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'refund' => [
-					'id'       => $id,
-					'metaData' => [
-						[
-							'key'   => 'meta_1',
-							'value' => 'test_meta_1',
-						],
-						[
-							'key'   => 'meta_2',
-							'value' => 'test_meta_2',
-						],
+			'refund' => [
+				'id'       => $id,
+				'metaData' => [
+					[
+						'key'   => 'meta_1',
+						'value' => 'test_meta_1',
+					],
+					[
+						'key'   => 'meta_2',
+						'value' => 'test_meta_2',
 					],
 				],
 			],
@@ -724,6 +696,6 @@ class MetaDataQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 }

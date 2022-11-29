@@ -48,12 +48,12 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$variables = [ 'id' => $id ];
 		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected  = [ 'data' => [ 'taxRate' => $this->helper->print_query( $this->rate ) ] ];
+		$expected  = [ 'taxRate' => $this->helper->print_query( $this->rate ) ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Two
@@ -65,12 +65,12 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'idType' => 'DATABASE_ID',
 		];
 		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected  = [ 'data' => [ 'taxRate' => $this->helper->print_query( $this->rate ) ] ];
+		$expected  = [ 'taxRate' => $this->helper->print_query( $this->rate ) ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testTaxesQuery() {
@@ -123,22 +123,20 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 */
 		$actual   = graphql( [ 'query' => $query ] );
 		$expected = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						$rates
-					),
-				],
+			'taxRates' => [
+				'nodes' => array_map(
+					function( $id ) {
+						return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
+					},
+					$rates
+				),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Two
@@ -153,30 +151,28 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						array_values(
-							array_filter(
-								$rates,
-								function( $id ) {
-									$rate = $this->helper->get_rate_object( $id );
-									return 'reduced-rate' === $rate->tax_rate_class;
-								}
-							)
+			'taxRates' => [
+				'nodes' => array_map(
+					function( $id ) {
+						return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
+					},
+					array_values(
+						array_filter(
+							$rates,
+							function( $id ) {
+								$rate = $this->helper->get_rate_object( $id );
+								return 'reduced-rate' === $rate->tax_rate_class;
+							}
 						)
-					),
-				],
+					)
+				),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Three
@@ -191,22 +187,20 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						[ $rates[2] ]
-					),
-				],
+			'taxRates' => [
+				'nodes' => array_map(
+					function( $id ) {
+						return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
+					},
+					[ $rates[2] ]
+				),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		/**
 		 * Assertion Four
@@ -221,21 +215,19 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						[ $rates[1], $rates[2] ]
-					),
-				],
+			'taxRates' => [
+				'nodes' => array_map(
+					function( $id ) {
+						return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
+					},
+					[ $rates[1], $rates[2] ]
+				),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 }

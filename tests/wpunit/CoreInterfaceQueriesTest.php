@@ -55,17 +55,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'product' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'commentCount'  => 1,
-					'commentStatus' => 'open',
-				],
+			'product' => [
+				'id'            => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+				'commentCount'  => 1,
+				'commentStatus' => 'open',
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testOrderAsNodeWithComments() {
@@ -99,17 +97,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'order' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
-					'commentCount'  => 2,
-					'commentStatus' => 'open',
-				],
+			'order' => [
+				'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
+				'commentCount'  => 2,
+				'commentStatus' => 'open',
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 
 		/**
 		 * Assertion Two
@@ -121,17 +117,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'order' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
-					'commentCount'  => 1,
-					'commentStatus' => 'closed',
-				],
+			'order' => [
+				'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
+				'commentCount'  => 1,
+				'commentStatus' => 'closed',
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testProductAsNodeWithContentEditor() {
@@ -163,16 +157,14 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'product' => [
-					'id'      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'content' => $product->get_description(),
-				],
+			'product' => [
+				'id'      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+				'content' => $product->get_description(),
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testProductAsNodeWithFeaturedImage() {
@@ -204,17 +196,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'product' => [
-					'id'                      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'featuredImageId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
-					'featuredImageDatabaseId' => $attachment_id,
-				],
+			'product' => [
+				'id'                      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+				'featuredImageId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
+				'featuredImageDatabaseId' => $attachment_id,
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testProductAsContentNode() {
@@ -257,31 +247,29 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'product' => [
-					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'databaseId'                => $wp_product->ID,
-					'date'                      => (string) $wc_product->get_date_created(),
-					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
-					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?? null,
-					'status'                    => $wp_product->post_status,
-					'slug'                      => $wp_product->post_name,
-					'modified'                  => (string) $wc_product->get_date_modified(),
-					'modifiedGmt'               => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_modified_gmt ),
-					'guid'                      => $wp_product->guid,
-					'desiredSlug'               => null,
-					'link'                      => get_permalink( $wp_product->ID ),
-					'uri'                       => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
-					'isRestricted'              => false,
-					'isPreview'                 => null,
-					'previewRevisionDatabaseId' => null,
-					'previewRevisionId'         => null,
-				],
+			'product' => [
+				'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+				'databaseId'                => $wp_product->ID,
+				'date'                      => (string) $wc_product->get_date_created(),
+				'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
+				'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?? null,
+				'status'                    => $wp_product->post_status,
+				'slug'                      => $wp_product->post_name,
+				'modified'                  => (string) $wc_product->get_date_modified(),
+				'modifiedGmt'               => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_modified_gmt ),
+				'guid'                      => $wp_product->guid,
+				'desiredSlug'               => null,
+				'link'                      => get_permalink( $wp_product->ID ),
+				'uri'                       => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
+				'isRestricted'              => false,
+				'isPreview'                 => null,
+				'previewRevisionDatabaseId' => null,
+				'previewRevisionId'         => null,
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testProductAsUniformResourceIdentifiable() {
@@ -308,16 +296,14 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'product' => [
-					'id'  => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
-					'uri' => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
-				],
+			'product' => [
+				'id'  => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+				'uri' => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testNodeInterfacesOnProductVariation() {
@@ -364,33 +350,31 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 		// Define expected data object.
 		$expected = [
-			'data' => [
-				'productVariation' => [
-					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product_variation', $variation_id ),
-					'databaseId'                => $wp_product->ID,
-					'date'                      => (string) $wc_product->get_date_created(),
-					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
-					'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?? null,
-					'status'                    => $wp_product->post_status,
-					'slug'                      => $wp_product->post_name,
-					'modified'                  => (string) $wc_product->get_date_modified(),
-					'modifiedGmt'               => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_modified_gmt ),
-					'guid'                      => $wp_product->guid,
-					'desiredSlug'               => null,
-					'link'                      => get_permalink( $wp_product->ID ),
-					'uri'                       => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
-					'isRestricted'              => false,
-					'isPreview'                 => null,
-					'previewRevisionDatabaseId' => null,
-					'previewRevisionId'         => null,
-					'featuredImageId'           => \GraphQLRelay\Relay::toGlobalId( 'post', $wc_product->get_image_id() ),
-					'featuredImageDatabaseId'   => $wc_product->get_image_id(),
-				],
+			'productVariation' => [
+				'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product_variation', $variation_id ),
+				'databaseId'                => $wp_product->ID,
+				'date'                      => (string) $wc_product->get_date_created(),
+				'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
+				'enclosure'                 => get_post_meta( $wp_product->ID, 'enclosure', true ) ?? null,
+				'status'                    => $wp_product->post_status,
+				'slug'                      => $wp_product->post_name,
+				'modified'                  => (string) $wc_product->get_date_modified(),
+				'modifiedGmt'               => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_modified_gmt ),
+				'guid'                      => $wp_product->guid,
+				'desiredSlug'               => null,
+				'link'                      => get_permalink( $wp_product->ID ),
+				'uri'                       => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
+				'isRestricted'              => false,
+				'isPreview'                 => null,
+				'previewRevisionDatabaseId' => null,
+				'previewRevisionId'         => null,
+				'featuredImageId'           => \GraphQLRelay\Relay::toGlobalId( 'post', $wc_product->get_image_id() ),
+				'featuredImageDatabaseId'   => $wc_product->get_image_id(),
 			],
 		];
 
 		// Assert query response valid.
-		$this->assertEquals( $expected, $response );
+		$this->assertEquals( $expected, $response['data'] );
 	}
 
 	public function testQueryProductWithNodeByUri() {

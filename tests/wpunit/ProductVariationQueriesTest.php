@@ -84,12 +84,12 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'variables' => $variables,
 			]
 		);
-		$expected  = [ 'data' => [ 'productVariation' => $this->helper->print_query( $variation_id ) ] ];
+		$expected  = [ 'productVariation' => $this->helper->print_query( $variation_id ) ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 
 		$this->getModule( '\Helper\Wpunit' )->clear_loader_cache( 'wc_post' );
 
@@ -109,12 +109,12 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 				'variables' => $variables,
 			]
 		);
-		$expected = [ 'data' => [ 'productVariation' => $this->helper->print_query( $variation_id ) ] ];
+		$expected = [ 'productVariation' => $this->helper->print_query( $variation_id ) ];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testVariationsQueryAndWhereArgs() {
@@ -257,15 +257,13 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'productVariation' => [
-					'id'    => $id,
-					'image' => [
-						'id' => Relay::toGlobalId(
-							'post',
-							$this->helper->field( $this->products['variations'][1], 'image_id' )
-						),
-					],
+			'productVariation' => [
+				'id'    => $id,
+				'image' => [
+					'id' => Relay::toGlobalId(
+						'post',
+						$this->helper->field( $this->products['variations'][1], 'image_id' )
+					),
 				],
 			],
 		];
@@ -273,7 +271,7 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testProductVariationDownloads() {
@@ -305,17 +303,15 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'productVariation' => [
-					'id'        => $id,
-					'downloads' => $this->helper->print_downloads( $this->products['variations'][0] ),
-				],
+			'productVariation' => [
+				'id'        => $id,
+				'downloads' => $this->helper->print_downloads( $this->products['variations'][0] ),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 }

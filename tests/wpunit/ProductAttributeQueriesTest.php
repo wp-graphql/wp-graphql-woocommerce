@@ -54,18 +54,16 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'product' => [
-					'id'         => $this->helper->to_relay_id( $this->product_id ),
-					'attributes' => $this->helper->print_attributes( $this->product_id ),
-				],
+			'product' => [
+				'id'         => $this->helper->to_relay_id( $this->product_id ),
+				'attributes' => $this->helper->print_attributes( $this->product_id ),
 			],
 		];
 
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testProductAttributeToProductConnectionQuery() {
@@ -94,15 +92,13 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'allPaColor' => [
-					'nodes' => [
-						[
-							'products' => [
-								'nodes' => [
-									[
-										'id' => $this->helper->to_relay_id( $this->product_id ),
-									],
+			'allPaColor' => [
+				'nodes' => [
+					[
+						'products' => [
+							'nodes' => [
+								[
+									'id' => $this->helper->to_relay_id( $this->product_id ),
 								],
 							],
 						],
@@ -114,7 +110,7 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 
 	public function testProductAttributeToVariationConnectionQuery() {
@@ -141,27 +137,25 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 		$expected  = [
-			'data' => [
-				'allPaSize' => [
-					'nodes' => [
-						[
-							'variations' => [
-								'nodes' => $this->variation_helper->print_nodes(
-									$this->variation_ids,
-									[
-										'filter' => function( $id ) {
-											$variation       = new \WC_Product_Variation( $id );
-											$small_attribute = array_filter(
-												$variation->get_attributes(),
-												function( $attribute ) {
-													return 'small' === $attribute;
-												}
-											);
-											return ! empty( $small_attribute );
-										},
-									]
-								),
-							],
+			'allPaSize' => [
+				'nodes' => [
+					[
+						'variations' => [
+							'nodes' => $this->variation_helper->print_nodes(
+								$this->variation_ids,
+								[
+									'filter' => function( $id ) {
+										$variation       = new \WC_Product_Variation( $id );
+										$small_attribute = array_filter(
+											$variation->get_attributes(),
+											function( $attribute ) {
+												return 'small' === $attribute;
+											}
+										);
+										return ! empty( $small_attribute );
+									},
+								]
+							),
 						],
 					],
 				],
@@ -171,6 +165,6 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// use --debug flag to view.
 		codecept_debug( $actual );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertEquals( $expected, $actual['data'] );
 	}
 }
