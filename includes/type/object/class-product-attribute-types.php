@@ -26,7 +26,7 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'ProductAttribute' ],
 				'fields'      => [
-					'id'          => [
+					'id'    => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
@@ -51,7 +51,7 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'ProductAttribute' ],
 				'fields'      => [
-					'id'          => [
+					'id'    => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
