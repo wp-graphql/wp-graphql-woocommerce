@@ -46,9 +46,6 @@ class Product_Attribute {
 			'id'          => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
-				'resolve'     => function ( $attribute ) {
-					return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : null;
-				},
 			],
 			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],
