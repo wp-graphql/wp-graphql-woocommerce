@@ -24,31 +24,12 @@ class Product {
 
 	/**
 	 * Registers the "Product" interface.
-	 *
-	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  Instance of the WPGraphQL TypeRegistry.
 	 */
-	public static function register_interface( &$type_registry ) {
-		register_graphql_interface_type(
-			'Product',
-			[
-				'description' => __( 'Product object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
-				'fields'      => self::get_fields(),
-				'resolveType' => function( $value ) use ( &$type_registry ) {
-					$possible_types = WP_GraphQL_WooCommerce::get_enabled_product_types();
-					if ( isset( $possible_types[ $value->type ] ) ) {
-						return $type_registry->get_type( $possible_types[ $value->type ] );
-					}
-					throw new UserError(
-						sprintf(
-							/* translators: %s: Product type */
-							__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-							$value->type
-						)
-					);
-				},
-			]
-		);
+	public static function register_interface() {
+
+		// Register the fields to the Product Interface
+		// the product interface is defined by the post_type registration
+		register_graphql_fields( 'Product', self::get_fields() );
 
 		register_graphql_field(
 			'RootQuery',
