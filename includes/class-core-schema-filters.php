@@ -8,6 +8,7 @@
 
 namespace WPGraphQL\WooCommerce;
 
+use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
@@ -134,10 +135,26 @@ class Core_Schema_Filters {
 	 */
 	public static function register_post_types( $args, $post_type ) {
 		if ( 'product' === $post_type ) {
-			$args['show_in_graphql']            = true;
-			$args['graphql_single_name']        = 'Product';
-			$args['graphql_plural_name']        = 'Products';
-			$args['skip_graphql_type_registry'] = true;
+			$args['show_in_graphql']      = true;
+			$args['graphql_single_name']  = 'Product';
+			$args['graphql_plural_name']  = 'Products';
+			$args['graphql_kind']         = 'interface';
+			$args['graphql_register_root_field'] = false;
+			$args['graphql_register_root_connection'] = false;
+			$args['graphql_resolve_type'] = static function( $value ) {
+				$type_registry = \WPGraphQL::get_type_registry();
+				$possible_types = WP_GraphQL_WooCommerce::get_enabled_product_types();
+				if ( isset( $possible_types[ $value->type ] ) ) {
+					return $type_registry->get_type( $possible_types[ $value->type ] );
+				}
+				throw new UserError(
+					sprintf(
+					/* translators: %s: Product type */
+						__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+						$value->type
+					)
+				);
+			};
 		}
 		if ( 'product_variation' === $post_type ) {
 			$args['show_in_graphql']            = true;
