@@ -23,6 +23,7 @@ class Attribute {
 			'Attribute',
 			[
 				'description' => __( 'Attribute object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'name'  => [
 						'type'        => 'String',

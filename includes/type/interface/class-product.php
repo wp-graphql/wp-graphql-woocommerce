@@ -32,6 +32,7 @@ class Product {
 			'Product',
 			[
 				'description' => __( 'Product object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => function( $value ) use ( &$type_registry ) {
 					$possible_types = WP_GraphQL_WooCommerce::get_enabled_product_types();

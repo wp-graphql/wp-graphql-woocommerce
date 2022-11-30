@@ -247,6 +247,7 @@ class Order_Item_Type {
 					'description' => $config[0],
 					'fields'      => self::get_fields( $config[1] ),
 					'connections' => ! empty( $config[2] ) ? $config[2] : null,
+					'interfaces'  => [ 'Node' ],
 				]
 			);
 		}
