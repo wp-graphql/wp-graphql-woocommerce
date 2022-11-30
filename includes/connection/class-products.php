@@ -329,6 +329,7 @@ class Products {
 				'queryClass'     => '\WC_Product_Query',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
 					$resolver = self::set_ordering_query_args( $resolver, $args );
@@ -645,11 +646,11 @@ class Products {
 		}
 
 		if ( empty( $where_args['type'] ) && empty( $where_args['typeIn'] ) && ! empty( $where_args['supportedTypesOnly'] )
-			&& true === $where_args['supportedTypesOnly'] ) {
-				$supported_types = array_keys( WP_GraphQL_WooCommerce::get_enabled_product_types() );
-				$terms           = ! empty( $where_args['typeNotIn'] )
-					? array_diff( $supported_types, $where_args['typeNotIn'] )
-					: $supported_types;
+		     && true === $where_args['supportedTypesOnly'] ) {
+			$supported_types = array_keys( WP_GraphQL_WooCommerce::get_enabled_product_types() );
+			$terms           = ! empty( $where_args['typeNotIn'] )
+				? array_diff( $supported_types, $where_args['typeNotIn'] )
+				: $supported_types;
 			$tax_query[]         = [
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
@@ -787,7 +788,7 @@ class Products {
 				: PHP_INT_MAX;
 
 			$meta_query[] = apply_filters(
-				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 				'woocommerce_get_min_max_price_meta_query',
 				[
 					'key'     => '_price',
@@ -850,4 +851,5 @@ class Products {
 
 		return $query_args;
 	}
+
 }

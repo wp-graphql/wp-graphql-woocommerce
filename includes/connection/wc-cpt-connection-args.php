@@ -59,6 +59,7 @@ function get_wc_cpt_connection_args(): array {
  * @return array
  */
 function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = [] ) {
+
 	$args = [];
 	if ( ! empty( $input['include'] ) ) {
 		$args['post__in'] = $input['include'];
