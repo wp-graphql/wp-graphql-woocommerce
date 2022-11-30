@@ -221,7 +221,7 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
-			$this->expectedField( 'coupons.nodes', self::IS_NULL ),
+			$this->expectedField( 'coupons.nodes', self::IS_FALSY ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
