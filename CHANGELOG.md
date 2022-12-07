@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.12.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.0) (2022-12-07)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.11.2...v0.12.0)
+
+**New Features:**
+
+- fix: product variation raw price not visible for public users [\#671](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/671) ([creative-andrew](https://github.com/creative-andrew))
+
+**Fixed:**
+
+- fix: Connections need to connect to Types that implement the Node interface [\#675](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/675) ([jasonbahl](https://github.com/jasonbahl))
+- Remove error when search coupons [\#672](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/672) ([AVert](https://github.com/AVert))
+- Change deprecated method is\_graphql\_request [\#667](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/667) ([fabiojundev](https://github.com/fabiojundev))
+
 ## [v0.11.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.2) (2022-08-29)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.11.1...v0.11.2)
@@ -18,8 +32,8 @@
 
 **Other Changes:**
 
-- chore: Old docs removed. New logo added. [\#652](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/652) ([kidunot89](https://github.com/kidunot89))
 - \(Query\) Format currency in cart type [\#619](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/619) ([victormattosvm](https://github.com/victormattosvm))
+- chore: Old docs removed. New logo added. [\#652](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/652) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.11.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.11.1) (2022-06-30)
 
