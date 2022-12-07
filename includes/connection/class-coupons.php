@@ -125,7 +125,6 @@ class Coupons {
 				: $ids;
 		}
 
-
 		/**
 		 * Filter the input fields
 		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
