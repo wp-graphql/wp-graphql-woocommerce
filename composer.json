@@ -31,8 +31,14 @@
         "firebase/php-jwt": "^6.1.0"
     },
     "require-dev": {
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-rest": "^2.0",
+        "codeception/util-universalframework": "^1.0",
+        "lucatume/wp-browser": "^3.1",
         "squizlabs/php_codesniffer": "^3.5",
-        "wp-coding-standards/wpcs": "^2.3"
+        "stripe/stripe-php": "^10.1",
+        "wp-coding-standards/wpcs": "^2.3",
+        "wp-graphql/wp-graphql-testcase": "^2.3"
     },
     "config": {
         "optimize-autoloader": true,
@@ -52,6 +58,12 @@
         }
     },
     "extra": {
+        "wordpress-install-dir": "local/public",
+        "installer-paths": {
+            "local/public/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+            "local/public/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+            "local/public/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+        }
     },
     "scripts": {
         "installTestEnv": "bash bin/install-test-env.local.sh",
