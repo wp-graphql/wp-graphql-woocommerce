@@ -141,7 +141,6 @@ class Core_Schema_Filters {
 			$args['graphql_kind']         = 'interface';
 			$args['graphql_register_root_field'] = false;
 			$args['graphql_register_root_connection'] = false;
-			$args['graphql_exclude_interfaces'] = [ 'HierarchicalContentNode' ];
 			$args['graphql_resolve_type'] = static function( $value ) {
 				$type_registry = \WPGraphQL::get_type_registry();
 				$possible_types = WP_GraphQL_WooCommerce::get_enabled_product_types();

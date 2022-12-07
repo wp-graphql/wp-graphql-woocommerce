@@ -205,13 +205,13 @@ class Product {
 				'type'        => 'Int',
 				'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
 			],
-			'parent'            => [
-				'type'        => 'Product',
-				'description' => __( 'Parent product', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source, array $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $source->parent_id, $context );
-				},
-			],
+			// 'parent'            => [
+			// 	'type'        => 'Product',
+			// 	'description' => __( 'Parent product', 'wp-graphql-woocommerce' ),
+			// 	'resolve'     => function( $source, array $args, AppContext $context ) {
+			// 		return Factory::resolve_crud_object( $source->parent_id, $context );
+			// 	},
+			// ],
 			'image'             => [
 				'type'        => 'MediaItem',
 				'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
