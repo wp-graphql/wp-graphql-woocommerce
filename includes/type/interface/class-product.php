@@ -94,26 +94,26 @@ class Product {
 	 */
 	public static function get_fields() {
 		return [
-			'id'                => [
-				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'The globally unique identifier for the product', 'wp-graphql-woocommerce' ),
-			],
-			'databaseId'        => [
-				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the product in the database', 'wp-graphql-woocommerce' ),
-			],
-			'slug'              => [
-				'type'        => 'String',
-				'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
-			],
-			'date'              => [
-				'type'        => 'String',
-				'description' => __( 'Date product created', 'wp-graphql-woocommerce' ),
-			],
-			'modified'          => [
-				'type'        => 'String',
-				'description' => __( 'Date product last updated', 'wp-graphql-woocommerce' ),
-			],
+			// 'id'                => [
+			// 	'type'        => [ 'non_null' => 'ID' ],
+			// 	'description' => __( 'The globally unique identifier for the product', 'wp-graphql-woocommerce' ),
+			// ],
+			// 'databaseId'        => [
+			// 	'type'        => [ 'non_null' => 'Int' ],
+			// 	'description' => __( 'The ID of the product in the database', 'wp-graphql-woocommerce' ),
+			// ],
+			// 'slug'              => [
+			// 	'type'        => 'String',
+			// 	'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
+			// ],
+			// 'date'              => [
+			// 	'type'        => 'String',
+			// 	'description' => __( 'Date product created', 'wp-graphql-woocommerce' ),
+			// ],
+			// 'modified'          => [
+			// 	'type'        => 'String',
+			// 	'description' => __( 'Date product last updated', 'wp-graphql-woocommerce' ),
+			// ],
 			'type'              => [
 				'type'        => 'ProductTypesEnum',
 				'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
@@ -122,10 +122,10 @@ class Product {
 				'type'        => 'String',
 				'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
 			],
-			'status'            => [
-				'type'        => 'String',
-				'description' => __( 'Product status', 'wp-graphql-woocommerce' ),
-			],
+			// 'status'            => [
+			// 	'type'        => 'String',
+			// 	'description' => __( 'Product status', 'wp-graphql-woocommerce' ),
+			// ],
 			'featured'          => [
 				'type'        => 'Boolean',
 				'description' => __( 'If the product is featured', 'wp-graphql-woocommerce' ),
@@ -205,13 +205,13 @@ class Product {
 				'type'        => 'Int',
 				'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
 			],
-			'parent'            => [
-				'type'        => 'Product',
-				'description' => __( 'Parent product', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source, array $args, AppContext $context ) {
-					return Factory::resolve_crud_object( $source->parent_id, $context );
-				},
-			],
+			// 'parent'            => [
+			// 	'type'        => 'Product',
+			// 	'description' => __( 'Parent product', 'wp-graphql-woocommerce' ),
+			// 	'resolve'     => function( $source, array $args, AppContext $context ) {
+			// 		return Factory::resolve_crud_object( $source->parent_id, $context );
+			// 	},
+			// ],
 			'image'             => [
 				'type'        => 'MediaItem',
 				'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
@@ -231,14 +231,14 @@ class Product {
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
 			],
-			'link'              => [
-				'type'        => 'String',
-				'description' => __( 'The permalink of the post', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source ) {
-					$permalink = get_post_permalink( $source->ID );
-					return ! empty( $permalink ) ? $permalink : null;
-				},
-			],
+			// 'link'              => [
+			// 	'type'        => 'String',
+			// 	'description' => __( 'The permalink of the post', 'wp-graphql-woocommerce' ),
+			// 	'resolve'     => function( $source ) {
+			// 		$permalink = get_post_permalink( $source->ID );
+			// 		return ! empty( $permalink ) ? $permalink : null;
+			// 	},
+			// ],
 			'metaData'          => \WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::get_metadata_field_definition(),
 		];
 	}

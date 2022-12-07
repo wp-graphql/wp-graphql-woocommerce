@@ -226,91 +226,91 @@ class Products {
 			]
 		);
 
-		// Taxonomy To Product resolver.
-		$resolve_product_from_taxonomy = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-			$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
+		// // Taxonomy To Product resolver.
+		// $resolve_product_from_taxonomy = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		// 	$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
-			$tax_query = [
-				[
-					// WPCS: slow query ok.
-												'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						'field'                            => 'term_id',
-						'terms'                            => $source->term_id,
-				],
-			];
-			$resolver->set_query_arg( 'tax_query', $tax_query );
+		// 	$tax_query = [
+		// 		[
+		// 			// WPCS: slow query ok.
+		// 			'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		// 			'field'    => 'term_id',
+		// 			'terms'    => $source->term_id,
+		// 		],
+		// 	];
+		// 	$resolver->set_query_arg( 'tax_query', $tax_query );
 
-			$resolver = self::set_ordering_query_args( $resolver, $args );
+		// 	$resolver = self::set_ordering_query_args( $resolver, $args );
 
-			return $resolver->get_connection();
-		};
+		// 	return $resolver->get_connection();
+		// };
 
-		// From ProductCategory.
-		register_graphql_connection(
-			self::get_connection_config(
-				[
-					'fromType' => 'ProductCategory',
-					'resolve'  => $resolve_product_from_taxonomy,
-				]
-			)
-		);
+		// // From ProductCategory.
+		// register_graphql_connection(
+		// 	self::get_connection_config(
+		// 		[
+		// 			'fromType' => 'ProductCategory',
+		// 			'resolve'  => $resolve_product_from_taxonomy,
+		// 		]
+		// 	)
+		// );
 
-		// From ProductTag.
-		register_graphql_connection(
-			self::get_connection_config(
-				[
-					'fromType' => 'ProductTag',
-					'resolve'  => $resolve_product_from_taxonomy,
-				]
-			)
-		);
+		// // From ProductTag.
+		// register_graphql_connection(
+		// 	self::get_connection_config(
+		// 		[
+		// 			'fromType' => 'ProductTag',
+		// 			'resolve'  => $resolve_product_from_taxonomy,
+		// 		]
+		// 	)
+		// );
 
-		// From WooCommerce product attributes.
-		$attributes = WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
-		foreach ( $attributes as $attribute ) {
-			register_graphql_connection(
-				self::get_connection_config(
-					[
-						'fromType' => ucfirst( graphql_format_field_name( $attribute ) ),
-						'resolve'  => $resolve_product_from_taxonomy,
-					]
-				)
-			);
-			register_graphql_connection(
-				self::get_connection_config(
-					[
-						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
-						'toType'        => 'ProductVariation',
-						'fromFieldName' => 'variations',
-						'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							global $wpdb;
-							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
+		// // From WooCommerce product attributes.
+		// $attributes = WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
+		// foreach ( $attributes as $attribute ) {
+		// 	register_graphql_connection(
+		// 		self::get_connection_config(
+		// 			[
+		// 				'fromType' => ucfirst( graphql_format_field_name( $attribute ) ),
+		// 				'resolve'  => $resolve_product_from_taxonomy,
+		// 			]
+		// 		)
+		// 	);
+		// 	register_graphql_connection(
+		// 		self::get_connection_config(
+		// 			[
+		// 				'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
+		// 				'toType'        => 'ProductVariation',
+		// 				'fromFieldName' => 'variations',
+		// 				'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+		// 					global $wpdb;
+		// 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
-							// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
-							// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-							$variation_ids = $wpdb->get_col(
-								$wpdb->prepare(
-									"SELECT ID
-									FROM {$wpdb->prefix}posts
-									WHERE ID IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = %s AND meta_value = %s)
-									AND post_type = 'product_variation'",
-									$attribute_meta_key,
-									$source->slug
-								)
-							);
+		// 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		// 					$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
+		// 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		// 					$variation_ids = $wpdb->get_col(
+		// 						$wpdb->prepare(
+		// 							"SELECT ID
+		// 							FROM {$wpdb->prefix}posts
+		// 							WHERE ID IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = %s AND meta_value = %s)
+		// 							AND post_type = 'product_variation'",
+		// 							$attribute_meta_key,
+		// 							$source->slug
+		// 						)
+		// 					);
 
-							$resolver->set_query_arg( 'post__in', $variation_ids );
-							$resolver->set_query_arg( 'post_type', 'product_variation' );
+		// 					$resolver->set_query_arg( 'post__in', $variation_ids );
+		// 					$resolver->set_query_arg( 'post_type', 'product_variation' );
 
-							$resolver = self::set_ordering_query_args( $resolver, $args );
+		// 					$resolver = self::set_ordering_query_args( $resolver, $args );
 
-							return $resolver->get_connection();
-						},
-					]
-				)
-			);
-		}//end foreach
+		// 					return $resolver->get_connection();
+		// 				},
+		// 			]
+		// 		)
+		// 	);
+		// }//end foreach
 	}
 
 	/**
@@ -329,8 +329,9 @@ class Products {
 				'queryClass'     => '\WC_Product_Query',
 				'connectionArgs' => self::get_connection_args(),
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-
+					add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 6 );
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
+					remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 6 );
 
 					$resolver = self::set_ordering_query_args( $resolver, $args );
 
@@ -339,6 +340,21 @@ class Products {
 			],
 			$args
 		);
+	}
+
+	/**
+	 * Bypass arg sanization in Post Object Connection Resolver.
+	 *
+	 * @param array                        $args                Sanitized GraphQL args passed to the resolver.
+	 * @param PostObjectConnectionResolver $connection_resolver Instance of the ConnectionResolver
+	 * @param mixed                        $source              source passed down from the resolve tree
+	 * @param array                        $all_args                array of arguments input in the field as part of the GraphQL query
+	 * @param AppContext                   $context             Object containing app context that gets passed down the resolve tree
+	 * @param ResolveInfo                  $info                Info about fields passed down the resolve tree
+	 * @return array
+	 */
+	public static function bypass_get_args_sanitization( $args, $connection_resolver, $source, $all_args, $context, $info ) {
+		return $all_args;
 	}
 
 	/**
@@ -527,21 +543,22 @@ class Products {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $where_args       Query "where" args.
-	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $args   All of the arguments for the query (not just the "where" args).
-	 * @param AppContext         $context    The AppContext object.
-	 * @param ResolveInfo        $info       The ResolveInfo object.
-	 * @param mixed|string|array $post_type  The post type for the query.
+	 * @param array              $query_args The mapped query arguments
+	 * @param array              $args       Query "where" args
+	 * @param mixed              $source     The query results for a query calling this
+	 * @param array              $all_args   All of the arguments for the query (not just the "where" args)
+	 * @param AppContext         $context    The AppContext object
+	 * @param ResolveInfo        $info       The ResolveInfo object
+	 * @param mixed|string|array $post_type  The post type for the query
 	 *
 	 * @return array Query arguments.
 	 */
-	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
+	public static function map_input_fields_to_wp_query( $query_args, $args, $source, $all_args, $context, $info, $post_type ) {
 		if ( ! in_array( 'product', $post_type, true ) && ! in_array( 'product_variation', $post_type, true ) ) {
 			return $query_args;
 		}
 
+		$where_args = $all_args['where'];
 		$query_args = array_merge(
 			$query_args,
 			map_shared_input_fields_to_wp_query( $where_args )

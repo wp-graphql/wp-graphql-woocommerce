@@ -39,6 +39,10 @@ class WC_Terms extends TermObjects {
 				// Registers the connections between each allowed PostObjectType and it's TermObjects.
 				if ( ! empty( $wc_post_types ) && is_array( $wc_post_types ) ) {
 					foreach ( $wc_post_types as $post_type ) {
+						if ( 'product' === $post_type ) {
+							continue;
+						}
+
 						if ( in_array( $post_type, $tax_object->object_type, true ) ) {
 							$post_type_object = get_post_type_object( $post_type );
 							register_graphql_connection(
