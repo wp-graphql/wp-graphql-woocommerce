@@ -23,6 +23,7 @@ class Product_Attribute {
 			'ProductAttribute',
 			[
 				'description' => __( 'Product attribute object', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => function( $value ) use ( &$type_registry ) {
 					if ( $value->is_taxonomy() ) {
@@ -45,9 +46,6 @@ class Product_Attribute {
 			'id'          => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
-				'resolve'     => function ( $attribute ) {
-					return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : null;
-				},
 			],
 			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],

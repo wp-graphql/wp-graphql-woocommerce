@@ -8,6 +8,8 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
+use GraphQLRelay\Relay;
+
 /**
  * Class Product_Attribute_Types
  */
@@ -24,6 +26,13 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'ProductAttribute' ],
 				'fields'      => [
+					'id'    => [
+						'type'        => [ 'non_null' => 'ID' ],
+						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $attribute ) {
+							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'LocalProductAttribute', $attribute->get_id() );
+						},
+					],
 					'scope' => [
 						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
@@ -42,6 +51,13 @@ class Product_Attribute_Types {
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'ProductAttribute' ],
 				'fields'      => [
+					'id'    => [
+						'type'        => [ 'non_null' => 'ID' ],
+						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $attribute ) {
+							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
+						},
+					],
 					'scope' => [
 						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),

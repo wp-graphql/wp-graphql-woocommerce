@@ -60,7 +60,10 @@ class Customers {
 					$resolver->set_query_arg( 'role', 'customer' );
 
 					if ( ! self::should_execute() ) {
-						return [];
+						return [
+							'nodes' => [],
+							'edges' => [],
+						];
 					}
 
 					return $resolver->get_connection();

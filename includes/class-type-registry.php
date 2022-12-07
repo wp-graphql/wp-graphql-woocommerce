@@ -59,7 +59,7 @@ class Type_Registry {
 		Type\WPInputObject\Orderby_Inputs::register();
 
 		// Interfaces.
-		Type\WPInterface\Product::register_interface( $type_registry );
+		Type\WPInterface\Product::register_interface();
 		Type\WPInterface\Attribute::register_interface( $type_registry );
 		Type\WPInterface\Product_Attribute::register_interface( $type_registry );
 		Type\WPInterface\Cart_Error::register_interface( $type_registry );
