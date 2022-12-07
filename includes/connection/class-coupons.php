@@ -125,7 +125,6 @@ class Coupons {
 				: $ids;
 		}
 
-		\codecept_debug( $query_args );
 
 		/**
 		 * Filter the input fields
