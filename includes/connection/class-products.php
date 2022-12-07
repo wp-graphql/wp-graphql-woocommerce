@@ -233,7 +233,7 @@ class Products {
 					add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 					remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
-					
+
 					$resolver->set_query_arg( 'p', $source->parent_id );
 
 					$resolver = self::set_ordering_query_args( $resolver, $args );
@@ -264,37 +264,9 @@ class Products {
 			return $resolver->get_connection();
 		};
 
-		// // From ProductCategory.
-		// register_graphql_connection(
-		// 	self::get_connection_config(
-		// 		[
-		// 			'fromType' => 'ProductCategory',
-		// 			'resolve'  => $resolve_product_from_taxonomy,
-		// 		]
-		// 	)
-		// );
-
-		// // From ProductTag.
-		// register_graphql_connection(
-		// 	self::get_connection_config(
-		// 		[
-		// 			'fromType' => 'ProductTag',
-		// 			'resolve'  => $resolve_product_from_taxonomy,
-		// 		]
-		// 	)
-		// );
-
 		// From WooCommerce product attributes.
 		$attributes = WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
 		foreach ( $attributes as $attribute ) {
-			// register_graphql_connection(
-			// 	self::get_connection_config(
-			// 		[
-			// 			'fromType' => ucfirst( graphql_format_field_name( $attribute ) ),
-			// 			'resolve'  => $resolve_product_from_taxonomy,
-			// 		]
-			// 	)
-			// );
 			register_graphql_connection(
 				self::get_connection_config(
 					[
@@ -365,8 +337,8 @@ class Products {
 	 * Bypass arg sanization in Post Object Connection Resolver.
 	 *
 	 * @param array                        $args                Sanitized GraphQL args passed to the resolver.
-	 * @param PostObjectConnectionResolver $connection_resolver Instance of the ConnectionResolver
-	 * @param array                        $all_args            array of arguments input in the field as part of the GraphQL query
+	 * @param PostObjectConnectionResolver $connection_resolver Instance of the ConnectionResolver.
+	 * @param array                        $all_args            array of arguments input in the field as part of the GraphQL query.
 
 	 * @return array
 	 */
@@ -560,13 +532,13 @@ class Products {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array              $query_args The mapped query arguments
-	 * @param array              $args       Query "where" args
-	 * @param mixed              $source     The query results for a query calling this
-	 * @param array              $all_args   All of the arguments for the query (not just the "where" args)
-	 * @param AppContext         $context    The AppContext object
-	 * @param ResolveInfo        $info       The ResolveInfo object
-	 * @param mixed|string|array $post_type  The post type for the query
+	 * @param array              $query_args The mapped query arguments.
+	 * @param array              $args       Query "where" args.
+	 * @param mixed              $source     The query results for a query calling this.
+	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param AppContext         $context    The AppContext object.
+	 * @param ResolveInfo        $info       The ResolveInfo object.
+	 * @param mixed|string|array $post_type  The post type for the query.
 	 *
 	 * @return array Query arguments.
 	 */
@@ -680,12 +652,12 @@ class Products {
 		}
 
 		if ( empty( $where_args['type'] ) && empty( $where_args['typeIn'] ) && ! empty( $where_args['supportedTypesOnly'] )
-		     && true === $where_args['supportedTypesOnly'] ) {
+			&& true === $where_args['supportedTypesOnly'] ) {
 			$supported_types = array_keys( WP_GraphQL_WooCommerce::get_enabled_product_types() );
 			$terms           = ! empty( $where_args['typeNotIn'] )
 				? array_diff( $supported_types, $where_args['typeNotIn'] )
 				: $supported_types;
-			$tax_query[]         = [
+			$tax_query[]     = [
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
 				'terms'    => $terms,

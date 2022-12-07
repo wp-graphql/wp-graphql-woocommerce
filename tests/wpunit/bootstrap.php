@@ -13,5 +13,6 @@ add_filter(
 		unset( $response['extensions'] );
 
 		return $response;
-	}, 99
+	},
+	99
 );

@@ -135,14 +135,14 @@ class Core_Schema_Filters {
 	 */
 	public static function register_post_types( $args, $post_type ) {
 		if ( 'product' === $post_type ) {
-			$args['show_in_graphql']      = true;
-			$args['graphql_single_name']  = 'Product';
-			$args['graphql_plural_name']  = 'Products';
-			$args['graphql_kind']         = 'interface';
-			$args['graphql_register_root_field'] = false;
+			$args['show_in_graphql']                  = true;
+			$args['graphql_single_name']              = 'Product';
+			$args['graphql_plural_name']              = 'Products';
+			$args['graphql_kind']                     = 'interface';
+			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
-			$args['graphql_resolve_type'] = static function( $value ) {
-				$type_registry = \WPGraphQL::get_type_registry();
+			$args['graphql_resolve_type']             = static function( $value ) {
+				$type_registry  = \WPGraphQL::get_type_registry();
 				$possible_types = WP_GraphQL_WooCommerce::get_enabled_product_types();
 				if ( isset( $possible_types[ $value->type ] ) ) {
 					return $type_registry->get_type( $possible_types[ $value->type ] );
@@ -155,7 +155,7 @@ class Core_Schema_Filters {
 					)
 				);
 			};
-		}
+		}//end if
 		if ( 'product_variation' === $post_type ) {
 			$args['show_in_graphql']            = true;
 			$args['graphql_single_name']        = 'ProductVariation';
