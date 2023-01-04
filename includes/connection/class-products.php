@@ -358,26 +358,29 @@ class Products {
 		$backward = isset( $args['last'] ) ? true : false;
 
 		if ( ! empty( $args['where']['orderby'] ) ) {
+			$default_fields = [
+				'_price',
+				'_regular_price',
+				'_sale_price',
+				'_wc_rating_count',
+				'_wc_average_rating',
+				'_sale_price_dates_from',
+				'_sale_price_dates_to',
+				'total_sales'
+			];
+			$sort_fields = apply_filters( 'graphql_woocommerce_products_add_sort_fields', $default_fields );
 			foreach ( $args['where']['orderby'] as $orderby_input ) {
-				switch ( $orderby_input['field'] ) {
-					case '_price':
-					case '_regular_price':
-					case '_sale_price':
-					case '_wc_rating_count':
-					case '_wc_average_rating':
-					case '_sale_price_dates_from':
-					case '_sale_price_dates_to':
-					case 'total_sales':
-						$order = $orderby_input['order'];
+				if (in_array($orderby_input['field'], $sort_fields)){
+					$order = $orderby_input['order'];
 
-						if ( $backward ) {
-							$order = 'ASC' === $order ? 'DESC' : 'ASC';
-						}
+					if ( $backward ) {
+						$order = 'ASC' === $order ? 'DESC' : 'ASC';
+					}
 
-						$resolver->set_query_arg( 'orderby', [ 'meta_value_num' => $order ] );
-						$resolver->set_query_arg( 'meta_key', esc_sql( $orderby_input['field'] ) );
-						$resolver->set_query_arg( 'meta_type', 'NUMERIC' );
-						break 2;
+					$resolver->set_query_arg( 'orderby', [ 'meta_value_num' => $order ] );
+					$resolver->set_query_arg( 'meta_key', esc_sql( $orderby_input['field'] ) );
+					$resolver->set_query_arg( 'meta_type', 'NUMERIC' );
+					break;
 				}
 			}//end foreach
 		}//end if
