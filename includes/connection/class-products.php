@@ -543,6 +543,7 @@ class Products {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $args, $source, $all_args, $context, $info, $post_type ) {
+		$post_type = is_array( $post_type ) ? $post_type : array( $post_type );
 		if ( ! in_array( 'product', $post_type, true ) && ! in_array( 'product_variation', $post_type, true ) ) {
 			return $query_args;
 		}
@@ -689,7 +690,6 @@ class Products {
 		}//end if
 
 		// Handle visibility.
-		$post_type_obj = get_post_type_object( $post_type );
 		if ( ! empty( $where_args['visibility'] ) ) {
 			switch ( $where_args['visibility'] ) {
 				case 'search':
