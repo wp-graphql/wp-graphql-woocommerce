@@ -85,181 +85,178 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		);
 	}
 
-	private function getCheckoutMutation() {
-		return '
-			mutation checkout( $input: CheckoutInput! ) {
-				checkout( input: $input ) {
-					clientMutationId
-					order {
-						id
-						databaseId
-						currency
-						orderVersion
-						date
-						modified
-						status
-						discountTotal
-						discountTax
-						shippingTotal
-						shippingTax
-						cartTax
-						total
-						totalTax
-						subtotal
-						orderNumber
-						orderKey
-						createdVia
-						pricesIncludeTax
-						parent {
-							id
-						}
-						customer {
-							id
-						}
-						customerIpAddress
-						customerUserAgent
-						customerNote
-						billing {
-							firstName
-							lastName
-							company
-							address1
-							address2
-							city
-							state
-							postcode
-							country
-							email
-							phone
-						}
-						shipping {
-							firstName
-							lastName
-							company
-							address1
-							address2
-							city
-							state
-							postcode
-							country
-						}
-						paymentMethod
-						paymentMethodTitle
-						transactionId
-						dateCompleted
-						datePaid
-						cartHash
-						shippingAddressMapUrl
-						hasBillingAddress
-						hasShippingAddress
-						isDownloadPermitted
-						needsShippingAddress
-						hasDownloadableItem
-						downloadableItems {
-							nodes {
-								url
-								accessExpires
-								downloadId
-								downloadsRemaining
-								name
-								product {
-									databaseId
-								}
-								download {
-									downloadId
-								}
-							}
-						}
-						needsPayment
-						needsProcessing
-						metaData {
-							key
-							value
-						}
-						couponLines {
-							nodes {
-								databaseId
-								orderId
-								code
-								discount
-								discountTax
-								coupon {
-									id
-								}
-							}
-						}
-						feeLines {
-							nodes {
-								databaseId
-								orderId
-								amount
-								name
-								taxStatus
-								total
-								totalTax
-								taxClass
-							}
-						}
-						shippingLines {
-							nodes {
-								databaseId
-								orderId
-								methodTitle
-								total
-								totalTax
-								taxClass
-							}
-						}
-						taxLines {
-							nodes {
-								rateCode
-								label
-								taxTotal
-								shippingTaxTotal
-								isCompound
-								taxRate {
-									databaseId
-								}
-							}
-						}
-						lineItems {
-							nodes {
-								productId
-								variationId
-								quantity
-								taxClass
-								subtotal
-								subtotalTax
-								total
-								totalTax
-								taxStatus
-								product {
-									node {
-										... on SimpleProduct {
-											id
-										}
-										... on VariableProduct {
-											id
-										}
-									}
-								}
-								variation {
-									node {
-										id
-									}
-								}
-							}
-						}
-					}
-					customer {
-						id
-					}
-					result
-					redirect
-				}
-			}
-		';
-	}
+	private function checkout( $input, $mutation = null ) {
+		if ( ! $mutation ) {
+			$mutation = '
+                mutation checkout( $input: CheckoutInput! ) {
+                    checkout( input: $input ) {
+                        clientMutationId
+                        order {
+                            id
+                            databaseId
+                            currency
+                            orderVersion
+                            date
+                            modified
+                            status
+                            discountTotal
+                            discountTax
+                            shippingTotal
+                            shippingTax
+                            cartTax
+                            total
+                            totalTax
+                            subtotal
+                            orderNumber
+                            orderKey
+                            createdVia
+                            pricesIncludeTax
+                            parent {
+                                id
+                            }
+                            customer {
+                                id
+                            }
+                            customerIpAddress
+                            customerUserAgent
+                            customerNote
+                            billing {
+                                firstName
+                                lastName
+                                company
+                                address1
+                                address2
+                                city
+                                state
+                                postcode
+                                country
+                                email
+                                phone
+                            }
+                            shipping {
+                                firstName
+                                lastName
+                                company
+                                address1
+                                address2
+                                city
+                                state
+                                postcode
+                                country
+                            }
+                            paymentMethod
+                            paymentMethodTitle
+                            transactionId
+                            dateCompleted
+                            datePaid
+                            cartHash
+                            shippingAddressMapUrl
+                            hasBillingAddress
+                            hasShippingAddress
+                            isDownloadPermitted
+                            needsShippingAddress
+                            hasDownloadableItem
+                            downloadableItems {
+                                nodes {
+                                    url
+                                    accessExpires
+                                    downloadId
+                                    downloadsRemaining
+                                    name
+                                    product {
+                                        databaseId
+                                    }
+                                    download {
+                                        downloadId
+                                    }
+                                }
+                            }
+                            needsPayment
+                            needsProcessing
+                            metaData {
+                                key
+                                value
+                            }
+                            couponLines {
+                                nodes {
+                                    databaseId
+                                    orderId
+                                    code
+                                    discount
+                                    discountTax
+                                    coupon {
+                                        id
+                                    }
+                                }
+                            }
+                            feeLines {
+                                nodes {
+                                    databaseId
+                                    orderId
+                                    amount
+                                    name
+                                    taxStatus
+                                    total
+                                    totalTax
+                                    taxClass
+                                }
+                            }
+                            shippingLines {
+                                nodes {
+                                    databaseId
+                                    orderId
+                                    methodTitle
+                                    total
+                                    totalTax
+                                    taxClass
+                                }
+                            }
+                            taxLines {
+                                nodes {
+                                    rateCode
+                                    label
+                                    taxTotal
+                                    shippingTaxTotal
+                                    isCompound
+                                    taxRate {
+                                        databaseId
+                                    }
+                                }
+                            }
+                            lineItems {
+                                nodes {
+                                    productId
+                                    variationId
+                                    quantity
+                                    taxClass
+                                    subtotal
+                                    subtotalTax
+                                    total
+                                    totalTax
+                                    taxStatus
+                                    product {
+                                        ... on SimpleProduct {
+                                            id
+                                        }
+                                        ... on VariableProduct {
+                                            id
+                                        }
+                                    }
+                                    variation {
+                                        id
+                                    }
+                                }
+                            }
+                        }
+                        customer {
+                            id
+                        }
+                        result
+                        redirect
+                    }
+                }
+            ';
+		}
 
 	private function getCartQuery() {
 		return '
