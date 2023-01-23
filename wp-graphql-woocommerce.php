@@ -31,7 +31,7 @@ defined( 'ABSPATH' ) || exit;
 function constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
-		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.11.2' );
+		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '0.12.0' );
 	}
 	// Plugin Folder Path.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR' ) ) {
