@@ -55,10 +55,7 @@
     },
     "scripts": {
         "installTestEnv": "bash bin/install-test-env.local.sh",
-        "runPreCommitCleanup": [
-          "bash bin/remove-wordpress.local.sh",
-          "bash bin/remove-testing-library.local.sh"
-        ],
+        "runPreCommitCleanup": "bash bin/cleanup.local.sh",
         "runWPUnitTest": "vendor/bin/codecept run wpunit",
         "dBuild": "env $(sed -e '/^#/d' .env.testing) docker-compose build",
         "dRunApp": "env $(sed -e '/^#/d' .env.testing) docker-compose up testable_app app_db mailhog",

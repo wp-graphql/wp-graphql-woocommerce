@@ -12,11 +12,12 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Type\Connection\Comments as Comments_Core;
 
 /**
  * Class - Comments
  */
-class Comments extends \WPGraphQL\Connection\Comments {
+class Comments extends Comments_Core {
 
 	/**
 	 * Registers connection.
