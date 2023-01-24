@@ -22,14 +22,13 @@ install_wordpress() {
 	# Install Wordpress + integrated plugins for testing/development.
 	composer install
 	composer require --dev -W \
-		composer/installers \
-		johnpbloch/wordpress:~${WP_VERSION} \
+		johnpbloch/wordpress:* \
         wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce \
         wpackagist-plugin/woocommerce-gateway-stripe \
-        wpackagist-plugin/wp-graphql \
+        wpackagist-plugin/wp-graphql:* \
         wpackagist-theme/twentytwentyone \
-		wp-cli/wp-cli-bundle:*
+		wp-cli/wp-cli-bundle
 }
 
 remove_wordpress() {
@@ -52,7 +51,7 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev --with-all-dependencies \
+	composer require --dev \
 		lucatume/wp-browser \
 		codeception/module-asserts:^1.0 \
 		codeception/module-rest:^2.0 \
@@ -60,6 +59,23 @@ install_local_test_library() {
 		wp-graphql/wp-graphql-testcase:^2.3 \
 		stripe/stripe-php
 
+}
+
+remove_local_composer_instance() {
+	if [ -f $PROJECT_ROOT_DIR/vendor/bin/composer ]; then
+		rm -f $PROJECT_ROOT_DIR/vendor/bin/composer
+	else
+		echo "No local composer instance found."
+	fi
+}
+
+remove_project_symlink() {
+	if [ -f $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce ]; then
+		rm -rf $WP_CORE_DIR/wp-content/plugins/wp-graphql-woocommerce
+		echo "Plugin symlink removed."
+	else
+		echo "Symlink no found."
+	fi
 }
 
 remove_local_test_library() {
@@ -70,6 +86,20 @@ remove_local_test_library() {
 		codeception/util-universalframework \
 		lucatume/wp-browser \
 		stripe/stripe-php
+}
+
+cleanup_local_files() {
+	if [ -n "$(ls -A $WP_CORE_DIR)" ]; then
+		echo "Removing final test files..."
+		rm -rf $WP_CORE_DIR/*
+		echo "Files removed!!"
+	else
+		echo "No files to remove!"
+	fi
+
+	echo "Rebuilding lock file..."
+	rm -rf $PROJECT_ROOT_DIR/vendor $PROJECT_ROOT_DIR/composer.lock
+	composer install --no-dev
 }
 
 install_db() {
