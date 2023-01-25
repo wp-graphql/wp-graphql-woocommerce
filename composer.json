@@ -92,7 +92,7 @@
         "/codeception.yml",
         "/composer.json",
         "/composer.lock",
-        "/docker-composer.yml",
+        "/docker-compose.yml",
         "/Dockerfile",
         "/netlify.toml",
         "/README.md"

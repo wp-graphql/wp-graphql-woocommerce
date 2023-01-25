@@ -32,7 +32,7 @@ class Orders {
 					'fromType'      => 'Customer',
 					'fromFieldName' => 'orders',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order' );
+						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, wc_get_order_types( 'view-orders' ) );
 
 						return self::get_customer_order_connection( $resolver, $source );
 					},
@@ -113,14 +113,37 @@ class Orders {
 			return [];
 		}
 
-		// If the querying user has a "billing email" set filter orders by user's billing email, otherwise filter by user's ID.
-		$meta_key   = ! empty( $customer->get_billing_email() ) ? '_billing_email' : '_customer_user';
-		$meta_value = ! empty( $customer->get_billing_email() )
-			? $customer->get_billing_email()
-			: $customer->get_id();
-		$resolver->set_query_arg( 'meta_key', $meta_key );
-		$resolver->set_query_arg( 'meta_value', $meta_value );
+		$meta_query = false;
+		if ( ! empty ( $customer->get_id() ) ) {
+			$meta_query = [
+				[
+					'key'          => '_customer_user',
+					'value'        => $customer->get_id(),
+					'compare'      => '=',
+				],
+			];
+		} else if ( ! empty( $customer->get_billing_email() ) ) {
+			$meta_query = [
+				'relation' => 'AND',
+				[
+					'key'          => '_billing_email',
+					'value'        => $customer->get_billing_email(),
+					'compare'      => '=',
+				],
+				[
+					'key'          => '_customer_user',
+					'value'        => 0,
+					'compare'      => '=',
+				]
+			];
+		}
 
+		// Bail if needed info not found on customer object.
+		if ( false === $meta_query ) {
+			return [];
+		}
+
+		$resolver->set_query_arg( 'meta_query', $meta_query );
 		return $resolver->get_connection();
 	}
 
@@ -342,7 +365,7 @@ class Orders {
 
 		// Process order meta inputs.
 		$metas      = [ 'customerId', 'customersIn' ];
-		$meta_query = [];
+		$meta_query = isset( $query_args['meta_query'] ) ? $query_args['meta_query'] : [];
 		foreach ( $metas as $field ) {
 			if ( isset( $query_args[ $field ] ) ) {
 				$value = $query_args[ $field ];
