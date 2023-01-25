@@ -232,7 +232,9 @@ class Product_Variation_Type {
 						'type'        => 'MediaItem',
 						'description' => __( 'Product variation main image', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source, array $args, AppContext $context ) {
-							return ! empty( $source->image_id ) ? DataSource::resolve_post_object( $source->image_id, $context ) : null;
+ 							return ! empty( $source->image_id )
+								? $context->get_loader( 'post' )->load_deferred( $source->image_id )
+ 								: null;
 						},
 					],
 

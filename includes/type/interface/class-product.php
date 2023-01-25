@@ -189,7 +189,7 @@ class Product {
 					if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
 						return null;
 					}
-					return DataSource::resolve_post_object( $source->image_id, $context );
+					return $context->get_loader( 'post' )->load_deferred( $source->image_id );
 				},
 			],
 			'onSale'            => [
