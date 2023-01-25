@@ -36,9 +36,11 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			throw new \Exception( $order->get_error_message( $args->get_error_code() ) );
 		}
 
-		// Set meta data.
-		if ( ! empty( $args['meta_data'] ) ) {
-			$order->set_meta_data( $args['meta_data'] );
+		// Set props.
+		foreach ( $args as $key => $value ) {
+			if ( is_callable( [ $order, "set_{$key}" ] ) ) {
+				$order->{"set_{$key}"}( $value );
+			}
 		}
 
 		return $order->save();
@@ -339,8 +341,10 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	public function set_to_customer_billing_address( $order, $customer, $save = true ) {
 		$order    = \wc_get_order( $order );
+		if ( ! $customer ) {
+			return $order;
+		}
 		$customer = new \WC_Customer( $customer );
-
 		// Set billing address
 		$order->set_billing_first_name( $customer->get_first_name() );
 		$order->set_billing_last_name( $customer->get_last_name() );
@@ -363,6 +367,9 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
 		$order    = \wc_get_order( $order );
+		if ( ! $customer ) {
+			return $order;
+		}
 		$customer = new \WC_Customer( $customer );
 
 		// Set shipping address

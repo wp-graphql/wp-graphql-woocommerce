@@ -405,11 +405,21 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 	public function testCustomerToOrdersConnection() {
 		$new_customer_id = $this->factory->customer->create();
+
 		$order_1         = $this->factory->order->createNew(
 			[ 'customer_id' => $this->customer ]
 		);
 		$order_2         = $this->factory->order->createNew(
 			[ 'customer_id' => $new_customer_id ]
+		);
+
+		$guest_customer  = new \WC_Customer();
+		$guest_customer->set_billing_email( 'test@test.com' );
+		$order_3         = $this->factory->order->createNew(
+			[
+				'customer_id'   => $guest_customer->get_id(),
+				'billing_email' => $guest_customer->get_billing_email(),
+			]
 		);
 
 		$query = '
@@ -433,6 +443,20 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
 			$this->expectedField( 'customer.orders.nodes.#.databaseId', $order_1 ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Query for a guest's orders.
+		 */
+		$this->loginAs( 0 );
+		WC()->customer = $guest_customer;
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'customer.orders.nodes.#.databaseId', $order_3 ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
