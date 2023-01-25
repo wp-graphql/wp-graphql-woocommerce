@@ -219,82 +219,58 @@ class Order extends WC_Post {
 					$price = ! empty( $this->wc_data->get_discount_total() ) ? $this->wc_data->get_discount_total() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'discountTotalRaw'      => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_discount_total() ) ? $this->wc_data->get_discount_total() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'discountTotalRaw'      => function() {
+					return ! empty( $this->wc_data->get_discount_total() ) ? $this->wc_data->get_discount_total() : 0;
+				},
 				'discountTax'           => function() {
 					$price = ! empty( $this->wc_data->get_discount_tax() ) ? $this->wc_data->get_discount_tax() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'discountTaxRaw'        => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_discount_tax() ) ? $this->wc_data->get_discount_tax() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'discountTaxRaw'        => function() {
+					return ! empty( $this->wc_data->get_discount_tax() ) ? $this->wc_data->get_discount_tax() : 0;
+				},
 				'shippingTotal'         => function() {
 					$price = ! empty( $this->wc_data->get_shipping_total() ) ? $this->wc_data->get_shipping_total() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'shippingTotalRaw'      => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_shipping_total() ) ? $this->wc_data->get_shipping_total() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'shippingTotalRaw'      => function() {
+					return ! empty( $this->wc_data->get_shipping_total() ) ? $this->wc_data->get_shipping_total() : 0;
+				},
 				'shippingTax'           => function() {
 					$price = ! empty( $this->wc_data->get_shipping_tax() ) ? $this->wc_data->get_shipping_tax() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'shippingTaxRaw'        => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_shipping_tax() ) ? $this->wc_data->get_shipping_tax() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'shippingTaxRaw'        => function() {
+					return ! empty( $this->wc_data->get_shipping_tax() ) ? $this->wc_data->get_shipping_tax() : 0;
+				},
 				'cartTax'               => function() {
 					$price = ! empty( $this->wc_data->get_cart_tax() ) ? $this->wc_data->get_cart_tax() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'cartTaxRaw'            => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_cart_tax() ) ? $this->wc_data->get_cart_tax() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'cartTaxRaw'            => function() {
+					return ! empty( $this->wc_data->get_cart_tax() ) ? $this->wc_data->get_cart_tax() : 0;
+				},
 				'total'                 => function() {
 					$price = ! empty( $this->wc_data->get_total() ) ? $this->wc_data->get_total() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'totalRaw'              => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_total() ) ? $this->wc_data->get_total() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'totalRaw'              => function() {
+					return ! empty( $this->wc_data->get_total() ) ? $this->wc_data->get_total() : 0;
+				},
 				'totalTax'              => function() {
 					$price = ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'totalTaxRaw'           => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'totalTaxRaw'           => function() {
+					return ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
+				},
 				'subtotal'              => function() {
 					$price = ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : null;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
-				'subtotalRaw'           => [
-					'callback'   => function() {
-						return ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : 0;
-					},
-					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				'subtotalRaw'           => function() {
+					return ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : 0;
+				},
 				'orderNumber'           => function() {
 					return ! empty( $this->wc_data->get_order_number() ) ? $this->wc_data->get_order_number() : null;
 				},
