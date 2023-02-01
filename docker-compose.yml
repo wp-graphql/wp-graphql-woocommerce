@@ -4,8 +4,6 @@ services:
   # Main application database.
   app_db:
     image: mysql
-    volumes:
-      - app_db_data
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD:-password}
@@ -43,7 +41,8 @@ services:
     env_file: .env.testing
     environment:
       APACHE_RUN_USER: "#1000" # Ensure Apache can write to the filesystem.
-      XDEBUG_CONFIG: remote_host=10.0.0.52 idekey=vscode
+      DOCKER_GATEWAY_HOST: "172.17.0.1"
+      XDEBUG_CONFIG: remote_host=${DOCKER_GATEWAY_HOST:-host.docker.internal} idekey=vscode
     networks:
       development:
     ports:
@@ -99,6 +98,3 @@ services:
 networks:
   development:
   testing:
-
-volumes:
-  app_db_data: {}

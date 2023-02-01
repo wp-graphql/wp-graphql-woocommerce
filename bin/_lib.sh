@@ -2,12 +2,7 @@
 
 set +u
 
-install_wordpress() {
-	if [ -f $WP_CORE_DIR/wp-config.php ]; then
-		echo "Wordpress already installed."
-		return;
-	fi
-
+composer_wordpress_config() {
 	# Set the wordpress install directory and plugin paths in the composer.json
 	composer config --unset extra.wordpress-install-dir;
 	composer config extra.wordpress-install-dir $WP_CORE_DIR;
@@ -19,6 +14,22 @@ install_wordpress() {
 	\"$THEMES_DIR/{\$name}/\": [\"type:wordpress-theme\"]
 }"
 
+	# Set WPackagist repository
+	composer config repositories.wpackagist composer https://wpackagist.org
+
+	# Enable plugins
+	composer config --no-plugins allow-plugins.composer/installers true
+	composer config --no-plugins allow-plugins.johnpbloch/wordpress-core-installer true
+}
+
+install_wordpress() {
+	if [ -f $WP_CORE_DIR/wp-config.php ]; then
+		echo "Wordpress already installed."
+		return;
+	fi
+
+	composer_wordpress_config
+
 	# Install Wordpress + integrated plugins for testing/development.
 	composer install
 	composer require --dev -W \
@@ -26,7 +37,7 @@ install_wordpress() {
         wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce \
         wpackagist-plugin/woocommerce-gateway-stripe \
-        wpackagist-plugin/wp-graphql:* \
+        wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
 		wp-cli/wp-cli-bundle
 }
@@ -52,8 +63,11 @@ install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
 	composer require --dev \
-		lucatume/wp-browser \
-		codeception/module-asserts:^1.0 \
+		lucatume/wp-browser:^3.1 \
+		codeception/codeception:^4.2 \
+		symfony/finder:* \
+		codeception/lib-asserts:^1.0 \
+		codeception/module-asserts:^1.3.1 \
 		codeception/module-rest:^2.0 \
 		codeception/util-universalframework:^1.0  \
 		wp-graphql/wp-graphql-testcase:^2.3 \
@@ -82,10 +96,23 @@ remove_local_test_library() {
 	# Remove testing library dependencies.
 	composer remove --dev wp-graphql/wp-graphql-testcase \
 		codeception/module-asserts \
+		codeception/codeception \
+		codeception/lib-asserts \
+		symfony/finder \
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
 		stripe/stripe-php
+}
+
+cleanup_composer_file() {
+	echo "Removing extra config..."
+	composer config --unset extra
+	echo "Removing repositories..."
+	composer config --unset repositories
+
+	composer config --unset config.allow-plugins
+	echo "composer.json cleaned!"
 }
 
 cleanup_local_files() {
@@ -98,7 +125,7 @@ cleanup_local_files() {
 	fi
 
 	echo "Rebuilding lock file..."
-	rm -rf $PROJECT_ROOT_DIR/vendor $PROJECT_ROOT_DIR/composer.lock
+	rm -rf $PROJECT_ROOT_DIR/vendor
 	composer install --no-dev
 }
 

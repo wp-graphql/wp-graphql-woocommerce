@@ -114,29 +114,29 @@ class Orders {
 		}
 
 		$meta_query = false;
-		if ( ! empty ( $customer->get_id() ) ) {
+		if ( ! empty( $customer->get_id() ) ) {
 			$meta_query = [
 				[
-					'key'          => '_customer_user',
-					'value'        => $customer->get_id(),
-					'compare'      => '=',
+					'key'     => '_customer_user',
+					'value'   => $customer->get_id(),
+					'compare' => '=',
 				],
 			];
-		} else if ( ! empty( $customer->get_billing_email() ) ) {
+		} elseif ( ! empty( $customer->get_billing_email() ) ) {
 			$meta_query = [
 				'relation' => 'AND',
 				[
-					'key'          => '_billing_email',
-					'value'        => $customer->get_billing_email(),
-					'compare'      => '=',
+					'key'     => '_billing_email',
+					'value'   => $customer->get_billing_email(),
+					'compare' => '=',
 				],
 				[
-					'key'          => '_customer_user',
-					'value'        => 0,
-					'compare'      => '=',
-				]
+					'key'     => '_customer_user',
+					'value'   => 0,
+					'compare' => '=',
+				],
 			];
-		}
+		}//end if
 
 		// Bail if needed info not found on customer object.
 		if ( false === $meta_query ) {

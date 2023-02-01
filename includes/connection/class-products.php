@@ -366,11 +366,11 @@ class Products {
 				'_wc_average_rating',
 				'_sale_price_dates_from',
 				'_sale_price_dates_to',
-				'total_sales'
+				'total_sales',
 			];
-			$sort_fields = apply_filters( 'graphql_woocommerce_products_add_sort_fields', $default_fields );
+			$sort_fields    = apply_filters( 'graphql_woocommerce_products_add_sort_fields', $default_fields );
 			foreach ( $args['where']['orderby'] as $orderby_input ) {
-				if (in_array($orderby_input['field'], $sort_fields)){
+				if ( in_array( $orderby_input['field'], $sort_fields, true ) ) {
 					$order = $orderby_input['order'];
 
 					if ( $backward ) {
@@ -546,7 +546,7 @@ class Products {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $args, $source, $all_args, $context, $info, $post_type ) {
-		$post_type = is_array( $post_type ) ? $post_type : array( $post_type );
+		$post_type = is_array( $post_type ) ? $post_type : [ $post_type ];
 		if ( ! in_array( 'product', $post_type, true ) && ! in_array( 'product_variation', $post_type, true ) ) {
 			return $query_args;
 		}

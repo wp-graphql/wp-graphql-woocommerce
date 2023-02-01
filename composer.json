@@ -20,12 +20,6 @@
             "role": "Lead developer"
         }
     ],
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://wpackagist.org"
-        }
-    ],
     "require": {
         "php": ">=7.1.0",
         "firebase/php-jwt": "^6.1.0"
@@ -39,8 +33,7 @@
         "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
-            "johnpbloch/wordpress-core-installer": true,
-            "composer/installers": true
+            "johnpbloch/wordpress-core-installer": true
         }
     },
     "autoload-dev": {
@@ -48,10 +41,8 @@
             "tests/_data/config.php"
         ],
         "psr-4": {
-          "Tests\\WPGraphQL\\WooCommerce\\": "tests/_support/"
+            "Tests\\WPGraphQL\\WooCommerce\\": "tests/_support/"
         }
-    },
-    "extra": {
     },
     "scripts": {
         "installTestEnv": "bash bin/install-test-env.local.sh",
@@ -59,7 +50,7 @@
         "runWPUnitTest": "vendor/bin/codecept run wpunit",
         "dBuild": "env $(sed -e '/^#/d' .env.testing) docker-compose build",
         "dRunApp": "env $(sed -e '/^#/d' .env.testing) docker-compose up testable_app app_db mailhog",
-        "dRunTestingDb":"if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.testing) docker-compose up -d testing_db; fi",
+        "dRunTestingDb": "if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.testing) docker-compose up -d testing_db; fi",
         "dSetMainDb": "docker-compose exec testable_app ./setup-database.sh main",
         "dSetTestingDb": "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- ./setup-database.sh testing",
         "dRunTest": [
@@ -69,30 +60,31 @@
         ],
         "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker-compose run --rm run_tests",
         "dDestroy": "docker-compose down -v",
-        "lint": "vendor/bin/phpcs -vp ."
+        "lint": "vendor/bin/phpcs -vp .",
+        "fix": "vendor/bin/phpcbf -vp ."
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
         "source": "https://github.com/wp-graphql/wp-graphql-woocommerce"
     },
     "archive": {
-      "name": "wp-graphql-wooocommerce",
-      "exclude": [
-        "/.*",
-        "/bin",
-        "/docs",
-        "/local",
-        "/plugin-build",
-        "/tests",
-        "!/vendor",
-        "/codeception.dist.yml",
-        "/codeception.yml",
-        "/composer.json",
-        "/composer.lock",
-        "/docker-compose.yml",
-        "/Dockerfile",
-        "/netlify.toml",
-        "/README.md"
-      ]
+        "name": "wp-graphql-wooocommerce",
+        "exclude": [
+            "/.*",
+            "/bin",
+            "/docs",
+            "/local",
+            "/plugin-build",
+            "/tests",
+            "!/vendor",
+            "/codeception.dist.yml",
+            "/codeception.yml",
+            "/composer.json",
+            "/composer.lock",
+            "/docker-compose.yml",
+            "/Dockerfile",
+            "/netlify.toml",
+            "/README.md"
+        ]
     }
 }
