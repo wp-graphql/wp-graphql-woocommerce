@@ -13,7 +13,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use GraphQL\Error\UserError;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
