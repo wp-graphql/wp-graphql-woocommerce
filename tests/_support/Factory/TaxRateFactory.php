@@ -74,7 +74,7 @@ class TaxRateFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	public function get_object_by_id( $id ) {
 		global $wpdb;
-		$rate = WC_Tax::_get_tax_rate( $id, OBJECT );
+		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
 		if ( \is_wp_error( $rate ) || empty( $rate ) ) {
 			return null;
 		}
