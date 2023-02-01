@@ -60,7 +60,8 @@
         ],
         "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker-compose run --rm run_tests",
         "dDestroy": "docker-compose down -v",
-        "lint": "vendor/bin/phpcs -vp ."
+        "lint": "vendor/bin/phpcs -vp .",
+        "fix": "vendor/bin/phpcbf -vp ."
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",

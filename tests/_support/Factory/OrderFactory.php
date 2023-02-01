@@ -340,7 +340,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function set_to_customer_billing_address( $order, $customer, $save = true ) {
-		$order    = \wc_get_order( $order );
+		$order = \wc_get_order( $order );
 		if ( ! $customer ) {
 			return $order;
 		}
@@ -366,7 +366,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
-		$order    = \wc_get_order( $order );
+		$order = \wc_get_order( $order );
 		if ( ! $customer ) {
 			return $order;
 		}

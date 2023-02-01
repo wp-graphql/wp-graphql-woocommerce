@@ -99,7 +99,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 	}
 
 	private function executeRegisterCustomerMutation( $input ) {
-		$query     = '
+		$query = '
 			mutation( $input: RegisterCustomerInput! ) {
 				registerCustomer( input: $input ) {
 					clientMutationId
@@ -144,13 +144,13 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		';
 
 		$variables = [ 'input' => $input ];
-		$response  = $this->graphql(compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		return $response;
 	}
 
 	private function executeUpdateCustomerMutation( $input ) {
-		$query     = '
+		$query = '
 			mutation( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					clientMutationId
@@ -192,7 +192,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		';
 
 		$variables = [ 'input' => $input ];
-		$response  = $this->graphql(compact( 'query', 'variables' ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		return $response;
 	}
@@ -232,7 +232,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'billing', $this->empty_billing() ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
 				]
-		 	),
+			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
 		];
 
@@ -274,7 +274,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
 				]
-		 	),
+			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
 		];
 
@@ -323,7 +323,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 						)
 					),
 				]
-		 	),
+			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
 		];
 
@@ -366,7 +366,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
 					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $this->shipping ) ),
 				]
-		 	),
+			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
 		];
 
@@ -465,12 +465,15 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'firstName', $this->first_name ),
 					$this->expectedField( 'lastName', $this->last_name ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
-					$this->expectedField( 'shipping', array_merge(
-						$this->empty_shipping(),
-						array_intersect_key( $this->billing, $this->empty_shipping() )
-					) ),
+					$this->expectedField(
+						'shipping',
+						array_merge(
+							$this->empty_shipping(),
+							array_intersect_key( $this->billing, $this->empty_shipping() )
+						)
+					),
 				]
-		 	),
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -502,10 +505,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'email', $this->email ),
 					$this->expectedField( 'firstName', $this->first_name ),
 					$this->expectedField( 'lastName', $this->last_name ),
-					$this->expectedField( 'billing',  $this->empty_billing() ),
+					$this->expectedField( 'billing', $this->empty_billing() ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
 				]
-		 	),
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -549,7 +552,6 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$user = get_user_by( 'email', 'user@woographql.test' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-
 		$expected = [
 			$this->expectedObject(
 				'registerCustomer.customer',
@@ -564,7 +566,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 						]
 					),
 				]
-		 	),
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -616,7 +618,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 						]
 					),
 				]
-		 	),
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -665,7 +667,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 						]
 					),
 				]
-		 	),
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
