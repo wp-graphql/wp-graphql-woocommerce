@@ -1,27 +1,38 @@
 <?php
 
-use GraphQLRelay\Relay;
+class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
+	public function expectedTaxRateData( $rate_id ) {
+		$rate = $this->factory->tax_rate->get_object_by_id( $rate_id );
 
-class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $rate;
-	private $helper;
+		$expected = [
+			$this->expectedField( 'taxRate.id', $this->toRelayId( 'tax_rate', $rate_id ) ),
+			$this->expectedField( 'taxRate.databaseId', absint( $rate->tax_rate_id ) ),
+			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : self::IS_NULL ),
+			$this->expectedField( 'taxRate.state', ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : self::IS_NULL ),
+			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : [ "*" ] ),
+			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : [ "*" ] ),
+			$this->expectedField( 'taxRate.rate', ! empty( $rate->tax_rate ) ? $rate->tax_rate : self::IS_NULL ),
+			$this->expectedField( 'taxRate.name', ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : self::IS_NULL ),
+			$this->expectedField( 'taxRate.priority', absint( $rate->tax_rate_priority ) ),
+			$this->expectedField( 'taxRate.compound', (bool) $rate->tax_rate_compound ),
+			$this->expectedField( 'taxRate.shipping', (bool) $rate->tax_rate_shipping ),
+			$this->expectedField( 'taxRate.order', absint( $rate->tax_rate_order ) ),
+			$this->expectedField(
+				'taxRate.class',
+				! empty( $rate->tax_rate_class )
+					? WPEnumType::get_safe_name( $rate->tax_rate_class )
+					: 'STANDARD'
+			),
+		];
 
-	public function setUp(): void {
-		parent::setUp();
-
-		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
-		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
-		$this->helper       = $this->getModule( '\Helper\Wpunit' )->tax_rate();
-		$this->rate         = $this->helper->create();
+		return $expected;
 	}
 
 	// tests
 	public function testTaxQuery() {
-		$id = Relay::toGlobalId( 'tax_rate', $this->rate );
+		$rate      = $this->factory->tax_rate->create();
 
-		$query = '
+		$query     = '
 			query taxRateQuery( $id: ID, $idType: TaxRateIdTypeEnum ) {
 				taxRate( id: $id, idType: $idType ) {
 					id
@@ -46,14 +57,11 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests query, "id" query arg, and results
 		 */
-		$variables = [ 'id' => $id ];
-		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected  = [ 'data' => [ 'taxRate' => $this->helper->print_query( $this->rate ) ] ];
+		$variables = [ 'id' => $this->toRelayId( 'tax_rate', $rate ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = $this->expectedTaxRateData( $rate );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
@@ -61,22 +69,18 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests query, "rateId" query arg, and results
 		 */
 		$variables = [
-			'id'     => $this->rate,
+			'id'     => $rate,
 			'idType' => 'DATABASE_ID',
 		];
-		$actual    = do_graphql_request( $query, 'taxRateQuery', $variables );
-		$expected  = [ 'data' => [ 'taxRate' => $this->helper->print_query( $this->rate ) ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testTaxesQuery() {
-		$rates = [
-			$this->rate,
-			$this->helper->create(
+		$rates    = [
+			$this->factory->tax_rate->create(),
+			$this->factory->tax_rate->create(
 				[
 					'country'  => 'US',
 					'state'    => 'AL',
@@ -90,7 +94,7 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'class'    => 'reduced-rate',
 				]
 			),
-			$this->helper->create(
+			$this->factory->tax_rate->create(
 				[
 					'country'  => 'US',
 					'state'    => 'VA',
@@ -106,11 +110,12 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 			),
 		];
 
-		$query = '
+		$query    = '
 			query ( $class: TaxClassEnum, $postCode: String, $postCodeIn: [String] ) {
 				taxRates( where: { class: $class, postCode: $postCode, postCodeIn: $postCodeIn } ) {
 					nodes {
 						id
+						class
 					}
 				}
 			}
@@ -121,62 +126,52 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Tests query
 		 */
-		$actual   = graphql( [ 'query' => $query ] );
-		$expected = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						$rates
-					),
-				],
-			],
-		];
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = array_map(
+			function( $id ) {
+				return $this->expectedNode(
+					'taxRates.nodes',
+					[
+						$this->expectedField( 'id', $this->toRelayId( 'tax_rate', $id ) ),
+					]
+				);
+			},
+			$rates
+		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Tests "class" where arg
 		 */
-		$variables = [ 'class' => 'REDUCED_RATE' ];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
+		$reduced_tax_rates = array_values(
+			array_filter(
+				$rates,
+				function( $id ) {
+					$rate = $this->factory->tax_rate->get_object_by_id( $id );
+					return 'reduced-rate' === $rate->tax_rate_class;
+				}
+			)
 		);
-		$expected  = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						array_values(
-							array_filter(
-								$rates,
-								function( $id ) {
-									$rate = $this->helper->get_rate_object( $id );
-									return 'reduced-rate' === $rate->tax_rate_class;
-								}
-							)
-						)
-					),
-				],
-			],
-		];
+		$variables         = [ 'class' => 'REDUCED_RATE' ];
+		$response          = $this->graphql( compact( 'query', 'variables' ) );
+		$expected          = $expected = array_map(
+			function( $id ) {
+				return $this->expectedNode(
+					'taxRates.nodes',
+					[
+						$this->expectedField( 'id', $this->toRelayId( 'tax_rate', $id ) ),
+					]
+				);
+			},
+			$reduced_tax_rates,
+		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$expected[]        = $this->not()->expectedField( 'taxRates.nodes.#.class', 'STANDARD' );
 
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Three
@@ -184,29 +179,14 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "postCode" where arg
 		 */
 		$variables = [ 'postCode' => '23451' ];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						[ $rates[2] ]
-					),
-				],
-			],
+			$this->expectedField( 'taxRates.nodes.0.id', $this->toRelayId( 'tax_rate', $rates[2] ) ),
+			$this->not()->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[0] ) ),
+			$this->not()->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[1] ) ),
 		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
 		 * Assertion Four
@@ -214,28 +194,90 @@ class TaxRateQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 * Tests "postCodeIn" where arg
 		 */
 		$variables = [ 'postCodeIn' => [ '123456', '23451' ] ];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			'data' => [
-				'taxRates' => [
-					'nodes' => array_map(
-						function( $id ) {
-							return [ 'id' => Relay::toGlobalId( 'tax_rate', $id ) ];
-						},
-						[ $rates[1], $rates[2] ]
-					),
-				],
-			],
+			$this->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[1] ) ),
+			$this->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[2] ) ),
+			$this->not()->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[0] ) ),
 		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 
-		$this->assertEquals( $expected, $actual );
+	public function testTaxIncludedOptionEffect() {
+		// Create tax rate.
+		$this->factory->tax_rate->create(
+			[
+				'country'  => 'US',
+				'state'    => '',
+				'rate'     => 10,
+				'name'     => 'US',
+				'priority' => '1',
+				'compound' => '0',
+				'shipping' => '1',
+				'class'    => '',
+			]
+		);
+
+		// Set customer address.
+		\WC()->customer->set_shipping_city( 'Norfolk' );
+		\WC()->customer->set_shipping_state( 'VA' );
+		\WC()->customer->set_shipping_postcode( '23451' );
+		\WC()->customer->set_shipping_country( 'US' );
+		\WC()->customer->save();
+		\WC()->initialize_session();
+
+		// Create product to query.
+		$product_id = $this->factory->product->createSimple(
+			[
+				'price' => 10,
+				'regular_price' => 10
+			]
+		);
+		$query     = '
+			query( $id: ID! ) {
+				product( id: $id ) {
+					... on SimpleProduct {
+						price
+						regularPrice
+					}
+				}
+			}
+		';
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+
+		/**
+		 * Assertion One
+		 *
+		 * Test without taxes included.
+		 */
+
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'product.price', '$10.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Clear product cache.
+		$this->clearLoaderCache( 'wc_post' );
+		$this->clearLoaderCache( 'post' );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Test with taxes included.
+		 */
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_prices_include_tax', 'no' );
+		update_option( 'woocommerce_tax_display_shop', 'incl' );
+
+		$this->logData( \wc_prices_include_tax() ? 'included' : 'excluded' );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'product.price', '$11.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
