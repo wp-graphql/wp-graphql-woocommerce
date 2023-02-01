@@ -13,7 +13,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use GraphQL\Error\UserError;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
@@ -189,7 +188,7 @@ class Product {
 					if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
 						return null;
 					}
-					return DataSource::resolve_post_object( $source->image_id, $context );
+					return $context->get_loader( 'post' )->load_deferred( $source->image_id );
 				},
 			],
 			'onSale'            => [

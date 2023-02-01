@@ -11,7 +11,6 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 
 /**
  * Class - Product_Category_Type
@@ -31,7 +30,7 @@ class Product_Category_Type {
 					'resolve'     => function( $source, array $args, AppContext $context ) {
 						$thumbnail_id = get_term_meta( $source->term_id, 'thumbnail_id', true );
 						return ! empty( $thumbnail_id )
-							? DataSource::resolve_post_object( $thumbnail_id, $context )
+							? $context->get_loader( 'post' )->load_deferred( $thumbnail_id )
 							: null;
 					},
 				],
