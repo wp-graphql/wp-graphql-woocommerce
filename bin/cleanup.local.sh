@@ -25,12 +25,11 @@ remove_wordpress
 # Delete symlink to
 remove_project_symlink
 
-# Remove "extra" config.
-composer config --unset extra.wordpress-install-dir
-composer config --unset extra.installer-paths
-
 # Remove testing dependencies from Composer.
 remove_local_test_library
+
+# Clean composer.json.
+cleanup_composer_file
 
 # Delete any missed files in the removal of the local installation.
 # And rebuild composer.lock
