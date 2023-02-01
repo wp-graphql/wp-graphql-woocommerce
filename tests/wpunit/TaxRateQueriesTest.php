@@ -9,8 +9,8 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'taxRate.databaseId', absint( $rate->tax_rate_id ) ),
 			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : self::IS_NULL ),
 			$this->expectedField( 'taxRate.state', ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : self::IS_NULL ),
-			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : [ "*" ] ),
-			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : [ "*" ] ),
+			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : [ '*' ] ),
+			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : [ '*' ] ),
 			$this->expectedField( 'taxRate.rate', ! empty( $rate->tax_rate ) ? $rate->tax_rate : self::IS_NULL ),
 			$this->expectedField( 'taxRate.name', ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : self::IS_NULL ),
 			$this->expectedField( 'taxRate.priority', absint( $rate->tax_rate_priority ) ),
@@ -30,9 +30,9 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 	// tests
 	public function testTaxQuery() {
-		$rate      = $this->factory->tax_rate->create();
+		$rate = $this->factory->tax_rate->create();
 
-		$query     = '
+		$query = '
 			query taxRateQuery( $id: ID, $idType: TaxRateIdTypeEnum ) {
 				taxRate( id: $id, idType: $idType ) {
 					id
@@ -78,7 +78,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	}
 
 	public function testTaxesQuery() {
-		$rates    = [
+		$rates = [
 			$this->factory->tax_rate->create(),
 			$this->factory->tax_rate->create(
 				[
@@ -110,7 +110,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			),
 		];
 
-		$query    = '
+		$query = '
 			query ( $class: TaxClassEnum, $postCode: String, $postCodeIn: [String] ) {
 				taxRates( where: { class: $class, postCode: $postCode, postCodeIn: $postCodeIn } ) {
 					nodes {
@@ -157,7 +157,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		);
 		$variables         = [ 'class' => 'REDUCED_RATE' ];
 		$response          = $this->graphql( compact( 'query', 'variables' ) );
-		$expected          = $expected = array_map(
+		$expected          = array_map(
 			function( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
@@ -169,7 +169,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$reduced_tax_rates,
 		);
 
-		$expected[]        = $this->not()->expectedField( 'taxRates.nodes.#.class', 'STANDARD' );
+		$expected[] = $this->not()->expectedField( 'taxRates.nodes.#.class', 'STANDARD' );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -230,11 +230,11 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		// Create product to query.
 		$product_id = $this->factory->product->createSimple(
 			[
-				'price' => 10,
-				'regular_price' => 10
+				'price'         => 10,
+				'regular_price' => 10,
 			]
 		);
-		$query     = '
+		$query      = '
 			query( $id: ID! ) {
 				product( id: $id ) {
 					... on SimpleProduct {
@@ -244,7 +244,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			}
 		';
-		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$variables  = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 
 		/**
 		 * Assertion One
@@ -252,8 +252,8 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * Test without taxes included.
 		 */
 
-		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
 			$this->expectedField( 'product.price', '$10.00' ),
 		];
 
@@ -273,8 +273,8 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		update_option( 'woocommerce_tax_display_shop', 'incl' );
 
 		$this->logData( \wc_prices_include_tax() ? 'included' : 'excluded' );
-		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
 			$this->expectedField( 'product.price', '$11.00' ),
 		];
 
