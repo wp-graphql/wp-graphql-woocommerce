@@ -225,6 +225,7 @@ class Products {
 				'fromFieldName' => 'parent',
 				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql-woocommerce' ),
 				'oneToOne'      => true,
+				'queryClass'    => '\WC_Product_Query',
 				'resolve'       => function( $source, $args, AppContext $context, ResolveInfo $info ) {
 					if ( empty( $source->parent_id ) ) {
 						return null;
@@ -243,27 +244,6 @@ class Products {
 			]
 		);
 
-		// Taxonomy To Product resolver.
-		$resolve_product_from_taxonomy = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-			add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
-			$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-			remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
-
-			$tax_query = [
-				[
-					// WPCS: slow query ok.
-					'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					'field'    => 'term_id',
-					'terms'    => $source->term_id,
-				],
-			];
-			$resolver->set_query_arg( 'tax_query', $tax_query );
-
-			$resolver = self::set_ordering_query_args( $resolver, $args );
-
-			return $resolver->get_connection();
-		};
-
 		// From WooCommerce product attributes.
 		$attributes = WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
 		foreach ( $attributes as $attribute ) {
@@ -275,7 +255,9 @@ class Products {
 						'fromFieldName' => 'variations',
 						'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							global $wpdb;
+							add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
+							remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 
 							// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
@@ -291,8 +273,9 @@ class Products {
 								)
 							);
 
+							$variation_ids = ! empty( $variation_ids ) ? $variation_ids : [ '0' ];
+
 							$resolver->set_query_arg( 'post__in', $variation_ids );
-							$resolver->set_query_arg( 'post_type', 'product_variation' );
 
 							$resolver = self::set_ordering_query_args( $resolver, $args );
 
@@ -302,6 +285,64 @@ class Products {
 				)
 			);
 		}//end foreach
+	}
+
+	/**
+	 * Returns the singular name of all registered taxonomies connected the products.
+	 *
+	 * @return array
+	 */
+	private static function get_product_connected_taxonomies() {
+		$taxonomies         = [];
+		$allowed_taxonomies = \WPGraphQL::get_allowed_taxonomies( 'objects' );
+
+		foreach ( $allowed_taxonomies as $tax_object ) {
+			if ( ! in_array( 'product', $tax_object->object_type, true ) ) {
+				continue;
+			}
+
+			$taxonomies[] = ucfirst( $tax_object->graphql_single_name );
+		}
+
+		return $taxonomies;
+	}
+
+	/**
+	 * Ensures all connection the `Product` type have proper connection config upon registration.
+	 *
+	 * @param array $config  Connection config.
+	 * @return array
+	 */
+	public static function set_connection_config( $config ) {
+		$to_type   = $config['toType'];
+		$from_type = $config['fromType'];
+		if ( 'Product' === $to_type ) {
+			$config['connectionArgs'] = self::get_connection_args();
+			$config['queryClass']     = '\WC_Product_Query';
+		}
+
+		$taxonomies = self::get_product_connected_taxonomies();
+		if ( 'Product' === $to_type && in_array( $from_type, $taxonomies, true ) ) {
+			$config['resolve'] = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
+				remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+				$tax_query = [
+					[
+						'taxonomy'         => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						'terms'            => [ $source->term_id ],
+						'field'            => 'term_id',
+						'include_children' => false,
+					],
+				];
+				$resolver->set_query_arg( 'tax_query', $tax_query );
+
+				$resolver = self::set_ordering_query_args( $resolver, $args );
+
+				return $resolver->get_connection();
+			};
+		}
+		return $config;
 	}
 
 	/**

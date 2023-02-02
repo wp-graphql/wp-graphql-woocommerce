@@ -123,6 +123,11 @@ class Core_Schema_Filters {
 			10,
 			2
 		);
+
+		add_filter(
+			'graphql_wp_connection_type_config',
+			[ '\WPGraphQL\WooCommerce\Connection\Products', 'set_connection_config' ]
+		);
 	}
 
 	/**

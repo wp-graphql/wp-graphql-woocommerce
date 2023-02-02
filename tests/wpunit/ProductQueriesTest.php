@@ -931,22 +931,33 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$test_category = $this->factory->product->createProductCategory( 'test-product-category-2' );
 		update_term_meta( $test_category, 'thumbnail_id', $image_id );
 
-		$product_id = $this->factory->product->createSimple(
+		$product_id           = $this->factory->product->createSimple(
 			[
-				'tag_ids'      => [ $test_tag ],
-				'category_ids' => [ $test_category ],
+				'tag_ids'       => [ $test_tag ],
+				'category_ids'  => [ $test_category ],
+				'price'         => 10,
+				'regular_price' => 10,
+			]
+		);
+		$expensive_product_id = $this->factory->product->createSimple(
+			[
+				'tag_ids'       => [ $test_tag ],
+				'category_ids'  => [ $test_category ],
+				'price'         => 100,
+				'regular_price' => 100,
 			]
 		);
 
 		$query = '
-			query {
+			query($orderby: [ProductsOrderbyInput], $orderby2: [ProductsOrderbyInput]) {
 				productTags( where: { hideEmpty: true } ) {
 					nodes {
 						name
-						products {
+						products(where: {orderby: $orderby}) {
 							nodes {
 								... on SimpleProduct {
 									id
+									price
 								}
 							}
 						}
@@ -958,10 +969,11 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						image {
 							id
 						}
-						products {
+						products(where: {orderby: $orderby2}) {
 							nodes {
 								... on SimpleProduct {
 									id
+									price
 								}
 							}
 						}
@@ -970,30 +982,38 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			}
 		';
 
-		$response = graphql( compact( 'query' ) );
-		$expected = [
+		$variables = [
+			'orderby'  => [
+				[
+					'field' => 'PRICE',
+					'order' => 'ASC',
+				],
+			],
+			'orderby2' => [
+				[
+					'field' => 'PRICE',
+					'order' => 'DESC',
+				],
+			],
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
 			$this->expectedNode(
 				'productTags.nodes',
 				[
-					'name'     => 'test-product-tag-2',
-					'products' => [
-						'nodes' => [
-							[ 'id' => $this->toRelayId( 'product', $product_id ) ],
-						],
-					],
+					$this->expectedField( 'name', 'test-product-tag-2' ),
+					$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
+					$this->expectedField( 'products.nodes.1.id', $this->toRelayId( 'product', $expensive_product_id ) ),
 				],
 				0
 			),
 			$this->expectedNode(
 				'productCategories.nodes',
 				[
-					'name'     => 'test-product-category-2',
-					'image'    => [ 'id' => $this->toRelayId( 'post', $image_id ) ],
-					'products' => [
-						'nodes' => [
-							[ 'id' => $this->toRelayId( 'product', $product_id ) ],
-						],
-					],
+					$this->expectedField( 'name', 'test-product-category-2' ),
+					$this->expectedField( 'image.id', $this->toRelayId( 'post', $image_id ) ),
+					$this->expectedField( 'products.nodes.1.id', $this->toRelayId( 'product', $product_id ) ),
+					$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'product', $expensive_product_id ) ),
 				],
 				0
 			),

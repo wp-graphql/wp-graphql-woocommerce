@@ -1,28 +1,41 @@
 <?php
 
-class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $helper;
-	private $variation_helper;
-	private $product_id;
-	private $variation_ids;
+class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
+	public function expectedProductAttributeData( $product_id, $path ) {
+		$product    = wc_get_product( $product_id );
+		$attributes = $product->get_attributes();
 
-	public function setUp(): void {
-		parent::setUp();
+		$expected = [];
 
-		$this->shop_manager     = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
-		$this->customer         = $this->factory->user->create( [ 'role' => 'customer' ] );
-		$this->helper           = $this->getModule( '\Helper\Wpunit' )->product();
-		$this->variation_helper = $this->getModule( '\Helper\Wpunit' )->product_variation();
-		$this->product_id       = $this->helper->create_variable();
-		$this->variation_ids    = $this->variation_helper->create( $this->product_id )['variations'];
+		foreach ( $attributes as $attribute_name => $attribute ) {
+			$expected[] = $this->expectedNode(
+				$path,
+				[
+					$this->expectedField( 'id', base64_encode( $attribute_name . ':' . $product_id . ':' . $attribute->get_name() ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+					$this->expectedField( 'attributeId', $attribute->get_id() ),
+					$this->expectedField( 'name', str_replace( 'pa_', '', $attribute->get_name() ) ),
+					$this->expectedField(
+						'label',
+						$attribute->is_taxonomy()
+							? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
+							: self::IS_NULL
+					),
+					$this->expectedField( 'options', $attribute->get_slugs() ),
+					$this->expectedField( 'position', $attribute->get_position() ),
+					$this->expectedField( 'visible', $attribute->get_visible() ),
+					$this->expectedField( 'variation', $attribute->get_variation() ),
+				]
+			);
+		}
 
-		\WPGraphQL::clear_schema();
+		return $expected;
 	}
 
 	// tests
 	public function testProductAttributeQuery() {
+		$product_id    = $this->factory->product->createVariable();
+		$variation_ids = $this->factory->product_variation->createSome( $product_id )['variations'];
+
 		$query = '
             query attributeQuery( $id: ID! ) {
                 product( id: $id ) {
@@ -45,30 +58,20 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
             }
         ';
 
-		$variables = [ 'id' => $this->helper->to_relay_id( $this->product_id ) ];
-		$actual    = graphql(
-			[
-				'query'          => $query,
-				'operation_name' => 'attributeQuery',
-				'variables'      => $variables,
-			]
+		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_merge(
+			[ $this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ) ],
+			$this->expectedProductAttributeData( $product_id, 'product.attributes.nodes' )
 		);
-		$expected  = [
-			'data' => [
-				'product' => [
-					'id'         => $this->helper->to_relay_id( $this->product_id ),
-					'attributes' => $this->helper->print_attributes( $this->product_id ),
-				],
-			],
-		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductAttributeToProductConnectionQuery() {
+		$product_id    = $this->factory->product->createVariable();
+		$variation_ids = $this->factory->product_variation->createSome( $product_id )['variations'];
+
 		$query = '
             query attributeConnectionQuery( $color: [String!] ) {
                 allPaColor( where: { name: $color } ) {
@@ -86,38 +89,18 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
 		$variables = [ 'color' => 'red' ];
-		$actual    = graphql(
-			[
-				'query'          => $query,
-				'operation_name' => 'attributeConnectionQuery',
-				'variables'      => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			'data' => [
-				'allPaColor' => [
-					'nodes' => [
-						[
-							'products' => [
-								'nodes' => [
-									[
-										'id' => $this->helper->to_relay_id( $this->product_id ),
-									],
-								],
-							],
-						],
-					],
-				],
-			],
+			$this->expectedField( 'allPaColor.nodes.0.products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
 		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductAttributeToVariationConnectionQuery() {
+		$product_id    = $this->factory->product->createVariable();
+		$variation_ids = $this->factory->product_variation->createSome( $product_id )['variations'];
+
 		$query = '
             query attributeConnectionQuery( $size: [String!] ) {
                 allPaSize( where: { name: $size } ) {
@@ -133,44 +116,26 @@ class ProductAttributeQueriesTest extends \Codeception\TestCase\WPTestCase {
         ';
 
 		$variables = [ 'size' => 'small' ];
-		$actual    = graphql(
-			[
-				'query'          => $query,
-				'operation_name' => 'attributeConnectionQuery',
-				'variables'      => $variables,
-			]
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_map(
+			function( $id ) {
+				return $this->expectedField( 'allPaSize.nodes.0.variations.nodes.#.id', $this->toRelayId( 'product_variation', $id ) );
+			},
+			array_filter(
+				$variation_ids,
+				function( $id ) {
+					$variation       = new \WC_Product_Variation( $id );
+					$small_attribute = array_filter(
+						$variation->get_attributes(),
+						function( $attribute ) {
+							return 'small' === $attribute;
+						}
+					);
+					return ! empty( $small_attribute );
+				}
+			)
 		);
-		$expected  = [
-			'data' => [
-				'allPaSize' => [
-					'nodes' => [
-						[
-							'variations' => [
-								'nodes' => $this->variation_helper->print_nodes(
-									$this->variation_ids,
-									[
-										'filter' => function( $id ) {
-											$variation       = new \WC_Product_Variation( $id );
-											$small_attribute = array_filter(
-												$variation->get_attributes(),
-												function( $attribute ) {
-													return 'small' === $attribute;
-												}
-											);
-											return ! empty( $small_attribute );
-										},
-									]
-								),
-							],
-						],
-					],
-				],
-			],
-		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
