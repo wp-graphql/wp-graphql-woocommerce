@@ -60,10 +60,10 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 
 		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
-			...$this->expectedProductAttributeData( $product_id, 'product.attributes.nodes' ),
-		];
+		$expected  = array_merge(
+			[ $this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ) ],
+			$this->expectedProductAttributeData( $product_id, 'product.attributes.nodes' )
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
