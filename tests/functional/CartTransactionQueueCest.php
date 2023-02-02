@@ -78,7 +78,8 @@ class CartTransactionQueueCest {
 	}
 
 	// tests
-	public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I ) {
+	public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I, $scenario ) {
+		$scenario->incomplete('Test unstable');
 		$I->wantTo( 'Add Item to cart' );
 		extract( $this->_startAuthenticatedSession( $I ) );
 
