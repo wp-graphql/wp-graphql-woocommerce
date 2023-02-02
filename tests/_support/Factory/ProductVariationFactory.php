@@ -32,13 +32,26 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		// Create variation.
 		$variation = new $variation_class();
-		$variation->set_props( $args );
-		if ( ! empty( $args['meta_data'] ) ) {
-			$variation->set_meta_data( $args['meta_data'] );
+		foreach ( $args as $field => $field_value ) {
+			if ( ! is_callable( [ $variation, "set_{$field}" ] ) ) {
+				throw new \Exception(
+					sprintf( '"%1$s" is not a valid %2$s product variation field.', $field, $variation->get_type() )
+				);
+			}
+
+			$variation->{"set_{$field}"}( $field_value );
 		}
-		if ( ! empty( $args['attributes'] ) ) {
-			$variation->set_attributes( $args['attributes'] );
-		}
+
+
+		// if ( ! empty( $args['meta_data'] ) ) {
+		// 	$variation->set_meta_data( $args['meta_data'] );
+		// 	unset( $args['meta_data'] );
+		// }
+		// if ( ! empty( $args['attributes'] ) ) {
+		// 	$variation->set_attributes( $args['attributes'] );
+		// 	unset( $args['attributes'] );
+		// }
+		// $variation->set_props( $args );
 
 		return $variation->save();
 	}
@@ -51,7 +64,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		foreach ( $fields as $field => $field_value ) {
 			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
 				throw new \Exception(
-					sprintf( '"%1$s" is not a valid %2$s product field.', $field, $object->get_type() )
+					sprintf( '"%1$s" is not a valid %2$s product variation field.', $field, $object->get_type() )
 				);
 			}
 
@@ -73,12 +86,14 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		// Create variation stub data.
 		$variation_data = [
 			[
+				'parent_id'     => $product,
 				'attributes'    => [ 'pa_size' => 'small' ],
 				'image_id'      => null,
 				'downloads'     => [ $this->factory->product->createDownload() ],
 				'regular_price' => 10,
 			],
 			[
+				'parent_id'     => $product,
 				'attributes'    => [ 'pa_size' => 'medium' ],
 				'image_id'      => $this->factory->post->create(
 					[
@@ -91,6 +106,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 				'regular_price' => 15,
 			],
 			[
+				'parent_id'     => $product,
 				'attributes'    => [ 'pa_size' => 'large' ],
 				'image_id'      => null,
 				'downloads'     => [],
@@ -101,14 +117,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		$variations = [];
 		foreach ( $variation_data as $data ) {
 			$args      = array_merge( $data, $args );
-			$variation = $this->create_and_get(
-				$args,
-				[
-					'parent_id'       => $product,
-					'sku'             => uniqid(),
-					'variation_class' => '\WC_Product_Variation',
-				]
-			);
+			$variation = $this->create_and_get( $args, [ 'variation_class' => '\WC_Product_Variation' ] );
 
 			$variations[] = $variation->get_id();
 		}
