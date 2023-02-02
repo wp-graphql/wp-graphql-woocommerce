@@ -931,7 +931,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$test_category = $this->factory->product->createProductCategory( 'test-product-category-2' );
 		update_term_meta( $test_category, 'thumbnail_id', $image_id );
 
-		$product_id = $this->factory->product->createSimple(
+		$product_id           = $this->factory->product->createSimple(
 			[
 				'tag_ids'       => [ $test_tag ],
 				'category_ids'  => [ $test_category ],
@@ -983,7 +983,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		';
 
 		$variables = [
-			'orderby' => [
+			'orderby'  => [
 				[
 					'field' => 'PRICE',
 					'order' => 'ASC',

@@ -7,11 +7,11 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 
 		$expected = [];
 
-		foreach( $attributes as $attribute_name => $attribute ) {
+		foreach ( $attributes as $attribute_name => $attribute ) {
 			$expected[] = $this->expectedNode(
 				$path,
 				[
-					$this->expectedField( 'id', base64_encode( $attribute_name . ':' . $product_id . ':' . $attribute->get_name() ) ),
+					$this->expectedField( 'id', base64_encode( $attribute_name . ':' . $product_id . ':' . $attribute->get_name() ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 					$this->expectedField( 'attributeId', $attribute->get_id() ),
 					$this->expectedField( 'name', str_replace( 'pa_', '', $attribute->get_name() ) ),
 					$this->expectedField(
@@ -36,7 +36,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$product_id    = $this->factory->product->createVariable();
 		$variation_ids = $this->factory->product_variation->createSome( $product_id )['variations'];
 
-		$query         = '
+		$query = '
             query attributeQuery( $id: ID! ) {
                 product( id: $id ) {
                     ... on VariableProduct {

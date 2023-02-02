@@ -42,7 +42,6 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 			$variation->{"set_{$field}"}( $field_value );
 		}
 
-
 		// if ( ! empty( $args['meta_data'] ) ) {
 		// 	$variation->set_meta_data( $args['meta_data'] );
 		// 	unset( $args['meta_data'] );

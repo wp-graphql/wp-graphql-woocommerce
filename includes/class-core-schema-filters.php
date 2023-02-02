@@ -256,7 +256,6 @@ class Core_Schema_Filters {
 			$args['show_in_graphql']     = true;
 			$args['graphql_single_name'] = $singular_name;
 			$args['graphql_plural_name'] = 'all' . ucFirst( $singular_name );
-			$args['graphql_exclude_connections'] = ['variations'];
 		}
 
 		return $args;

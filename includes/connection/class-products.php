@@ -225,7 +225,7 @@ class Products {
 				'fromFieldName' => 'parent',
 				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql-woocommerce' ),
 				'oneToOne'      => true,
-				'queryClass'     => '\WC_Product_Query',
+				'queryClass'    => '\WC_Product_Query',
 				'resolve'       => function( $source, $args, AppContext $context, ResolveInfo $info ) {
 					if ( empty( $source->parent_id ) ) {
 						return null;
@@ -273,7 +273,7 @@ class Products {
 								)
 							);
 
-							$variation_ids = ! empty( $variation_ids ) ? $variation_ids: ['0'];
+							$variation_ids = ! empty( $variation_ids ) ? $variation_ids : [ '0' ];
 
 							$resolver->set_query_arg( 'post__in', $variation_ids );
 
@@ -293,11 +293,10 @@ class Products {
 	 * @return array
 	 */
 	private static function get_product_connected_taxonomies() {
-		$taxonomies = [];
+		$taxonomies         = [];
 		$allowed_taxonomies = \WPGraphQL::get_allowed_taxonomies( 'objects' );
 
 		foreach ( $allowed_taxonomies as $tax_object ) {
-
 			if ( ! in_array( 'product', $tax_object->object_type, true ) ) {
 				continue;
 			}
@@ -315,15 +314,15 @@ class Products {
 	 * @return array
 	 */
 	public static function set_connection_config( $config ) {
-		$toType   = $config['toType'];
-		$fromType = $config['fromType'];
-		if ( 'Product' === $toType ) {
+		$to_type   = $config['toType'];
+		$from_type = $config['fromType'];
+		if ( 'Product' === $to_type ) {
 			$config['connectionArgs'] = self::get_connection_args();
 			$config['queryClass']     = '\WC_Product_Query';
 		}
 
 		$taxonomies = self::get_product_connected_taxonomies();
-		if ( 'Product' === $toType && in_array( $config['fromType'], $taxonomies, true ) ) {
+		if ( 'Product' === $to_type && in_array( $from_type, $taxonomies, true ) ) {
 			$config['resolve'] = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 				add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
