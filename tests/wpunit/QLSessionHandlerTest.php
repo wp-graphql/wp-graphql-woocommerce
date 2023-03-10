@@ -109,8 +109,8 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		$decode_token = JWT::decode( $token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) );
 		$this->assertTrue( ! empty( $decode_token->iat ) );
-		$this->assertTrue( ! empty( $decode_token->iat ) );
-		$this->assertTrue( ! empty( $decode_token->iat ) );
+		$this->assertTrue( ! empty( $decode_token->exp ) );
+		$this->assertTrue( ! empty( $decode_token->data ) );
 
 		$this->assertEquals( $token, $session->build_token() );
 	}
