@@ -74,7 +74,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Expect token to be value.
 		$token = $session->get_session_token();
-		$this->assertObjectHasAttribute( 'iat', $token );
+		$this->assertTrue( ! empty( $token->field ) );
 		$this->assertObjectHasAttribute( 'exp', $token );
 		$this->assertObjectHasAttribute( 'data', $token );
 	}
