@@ -416,4 +416,14 @@ class QL_Session_Handler extends WC_Session_Handler {
 		\WC_Cache_Helper::invalidate_cache_group( WC_SESSION_CACHE_GROUP );
 		$this->_data = $this->get_session( $this->_customer_id );
 	}
+
+	/**
+	 * Noop for \WC_Session_Handler method.
+	 *
+	 * Prevents potential crticial errors when calling this method.
+	 *
+	 * @param bool $set Should the session cookie be set.
+	 */
+	public function set_customer_session_cookie( $set ) {}
+
 }
