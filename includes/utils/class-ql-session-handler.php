@@ -424,6 +424,6 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 *
 	 * @param bool $set Should the session cookie be set.
 	 */
-	public function set_customer_session_cookie($set) {}
+	public function set_customer_session_cookie( $set ) {}
 
 }
