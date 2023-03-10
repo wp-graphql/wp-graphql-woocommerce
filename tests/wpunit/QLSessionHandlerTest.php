@@ -74,9 +74,9 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Expect token to be value.
 		$token = $session->get_session_token();
-		$this->assertTrue( ! empty( $token->field ) );
-		$this->assertObjectHasAttribute( 'exp', $token );
-		$this->assertObjectHasAttribute( 'data', $token );
+		$this->assertTrue( ! empty( $token->iat ) );
+		$this->assertTrue( ! empty( $token->exp ) );
+		$this->assertTrue( ! empty( $token->data ) );
 	}
 
 	public function test_get_session_header() {
@@ -108,9 +108,9 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$token = $session->build_token();
 
 		$decode_token = JWT::decode( $token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) );
-		$this->assertObjectHasAttribute( 'iat', $decode_token );
-		$this->assertObjectHasAttribute( 'exp', $decode_token );
-		$this->assertObjectHasAttribute( 'data', $decode_token );
+		$this->assertTrue( ! empty( $decode_token->iat ) );
+		$this->assertTrue( ! empty( $decode_token->iat ) );
+		$this->assertTrue( ! empty( $decode_token->iat ) );
 
 		$this->assertEquals( $token, $session->build_token() );
 	}
