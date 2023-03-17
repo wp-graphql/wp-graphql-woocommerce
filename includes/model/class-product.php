@@ -241,7 +241,7 @@ class Product extends WC_Post {
 							: null;
 					},
 					'priceRaw'        => function() {
-						return ! empty( $this->wc_data->get_price() ) ? \wc_get_price_to_display( $this->wc_data ) : null;
+						return ! empty( $this->wc_data->get_price() ) ? $this->wc_data->get_price() : null;
 					},
 					'regularPrice'    => function() {
 						return ! empty( $this->wc_data->get_regular_price() )
@@ -255,8 +255,8 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_sale_price() )
 							? \wc_graphql_price(
 								\wc_get_price_to_display(
+									$this->wc_data,
 									[
-										$this->wc_data,
 										'price' => $this->wc_data->get_sale_price(),
 									]
 								)
