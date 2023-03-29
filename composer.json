@@ -33,7 +33,8 @@
         "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
-            "johnpbloch/wordpress-core-installer": true
+            "johnpbloch/wordpress-core-installer": true,
+            "composer/installers": true
         }
     },
     "autoload-dev": {

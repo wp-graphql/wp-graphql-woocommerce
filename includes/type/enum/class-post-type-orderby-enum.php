@@ -27,6 +27,10 @@ class Post_Type_Orderby_Enum {
 	 */
 	protected static function post_type_values() {
 		return [
+			'NAME'       => [
+				'value'       => 'post_title',
+				'description' => __( 'Order by name', 'wp-graphql-woocommerce' ),
+			],
 			'SLUG'       => [
 				'value'       => 'post_name',
 				'description' => __( 'Order by slug', 'wp-graphql-woocommerce' ),
