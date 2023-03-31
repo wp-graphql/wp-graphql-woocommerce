@@ -110,7 +110,10 @@ class Orders {
 	private static function get_customer_order_connection( $resolver, $customer ) {
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
 		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return [];
+			return [
+				'nodes' => [],
+				'edges' => [],
+			];
 		}
 
 		$meta_query = false;
@@ -140,7 +143,10 @@ class Orders {
 
 		// Bail if needed info not found on customer object.
 		if ( false === $meta_query ) {
-			return [];
+			return [
+				'nodes' => [],
+				'edges' => [],
+			];
 		}
 
 		$resolver->set_query_arg( 'meta_query', $meta_query );
