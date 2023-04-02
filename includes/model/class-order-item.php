@@ -85,7 +85,8 @@ class Order_Item extends Model {
 					return ! empty( $this->data->get_order_id() ) ? $this->data->get_order_id() : null;
 				},
 				'id'         => function() {
-					return Relay::toGlobalId( 'order_item', $this->data->get_order_id() . '+' . $this->ID );
+					// phpcs:ignore 
+					return Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID );
 				},
 				'type'       => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;

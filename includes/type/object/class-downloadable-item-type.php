@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
+use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WC_Product_Download;
@@ -29,9 +30,16 @@ class Downloadable_Item_Type {
 				'description' => __( 'A downloadable item', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
+					'id'                 => [
+						'type'        => [ 'non_null' => 'ID' ],
+						'description' => __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' ),
+						'resolve'     => function ( $source ) {
+							return ! empty( $source['download_id'] ) ? Relay::toGlobalId( 'download', $source['download_id'] ) : null;
+						},
+					],
 					'downloadId'         => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' ),
+						'description' => __( 'Downloadable item ID.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source['download_id'] ) ? $source['download_id'] : null;
 						},
