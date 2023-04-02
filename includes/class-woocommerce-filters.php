@@ -27,7 +27,7 @@ class WooCommerce_Filters {
 		self::$session_header = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
 
 		// Check if request is a GraphQL POST request.
-		if ( ! defined( 'NO_QL_SESSION_HANDLER' ) ) {
+		if ( ! self::is_session_handler_disabled() ) {
 			add_filter( 'woocommerce_session_handler', [ __CLASS__, 'woocommerce_session_handler' ] );
 			add_filter( 'graphql_response_headers_to_send', [ __CLASS__, 'add_session_header_to_expose_headers' ] );
 			add_filter( 'graphql_access_control_allow_headers', [ __CLASS__, 'add_session_header_to_allow_headers' ] );
@@ -35,6 +35,15 @@ class WooCommerce_Filters {
 
 		// Add better support for Stripe payment gateway.
 		add_filter( 'graphql_stripe_process_payment_args', [ __CLASS__, 'woographql_stripe_gateway_args' ], 10, 2 );
+	}
+
+	/**
+	 * Returns true if the "Disable QL Session Handler" option is checked on the settings page.
+	 *
+	 * @return boolean
+	 */
+	public static function is_session_handler_disabled() {
+		return 'on' === get_graphql_setting( 'disable_ql_session_handler', 'off', 'woographql_settings' );
 	}
 
 	/**

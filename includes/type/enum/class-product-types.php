@@ -16,7 +16,7 @@ class Product_Types {
 	 * Registers type
 	 */
 	public static function register() {
-		$values = apply_filters(
+		$values        = apply_filters(
 			'graphql_product_types_enum_values',
 			[
 				'SIMPLE'    => [
@@ -40,6 +40,14 @@ class Product_Types {
 					'description' => __( 'A product variation', 'wp-graphql-woocommerce' ),
 				],
 			]
+		);
+		$product_types = \wc_get_product_types();
+		array_walk(
+			$product_types,
+			function( $description, $value ) {
+				$key = strtoupper( str_replace( '-', '_', $value ) );
+				$values[ $key ] = compact( 'description', 'value' );
+			}
 		);
 
 		register_graphql_enum_type(

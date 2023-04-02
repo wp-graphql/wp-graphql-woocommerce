@@ -301,7 +301,13 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'connection/class-variation-attributes.php';
 			require $include_directory_path . 'connection/class-wc-terms.php';
 
+			// Include admin files.
+			require $include_directory_path . 'admin/class-section.php';
+			require $include_directory_path . 'admin/class-general.php';
+			require $include_directory_path . 'admin/class-substitutions.php';
+
 			// Include main plugin class files.
+			require $include_directory_path . 'class-admin.php';
 			require $include_directory_path . 'class-core-schema-filters.php';
 			require $include_directory_path . 'class-jwt-auth-schema-filters.php';
 			require $include_directory_path . 'class-woocommerce-filters.php';
@@ -358,6 +364,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * Sets up WooGraphQL schema.
 		 */
 		private function setup() {
+			// Initialize WooGraphQL Settings.
+			new Admin();
+
 			// Setup minor integrations.
 			Functions\setup_minor_integrations();
 

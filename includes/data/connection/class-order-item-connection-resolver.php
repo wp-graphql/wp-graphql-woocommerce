@@ -84,7 +84,14 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				$type = 'coupon';
 				break;
 			default:
-				$type = 'line_item';
+				$type = apply_filters(
+					'graphql_order_item_connection_item_type',
+					'line_item',
+					$this->source,
+					$this->args,
+					$this->context,
+					$this->info
+				);
 				break;
 		}
 
