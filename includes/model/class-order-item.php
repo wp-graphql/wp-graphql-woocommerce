@@ -11,6 +11,7 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use WPGraphQL\Model\Model;
+use GraphQLRelay\Relay;
 
 /**
  * Class Order_Item
@@ -76,11 +77,15 @@ class Order_Item extends Model {
 				'ID'         => function() {
 					return $this->data->get_id();
 				},
+				
 				'databaseId' => function() {
 					return $this->ID;
 				},
 				'orderId'    => function() {
 					return ! empty( $this->data->get_order_id() ) ? $this->data->get_order_id() : null;
+				},
+				'id'         => function() {
+					return Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID );
 				},
 				'type'       => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
