@@ -89,7 +89,7 @@ class Wpunit extends \Codeception\Module {
 	}
 
 	public function clear_loader_cache( $loader_name ) {
-		$loader = \WPGraphQL::get_app_context()->getLoader( $loader_name );
+		$loader = \WPGraphQL::get_app_context()->get_loader( $loader_name );
 		$loader->clearAll();
 	}
 

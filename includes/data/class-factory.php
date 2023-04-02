@@ -49,7 +49,7 @@ class Factory {
 			return null;
 		}
 		$customer_id = absint( $id );
-		$loader      = $context->getLoader( 'wc_customer' );
+		$loader      = $context->get_loader( 'wc_customer' );
 		$loader->buffer( [ $customer_id ] );
 		return new Deferred(
 			function () use ( $loader, $customer_id ) {
@@ -72,10 +72,10 @@ class Factory {
 			return null;
 		}
 
-		$context->getLoader( 'wc_post' )->buffer( [ $id ] );
+		$context->get_loader( 'wc_post' )->buffer( [ $id ] );
 		return new Deferred(
 			function () use ( $id, $context ) {
-				return $context->getLoader( 'wc_post' )->load( $id );
+				return $context->get_loader( 'wc_post' )->load( $id );
 			}
 		);
 	}
@@ -114,7 +114,7 @@ class Factory {
 		}
 
 		$id     = absint( $id );
-		$loader = $context->getLoader( 'tax_rate' );
+		$loader = $context->get_loader( 'tax_rate' );
 		$loader->buffer( [ $id ] );
 		return new Deferred(
 			function () use ( $loader, $id ) {
@@ -169,10 +169,10 @@ class Factory {
 			return null;
 		}
 
-		$context->getLoader( 'cart_item' )->buffer( [ $key ] );
+		$context->get_loader( 'cart_item' )->buffer( [ $key ] );
 		return new Deferred(
 			function () use ( $key, $context ) {
-				return $context->getLoader( 'cart_item' )->load( $key );
+				return $context->get_loader( 'cart_item' )->load( $key );
 			}
 		);
 	}
@@ -205,7 +205,7 @@ class Factory {
 			return null;
 		}
 		$object_id = absint( $id );
-		$loader    = $context->getLoader( 'downloadable_item' );
+		$loader    = $context->get_loader( 'downloadable_item' );
 		$loader->buffer( [ $object_id ] );
 		return new Deferred(
 			function () use ( $loader, $object_id ) {
