@@ -134,7 +134,7 @@ class Core_Schema_Filters {
 	 * Check and returns a GraphQL type from the
 	 * "{$product_type}_substitution_type" in the WooGraphQL settings.
 	 *
-	 * @param string $product_type
+	 * @param string $product_type  Product type in need of a GraphQL type.
 	 *
 	 * @return string|null
 	 */
@@ -166,7 +166,7 @@ class Core_Schema_Filters {
 				}
 
 				// Look for substitution type.
-				$substitution_type = self::get_substitution_type( $value-> type );
+				$substitution_type = self::get_substitution_type( $value->type );
 				if ( ! empty( $substitution_type ) ) {
 					return $type_registry->get_type( $substitution_type );
 				}

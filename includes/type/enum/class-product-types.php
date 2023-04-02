@@ -45,7 +45,7 @@ class Product_Types {
 		array_walk(
 			$product_types,
 			function( $description, $value ) {
-				$key = strtoupper( str_replace( '-', '_', $value ) );
+				$key            = strtoupper( str_replace( '-', '_', $value ) );
 				$values[ $key ] = compact( 'description', 'value' );
 			}
 		);

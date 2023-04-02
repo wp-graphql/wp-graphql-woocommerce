@@ -93,7 +93,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 					$this->info
 				);
 				break;
-		}
+		}//end switch
 
 		$items = [];
 		foreach ( $this->source->get_items( $type ) as $id => $item ) {

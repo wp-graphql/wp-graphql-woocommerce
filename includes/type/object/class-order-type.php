@@ -38,7 +38,7 @@ class Order_Type {
 				/**
 				 * Allows for a decisive filtering of the order fields.
 				 * Note: Only use if deregisteration or renaming the field(s) has failed.
-				 * 
+				 *
 				 * @param array $fields  Order field definitions.
 				 * @return array
 				 */
@@ -46,7 +46,7 @@ class Order_Type {
 				/**
 				 * Allows for a decisive filtering of the order connections.
 				 * Note: Only use if deregisteration or renaming the connection(s) has failed.
-				 * 
+				 *
 				 * @param array $connections  Order connection definitions.
 				 * @return array
 				 */
@@ -61,7 +61,7 @@ class Order_Type {
 	 * @param array $other_fields Extra fields configs to be added or override the default field definitions.
 	 * @return array
 	 */
-	public static function get_fields( $other_fields = []) {
+	public static function get_fields( $other_fields = [] ) {
 		return array_merge(
 			[
 				'id'                    => [

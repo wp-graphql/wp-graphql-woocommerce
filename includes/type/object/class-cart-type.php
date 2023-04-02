@@ -444,7 +444,7 @@ class Cart_Type {
 				/**
 				 * Allows for a decisive filtering of the cart fields.
 				 * Note: Only use if deregisteration or renaming the field(s) has failed.
-				 * 
+				 *
 				 * @param array $fields  Cart field definitions.
 				 * @return array
 				 */
@@ -452,7 +452,7 @@ class Cart_Type {
 				/**
 				 * Allows for a decisive filtering of the cart connections.
 				 * Note: Only use if deregisteration or renaming the connection(s) has failed.
-				 * 
+				 *
 				 * @param array $connections  Cart connection definitions.
 				 * @return array
 				 */

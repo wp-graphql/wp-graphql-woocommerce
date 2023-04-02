@@ -175,7 +175,7 @@ class Customer_Type {
 				/**
 				 * Allows for a decisive filtering of the order fields.
 				 * Note: Only use if deregisteration or renaming the field(s) has failed.
-				 * 
+				 *
 				 * @param array $fields  Customer field definitions.
 				 * @return array
 				 */
@@ -183,7 +183,7 @@ class Customer_Type {
 				/**
 				 * Allows for a decisive filtering of the order connections.
 				 * Note: Only use if deregisteration or renaming the connection(s) has failed.
-				 * 
+				 *
 				 * @param array $connections  Customer connection definitions.
 				 * @return array
 				 */
