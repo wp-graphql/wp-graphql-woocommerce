@@ -158,7 +158,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				case 'shop_order':
 					$customer_id = get_post_meta( $key, '_customer_user', true );
 					if ( ! empty( $customer_id ) ) {
-						$this->context->getLoader( 'wc_customer' )->buffer( [ $customer_id ] );
+						$this->context->get_loader( 'wc_customer' )->buffer( [ $customer_id ] );
 					}
 					break;
 				case 'product_variation':
@@ -180,7 +180,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			$load_dependencies = new Deferred(
 				function() use ( $key, $post_type, $customer_id, $parent_id, $context ) {
 					if ( ! empty( $customer_id ) ) {
-						$context->getLoader( 'wc_customer' )->load( $customer_id );
+						$context->get_loader( 'wc_customer' )->load( $customer_id );
 					}
 					if ( ! empty( $parent_id ) ) {
 						$this->load( $parent_id );

@@ -131,6 +131,18 @@ class Core_Schema_Filters {
 	}
 
 	/**
+	 * Check and returns a GraphQL type from the
+	 * "{$product_type}_substitution_type" in the WooGraphQL settings.
+	 *
+	 * @param string $product_type  Product type in need of a GraphQL type.
+	 *
+	 * @return string|null
+	 */
+	public static function get_substitution_type( $product_type ) {
+		return get_graphql_setting( "{$product_type}_substitution_type", null, 'woographql_settings' );
+	}
+
+	/**
 	 * Registers WooCommerce post-types to be used in GraphQL schema
 	 *
 	 * @param array  $args      - allowed post-types.
@@ -152,6 +164,13 @@ class Core_Schema_Filters {
 				if ( isset( $possible_types[ $value->type ] ) ) {
 					return $type_registry->get_type( $possible_types[ $value->type ] );
 				}
+
+				// Look for substitution type.
+				$substitution_type = self::get_substitution_type( $value->type );
+				if ( ! empty( $substitution_type ) ) {
+					return $type_registry->get_type( $substitution_type );
+				}
+
 				throw new UserError(
 					sprintf(
 					/* translators: %s: Product type */

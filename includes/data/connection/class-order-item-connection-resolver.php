@@ -84,9 +84,25 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				$type = 'coupon';
 				break;
 			default:
-				$type = 'line_item';
+				/**
+				 * Filter the $item_type to allow non-core item types.
+				 *
+				 * @param array       $query_args The args that will be passed to the WP_Query.
+				 * @param mixed       $source     The source that's passed down the GraphQL queries.
+				 * @param array       $args       The inputArgs on the field.
+				 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
+				 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+				 */
+				$type = apply_filters(
+					'graphql_order_item_connection_item_type',
+					'line_item',
+					$this->source,
+					$this->args,
+					$this->context,
+					$this->info
+				);
 				break;
-		}
+		}//end switch
 
 		$items = [];
 		foreach ( $this->source->get_items( $type ) as $id => $item ) {
