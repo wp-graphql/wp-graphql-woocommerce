@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.12.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.3) (2023-04-04)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.2...v0.12.3)
+
+**New Features:**
+
+- feat: WooGraphQL settings tab added. [\#726](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/726) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.12.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.2) (2023-04-01)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.1...v0.12.2)
@@ -15,6 +23,10 @@
 - Fix wrong function args in sale price and remove wc\_get\_price\_to\_display from raw price. [\#716](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/716) ([creative-andrew](https://github.com/creative-andrew))
 - Adds tax calculation to regular and sale prices. [\#714](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/714) ([creative-andrew](https://github.com/creative-andrew))
 - Adds noop for set\_customer\_session\_cookie. [\#710](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/710) ([creative-andrew](https://github.com/creative-andrew))
+
+**Other Changes:**
+
+- CHANGELOG and version updated. [\#724](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/724) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.12.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.1) (2023-02-02)
 
