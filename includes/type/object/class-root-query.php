@@ -115,6 +115,13 @@ class Root_Query {
 								break;
 						}
 
+						// Check if user authorized to view coupon.
+						$post_type     = get_post_type_object( 'shop_coupon' );
+						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
+						if ( ! $is_authorized ) {
+							return null;
+						}
+						
 						if ( empty( $coupon_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No coupon ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
@@ -212,7 +219,7 @@ class Root_Query {
 						// Check if user authorized to view order.
 						$post_type     = get_post_type_object( 'shop_order' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
-						if ( get_current_user_id() ) {
+						if ( ! $is_authorized && get_current_user_id() ) {
 							$orders = wc_get_orders(
 								[
 									'type'          => 'shop_order',
