@@ -170,7 +170,7 @@ class Cart_Mutation {
 		$the_coupon = new \WC_Coupon( $code );
 
 		// Prevent adding coupons by post ID.
-		if ( $the_coupon->get_code() !== $code ) {
+		if ( strtoupper( $the_coupon->get_code() ) !== strtoupper( $code ) ) {
 			$reason = __( 'No coupon found with the code provided', 'wp-graphql-woocommerce' );
 			return false;
 		}
