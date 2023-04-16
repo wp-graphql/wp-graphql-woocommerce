@@ -417,19 +417,18 @@ class Root_Query {
 
 		// Product queries.
 		$unsupported_type_enabled = woographql_setting( 'enable_unsupported_product_type', 'off' );
-		
+
 		$product_type_keys = array_keys( WooGraphQL::get_enabled_product_types() );
-		if ( 'on' ===  $unsupported_type_enabled ) {
+		if ( 'on' === $unsupported_type_enabled ) {
 			$product_type_keys[] = 'unsupported';
 		}
 
 		$product_type_keys = apply_filters( 'woographql_register_product_queries', $product_type_keys );
 
-		$product_types   = WooGraphQL::get_enabled_product_types();
-		if ( 'on' ===  $unsupported_type_enabled ) {
+		$product_types = WooGraphQL::get_enabled_product_types();
+		if ( 'on' === $unsupported_type_enabled ) {
 			$product_types['unsupported'] = WooGraphQL::get_supported_product_type();
 		}
-		
 
 		foreach ( $product_type_keys as $type_key ) {
 			$field_name = "{$type_key}Product";
@@ -444,7 +443,8 @@ class Root_Query {
 				$field_name,
 				[
 					'type'        => $type_name,
-					'description' => __( "A {$type_key} product object", 'wp-graphql-woocommerce' ),
+					/* translators: Product type slug */
+					'description' => sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key ),
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',

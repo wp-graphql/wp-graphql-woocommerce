@@ -145,7 +145,7 @@ class Core_Schema_Filters {
 			$args['graphql_single_name']              = 'Product';
 			$args['graphql_plural_name']              = 'Products';
 			$args['graphql_kind']                     = 'interface';
-			$args['graphql_interfaces']               = ['ContentNode'];
+			$args['graphql_interfaces']               = [ 'ContentNode' ];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
 			$args['graphql_resolve_type']             = static function( $value ) {
@@ -363,9 +363,12 @@ class Core_Schema_Filters {
 	/**
 	 * Inject Union type resolver that resolve to Product with Product types
 	 *
-	 * @param \WPGraphQL\Type\WPObjectType $type           Type be resolve to.
-	 * @param mixed                        $value          Object for which the type is being resolve config.
-	 * @param WPUnionType|WPInterfaceType  $abstract_type  WPGraphQL abstract class object.
+	 * @param \WPGraphQL\Type\WPObjectType|null $type   Type be resolve to.
+	 * @param mixed                             $value  Object for which the type is being resolve config.
+	 *
+	 * @throws UserError Invalid product type received.
+	 *
+	 * @return \WPGraphQL\Type\WPObjectType|null
 	 */
 	public static function inject_type_resolver( $type, $value ) {
 		$type_registry = \WPGraphQL::get_type_registry();
@@ -394,7 +397,7 @@ class Core_Schema_Filters {
 						)
 					);
 				}
-		}
+		}//end switch
 
 		return $type;
 	}

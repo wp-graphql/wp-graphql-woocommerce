@@ -235,7 +235,7 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
  * @package Axis\Plugin_Distributor
  */
 
- if ( ! function_exists( 'woographql_setting' ) ) :
+if ( ! function_exists( 'woographql_setting' ) ) :
 	/**
 	 * Get an option value from WooGraphQL settings
 	 *

@@ -35,7 +35,6 @@ class Product_Types {
 		if ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 			self::register_unsupported_product_type();
 		}
-		
 	}
 
 	/**
@@ -388,12 +387,12 @@ class Product_Types {
 				'fields'      => array_merge(
 					Product::get_fields(),
 					[
-						'type'              => [
+						'type' => [
 							'type'        => 'ProductTypesEnum',
 							'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
 							'resolve'     => function () {
 								return 'unsupported';
-							}
+							},
 						],
 					],
 					self::get_pricing_and_tax_fields(),
