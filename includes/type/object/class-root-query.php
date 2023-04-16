@@ -12,8 +12,8 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - Root_Query
@@ -416,12 +416,20 @@ class Root_Query {
 		);
 
 		// Product queries.
-		$product_type_keys = apply_filters(
-			'woographql_register_product_queries',
-			array_keys( WP_GraphQL_WooCommerce::get_enabled_product_types() )
-		);
+		$unsupported_type_enabled = woographql_setting( 'enable_unsupported_product_type', 'off' );
+		
+		$product_type_keys = array_keys( WooGraphQL::get_enabled_product_types() );
+		if ( 'on' ===  $unsupported_type_enabled ) {
+			$product_type_keys[] = 'unsupported';
+		}
 
-		$product_types = WP_GraphQL_WooCommerce::get_enabled_product_types();
+		$product_type_keys = apply_filters( 'woographql_register_product_queries', $product_type_keys );
+
+		$product_types   = WooGraphQL::get_enabled_product_types();
+		if ( 'on' ===  $unsupported_type_enabled ) {
+			$product_types['unsupported'] = WooGraphQL::get_supported_product_type();
+		}
+		
 
 		foreach ( $product_type_keys as $type_key ) {
 			$field_name = "{$type_key}Product";
@@ -436,7 +444,7 @@ class Root_Query {
 				$field_name,
 				[
 					'type'        => $type_name,
-					'description' => __( 'A simple product object', 'wp-graphql-woocommerce' ),
+					'description' => __( "A {$type_key} product object", 'wp-graphql-woocommerce' ),
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',

@@ -13,6 +13,7 @@ use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
  * Class Core_Schema_Filters
@@ -131,18 +132,6 @@ class Core_Schema_Filters {
 	}
 
 	/**
-	 * Check and returns a GraphQL type from the
-	 * "{$product_type}_substitution_type" in the WooGraphQL settings.
-	 *
-	 * @param string $product_type  Product type in need of a GraphQL type.
-	 *
-	 * @return string|null
-	 */
-	public static function get_substitution_type( $product_type ) {
-		return get_graphql_setting( "{$product_type}_substitution_type", null, 'woographql_settings' );
-	}
-
-	/**
 	 * Registers WooCommerce post-types to be used in GraphQL schema
 	 *
 	 * @param array  $args      - allowed post-types.
@@ -156,19 +145,17 @@ class Core_Schema_Filters {
 			$args['graphql_single_name']              = 'Product';
 			$args['graphql_plural_name']              = 'Products';
 			$args['graphql_kind']                     = 'interface';
+			$args['graphql_interfaces']               = ['ContentNode'];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
 			$args['graphql_resolve_type']             = static function( $value ) {
 				$type_registry  = \WPGraphQL::get_type_registry();
-				$possible_types = WP_GraphQL_WooCommerce::get_enabled_product_types();
+				$possible_types = WooGraphQL::get_enabled_product_types();
 				if ( isset( $possible_types[ $value->type ] ) ) {
 					return $type_registry->get_type( $possible_types[ $value->type ] );
-				}
-
-				// Look for substitution type.
-				$substitution_type = self::get_substitution_type( $value->type );
-				if ( ! empty( $substitution_type ) ) {
-					return $type_registry->get_type( $substitution_type );
+				} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
+					$unsupported_type = WooGraphQL::get_supported_product_type();
+					return $type_registry->get_type( $unsupported_type );
 				}
 
 				throw new UserError(
@@ -269,7 +256,7 @@ class Core_Schema_Filters {
 		}
 
 		// Filter product attributes taxonomies.
-		$attributes = WP_GraphQL_WooCommerce::get_product_attribute_taxonomies();
+		$attributes = WooGraphQL::get_product_attribute_taxonomies();
 		if ( in_array( $taxonomy, $attributes, true ) ) {
 			$singular_name               = graphql_format_field_name( $taxonomy );
 			$args['show_in_graphql']     = true;
@@ -328,7 +315,8 @@ class Core_Schema_Filters {
 						return 'Product' !== $type;
 					}
 				),
-				array_values( WP_GraphQL_WooCommerce::get_enabled_product_types() )
+				array_values( WooGraphQL::get_enabled_product_types() ),
+				[ WooGraphQL::get_supported_product_type() ]
 			);
 			$refresh_callback    = true;
 		}
@@ -379,16 +367,33 @@ class Core_Schema_Filters {
 	 * @param mixed                        $value          Object for which the type is being resolve config.
 	 * @param WPUnionType|WPInterfaceType  $abstract_type  WPGraphQL abstract class object.
 	 */
-	public static function inject_type_resolver( $type, $value, $abstract_type ) {
+	public static function inject_type_resolver( $type, $value ) {
+		$type_registry = \WPGraphQL::get_type_registry();
 		switch ( $type ) {
-			case 'Product':
 			case 'Coupon':
 			case 'Order':
 				$new_type = Factory::resolve_node_type( $type, $value );
 				if ( $new_type ) {
-					$type = $abstract_type->type_registry->get_type( $new_type );
+					$type = $type_registry->get_type( $new_type );
 				}
 				break;
+			case 'Product':
+				$supported_types = WooGraphQL::get_enabled_product_types();
+				if ( in_array( $value->type, array_keys( $supported_types ), true ) ) {
+					$type_name = $supported_types[ $value->type ];
+					$type      = $type_registry->get_type( $type_name );
+				} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
+					$type_name = WooGraphQL::get_supported_product_type();
+					$type      = $type_registry->get_type( $type_name );
+				} else {
+					throw new UserError(
+						sprintf(
+						/* translators: %s: Product type */
+							__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+							$value->type
+						)
+					);
+				}
 		}
 
 		return $type;

@@ -229,6 +229,51 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 	}
 }//end if
 
+/**
+ * Plugin global functions.
+ *
+ * @package Axis\Plugin_Distributor
+ */
+
+ if ( ! function_exists( 'woographql_setting' ) ) :
+	/**
+	 * Get an option value from WooGraphQL settings
+	 *
+	 * @param string $option_name  The key of the option to return.
+	 * @param mixed  $default      The default value the setting should return if no value is set.
+	 * @param string $section_name The settings section name.
+	 *
+	 * @return mixed|string|int|boolean
+	 */
+	function woographql_setting( string $option_name, $default = '', $section_name = 'woographql_settings' ) {
+		$section_fields = get_option( $section_name );
+
+		/**
+		 * Filter the section fields
+		 *
+		 * @param array  $section_fields The values of the fields stored for the section
+		 * @param string $section_name   The name of the section
+		 * @param mixed  $default        The default value for the option being retrieved
+		 */
+		$section_fields = apply_filters( 'woographql_settings_section_fields', $section_fields, $section_name, $default );
+
+		/**
+		 * Get the value from the stored data, or return the default
+		 */
+		$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+
+		/**
+		 * Filter the value before returning it
+		 *
+		 * @param mixed  $value          The value of the field
+		 * @param mixed  $default        The default value if there is no value set
+		 * @param string $option_name    The name of the option
+		 * @param array  $section_fields The setting values within the section
+		 * @param string $section_name   The name of the section the setting belongs to
+		 */
+		return apply_filters( 'woographql_settings_section_field_value', $value, $default, $option_name, $section_fields, $section_name );
+	}
+endif;
 
 
 

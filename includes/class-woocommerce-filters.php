@@ -43,7 +43,7 @@ class WooCommerce_Filters {
 	 * @return boolean
 	 */
 	public static function is_session_handler_disabled() {
-		return 'on' === get_graphql_setting( 'disable_ql_session_handler', 'off', 'woographql_settings' );
+		return 'on' === woographql_setting( 'disable_ql_session_handler', 'off' );
 	}
 
 	/**

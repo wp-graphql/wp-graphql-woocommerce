@@ -84,6 +84,18 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
+		 * Returns GraphQL Product Type name for product types not supported by the GraphQL schema.
+		 *
+		 * @return array
+		 */
+		public static function get_supported_product_type() {
+			return apply_filters(
+				'graphql_woocommerce_unsupported_product_type',
+				'UnsupportedProduct'
+			);
+		}
+
+		/**
 		 * Returns WooCommerce product attribute taxonomies to be registered as
 		 * "TermObject" types in the schema.
 		 *
@@ -304,7 +316,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			// Include admin files.
 			require $include_directory_path . 'admin/class-section.php';
 			require $include_directory_path . 'admin/class-general.php';
-			require $include_directory_path . 'admin/class-substitutions.php';
 
 			// Include main plugin class files.
 			require $include_directory_path . 'class-admin.php';
