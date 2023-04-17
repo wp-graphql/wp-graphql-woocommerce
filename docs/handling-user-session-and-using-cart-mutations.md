@@ -4,9 +4,305 @@ In this guide, we will demonstrate how to implement cart controls on the single 
 
 ## Prerequisites
 
-This guide assumes that you have read and followed the previous guides.
+- Basic knowledge of React and React Router.
+- Familiarity with GraphQL and WPGraphQL.
+- A setup WPGraphQL/WooGraphQL backend.
+- Read previous guides on [Routing By URI](routing-by-uri.md) and [Using Product Data](using-product.data.md)
 
-## Part 1: UserSessionProvider.jsx
+## Step 0: Create our `graphql.js` file
+
+```javascript
+import { gql } from '@apollo/client';
+
+export const CustomerContent = gql`
+  fragment CustomerContent on Customer {
+    id
+    sessionToken
+  }
+`;
+
+export const ProductContentSlice = gql`
+  fragment ProductContentSlice on Product {
+    id
+    databaseId
+    name
+    slug
+    type
+    image {
+      id
+      sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+      altText
+    }
+    ... on SimpleProduct {
+      price
+      regularPrice
+      soldIndividually
+    }
+    ... on VariableProduct {
+      price
+      regularPrice
+      soldIndividually
+    }
+  }
+`;
+
+export const ProductVariationContentSlice = gql`
+  fragment ProductVariationContentSlice on ProductVariation {
+    id
+    databaseId
+    name
+    slug
+    image {
+      id
+      sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+      altText
+    }
+    price
+    regularPrice
+  }
+`;
+
+export const ProductContentFull = gql`
+  fragment ProductContentFull on Product {
+    id
+    databaseId
+    slug
+    name
+    type
+    description
+    shortDescription(format: RAW)
+    image {
+      id
+      sourceUrl
+      altText
+    }
+    galleryImages {
+      nodes {
+        id
+        sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+        altText
+      }
+    }
+    productTags(first: 20) {
+      nodes {
+        id
+        slug
+        name
+      }
+    }
+    attributes {
+      nodes {
+        id
+        attributeId
+        ... on LocalProductAttribute {
+          name
+          options
+          variation
+        }
+        ... on GlobalProductAttribute {
+          name
+          options
+          variation
+        }
+      }
+    }
+    ... on SimpleProduct {
+      onSale
+      stockStatus
+      price
+      rawPrice: price(format: RAW)
+      regularPrice
+      salePrice
+      stockStatus
+      stockQuantity
+      soldIndividually
+    }
+    ... on VariableProduct {
+      onSale
+      price
+      rawPrice: price(format: RAW)
+      regularPrice
+      salePrice
+      stockStatus
+      stockQuantity
+      soldIndividually
+      variations(first: 50) {
+        nodes {
+          id
+          databaseId
+          name
+          price
+          rawPrice: price(format: RAW)
+          regularPrice
+          salePrice
+          onSale
+          attributes {
+            nodes {
+              name
+              label
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const VariationContent = gql`
+  fragment VariationContent on ProductVariation {
+    id
+    name
+    slug
+    price
+    regularPrice
+    salePrice
+    stockStatus
+    stockQuantity
+    onSale
+    image {
+      id
+      sourceUrl
+      altText
+    }
+  }
+`;
+
+export const CartItemContent = gql`
+  fragment CartItemContent on CartItem {
+    key
+    product {
+      node {
+        ...ProductContentSlice
+      }
+    }
+    variation {
+      node {
+        ...ProductVariationContentSlice
+      }
+    }
+    quantity
+    total
+    subtotal
+    subtotalTax
+    extraData {
+      key
+      value
+    }
+  }
+`;
+
+export const CartContent = gql`
+  fragment CartContent on Cart {
+    contents(first: 100) {
+      itemCount
+      nodes {
+        ...CartItemContent
+      }
+    }
+    appliedCoupons {
+      code
+      discountAmount
+      discountTax
+    }
+    needsShippingAddress
+    availableShippingMethods {
+      packageDetails
+      supportsShippingCalculator
+      rates {
+        id
+        instanceId
+        methodId
+        label
+        cost
+      }
+    }
+    subtotal
+    subtotalTax
+    shippingTax
+    shippingTotal
+    total
+    totalTax
+    feeTax
+    feeTotal
+    discountTax
+    discountTotal
+  }
+`;
+
+export const GetProduct = gql`
+  query GetProduct($id: ID!, $idType: ProductIdTypeEnum) {
+    product(id: $id, idType: $idType) {
+      ...ProductContentFull
+    }
+  }
+`;
+
+export const GetProductVariation = gql`
+  query GetProductVariation($id: ID!) {
+    productVariation(id: $id, idType: DATABASE_ID) {
+      ...VariationContent
+    }
+  }
+`;
+
+export const GetCart = gql`
+  query GetCart($customerId: Int) {
+    cart {
+      ...CartContent
+    }
+    customer(customerId: $customerId) {
+      ...CustomerContent
+    }
+  }
+`;
+
+export const AddToCart = gql`
+  mutation AddToCart($productId: Int!, $variationId: Int, $quantity: Int, $extraData: String) {
+    addToCart(
+      input: {productId: $productId, variationId: $variationId, quantity: $quantity, extraData: $extraData}
+    ) {
+      cart {
+        ...CartContent
+      }
+      cartItem {
+        ...CartItemContent
+      }
+    }
+  }
+`;
+
+export const UpdateCartItemQuantities = gql`
+  mutation UpdateCartItemQuantities($items: [CartItemQuantityInput]) {
+    updateItemQuantities(input: {items: $items}) {
+      cart {
+        ...CartContent
+      }
+      items {
+        ...CartItemContent
+      }
+    }
+  }
+`;
+
+export const RemoveItemsFromCart = gql`
+  mutation RemoveItemsFromCart($keys: [ID], $all: Boolean) {
+    removeItemsFromCart(input: {keys: $keys, all: $all}) {
+      cart {
+        ...CartContent
+      }
+      cartItems {
+        ...CartItemContent
+      }
+    }
+  }
+`;
+
+```
+
+We've included all the queries will be using going forward and leveraging some fragments here and there. Now we can move onto implementing the components sourcing these queries and mutations.
+
+## Step 1: UserSessionProvider.jsx
 
 `UserSessionProvider.jsx` is a state manager that queries and maintains the app's copy of the end-user's session state from WooCommerce on the backend. We'll also be implementing a helper hook called `useSession()` that will provide the user session state to components nested within the provider. In order for the `UserSessionProvider` code in our samples to work properly, the end user will have to implement an ApolloClient with a middleware layer configured to manage the WooCommerce session token, like the one demonstrated in our [**Configuring GraphQL Client for User Session**](configuring-graphql-client-for-user-session.md) guide.
 
@@ -15,7 +311,7 @@ Here is the code for `UserSessionProvider.jsx`:
 ```jsx
 import { createContext, useContext, useEffect, useReducer } from 'react';
 import { useQuery } from '@apollo/client';
-import { GetCartDocument } from '../graphql';
+import { GetCart } from './graphql';
 
 const initialSession = {
   cart: null,
@@ -46,7 +342,7 @@ const { Provider } = SessionContext;
 export function SessionProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialSession);
 
-  const { data, loading: fetching } = useQuery(GetCartDocument);
+  const { data, loading: fetching } = useQuery(GetCart);
 
   useEffect(() => {
     if (data?.cart) {
@@ -90,7 +386,7 @@ export const useSession = () => useContext(SessionContext);
 
 To use the `SessionProvider`, you should wrap your app component with it and wrap the `SessionProvider` with an ApolloProvider set with our session token managing ApolloClient. Make sure to demonstrate this for the reader against our previous code samples from previous posts.
 
-## Part 2: useCartMutations.js
+## Step 2: useCartMutations.js
 
 `useCartMutations.js` is a hook that, when provided a `product ID`, `variation ID`, and any other item data, will search the cart stored in the session provider for matching products in the cart, returning the `item key` and `quantity` in the cart. With this knowledge, you can render your single product's cart option according to what actions are available to the end-user in relation to that product.
 
@@ -101,18 +397,10 @@ import { useEffect, useState } from 'react';
 
 import { useSession } from './UserSessionProvider.jsx';
 import {
-  useAddToCartMutation,
-  useUpdateCartItemQuantitiesMutation,
-  useRemoveItemsFromCartMutation,
-  useApplyCouponToCartMutation,
-  useRemoveCouponFromCartMutation,
-  useSetShippingLocaleMutation,
-  useSetShippingMethodMutation,
-  Cart,
-  CountriesEnum,
-  Customer,
-  GetCartDocument,
-} from '@axis/graphql';
+  AddToCart,
+  UpdateCartItemQuantities,
+  RemoveItemsFromCart,
+} from './graphql';
 
 const useCartMutations = (
   productId,
@@ -129,7 +417,7 @@ const useCartMutations = (
   );
 
   const [addToCart, { loading: adding }] = useMutation({
-    mutation: AddToCartDocument,
+    mutation: AddToCart,
     onCompleted({ addToCart: data }) {
       if (data?.cart) {
         setCart(data.cart);

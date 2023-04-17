@@ -41,7 +41,7 @@ import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
-import { NodeByUri } from './graphql/queries';
+import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -112,7 +112,7 @@ To add pagination to our shop page, we will need to update the `NodeByUri` opera
 
 _Notice we are not applying the `first` and `after` variables to the query but instead a connection within._
 
-First, update the `NodeByUri` query in `graphql/queries.js`:
+First, update the `NodeByUri` query in `graphql.js`:
 
 ```graphql
 query NodeByUri($uri: ID!, $first: Int, $after: String) {
@@ -163,7 +163,7 @@ import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
-import { NodeByUri } from './graphql/queries';
+import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -213,7 +213,7 @@ Now, when you click the "Load More" button, it will fetch more products and add 
 
 To add sorting functionality, we will update the `NodeByUri` query again to include a `where` argument in the `contentNodes` field. This will allow us to control the order in which the products are fetched.
 
-Update the `NodeByUri` query in `graphql/queries.js`:
+Update the `NodeByUri` query in `graphql.js`:
 
 ```graphql
 query NodeByUri($uri: ID!, $first: Int, $after: String, $where: RootQueryToProductConnectionWhereArgs) {
@@ -264,7 +264,7 @@ import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
-import { NodeByUri } from './graphql/queries';
+import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -324,7 +324,7 @@ Now, when you change the sorting option in the dropdown, the products will be fe
 
 To add filtering functionality, you will need to make further updates to the `NodeByUri` query and the `ShopPage` component. In this example, we will add a simple search input to filter products based on their names.
 
-Update the `NodeByUri` query in `graphql/queries.js` to include a search argument in the where field:
+Update the `NodeByUri` query in `graphql.js` to include a search argument in the where field:
 
 ```graphql
 query NodeByUri($uri: ID!, $first: Int, $after: String, $where: RootQueryToProductConnectionWhereArgs) {
@@ -377,7 +377,7 @@ import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
-import { NodeByUri } from './graphql/queries';
+import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
