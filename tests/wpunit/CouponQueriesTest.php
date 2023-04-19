@@ -120,13 +120,24 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		/**
 		 * Assertion One
+		 * 
+		 * Confirm customer's can't query coupons by ID.
 		 */
 		$this->loginAsCustomer();
 		$variables = [ 'id' => $this->toRelayId( 'shop_coupon', $coupon_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = $this->expectedCouponData( $coupon_id );
+		$expected  = [ $this->expectedField( 'coupon', self::IS_NULL ) ];
 
 		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Two
+		 * 
+		 * Confirm shop managers can query coupons by ID.
+		 */
+		$this->loginAsShopManager();
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, $this->expectedCouponData( $coupon_id ) );
 	}
 
 	public function testCouponQueryAndIds() {
@@ -147,7 +158,7 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		 *
 		 * Testing "ID" ID type.
 		 */
-		$this->loginAsCustomer();
+		$this->loginAsShopManager();
 		$variables = [
 			'id'     => $relay_id,
 			'idType' => 'ID',
