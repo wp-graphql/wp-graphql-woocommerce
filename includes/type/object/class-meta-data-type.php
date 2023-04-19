@@ -44,7 +44,15 @@ class Meta_Data_Type {
 						'type'        => 'String',
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
-							return ! empty( $source->value ) ? (string) $source->value : null;
+							if ( empty( $source->value ) ) {
+								return null;
+							}
+
+							if ( is_array( $source->value ) || is_object( $source->value ) ) {
+								return wp_json_encode( $source->value );
+							}
+
+							return (string) $source->value;
 						},
 					],
 				],
