@@ -2,13 +2,13 @@
 
 The WooGraphQL settings tab on the WPGraphQL settings page provides several options to customize the behavior of the WooGraphQL plugin. Below is a detailed breakdown of each setting.
 
-![WooGraphQL Settings Overview Screenshot](path/to/overview-screenshot.png)
+![WooGraphQL Settings Overview Screenshot](images/overview-screenshot.png)
 
 ## Disable QL Session Handler
 
 WooGraphQL comes with a custom WooCommerce User Session Handler called QL Session Handler, which extends the default WooCommerce session handler. The QL Session Handler uses JSON Web Tokens (JWT) instead of HTTP cookies for session identification. This setting allows you to disable the QL Session Handler and revert to the default WooCommerce session handler that uses HTTP cookies.
 
-![Disable QL Session Handler Screenshot](path/to/disable-ql-session-handler-screenshot.png)
+![Disable QL Session Handler Screenshot](images/disable-ql-session-handler-screenshot.png)
 
 ### Default WooCommerce Session Handler
 
@@ -18,7 +18,7 @@ The default WooCommerce User Session Handler is responsible for capturing cart a
 
 These settings allow you to enable or disable the GraphQL schema types, queries, and mutations for various WooCommerce extensions supported by WooGraphQL Pro. This is useful if you have one of the supported extensions installed and activated but don't need it exposed to the GraphQL API, keeping the schema lightweight.
 
-![WooGraphQL Pro Settings Screenshot](path/to/woographql-pro-settings-screenshot.png)
+![WooGraphQL Pro Settings Screenshot](images/woographql-pro-settings-screenshot.png)
 
 ### Pro License
 
