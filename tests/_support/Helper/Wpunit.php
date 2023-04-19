@@ -21,6 +21,7 @@ class Wpunit extends \Codeception\Module {
 		require_once __DIR__ . '/crud-helpers/order.php';
 		require_once __DIR__ . '/crud-helpers/refund.php';
 		require_once __DIR__ . '/crud-helpers/cart.php';
+		require_once __DIR__ . '/../Utils/class-wc-product-advanced.php';
 	}
 
 	/**

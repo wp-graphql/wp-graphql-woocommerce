@@ -26,6 +26,13 @@ class General extends Section {
 				'type'    => 'checkbox',
 				'default' => 'off',
 			],
+			[
+				'name'    => 'enable_unsupported_product_type',
+				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
+				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),
+				'type'    => 'checkbox',
+				'default' => 'off',
+			],
 		];
 	}
 }

@@ -32,7 +32,7 @@ install_wordpress() {
 
 	# Install Wordpress + integrated plugins for testing/development.
 	composer install
-	composer require --dev -W \
+	composer require --dev --no-interaction -W \
 		johnpbloch/wordpress:* \
         wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce \

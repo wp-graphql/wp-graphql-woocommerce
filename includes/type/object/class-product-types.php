@@ -14,6 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Type\WPInterface\Product;
 
@@ -30,6 +31,10 @@ class Product_Types {
 		self::register_variable_product_type();
 		self::register_external_product_type();
 		self::register_group_product_type();
+
+		if ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
+			self::register_unsupported_product_type();
+		}
 	}
 
 	/**
@@ -252,7 +257,7 @@ class Product_Types {
 		register_graphql_object_type(
 			'SimpleProduct',
 			[
-				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
+				'description' => __( 'A simple product object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => self::get_product_interfaces(),
 				'fields'      => array_merge(
 					Product::get_fields(),
@@ -365,6 +370,35 @@ class Product_Types {
 							},
 						],
 					]
+				),
+			]
+		);
+	}
+
+	/**
+	 * Register "SimpleProduct" type.
+	 */
+	private static function register_unsupported_product_type() {
+		register_graphql_object_type(
+			WooGraphQL::get_supported_product_type(),
+			[
+				'description' => __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' ),
+				'interfaces'  => self::get_product_interfaces(),
+				'fields'      => array_merge(
+					Product::get_fields(),
+					[
+						'type' => [
+							'type'        => 'ProductTypesEnum',
+							'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
+							'resolve'     => function () {
+								return 'unsupported';
+							},
+						],
+					],
+					self::get_pricing_and_tax_fields(),
+					self::get_inventory_fields(),
+					self::get_shipping_fields(),
+					self::get_virtual_data_fields()
 				),
 			]
 		);

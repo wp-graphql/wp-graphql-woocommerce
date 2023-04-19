@@ -10,7 +10,6 @@ namespace WPGraphQL\WooCommerce;
 
 use WPGraphQL\Admin\Settings\Settings;
 use WPGraphQL\WooCommerce\Admin\General;
-use WPGraphQL\WooCommerce\Admin\Substitutions;
 
 /**
  * Class Admin
@@ -39,11 +38,6 @@ class Admin {
 		$manager->settings_api->register_fields(
 			'woographql_settings',
 			General::get_fields(),
-		);
-
-		$manager->settings_api->register_fields(
-			'woographql_settings',
-			Substitutions::get_fields(),
 		);
 	}
 }
