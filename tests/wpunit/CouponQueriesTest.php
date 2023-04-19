@@ -120,7 +120,7 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		/**
 		 * Assertion One
-		 * 
+		 *
 		 * Confirm customer's can't query coupons by ID.
 		 */
 		$this->loginAsCustomer();
@@ -132,7 +132,7 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		/**
 		 * Assertion Two
-		 * 
+		 *
 		 * Confirm shop managers can query coupons by ID.
 		 */
 		$this->loginAsShopManager();

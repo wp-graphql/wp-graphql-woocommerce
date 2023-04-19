@@ -121,7 +121,7 @@ class Root_Query {
 						if ( ! $is_authorized ) {
 							return null;
 						}
-						
+
 						if ( empty( $coupon_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No coupon ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
