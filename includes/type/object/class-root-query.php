@@ -459,7 +459,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key ) {
+					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key, $unsupported_type_enabled ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -488,7 +488,7 @@ class Root_Query {
 						if ( empty( $product_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
-						} elseif ( \WC()->product_factory->get_product_type( $product_id ) !== $type_key ) {
+						} elseif ( \WC()->product_factory->get_product_type( $product_id ) !== $type_key && 'off' === $unsupported_type_enabled ) {
 							/* translators: Invalid product type message %1$s: Product ID, %2$s: Product type */
 							throw new UserError( sprintf( __( 'This product of ID %1$s is not a %2$s product', 'wp-graphql-woocommerce' ), $product_id, $type_key ) );
 						} elseif ( get_post( $product_id )->post_type !== 'product' ) {
