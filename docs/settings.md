@@ -14,6 +14,10 @@ WooGraphQL comes with a custom WooCommerce User Session Handler called QL Sessio
 
 The default WooCommerce User Session Handler is responsible for capturing cart and customer data for end-users and storing it temporarily in the WordPress database. It provides an HTTP cookie to the end-user's machine to keep track of this session, even if they aren't a registered member of the WordPress site. The session typically stays in the database for 14 days from its last save, after which it is deleted. The problem with HTTP cookies is that they typically cannot be used across multiple domains without complex configurations.
 
+## Enable Unsupported types
+
+The settings is simple to understand and likely to be enabled if your using a WC extension that uses a product type that isn't support by WooGraphQL out-of-box. When enabled it will substitute the missing type with the SimpleProduct type. This way you can still you the product type and possibly pull what extra data you need from the `Product`'s `metaData` field.
+
 ## WooGraphQL Pro Settings
 
 These settings allow you to enable or disable the GraphQL schema types, queries, and mutations for various WooCommerce extensions supported by WooGraphQL Pro. This is useful if you have one of the supported extensions installed and activated but don't need it exposed to the GraphQL API, keeping the schema lightweight.

@@ -19,15 +19,18 @@ fetch(endpoint, {
     query: `
       query {
         cart {
-          items {
-            key
-            product {
-              node {
-                id
-                name
+          contents {
+            nodes {
+              key
+              product {
+                node {
+                  id
+                  name
+                }
               }
+              quantity
+              subtotal
             }
-            quantity
           }
         }
       }
