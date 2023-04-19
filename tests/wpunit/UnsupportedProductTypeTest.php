@@ -26,9 +26,9 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 
 	public function testUnsupportedProductTypePassesWhenEnabled() {
 		update_option(
-            'woographql_settings',
-            [ 'enable_unsupported_product_type' =>'on' ]
-        );
+			'woographql_settings',
+			[ 'enable_unsupported_product_type' => 'on' ]
+		);
 
 		$product_id = $this->factory->product->createSimple(
 			[ 'product_class' => '\WC_Product_Advanced' ]
