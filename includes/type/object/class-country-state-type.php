@@ -24,14 +24,14 @@ class Country_State_Type {
 			[
 				'description' => __( 'shipping country state object', 'wp-graphql-woocommerce' ),
 				'fields'      => [
-					'code'         => [
+					'code' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Country state code', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
 							return ! empty( $source['code'] ) ? $source['code'] : null;
 						},
 					],
-					'name'   => [
+					'name' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Country state name', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $source ) {
