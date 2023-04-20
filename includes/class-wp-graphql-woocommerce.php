@@ -231,6 +231,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/interface/class-cart-error.php';
 			require $include_directory_path . 'type/interface/class-product-attribute.php';
 			require $include_directory_path . 'type/interface/class-product.php';
+			require $include_directory_path . 'type/interface/class-payment-token.php';
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';
@@ -256,6 +257,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-simple-attribute-type.php';
 			require $include_directory_path . 'type/object/class-tax-rate-type.php';
 			require $include_directory_path . 'type/object/class-variation-attribute-type.php';
+			require $include_directory_path . 'type/object/class-payment-token-types.php';
 
 			// Include input type class files.
 			require $include_directory_path . 'type/input/class-cart-item-input.php';
@@ -297,6 +299,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-review-write.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';
 			require $include_directory_path . 'mutation/class-review-update.php';
+			require $include_directory_path . 'mutation/class-payment-method-delete.php';
+			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
 
 			// Include connection class/function files.
 			require $include_directory_path . 'connection/wc-cpt-connection-args.php';

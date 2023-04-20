@@ -16,7 +16,7 @@
 - [Harmonizing with WordPress](harmonizing-with-wordpress.md)
 - [Using Checkout Mutation + Order Mutations](using-checkout-mutation-and-order-mutations.md)
 - [Using Order Data](using-order-data.md)
-- [Using Customer Data + Mutations](using-customer-data-mutations.md)
+- [Using Customer Data + Mutations](using-customer-data-and-mutations.md)
 
 ## WooGraphQL Pro
 

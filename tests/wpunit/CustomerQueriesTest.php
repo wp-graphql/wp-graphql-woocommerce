@@ -461,4 +461,8 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	public function testCustomerAvailablePaymentMethodsField() { 
+        $this->assertTrue(false);
+    }
 }
