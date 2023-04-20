@@ -63,6 +63,7 @@ class Type_Registry {
 		Type\WPInterface\Attribute::register_interface( $type_registry );
 		Type\WPInterface\Product_Attribute::register_interface( $type_registry );
 		Type\WPInterface\Cart_Error::register_interface( $type_registry );
+		Type\WPInterface\Payment_Token::register_interface( $type_registry );
 
 		// Objects.
 		Type\WPObject\Meta_Data_Type::register();
@@ -86,6 +87,7 @@ class Type_Registry {
 		Type\WPObject\Shipping_Package_Type::register();
 		Type\WPObject\Shipping_Rate_Type::register();
 		Type\WPObject\Cart_Error_Types::register();
+		Type\WPObject\Payment_Token_Types::register();
 
 		// Object fields.
 		Type\WPObject\Product_Category_Type::register_fields();
@@ -130,5 +132,7 @@ class Type_Registry {
 		Mutation\Coupon_Create::register_mutation();
 		Mutation\Coupon_Update::register_mutation();
 		Mutation\Coupon_Delete::register_mutation();
+		Mutation\Payment_Method_Delete::register_mutation();
+		Mutation\Payment_Method_Set_Default::register_mutation();
 	}
 }

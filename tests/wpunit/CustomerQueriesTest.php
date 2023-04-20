@@ -461,4 +461,101 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	public function testCustomerAvailablePaymentMethodsField() {
+		// Create customer.
+		$customer_id = $this->factory->customer->create();
+
+		// Create tokens.
+		$expiry_month = gmdate( 's', strtotime( 'now' ) );
+		$expiry_year  = gmdate( 'Y', strtotime( '+1 year' ) );
+		$token_cc     = $this->factory->payment_token->createCCToken(
+			$customer_id,
+			[
+				'last4'        => 1234,
+				'expiry_month' => $expiry_month,
+				'expiry_year'  => $expiry_year,
+				'card_type'    => 'visa',
+				'token'        => time(),
+			]
+		);
+		$token_ec     = $this->factory->payment_token->createECheckToken(
+			$customer_id,
+			[
+				'last4' => 4567,
+				'token' => time(),
+			]
+		);
+
+		// Create query.
+		$query = '
+			query($id: ID) {
+				customer(id: $id) {
+					id
+					availablePaymentMethods {
+						id
+						tokenId
+						... on PaymentTokenCC {
+							last4
+							expiryMonth
+							expiryYear
+							cardType
+						}
+						... on PaymentTokenECheck {
+							last4
+						}
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assert tokens are inaccessible as guest or admin
+		 */
+		$variables = [ 'id' => $this->toRelayId( 'customer', $customer_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [ $this->expectedField( 'customer', self::IS_NULL ) ];
+
+		$this->assertQueryError( $response, $expected );
+
+		// Again, as admin.
+		$this->loginAsShopManager();
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.availablePaymentMethods', self::IS_NULL ),
+		];
+
+		$this->assertQueryError( $response, $expected );
+
+		/**
+		 * Assert customer can view their payment methods.
+		 */
+		$this->loginAs( $customer_id );
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedNode(
+				'customer.availablePaymentMethods',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
+					$this->expectedField( 'tokenId', $token_cc->get_id() ),
+					$this->expectedField( 'last4', 1234 ),
+					$this->expectedField( 'expiryMonth', $expiry_month ),
+					$this->expectedField( 'expiryYear', $expiry_year ),
+					$this->expectedField( 'cardType', 'visa' ),
+				]
+			),
+			$this->expectedNode(
+				'customer.availablePaymentMethods',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
+					$this->expectedField( 'tokenId', $token_ec->get_id() ),
+					$this->expectedField( 'last4', 4567 ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

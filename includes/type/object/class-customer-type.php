@@ -110,16 +110,6 @@ class Customer_Type {
 					'type'        => 'Boolean',
 					'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 				],
-				'sessionToken'          => [
-					'type'        => 'String',
-					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
-						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
-									return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
-						}
-									return null;
-					},
-				],
 
 				'metaData'              => Meta_Data_Type::get_metadata_field_definition(),
 			],
@@ -191,21 +181,61 @@ class Customer_Type {
 			]
 		);
 
+		// Register session token fields if QL_Session_Handler is enabled.
+		if ( 'off' === woographql_setting( 'disable_ql_session_handler', 'off' ) ) {
+			/**
+			 * Register the "sessionToken" field to the "Customer" type.
+			 */
+			register_graphql_field(
+				'Customer',
+				'sessionToken',
+				[
+					'type'        => 'String',
+					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
+							return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+						}
+
+						return null;
+					},
+				]
+			);
+			/**
+			 * Register the "wooSessionToken" field to the "User" type.
+			 */
+			register_graphql_field(
+				'User',
+				'wooSessionToken',
+				[
+					'type'        => 'String',
+					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+						}
+
+						return null;
+					},
+				]
+			);
+		}//end if
+
 		/**
-		 * Register the "sessionToken" field to the "User" type.
+		 * Register "availablePaymentMethods" field to "Customer" type.
 		 */
 		register_graphql_field(
-			'User',
-			'wooSessionToken',
+			'Customer',
+			'availablePaymentMethods',
 			[
-				'type'        => 'String',
-				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+				'type'        => [ 'list_of' => 'PaymentToken' ],
+				'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source ) {
-					if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+					if ( get_current_user_id() === $source->ID ) {
+						return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
 					}
 
-					return null;
+					throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
 				},
 			]
 		);
