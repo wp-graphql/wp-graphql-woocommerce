@@ -32,7 +32,7 @@ class PaymentTokenFactory {
 			$token->set_user_id( $user_id );
 		}
 
-        // Set props.
+		// Set props.
 		foreach ( $args as $key => $value ) {
 			if ( is_callable( [ $token, "set_{$key}" ] ) ) {
 				$token->{"set_{$key}"}( $value );
@@ -54,11 +54,11 @@ class PaymentTokenFactory {
 		$token->set_last4( 1234 );
 		$token->set_token( time() );
 
-        if ( ! empty( $user_id ) ) {
+		if ( ! empty( $user_id ) ) {
 			$token->set_user_id( $user_id );
 		}
 
-        // Set props.
+		// Set props.
 		foreach ( $args as $key => $value ) {
 			if ( is_callable( [ $token, "set_{$key}" ] ) ) {
 				$token->{"set_{$key}"}( $value );
@@ -81,7 +81,7 @@ class PaymentTokenFactory {
 		$token->set_extra( $extra );
 		$token->set_token( time() );
 
-        // Set props.
+		// Set props.
 		foreach ( $args as $key => $value ) {
 			if ( is_callable( [ $token, "set_{$key}" ] ) ) {
 				$token->{"set_{$key}"}( $value );

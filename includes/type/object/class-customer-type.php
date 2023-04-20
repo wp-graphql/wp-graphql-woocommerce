@@ -219,7 +219,7 @@ class Customer_Type {
 					},
 				]
 			);
-		}
+		}//end if
 
 		/**
 		 * Register "availablePaymentMethods" field to "Customer" type.

@@ -416,7 +416,7 @@ class Core_Schema_Filters {
 		if ( ! class_exists( 'WPGraphQL\WooCommerce\Pro\WooGraphQL_Pro' ) ) {
 			return false;
 		}
-		
+
 		return Pro\WooGraphQL_Pro::is_composite_products_enabled()
 			&& Pro\WooGraphQL_Pro::is_composite_products_active();
 	}

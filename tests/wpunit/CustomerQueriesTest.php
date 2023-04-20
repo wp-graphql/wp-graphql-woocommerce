@@ -462,13 +462,13 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
-	public function testCustomerAvailablePaymentMethodsField() { 
-        // Create customer.
+	public function testCustomerAvailablePaymentMethodsField() {
+		// Create customer.
 		$customer_id = $this->factory->customer->create();
-		
+
 		// Create tokens.
-		$expiry_month = date( 's', strtotime( 'now' ) );
-		$expiry_year  = date( 'Y', strtotime('+1 year' ) );
+		$expiry_month = gmdate( 's', strtotime( 'now' ) );
+		$expiry_year  = gmdate( 'Y', strtotime( '+1 year' ) );
 		$token_cc     = $this->factory->payment_token->createCCToken(
 			$customer_id,
 			[
@@ -482,8 +482,8 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$token_ec     = $this->factory->payment_token->createECheckToken(
 			$customer_id,
 			[
-				'last4'        => 4567,
-				'token'        => time(),
+				'last4' => 4567,
+				'token' => time(),
 			]
 		);
 
@@ -557,5 +557,5 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
-    }
+	}
 }
