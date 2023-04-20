@@ -231,8 +231,8 @@ class Customer_Type {
 				'type'        => [ 'list_of' => 'PaymentToken' ],
 				'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source ) {
-					if ( \get_current_user_id() === $source->ID ) {
-						return \WC_Payment_Tokens::get_customer_tokens( $customer_id );
+					if ( get_current_user_id() === $source->ID ) {
+						return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
 					}
 
 					throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );

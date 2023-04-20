@@ -17,6 +17,7 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Model\Comment;
 use WPGraphQL\Mutation\CommentCreate;
+use WC_Payment_Tokens;
 
 /**
  * Class Payment_Method_Set_Default
@@ -60,7 +61,17 @@ class Payment_Method_Set_Default {
 		return [
             'status' => [
                 'type'        => 'String',
-                'description' => __( 'Status of the request', 'wp-graphql-woocommerce' )
+                'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
+				'resolve'     => function ( $payload ) {
+					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
+				}
+			],
+			'token' => [
+                'type'        => 'PaymentToken',
+                'description' => __( 'Preferred payment method token', 'wp-graphql-woocommerce' ),
+				'resolve'     => function ( $payload ) {
+					return ! empty( $payload['token'] ) ? $payload['token'] : null;
+				}
             ]
         ];
 	}
@@ -87,7 +98,10 @@ class Payment_Method_Set_Default {
             WC_Payment_Tokens::set_users_default( $token->get_user_id(), intval( $token_id ) );
             wc_add_notice( __( 'This payment method was successfully set as your default.', 'wp-graphql-woocommerce' ) );
 
-			return [ 'status' => 'SUCCESS' ];
+			return [
+				'status' => 'SUCCESS',
+				'token'  => WC_Payment_Tokens::get( $token_id ),
+			];
 		};
 	}
 }

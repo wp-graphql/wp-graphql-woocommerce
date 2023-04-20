@@ -17,6 +17,7 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Model\Comment;
 use WPGraphQL\Mutation\CommentCreate;
+use WC_Payment_Tokens;
 
 /**
  * Class Payment_Method_Delete
@@ -46,7 +47,8 @@ class Payment_Method_Delete {
 		return [
             'tokenId' => [
                 'type'        => [ 'non_null' => 'Integer' ],
-                'description' => __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' )
+                'description' => __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' ),
+				
             ]
         ];
 	}
@@ -60,7 +62,10 @@ class Payment_Method_Delete {
 		return [
             'status' => [
                 'type'        => 'String',
-                'description' => __( 'Status of the request', 'wp-graphql-woocommerce' )
+                'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
+				'resolve'     => function ( $payload ) {
+					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
+				}
             ]
         ];
 	}

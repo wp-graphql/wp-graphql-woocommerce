@@ -9,6 +9,7 @@
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
 use GraphQLRelay\Relay;
+use GraphQL\Error\UserError;
 
 /**
  * Class Payment_Token
@@ -26,7 +27,22 @@ class Payment_Token {
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => function( $value ) {
-					
+                    $type_registry = \WPGraphQL::get_type_registry();
+                    $type          = $value->get_type();
+					switch( $type ) {
+                        case 'CC':
+                            return $type_registry->get_type( 'PaymentTokenCC' );
+                        case 'eCheck':
+                            return $type_registry->get_type( 'PaymentTokenECheck' );
+                        default:
+                            throw new UserError(
+                                sprintf(
+                                    /* translators: %s: Payment token type */
+                                    __( 'The "%s" token type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+                                    $type
+                                )
+                            );
+                    }
 				},
 			]
 		);
