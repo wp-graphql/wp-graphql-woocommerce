@@ -88,6 +88,7 @@ class Type_Registry {
 		Type\WPObject\Shipping_Rate_Type::register();
 		Type\WPObject\Cart_Error_Types::register();
 		Type\WPObject\Payment_Token_Types::register();
+		Type\WPObject\Country_State_Type::register();
 
 		// Object fields.
 		Type\WPObject\Product_Category_Type::register_fields();
