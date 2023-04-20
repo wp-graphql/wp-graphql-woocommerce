@@ -30,6 +30,26 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		$object = new \WC_Shipping_Zone();
 
+		if ( ! empty( $args['countries'] ) ) {
+			foreach ( $args['countries'] as $country ) {
+				$object->add_location( $country, 'country' );
+			}
+		}
+		if ( ! empty( $args['states'] ) ) {
+			foreach ( $args['states'] as $state ) {
+				$object->add_location( $state, 'state' );
+			}
+		}
+		if ( ! empty( $args['postcode'] ) ) {
+			foreach ( $args['postcode'] as $postcode ) {
+				$object->add_location( $postcode, 'postcode' );
+			}
+		}
+
+		if ( ! empty( $args['shipping_method'] ) ) {
+			$object->add_shipping_method( $args['shipping_method'] );
+		}
+
 		foreach ( $args as $key => $value ) {
 			if ( is_callable( [ $object, "set_{$key}" ] ) ) {
 				$object->{"set_{$key}"}( $value );

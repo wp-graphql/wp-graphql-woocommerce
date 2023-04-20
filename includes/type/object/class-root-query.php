@@ -419,6 +419,42 @@ class Root_Query {
 						return Factory::resolve_tax_rate( $rate_id, $context );
 					},
 				],
+				'shippingCountries' => [
+					'type'        => [ 'list_of' => 'CountriesEnum' ],
+					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
+					'resolve'     => function() {
+						$wc_countries = new \WC_Countries();
+						$countries    = $wc_countries->get_allowed_countries();
+
+						return array_keys( $countries );
+					}
+				],
+				'shippingCountryStates' => [
+					'type'        => [ 'list_of' => 'CountryState' ],
+					'args'        => [
+						'country' => [
+							'type'        => [ 'non_null' => 'CountriesEnum' ],
+							'description' => __( 'Target country')
+						]
+					],
+					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $_, $args ) {
+						$country      = $args['country'];
+						$wc_countries = new \WC_Countries();
+						$states       = $wc_countries->get_shipping_country_states();
+
+						if ( ! empty( $states ) && ! empty( $states[ $country ] ) ) {
+							$formatted_states = [];
+							foreach( $states[ $country ] as $code => $name ) {
+								$formatted_states[] = compact( 'name', 'code' );
+							}
+
+							return $formatted_states;
+						}
+
+						return [];
+					}
+				]
 			]
 		);
 

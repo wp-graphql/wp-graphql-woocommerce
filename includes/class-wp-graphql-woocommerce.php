@@ -258,6 +258,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-tax-rate-type.php';
 			require $include_directory_path . 'type/object/class-variation-attribute-type.php';
 			require $include_directory_path . 'type/object/class-payment-token-types.php';
+			require $include_directory_path . 'type/object/class-country-state.php';
 
 			// Include input type class files.
 			require $include_directory_path . 'type/input/class-cart-item-input.php';
