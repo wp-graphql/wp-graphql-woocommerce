@@ -65,13 +65,25 @@ class Order extends WC_Post {
 	}
 
 	/**
+	 * Return order types viewable by proven ownership.
+	 *
+	 * @return array
+	 */
+	protected function get_viewable_order_types() {
+		return apply_filters(
+			'woographql_viewable_order_types',
+			[ 'shop_order' ],
+		);
+	}
+
+	/**
 	 * Whether or not the customer of the order matches the current user.
 	 *
 	 * @return bool
 	 */
 	protected function owner_matches_current_user() {
 		// Get Customer ID.
-		if ( 'shop_order' === $this->post_type ) {
+		if ( in_array( $this->post_type, $this->get_viewable_order_types(), true ) ) {
 			$customer_id = $this->wc_data->get_customer_id();
 		} else {
 			$customer_id = get_post_meta( '_customer_user', $this->wc_data->get_parent_id(), true );
@@ -94,7 +106,7 @@ class Order extends WC_Post {
 	 * @return bool
 	 */
 	public function guest_order_customer_matches_current_user() {
-		if ( 'shop_order' === $this->post_type ) {
+		if ( in_array( $this->post_type, $this->get_viewable_order_types(), true ) ) {
 			$customer_email = $this->wc_data->get_billing_email();
 		} else {
 			$customer_email = get_post_meta( '_billing_email', $this->wc_data->get_parent_id(), true );
