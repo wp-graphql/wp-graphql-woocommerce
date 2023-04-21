@@ -10,6 +10,10 @@
 - feat: Country queries implemented. [\#736](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/736) ([kidunot89](https://github.com/kidunot89))
 - feat: payment method mutations and fields implemented. [\#735](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/735) ([kidunot89](https://github.com/kidunot89))
 
+**Fixed:**
+
+- fix: PaymentToken child types fixed. [\#739](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/739) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.12.4](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.4) (2023-04-19)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.3...v0.12.4)
