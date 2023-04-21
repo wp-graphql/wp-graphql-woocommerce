@@ -224,19 +224,54 @@ class Customer_Type {
 		/**
 		 * Register "availablePaymentMethods" field to "Customer" type.
 		 */
-		register_graphql_field(
+		register_graphql_fields(
 			'Customer',
-			'availablePaymentMethods',
 			[
-				'type'        => [ 'list_of' => 'PaymentToken' ],
-				'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source ) {
-					if ( get_current_user_id() === $source->ID ) {
-						return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
-					}
-
-					throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
-				},
+				'availablePaymentMethods' => [
+					'type'        => [ 'list_of' => 'PaymentToken' ],
+					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( get_current_user_id() === $source->ID ) {
+							return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
+						}
+	
+						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
+					},
+				],
+				'availablePaymentMethodsCC' => [
+					'type'        => [ 'list_of' => 'PaymentTokenCC' ],
+					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( get_current_user_id() === $source->ID ) {
+							$tokens = array_filter(
+								array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) ),
+								function ( $token ) {
+									return 'CC' === $token->get_type();
+								}
+							);
+							return $tokens;
+						}
+	
+						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
+					},
+				],
+				'availablePaymentMethodsEC' => [
+					'type'        => [ 'list_of' => 'PaymentTokenECheck' ],
+					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( get_current_user_id() === $source->ID ) {
+							$tokens = array_filter(
+								array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) ),
+								function ( $token ) {
+									return 'eCheck' === $token->get_type();
+								}
+							);
+							return $tokens;
+						}
+	
+						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
+					},
+				],
 			]
 		);
 	}
