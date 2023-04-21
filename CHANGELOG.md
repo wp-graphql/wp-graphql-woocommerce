@@ -2,6 +2,14 @@
 
 ## [v0.12.5](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.5) (2023-04-21)
 
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.5...v0.12.5)
+
+**New Features:**
+
+- feat: woographql\_viewable\_order\_types hook added [\#741](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/741) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.12.5](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.5) (2023-04-21)
+
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.4...v0.12.5)
 
 **New Features:**
