@@ -1,3 +1,10 @@
+---
+title: "Routing by URI with WooGraphQL"
+description: "Discover how to implement routing by URI in your headless WooCommerce application using WooGraphQL and WPGraphQL for efficient and user-friendly navigation."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, routing, URI, headless, navigation"
+author: "Geoff Taylor"
+---
+
 # Routing By URI
 
 In this guide, we will create a simple app that demonstrates routing with WPGraphQL's `nodeByUri` query. We will use this query to fetch data for a shop page that displays a list of products with their "name", "shortDescription", "price", and "image". The shop page will use the uri parameter to fetch the data and render the page accordingly.
@@ -32,38 +39,75 @@ export default App;
 
 ## ShopPage Component
 
-In the `ShopPage` component, we will use the `nodeByUri` query to fetch the data for the shop page. Based on the data received, we will render a product listing for either a collection or a single data object.
+In the `ShopPage` component, we will use the `nodeByUri` query to fetch the data for the shop page. Based on the data received, we will render a product listing for either a collection or a single data object. We'll start by creating the `graphql.js` file.
+
+```javascript
+import { gql } from '@apollo/client';
+
+export const NodeByUri = gql`
+  query NodeByUri($uri: ID!) {
+    nodeByUri(uri: $uri) {
+      ... on Product {
+        id
+        name
+        shortDescription
+        price
+        image {
+          sourceUrl
+          altText
+        }
+      }
+      contentNodes(first: 100) {
+        edges {
+          cursor
+          node {
+            ... on Product {
+              id
+              name
+              shortDescription
+              ... on SimpleProduct {
+                  price
+              }
+              ... on VariableProduct {
+                  price
+              }
+              image {
+                sourceUrl
+                altText
+              }
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+```
+
 
 ```jsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
 import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
-  const [products, setProducts] = useState([]);
   const { loading, error, data } = useQuery(NodeByUri, {
     variables: { uri: '/shop' },
   });
 
-  useEffect(() => {
-    if (data && data.nodeByUri) {
-      const { nodeByUri } = data;
-
-      if (nodeByUri.contentNodes) {
-        setProducts(nodeByUri.contentNodes.nodes);
-      } else {
-        setProducts([nodeByUri]);
-      }
-    }
-  }, [data]);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
+  const products = data?.nodeByUri?.contentNodes?.edges?.map(
+    ({ node }) => node
+  ) || [];
   return <ProductListing products={products} />;
 };
 
@@ -104,11 +148,34 @@ export default ProductListing;
 
 With the `ProductListing` component, we can display the product listing for both collection and single data object. This approach can also be applied to other pages such as `/product-category/*` or `/product-tag/*` pages, with the ability to change there slug names as well in the WP Dashboard.
 
-In the next part, we will focused further on rendering a product listing using the `nodeByUri` query by exploring adding features like pagination, sorting, and filtering to our shop page.
+In the next section, we will focused further on rendering a product listing using the `nodeByUri` query by exploring adding features like pagination, sorting, and filtering to our shop page.
 
 ## Pagination
 
-To add pagination to our shop page, we will need to update the `NodeByUri` operation to include the `after` and `first` variables. This will allow us to fetch a specific number of products and control the starting point for the fetched data.
+To add pagination to our shop page, we will need to create a type policy for our schema. This will tell Apollo how to cache our query results.
+
+```javascript
+import { ApolloClient, from } from '@apollo/client';
+import { relayStylePagination } from '@apollo/client/utilities';
+const typePolicies = {
+  RootQuery: {
+    queryType: true,
+    fields: {
+      products: relayStylePagination(['where']),
+    },
+  },
+};
+const client = new ApolloClient({
+  link: from([
+    // ...middleware/afterware/endpoint
+  ]),
+  cache: new InMemoryCache({ typePolicies }),
+});
+```
+
+`relayStylePagination()` is a utility function that merges to the results of a Relay Connection together and as of the writing of this documentation has a slight bug where it only merges the `edges` and not the `nodes`, if your wondering why we're using `edges` instead of `nodes`.
+
+Next we have to update the `NodeByUri` operation to include the `after` and `first` variables. This will allow us to fetch a specific number of products and control the starting point for the fetched data.
 
 _Notice we are not applying the `first` and `after` variables to the query but instead a connection within._
 
@@ -128,20 +195,23 @@ query NodeByUri($uri: ID!, $first: Int, $after: String) {
       }
     }
       contentNodes(first: $first, after: $after) {
-        nodes {
-          ... on Product {
-            id
-            name
-            shortDescription
-            ... on SimpleProduct {
-                price
-            }
-            ... on VariableProduct {
-                price
-            }
-            image {
-              sourceUrl
-              altText
+        edges {
+          cursor
+          node {
+            ... on Product {
+              id
+              name
+              shortDescription
+              ... on SimpleProduct {
+                  price
+              }
+              ... on VariableProduct {
+                  price
+              }
+              image {
+                sourceUrl
+                altText
+              }
             }
           }
         }
@@ -157,31 +227,17 @@ query NodeByUri($uri: ID!, $first: Int, $after: String) {
 Next, update the `ShopPage` component to manage the pagination state and fetch more products using the `fetchMore` function from the `useQuery` hook:
 
 ```jsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
 import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
-  const [products, setProducts] = useState([]);
   const { loading, error, data, fetchMore } = useQuery(NodeByUri, {
     variables: { uri: '/shop', first: 10 },
   });
-
-  useEffect(() => {
-    if (data && data.nodeByUri) {
-      const { nodeByUri } = data;
-
-      if (nodeByUri.contentNodes) {
-        setProducts(nodeByUri.contentNodes.nodes);
-      } else {
-        setProducts([nodeByUri]);
-      }
-    }
-  }, [data]);
 
   const loadMoreProducts = () => {
     if (data.nodeByUri.contentNodes.pageInfo.hasNextPage) {
@@ -195,6 +251,10 @@ const ShopPage = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+
+  const products = data?.nodeByUri?.contentNodes?.edges?.map(
+    ({ node }) => node
+  ) || [];
 
   return (
     <>
@@ -217,73 +277,61 @@ Update the `NodeByUri` query in `graphql.js`:
 
 ```graphql
 query NodeByUri($uri: ID!, $first: Int, $after: String, $where: RootQueryToProductConnectionWhereArgs) {
-    nodeByUri(uri: $uri) {
-        ... on Product {
+  nodeByUri(uri: $uri) {
+    ... on Product {
+      id
+      name
+      shortDescription
+      price
+      image {
+        sourceUrl
+        altText
+      }
+    }
+    contentNodes(first: $first, after: $after, where: $where) {
+      edges {
+        nodes {
+          ... on Product {
             id
             name
             shortDescription
-            price
+            ... on SimpleProduct {
+              price
+            }
+            ... on VariableProduct {
+              price
+            }
             image {
-                sourceUrl
-                altText
+              sourceUrl
+              altText
             }
+          }
         }
-        contentNodes(first: $first, after: $after, where: $where) {
-            nodes {
-                ... on Product {
-                    id
-                    name
-                    shortDescription
-                    ... on SimpleProduct {
-                        price
-                    }
-                    ... on VariableProduct {
-                        price
-                    }
-                    image {
-                        sourceUrl
-                        altText
-                    }
-                }
-            }
-            pageInfo {
-                hasNextPage
-                endCursor
-            }
-        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
+  }
 }
 ```
 
 Next, add a sorting dropdown component to the `ShopPage` component, and update the state and the `useQuery` hook to handle sorting:
 
 ```jsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
 import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
-  const [products, setProducts] = useState([]);
   const [sort, setSort] = useState(null);
   const { loading, error, data, fetchMore } = useQuery(NodeByUri, {
     variables: { uri: '/shop', first: 10, where: sort },
   });
-
-  useEffect(() => {
-    if (data && data.nodeByUri) {
-      const { nodeByUri } = data;
-
-      if (nodeByUri.contentNodes) {
-        setProducts(nodeByUri.contentNodes.nodes);
-      } else {
-        setProducts([nodeByUri]);
-      }
-    }
-  }, [data]);
 
   const loadMoreProducts = () => {
     if (data.nodeByUri.contentNodes.pageInfo.hasNextPage) {
@@ -301,6 +349,10 @@ const ShopPage = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+
+  const products = data?.nodeByUri?.contentNodes?.edges?.map(
+    ({ node }) => node
+  ) || [];
 
   return (
     <>
@@ -341,26 +393,28 @@ query NodeByUri($uri: ID!, $first: Int, $after: String, $where: RootQueryToProdu
     }
     ... on Collection {
       contentNodes(first: $first, after: $after, where: $where) {
-        nodes {
-          ... on Product {
-            id
-            name
-            shortDescription
-            ... on SimpleProduct {
-                price
-            }
-            ... on VariableProduct {
-                price
-            }
-            image {
-              sourceUrl
-              altText
+        edges {
+          nodes {
+            ... on Product {
+              id
+              name
+              shortDescription
+              ... on SimpleProduct {
+                  price
+              }
+              ... on VariableProduct {
+                  price
+              }
+              image {
+                sourceUrl
+                altText
+              }
             }
           }
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
         }
       }
     }
@@ -371,33 +425,19 @@ query NodeByUri($uri: ID!, $first: Int, $after: String, $where: RootQueryToProdu
 Next, add a search input component to the `ShopPage` component, and update the state and the `useQuery` hook to handle filtering:
 
 ```jsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
 import ProductListing from './ProductListing';
 
 // Import the NodeByUri query here
 import { NodeByUri } from './graphql';
 
 const ShopPage = () => {
-  const [products, setProducts] = useState([]);
   const [sort, setSort] = useState(null);
   const [search, setSearch] = useState('');
   const { loading, error, data, fetchMore } = useQuery(NodeByUri, {
     variables: { uri: '/shop', first: 10, where: { ...sort, search } },
   });
-
-  useEffect(() => {
-    if (data && data.nodeByUri) {
-      const { nodeByUri } = data;
-
-      if (nodeByUri.contentNodes) {
-        setProducts(nodeByUri.contentNodes.nodes);
-      } else {
-        setProducts([nodeByUri]);
-      }
-    }
-  }, [data]);
 
   const loadMoreProducts = () => {
     if (data.nodeByUri.contentNodes.pageInfo.hasNextPage) {
@@ -419,6 +459,10 @@ const ShopPage = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+
+  const products = data?.nodeByUri?.contentNodes?.edges?.map(
+    ({ node }) => node
+  ) || [];
 
   return (
     <>
@@ -443,5 +487,7 @@ export default ShopPage;
 ```
 
 With these changes, you can now search for products by typing in the search input, and the products will be fetched and displayed based on the search query. This is far from complete it needs many more things, like CSS styling, field validation, and error handling to name few.
+
+## Conclusion
 
 In summary, you've now implemented sorting and filtering functionality for products in a headless WordPress + React app using WooGraphQL. You can further customize the sorting and filtering options by modifying the `NodeByUri` query and the `ShopPage` component.

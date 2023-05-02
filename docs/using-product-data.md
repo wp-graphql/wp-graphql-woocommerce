@@ -1,3 +1,10 @@
+---
+title: "Using Product Data with WooGraphQL"
+description: "Learn how to efficiently fetch and use product data in your headless WooCommerce application using WooGraphQL and WPGraphQL for a seamless shopping experience."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, product data, headless, shopping experience"
+author: "Geoff Taylor"
+---
+
 # Using Product Data
 
 In this guide, we will implement the Single Product page using the provided GraphQL query and the JSON result. We will display the product's `name`, `description`, `price`, `regularPrice`, `attributes`, `width`, `height`, `length`, and `weight`. Additionally, we will prepare a section for cart options like desired quantity and an Add to Cart button.
@@ -117,17 +124,16 @@ We've included the `GetProduct` query we'll be utilizing going forward and lever
 First, create a new component for the Single Product page. You can call it `SingleProduct.js`. In this component, we will use the `GetProduct` query from the list of provided queries.
 
 ```jsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
 import { GetProduct } from './graphql';
-import LoadingSpinner from './LoadingSpinner';
 
 const SingleProduct = ({ productId }) => {
   const { data, loading, error } = useQuery(GetProduct, {
     variables: { id: productId, idType: 'DATABASE_ID' },
   });
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   const product = data.product;
@@ -174,18 +180,20 @@ return (
 
 ## Step 3: Add width, height, length, and weight information
 
-You need to modify the `GetProduct` query to include the dimensions and weight fields for simple and variable products. Then, display the dimensions and weight in the Single Product component.
+You need to modify the `GetProduct` query to include the dimensions and weight fields for simple and variable products. Then, display the dimensions and weight in the Single Product component. Add the following fields to the SimpleProduct and VariableProduct fragments in the `graphql.js` file.
 
-```javascript
-// Add the following fields to the SimpleProduct and VariableProduct fragments
+```graphql
 dimensions {
   width
   height
   length
 }
 weight
+```
 
-// Inside the SingleProduct component, after rendering the attributes
+Inside the SingleProduct component, after rendering the attributes
+
+```jsx
 <div className="dimensions">
   <strong>Dimensions:</strong> {product.dimensions.width} x {product.dimensions.height} x {product.dimensions.length}
 </div>
@@ -196,10 +204,9 @@ weight
 
 ## Step 4: Add cart options section
 
-Finally, add a section for cart options like desired quantity and the Add to Cart button. Use the `soldIndividually` and `stockStatus` fields to control the state of the cart controls.
+Finally, add a section for cart options like desired quantity and the Add to Cart button. Use the `soldIndividually` and `stockStatus` fields to control the state of the cart controls. Add this inside the SingleProduct component, after rendering the weight information
 
-```javascript
-  // Inside the SingleProduct component, after rendering the weight information
+```jsx
   <div className="cart-options">
     {!product.soldIndividually && (
       <div className="quantity">
@@ -216,10 +223,9 @@ Finally, add a section for cart options like desired quantity and the Add to Car
     )}
   </div>
 );
-
 ```
 
-With this implementation, the Single Product page displays the product information, dimensions, and weight. Additionally, it includes a section for cart options, such as the desired quantity and an Add to Cart button. The availability of the cart options is dictated by the `soldIndividually` and `stockStatus` fields. If the product is not sold individually, the user can select a quantity. The Add to Cart button is only shown if the product is in stock; otherwise, an "Out of stock" message is displayed.
+With this implementation, the Single Product page displays the product information, dimensions, and weight. Additionally, it includes a section for cart options, such as the desired quantity and an Add to Cart button. The availability of the cart options is dictated by the `soldIndividually` and `stockStatus` fields. If the product is not sold individually, the user can select a quantity. The Add to Cart button is only shown if the product is in stock; otherwise, an "Out of stock" message is displayed. We could also go a step further and use the product's `stockQuantity` to set a hard max quantity limit, but it's outta of the scope of this guide.
 
 ## Conclusion
 

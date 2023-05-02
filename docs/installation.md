@@ -1,3 +1,10 @@
+---
+title: "WooGraphQL Installation Guide"
+author: "Geoff Taylor"
+description: "Step-by-step instructions to install and set up WooGraphQL, the WPGraphQL extension that integrates WooCommerce with GraphQL for headless e-commerce solutions."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, installation, setup, headless e-commerce"
+---
+
 # Installation
 
 This guide will walk you through the process of installing and configuring WooGraphQL for your WordPress website.
@@ -11,7 +18,7 @@ This guide will walk you through the process of installing and configuring WooGr
 
 ### 1. Download the WooGraphQL plugin
 
-Visit the official WooGraphQL website (https://woographql.com) and download the latest release as a zip file.
+Visit the official WooGraphQL website (https://woographql.com/) and download the latest release as a zip file.
 
 ### 2. Install the WooGraphQL plugin
 
