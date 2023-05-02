@@ -1,3 +1,10 @@
+---
+title: "Handling User Session and Using Cart Mutations with WooGraphQL"
+description: "Discover how to manage user sessions and perform cart mutations using WooGraphQL and WPGraphQL in your headless WooCommerce application for a smooth shopping experience."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, user session, cart mutations, headless, shopping experience"
+author: "Geoff Taylor"
+---
+
 # Handling User Session and Using Cart Mutations
 
 In this guide, we will demonstrate how to implement cart controls on the single product page, which will take into account the state of the cart stored in the user session. This guide builds upon the app created in the previous guides, so use the code samples from them as a starting point. The guide is broken down into three parts: The implementation and use of `UserSessionProvider.jsx`, `useCartMutations.js`, and `CartOptions.jsx`.
@@ -301,6 +308,7 @@ export const RemoveItemsFromCart = gql`
 ```
 
 We've included all the queries will be using going forward and leveraging some fragments here and there. Now we can move onto implementing the components sourcing these queries and mutations.
+We won't go over them into much detail here but you can learn more about them in the [schema](/schema) docs.
 
 ## Step 1: UserSessionProvider.jsx
 
@@ -384,7 +392,7 @@ export function SessionProvider({ children }) {
 export const useSession = () => useContext(SessionContext);
 ```
 
-To use the `SessionProvider`, you should wrap your app component with it and wrap the `SessionProvider` with an ApolloProvider set with our session token managing ApolloClient. Make sure to demonstrate this for the reader against our previous code samples from previous posts.
+To use the `SessionProvider`, you should wrap your root app component with it and wrap the `SessionProvider` with an ApolloProvider set with our session token managing ApolloClient. Make sure to demonstrate this for the reader against our previous code samples from previous posts.
 
 ## Step 2: useCartMutations.js
 
@@ -528,78 +536,98 @@ With the `useCartMutations` hook implemented, you can use it within your compone
 
 You can now use this hook to create and manage cart interactions in your components. For instance, you can create an "Add to Cart" button that adds items to the cart, updates the quantity of an existing item, or removes an item from the cart.
 
-Here's an example of how you could use the useCartMutations hook within a React component:
+Here's an example of how you could use the useCartMutations hook within a React component use our SingleProduct component from the previous guide:
 
 ```jsx
-import React, { useState } from 'react';
-import useCartMutations from './useCartMutations';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { GetProduct } from './graphql';
 
-const ProductCard = ({ product }) => {
+const SingleProduct = ({ productId }) => {
   const [quantity, setQuantity] = useState(1);
-  const { productId, variationId, extraData } = product;
-  const { quantityInCart, mutate, loading } = useCartMutations(productId, variationId, extraData);
+  const { data, loading, error } = useQuery(GetProduct, {
+    variables: { id: productId, idType: 'DATABASE_ID' },
+  });
+  const { quantityInCart: inCart, mutate, loading } = useCartMutations(productId);
 
-  const handleAddToCart = () => {
-    mutate(quantity, 'add');
-  };
+  useEffect(() => {
+    if (inCart) {
+      setQuantity(inCart);
+    }
+  }, [inCart])
 
-  const handleUpdateQuantity = () => {
-    mutate(quantity, 'update');
-  };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
-  const handleRemoveFromCart = () => {
-    mutate(0, 'remove');
-  };
+  const handleAddOrUpdateAction = async () => {
+    mutate({ quantity });
+  }
+
+  const handleRemoveAction = async () => {
+    mutate({ mutation: 'remove', quantity: 0 });
+  }
+
+  const buttonText = inCart ? 'Update' : 'Add To Cart';
 
   return (
-    <div className="product-card">
-      <h3>{product.name}</h3>
-      <img src={product.image} alt={product.name} />
-      <p>Price: {product.price}</p>
-
-      <div className="quantity-input">
-        <label htmlFor="quantity">Quantity:</label>
-        <input
-          type="number"
-          id="quantity"
-          value={quantity}
-          onChange={(e) => setQuantity(parseInt(e.target.value))}
-          min={0}
-        />
+    <div className="single-product">
+      {/* Rest of component */}
+      <div className="cart-options">
+        {!product.soldIndividually && (
+          <div className="quantity">
+            <label htmlFor="quantity">Quantity:</label>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              min="1"
+              defaultValue={inCart ? inCart : 1}
+              onChange={(event) => setQuantity(Number.parseInt(event.target.value)))}
+            />
+          </div>
+        )}
+        {product.stockStatus === 'IN_STOCK' ? (
+          <>
+            <button
+              type="button"
+              className="add-to-cart"
+              onClick={handleAddOrUpdateAction}
+              disabled={loading}
+            >
+              {buttonText}
+            </button>
+            {inCart && (
+              <button
+                type="button"
+                className="remove-from-cart"
+                onClick={handleRemoveAction}
+                disabled={loading}
+              >
+                Remove
+              </button>
+            )}
+          </>
+        ) : (
+          <p>Out of stock</p>
+        )}
       </div>
-
-      <button onClick={handleAddToCart} disabled={loading}>
-        Add to Cart
-      </button>
-
-      {quantityInCart > 0 && (
-        <>
-          <button onClick={handleUpdateQuantity} disabled={loading}>
-            Update Quantity
-          </button>
-
-          <button onClick={handleRemoveFromCart} disabled={loading}>
-            Remove from Cart
-          </button>
-        </>
-      )}
     </div>
   );
 };
 
-export default ProductCard;
+export default SingleProduct;
 ```
 
-In this example, we have a `ProductCard` component that receives a product object as a prop. It uses the `useCartMutations` hook to manage the cart actions. The component renders the product information and provides buttons to add, update, or remove the item from the cart.
+In this example, we have our `SingleProduct` component that receives a `productId`. It uses the `useCartMutations` hook to manage the cart actions. The component renders the product information and provides buttons to add, update, or remove the item from the cart.
 
-The `handleAddToCart`, `handleUpdateQuantity`, and `handleRemoveFromCart` functions call the `mutate` function returned by the `useCartMutations` hook with the desired action ('add', 'update', or 'remove'). The `loading` flag is used to disable the buttons while any cart mutations are in progress.
+The `handleAddOrUpdateAction` and `handleRemoveAction` functions call the `mutate` function returned by the `useCartMutations`. The `loading` flag is used to disable the buttons while any cart mutations are in progress.
 
-This is just an example of how you could use the `useCartMutations` hook. Depending on your application's requirements and design, you may need to modify or extend the component to fit your needs.
+This is just an example of how you could use the `useCartMutations` hook and only using simple products, but as I'm sure you noticed it support a `variationId` as the second parameter. Implementing Variable product support in our `SingleProduct` component is out of the scope this guide, but with what has been provided you should have no problem implementing variable product support.
 
 ## Conclusion
 
-In conclusion, we've created a custom React hook, `useCartMutations`, which allows you to manage cart actions like adding, updating, and removing items in an e-commerce application. We've used the Apollo Client's useMutation hook to interact with the GraphQL API and manage the state of the cart. Then, we've demonstrated how to use the custom `useCartMutations` hook within a `ProductCard` component to perform cart-related actions.
+In conclusion, we've created a custom React hook, `useCartMutations`, which allows you to manage cart actions like adding, updating, and removing items in an e-commerce application. We've used the Apollo Client's useMutation hook to interact with the GraphQL API and manage the state of the cart. Then, we've demonstrated how to use the custom `useCartMutations` hook within our `SingleProduct` component to perform cart-related actions.
 
-This custom hook can help you create a more organized and modular e-commerce application by abstracting the cart logic and keeping your components clean and focused. You can further modify and extend the `useCartMutations` hook and the `ProductCard` component to suit the specific requirements of your application.
+This custom hook can help you create a more organized and modular e-commerce application by abstracting the cart logic and keeping your components clean and focused. You can further modify and extend the `useCartMutations` hook and the `SingleProduct` component to suit the specific requirements of your application.
 
 By leveraging the power of custom hooks and GraphQL in your React application, you can create a robust and efficient e-commerce solution that scales well and provides a great user experience.
