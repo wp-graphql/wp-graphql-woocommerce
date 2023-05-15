@@ -38,6 +38,10 @@ class Customer_Type {
 				'databaseId'            => [
 					'type'        => 'Int',
 					'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						$database_id = absint( $source->ID );
+						return ! empty ( $database_id ) ? $database_id : null;
+					}
 				],
 				'isVatExempt'           => [
 					'type'        => 'Boolean',
@@ -155,6 +159,8 @@ class Customer_Type {
 
 	/**
 	 * Registers Customer WPObject type and related fields.
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -180,46 +186,6 @@ class Customer_Type {
 				'connections' => apply_filters( 'woographql_customer_connection_definitions', self::get_connections() ),
 			]
 		);
-
-		// Register session token fields if QL_Session_Handler is enabled.
-		if ( 'off' === woographql_setting( 'disable_ql_session_handler', 'off' ) ) {
-			/**
-			 * Register the "sessionToken" field to the "Customer" type.
-			 */
-			register_graphql_field(
-				'Customer',
-				'sessionToken',
-				[
-					'type'        => 'String',
-					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
-						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
-							return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
-						}
-
-						return null;
-					},
-				]
-			);
-			/**
-			 * Register the "wooSessionToken" field to the "User" type.
-			 */
-			register_graphql_field(
-				'User',
-				'wooSessionToken',
-				[
-					'type'        => 'String',
-					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
-						if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-							return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
-						}
-
-						return null;
-					},
-				]
-			);
-		}//end if
 
 		/**
 		 * Register "availablePaymentMethods" field to "Customer" type.
@@ -274,5 +240,171 @@ class Customer_Type {
 				],
 			]
 		);
+	}
+
+	/**
+	 * Registers fields that require the "QL_Session_Handler" class to work.
+	 *
+	 * @return void
+	 */
+	public static function register_session_handler_fields() {
+		/**
+		 * Register the "sessionToken" field to the "Customer" type.
+		 */
+		register_graphql_field(
+			'Customer',
+			'sessionToken',
+			[
+				'type'        => 'String',
+				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $source ) {
+					if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
+						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+					}
+
+					return null;
+				},
+			]
+		);
+		/**
+		 * Register the "wooSessionToken" field to the "User" type.
+		 */
+		register_graphql_field(
+			'User',
+			'wooSessionToken',
+			[
+				'type'        => 'String',
+				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $source ) {
+					if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+					}
+
+					return null;
+				},
+			]
+		);
+	}
+
+	/**
+	 * Creates nonce for WooGraphQL session drops URLs.
+	 */
+	private static function create_nonce( $action = -1 ) {
+		$uid   = 0;
+		$token = '';
+		$i     = wp_nonce_tick( $action );
+	
+		return substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
+	}
+
+	/**
+	 * Registers selected authorizing_url_fields
+	 *
+	 * @param array $fields_to_register  Slugs of fields
+	 * @return void
+	 */
+	public static function register_authorizing_url_fields( $fields_to_register ) {
+		if ( in_array( 'cart_url', $fields_to_register, true ) ) {
+			register_graphql_field(
+				'Customer',
+				'cartUrl',
+				[
+					'type'        => 'String',
+					'description' => __( 'A nonce link to the session user\'s cart. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						// Get current customer and user ID.
+						$customer_id     = $source->ID;
+						$current_user_id = get_current_user_id();
+
+						// Return null if current user not user being queried.
+						if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+							return null;
+						}
+
+						// Build nonced url as an unauthenticated user.
+						$nonce_name = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
+						$url   = add_query_arg(
+							[
+								'session_id' => $customer_id,
+								$nonce_name  => self::create_nonce( "load-cart_{$customer_id}" ),
+				 			],
+							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+						);
+
+						return esc_url_raw( $url );
+					},
+				]
+			);
+		}
+
+		if ( in_array( 'checkout_url', $fields_to_register, true ) ) {
+			register_graphql_field(
+				'Customer',
+				'checkoutUrl',
+				[
+					'type'        => 'String',
+					'description' => __( 'A nonce link to the checkout page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						// Get current customer and user ID.
+						$customer_id     = $source->ID;
+						$current_user_id = get_current_user_id();
+
+						// Return null if current user not user being queried.
+						if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+							return null;
+						}
+
+						// Build nonced url as an unauthenticated user.
+						$nonce_name = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
+						$url   = add_query_arg(
+							[
+								'session_id' => $customer_id,
+								$nonce_name  => self::create_nonce( "load-checkout_{$customer_id}" ),
+				 			],
+							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+						);
+
+						return esc_url_raw( $url );
+					},
+				]
+			);
+		}
+
+		if ( in_array( 'add_payment_method_url', $fields_to_register, true ) ) {
+			register_graphql_field(
+				'Customer',
+				'addPaymentMethodUrl',
+				[
+					'type'        => 'String',
+					'description' => __( 'A nonce link to the add payment page for the authenticated user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+					'resolve'     => function( $source ) {
+						if ( ! is_user_logged_in() ) {
+							return null;
+						}
+
+						// Get current customer and user ID.
+						$customer_id     = $source->ID;
+						$current_user_id = get_current_user_id();
+
+						// Return null if current user not user being queried.
+						if ( $current_user_id !== $customer_id ) {
+							return null;
+						}
+
+						// Build nonced url as an unauthenticated user.
+						$nonce_name = woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' );
+						$url   = add_query_arg(
+							[
+								'session_id' => $customer_id,
+								$nonce_name  => self::create_nonce( "load-account_{$customer_id}" ),
+				 			],
+							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+						);
+
+						return esc_url_raw( $url );
+					},
+				]
+			);
+		}
 	}
 }

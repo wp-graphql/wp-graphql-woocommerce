@@ -609,4 +609,48 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	public function testAuthorizingUrlFields() {
+		// Create customer for later use.
+		$customer_id = $this->factory->customer->create();
+
+		// Create auth URLs query.
+		$query = '
+			query($id: ID) {
+				customer(id: $id) {
+					id
+					cartUrl
+					checkoutUrl
+					addPaymentMethodUrl
+				}
+			}
+		';
+
+		/**
+		 * Assert NULL values when querying as admin
+		 */
+		$this->loginAsShopManager();
+		$variables = [ 'id' => $this->toRelayId( 'customer', $customer_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.cartUrl', self::IS_NULL ),
+			$this->expectedField( 'customer.checkoutUrl', self::IS_NULL ),
+			$this->expectedField( 'customer.addPaymentMethodUrl', self::IS_NULL ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assert NOT NULL values when querying as admin
+		 */
+		$this->loginAs( $customer_id );
+		$response  = $this->graphql( compact( 'query' ) );
+		$expected  = [
+			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.cartUrl', self::NOT_NULL ),
+			$this->expectedField( 'customer.checkoutUrl', self::NOT_NULL ),
+			$this->expectedField( 'customer.addPaymentMethodUrl', self::NOT_NULL ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

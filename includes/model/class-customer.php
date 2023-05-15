@@ -58,7 +58,7 @@ class Customer extends Model {
 		if ( empty( $this->fields ) ) {
 			$this->fields = [
 				'ID'                    => function() {
-					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : \WC()->session->_customer_id;
+					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : \WC()->session->get_customer_id();
 				},
 				'id'                    => function() {
 					return ( ! empty( $this->data->get_id() ) )

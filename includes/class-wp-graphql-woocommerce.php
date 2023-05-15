@@ -377,6 +377,21 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
+		 * Returns true if any authorizing urls are enabled.
+		 *
+		 * @return bool
+		 */
+		public static function auth_router_is_enabled() {
+			return defined( 'FORCE_ENABLE_AUTH_URLS' )
+				|| ! empty( array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) ) );
+		}
+
+		public static function load_auth_router() {
+			require get_includes_directory() . 'utils/class-protected-router.php';
+			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'instance' ] );
+		}
+
+		/**
 		 * Sets up WooGraphQL schema.
 		 */
 		private function setup() {

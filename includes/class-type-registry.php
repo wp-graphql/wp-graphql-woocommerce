@@ -13,13 +13,16 @@ namespace WPGraphQL\WooCommerce;
  */
 class Type_Registry {
 
+	
 	/**
 	 * Registers WooGraphQL types, connections, unions, and mutations to GraphQL schema
 	 *
 	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  Instance of the WPGraphQL TypeRegistry.
 	 */
 	public function init( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
-		// Enumerations.
+		/**
+		 * Enumerations.
+		 */
 		Type\WPEnum\Backorders::register();
 		Type\WPEnum\Catalog_Visibility::register();
 		Type\WPEnum\Countries::register();
@@ -43,7 +46,9 @@ class Type_Registry {
 		Type\WPEnum\Id_Type_Enums::register();
 		Type\WPEnum\Cart_Error_Type::register();
 
-		// InputObjects.
+		/**
+		 * InputObjects.
+		 */
 		Type\WPInputObject\Cart_Item_Input::register();
 		Type\WPInputObject\Customer_Address_Input::register();
 		Type\WPInputObject\Product_Attribute_Input::register();
@@ -58,14 +63,18 @@ class Type_Registry {
 		Type\WPInputObject\Product_Taxonomy_Input::register();
 		Type\WPInputObject\Orderby_Inputs::register();
 
-		// Interfaces.
+		/**
+		 * Interfaces.
+		 */
 		Type\WPInterface\Product::register_interface();
 		Type\WPInterface\Attribute::register_interface( $type_registry );
 		Type\WPInterface\Product_Attribute::register_interface( $type_registry );
 		Type\WPInterface\Cart_Error::register_interface( $type_registry );
 		Type\WPInterface\Payment_Token::register_interface( $type_registry );
 
-		// Objects.
+		/**
+		 * Objects.
+		 */
 		Type\WPObject\Meta_Data_Type::register();
 		Type\WPObject\Downloadable_Item_Type::register();
 		Type\WPObject\Coupon_Type::register();
@@ -90,11 +99,27 @@ class Type_Registry {
 		Type\WPObject\Payment_Token_Types::register();
 		Type\WPObject\Country_State_Type::register();
 
-		// Object fields.
+		/**
+		 * Object fields.
+		 */
 		Type\WPObject\Product_Category_Type::register_fields();
 		Type\WPObject\Root_Query::register_fields();
 
-		// Connections.
+		// Register the following fields only if "disable_ql_session_handler" option is not on.
+		$ql_session_handled_enabled = ! WooCommerce_Filters::is_session_handler_disabled();
+		if ( $ql_session_handled_enabled ) {
+			Type\WPObject\Customer_Type::register_session_handler_fields();
+		}
+
+		// Register the following fields only if "disable_ql_session_handler" option is not "on" and some fields under the "enable_authorizing_url_fields" option are "selected".
+		$enabled_url_fields = WooCommerce_Filters::enabled_authorizing_url_fields();
+		if ( $ql_session_handled_enabled && ! empty ( $enabled_url_fields ) ) {
+			Type\WPObject\Customer_Type::register_authorizing_url_fields( array_keys( $enabled_url_fields ) );
+		}
+
+		/**
+		 * Connections.
+		 */
 		Connection\Posts::register_connections();
 		Connection\WC_Terms::register_connections();
 		Connection\Comments::register_connections();
@@ -108,7 +133,9 @@ class Type_Registry {
 		Connection\Shipping_Methods::register_connections();
 		Connection\Payment_Gateways::register_connections();
 
-		// Mutations.
+		/**
+		 * Mutations.
+		 */
 		Mutation\Customer_Register::register_mutation();
 		Mutation\Customer_Update::register_mutation();
 		Mutation\Cart_Add_Item::register_mutation();

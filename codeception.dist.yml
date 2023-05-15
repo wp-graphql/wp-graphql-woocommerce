@@ -57,6 +57,7 @@ modules:
     REST:
       depends: WPBrowser
       url: '%WORDPRESS_URL%'
+      cookies: false
     WPFilesystem:
       wpRootFolder: '%WP_CORE_DIR%'
       plugins: '/wp-content/plugins'

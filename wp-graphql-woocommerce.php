@@ -139,6 +139,17 @@ function init() {
 }
 add_action( 'graphql_init', 'WPGraphQL\WooCommerce\init' );
 
+/**
+ * Initializes Protected Router
+ */
+function init_auth_router() {
+    if ( empty( dependencies_not_ready() ) ) {
+        require_once get_includes_directory() . 'class-wp-graphql-woocommerce.php';
+        WP_GraphQL_WooCommerce::load_auth_router();
+    }
+}
+add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\init_auth_router' );
+
 // Load constants.
 constants();
 
