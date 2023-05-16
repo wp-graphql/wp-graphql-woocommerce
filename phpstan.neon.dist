@@ -1,0 +1,15 @@
+parameters:
+		level: 0 # Gotta start somewhere
+		inferPrivatePropertyTypeFromConstructor: true
+		checkMissingIterableValueType: false
+		bootstrapFiles:
+			- phpstan/constants.php
+		paths:
+			- wp-graphql-woocommerce.php
+			- access-functions.php
+			- includes/
+		scanFiles:
+			- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
+		scanDirectories:
+			- ../wp-graphql-jwt-authentication
