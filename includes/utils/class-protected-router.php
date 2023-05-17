@@ -299,9 +299,9 @@ class Protected_Router {
 			wp_set_current_user( 0 );
 		}
 
-		if ( ! wp_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
-			echo 'Failed nonce';
-			//wp_safe_redirect( home_url() );
+		// Verify nonce.
+		if ( ! woographql_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
+			wp_safe_redirect( home_url() );
 			exit();
 		}
 

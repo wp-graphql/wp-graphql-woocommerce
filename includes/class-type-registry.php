@@ -162,5 +162,6 @@ class Type_Registry {
 		Mutation\Coupon_Delete::register_mutation();
 		Mutation\Payment_Method_Delete::register_mutation();
 		Mutation\Payment_Method_Set_Default::register_mutation();
+		Mutation\Update_Session::register_mutation();
 	}
 }

@@ -302,6 +302,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-review-update.php';
 			require $include_directory_path . 'mutation/class-payment-method-delete.php';
 			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
+			require $include_directory_path . 'mutation/class-update-session.php';
 
 			// Include connection class/function files.
 			require $include_directory_path . 'connection/wc-cpt-connection-args.php';

@@ -718,6 +718,17 @@ class GraphQLE2E extends \Codeception\Module {
 			]
 		);
 		update_option( 'woocommerce_cart_page_id', $cart_page_id );
+		$checkout_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Checkout',
+				'post_name'    => 'checkout',
+				'post_author'   => 1,
+				'post_content' => '[woocommerce_checkout]',
+				'post_status'  => 'publish',
+			]
+		);
+		update_option( 'woocommerce_checkout_page_id', $checkout_page_id );
 
 		global $wp_rewrite;
 		// Set the permalink structure
@@ -889,8 +900,7 @@ class GraphQLE2E extends \Codeception\Module {
 		);
 	}
 
-	public function verifyRedirect($startUrl, $endUrl, $redirectCode = 301)
-    {
+	public function verifyRedirect($startUrl, $endUrl, $redirectCode = 301) {
         $phpBrowser = $this->getModule('WPBrowser');
         $guzzle = $phpBrowser->client;
         

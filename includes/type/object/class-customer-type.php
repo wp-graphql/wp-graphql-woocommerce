@@ -28,7 +28,7 @@ class Customer_Type {
 	 * @param array $other_fields Extra fields configs to be added or override the default field definitions.
 	 * @return array
 	 */
-	public static function get_fields( $other_fields = [] ) {
+	public static function get_fields( $other_fields = [] ) {		
 		return array_merge(
 			[
 				'id'                    => [
@@ -114,8 +114,29 @@ class Customer_Type {
 					'type'        => 'Boolean',
 					'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
 				],
-
 				'metaData'              => Meta_Data_Type::get_metadata_field_definition(),
+				'session'               => [
+					'type'        => [ 'list_of' => 'MetaData' ],
+					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
+					'resolve'     => function ( $source ) {
+						\codecept_debug( \WC()->session->get_customer_id() );
+						if ( (string) $source->ID === (string) \WC()->session->get_customer_id() ) {
+							$session_data = \WC()->session->get_session_data();
+							$session      = [];
+							foreach ( $session_data as $key => $value ) {
+								$meta = new \stdClass();
+								$meta->id    = null;
+								$meta->key   = $key;
+								$meta->value = maybe_unserialize( $value );
+								$session[]   = $meta;
+							}
+		
+							return $session;
+						}
+
+						throw new UserError( __( 'It\'s not possible to access another user\'s session data', 'wp-graphql-woocommerce' ) );
+					}
+				]
 			],
 			$other_fields,
 		);
@@ -285,17 +306,7 @@ class Customer_Type {
 			]
 		);
 	}
-
-	/**
-	 * Creates nonce for WooGraphQL session drops URLs.
-	 */
-	private static function create_nonce( $action = -1 ) {
-		$uid   = 0;
-		$token = '';
-		$i     = wp_nonce_tick( $action );
 	
-		return substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
-	}
 
 	/**
 	 * Registers selected authorizing_url_fields
@@ -326,7 +337,7 @@ class Customer_Type {
 						$url   = add_query_arg(
 							[
 								'session_id' => $customer_id,
-								$nonce_name  => self::create_nonce( "load-cart_{$customer_id}" ),
+								$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
 				 			],
 							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 						);
@@ -359,7 +370,7 @@ class Customer_Type {
 						$url   = add_query_arg(
 							[
 								'session_id' => $customer_id,
-								$nonce_name  => self::create_nonce( "load-checkout_{$customer_id}" ),
+								$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
 				 			],
 							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 						);
@@ -396,7 +407,7 @@ class Customer_Type {
 						$url   = add_query_arg(
 							[
 								'session_id' => $customer_id,
-								$nonce_name  => self::create_nonce( "load-account_{$customer_id}" ),
+								$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
 				 			],
 							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 						);

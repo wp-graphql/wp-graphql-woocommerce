@@ -12,30 +12,74 @@ namespace WPGraphQL\WooCommerce\Utils;
  * Class Transfer_Session_Handler
  */
 class Transfer_Session_Handler extends \WC_Session_Handler {
+    /**
+     * Return true, if valid credential exists
+     *
+     * @return bool
+     */
+    protected function verify_auth_request_credential_exists() {
+        $possible_nonces = array_values( Protected_Router::get_nonce_names() );
+        // Return false if not nonce names set.
+        if ( empty( $possible_nonces ) ) {
+            return false;
+        }
+
+        // Return false if no matching nonces found in query parameters.
+        $query_params = array_keys( $_REQUEST );
+        if ( empty( array_intersect( $possible_nonces, $query_params ) ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function get_posted_session_id() {
+        if ( ! $this->verify_auth_request_credential_exists() ) {
+            return 0;
+        }
+        if ( ! isset( $_REQUEST['session_id'] ) ) {
+            return 0;
+        }
+
+        return sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) );
+    }
+
 	/**
 	 * Reads in customer ID from query parameters if specific conditions are met otherwise
      * a guest ID are generated as usual.
 	 * @return string
 	 */
 	public function generate_customer_id() {
-        $possible_nonces = array_values( Protected_Router::get_nonce_names() );
-        // Bail if not nonce names set.
-        if ( empty( $possible_nonces ) ) {
-            return parent::generate_customer_id();
+        $session_id = $this->get_posted_session_id();
+        if ( 0 !== $session_id ) {
+            return $session_id;
         }
 
-        // Bail if no matching nonces found in query parameters.
-        $query_params = array_keys( $_REQUEST );
-        if ( empty( array_intersect( $possible_nonces, $query_params ) ) ) {
-            return parent::generate_customer_id();
-        }
-
-        // Bail if no session ID sent as a query param.
-        if ( ! isset( $_REQUEST['session_id'] ) ) {
-            return parent::generate_customer_id();
-        }
-
-        $session_id = sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) );
-        return $session_id;
+        return parent::generate_customer_id();
 	}
+
+    /**
+     * Returns client session ID.
+     *
+     * @return string
+     */
+    public function get_client_session_id() {
+        $session_id   = $this->get_posted_session_id();
+        if ( 0 !== $session_id ) {
+            $session_data = $this->get_session( $session_id );
+            $client_session_id            = $session_data['client_session_id'];
+            $client_session_id_expiration = $session_data['client_session_id_expiration'];
+        } else {
+            $client_session_id            = $this->get( 'client_session_id', false );
+            $client_session_id_expiration = absint( $this->get( 'client_session_id_expiration', 0 ) );
+        }
+
+        if ( false !== $client_session_id && time() < $client_session_id_expiration ) {
+            return $client_session_id;
+        }
+        
+        $client_session_id = '';
+
+        return $client_session_id;
+    }
 }
