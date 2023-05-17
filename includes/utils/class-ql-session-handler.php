@@ -98,6 +98,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->transaction_manager = Session_Transaction_Manager::get( $this );
 
 		add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
+		add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
 		add_action( 'graphql_after_resolve_field', [ $this, 'save_if_dirty' ], 10, 4 );
 		add_action( 'shutdown', [ $this, 'save_data' ] );
 		add_action( 'wp_logout', [ $this, 'destroy_session' ] );
@@ -115,7 +116,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	public function init_session_token() {
 		$token = $this->get_session_token();
 
-		// Process existing session.
+		// Process existing session if not expired or invalid.
 		if ( $token && ! is_wp_error( $token ) ) {
 			$this->_customer_id        = $token->data->customer_id;
 			$this->_session_issued     = $token->iat;
@@ -357,7 +358,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->_session_expiration = apply_filters(
 			'graphql_woocommerce_cart_session_expire',
 			// Seconds * Minutes * Hours * Days.
-			time() + ( 60 * 60 * 24 * 14 )
+			$this->_session_issued + ( 60 * 60 * 24 * 14 )
 		);
 		// 13 Days.
 		$this->_session_expiring = $this->_session_expiration - ( 60 * 60 * 24 );

@@ -119,7 +119,6 @@ class Customer_Type {
 					'type'        => [ 'list_of' => 'MetaData' ],
 					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
 					'resolve'     => function ( $source ) {
-						\codecept_debug( \WC()->session->get_customer_id() );
 						if ( (string) \WC()->session->get_customer_id() === (string) $source->ID ) {
 							$session_data = \WC()->session->get_session_data();
 							$session      = [];
@@ -316,104 +315,155 @@ class Customer_Type {
 	 */
 	public static function register_authorizing_url_fields( $fields_to_register ) {
 		if ( in_array( 'cart_url', $fields_to_register, true ) ) {
-			register_graphql_field(
+			register_graphql_fields(
 				'Customer',
-				'cartUrl',
 				[
-					'type'        => 'String',
-					'description' => __( 'A nonce link to the session user\'s cart. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
-						// Get current customer and user ID.
-						$customer_id     = $source->ID;
-						$current_user_id = get_current_user_id();
-
-						// Return null if current user not user being queried.
-						if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
-							return null;
-						}
-
-						// Build nonced url as an unauthenticated user.
-						$nonce_name = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
-						$url        = add_query_arg(
-							[
-								'session_id' => $customer_id,
-								$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
-							],
-							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
-						);
-
-						return esc_url_raw( $url );
-					},
+					'cartUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'A nonced link to the cart page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+	
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+	
+							// Build nonced url as an unauthenticated user.
+							$nonce_name = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
+							$url        = add_query_arg(
+								[
+									'session_id' => $customer_id,
+									$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
+								],
+								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+							);
+	
+							return esc_url_raw( $url );
+						},
+					],
+					'cartNonce' => [
+						'type'        => 'String',
+						'description' => __( 'A nonce for the cart page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+	
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+	
+							return woographql_create_nonce( "load-cart_{$customer_id}" );
+						},
+					],
 				]
 			);
 		}//end if
 
 		if ( in_array( 'checkout_url', $fields_to_register, true ) ) {
-			register_graphql_field(
+			register_graphql_fields(
 				'Customer',
-				'checkoutUrl',
 				[
-					'type'        => 'String',
-					'description' => __( 'A nonce link to the checkout page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
-						// Get current customer and user ID.
-						$customer_id     = $source->ID;
-						$current_user_id = get_current_user_id();
-
-						// Return null if current user not user being queried.
-						if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
-							return null;
-						}
-
-						// Build nonced url as an unauthenticated user.
-						$nonce_name = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
-						$url        = add_query_arg(
-							[
-								'session_id' => $customer_id,
-								$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
-							],
-							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
-						);
-
-						return esc_url_raw( $url );
-					},
+					'checkoutUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'A nonce link to the checkout page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+	
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+	
+							// Build nonced url as an unauthenticated user.
+							$nonce_name = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
+							$url        = add_query_arg(
+								[
+									'session_id' => $customer_id,
+									$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
+								],
+								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+							);
+	
+							return esc_url_raw( $url );
+						},
+					],
+					'checkoutNonce' => [
+						'type'        => 'String',
+						'description' => __( 'A nonce for the checkout page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+	
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+	
+							return woographql_create_nonce( "load-checkout_{$customer_id}" );
+						},
+					],
 				]
 			);
 		}//end if
 
 		if ( in_array( 'add_payment_method_url', $fields_to_register, true ) ) {
-			register_graphql_field(
+			register_graphql_fields(
 				'Customer',
-				'addPaymentMethodUrl',
 				[
-					'type'        => 'String',
-					'description' => __( 'A nonce link to the add payment page for the authenticated user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
-						if ( ! is_user_logged_in() ) {
-							return null;
-						}
-
-						// Get current customer and user ID.
-						$customer_id     = $source->ID;
-						$current_user_id = get_current_user_id();
-
-						// Return null if current user not user being queried.
-						if ( $current_user_id !== $customer_id ) {
-							return null;
-						}
-
-						// Build nonced url as an unauthenticated user.
-						$nonce_name = woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' );
-						$url        = add_query_arg(
-							[
-								'session_id' => $customer_id,
-								$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
-							],
-							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
-						);
-
-						return esc_url_raw( $url );
-					},
+					'addPaymentMethodUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'A nonce link to the add payment method page for the authenticated user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							if ( ! is_user_logged_in() ) {
+								return null;
+							}
+	
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+	
+							// Return null if current user not user being queried.
+							if ( $current_user_id !== $customer_id ) {
+								return null;
+							}
+	
+							// Build nonced url as an unauthenticated user.
+							$nonce_name = woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' );
+							$url        = add_query_arg(
+								[
+									'session_id' => $customer_id,
+									$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
+								],
+								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+							);
+	
+							return esc_url_raw( $url );
+						},
+					],
+					'addPaymentMethodNonce' => [
+						'type'        => 'String',
+						'description' => __( 'A nonce for the add payment method page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+	
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+	
+							return woographql_create_nonce( "load-account_{$customer_id}" );
+						},
+					],
 				]
 			);
 		}//end if

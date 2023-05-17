@@ -99,10 +99,13 @@ class Update_Session {
 			// Save session data input.
 			foreach ( $session_data_input as $meta ) {
 				\WC()->session->set( $meta['key'], $meta['value'] );
+			}
+
+			if ( is_a( \WC()->session, '\WC_Session_Handler' ) ) {
 				\WC()->session->save_data();
 			}
 
-			\codecept_debug( \WC()->session->get_session_data() );
+			do_action( 'woographql_update_session', true );
 
 			// Process errors or return successful.
 			$notices = \WC()->session->get( 'wc_notices' );

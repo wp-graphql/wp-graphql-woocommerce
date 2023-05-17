@@ -255,6 +255,17 @@ class Protected_Router {
 	}
 
 	/**
+	 * Redirects to homepage.
+	 *
+	 * @return void
+	 */
+	private function redirect_to_home() {
+		status_header( 404 );
+		wp_safe_redirect( home_url() );
+		exit;
+	}
+
+	/**
 	 * Send stable version of plugin to download.
 	 *
 	 * @throws \Exception Session not found.
@@ -265,8 +276,7 @@ class Protected_Router {
 		// Bail early if session ID or nonce not found.
 		$nonce_names = $this->get_nonce_names();
 		if ( empty( $nonce_names ) ) {
-			wp_safe_redirect( home_url() );
-			exit;
+			$this->redirect_to_home();
 		}
 
 		$nonce_prefix = null;
@@ -282,8 +292,7 @@ class Protected_Router {
 		}
 
 		if ( empty( $nonce_prefix ) | empty( $session_id ) | empty( $nonce ) ) {
-			wp_safe_redirect( home_url() );
-			exit;
+			$this->redirect_to_home();
 		}
 
 		// Bail early if session user already authenticated.
@@ -300,8 +309,7 @@ class Protected_Router {
 
 		// Verify nonce.
 		if ( ! woographql_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
-			wp_safe_redirect( home_url() );
-			exit();
+			$this->redirect_to_home();
 		}
 
 		// If Session ID is a user ID authenticate as session user.

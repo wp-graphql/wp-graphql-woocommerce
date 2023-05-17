@@ -103,6 +103,7 @@ class Session_Transaction_Manager {
 				'updateItemQuantities',
 				'updateShippingMethod',
 				'updateCustomer',
+				'updateSession',
 			]
 		);
 	}
