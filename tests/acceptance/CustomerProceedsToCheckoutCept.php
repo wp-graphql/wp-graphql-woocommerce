@@ -5,8 +5,8 @@ $product_catalog = $I->getCatalog();
 
 // Flush permalinks.
 $I->loginAsAdmin();
-$I->amOnAdminPage('options-permalink.php');
-$I->click('#submit');
+$I->amOnAdminPage( 'options-permalink.php' );
+$I->click( '#submit' );
 $I->logOut();
 
 // Make quick helper for managing the session token.
@@ -93,19 +93,19 @@ $update_session_mutation = '
 		}
 	}
 ';
-$success    = $I->sendGraphQLRequest(
+$success                 = $I->sendGraphQLRequest(
 	$update_session_mutation,
 	[
 		'sessionData' => [
 			[
 				'key'   => 'client_session_id',
-				'value' => 'test-client-session-id-1'
+				'value' => 'test-client-session-id-1',
 			],
 			[
 				'key'   => 'client_session_id_expiration',
-				'value' => '3600'
+				'value' => '3600',
 			],
-		]
+		],
 	]
 );
 
@@ -148,19 +148,19 @@ $I->wantTo( 'Confirm checkout page has the belt in it.' );
 $I->see( 'Belt' );
 
 $I->wantTo( 'Start a new session with a expired "Client Session ID"' );
-$success    = $I->sendGraphQLRequest(
+$success = $I->sendGraphQLRequest(
 	$update_session_mutation,
 	[
 		'sessionData' => [
 			[
 				'key'   => 'client_session_id',
-				'value' => 'test-client-session-id-1'
+				'value' => 'test-client-session-id-1',
 			],
 			[
 				'key'   => 'client_session_id_expiration',
-				'value' => '1'
+				'value' => '1',
 			],
-		]
+		],
 	]
 );
 

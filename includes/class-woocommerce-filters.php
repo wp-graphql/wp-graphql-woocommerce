@@ -68,7 +68,7 @@ class WooCommerce_Filters {
 	 * Return the nonce query parameter name for the provided field.
 	 *
 	 * @param string $field  URL field slug.
-	 * 
+	 *
 	 * @return string null
 	 */
 	public static function get_authorizing_url_nonce_param_name( $field ) {

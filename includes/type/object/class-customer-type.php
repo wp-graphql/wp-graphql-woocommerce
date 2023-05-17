@@ -28,7 +28,7 @@ class Customer_Type {
 	 * @param array $other_fields Extra fields configs to be added or override the default field definitions.
 	 * @return array
 	 */
-	public static function get_fields( $other_fields = [] ) {		
+	public static function get_fields( $other_fields = [] ) {
 		return array_merge(
 			[
 				'id'                    => [
@@ -40,8 +40,8 @@ class Customer_Type {
 					'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source ) {
 						$database_id = absint( $source->ID );
-						return ! empty ( $database_id ) ? $database_id : null;
-					}
+						return ! empty( $database_id ) ? $database_id : null;
+					},
 				],
 				'isVatExempt'           => [
 					'type'        => 'Boolean',
@@ -124,19 +124,19 @@ class Customer_Type {
 							$session_data = \WC()->session->get_session_data();
 							$session      = [];
 							foreach ( $session_data as $key => $value ) {
-								$meta = new \stdClass();
+								$meta        = new \stdClass();
 								$meta->id    = null;
 								$meta->key   = $key;
 								$meta->value = maybe_unserialize( $value );
 								$session[]   = $meta;
 							}
-		
+
 							return $session;
 						}
 
 						throw new UserError( __( 'It\'s not possible to access another user\'s session data', 'wp-graphql-woocommerce' ) );
-					}
-				]
+					},
+				],
 			],
 			$other_fields,
 		);
@@ -180,7 +180,7 @@ class Customer_Type {
 
 	/**
 	 * Registers Customer WPObject type and related fields.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {
@@ -306,7 +306,7 @@ class Customer_Type {
 			]
 		);
 	}
-	
+
 
 	/**
 	 * Registers selected authorizing_url_fields
@@ -334,11 +334,11 @@ class Customer_Type {
 
 						// Build nonced url as an unauthenticated user.
 						$nonce_name = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
-						$url   = add_query_arg(
+						$url        = add_query_arg(
 							[
 								'session_id' => $customer_id,
 								$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
-				 			],
+							],
 							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 						);
 
@@ -346,7 +346,7 @@ class Customer_Type {
 					},
 				]
 			);
-		}
+		}//end if
 
 		if ( in_array( 'checkout_url', $fields_to_register, true ) ) {
 			register_graphql_field(
@@ -367,11 +367,11 @@ class Customer_Type {
 
 						// Build nonced url as an unauthenticated user.
 						$nonce_name = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
-						$url   = add_query_arg(
+						$url        = add_query_arg(
 							[
 								'session_id' => $customer_id,
 								$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
-				 			],
+							],
 							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 						);
 
@@ -379,7 +379,7 @@ class Customer_Type {
 					},
 				]
 			);
-		}
+		}//end if
 
 		if ( in_array( 'add_payment_method_url', $fields_to_register, true ) ) {
 			register_graphql_field(
@@ -404,11 +404,11 @@ class Customer_Type {
 
 						// Build nonced url as an unauthenticated user.
 						$nonce_name = woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' );
-						$url   = add_query_arg(
+						$url        = add_query_arg(
 							[
 								'session_id' => $customer_id,
 								$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
-				 			],
+							],
 							site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 						);
 
@@ -416,6 +416,6 @@ class Customer_Type {
 					},
 				]
 			);
-		}
+		}//end if
 	}
 }

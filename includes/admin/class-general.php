@@ -25,18 +25,18 @@ class General extends Section {
 			'checkout_url'           => 'checkout_url',
 			'add_payment_method_url' => 'add_payment_method_url',
 		];
-		
+
 		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( CART_URL_NONCE_PARAM );
 		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( CHECKOUT_URL_NONCE_PARAM );
 		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( ADD_PAYMENT_METHOD_URL_NONCE_PARAM );
 
 		return [
 			[
-				'name'    => 'disable_ql_session_handler',
-				'label'   => __( 'Disable QL Session Handler', 'wp-graphql-woocommerce' ),
-				'desc'    => __( 'The QL Session Handler takes over management of WooCommerce Session Management on WPGraphQL request replacing the usage of HTTP Cookies with JSON Web Tokens.', 'wp-graphql-woocommerce' )
+				'name'     => 'disable_ql_session_handler',
+				'label'    => __( 'Disable QL Session Handler', 'wp-graphql-woocommerce' ),
+				'desc'     => __( 'The QL Session Handler takes over management of WooCommerce Session Management on WPGraphQL request replacing the usage of HTTP Cookies with JSON Web Tokens.', 'wp-graphql-woocommerce' )
 					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
-				'type'    => 'checkbox',
+				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'on' : woographql_setting( 'disable_ql_session_handler', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ) ? true : false,
 			],
@@ -95,7 +95,7 @@ class General extends Section {
 							'unique',
 							sprintf(
 								/* translators: %s: Field display name; %s: Sibling field display name; %s Other sibling field display name; */
-								__( 'The <strong>%s</strong> field must be unique and can be the same as the <em>%s</em> or <em>%s</em>', 'wp-graphql-woocommerce' ),
+								__( 'The <strong>%1$s</strong> field must be unique and can be the same as the <em>%2$s</em> or <em>%3$s</em>', 'wp-graphql-woocommerce' ),
 								'Cart URL nonce name',
 								'Checkout URL nonce name',
 								'Add Payment Method URL nonce name'
@@ -128,7 +128,7 @@ class General extends Section {
 							'unique',
 							sprintf(
 								/* translators: %s: Field display name; %s: Sibling field display name; %s Other sibling field display name; */
-								__( 'The <strong>%s</strong> field must be unique and can be the same as the <em>%s</em> or <em>%s</em>', 'wp-graphql-woocommerce' ),
+								__( 'The <strong>%1$s</strong> field must be unique and can be the same as the <em>%2$s</em> or <em>%3$s</em>', 'wp-graphql-woocommerce' ),
 								'Checkout URL nonce name',
 								'Cart URL nonce name',
 								'Add Payment Method URL nonce name'
@@ -161,7 +161,7 @@ class General extends Section {
 							'unique',
 							sprintf(
 								/* translators: %s: Field display name; %s: Sibling field display name; %s Other sibling field display name; */
-								__( 'The <strong>%s</strong> field must be unique and can be the same as the <em>%s</em> or <em>%s</em>', 'wp-graphql-woocommerce' ),
+								__( 'The <strong>%1$s</strong> field must be unique and can be the same as the <em>%2$s</em> or <em>%3$s</em>', 'wp-graphql-woocommerce' ),
 								'Add Payment Method URL nonce name',
 								'Checkout URL nonce name',
 								'Cart URL nonce name',

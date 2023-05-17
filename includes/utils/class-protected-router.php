@@ -15,39 +15,39 @@ use WPGraphQL\WooCommerce\WooCommerce_Filters;
  */
 class Protected_Router {
 
-    /**
-     * Stores the instance of the Protected_Router class
-     *
-     * @var Protected_Router The one true Protected_Router
-     */
-    private static $instance;
+	/**
+	 * Stores the instance of the Protected_Router class
+	 *
+	 * @var Protected_Router The one true Protected_Router
+	 */
+	private static $instance;
 
-    /**
+	/**
 	 * The default route
 	 *
 	 * @var string $route
 	 */
 	public static $default_route = 'transfer-session';
 
-    /**
+	/**
 	 * Sets the route to use as the endpoint
 	 *
 	 * @var string $route
 	 */
 	public static $route = null;
 
-    /**
+	/**
 	 * Set the default status code to 200.
 	 *
 	 * @var int
 	 */
 	public static $http_status_code = 200;
 
-    /**
-     * Protected_Router constructor
-     */
-    private function __construct() {
-        self::$route = woographql_setting( 'authorizing_url_endpoint', apply_filters( 'woographql_authorizing_url_endpoint', self::$default_route ) );
+	/**
+	 * Protected_Router constructor
+	 */
+	private function __construct() {
+		self::$route = woographql_setting( 'authorizing_url_endpoint', apply_filters( 'woographql_authorizing_url_endpoint', self::$default_route ) );
 		/**
 		 * Create the rewrite rule for the route
 		 */
@@ -62,43 +62,43 @@ class Protected_Router {
 		 * Redirects the route to the graphql processor
 		 */
 		add_action( 'pre_get_posts', [ $this, 'resolve_request' ], 1 );
-    }
+	}
 
-    /**
-     * Returns a Protected_Router Instance.
-     *
-     * @return Protected_Router
-     */
-    public static function instance() {
-        if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
-            self::$instance = new self();
-        }
+	/**
+	 * Returns a Protected_Router Instance.
+	 *
+	 * @return Protected_Router
+	 */
+	public static function instance() {
+		if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+			self::$instance = new self();
+		}
 
-        // Return the Protected_Router Instance.
-        return self::$instance;
-    }
+		// Return the Protected_Router Instance.
+		return self::$instance;
+	}
 
-    /**
-     * Throw error on object clone.
-     * The whole idea of the singleton design pattern is that there is a single object
-     * therefore, we don't want the object to be cloned.
-     *
-     * @return void
-     */
-    public function __clone() {
-        // Cloning instances of the class is forbidden.
-        _doing_it_wrong( __FUNCTION__, esc_html__( 'Protected_Router class should not be cloned.', 'plugin-distro' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
-    }
+	/**
+	 * Throw error on object clone.
+	 * The whole idea of the singleton design pattern is that there is a single object
+	 * therefore, we don't want the object to be cloned.
+	 *
+	 * @return void
+	 */
+	public function __clone() {
+		// Cloning instances of the class is forbidden.
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Protected_Router class should not be cloned.', 'plugin-distro' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
+	}
 
-    /**
-     * Disable unserializing of the class.
-     *
-     * @return void
-     */
-    public function __wakeup() {
-        // De-serializing instances of the class is forbidden.
-        _doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the Protected_Router class is not allowed', 'plugin-distro' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
-    }
+	/**
+	 * Disable unserializing of the class.
+	 *
+	 * @return void
+	 */
+	public function __wakeup() {
+		// De-serializing instances of the class is forbidden.
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the Protected_Router class is not allowed', 'plugin-distro' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
+	}
 
 	/**
 	 * Adds rewrite rule for the route endpoint
@@ -113,7 +113,7 @@ class Protected_Router {
 		);
 	}
 
-    /**
+	/**
 	 * Adds the query_var for the route
 	 *
 	 * @param array $query_vars The array of whitelisted query variables.
@@ -132,13 +132,12 @@ class Protected_Router {
 	 * @return boolean
 	 */
 	public static function is_auth_request() {
-        $is_auth_request = false;
-        if ( isset( $_GET[ self::$route ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-            $is_auth_request = true;
-        } else {
-            // Check the server to determine if the auth endpoint is being requested
+		$is_auth_request = false;
+		if ( isset( $_GET[ self::$route ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$is_auth_request = true;
+		} else {
+			// Check the server to determine if the auth endpoint is being requested
 			if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
-
 				$host = wp_unslash( $_SERVER['HTTP_HOST'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$uri  = wp_unslash( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
@@ -151,28 +150,28 @@ class Protected_Router {
 				}
 
 				$parsed_site_url    = wp_parse_url( site_url( self::$route ), PHP_URL_PATH );
-				$auth_url       = ! empty( $parsed_site_url ) ? wp_unslash( $parsed_site_url ) : self::$route;
+				$auth_url           = ! empty( $parsed_site_url ) ? wp_unslash( $parsed_site_url ) : self::$route;
 				$parsed_request_url = wp_parse_url( $uri, PHP_URL_PATH );
 				$request_url        = ! empty( $parsed_request_url ) ? wp_unslash( $parsed_request_url ) : '';
 
 				// Determine if the route is indeed a download request
 				$is_auth_request = false !== strpos( $request_url, $auth_url );
-      		}
-    	}
+			}//end if
+		}//end if
 
-    	/**
+		/**
 		 * Filter whether the request is a download request. Default is false.
 		 *
 		 * @param boolean $is_download_request Whether the request is a request to download the plugin. Default false.
 		 */
 		return apply_filters( 'woographql_is_auth_request', $is_auth_request );
-    }
+	}
 
-    /**
+	/**
 	 * This resolves the http request and ensures that WordPress can respond with the appropriate
 	 * response instead of responding with a template from the standard WordPress Template
 	 * Loading process
-     *
+	 *
 	 * @return void
 	 */
 	public function resolve_request( $query ) {
@@ -211,7 +210,7 @@ class Protected_Router {
 			return [];
 		}
 		$nonce_names = [];
-		foreach( array_keys( $enabled_authorizing_url_fields ) as $field ) {
+		foreach ( array_keys( $enabled_authorizing_url_fields ) as $field ) {
 			$nonce_names[ $field ] = WooCommerce_Filters::get_authorizing_url_nonce_param_name( $field );
 		}
 		return array_filter( $nonce_names );
@@ -224,14 +223,14 @@ class Protected_Router {
 	 * @return string|void
 	 */
 	public function get_nonce_prefix( $field ) {
-		switch( $field ) {
+		switch ( $field ) {
 			case 'cart_url':
 				return 'load-cart_';
 			case 'checkout_url':
 				return 'load-checkout_';
 			case 'add_payment_method_url':
 				return 'load-account_';
-			default: 
+			default:
 				return apply_filters( 'woographql_auth_nonce_prefix', null, $field, $this );
 		}
 	}
@@ -243,32 +242,31 @@ class Protected_Router {
 	 * @return string|null
 	 */
 	public function get_target_endpoint( $field ) {
-		switch( $field ) {
+		switch ( $field ) {
 			case 'cart_url':
 				return wc_get_endpoint_url( 'cart' );
 			case 'checkout_url':
 				return wc_get_endpoint_url( 'checkout' );
 			case 'add_payment_method_url':
 				return wc_get_account_endpoint_url( 'add-payment-method' );
-			default: 
+			default:
 				return apply_filters( 'woographql_auth_target_endpoint', null, $field, $this );
-
 		}
 	}
 
-    /**
-     * Send stable version of plugin to download.
-     *
-     * @return void
-     */
-    private function process_auth_request() {
+	/**
+	 * Send stable version of plugin to download.
+	 *
+	 * @return void
+	 */
+	private function process_auth_request() {
 		// Bail early if session ID or nonce not found.
 		$nonce_names = $this->get_nonce_names();
 		if ( empty( $nonce_names ) ) {
 			wp_safe_redirect( home_url() );
 			exit;
 		}
-		
+
 		$nonce_prefix = null;
 		$session_id   = null;
 		$nonce        = null;
@@ -280,7 +278,6 @@ class Protected_Router {
 				break;
 			}
 		}
-
 
 		if ( empty( $nonce_prefix ) | empty( $session_id ) | empty( $nonce ) ) {
 			wp_safe_redirect( home_url() );
@@ -333,6 +330,6 @@ class Protected_Router {
 		// After session has been restored on redirect to destination.
 		wp_safe_redirect( $this->get_target_endpoint( $field ) );
 		exit;
-    }
+	}
 }
 

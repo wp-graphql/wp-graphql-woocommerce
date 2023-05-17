@@ -13,7 +13,7 @@ namespace WPGraphQL\WooCommerce;
  */
 class Type_Registry {
 
-	
+
 	/**
 	 * Registers WooGraphQL types, connections, unions, and mutations to GraphQL schema
 	 *
@@ -113,7 +113,7 @@ class Type_Registry {
 
 		// Register the following fields only if "disable_ql_session_handler" option is not "on" and some fields under the "enable_authorizing_url_fields" option are "selected".
 		$enabled_url_fields = WooCommerce_Filters::enabled_authorizing_url_fields();
-		if ( $ql_session_handled_enabled && ! empty ( $enabled_url_fields ) ) {
+		if ( $ql_session_handled_enabled && ! empty( $enabled_url_fields ) ) {
 			Type\WPObject\Customer_Type::register_authorizing_url_fields( array_keys( $enabled_url_fields ) );
 		}
 

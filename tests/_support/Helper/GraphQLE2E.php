@@ -706,13 +706,13 @@ class GraphQLE2E extends \Codeception\Module {
 		}
 
 		// Create cart page.
-		$wpdb = $this->getModule( 'WPDb' );
+		$wpdb         = $this->getModule( 'WPDb' );
 		$cart_page_id = $wpdb->havePostInDatabase(
 			[
 				'post_type'    => 'page',
 				'post_title'   => 'Cart',
 				'post_name'    => 'cart',
-				'post_author'   => 1,
+				'post_author'  => 1,
 				'post_content' => '[woocommerce_cart]',
 				'post_status'  => 'publish',
 			]
@@ -723,7 +723,7 @@ class GraphQLE2E extends \Codeception\Module {
 				'post_type'    => 'page',
 				'post_title'   => 'Checkout',
 				'post_name'    => 'checkout',
-				'post_author'   => 1,
+				'post_author'  => 1,
 				'post_content' => '[woocommerce_checkout]',
 				'post_status'  => 'publish',
 			]
@@ -732,9 +732,9 @@ class GraphQLE2E extends \Codeception\Module {
 
 		global $wp_rewrite;
 		// Set the permalink structure
-		$wp_rewrite->set_permalink_structure('/%postname%/');
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 		// Flush the rules and tell it to write htaccess
-		$wp_rewrite->flush_rules(true);
+		$wp_rewrite->flush_rules( true );
 
 		return $product_catalog;
 	}
@@ -900,21 +900,21 @@ class GraphQLE2E extends \Codeception\Module {
 		);
 	}
 
-	public function verifyRedirect($startUrl, $endUrl, $redirectCode = 301) {
-        $phpBrowser = $this->getModule('WPBrowser');
-        $guzzle = $phpBrowser->client;
-        
-        // Disable the following of redirects
-        $guzzle->followRedirects(false);
-        
-        $phpBrowser->_loadPage('GET', $startUrl);
-        $response = $guzzle->getInternalResponse();
-        $responseCode   = $response->getStatusCode();
-        $locationHeader = $response->getHeader('Location');
-        
-        $this->assertEquals($responseCode, $redirectCode);
-        $this->assertEquals($endUrl, $locationHeader);
-        
-        $guzzle->followRedirects(true);
-    }
+	public function verifyRedirect( $startUrl, $endUrl, $redirectCode = 301 ) {
+		$phpBrowser = $this->getModule( 'WPBrowser' );
+		$guzzle     = $phpBrowser->client;
+
+		// Disable the following of redirects
+		$guzzle->followRedirects( false );
+
+		$phpBrowser->_loadPage( 'GET', $startUrl );
+		$response       = $guzzle->getInternalResponse();
+		$responseCode   = $response->getStatusCode();
+		$locationHeader = $response->getHeader( 'Location' );
+
+		$this->assertEquals( $responseCode, $redirectCode );
+		$this->assertEquals( $endUrl, $locationHeader );
+
+		$guzzle->followRedirects( true );
+	}
 }

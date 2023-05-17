@@ -644,8 +644,8 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Assert NOT NULL values when querying as admin
 		 */
 		$this->loginAs( $customer_id );
-		$response  = $this->graphql( compact( 'query' ) );
-		$expected  = [
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
 			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
 			$this->expectedField( 'customer.cartUrl', self::NOT_NULL ),
 			$this->expectedField( 'customer.checkoutUrl', self::NOT_NULL ),

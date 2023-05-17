@@ -284,7 +284,7 @@ endif;
 if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	/**
 	 * Creates WooGraphQL session transfer nonces.
-	 * 
+	 *
 	 * @param string $action  Nonce name.
 	 */
 	function woographql_create_nonce( $action = -1 ) {
@@ -302,7 +302,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	 *
 	 * @param string         $nonce   Nonce to validated.
 	 * @param integer|string $action  Nonce name.
-	 * 
+	 *
 	 * @return bool
 	 */
 	function woographql_verify_nonce( $nonce, $action = -1 ) {

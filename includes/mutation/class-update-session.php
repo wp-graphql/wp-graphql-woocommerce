@@ -42,7 +42,7 @@ class Update_Session {
 	 */
 	public static function get_input_fields() {
 		return [
-			'sessionData'   => [
+			'sessionData' => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => __( 'Data to be persisted in the session.', 'wp-graphql-woocommerce' ),
 			],
@@ -60,14 +60,14 @@ class Update_Session {
 				'type'    => [ 'list_of' => 'MetaData' ],
 				'resolve' => function ( $payload ) {
 					$session_data = \WC()->session->get_session_data();
-                    $session      = [];
-                    foreach ( $session_data as $key => $value ) {
-                        $meta = new \stdClass();
-                        $meta->id    = null;
-                        $meta->key   = $key;
-                        $meta->value = maybe_unserialize( $value );
-                        $session[]   = $meta;
-                    }
+					$session      = [];
+					foreach ( $session_data as $key => $value ) {
+						$meta        = new \stdClass();
+						$meta->id    = null;
+						$meta->key   = $key;
+						$meta->value = maybe_unserialize( $value );
+						$session[]   = $meta;
+					}
 
 					return $session;
 				},
@@ -90,19 +90,19 @@ class Update_Session {
 		return function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
-            // Guard against missing input.
-            if ( empty( $input['sessionData'] ) ) {
-                throw new UserError( __( 'No session data provided', 'wp-graphql-woocommerce' ) );
-            }
-            $session_data_input = $input['sessionData'];
+			// Guard against missing input.
+			if ( empty( $input['sessionData'] ) ) {
+				throw new UserError( __( 'No session data provided', 'wp-graphql-woocommerce' ) );
+			}
+			$session_data_input = $input['sessionData'];
 
 			// Save session data input.
-            foreach ( $session_data_input as $meta ) {
-                \WC()->session->set( $meta['key'], $meta['value'] );
-                \WC()->session->save_data();
-            }
+			foreach ( $session_data_input as $meta ) {
+				\WC()->session->set( $meta['key'], $meta['value'] );
+				\WC()->session->save_data();
+			}
 
-            \codecept_debug( \WC()->session->get_session_data() );
+			\codecept_debug( \WC()->session->get_session_data() );
 
 			// Process errors or return successful.
 			$notices = \WC()->session->get( 'wc_notices' );
