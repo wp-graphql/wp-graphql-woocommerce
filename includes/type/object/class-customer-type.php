@@ -120,7 +120,7 @@ class Customer_Type {
 					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
 					'resolve'     => function ( $source ) {
 						\codecept_debug( \WC()->session->get_customer_id() );
-						if ( (string) $source->ID === (string) \WC()->session->get_customer_id() ) {
+						if ( (string) \WC()->session->get_customer_id() === (string) $source->ID ) {
 							$session_data = \WC()->session->get_session_data();
 							$session      = [];
 							foreach ( $session_data as $key => $value ) {
@@ -311,7 +311,7 @@ class Customer_Type {
 	/**
 	 * Registers selected authorizing_url_fields
 	 *
-	 * @param array $fields_to_register  Slugs of fields
+	 * @param array $fields_to_register  Slugs of fields.
 	 * @return void
 	 */
 	public static function register_authorizing_url_fields( $fields_to_register ) {

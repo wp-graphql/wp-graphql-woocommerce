@@ -270,12 +270,22 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 endif;
 
 if ( ! function_exists( 'woographql_get_session_uid' ) ) :
+	/**
+	 * Returns end-user's customer ID.
+	 *
+	 * @return string|int
+	 */
 	function woographql_get_session_uid() {
 		return WC()->session->get_customer_id();
 	}
 endif;
 
 if ( ! function_exists( 'woographql_get_session_token' ) ) :
+	/**
+	 * Returns session user's "client_session_id"
+	 *
+	 * @return string
+	 */
 	function woographql_get_session_token() {
 		return WC()->session->get_client_session_id();
 	}

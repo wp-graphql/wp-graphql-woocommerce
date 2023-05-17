@@ -33,6 +33,11 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 		return true;
 	}
 
+	/**
+	 * Returns "session_id" if proper conditions met.
+	 *
+	 * @return int
+	 */
 	protected function get_posted_session_id() {
 		if ( ! $this->verify_auth_request_credential_exists() ) {
 			return 0;

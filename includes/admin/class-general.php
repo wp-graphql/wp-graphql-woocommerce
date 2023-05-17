@@ -68,6 +68,7 @@ class General extends Section {
 				'name'     => 'authorizing_url_endpoint',
 				'label'    => __( 'Endpoint for Authorizing URLs', 'wp-graphql-woocommerce' ),
 				'desc'     => sprintf(
+					/* translators: %1$s: Site URL, %2$s: WooGraphQL Auth Endpoint */
 					__( 'The endpoint (path) for transferring user sessions on the site. <a target="_blank" href="%1$s/%2$s">%1$s/%2$s</a>.', 'wp-graphql-woocommerce' ),
 					site_url(),
 					woographql_setting( 'authorizing_url_endpoint', 'transfer-session' )

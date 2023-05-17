@@ -87,7 +87,7 @@ class Protected_Router {
 	 */
 	public function __clone() {
 		// Cloning instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Protected_Router class should not be cloned.', 'plugin-distro' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Protected_Router class should not be cloned.', 'wp-graphql-woocommerce' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Protected_Router {
 	 */
 	public function __wakeup() {
 		// De-serializing instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the Protected_Router class is not allowed', 'plugin-distro' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the Protected_Router class is not allowed', 'wp-graphql-woocommerce' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Protected_Router {
 		if ( isset( $_GET[ self::$route ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$is_auth_request = true;
 		} else {
-			// Check the server to determine if the auth endpoint is being requested
+			// Check the server to determine if the auth endpoint is being requested.
 			if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
 				$host = wp_unslash( $_SERVER['HTTP_HOST'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$uri  = wp_unslash( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -154,7 +154,7 @@ class Protected_Router {
 				$parsed_request_url = wp_parse_url( $uri, PHP_URL_PATH );
 				$request_url        = ! empty( $parsed_request_url ) ? wp_unslash( $parsed_request_url ) : '';
 
-				// Determine if the route is indeed a download request
+				// Determine if the route is indeed a download request.
 				$is_auth_request = false !== strpos( $request_url, $auth_url );
 			}//end if
 		}//end if
@@ -174,7 +174,7 @@ class Protected_Router {
 	 *
 	 * @return void
 	 */
-	public function resolve_request( $query ) {
+	public function resolve_request() {
 
 		/**
 		 * Access the $wp_query object
@@ -196,7 +196,7 @@ class Protected_Router {
 		/**
 		 * Process the GraphQL query Request
 		 */
-		$this->process_auth_request( $query );
+		$this->process_auth_request();
 	}
 
 	/**
@@ -256,6 +256,8 @@ class Protected_Router {
 
 	/**
 	 * Send stable version of plugin to download.
+	 *
+	 * @throws \Exception Session not found.
 	 *
 	 * @return void
 	 */
