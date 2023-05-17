@@ -287,7 +287,7 @@ if ( ! function_exists( 'woographql_get_session_token' ) ) :
 	 * @return string
 	 */
 	function woographql_get_session_token() {
-		return  WC()->session->get_client_session_id();
+		return WC()->session->get_client_session_id();
 	}
 endif;
 

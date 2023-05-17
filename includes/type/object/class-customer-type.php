@@ -325,12 +325,12 @@ class Customer_Type {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
-	
+
 							// Return null if current user not user being queried.
 							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
 								return null;
 							}
-	
+
 							// Build nonced url as an unauthenticated user.
 							$nonce_name = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
 							$url        = add_query_arg(
@@ -340,7 +340,7 @@ class Customer_Type {
 								],
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
-	
+
 							return esc_url_raw( $url );
 						},
 					],
@@ -351,12 +351,12 @@ class Customer_Type {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
-	
+
 							// Return null if current user not user being queried.
 							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
 								return null;
 							}
-	
+
 							return woographql_create_nonce( "load-cart_{$customer_id}" );
 						},
 					],
@@ -375,12 +375,12 @@ class Customer_Type {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
-	
+
 							// Return null if current user not user being queried.
 							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
 								return null;
 							}
-	
+
 							// Build nonced url as an unauthenticated user.
 							$nonce_name = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
 							$url        = add_query_arg(
@@ -390,7 +390,7 @@ class Customer_Type {
 								],
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
-	
+
 							return esc_url_raw( $url );
 						},
 					],
@@ -401,12 +401,12 @@ class Customer_Type {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
-	
+
 							// Return null if current user not user being queried.
 							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
 								return null;
 							}
-	
+
 							return woographql_create_nonce( "load-checkout_{$customer_id}" );
 						},
 					],
@@ -425,16 +425,16 @@ class Customer_Type {
 							if ( ! is_user_logged_in() ) {
 								return null;
 							}
-	
+
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
-	
+
 							// Return null if current user not user being queried.
 							if ( $current_user_id !== $customer_id ) {
 								return null;
 							}
-	
+
 							// Build nonced url as an unauthenticated user.
 							$nonce_name = woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' );
 							$url        = add_query_arg(
@@ -444,7 +444,7 @@ class Customer_Type {
 								],
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
-	
+
 							return esc_url_raw( $url );
 						},
 					],
@@ -455,12 +455,12 @@ class Customer_Type {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
-	
+
 							// Return null if current user not user being queried.
 							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
 								return null;
 							}
-	
+
 							return woographql_create_nonce( "load-account_{$customer_id}" );
 						},
 					],
