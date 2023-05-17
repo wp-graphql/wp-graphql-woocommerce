@@ -283,10 +283,10 @@ class Protected_Router {
 		$session_id   = null;
 		$nonce        = null;
 		foreach ( $nonce_names as $field => $nonce_param ) {
-			if ( in_array( $nonce_param, array_keys( $_REQUEST ), true ) ) {
+			if ( in_array( $nonce_param, array_keys( $_REQUEST ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$nonce_prefix = $this->get_nonce_prefix( $field );
-				$session_id   = isset( $_REQUEST['session_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) ) : null;
-				$nonce        = isset( $_REQUEST[ $nonce_param ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $nonce_param ] ) ) : null;
+				$session_id   = isset( $_REQUEST['session_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$nonce        = isset( $_REQUEST[ $nonce_param ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $nonce_param ] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				break;
 			}
 		}

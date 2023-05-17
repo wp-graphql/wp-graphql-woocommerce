@@ -25,7 +25,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 		}
 
 		// Return false if no matching nonces found in query parameters.
-		$query_params = array_keys( $_REQUEST );
+		$query_params = array_keys( $_REQUEST ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( empty( array_intersect( $possible_nonces, $query_params ) ) ) {
 			return false;
 		}
@@ -42,11 +42,11 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 		if ( ! $this->verify_auth_request_credential_exists() ) {
 			return 0;
 		}
-		if ( ! isset( $_REQUEST['session_id'] ) ) {
+		if ( ! isset( $_REQUEST['session_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return 0;
 		}
 
-		return sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) );
+		return sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 
 	/**
