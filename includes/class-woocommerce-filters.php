@@ -54,7 +54,7 @@ class WooCommerce_Filters {
 	 * @return array
 	 */
 	public static function enabled_authorizing_url_fields() {
-		if ( defined( 'FORCE_ENABLE_AUTH_URLS' ) ) {
+		if ( defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) ) {
 			return [
 				'cart_url'               => 'cart_url',
 				'checkout_url'           => 'checkout_url',

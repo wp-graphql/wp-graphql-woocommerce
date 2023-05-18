@@ -383,7 +383,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return bool
 		 */
 		public static function auth_router_is_enabled() {
-			return defined( 'FORCE_ENABLE_AUTH_URLS' )
+			return defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' )
 				|| ! empty( array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) ) );
 		}
 

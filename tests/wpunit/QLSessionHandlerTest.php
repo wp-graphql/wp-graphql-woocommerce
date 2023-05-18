@@ -148,4 +148,28 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		$this->assertNotEquals( $old_token, $new_token, 'Tokens should not match' );
 	}
+
+	public function test_get_client_session_id() {
+		// Create session handler.
+		$session = new QL_Session_Handler();
+
+		// Assert an random string returned, when valid "client_session_id" and "client_session_id_expiration" are not set.
+		$session->init_session_cookie();
+		$this->assertNotEquals( '', $session->get_client_session_id());
+
+		$session->init_session_cookie();
+		$_REQUEST['_wc_cart']   = 'test';
+		$this->assertNotEquals( '', $session->get_client_session_id() );
+
+		$session->init_session_cookie();
+		$session->set( 'client_session_id', 'test-client-session-id' );
+		$session->set( 'client_session_id_expiration', '1' );
+		$this->assertNotEquals( 'test-client-session-id', $session->get_client_session_id() );
+
+		// Assert "test-client-session-id" is returned, when valid "client_session_id" and "client_session_id_expiration" are set.
+		$session->init_session_cookie();
+		$session->set( 'client_session_id', 'test-client-session-id' );
+		$session->set( 'client_session_id_expiration', ( time() + 3600 ) );
+		$this->assertEquals( 'test-client-session-id', $session->get_client_session_id() );
+	}
 }

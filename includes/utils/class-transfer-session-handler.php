@@ -17,7 +17,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 *
 	 * @return bool
 	 */
-	protected function verify_auth_request_credential_exists() {
+	protected function verify_auth_request_credentials_exists() {
 		$possible_nonces = array_values( Protected_Router::get_nonce_names() );
 		// Return false if not nonce names set.
 		if ( empty( $possible_nonces ) ) {
@@ -39,7 +39,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 * @return int
 	 */
 	protected function get_posted_session_id() {
-		if ( ! $this->verify_auth_request_credential_exists() ) {
+		if ( ! $this->verify_auth_request_credentials_exists() ) {
 			return 0;
 		}
 		if ( ! isset( $_REQUEST['session_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -70,9 +70,10 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 * @return string
 	 */
 	public function get_client_session_id() {
-		$session_id = $this->get_posted_session_id();
-		if ( 0 !== $session_id ) {
-			$session_data                 = $this->get_session( $session_id );
+		$session_id    = $this->get_posted_session_id();
+		$session_data  = 0 !== $session_id ? $this->get_session( $session_id ) : null;
+
+		if ( ! empty( $session_data ) ) {
 			$client_session_id            = $session_data['client_session_id'];
 			$client_session_id_expiration = $session_data['client_session_id_expiration'];
 		} else {

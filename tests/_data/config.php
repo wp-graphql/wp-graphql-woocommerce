@@ -12,8 +12,8 @@ if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD' ) && false !== getenv( 'WPGRAPH
 	define( 'WPGRAPHQL_WOOCOMMERCE_AUTOLOAD', true );
 }
 
-if ( ! defined( 'FORCE_ENABLE_AUTH_URLS' ) ) {
-	define( 'FORCE_ENABLE_AUTH_URLS', true );
+if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) ) {
+	define( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS', true );
 }
 if ( ! defined( 'CART_URL_NONCE_PARAM' ) ) {
 	define( 'CART_URL_NONCE_PARAM', '_wc_cart' );
