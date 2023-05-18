@@ -168,6 +168,6 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	protected function is_valid_model( $model ) {
-		return isset( $model ) && ! empty( $model['download_id'] );
+		return ! empty( $model ) && ! empty( $model['download_id'] );
 	}
 }

@@ -61,7 +61,7 @@ class Tax_Rate extends Model {
 					return ! empty( $this->data->tax_rate_id ) ? Relay::toGlobalId( 'tax_rate', $this->data->tax_rate_id ) : null;
 				},
 				'databaseId' => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'country'    => function() {
 					return ! empty( $this->data->tax_rate_country ) ? $this->data->tax_rate_country : null;

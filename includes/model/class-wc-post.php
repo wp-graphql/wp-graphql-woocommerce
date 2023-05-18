@@ -129,13 +129,15 @@ abstract class WC_Post extends Post {
 	 * @return bool
 	 */
 	protected function is_post_private( $post_object = null ) {
+		/**
+		 * Stores the incoming post type object for the post being modeled
+		 *
+		 * @var null|\WP_Post_Type $post_type_object
+		 */
 		$post_type_object = $this->post_type_object;
 
 		if ( empty( $post_object ) ) {
 			$post_object = $this->data;
-		}
-
-		if ( empty( $post_object ) ) {
 			return true;
 		}
 
@@ -166,11 +168,6 @@ abstract class WC_Post extends Post {
 			}
 
 			$parent_post_type_obj = $post_type_object;
-
-			if ( empty( $parent_post_type_obj ) ) {
-				return true;
-			}
-
 			if ( 'private' === $parent->post_status ) {
 				$cap = isset( $parent_post_type_obj->cap->read_private_posts ) ? $parent_post_type_obj->cap->read_private_posts : 'read_private_posts';
 			} else {

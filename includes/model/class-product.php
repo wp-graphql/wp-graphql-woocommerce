@@ -414,11 +414,11 @@ class Product extends WC_Post {
 			$fields += [
 				'commentCount'  => function() {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					return $this->reviewCount;
+					return ! empty( $this->reviewCount ) ? $this->reviewCount : null;
 				},
 				'commentStatus' => function() {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					return $this->reviewsAllowed ? 'open' : 'closed';
+					return isset( $this->reviewsAllowed ) && $this->reviewsAllowed ? 'open' : 'closed';
 				},
 			];
 

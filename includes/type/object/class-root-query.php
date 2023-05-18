@@ -58,7 +58,7 @@ class Root_Query {
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {
-						$item = Factory::resolve_cart_item( $args['key'], $context );
+						$item = $context->get_loader( 'cart_item' )->load_deferred( $args['key'] );
 						if ( empty( $item ) ) {
 							throw new UserError( __( 'The key input is invalid', 'wp-graphql-woocommerce' ) );
 						}
@@ -75,12 +75,14 @@ class Root_Query {
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args ) {
-						$fee = Factory::resolve_cart_fee( $args['id'] );
-						if ( empty( $fee ) ) {
+						$fees   = Factory::resolve_cart()->get_fees();
+						$fee_id = $args['id'];
+				
+						if ( empty( $fees[ $fee_id ]  ) ) {
 							throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
 						}
 
-						return $fee;
+						return $fees[ $fee_id ] ;
 					},
 				],
 				'coupon'               => [

@@ -99,6 +99,7 @@ class Cart_Fill {
 					);
 
 					foreach ( $all_error_data as $error_data ) {
+						$cart_error = [];
 						switch ( true ) {
 							case isset( $error_data['cart_item_data'] ):
 								$cart_error         = $error_data['cart_item_data'];
@@ -114,6 +115,9 @@ class Cart_Fill {
 									'chosen_method' => $error_data['chosen_method'],
 								];
 								$cart_error['type'] = 'INVALID_SHIPPING_METHOD';
+							default: 
+								$cart_error         = [];
+								$cart_error['type'] = 'UNKNOWN';
 								break;
 						}
 

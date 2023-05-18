@@ -79,14 +79,16 @@ class Order_Item extends Model {
 				},
 
 				'databaseId' => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'orderId'    => function() {
 					return ! empty( $this->data->get_order_id() ) ? $this->data->get_order_id() : null;
 				},
 				'id'         => function() {
 					// phpcs:ignore 
-					return Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID );
+					return ( ! empty( $this->orderId ) && ! empty( $this->ID ) )
+						? Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID )
+						: null;
 				},
 				'type'       => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;

@@ -16,16 +16,17 @@ class Product_Attribute {
 	/**
 	 * Registers the "Product" interface.
 	 *
-	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  Instance of the WPGraphQL TypeRegistry.
+	 * @return void
 	 */
-	public static function register_interface( &$type_registry ) {
+	public static function register_interface() {
 		register_graphql_interface_type(
 			'ProductAttribute',
 			[
 				'description' => __( 'Product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
-				'resolveType' => function( $value ) use ( &$type_registry ) {
+				'resolveType' => function( $value ) {
+					$type_registry = \WPGraphQL::get_type_registry();
 					if ( $value->is_taxonomy() ) {
 						return $type_registry->get_type( 'GlobalProductAttribute' );
 					} else {

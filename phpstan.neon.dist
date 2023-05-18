@@ -1,5 +1,5 @@
 parameters:
-		level: 0 # Gotta start somewhere
+		level: 2 # Gotta start somewhere
 		inferPrivatePropertyTypeFromConstructor: true
 		checkMissingIterableValueType: false
 		bootstrapFiles:

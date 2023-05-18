@@ -61,7 +61,7 @@ class Shipping_Method extends Model {
 					return ! empty( $this->data->id ) ? Relay::toGlobalId( 'shipping_method', $this->data->id ) : null;
 				},
 				'databaseId'  => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'title'       => function() {
 					return ! empty( $this->data->method_title ) ? $this->data->method_title : null;

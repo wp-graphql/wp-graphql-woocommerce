@@ -147,6 +147,10 @@ class Review_Delete_Restore {
 					break;
 			}
 
+			if ( empty( $classname ) || ! class_exists( $classname ) ) {
+				throw new UserError( __( 'Failed to find mutation resolver. Please contact site adminstrator', 'wp-graphql-woocommerce' ) );
+			}
+
 			// Get the comment mutation resolver.
 			$resolver = $classname::mutate_and_get_payload();
 

@@ -66,7 +66,7 @@ class Customer extends Model {
 						: 'guest';
 				},
 				'databaseId'            => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'isVatExempt'           => function() {
 					return ! is_null( $this->data->get_is_vat_exempt() ) ? $this->data->get_is_vat_exempt() : null;

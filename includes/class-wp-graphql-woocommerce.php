@@ -421,7 +421,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Initialize WooGraphQL TypeRegistry.
 			$registry = new Type_Registry();
-			add_action( 'graphql_register_types', [ $registry, 'init' ], 10, 1 );
+			add_action( 'graphql_register_types', [ $registry, 'init' ] );
 		}
 	}
 

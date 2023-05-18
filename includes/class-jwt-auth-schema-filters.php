@@ -90,25 +90,31 @@ class JWT_Auth_Schema_Filters {
 	 * Adds "customer" field to "login" mutation payload.
 	 */
 	public static function add_customer_to_login_payload() {
-		register_graphql_fields(
+		register_graphql_field(
 			'LoginPayload',
+			'customer',
 			[
-				'customer'     => [
-					'type'        => 'Customer',
-					'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $payload ) {
-						$id = $payload['id'];
-						return new Customer( $id );
-					},
-				],
-				'sessionToken' => [
+				'type'        => 'Customer',
+				'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
+				'resolve'     => function( $payload ) {
+					$id = $payload['id'];
+					return new Customer( $id );
+				},
+			]
+		);
+
+		if ( ! WooCommerce_Filters::is_session_handler_disabled() )
+			register_graphql_field(
+				'LoginPayload',
+				'sessionToken',
+				[
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
 						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
 					},
-				],
-			]
-		);
+				]
+			);
+		}
 	}
 }

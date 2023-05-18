@@ -206,7 +206,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			);
 		}//end foreach
 
-		return ! empty( $loaded_posts ) ? $loaded_posts : [];
+		return $loaded_posts;
 	}
 
 	/**

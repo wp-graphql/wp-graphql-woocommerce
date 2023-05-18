@@ -472,7 +472,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				}
 
 				// Set sub tax query relation.
-				if ( 1 > count( $sub_tax_query ) ) {
+				if ( 1 > count( $sub_tax_query ) && ! empty( $relation ) ) {
 					$sub_tax_query['relation'] = strtoupper( $relation );
 				}
 

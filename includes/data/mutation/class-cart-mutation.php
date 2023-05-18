@@ -117,12 +117,12 @@ class Cart_Mutation {
 	 * @throws UserError Cart item not found message.
 	 */
 	public static function retrieve_cart_items( $input, $context, $info, $mutation = '' ) {
+		$items = [];
 		if ( ! empty( $input['all'] ) && $input['all'] ) {
 			$items = array_values( \WC()->cart->get_cart() );
 		}
-
-		if ( ! empty( $input['keys'] ) && ! isset( $items ) ) {
-			$items = [];
+		
+		if ( ! empty( $input['keys'] ) && ! empty( $items ) ) {
 			foreach ( $input['keys'] as $key ) {
 				$item = \WC()->cart->get_cart_item( $key );
 				if ( empty( $item ) ) {

@@ -49,17 +49,11 @@ class Factory {
 	 * @access public
 	 */
 	public static function resolve_customer( $id, AppContext $context ) {
-		if ( empty( $id ) || ! absint( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
-		$customer_id = absint( $id );
-		$loader      = $context->get_loader( 'wc_customer' );
-		$loader->buffer( [ $customer_id ] );
-		return new Deferred(
-			function () use ( $loader, $customer_id ) {
-				return $loader->load( $customer_id );
-			}
-		);
+
+		return $context->get_loader( 'wc_customer' )->load_deferred( absint( $id ) );
 	}
 
 	/**
@@ -72,16 +66,11 @@ class Factory {
 	 * @access public
 	 */
 	public static function resolve_crud_object( $id, AppContext $context ) {
-		if ( empty( $id ) || ! absint( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
 
-		$context->get_loader( 'wc_post' )->buffer( [ $id ] );
-		return new Deferred(
-			function () use ( $id, $context ) {
-				return $context->get_loader( 'wc_post' )->load( $id );
-			}
-		);
+		return $context->get_loader( 'wc_post' )->load_deferred( absint( $id ) );
 	}
 
 	/**
@@ -113,18 +102,11 @@ class Factory {
 	 * @return Deferred object
 	 */
 	public static function resolve_tax_rate( $id, AppContext $context ) {
-		if ( empty( $id ) || ! is_numeric( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
 
-		$id     = absint( $id );
-		$loader = $context->get_loader( 'tax_rate' );
-		$loader->buffer( [ $id ] );
-		return new Deferred(
-			function () use ( $loader, $id ) {
-				return $loader->load( $id );
-			}
-		);
+		return $context->get_loader( 'tax_rate' )->load_deferred( absint( $id ) );
 	}
 
 	/**
@@ -173,27 +155,7 @@ class Factory {
 			return null;
 		}
 
-		$context->get_loader( 'cart_item' )->buffer( [ $key ] );
-		return new Deferred(
-			function () use ( $key, $context ) {
-				return $context->get_loader( 'cart_item' )->load( $key );
-			}
-		);
-	}
-
-	/**
-	 * Resolves a fee object by ID.
-	 *
-	 * @param int $id Fee object generated ID.
-	 *
-	 * @return object
-	 */
-	public static function resolve_cart_fee( $id ) {
-		if ( ! empty( self::resolve_cart()->get_fees()[ $id ] ) ) {
-			return self::resolve_cart()->get_fees()[ $id ];
-		}
-
-		return null;
+		return $context->get_loader( 'cart_item' )->load_deferred( $key );
 	}
 
 	/**
@@ -205,17 +167,11 @@ class Factory {
 	 * @return Deferred object
 	 */
 	public static function resolve_downloadable_item( $id, AppContext $context ) {
-		if ( empty( $id ) || ! absint( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
-		$object_id = absint( $id );
-		$loader    = $context->get_loader( 'downloadable_item' );
-		$loader->buffer( [ $object_id ] );
-		return new Deferred(
-			function () use ( $loader, $object_id ) {
-				return $loader->load( $object_id );
-			}
-		);
+
+		return $context->get_loader( 'downloadable_item' )->load_deferred( absint( $id ) );
 	}
 
 	/**
