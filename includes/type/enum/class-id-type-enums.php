@@ -131,12 +131,6 @@ class Id_Type_Enums {
 						'wp-graphql-woocommerce'
 					),
 				];
-			case 'id':
-				return [
-					'name'        => 'ID',
-					'value'       => 'global_id',
-					'description' => __( 'Identify a resource by the (hashed) Global ID.', 'wp-graphql-woocommerce' ),
-				];
 			case 'database_id':
 				return [
 					'name'        => 'DATABASE_ID',
@@ -148,6 +142,13 @@ class Id_Type_Enums {
 					'name'        => 'URI',
 					'value'       => 'uri',
 					'description' => __( 'Identify a resource by the URI.', 'wp-graphql-woocommerce' ),
+				];
+			case 'id':
+			default:
+				return [
+					'name'        => 'ID',
+					'value'       => 'global_id',
+					'description' => __( 'Identify a resource by the (hashed) Global ID.', 'wp-graphql-woocommerce' ),
 				];
 		}//end switch
 	}

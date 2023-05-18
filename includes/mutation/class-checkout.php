@@ -154,7 +154,7 @@ class Checkout {
 				/**
 				 * Action called after checking out.
 				 *
-				 * @param WC_Order    $order   WC_Order instance.
+				 * @param \WC_Order    $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
 				 * @param AppContext  $context Request AppContext instance.
 				 * @param ResolveInfo $info    Request ResolveInfo instance.

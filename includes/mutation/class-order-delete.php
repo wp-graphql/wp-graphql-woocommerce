@@ -124,7 +124,7 @@ class Order_Delete {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
+			 * @param Order       $order   Order model instance.
 			 * @param array       $input   Input data describing order.
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.
@@ -147,7 +147,7 @@ class Order_Delete {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
+			 * @param Order       $order   Order model instance.
 			 * @param array       $input   Input data describing order
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.

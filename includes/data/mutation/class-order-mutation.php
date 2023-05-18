@@ -73,7 +73,6 @@ class Order_Mutation {
 		/**
 		 * Action called before order is created.
 		 *
-		 * @param WC_Order    $order   WC_Order instance.
 		 * @param array       $input   Input data describing order.
 		 * @param AppContext  $context Request AppContext instance.
 		 * @param ResolveInfo $info    Request ResolveInfo instance.
@@ -82,13 +81,13 @@ class Order_Mutation {
 
 		$order = \wc_create_order( $args );
 		if ( is_wp_error( $order ) ) {
-			throw UserError( $order->get_error_code() . $order->get_message() );
+			throw new UserError( $order->get_error_code() . $order->get_message() );
 		}
 
 		/**
 		 * Action called after order is created.
 		 *
-		 * @param WC_Order    $order   WC_Order instance.
+		 * @param \WC_Order    $order   WC_Order instance.
 		 * @param array       $input   Input data describing order.
 		 * @param AppContext  $context Request AppContext instance.
 		 * @param ResolveInfo $info    Request ResolveInfo instance.
@@ -236,6 +235,15 @@ class Order_Mutation {
 					'taxClass'  => 'tax_class',
 					'taxStatus' => 'tax_status',
 				];
+			default:
+				/**
+				 * Allow filtering of order item keys for unknown item types.
+				 * 
+				 * @param array  $item_keys  Order item keys.
+				 * @param string $type       Order item type slug.
+				 */
+				$item_keys = apply_filters( 'woographql_get_order_item_keys', [], $type );
+				return $item_keys;
 		}//end switch
 	}
 
@@ -326,7 +334,7 @@ class Order_Mutation {
 		/**
 		 * Action called before changes to order meta are saved.
 		 *
-		 * @param WC_Order    $order   WC_Order instance.
+		 * @param \WC_Order   $order   WC_Order instance.
 		 * @param array       $props   Order props array.
 		 * @param AppContext  $context Request AppContext instance.
 		 * @param ResolveInfo $info    Request ResolveInfo instance.

@@ -87,7 +87,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				/**
 				 * Filter the $item_type to allow non-core item types.
 				 *
-				 * @param array       $query_args The args that will be passed to the WP_Query.
+				 * @param string      $item_type  Order item type.
 				 * @param mixed       $source     The source that's passed down the GraphQL queries.
 				 * @param array       $args       The inputArgs on the field.
 				 * @param AppContext  $context    The AppContext passed down the GraphQL tree.

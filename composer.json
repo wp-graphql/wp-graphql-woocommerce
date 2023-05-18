@@ -36,7 +36,7 @@
     },
     "config": {
         "platform": {
-          "php": "7.3"
+            "php": "7.3"
         },
         "optimize-autoloader": true,
         "process-timeout": 0,

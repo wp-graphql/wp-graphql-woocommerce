@@ -153,7 +153,8 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 		 * @param string $return            Price HTML markup.
 		 * @param string $price             Formatted price.
 		 * @param array  $args              Pass on the args.
-		 * @param float  $unformatted_price Price as float to allow plugins custom formatting. Since 3.2.0.
+		 * @param float  $unformatted_price Price as float to allow plugins custom formatting.
+		 * @param string $symbol            Currency symbol.
 		 */
 		return apply_filters( 'graphql_woocommerce_price', $return, $price, $args, $unformatted_price, $symbol );
 	}

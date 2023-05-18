@@ -136,7 +136,6 @@ class Coupons {
 		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
 		 * @param AppContext  $context    The AppContext object
 		 * @param ResolveInfo $info       The ResolveInfo object
-		 * @param mixed|string|array      $post_type  The post type for the query
 		 */
 		$query_args = apply_filters(
 			'graphql_map_input_fields_to_coupon_query',

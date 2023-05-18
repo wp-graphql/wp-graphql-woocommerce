@@ -89,7 +89,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_node_by_id( $id ) {
 		$post = get_post( $id );
-		if ( empty( $post ) || is_wp_error( $post ) ) {
+		if ( empty( $post ) ) {
 			return null;
 		}
 

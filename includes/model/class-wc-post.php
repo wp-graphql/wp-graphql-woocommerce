@@ -89,7 +89,7 @@ abstract class WC_Post extends Post {
 	 *
 	 * @return mixed
 	 *
-	 * @throws BadMethodCallException Method not found on WC data object.
+	 * @throws \BadMethodCallException Method not found on WC data object.
 	 */
 	public function __call( $method, $args ) {
 		if ( \is_callable( [ $this->wc_data, $method ] ) ) {
@@ -97,7 +97,7 @@ abstract class WC_Post extends Post {
 		}
 
 		$class = __CLASS__;
-		throw new BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
+		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 
 	/**

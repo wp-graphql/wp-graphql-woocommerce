@@ -59,14 +59,14 @@ class Core_Schema_Filters {
 			'graphql_union_resolve_type',
 			[ __CLASS__, 'inject_type_resolver' ],
 			10,
-			3
+			2
 		);
 
 		add_filter(
 			'graphql_interface_resolve_type',
 			[ __CLASS__, 'inject_type_resolver' ],
 			10,
-			3
+			2
 		);
 
 		add_filter(

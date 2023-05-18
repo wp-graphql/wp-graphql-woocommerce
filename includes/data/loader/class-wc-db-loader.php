@@ -199,7 +199,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 			return null;
 		}
 
-		$item = new \WPGraphQL\WooCommerce\ModelOrder_Item( $item );
+		$item = new \WPGraphQL\WooCommerce\Model\Order_Item( $item );
 
 		return $item;
 	}

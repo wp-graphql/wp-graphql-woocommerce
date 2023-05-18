@@ -404,7 +404,7 @@ class Checkout_Mutation {
 				}
 
 				if ( \wc_graphql_ends_with( $key, 'phone' ) ) {
-					if ( $validate_fieldset && '' !== $data[ $key ] && ! WC_Validation::is_phone( $data[ $key ] ) ) {
+					if ( $validate_fieldset && '' !== $data[ $key ] && ! \WC_Validation::is_phone( $data[ $key ] ) ) {
 						/* translators: %s: phone number */
 						throw new UserError( sprintf( __( '%s is not a valid phone number.', 'wp-graphql-woocommerce' ), $field_label ) );
 					}
@@ -616,7 +616,7 @@ class Checkout_Mutation {
 			 * Use this to do some last minute transaction ID validation.
 			 *
 			 * @param bool        $is_valid        Is transaction ID valid.
-			 * @param WC_Order    $order           Order being processed.
+			 * @param \WC_Order   $order           Order being processed.
 			 * @param String|null $transaction_id  Order payment transaction ID.
 			 * @param array       $data            Order data.
 			 * @param array       $input           Order raw input data.
@@ -723,7 +723,7 @@ class Checkout_Mutation {
 		/**
 		 * Action called before changes to order meta are saved.
 		 *
-		 * @param WC_Order    $order      WC_Order instance.
+		 * @param \WC_Order   $order      WC_Order instance.
 		 * @param array       $meta_data  Order meta data.
 		 * @param array       $props      Order props array.
 		 * @param AppContext  $context    Request AppContext instance.

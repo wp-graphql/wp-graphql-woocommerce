@@ -154,25 +154,6 @@ class Orders {
 	}
 
 	/**
-	 * Returns refund connection filter by customer.
-	 *
-	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
-	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
-	 *
-	 * @return array
-	 */
-	private static function get_customer_refund_connection( $resolver, $customer ) {
-		// If not "billing email" or "ID" set bail early by returning an empty connection.
-		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return [
-				'pageInfo' => null,
-				'nodes'    => [],
-				'edges'    => [],
-			];
-		}
-	}
-
-	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults.
 	 *
