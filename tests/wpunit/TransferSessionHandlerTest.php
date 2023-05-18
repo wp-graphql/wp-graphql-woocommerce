@@ -24,11 +24,11 @@ class TransferSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		$this->session->init_session_cookie();
 		$this->assertNotEquals( 'test-session-id', $this->session->get_customer_id() );
 
-		$_REQUEST['_wc_cart']   = 'test';
+		$_REQUEST['_wc_cart'] = 'test';
 		$this->session->init_session_cookie();
 		$this->assertNotEquals( 'test-session-id', $this->session->get_customer_id() );
-		
-		unset( $_REQUEST['_wc_cart'] );
+
+		unset( $_REQUEST['_wc_cart'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$_REQUEST['session_id'] = 'test-session-id';
 		$this->session->init_session_cookie();
 		$this->assertNotEquals( 'test-session-id', $this->session->get_customer_id() );
@@ -43,14 +43,14 @@ class TransferSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 	public function testGetClientSessionId() {
 		// Assert an empty string is return, when invalid creds are provided.
 		$this->session->init_session_cookie();
-		$this->assertEquals( '', $this->session->get_client_session_id());
-
-		$this->session->init_session_cookie();
-		$_REQUEST['_wc_cart']   = 'test';
 		$this->assertEquals( '', $this->session->get_client_session_id() );
 
 		$this->session->init_session_cookie();
-		unset( $_REQUEST['_wc_cart'] );
+		$_REQUEST['_wc_cart'] = 'test';
+		$this->assertEquals( '', $this->session->get_client_session_id() );
+
+		$this->session->init_session_cookie();
+		unset( $_REQUEST['_wc_cart'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$_REQUEST['session_id'] = $this->session->get_client_session_id();
 		$this->assertEquals( '', $this->session->get_client_session_id() );
 

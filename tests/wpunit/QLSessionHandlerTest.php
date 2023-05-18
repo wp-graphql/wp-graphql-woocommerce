@@ -155,10 +155,10 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Assert an random string returned, when valid "client_session_id" and "client_session_id_expiration" are not set.
 		$session->init_session_cookie();
-		$this->assertNotEquals( '', $session->get_client_session_id());
+		$this->assertNotEquals( '', $session->get_client_session_id() );
 
 		$session->init_session_cookie();
-		$_REQUEST['_wc_cart']   = 'test';
+		$_REQUEST['_wc_cart'] = 'test';
 		$this->assertNotEquals( '', $session->get_client_session_id() );
 
 		$session->init_session_cookie();

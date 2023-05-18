@@ -70,8 +70,8 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 * @return string
 	 */
 	public function get_client_session_id() {
-		$session_id    = $this->get_posted_session_id();
-		$session_data  = 0 !== $session_id ? $this->get_session( $session_id ) : null;
+		$session_id   = $this->get_posted_session_id();
+		$session_data = 0 !== $session_id ? $this->get_session( $session_id ) : null;
 
 		if ( ! empty( $session_data ) ) {
 			$client_session_id            = $session_data['client_session_id'];
