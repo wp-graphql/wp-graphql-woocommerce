@@ -103,7 +103,7 @@ class JWT_Auth_Schema_Filters {
 			]
 		);
 
-		if ( ! WooCommerce_Filters::is_session_handler_disabled() )
+		if ( ! WooCommerce_Filters::is_session_handler_disabled() ) {
 			register_graphql_field(
 				'LoginPayload',
 				'sessionToken',
