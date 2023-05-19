@@ -72,9 +72,7 @@ const input = {
 }
 ```
 
-When the `client_session
-
-_id` or `client_session_id_expiration` values become invalid or expired, WooGraphQL generates new values with an expiration time of one hour. To avoid this, we recommend you to periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
+When the `client_session_id` or `client_session_id_expiration` values become invalid or expired, WooGraphQL generates new values with an expiration time of one hour. To avoid this, we recommend you to periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
 
 ## Conclusion
 
