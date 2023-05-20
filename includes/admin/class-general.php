@@ -12,6 +12,13 @@ namespace WPGraphQL\WooCommerce\Admin;
  */
 class General extends Section {
 
+	/**
+	 * Returns the other nonce values besides the one provided.
+	 *
+	 * @param string $excluded  Slug of nonce value to be excluded.
+	 *
+	 * @return array
+	 */
 	public static function get_other_nonce_values( $excluded ) {
 		$nonce_values = apply_filters(
 			'woographql_authorizing_url_nonce_values',
