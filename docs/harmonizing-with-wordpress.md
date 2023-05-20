@@ -206,10 +206,10 @@ export function generateUrl(sessionToken, clientSessionId, actionType) {
 
 Note that for the `change-sub` and `renew-sub` actions from WooGraphQL Pro, we are passing a `%SUBSCRIPTION_ID%` placeholder to be replaced with a subscription database ID before use.
 
-To get a cart URL, you would run:
+To get our checkout URL, you would run:
 
 ```js
-const cartUrl = generateUrl(sessionToken, clientSessionId, 'cart');
+const checkoutUrl = generateUrl(sessionToken, clientSessionId, 'checkout');
 ```
 
 Also, `transfer-session` is the default name of the authorization endpoint. This can be altered in the WooGraphQL settings on the WP Dashboard.
