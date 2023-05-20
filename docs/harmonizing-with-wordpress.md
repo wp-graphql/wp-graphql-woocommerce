@@ -74,6 +74,148 @@ const input = {
 
 When the `client_session_id` or `client_session_id_expiration` values become invalid or expired, WooGraphQL generates new values with an expiration time of one hour. To avoid this, we recommend you to periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
 
+## Reinventing Security: The Client-Side Nonce
+
+Next we're going to explore an advanced approach to enhance the security of our checkout procedure by generating a nonce on the client side. By doing this, and not pulling the Nonces or Auth URLs from WooGraphQL we remove any risk of leakage thru GraphQL request and further protect the end-user's data and the WordPress backend. This process will involve recreating some of PHP and WordPress core functions in JavaScript.
+
+1. **PHP `time` Function in JavaScript**
+
+   Our first stop is to rewrite the PHP `time` function in JavaScript, which returns the current Unix timestamp. Here's how we can do it:
+
+    ```js
+    function time() {
+      return Math.floor(new Date().getTime() / 1000);
+    }
+    ```
+
+2. **WordPress `wp_nonce_tick` Function in JavaScript**
+
+   Next, we translate the WordPress function `wp_nonce_tick` to JavaScript. This function returns a time-dependent variable for nonce creation:
+
+    ```js
+    const MINUTE_IN_SECONDS = 60;
+    const HOUR_IN_SECONDS = 60 * MINUTE_IN_SECONDS;
+    const DAY_IN_SECONDS = 24 * HOUR_IN_SECONDS;
+
+    function nonceTick() {
+      const nonceLife = DAY_IN_SECONDS;
+      return Math.ceil(time() / (nonceLife / 2));
+    }
+    ```
+
+3. **WordPress `wp_hash` Function in JavaScript**
+
+   The `wp_hash` function, another WordPress core function, will be adapted to JavaScript as well. This function uses the `wp_salt` function to retrieve the salt from WordPress Salt constants, usually defined in the `wp-config.php` file. In our context, we only need the `nonce` salt. Therefore, it's crucial to ensure the `NONCE_KEY` and `NONCE_SALT` constants are set on the WordPress installation, and their values are accessible in our front-end application.
+
+   `wp_hash` also uses `hash_hmac` and `md5` encryption to create the hash. For this, we'll utilize `crypto-js`, which you can install with `npm` using the command `npm install crypto-js`. Here's how to write `wp_hash` in JavaScript:
+
+    ```js
+    import { HmacMD5 } from 'crypto-js';
+
+    export function wpNonceHash(data) {
+      const nonceSalt = process.env.NONCE_KEY + process.env.NONCE_SALT;
+      const hash = HmacMD5(data, nonceSalt).toString();
+
+      return hash;
+    }
+    ```
+
+With these functions ready, we can essentially recreate the `woographql_create_nonce` PHP function employed by WooGraphQL to create the nonce. Below is the JavaScript version:
+
+```js
+export function createNonce(action, uId, token) {
+  const i = nonceTick();
+
+  const nonce = wpNonceHash(`${i}|${action}|${uId}|${token}`).slice(-12, -2);
+
+  return nonce;
+}
+```
+
+In the function above:
+- The `action` parameter represents the nonce action name.
+- The `uId` parameter represents the end-user's session ID, either their WP User Database ID (if they are authenticated) or a random string (if they are a guest). To retrieve this value, we'll have to decode the WooCommerce Session Token used by ApolloClient.
+- The `token` is our Client Session ID mentioned earlier.
+
+4. **Generating the URLs**
+
+Having the nonce alone is not enough, so let's move on to generating our URLs. The process involves three functions and the `jwt-decode` library. Install it using npm with the command `npm install jwt-decode`.
+
+Here's the JavaScript code to generate the URL:
+
+```js
+import jwtDecode from 'jwt-decode';
+
+function getAction(action, uId) {
+  switch (action) {
+    case 'cart':
+      return `load-cart_${uId}`;
+    case 'checkout':
+      return `load-checkout_${uId}`;
+    case 'new-payment':
+      return `load-account_${uId}`;
+    case 'change-sub':
+      return `change-sub_${uId}`;
+    case 'renew-sub':
+      return `renew-sub_${uId}`;
+    default:
+      throw new Error('Invalid nonce action provided.');
+  }
+}
+
+function getNonceParam(action) {
+  switch (action) {
+    case 'cart':
+      return '_wc_cart';
+    case 'checkout':
+      return '_wc_checkout';
+    case 'new-payment':
+      return '_wc_payment';
+    case 'change-sub':
+      return '_wc_change_sub';
+    case 'renew-sub':
+      return '_wc_renew_sub';
+    default:
+      throw new Error('Invalid nonce action provided.');
+  }
+}
+
+export function generateUrl(sessionToken, clientSessionId, actionType) {
+  const decodedToken = jwtDecode(sessionToken);
+  if (!decodedToken?.data?.customer_id) {
+    throw new Error('Failed to decode session token');
+  }
+  const uId = decodedToken.data.customer_id;
+  const action = getAction(actionType, uId);
+
+  // Create nonce
+  const nonce = createNonce(action, uId, clientSessionId);
+
+  // Create URL.
+  const param = getNonceParam(actionType);
+  let url = `${process.env.WORDPRESS_URL}/transfer-session?session_id=${uId}&${param}=${nonce}`;
+
+  // Add subscription ID placeholder if subscription action.
+  if (actionType === 'change-sub' || actionType === 'renew-sub') {
+    url = `${url}&sub=%SUBSCRIPTION_ID%`;
+  }
+  
+  return url;
+}
+```
+
+Note that for the `change-sub` and `renew-sub` actions from WooGraphQL Pro, we are passing a `%SUBSCRIPTION_ID%` placeholder to be replaced with a subscription database ID before use.
+
+To get a cart URL, you would run:
+
+```js
+const cartUrl = generateUrl(sessionToken, clientSessionId, 'cart');
+```
+
+Also, `transfer-session` is the default name of the authorization endpoint. This can be altered in the WooGraphQL settings on the WP Dashboard.
+
+To confirm the validity of your URL, compare it with the Auth URLs generated by WooGraphQL with the same `client_session_id` and ensure they are identical.
+
 ## Conclusion
 
 With this guide, you should now be able to add a secure checkout button to your WooCommerce cart page using WooGraphQL. Keep in mind that even though we've improved security by setting a client-side session ID and expiration, these measures should be part of a broader security strategy. Always ensure to follow best practices to keep your application and user data safe.
