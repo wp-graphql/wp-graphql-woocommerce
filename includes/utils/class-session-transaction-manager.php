@@ -241,7 +241,7 @@ class Session_Transaction_Manager {
 		}
 
 		// Save transaction queue.
-		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue );
+		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue, 5 * MINUTE_IN_SECONDS );
 	}
 
 	/**

@@ -55,11 +55,14 @@ class WooCommerce_Filters {
 	 */
 	public static function enabled_authorizing_url_fields() {
 		if ( defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) ) {
-			return [
-				'cart_url'               => 'cart_url',
-				'checkout_url'           => 'checkout_url',
-				'add_payment_method_url' => 'add_payment_method_url',
-			];
+			return apply_filters(
+				'woographql_enabled_authorizing_url_fields',
+				[
+					'cart_url'               => 'cart_url',
+					'checkout_url'           => 'checkout_url',
+					'add_payment_method_url' => 'add_payment_method_url',
+				]
+			);
 		}
 		return woographql_setting( 'enable_authorizing_url_fields', [] );
 	}

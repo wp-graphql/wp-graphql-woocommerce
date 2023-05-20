@@ -12,6 +12,19 @@ namespace WPGraphQL\WooCommerce\Admin;
  */
 class General extends Section {
 
+	public static function get_other_nonce_values( $excluded ) {
+		$nonce_values = apply_filters(
+			'woographql_authorizing_url_nonce_values',
+			[
+				'cart_url'               => woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
+				'checkout_url'           => woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
+				'add_payment_method_url' => woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
+			]
+		);
+
+		return array_values( array_diff_key( $nonce_values, [ $excluded => '' ] ) );
+	}
+
 	/**
 	 * Returns General settings fields.
 	 *
@@ -20,11 +33,14 @@ class General extends Section {
 	public static function get_fields() {
 		$custom_endpoint                = apply_filters( 'woographql_authorizing_url_endpoint', null );
 		$enabled_authorizing_url_fields = array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) );
-		$all_urls_checked               = [
-			'cart_url'               => 'cart_url',
-			'checkout_url'           => 'checkout_url',
-			'add_payment_method_url' => 'add_payment_method_url',
-		];
+		$all_urls_checked               = apply_filters(
+			'woographql_enabled_authorizing_url_fields',
+			[
+				'cart_url'               => 'cart_url',
+				'checkout_url'           => 'checkout_url',
+				'add_payment_method_url' => 'add_payment_method_url',
+			]
+		);
 
 		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( CART_URL_NONCE_PARAM );
 		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( CHECKOUT_URL_NONCE_PARAM );
@@ -86,21 +102,12 @@ class General extends Section {
 				'value'             => $cart_url_hardcoded ? CART_URL_NONCE_PARAM : woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
 				'disabled'          => defined( 'CART_URL_NONCE_PARAM' ) || ! in_array( 'cart_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => function ( $value ) {
-					$other_nonces = [
-						woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
-						woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
-					];
+					$other_nonces = self::get_other_nonce_values( 'cart_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(
 							'cart_url_nonce_param',
 							'unique',
-							sprintf(
-								/* translators: %s: Field display name; %s: Sibling field display name; %s Other sibling field display name; */
-								__( 'The <strong>%1$s</strong> field must be unique and can be the same as the <em>%2$s</em> or <em>%3$s</em>', 'wp-graphql-woocommerce' ),
-								'Cart URL nonce name',
-								'Checkout URL nonce name',
-								'Add Payment Method URL nonce name'
-							),
+							__( 'The <strong>Cart URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
 							'error'
 						);
 
@@ -119,21 +126,12 @@ class General extends Section {
 				'value'             => $checkout_url_hardcoded ? CHECKOUT_URL_NONCE_PARAM : woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
 				'disabled'          => defined( 'CHECKOUT_URL_NONCE_PARAM' ) || ! in_array( 'checkout_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => function ( $value ) {
-					$other_nonces = [
-						woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
-						woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
-					];
+					$other_nonces = self::get_other_nonce_values( 'checkout_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(
 							'checkout_url_nonce_param',
 							'unique',
-							sprintf(
-								/* translators: %s: Field display name; %s: Sibling field display name; %s Other sibling field display name; */
-								__( 'The <strong>%1$s</strong> field must be unique and can be the same as the <em>%2$s</em> or <em>%3$s</em>', 'wp-graphql-woocommerce' ),
-								'Checkout URL nonce name',
-								'Cart URL nonce name',
-								'Add Payment Method URL nonce name'
-							),
+							__( 'The <strong>Checkout URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
 							'error'
 						);
 
@@ -150,23 +148,14 @@ class General extends Section {
 					. ( $add_payment_method_url_hardcoded ? __( ' This setting is disabled. The "ADD_PAYMENT_METHOD_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'              => 'text',
 				'value'             => $add_payment_method_url_hardcoded ? ADD_PAYMENT_METHOD_URL_NONCE_PARAM : woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
-				'disabled'          => defined( 'CART_URL_NONCE_PARAM' ) || ! in_array( 'add_payment_method_url', $enabled_authorizing_url_fields, true ),
+				'disabled'          => defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) || ! in_array( 'add_payment_method_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => function ( $value ) {
-					$other_nonces = [
-						woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
-						woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
-					];
+					$other_nonces = self::get_other_nonce_values( 'add_payment_method_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(
 							'add_payment_method_url_nonce_param',
 							'unique',
-							sprintf(
-								/* translators: %s: Field display name; %s: Sibling field display name; %s Other sibling field display name; */
-								__( 'The <strong>%1$s</strong> field must be unique and can be the same as the <em>%2$s</em> or <em>%3$s</em>', 'wp-graphql-woocommerce' ),
-								'Add Payment Method URL nonce name',
-								'Checkout URL nonce name',
-								'Cart URL nonce name',
-							),
+							__( 'The <strong>Add Payment Method URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
 							'error'
 						);
 

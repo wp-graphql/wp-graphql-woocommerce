@@ -220,7 +220,7 @@ class Protected_Router {
 	 * Returns the nonce action prefix for the provided field.
 	 *
 	 * @param string $field  Field.
-	 * @return string|void
+	 * @return string|null
 	 */
 	public function get_nonce_prefix( $field ) {
 		switch ( $field ) {

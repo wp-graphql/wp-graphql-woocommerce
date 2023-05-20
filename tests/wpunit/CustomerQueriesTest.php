@@ -1,6 +1,5 @@
 <?php
 
-use GraphQLRelay\Relay;
 class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
 	public function expectedCustomerData( $id ) {
