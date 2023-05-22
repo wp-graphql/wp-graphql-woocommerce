@@ -107,13 +107,12 @@ class Order_Create {
 			'isPaid'             => [
 				'type'        => 'Boolean',
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
-			),
+			],
 			'createdVia'         => array(
 				'type'        => 'String',
 				'description' => __( 'Order created via', 'wp-graphql-woocommerce' ),
-			),
-		);
-
+			)
+		];
 		return $input_fields;
 	}
 
