@@ -8,6 +8,8 @@
 
 namespace WPGraphQL\WooCommerce;
 
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
+
 /**
  * Class WooCommerce_Filters
  */
@@ -43,7 +45,43 @@ class WooCommerce_Filters {
 	 * @return boolean
 	 */
 	public static function is_session_handler_disabled() {
-		return 'on' === woographql_setting( 'disable_ql_session_handler', 'off' );
+		return defined( 'NO_QL_SESSION_HANDLER' ) || 'on' === woographql_setting( 'disable_ql_session_handler', 'off' );
+	}
+
+	/**
+	 * Returns array of enabled authorizing URL field slugs.
+	 *
+	 * @return array
+	 */
+	public static function enabled_authorizing_url_fields() {
+		if ( defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) ) {
+			return apply_filters(
+				'woographql_enabled_authorizing_url_fields',
+				[
+					'cart_url'               => 'cart_url',
+					'checkout_url'           => 'checkout_url',
+					'add_payment_method_url' => 'add_payment_method_url',
+				]
+			);
+		}
+		return woographql_setting( 'enable_authorizing_url_fields', [] );
+	}
+
+	/**
+	 * Return the nonce query parameter name for the provided field.
+	 *
+	 * @param string $field  URL field slug.
+	 *
+	 * @return string null
+	 */
+	public static function get_authorizing_url_nonce_param_name( $field ) {
+		$flag_name      = strtoupper( $field );
+		$hardcoded_name = defined( "{$flag_name}_NONCE_PARAM" ) ? constant( "{$flag_name}_NONCE_PARAM" ) : false;
+		if ( ! empty( $hardcoded_name ) ) {
+			return $hardcoded_name;
+		}
+
+		return woographql_setting( "{$field}_nonce_param", null );
 	}
 
 	/**
@@ -55,6 +93,11 @@ class WooCommerce_Filters {
 	public static function woocommerce_session_handler( $session_class ) {
 		if ( \WPGraphQL\Router::is_graphql_http_request() ) {
 			$session_class = '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
+		} elseif ( WooGraphQL::auth_router_is_enabled() ) {
+			require_once get_includes_directory() . 'utils/class-protected-router.php';
+			require_once get_includes_directory() . 'utils/class-transfer-session-handler.php';
+
+			$session_class = Utils\Protected_Router::is_auth_request() ? '\WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler' : $session_class;
 		}
 
 		return $session_class;

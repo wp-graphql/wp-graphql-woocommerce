@@ -229,12 +229,6 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 	}
 }//end if
 
-/**
- * Plugin global functions.
- *
- * @package Axis\Plugin_Distributor
- */
-
 if ( ! function_exists( 'woographql_setting' ) ) :
 	/**
 	 * Get an option value from WooGraphQL settings
@@ -272,6 +266,92 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 		 * @param string $section_name   The name of the section the setting belongs to
 		 */
 		return apply_filters( 'woographql_settings_section_field_value', $value, $default, $option_name, $section_fields, $section_name );
+	}
+endif;
+
+if ( ! function_exists( 'woographql_get_session_uid' ) ) :
+	/**
+	 * Returns end-user's customer ID.
+	 *
+	 * @return string|int
+	 */
+	function woographql_get_session_uid() {
+		return WC()->session->get_customer_id();
+	}
+endif;
+
+if ( ! function_exists( 'woographql_get_session_token' ) ) :
+	/**
+	 * Returns session user's "client_session_id"
+	 *
+	 * @return string
+	 */
+	function woographql_get_session_token() {
+		return WC()->session->get_client_session_id();
+	}
+endif;
+
+if ( ! function_exists( 'woographql_create_nonce' ) ) :
+	/**
+	 * Creates WooGraphQL session transfer nonces.
+	 *
+	 * @param string $action  Nonce name.
+	 */
+	function woographql_create_nonce( $action = -1 ) {
+		$uid   = woographql_get_session_uid();
+		$token = woographql_get_session_token();
+		$i     = wp_nonce_tick( $action );
+
+		return substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
+	}
+endif;
+
+if ( ! function_exists( 'woographql_verify_nonce' ) ) :
+	/**
+	 * Validate WooGraphQL session transfer nonces.
+	 *
+	 * @param string         $nonce   Nonce to validated.
+	 * @param integer|string $action  Nonce name.
+	 *
+	 * @return bool
+	 */
+	function woographql_verify_nonce( $nonce, $action = -1 ) {
+		$nonce = (string) $nonce;
+		$uid   = woographql_get_session_uid();
+
+		if ( empty( $nonce ) ) {
+			return false;
+		}
+
+		$token = woographql_get_session_token();
+		$i     = wp_nonce_tick( $action );
+
+		// Nonce generated 0-12 hours ago.
+		$expected = substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
+		if ( hash_equals( $expected, $nonce ) ) {
+			return 1;
+		}
+
+		// Nonce generated 12-24 hours ago.
+		$expected = substr( wp_hash( ( $i - 1 ) . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
+		if ( hash_equals( $expected, $nonce ) ) {
+			return 2;
+		}
+
+		/**
+		 * Fires when nonce verification fails.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param string     $nonce  The invalid nonce.
+		 * @param string|int $action The nonce action.
+		 * @param WP_User    $user   The current user object.
+		 * @param string     $token  The user's session token.
+		 */
+		do_action( 'graphql_verify_nonce_failed', $nonce, $action, $uid, $token );
+
+		// Invalid nonce.
+		return false;
 	}
 endif;
 

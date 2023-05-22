@@ -1,6 +1,5 @@
 <?php
 
-use GraphQLRelay\Relay;
 class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
 	public function expectedCustomerData( $id ) {
@@ -607,6 +606,68 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			),
 		];
 
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	public function testAuthorizingUrlFields() {
+		// Reinitialize WC session with QL_Session_Handler set.
+		add_filter(
+			'woocommerce_session_handler',
+			function( $session_class ) {
+				return '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
+			}
+		);
+		\WC()->initialize_session();
+
+		// Create customer for later use.
+		$customer_id = $this->factory->customer->create();
+
+		// Create auth URLs query.
+		$query = '
+			query($id: ID) {
+				customer(id: $id) {
+					id
+					cartUrl
+					cartNonce
+					checkoutUrl
+					checkoutNonce
+					addPaymentMethodUrl
+					addPaymentMethodNonce
+				}
+			}
+		';
+
+		/**
+		 * Assert NULL values when querying as admin
+		 */
+		$this->loginAsShopManager();
+		$variables = [ 'id' => $this->toRelayId( 'customer', $customer_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.cartUrl', self::IS_NULL ),
+			$this->expectedField( 'customer.cartNonce', self::IS_NULL ),
+			$this->expectedField( 'customer.checkoutUrl', self::IS_NULL ),
+			$this->expectedField( 'customer.checkoutNonce', self::IS_NULL ),
+			$this->expectedField( 'customer.addPaymentMethodUrl', self::IS_NULL ),
+			$this->expectedField( 'customer.addPaymentMethodNonce', self::IS_NULL ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assert NOT NULL values when querying as admin
+		 */
+		$this->loginAs( $customer_id );
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.cartUrl', self::NOT_NULL ),
+			$this->expectedField( 'customer.cartNonce', self::NOT_NULL ),
+			$this->expectedField( 'customer.checkoutUrl', self::NOT_NULL ),
+			$this->expectedField( 'customer.checkoutNonce', self::NOT_NULL ),
+			$this->expectedField( 'customer.addPaymentMethodUrl', self::NOT_NULL ),
+			$this->expectedField( 'customer.addPaymentMethodNonce', self::NOT_NULL ),
+		];
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 }

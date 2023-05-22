@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards based custom ruleset for your plugin">
-	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs" />
+	<config name="installed_paths" value="vendor/automattic/vipwpcs,vendor/wp-coding-standards/wpcs" />
 	<description>Generally-applicable sniffs for WordPress plugins.</description>
 
 	<!-- How to scan -->

@@ -705,6 +705,37 @@ class GraphQLE2E extends \Codeception\Module {
 			$product_catalog[ $product['post_title'] ] = $product_id;
 		}
 
+		// Create cart page.
+		$wpdb         = $this->getModule( 'WPDb' );
+		$cart_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Cart',
+				'post_name'    => 'cart',
+				'post_author'  => 1,
+				'post_content' => '[woocommerce_cart]',
+				'post_status'  => 'publish',
+			]
+		);
+		update_option( 'woocommerce_cart_page_id', $cart_page_id );
+		$checkout_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Checkout',
+				'post_name'    => 'checkout',
+				'post_author'  => 1,
+				'post_content' => '[woocommerce_checkout]',
+				'post_status'  => 'publish',
+			]
+		);
+		update_option( 'woocommerce_checkout_page_id', $checkout_page_id );
+
+		global $wp_rewrite;
+		// Set the permalink structure
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
+		// Flush the rules and tell it to write htaccess
+		$wp_rewrite->flush_rules( true );
+
 		return $product_catalog;
 	}
 
@@ -790,6 +821,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 */
 	public function haveAProductInTheDatabase( $args, &$product_id, $term = 'simple', &$term_id = 0 ) {
 		$wpdb = $this->getModule( 'WPDb' );
+
 		// Create Product
 		$product_id = $wpdb->havePostInDatabase(
 			array_replace_recursive(
@@ -866,5 +898,23 @@ class GraphQLE2E extends \Codeception\Module {
 				'user_email' => 'jimbo1234@example.com',
 			]
 		);
+	}
+
+	public function verifyRedirect( $startUrl, $endUrl, $redirectCode = 301 ) {
+		$phpBrowser = $this->getModule( 'WPBrowser' );
+		$guzzle     = $phpBrowser->client;
+
+		// Disable the following of redirects
+		$guzzle->followRedirects( false );
+
+		$phpBrowser->_loadPage( 'GET', $startUrl );
+		$response       = $guzzle->getInternalResponse();
+		$responseCode   = $response->getStatusCode();
+		$locationHeader = $response->getHeader( 'Location' );
+
+		$this->assertEquals( $responseCode, $redirectCode );
+		$this->assertEquals( $endUrl, $locationHeader );
+
+		$guzzle->followRedirects( true );
 	}
 }

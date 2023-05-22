@@ -302,6 +302,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-review-update.php';
 			require $include_directory_path . 'mutation/class-payment-method-delete.php';
 			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
+			require $include_directory_path . 'mutation/class-update-session.php';
 
 			// Include connection class/function files.
 			require $include_directory_path . 'connection/wc-cpt-connection-args.php';
@@ -374,6 +375,26 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 					);
 				}
 			}//end if
+		}
+
+		/**
+		 * Returns true if any authorizing urls are enabled.
+		 *
+		 * @return bool
+		 */
+		public static function auth_router_is_enabled() {
+			return defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' )
+				|| ! empty( array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) ) );
+		}
+
+		/**
+		 * Import and setups Protected_Router class instance.
+		 *
+		 * @return void
+		 */
+		public static function load_auth_router() {
+			require get_includes_directory() . 'utils/class-protected-router.php';
+			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'instance' ] );
 		}
 
 		/**
