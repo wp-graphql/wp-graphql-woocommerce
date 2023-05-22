@@ -1,12 +1,16 @@
 # Changelog
 
-## [v0.12.5](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.5) (2023-04-21)
+## [v0.13.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.13.0) (2023-05-22)
 
-[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.5...v0.12.5)
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.5...v0.13.0)
 
 **New Features:**
 
-- feat: woographql\_viewable\_order\_types hook added [\#741](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/741) ([kidunot89](https://github.com/kidunot89))
+- feat: Authorizing URLs introduced and Harmonizing with WordPress guide written. [\#745](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/745) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- devops: Docs refactored heavily and provided meta data. [\#743](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/743) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.12.5](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.5) (2023-04-21)
 
@@ -14,6 +18,7 @@
 
 **New Features:**
 
+- feat: woographql\_viewable\_order\_types hook added [\#741](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/741) ([kidunot89](https://github.com/kidunot89))
 - feat: filters added to product and order orderby enumerations [\#737](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/737) ([kidunot89](https://github.com/kidunot89))
 - feat: Country queries implemented. [\#736](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/736) ([kidunot89](https://github.com/kidunot89))
 - feat: payment method mutations and fields implemented. [\#735](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/735) ([kidunot89](https://github.com/kidunot89))
@@ -34,6 +39,10 @@
 
 - fix: Case-sensitive apply coupon mutation fix [\#729](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/729) ([sbolinger-godaddy](https://github.com/sbolinger-godaddy))
 - fix: Meta data type error fixed. [\#728](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/728) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- schema link added to docs toc. [\#734](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/734) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.12.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.12.3) (2023-04-04)
 

@@ -7,7 +7,7 @@ Requires PHP: 7.1
 Requires WooCommerce: 4.8.0
 Requires WPGraphQL: 1.14.0+
 Works with WPGraphQL-JWT-Authentication: 0.7.0+
-Stable tag: 0.12.5
+Stable tag: 0.13.0
 License: GPL-3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Maintained at: https://github.com/wp-graphql/wp-graphql-woocommerce
