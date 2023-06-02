@@ -9,9 +9,13 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Refund_Connection_Resolver;
+use WPGraphQL\WooCommerce\Utils\QL_Order_Query;
 
 /**
  * Class - Orders
@@ -25,7 +29,9 @@ class Orders {
 	 */
 	public static function register_connections() {
 		// From RootQuery To Orders.
-		register_graphql_connection( self::get_connection_config() );
+		register_graphql_connection(
+			self::get_connection_config()
+		);
 
 		// From Customer To Orders.
 		register_graphql_connection(
@@ -34,7 +40,7 @@ class Orders {
 					'fromType'      => 'Customer',
 					'fromFieldName' => 'orders',
 					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, wc_get_order_types( 'view-orders' ) );
+						$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
 
 						return self::get_customer_order_connection( $resolver, $source );
 					},
@@ -62,7 +68,7 @@ class Orders {
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
 					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
+						$resolver = new Refund_Connection_Resolver( $source, $args, $context, $info );
 
 						$resolver->set_query_arg( 'post_parent', $source->ID );
 
@@ -81,7 +87,7 @@ class Orders {
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
 					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_order_refund' );
+						$resolver = new Refund_Connection_Resolver( $source, $args, $context, $info );
 
 						$customer_orders = \wc_get_orders(
 							[
@@ -119,40 +125,12 @@ class Orders {
 			];
 		}
 
-		$meta_query = false;
 		if ( ! empty( $customer->get_id() ) ) {
-			$meta_query = [
-				[
-					'key'     => '_customer_user',
-					'value'   => $customer->get_id(),
-					'compare' => '=',
-				],
-			];
+			$resolver->set_query_arg( 'customer_id', $customer->get_id() );
 		} elseif ( ! empty( $customer->get_billing_email() ) ) {
-			$meta_query = [
-				'relation' => 'AND',
-				[
-					'key'     => '_billing_email',
-					'value'   => $customer->get_billing_email(),
-					'compare' => '=',
-				],
-				[
-					'key'     => '_customer_user',
-					'value'   => 0,
-					'compare' => '=',
-				],
-			];
-		}//end if
-
-		// Bail if needed info not found on customer object.
-		if ( false === $meta_query ) {
-			return [
-				'nodes' => [],
-				'edges' => [],
-			];
+			$resolver->set_query_arg( 'billing_email', $customer->get_billing_email() );
 		}
 
-		$resolver->set_query_arg( 'meta_query', $meta_query );
 		return $resolver->get_connection();
 	}
 
@@ -180,7 +158,6 @@ class Orders {
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args( 'private' ),
-				'queryClass'     => '\WC_Order_Query',
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $post_object ) {
 					// Check if user shop manager.
 					$not_manager = ! current_user_can( $post_object->cap->edit_posts );
@@ -191,7 +168,9 @@ class Orders {
 						: $args;
 
 					// Initialize connection resolver.
-					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, $post_object->name );
+					$resolver = 'shop_order_refund' === $post_object->name
+						? new Refund_Connection_Resolver( $source, $args, $context, $info )
+						: new Order_Connection_Resolver( $source, $args, $context, $info );
 
 					/**
 					 * If not shop manager, restrict results to orders/refunds owned by querying user
@@ -346,7 +325,7 @@ class Orders {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info, $post_type ) {
-		$post_types = [ 'shop_order', 'shop_order_refund' ];
+		$post_types = [ 'shop_order', 'shop_order_refund', 'shop_order_placehold' ];
 		if ( empty( array_intersect( $post_types, is_string( $post_type ) ? [ $post_type ] : $post_type ) ) ) {
 			return $query_args;
 		}

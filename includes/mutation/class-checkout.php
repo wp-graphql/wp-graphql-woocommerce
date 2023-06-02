@@ -106,7 +106,7 @@ class Checkout {
 			'customer' => [
 				'type'    => 'Customer',
 				'resolve' => function() {
-					return is_user_logged_in() ? new Customer( get_current_user_id() ) : null;
+					return is_user_logged_in() ? new Customer( get_current_user_id() ) : new Customer();
 				},
 			],
 			'result'   => [

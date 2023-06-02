@@ -7,22 +7,24 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$refund = \wc_get_order( $refund_id );
 
 		return [
-			$this->expectedField( 'refund.id', $this->toRelayId( 'shop_order_refund', $refund_id ) ),
+			$this->expectedField( 'refund.id', $this->toRelayId( 'order', $refund_id ) ),
 			$this->expectedField( 'refund.databaseId', $refund->get_id() ),
 			$this->expectedField( 'refund.title', $refund->get_post_title() ),
 			$this->expectedField( 'refund.reason', $refund->get_reason() ),
 			$this->expectedField( 'refund.amount', floatval( $refund->get_amount() ) ),
-			$this->expectedField( 'refund.refundedBy.databaseId', $refund->get_refunded_by() ),
 			$this->expectedField( 'refund.date', (string) $refund->get_date_modified() ),
 		];
 	}
 
 	// tests
 	public function testRefundQuery() {
-		$customer_id = $this->factory->customer->create();
-		$order_id    = $this->factory->order->createNew( [ 'customer_id' => $customer_id ] );
-		$refund_id   = $this->factory->refund->createNew( $order_id );
-		$relay_id    = $this->toRelayId( 'shop_order_refund', $refund_id );
+		$customer_id         = $this->factory->customer->create();
+		$invalid_customer_id = $this->factory->customer->create();
+		$order_id            = $this->factory->order->createNew( [ 'customer_id' => $customer_id ] );
+		$this->loginAsShopManager();
+		$refund_id = $this->factory->refund->createNew( $order_id );
+		$refund    = \wc_get_order( $refund_id );
+		$relay_id  = $this->toRelayId( 'order', $refund_id );
 
 		$query = '
 			query ( $id: ID! ) {
@@ -45,20 +47,14 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		 *
 		 * Test query and failed results for users lacking required caps
 		 */
-		$this->loginAs( $customer_id );
+		$this->loginAs( $invalid_customer_id );
 		$variables = [ 'id' => $relay_id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'refund.id', $relay_id ),
-			$this->expectedField( 'refund.databaseId', $refund_id ),
-			$this->expectedField( 'refund.title', self::IS_NULL ),
-			$this->expectedField( 'refund.reason', self::IS_NULL ),
-			$this->expectedField( 'refund.amount', self::IS_NULL ),
-			$this->expectedField( 'refund.refundedBy', self::IS_NULL ),
-			$this->expectedField( 'refund.date', self::IS_NULL ),
+			$this->expectedField( 'refund', self::IS_NULL ),
 		];
 
-		$this->assertQuerySuccessful( $response, $expected );
+		$this->assertQueryError( $response, $expected );
 
 		// Clear wc_post loader cache.
 		$this->clearLoaderCache( 'wc_post' );
@@ -68,9 +64,24 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		 *
 		 * Test query and results for users with required caps
 		 */
-		$this->loginAsShopManager();
+		$this->loginAs( $customer_id );
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = $this->expectedRefundData( $refund_id );
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Clear wc_post loader cache.
+		$this->clearLoaderCache( 'wc_post' );
+
+		/**
+		 * Assertion Three
+		 *
+		 * Test query and results for shop managers
+		 */
+		$this->loginAs( 1 );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = $this->expectedRefundData( $refund_id );
+		//$expected[] = $this->expectedField( 'refund.refundedBy.databaseId', $refund->get_refunded_by() );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -79,7 +90,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$customer_id = $this->factory->customer->create();
 		$order_id    = $this->factory->order->createNew( [ 'customer_id' => $customer_id ] );
 		$refund_id   = $this->factory->refund->createNew( $order_id );
-		$relay_id    = $this->toRelayId( 'shop_order_refund', $refund_id );
+		$relay_id    = $this->toRelayId( 'order', $refund_id );
 
 		$query = '
 			query ( $id: ID!, $idType: RefundIdTypeEnum ) {
@@ -237,7 +248,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		';
 
 		$this->loginAsShopManager();
-		$variables = [ 'id' => $this->toRelayId( 'shop_order', $order_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'order', $order_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$expected = [

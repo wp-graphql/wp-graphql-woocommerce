@@ -94,6 +94,8 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			return true;
 		} elseif ( isset( $this->query_args['customer_id'] ) ) {
 			return get_current_user_id() === $this->query_args['customer_id'];
+		} elseif ( isset( $this->query_args['billing_email'] ) ) {
+			return \WC()->customer->get_billing_email() === $this->query_args['billing_email'];
 		}
 
 		return false;
@@ -186,12 +188,17 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Return an array of items from the query
-	 *
-	 * @return array
+	 * {@inheritDoc}
 	 */
-	public function get_ids() {
-		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
+	public function get_ids_from_query() {
+		$ids = ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
+
+		// If we're going backwards, we need to reverse the array.
+		if ( ! empty( $this->args['last'] ) ) {
+			$ids = array_reverse( $ids );
+		}
+
+		return $ids;
 	}
 
 	/**
@@ -309,13 +316,15 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Wrapper for "WC_Connection_Functions::is_valid_post_offset()"
+	 * Determine whether or not the the offset is valid, i.e the order corresponding to the offset
+	 * exists. Offset is equivalent to order_id. So this function is equivalent to checking if the
+	 * post with the given ID exists.
 	 *
-	 * @param integer $offset Post ID.
+	 * @param int $offset The ID of the node used in the cursor offset.
 	 *
 	 * @return bool
 	 */
 	public function is_valid_offset( $offset ) {
-		return $this->is_valid_post_offset( $offset );
+		return (bool) \wc_get_order( absint( $offset ) );
 	}
 }

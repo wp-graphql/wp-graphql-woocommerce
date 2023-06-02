@@ -39,7 +39,7 @@ install_wordpress() {
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
-		wp-cli/wp-cli-bundle
+		wp-cli/wp-cli-bundle:*
 }
 
 remove_wordpress() {

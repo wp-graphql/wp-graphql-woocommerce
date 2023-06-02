@@ -164,7 +164,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'model/class-product.php';
 			require $include_directory_path . 'model/class-product-variation.php';
 			require $include_directory_path . 'model/class-order.php';
-			require $include_directory_path . 'model/class-refund.php';
 			require $include_directory_path . 'model/class-order-item.php';
 			require $include_directory_path . 'model/class-shipping-method.php';
 			require $include_directory_path . 'model/class-tax-rate.php';
@@ -381,11 +380,20 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Returns true if any authorizing urls are enabled.
 		 *
+		 * @return array
+		 */
+		public static function get_enabled_auth_urls() {
+			return woographql_setting( 'enable_authorizing_url_fields', [] );
+		}
+
+		/**
+		 * Returns true if any authorizing urls are enabled.
+		 *
 		 * @return bool
 		 */
 		public static function auth_router_is_enabled() {
 			return defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' )
-				|| ! empty( array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) ) );
+				|| ! empty( self::get_enabled_auth_urls() );
 		}
 
 		/**

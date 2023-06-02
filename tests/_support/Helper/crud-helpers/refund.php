@@ -10,7 +10,7 @@ class RefundHelper extends WCG_Helper {
 	}
 
 	public function to_relay_id( $id ) {
-		return Relay::toGlobalId( 'shop_order_refund', $id );
+		return Relay::toGlobalId( 'order', $id );
 	}
 
 	public function create( $order, $args = array() ) {

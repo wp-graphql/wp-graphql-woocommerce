@@ -39,7 +39,8 @@ class General extends Section {
 	 */
 	public static function get_fields() {
 		$custom_endpoint                = apply_filters( 'woographql_authorizing_url_endpoint', null );
-		$enabled_authorizing_url_fields = array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) );
+		$enabled_authorizing_url_fields = woographql_setting( 'enable_authorizing_url_fields', [] );
+		$enabled_authorizing_url_fields = ! empty( $enabled_authorizing_url_fields ) ? array_keys( $enabled_authorizing_url_fields ) : [];
 		$all_urls_checked               = apply_filters(
 			'woographql_enabled_authorizing_url_fields',
 			[

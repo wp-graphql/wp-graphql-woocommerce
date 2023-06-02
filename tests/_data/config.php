@@ -29,6 +29,10 @@ if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
 	define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'testingtesting123' );
 }
 
+if ( ! defined( 'HPOS' ) ) {
+	define( 'HPOS', true );
+}
+
 if ( ! defined( 'STRIPE_API_PUBLISHABLE_KEY' ) && false !== getenv( 'STRIPE_API_PUBLISHABLE_KEY' ) ) {
 	define( 'STRIPE_API_PUBLISHABLE_KEY', getenv( 'STRIPE_API_PUBLISHABLE_KEY' ) );
 }
@@ -36,3 +40,5 @@ if ( ! defined( 'STRIPE_API_PUBLISHABLE_KEY' ) && false !== getenv( 'STRIPE_API_
 if ( ! defined( 'STRIPE_API_SECRET_KEY' ) && false !== getenv( 'STRIPE_API_SECRET_KEY' ) ) {
 	define( 'STRIPE_API_SECRET_KEY', getenv( 'STRIPE_API_SECRET_KEY' ) );
 }
+
+
