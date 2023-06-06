@@ -40,7 +40,7 @@ class DB_Hooks {
 	 *
 	 * @return string
 	 */
-	public function add_cursor( $clauses, $query, $args, ) {
+	public function add_cursor( $clauses, $query, $args ) {
 		if ( true !== is_graphql_request() ) {
 			return $clauses;
 		}
