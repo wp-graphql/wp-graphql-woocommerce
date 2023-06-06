@@ -74,6 +74,7 @@ function initialize_hpos() {
 	toggle_cot( true );
 }
 
-if ( defined( 'HPOS' ) && HPOS ) {
+if ( defined( 'HPOS' ) ) {
+	\codecept_debug( 'HPOS activated!!!' );
 	initialize_hpos();
 }
