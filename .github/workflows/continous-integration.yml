@@ -37,7 +37,7 @@ jobs:
             hpos: 1
 
       fail-fast: false
-    name: Testing WooGraphQL in WordPress v${{ matrix.wordpress }} on PHP${{ matrix.php }}
+    name: Testing WooGraphQL in WordPress v${{ matrix.wordpress }} on PHP${{ matrix.php }} ${{ matrix.hpos == 1 && 'with HPOS' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,8 +62,6 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: HPOS="${{ matrix.hpos }}" FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
-
-
 
       - name: Push Codecoverage to Coveralls.io
         if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY != null }}
