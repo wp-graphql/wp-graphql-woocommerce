@@ -273,6 +273,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 				orders(first: $first, last: $last, after: $after, before: $before) {
 					nodes {
 						databaseId
+						date
                     }
                     pageInfo {
                         hasPreviousPage

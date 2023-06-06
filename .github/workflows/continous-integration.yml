@@ -35,7 +35,7 @@ jobs:
             debug: '--debug'
 
       fail-fast: false
-    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+    name: Testing WooGraphQL in WordPress v${{ matrix.wordpress }} on PHP${{ matrix.php }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -54,12 +54,19 @@ jobs:
           composer install
           WP_VERSION=${{ matrix.wordpress }} SKIP_DB_CREATE=true SKIP_WP_SETUP=true composer installTestEnv
 
-      - name: Run Tests w/ Docker.
+      - name: Run Tests.
         env:
           USING_XDEBUG: ${{ matrix.xdebug }}
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
+
+      - name: Run Tests w/ HPOS activated.
+        env:
+          USING_XDEBUG: ${{ matrix.xdebug }}
+          WP_VERSION: ${{ matrix.wordpress }}
+          PHP_VERSION: ${{ matrix.php }}
+        run: HPOS=1 FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Push Codecoverage to Coveralls.io
         if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY != null }}

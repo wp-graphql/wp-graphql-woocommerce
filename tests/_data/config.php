@@ -29,7 +29,7 @@ if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
 	define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'testingtesting123' );
 }
 
-if ( ! defined( 'HPOS' ) ) {
+if ( ! defined( 'HPOS' ) && false !== getenv( 'HPOS' ) ) {
 	define( 'HPOS', true );
 }
 

@@ -74,6 +74,6 @@ function initialize_hpos() {
 	toggle_cot( true );
 }
 
-if ( defined( 'HPOS' ) ) {
+if ( defined( 'HPOS' ) && HPOS ) {
 	initialize_hpos();
 }
