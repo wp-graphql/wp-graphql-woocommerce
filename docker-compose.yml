@@ -89,7 +89,7 @@ services:
       WORDPRESS_DOMAIN: localhost
       WP_SITEURL: http://localhost
       WP_HOME: http://localhost
-    command: ./setup-database.sh testing codecept run ${FILTER:-}
+    command: HPOS=${HPOS:-} ./setup-database.sh testing codecept run ${FILTER:-}
     networks:
       testing:
         aliases:

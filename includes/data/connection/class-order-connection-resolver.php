@@ -35,7 +35,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	protected $post_type;
 
 	/**
-	 * This stores the should 
+	 * This stores the should
 	 *
 	 * @var boolean
 	 */
@@ -48,6 +48,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @param array       $args      The input arguments for the query.
 	 * @param AppContext  $context   The context of the request.
 	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
+	 * @param string      $post_type The post type for the connection resolver.
 	 */
 	public function __construct( $source, $args, $context, $info, $post_type = 'shop_order' ) {
 		/**
@@ -139,7 +140,9 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args['posts_per_page'] = $this->one_to_one ? 1 : min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1;
 
-		// set the graphql cursor args
+		/**
+		 * Set the graphql cursor args.
+		 */
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 		$query_args['graphql_after_cursor']   = $this->get_after_offset();
 		$query_args['graphql_before_cursor']  = $this->get_before_offset();

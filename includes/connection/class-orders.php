@@ -149,7 +149,7 @@ class Orders {
 		$customer_id   = $customer->get_id();
 		$billing_email = $customer->get_billing_email();
 		if ( ! empty( $customer_id ) ) {
-			$args = [
+			$args      = [
 				'customer_id' => $customer_id,
 				'return'      => 'ids',
 			];
@@ -157,15 +157,15 @@ class Orders {
 		}
 
 		if ( ! empty( $billing_email ) ) {
-			$args = array(
+			$args               = [
 				'billing_email' => $billing_email,
 				'return'        => 'ids',
-			);
+			];
 			$order_ids_by_email = wc_get_orders( $args );
 			// Merge the arrays of order IDs.
 			$order_ids = array_merge( $order_ids, $order_ids_by_email );
 		}
-		
+
 		// If no orders found, return empty connection.
 		if ( empty( $order_ids ) ) {
 			return $empty_results;
@@ -183,7 +183,6 @@ class Orders {
 
 		// Execute and return connection.
 		return $resolver->get_connection();
-	
 	}
 
 	/**
@@ -213,7 +212,6 @@ class Orders {
 				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $post_object ) {
 					// Check if user shop manager.
 					$not_manager = ! current_user_can( $post_object->cap->edit_posts );
-					
 
 					// Remove any arguments that require querying user to have "shop manager" role.
 					$args = $not_manager && 'shop_order' === $post_object->name

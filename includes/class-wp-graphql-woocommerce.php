@@ -201,7 +201,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			// Include factory class file.
 			require $include_directory_path . 'data/class-factory.php';
 
-
 			// Include DB hooks class files.
 			require $include_directory_path . 'data/cursor/class-cot-cursor.php';
 			require $include_directory_path . 'data/class-db-hooks.php';
