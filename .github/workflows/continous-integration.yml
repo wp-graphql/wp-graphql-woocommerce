@@ -37,7 +37,7 @@ jobs:
             hpos: 1
 
       fail-fast: false
-    name: Testing WooGraphQL in WordPress v${{ matrix.wordpress }} on PHP${{ matrix.php }} ${{ matrix.hpos == 1 && 'with HPOS' || '' }}
+    name: Testing WooGraphQL in WordPress v${{ matrix.wordpress }} on PHP${{ matrix.php }} ${{ matrix.hpos == 1 && 'with HPOS activated ' || '' }}${{ matrix.coverage == '--coverage --coverage-xml' && 'with Codecoverage ' || '' }}${{ matrix.debug == '--debug' && 'in Debug Mode ' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
