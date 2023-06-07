@@ -2,6 +2,12 @@ parameters:
 		level: 4 # Gotta start somewhere
 		inferPrivatePropertyTypeFromConstructor: true
 		checkMissingIterableValueType: false
+		treatPhpDocTypesAsCertain: false
+		stubFiles:
+			# Simulate added properties. This is neccesary due to a config issue in WPGraphQL core.
+			- phpstan/class-wp-post-type.php
+			- phpstan/class-wp-taxonomy.php
+			- phpstan/class-woocommerce.php
 		bootstrapFiles:
 			- phpstan/constants.php
 		paths:
