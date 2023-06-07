@@ -290,9 +290,14 @@ class Order_Item_Type {
 						'type'        => 'TaxLine',
 						'description' => __( 'Tax line connected to this statement', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$item               = \WC_Order_Factory::get_order_item( $source['ID'] );
+							$item = \WC_Order_Factory::get_order_item( $source['ID'] );
+							// Return early if the item is not found.
+							if ( false === $item ) {
+								return null;
+							}
+
 							$item->cached_order = $source;
-							return ! empty( $item ) ? Factory::resolve_order_item( $item ) : null;
+							return Factory::resolve_order_item( $item );
 						},
 					],
 				],
