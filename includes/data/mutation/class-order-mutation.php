@@ -241,7 +241,7 @@ class Order_Mutation {
 			default:
 				/**
 				 * Allow filtering of order item keys for unknown item types.
-				 * 
+				 *
 				 * @param array  $item_keys  Order item keys.
 				 * @param string $type       Order item type slug.
 				 */
@@ -422,7 +422,7 @@ class Order_Mutation {
 	 * Purge object when creating.
 	 *
 	 * @param null|\WC_Order|Order $order         Object data.
-	 * @param boolean        $force_delete  Delete or put in trash.
+	 * @param boolean              $force_delete  Delete or put in trash.
 	 *
 	 * @return bool
 	 * @throws UserError  Failed to delete order.

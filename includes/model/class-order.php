@@ -69,7 +69,7 @@ use GraphQLRelay\Relay;
  * @property string $cartHash
  * @property string $customerNote
  * @property string $orderVersion
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Order extends WC_Post {

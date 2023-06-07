@@ -16,10 +16,10 @@ use WP_Post_Type;
 
 /**
  * Class WC_Post
- * 
+ *
  * @property \WC_Data $wc_data
  * @property \WP_Post $data
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 abstract class WC_Post extends Post {

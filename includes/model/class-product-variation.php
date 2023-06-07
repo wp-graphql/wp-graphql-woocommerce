@@ -62,7 +62,7 @@ use WC_Product_Variation;
  * @property int    $shipping_class_id
  * @property int    $image_id
  * @property array  $attributes
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Product_Variation extends WC_Post {

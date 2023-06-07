@@ -15,7 +15,7 @@ use GraphQLRelay\Relay;
 
 /**
  * Class Order_Item
- *  
+ *
  * @property \WC_Order_Item $wc_data
  *
  * @property int    $ID
@@ -23,12 +23,12 @@ use GraphQLRelay\Relay;
  * @property int    $databaseId
  * @property int    $orderId
  * @property string $type
- * 
+ *
  * @property ?string $code
  * @property ?string $discount
  * @property ?string $discountTax
  * @property ?string $coupon_id
- * 
+ *
  * @property ?float  $amount
  * @property ?string $name
  * @property ?string $taxStatus
@@ -36,20 +36,20 @@ use GraphQLRelay\Relay;
  * @property ?float  $total
  * @property ?float  $totalTax
  * @property ?string $taxes
- * 
+ *
  * @property ?string $methodTitle
  * @property ?string $method_id
  * @property ?string $shippingTaxTotal
  * @property ?array  $taxes
  * @property ?string $taxClass
- * 
+ *
  * @property ?string $rateCode
  * @property ?string $label
  * @property ?float  $taxTotal
  * @property ?float  $shippingTaxTotal
  * @property ?bool   $isCompound
  * @property ?int    $rate_id
- * 
+ *
  * @property ?int    $productId
  * @property ?int    $variationId
  * @property ?int    $quantity
@@ -61,7 +61,7 @@ use GraphQLRelay\Relay;
  * @property ?array  $itemDownloads
  * @property ?string $taxStatus
  * @property ?string $taxClass
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Order_Item extends Model {

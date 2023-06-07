@@ -15,7 +15,7 @@ use WPGraphQL\Model\Model;
 
 /**
  * Class Shipping_Method
- * 
+ *
  * @property \WC_Shipping_Method $wc_data
  *
  * @property int    $ID
@@ -23,7 +23,7 @@ use WPGraphQL\Model\Model;
  * @property int    $databaseId
  * @property string $title
  * @property string $description
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Shipping_Method extends Model {

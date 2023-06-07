@@ -291,7 +291,7 @@ class Protected_Router {
 		$nonce_prefix = null;
 		$session_id   = null;
 		$nonce        = null;
-		$field		  = null;
+		$field        = null;
 		foreach ( $nonce_names as $possible_field => $nonce_param ) {
 			if ( in_array( $nonce_param, array_keys( $_REQUEST ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$field        = $possible_field;
@@ -333,7 +333,7 @@ class Protected_Router {
 
 		/**
 		 * Session object
-		 * 
+		 *
 		 * @var Transfer_Session_Handler $session
 		 */
 		$session = \WC()->session;

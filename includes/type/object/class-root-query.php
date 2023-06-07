@@ -77,12 +77,12 @@ class Root_Query {
 					'resolve'     => function( $source, array $args ) {
 						$fees   = Factory::resolve_cart()->get_fees();
 						$fee_id = $args['id'];
-				
-						if ( empty( $fees[ $fee_id ]  ) ) {
+
+						if ( empty( $fees[ $fee_id ] ) ) {
 							throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
 						}
 
-						return $fees[ $fee_id ] ;
+						return $fees[ $fee_id ];
 					},
 				],
 				'coupon'               => [

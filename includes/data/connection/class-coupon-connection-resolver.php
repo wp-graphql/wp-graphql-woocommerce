@@ -22,9 +22,9 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  * Class Coupon_Connection_Resolver
  *
  * @deprecated v0.10.0
- * 
+ *
  * @property WC_CPT_Loader $loader
- * 
+ *
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {

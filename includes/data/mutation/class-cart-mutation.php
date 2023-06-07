@@ -124,7 +124,7 @@ class Cart_Mutation {
 		if ( ! empty( $input['all'] ) ) {
 			$items = array_values( \WC()->cart->get_cart() );
 		}
-		
+
 		// If keys are provided and cart items haven't been retrieve yet,
 		// retrieve the cart items by key.
 		if ( ! empty( $input['keys'] ) && null === $items ) {

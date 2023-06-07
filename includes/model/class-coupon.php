@@ -15,9 +15,9 @@ use WC_Coupon;
 
 /**
  * Class Coupon
- * 
+ *
  * @property \WC_Coupon $wc_data
- * 
+ *
  * @property int $ID
  * @property string $id
  * @property string $code
@@ -42,7 +42,7 @@ use WC_Coupon;
  * @property string $product_category_ids
  * @property string $excluded_product_category_ids
  * @property string $used_by_ids
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Coupon extends WC_Post {

@@ -16,7 +16,7 @@ use WC_Customer;
 
 /**
  * Class Customer
- * 
+ *
  * @property \WC_Customer $wc_data
  *
  * @property int $ID
@@ -39,7 +39,7 @@ use WC_Customer;
  * @property array $shipping
  * @property bool $isPayingCustomer
  * @property int $last_order_id
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Customer extends Model {

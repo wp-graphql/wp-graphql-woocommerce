@@ -19,7 +19,7 @@ use WC_Product_Simple;
 
 /**
  * Class Product
- * 
+ *
  * @property \WC_Product $wc_data
  *
  * @property int         $ID
@@ -71,7 +71,7 @@ use WC_Product_Simple;
  * @property bool        $shippingTaxable
  * @property array       $cross_sell_ids
  * @property string      $stockStatus
- * 
+ *
  * @property bool        $virtual
  * @property int         $downloadExpiry
  * @property bool        $downloadable
@@ -86,16 +86,16 @@ use WC_Product_Simple;
  * @property float|array $salePriceRaw
  * @property string      $taxStatus
  * @property string      $taxClass
- * 
+ *
  * @property string      $externalUrl
  * @property string      $buttonText
  *
  * @property string      $addToCartText
  * @property string      $addToCartDescription
  * @property array       $grouped_ids
- * 
+ *
  * @property array       $variation_ids
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Product extends WC_Post {
@@ -473,7 +473,7 @@ class Product extends WC_Post {
 						'externalUrl' => function() {
 							/**
 							 * External product
-							 * 
+							 *
 							 * @var \WC_Product_External $data
 							 */
 							$data = $this->wc_data;
@@ -482,7 +482,7 @@ class Product extends WC_Post {
 						'buttonText'  => function() {
 							/**
 							 * External product
-							 * 
+							 *
 							 * @var \WC_Product_External $data
 							 */
 							$data = $this->wc_data;

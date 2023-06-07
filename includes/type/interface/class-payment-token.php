@@ -18,7 +18,7 @@ class Payment_Token {
 
 	/**
 	 * Registers the "PaymentToken" interface.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_interface() {

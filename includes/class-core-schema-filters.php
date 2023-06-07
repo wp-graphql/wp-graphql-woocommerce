@@ -275,7 +275,7 @@ class Core_Schema_Filters {
 	/**
 	 * Registers data-loaders to be used when resolving WooCommerce-related GraphQL types
 	 *
-	 * @param array      $loaders - assigned loaders.
+	 * @param array                 $loaders - assigned loaders.
 	 * @param \WPGraphQL\AppContext $context - AppContext instance.
 	 *
 	 * @return array

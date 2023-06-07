@@ -118,13 +118,13 @@ class Cart_Fill {
 									'type'          => 'INVALID_SHIPPING_METHOD',
 								];
 								break;
-							default: 
+							default:
 								$cart_error = [
 									'reasons' => [ 'Unknown error occurred.' ],
 									'type'    => 'UNKNOWN',
 								];
 								break;
-						}
+						}//end switch
 
 						if ( ! empty( $error_data['reasons'] ) ) {
 							$cart_error['reasons'] = $error_data['reasons'];

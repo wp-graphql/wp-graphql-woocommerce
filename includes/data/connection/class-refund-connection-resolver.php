@@ -22,7 +22,7 @@ use WPGraphQL\WooCommerce\Model\Refund;
  * Class Refund_Connection_Resolver
  *
  * @deprecated v0.10.0
- * 
+ *
  * @property WC_CPT_Loader $loader
  */
 class Refund_Connection_Resolver extends AbstractConnectionResolver {

@@ -32,7 +32,7 @@ use WPGraphQL\Model\Model;
  * @property bool   $shipping
  * @property int    $order
  * @property string $class
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Tax_Rate extends Model {

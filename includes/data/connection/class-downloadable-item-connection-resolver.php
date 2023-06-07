@@ -21,9 +21,9 @@ use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Downloadable_Item_Connection_Resolver
- * 
+ *
  * @property WC_Db_Loader $loader
- * 
+ *
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {

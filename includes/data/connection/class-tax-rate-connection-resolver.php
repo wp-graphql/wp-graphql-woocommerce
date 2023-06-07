@@ -19,9 +19,9 @@ use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Tax_Rate_Connection_Resolver
- * 
+ *
  * @property WC_Db_Loader $loader
- * 
+ *
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {

@@ -15,7 +15,7 @@ use WC_Session_Handler;
 
 /**
  * Class - QL_Session_Handler
- * 
+ *
  * @property float $_session_expiring
  * @property float $_session_expiration
  * @property int|string $_customer_id
@@ -111,7 +111,6 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @throws UserError Invalid token.
 	 */
 	public function init_session_token() {
-
 		$token = $this->get_session_token();
 
 		// Process existing session if not expired or invalid.

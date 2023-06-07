@@ -282,8 +282,8 @@ if ( ! function_exists( 'woographql_get_session_uid' ) ) :
 	function woographql_get_session_uid() {
 		/**
 		 * Session Handler
-		 * 
-		 * @var QL_Session_Handler|Transfer_Session_Handler $session 
+		 *
+		 * @var QL_Session_Handler|Transfer_Session_Handler $session
 		 */
 		$session = WC()->session;
 		return $session->get_customer_id();
@@ -299,8 +299,8 @@ if ( ! function_exists( 'woographql_get_session_token' ) ) :
 	function woographql_get_session_token() {
 		/**
 		 * Session Handler
-		 * 
-		 * @var QL_Session_Handler|Transfer_Session_Handler $session 
+		 *
+		 * @var QL_Session_Handler|Transfer_Session_Handler $session
 		 */
 		$session = WC()->session;
 		return $session->get_client_session_id();
