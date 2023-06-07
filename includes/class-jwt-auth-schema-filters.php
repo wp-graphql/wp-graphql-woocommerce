@@ -59,7 +59,13 @@ class JWT_Auth_Schema_Filters {
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
-						$user  = get_user_by( 'ID', $payload['id'] );
+						$user = get_user_by( 'ID', $payload['id'] );
+
+						/**
+						 * This method is typed wrong upstream.
+						 *
+						 * @var \WP_Error|string|null $token
+						 */
 						$token = \WPGraphQL\JWT_Authentication\Auth::get_token( $user );
 
 						if ( is_wp_error( $token ) ) {
@@ -73,7 +79,12 @@ class JWT_Auth_Schema_Filters {
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
-						$user          = get_user_by( 'ID', $payload['id'] );
+						$user = get_user_by( 'ID', $payload['id'] );
+						/**
+						 * This method is typed wrong upstream.
+						 *
+						 * @var \WP_Error|string|null $refresh_token
+						 */
 						$refresh_token = \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user );
 
 						if ( is_wp_error( $refresh_token ) ) {
@@ -116,7 +127,7 @@ class JWT_Auth_Schema_Filters {
 					'resolve'     => function( $payload ) {
 						/**
 						 * Session Handler.
-						 * 
+						 *
 						 * @var QL_Session_Handler|Transfer_Session_Handler $session
 						 */
 						$session = \WC()->session;
