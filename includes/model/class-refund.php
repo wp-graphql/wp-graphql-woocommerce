@@ -16,6 +16,18 @@ use WC_Order_Refund;
 
 /**
  * Class Refund.
+ *
+ * @property \WC_Order_Refund $wc_data
+ *
+ * @property int    $ID
+ * @property string $id
+ * @property string $title
+ * @property float  $amount
+ * @property string $reason
+ * @property string $refunded_by_id
+ * @property string $date
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Refund extends Order {
 

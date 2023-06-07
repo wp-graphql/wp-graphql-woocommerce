@@ -16,6 +16,7 @@ use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Data\Connection\Downloadable_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 /**
  * Class Customer_Type
@@ -119,8 +120,13 @@ class Customer_Type {
 					'type'        => [ 'list_of' => 'MetaData' ],
 					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
 					'resolve'     => function ( $source ) {
-						if ( (string) \WC()->session->get_customer_id() === (string) $source->ID ) {
-							$session_data = \WC()->session->get_session_data();
+						/**
+						 * @var \WC_Session_Handler $session
+						 */
+						$session = \WC()->session;
+
+						if ( (string) $session->get_customer_id() === (string) $source->ID ) {
+							$session_data = $session->get_session_data();
 							$session      = [];
 							foreach ( $session_data as $key => $value ) {
 								$meta        = new \stdClass();
@@ -279,7 +285,12 @@ class Customer_Type {
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source ) {
 					if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
-						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+						/**
+						 * @var QL_Session_Handler $session
+						 */
+						$session = \WC()->session;
+
+						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
 					}
 
 					return null;
@@ -297,7 +308,12 @@ class Customer_Type {
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 				'resolve'     => function( $source ) {
 					if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+						/**
+						 * @var QL_Session_Handler $session
+						 */
+						$session = \WC()->session;
+
+						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
 					}
 
 					return null;

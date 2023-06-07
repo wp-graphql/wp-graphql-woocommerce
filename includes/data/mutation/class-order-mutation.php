@@ -9,6 +9,9 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class - Order_Mutation
@@ -81,7 +84,7 @@ class Order_Mutation {
 
 		$order = \wc_create_order( $args );
 		if ( is_wp_error( $order ) ) {
-			throw new UserError( $order->get_error_code() . $order->get_message() );
+			throw new UserError( $order->get_error_code() . $order->get_error_message() );
 		}
 
 		/**
@@ -374,6 +377,10 @@ class Order_Mutation {
 
 		// Remove all coupons first to ensure calculation is correct.
 		foreach ( $order->get_items( 'coupon' ) as $coupon ) {
+			/**
+			 * @var \WC_Order_Item_Coupon $coupon
+			 */
+
 			$order->remove_coupon( $coupon->get_code() );
 		}
 
@@ -414,7 +421,7 @@ class Order_Mutation {
 	/**
 	 * Purge object when creating.
 	 *
-	 * @param WC_Order|Order $order         Object data.
+	 * @param \WC_Order|Order $order         Object data.
 	 * @param boolean        $force_delete  Delete or put in trash.
 	 *
 	 * @return bool

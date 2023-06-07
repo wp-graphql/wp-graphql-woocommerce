@@ -14,10 +14,15 @@ use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Tax_Rate_Connection_Resolver
+ * 
+ * @property WC_Db_Loader $loader
+ * 
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	/**

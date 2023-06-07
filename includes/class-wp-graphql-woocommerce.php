@@ -394,7 +394,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public static function load_auth_router() {
 			require get_includes_directory() . 'utils/class-protected-router.php';
-			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'instance' ] );
+			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'initialize' ] );
 		}
 
 		/**

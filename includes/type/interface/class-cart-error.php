@@ -33,6 +33,8 @@ class Cart_Error {
 							return $type_registry->get_type( 'CouponError' );
 						case 'INVALID_SHIPPING_METHOD':
 							return $type_registry->get_type( 'ShippingMethodError' );
+						case 'UNKNOWN':
+							return $type_registry->get_type( 'UnknownCartError' );
 					}
 				},
 			]

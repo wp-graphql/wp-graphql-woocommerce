@@ -15,6 +15,35 @@ use WC_Coupon;
 
 /**
  * Class Coupon
+ * 
+ * @property \WC_Coupon $wc_data
+ * 
+ * @property int $ID
+ * @property string $id
+ * @property string $code
+ * @property string $date
+ * @property string $modified
+ * @property string $description
+ * @property string $discountType
+ * @property string $amount
+ * @property string $dateExpiry
+ * @property string $usageCount
+ * @property string $individualUse
+ * @property string $usageLimit
+ * @property string $usageLimitPerUser
+ * @property string $limitUsageToXItems
+ * @property string $freeShipping
+ * @property string $excludeSaleItems
+ * @property string $minimumAmount
+ * @property string $maximumAmount
+ * @property string $emailRestrictions
+ * @property string $product_ids
+ * @property string $excluded_product_ids
+ * @property string $product_category_ids
+ * @property string $excluded_product_category_ids
+ * @property string $used_by_ids
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Coupon extends WC_Post {
 

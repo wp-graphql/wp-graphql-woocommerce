@@ -102,5 +102,14 @@ class Cart_Error_Types {
 				],
 			]
 		);
+
+		register_graphql_object_type(
+			'UnknownCartError',
+			[
+				'description' => __( 'Error that occurred with no recognizable reason.', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'CartError' ],
+				'fields'      => [],
+			]
+		);
 	}
 }

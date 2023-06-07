@@ -16,13 +16,38 @@ use WC_Customer;
 
 /**
  * Class Customer
+ * 
+ * @property \WC_Customer $wc_data
+ *
+ * @property int $ID
+ * @property string $id
+ * @property int $databaseId
+ * @property bool $isVatExempt
+ * @property bool $hasCalculatedShipping
+ * @property bool $calculatedShipping
+ * @property int $orderCount
+ * @property float $totalSpent
+ * @property string $username
+ * @property string $email
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $displayName
+ * @property string $role
+ * @property string $date
+ * @property string $modified
+ * @property array $billing
+ * @property array $shipping
+ * @property bool $isPayingCustomer
+ * @property int $last_order_id
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Customer extends Model {
 
 	/**
 	 * Customer constructor
 	 *
-	 * @param WC_Customer|int $id - User ID.
+	 * @param WC_Customer|int|string $id - User ID.
 	 */
 	public function __construct( $id = 'session' ) {
 		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( $id );

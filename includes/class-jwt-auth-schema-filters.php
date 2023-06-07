@@ -11,6 +11,9 @@ namespace WPGraphQL\WooCommerce;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
+use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
+
 /**
  * Class JWT_Auth_Schema_Filters
  */
@@ -111,7 +114,14 @@ class JWT_Auth_Schema_Filters {
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
-						return apply_filters( 'graphql_customer_session_token', \WC()->session->build_token() );
+						/**
+						 * Session Handler.
+						 * 
+						 * @var QL_Session_Handler|Transfer_Session_Handler $session
+						 */
+						$session = \WC()->session;
+
+						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
 					},
 				]
 			);

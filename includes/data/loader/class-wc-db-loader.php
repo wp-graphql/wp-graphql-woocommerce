@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Data\Loader;
 
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
+use WPGraphQL\AppContext;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
@@ -119,7 +120,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Downloadable item ID.
 	 *
-	 * @return WC_Customer_Download|null
+	 * @return \WC_Customer_Download|null
 	 */
 	public function load_downloadable_item_from_id( $id ) {
 		$node = new \WC_Customer_Download( $id );
@@ -137,7 +138,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		global $wpdb;
 
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
-		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
+		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) && is_object( $rate ) ) {
 			// Get locales from a tax rate.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$locales = $wpdb->get_results(
@@ -190,7 +191,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Order item IDs.
 	 *
-	 * @return \WPGraphQL\Model\Order_Item|null
+	 * @return \WPGraphQL\WooCommerce\Model\Order_Item|null
 	 */
 	public function load_order_item_from_id( $id ) {
 		$item = \WC()->order_factory::get_order_item( $id );

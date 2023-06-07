@@ -114,10 +114,11 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @throws UserError Invalid token.
 	 */
 	public function init_session_token() {
+
 		$token = $this->get_session_token();
 
 		// Process existing session if not expired or invalid.
-		if ( $token && ! is_wp_error( $token ) ) {
+		if ( $token && is_object( $token ) && ! is_wp_error( $token ) ) {
 			$this->_customer_id        = $token->data->customer_id;
 			$this->_session_issued     = $token->iat;
 			$this->_session_expiration = $token->exp;
@@ -385,10 +386,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Save any changes to database after a session mutations has been run.
 	 *
-	 * @param mixed                 $source   Operation root object.
-	 * @param array                 $args     Operation arguments.
-	 * @param \WPGraphQL\AppContext $context  AppContext instance.
-	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
+	 * @param mixed                                $source   Operation root object.
+	 * @param array                                $args     Operation arguments.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
 	 */
 	public function save_if_dirty( $source, $args, $context, $info ) {
 		// Bail early, if not one of the session mutations.

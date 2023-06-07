@@ -106,18 +106,23 @@ class Cart_Fill {
 								$cart_error['type'] = 'INVALID_CART_ITEM';
 								break;
 							case isset( $error_data['code'] ):
-								$cart_error         = [ 'code' => $error_data['code'] ];
-								$cart_error['type'] = 'INVALID_COUPON';
+								$cart_error = [
+									'code' => $error_data['code'],
+									'type' => 'INVALID_COUPON',
+								];
 								break;
 							case isset( $error_data['package'] ):
-								$cart_error         = [
+								$cart_error = [
 									'package'       => $error_data['package'],
 									'chosen_method' => $error_data['chosen_method'],
+									'type'          => 'INVALID_SHIPPING_METHOD',
 								];
-								$cart_error['type'] = 'INVALID_SHIPPING_METHOD';
+								break;
 							default: 
-								$cart_error         = [];
-								$cart_error['type'] = 'UNKNOWN';
+								$cart_error = [
+									'reasons' => [ 'Unknown error occurred.' ],
+									'type'    => 'UNKNOWN',
+								];
 								break;
 						}
 

@@ -15,6 +15,55 @@ use WC_Product_Variation;
 
 /**
  * Class Product_Variation
+ *
+ * @property \WC_Product_Variation $wc_data
+ *
+ * @property int    $ID
+ * @property string $id
+ * @property string $name
+ * @property string $date
+ * @property string $modified
+ * @property string $description
+ * @property string $sku
+ * @property string $price
+ * @property float  $priceRaw
+ * @property string $regularPrice
+ * @property float  $regularPriceRaw
+ * @property string $salePrice
+ * @property float  $salePriceRaw
+ * @property string $dateOnSaleFrom
+ * @property string $dateOnSaleTo
+ * @property bool   $onSale
+ * @property string $status
+ * @property bool   $purchasable
+ * @property bool   $virtual
+ * @property bool   $downloadable
+ * @property array  $downloads
+ * @property int    $downloadLimit
+ * @property int    $downloadExpiry
+ * @property string $taxStatus
+ * @property string $taxClass
+ * @property bool   $manageStock
+ * @property int    $stockQuantity
+ * @property string $stockStatus
+ * @property string $backorders
+ * @property bool   $backordersAllowed
+ * @property float  $weight
+ * @property float  $length
+ * @property float  $width
+ * @property float  $height
+ * @property int    $menuOrder
+ * @property string $purchaseNote
+ * @property string $catalogVisibility
+ * @property bool   $hasAttributes
+ * @property string $type
+ * @property int    $parent_id
+ * @property string $parentId
+ * @property int    $shipping_class_id
+ * @property int    $image_id
+ * @property array  $attributes
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Product_Variation extends WC_Post {
 

@@ -68,7 +68,7 @@ install_local_test_library() {
 		symfony/finder:* \
 		codeception/lib-asserts:^1.0 \
 		codeception/module-asserts:^1.3.1 \
-		codeception/module-rest:^2.0 \
+		codeception/module-rest:* \
 		codeception/util-universalframework:^1.0  \
 		wp-graphql/wp-graphql-testcase:^2.3 \
 		stripe/stripe-php

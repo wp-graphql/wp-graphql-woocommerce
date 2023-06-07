@@ -6,6 +6,9 @@
  * @since 0.0.1
  */
 
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
+use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
+
 if ( ! function_exists( 'wc_graphql_starts_with' ) ) {
 	/**
 	 * Checks if source string starts with the target string
@@ -288,7 +291,13 @@ if ( ! function_exists( 'woographql_get_session_token' ) ) :
 	 * @return string
 	 */
 	function woographql_get_session_token() {
-		return WC()->session->get_client_session_id();
+		/**
+		 * Session Handler
+		 * 
+		 * @var QL_Session_Handler|Transfer_Session_Handler $session 
+		 */
+		$session = WC()->session;
+		return $session->get_client_session_id();
 	}
 endif;
 
@@ -296,7 +305,7 @@ if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	/**
 	 * Creates WooGraphQL session transfer nonces.
 	 *
-	 * @param string $action  Nonce name.
+	 * @param string|int $action  Nonce name.
 	 */
 	function woographql_create_nonce( $action = -1 ) {
 		$uid   = woographql_get_session_uid();
@@ -346,7 +355,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 		 *
 		 * @param string     $nonce  The invalid nonce.
 		 * @param string|int $action The nonce action.
-		 * @param WP_User    $user   The current user object.
+		 * @param string|int $uid    User ID.
 		 * @param string     $token  The user's session token.
 		 */
 		do_action( 'graphql_verify_nonce_failed', $nonce, $action, $uid, $token );

@@ -17,6 +17,8 @@ use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class Variation_Attribute_Connection_Resolver
+ * 
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Variation_Attribute_Connection_Resolver {
 
@@ -24,7 +26,7 @@ class Variation_Attribute_Connection_Resolver {
 	 * Returns data array from WC_Product_Attribute ArrayAccess object.
 	 *
 	 * @param array  $attrs      WC_Product_Attribute object.
-	 * @param string $parent_id  ProductVariation Relay ID.
+	 * @param string|int $parent_id  ProductVariation Relay ID.
 	 *
 	 * @return array
 	 */

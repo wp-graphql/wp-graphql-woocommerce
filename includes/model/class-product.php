@@ -19,6 +19,84 @@ use WC_Product_Simple;
 
 /**
  * Class Product
+ * 
+ * @property \WC_Product $wc_data
+ *
+ * @property int $ID
+ * @property string $id
+ * @property string $type
+ * @property string $slug
+ * @property string $name
+ * @property string $date
+ * @property string $modified
+ * @property string $status
+ * @property bool $featured
+ * @property string $description
+ * @property string $descriptionRaw
+ * @property string $shortDescription
+ * @property string $shortDescriptionRaw
+ * @property string $sku
+ * @property string $dateOnSaleFrom
+ * @property string $dateOnSaleTo
+ * @property bool $reviewsAllowed
+ * @property string $purchaseNote
+ * @property int $menuOrder
+ * @property float $averageRating
+ * @property int $reviewCount
+ * @property bool $onSale
+ * @property bool $purchasable
+ * @property string $catalogVisibility
+ * @property int $totalSales
+ *
+ * @property array $upsell_ids
+ * @property array $attributes
+ * @property array $default_attributes
+ * @property int $image_id
+ * @property array $gallery_image_ids
+ * @property array $category_ids
+ * @property array $tag_ids
+ * @property int $parent_id
+ *
+ * @property ?bool $manageStock
+ * @property ?int $stockQuantity
+ * @property ?string $backorders
+ * @property ?bool $backordersAllowed
+ * @property ?bool $soldIndividually
+ * @property ?float $weight
+ * @property ?float $length
+ * @property ?float $width
+ * @property ?float $height
+ * @property ?int $shippingClassId
+ * @property ?bool $shippingRequired
+ * @property ?bool $shippingTaxable
+ * @property ?array $cross_sell_ids
+ * @property ?string $stockStatus
+ * 
+ * @property ?bool $virtual
+ * @property ?int $downloadExpiry
+ * @property ?bool $downloadable
+ * @property ?int $downloadLimit
+ * @property ?array $downloads
+ *
+ * @property ?string $price
+ * @property ?(float|array) $priceRaw
+ * @property ?string $regularPrice
+ * @property ?(float|array) $regularPriceRaw
+ * @property ?string $salePrice
+ * @property ?(float|array) $salePriceRaw
+ * @property ?string $taxStatus
+ * @property ?string $taxClass
+ * 
+ * @property ?string $externalUrl
+ * @property ?string $buttonText
+ *
+ * @property ?string $addToCartText
+ * @property ?string $addToCartDescription
+ * @property array $grouped_ids
+ * 
+ * @property array $variation_ids
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Product extends WC_Post {
 
@@ -49,6 +127,15 @@ class Product extends WC_Post {
 	}
 
 	/**
+	 * Returns the product type.
+	 *
+	 * @return string
+	 */
+	public function get_type() {
+		return $this->wc_data->get_type();
+	}
+
+	/**
 	 * Returns string of variation price range.
 	 *
 	 * @param string  $pricing_type - Range selected pricing type.
@@ -57,7 +144,12 @@ class Product extends WC_Post {
 	 * @return string|null
 	 */
 	private function get_variation_price( $pricing_type = '', $raw = false ) {
-		$prices = $this->wc_data->get_variation_prices( true );
+		/**
+		 * @var \WC_Product_Variable $data
+		 */
+		$data = $this->wc_data;
+
+		$prices = $data->get_variation_prices( true );
 
 		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->wc_data->is_on_sale() ) ) {
 			return null;
@@ -379,10 +471,22 @@ class Product extends WC_Post {
 				case apply_filters( "graphql_{$type}_product_model_use_external_fields", 'external' === $type ):
 					$fields += [
 						'externalUrl' => function() {
-							return ! empty( $this->wc_data->get_product_url() ) ? $this->wc_data->get_product_url() : null;
+							/**
+							 * External product
+							 * 
+							 * @var \WC_Product_External $data
+							 */
+							$data = $this->wc_data;
+							return ! empty( $data->get_product_url() ) ? $data->get_product_url() : null;
 						},
 						'buttonText'  => function() {
-							return ! empty( $this->wc_data->get_button_text() ) ? $this->wc_data->get_button_text() : null;
+							/**
+							 * External product
+							 * 
+							 * @var \WC_Product_External $data
+							 */
+							$data = $this->wc_data;
+							return ! empty( $data->get_button_text() ) ? $data->get_button_text() : null;
 						},
 					];
 					break;

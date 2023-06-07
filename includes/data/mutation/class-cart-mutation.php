@@ -9,6 +9,8 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -117,12 +119,16 @@ class Cart_Mutation {
 	 * @throws UserError Cart item not found message.
 	 */
 	public static function retrieve_cart_items( $input, $context, $info, $mutation = '' ) {
-		$items = [];
+		$items = null;
+		// If "all" flag provided, retrieve all cart items.
 		if ( ! empty( $input['all'] ) && $input['all'] ) {
 			$items = array_values( \WC()->cart->get_cart() );
 		}
 		
-		if ( ! empty( $input['keys'] ) && ! empty( $items ) ) {
+		// If keys are provided and cart items haven't been retrieve yet,
+		// retrieve the cart items by key.
+		if ( ! empty( $input['keys'] ) && null === $items ) {
+			$items = [];
 			foreach ( $input['keys'] as $key ) {
 				$item = \WC()->cart->get_cart_item( $key );
 				if ( empty( $item ) ) {

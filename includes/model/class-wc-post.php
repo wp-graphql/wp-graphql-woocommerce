@@ -16,6 +16,11 @@ use WP_Post_Type;
 
 /**
  * Class WC_Post
+ * 
+ * @property \WC_Data $wc_data
+ * @property \WP_Post $data
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 abstract class WC_Post extends Post {
 
@@ -29,7 +34,7 @@ abstract class WC_Post extends Post {
 	/**
 	 * WC_Post constructor
 	 *
-	 * @param int $data  Data object to be used by the model.
+	 * @param \WC_Data $data  Data object to be used by the model.
 	 */
 	public function __construct( $data ) {
 		// Store CRUD object.
@@ -124,7 +129,7 @@ abstract class WC_Post extends Post {
 	/**
 	 * Method for determining if the data should be considered private or not
 	 *
-	 * @param WP_Post $post_object The object of the post we need to verify permissions for.
+	 * @param \WP_Post $post_object The object of the post we need to verify permissions for.
 	 *
 	 * @return bool
 	 */

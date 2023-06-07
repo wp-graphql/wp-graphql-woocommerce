@@ -154,7 +154,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return \WP_User_Query
 	 */
 	public function get_query() {
 		return new \WP_User_Query( $this->get_query_args() );

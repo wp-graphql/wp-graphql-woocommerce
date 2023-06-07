@@ -9,6 +9,8 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WP_Error;
 
 use function WC;
@@ -27,7 +29,7 @@ class Checkout_Mutation {
 	/**
 	 * Caches customer object. @see get_value.
 	 *
-	 * @var WC_Customer
+	 * @var \WC_Customer
 	 */
 	private static $logged_in_customer = null;
 

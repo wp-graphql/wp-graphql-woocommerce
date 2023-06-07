@@ -27,7 +27,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Instance of parent session handler
 	 *
-	 * @var \WC_Session
+	 * @var QL_Session_Handler
 	 */
 	private $session_handler = null;
 
@@ -43,7 +43,7 @@ class Session_Transaction_Manager {
 	 * Singleton retriever and cleaner.
 	 * Should not be called anywhere but in the session handler init function.
 	 *
-	 * @param \WC_Session $session_handler  WooCommerce Session Handler instance.
+	 * @param QL_Session_Handler $session_handler  WooCommerce Session Handler instance.
 	 *
 	 * @return Session_Transaction_Manager
 	 */
@@ -59,7 +59,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Session_Transaction_Manager constructor
 	 *
-	 * @param \WC_Session $session_handler  Reference back to session handler.
+	 * @param QL_Session_Handler $session_handler  Reference back to session handler.
 	 */
 	public function __construct( &$session_handler ) {
 		$this->session_handler = $session_handler;
@@ -114,10 +114,10 @@ class Session_Transaction_Manager {
 	 * Creates an transaction ID if executing mutations that alter the session data, and stales
 	 * execution until the transaction ID is at the top of the queue.
 	 *
-	 * @param mixed                 $source   Operation root object.
-	 * @param array                 $args     Operation arguments.
-	 * @param \WPGraphQL\AppContext $context  AppContext instance.
-	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
+	 * @param mixed                                $source   Operation root object.
+	 * @param array                                $args     Operation arguments.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
 	 */
 	public function update_transaction_queue( $source, $args, $context, $info ) {
 		// Bail early, if not one of the session mutations.

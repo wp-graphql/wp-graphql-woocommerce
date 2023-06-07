@@ -15,6 +15,25 @@ use WPGraphQL\Model\Model;
 
 /**
  * Class Tax_Rate
+ *
+ * @property \WC_Tax_Rate $wc_data
+ *
+ * @property int    $ID
+ * @property string $id
+ * @property string $databaseId
+ * @property string $country
+ * @property string $state
+ * @property string $city
+ * @property string $postcode
+ * @property string $rate
+ * @property string $name
+ * @property string $priority
+ * @property bool   $compound
+ * @property bool   $shipping
+ * @property int    $order
+ * @property string $class
+ * 
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Tax_Rate extends Model {
 

@@ -16,6 +16,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Model\Term;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Model\Coupon;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Product;
@@ -25,6 +26,8 @@ use WPGraphQL\WooCommerce\Model\Product_Variation;
  * Class Product_Connection_Resolver
  *
  * @deprecated v0.10.0
+ * 
+ * @property WC_CPT_Loader $loader
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**

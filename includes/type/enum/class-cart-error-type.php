@@ -20,6 +20,7 @@ class Cart_Error_Type {
 			'INVALID_CART_ITEM'       => [ 'value' => 'INVALID_CART_ITEM' ],
 			'INVALID_COUPON'          => [ 'value' => 'INVALID_COUPON' ],
 			'INVALID_SHIPPING_METHOD' => [ 'value' => 'INVALID_SHIPPING_METHOD' ],
+			'UNKNOWN'                 => [ 'value' => 'UNKNOWN' ],
 		];
 
 		register_graphql_enum_type(
