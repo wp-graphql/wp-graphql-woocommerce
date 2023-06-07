@@ -36,7 +36,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	/**
 	 * Returns "session_id" if proper conditions met.
 	 *
-	 * @return int
+	 * @return int|string
 	 */
 	protected function get_posted_session_id() {
 		if ( ! $this->verify_auth_request_credentials_exists() ) {
@@ -53,7 +53,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 * Reads in customer ID from query parameters if specific conditions are met otherwise
 	 * a guest ID are generated as usual.
 	 *
-	 * @return string
+	 * @return int|string
 	 */
 	public function generate_customer_id() {
 		$session_id = $this->get_posted_session_id();

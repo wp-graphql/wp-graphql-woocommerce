@@ -323,7 +323,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	 * @param string         $nonce   Nonce to validated.
 	 * @param integer|string $action  Nonce name.
 	 *
-	 * @return bool
+	 * @return false|int
 	 */
 	function woographql_verify_nonce( $nonce, $action = -1 ) {
 		$nonce = (string) $nonce;

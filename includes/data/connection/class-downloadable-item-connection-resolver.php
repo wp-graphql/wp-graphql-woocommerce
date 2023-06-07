@@ -112,7 +112,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return array
 	 */
 	public function get_query() {
 		$items = 0;

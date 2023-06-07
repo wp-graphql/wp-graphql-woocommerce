@@ -15,6 +15,10 @@ use WC_Session_Handler;
 
 /**
  * Class - QL_Session_Handler
+ * 
+ * @property float $_session_expiring
+ * @property float $_session_expiration
+ * @property int|string $_customer_id
  */
 class QL_Session_Handler extends WC_Session_Handler {
 
@@ -28,7 +32,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Stores Timestamp of when the session token was issued.
 	 *
-	 * @var string $_session_issued
+	 * @var float $_session_issued
 	 */
 	protected $_session_issued; // @codingStandardsIgnoreLine
 
@@ -242,7 +246,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Creates JSON Web Token for customer session.
 	 *
-	 * @return string
+	 * @return false|string
 	 */
 	public function build_token() {
 		if ( empty( $this->_session_issued ) ) {
@@ -252,7 +256,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		/**
 		 * Determine the "not before" value for use in the token
 		 *
-		 * @param string  $issued        The timestamp of token was issued.
+		 * @param float   $issued        The timestamp of token was issued.
 		 * @param integer $customer_id   Customer ID.
 		 * @param array   $session_data  Cart session data.
 		 */

@@ -20,7 +20,7 @@ class Session_Transaction_Manager {
 	/**
 	 * The request's transaction ID.
 	 *
-	 * @var string
+	 * @var null|string
 	 */
 	public $transaction_id = null;
 

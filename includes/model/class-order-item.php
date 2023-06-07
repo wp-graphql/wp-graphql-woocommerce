@@ -69,7 +69,7 @@ class Order_Item extends Model {
 	/**
 	 * Stores order item type.
 	 *
-	 * @var int
+	 * @var string
 	 */
 	protected $item_type;
 

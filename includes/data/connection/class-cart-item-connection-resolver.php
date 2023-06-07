@@ -80,7 +80,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return array
 	 */
 	public function get_query() {
 		$cart_items = array_values( $this->source->get_cart() );

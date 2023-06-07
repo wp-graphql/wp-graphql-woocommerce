@@ -45,7 +45,7 @@ class Factory {
 	 * @param int        $id      - user ID of the customer being retrieved.
 	 * @param AppContext $context - AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 * @access public
 	 */
 	public static function resolve_customer( $id, AppContext $context ) {
@@ -62,7 +62,7 @@ class Factory {
 	 * @param int        $id      - post ID of the crud object being retrieved.
 	 * @param AppContext $context - AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 * @access public
 	 */
 	public static function resolve_crud_object( $id, AppContext $context ) {
@@ -99,7 +99,7 @@ class Factory {
 	 * @param string     $id - Tax rate ID.
 	 * @param AppContext $context - AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 */
 	public static function resolve_tax_rate( $id, AppContext $context ) {
 		if ( 0 === absint( $id ) ) {
@@ -148,7 +148,7 @@ class Factory {
 	 * @param string     $key      Cart item key.
 	 * @param AppContext $context  AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 */
 	public static function resolve_cart_item( $key, AppContext $context ) {
 		if ( empty( $key ) ) {
@@ -164,7 +164,7 @@ class Factory {
 	 * @param int        $id       Downloadable item ID.
 	 * @param AppContext $context  AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 */
 	public static function resolve_downloadable_item( $id, AppContext $context ) {
 		if ( 0 === absint( $id ) ) {

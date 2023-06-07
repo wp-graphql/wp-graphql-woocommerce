@@ -94,7 +94,7 @@ function plugin_file_url( $filepath ) {
  *
  * @param array $deps  Unloaded dependencies list.
  *
- * @return bool
+ * @return array
  */
 function dependencies_not_ready( &$deps = [] ) {
 	if ( ! class_exists( '\WPGraphQL' ) ) {

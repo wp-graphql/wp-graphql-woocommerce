@@ -82,7 +82,7 @@ class Coupon_Delete {
 	 *
 	 * @throws UserError Invalid ID provided | Lack of capabilities.
 	 *
-	 * @return callable
+	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		// Retrieve order ID.
