@@ -22,79 +22,79 @@ use WC_Product_Simple;
  * 
  * @property \WC_Product $wc_data
  *
- * @property int $ID
- * @property string $id
- * @property string $type
- * @property string $slug
- * @property string $name
- * @property string $date
- * @property string $modified
- * @property string $status
- * @property bool $featured
- * @property string $description
- * @property string $descriptionRaw
- * @property string $shortDescription
- * @property string $shortDescriptionRaw
- * @property string $sku
- * @property string $dateOnSaleFrom
- * @property string $dateOnSaleTo
- * @property bool $reviewsAllowed
- * @property string $purchaseNote
- * @property int $menuOrder
- * @property float $averageRating
- * @property int $reviewCount
- * @property bool $onSale
- * @property bool $purchasable
- * @property string $catalogVisibility
- * @property int $totalSales
+ * @property int         $ID
+ * @property string      $id
+ * @property string      $type
+ * @property string      $slug
+ * @property string      $name
+ * @property string      $date
+ * @property string      $modified
+ * @property string      $status
+ * @property bool        $featured
+ * @property string      $description
+ * @property string      $descriptionRaw
+ * @property string      $shortDescription
+ * @property string      $shortDescriptionRaw
+ * @property string      $sku
+ * @property string      $dateOnSaleFrom
+ * @property string      $dateOnSaleTo
+ * @property bool        $reviewsAllowed
+ * @property string      $purchaseNote
+ * @property int         $menuOrder
+ * @property float       $averageRating
+ * @property int         $reviewCount
+ * @property bool        $onSale
+ * @property bool        $purchasable
+ * @property string      $catalogVisibility
+ * @property int         $totalSales
  *
- * @property array $upsell_ids
- * @property array $attributes
- * @property array $default_attributes
- * @property int $image_id
- * @property array $gallery_image_ids
- * @property array $category_ids
- * @property array $tag_ids
- * @property int $parent_id
+ * @property array       $upsell_ids
+ * @property array       $attributes
+ * @property array       $default_attributes
+ * @property int         $image_id
+ * @property array       $gallery_image_ids
+ * @property array       $category_ids
+ * @property array       $tag_ids
+ * @property int         $parent_id
  *
- * @property ?bool $manageStock
- * @property ?int $stockQuantity
- * @property ?string $backorders
- * @property ?bool $backordersAllowed
- * @property ?bool $soldIndividually
- * @property ?float $weight
- * @property ?float $length
- * @property ?float $width
- * @property ?float $height
- * @property ?int $shippingClassId
- * @property ?bool $shippingRequired
- * @property ?bool $shippingTaxable
- * @property ?array $cross_sell_ids
- * @property ?string $stockStatus
+ * @property bool        $manageStock
+ * @property int         $stockQuantity
+ * @property string      $backorders
+ * @property bool        $backordersAllowed
+ * @property bool        $soldIndividually
+ * @property float       $weight
+ * @property float       $length
+ * @property float       $width
+ * @property float       $height
+ * @property int         $shippingClassId
+ * @property bool        $shippingRequired
+ * @property bool        $shippingTaxable
+ * @property array       $cross_sell_ids
+ * @property string      $stockStatus
  * 
- * @property ?bool $virtual
- * @property ?int $downloadExpiry
- * @property ?bool $downloadable
- * @property ?int $downloadLimit
- * @property ?array $downloads
+ * @property bool        $virtual
+ * @property int         $downloadExpiry
+ * @property bool        $downloadable
+ * @property int         $downloadLimit
+ * @property array       $downloads
  *
- * @property ?string $price
- * @property ?(float|array) $priceRaw
- * @property ?string $regularPrice
- * @property ?(float|array) $regularPriceRaw
- * @property ?string $salePrice
- * @property ?(float|array) $salePriceRaw
- * @property ?string $taxStatus
- * @property ?string $taxClass
+ * @property string      $price
+ * @property float|array $priceRaw
+ * @property string      $regularPrice
+ * @property float|array $regularPriceRaw
+ * @property string      $salePrice
+ * @property float|array $salePriceRaw
+ * @property string      $taxStatus
+ * @property string      $taxClass
  * 
- * @property ?string $externalUrl
- * @property ?string $buttonText
+ * @property string      $externalUrl
+ * @property string      $buttonText
  *
- * @property ?string $addToCartText
- * @property ?string $addToCartDescription
- * @property array $grouped_ids
+ * @property string      $addToCartText
+ * @property string      $addToCartDescription
+ * @property array       $grouped_ids
  * 
- * @property array $variation_ids
+ * @property array       $variation_ids
  * 
  * @package WPGraphQL\WooCommerce\Model
  */
@@ -209,7 +209,7 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_status() ) ? $this->wc_data->get_status() : null;
 				},
 				'featured'            => function() {
-					return ! is_null( $this->wc_data->get_featured() ) ? $this->wc_data->get_featured() : null;
+					return $this->wc_data->get_featured();
 				},
 				'description'         => function() {
 					return ! empty( $this->wc_data->get_description() )
@@ -252,19 +252,19 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_purchase_note() ) ? $this->wc_data->get_purchase_note() : null;
 				},
 				'menuOrder'           => function() {
-					return ! is_null( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
+					return ! empty( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
 				},
 				'averageRating'       => function() {
-					return ! is_null( $this->wc_data->get_average_rating() ) ? $this->wc_data->get_average_rating() : null;
+					return ! empty( $this->wc_data->get_average_rating() ) ? $this->wc_data->get_average_rating() : null;
 				},
 				'reviewCount'         => function() {
-					return ! is_null( $this->wc_data->get_review_count() ) ? $this->wc_data->get_review_count() : null;
+					return ! empty( $this->wc_data->get_review_count() ) ? $this->wc_data->get_review_count() : null;
 				},
 				'onSale'              => function () {
-					return ! is_null( $this->wc_data->is_on_sale() ) ? $this->wc_data->is_on_sale() : null;
+					return $this->wc_data->is_on_sale();
 				},
 				'purchasable'         => function () {
-					return ! is_null( $this->wc_data->is_purchasable() ) ? $this->wc_data->is_purchasable() : null;
+					return $this->wc_data->is_purchasable();
 				},
 
 				/**
@@ -278,7 +278,7 @@ class Product extends WC_Post {
 				],
 				'totalSales'          => [
 					'callback'   => function() {
-						return ! is_null( $this->wc_data->get_total_sales() ) ? $this->wc_data->get_total_sales() : null;
+						return ! empty( $this->wc_data->get_total_sales() ) ? $this->wc_data->get_total_sales() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				],
@@ -362,7 +362,7 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_tax_status() ) ? $this->wc_data->get_tax_status() : null;
 					},
 					'taxClass'        => function() {
-						return ! is_null( $this->wc_data->get_tax_class() ) ? $this->wc_data->get_tax_class() : '';
+						return $this->wc_data->get_tax_class();
 					},
 				];
 			}//end if
@@ -375,7 +375,7 @@ class Product extends WC_Post {
 			) {
 				$fields += [
 					'manageStock'       => function() {
-						return ! is_null( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
+						return ! empty( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
 					},
 					'stockQuantity'     => function() {
 						return ! empty( $this->wc_data->get_stock_quantity() ) ? $this->wc_data->get_stock_quantity() : null;
@@ -384,10 +384,10 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_backorders() ) ? $this->wc_data->get_backorders() : null;
 					},
 					'backordersAllowed' => function() {
-						return ! empty( $this->wc_data->backorders_allowed() ) ? $this->wc_data->backorders_allowed() : null;
+						return $this->wc_data->backorders_allowed();
 					},
 					'soldIndividually'  => function() {
-						return ! is_null( $this->wc_data->is_sold_individually() ) ? $this->wc_data->is_sold_individually() : null;
+						return $this->wc_data->is_sold_individually();
 					},
 					'weight'            => function() {
 						return ! empty( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
@@ -405,10 +405,10 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_shipping_class_id() : null;
 					},
 					'shippingRequired'  => function() {
-						return ! is_null( $this->wc_data->needs_shipping() ) ? $this->wc_data->needs_shipping() : null;
+						return $this->wc_data->needs_shipping();
 					},
 					'shippingTaxable'   => function() {
-						return ! is_null( $this->wc_data->is_shipping_taxable() ) ? $this->wc_data->is_shipping_taxable() : null;
+						return $this->wc_data->is_shipping_taxable();
 					},
 					'cross_sell_ids'    => function() {
 						return ! empty( $this->wc_data->get_cross_sell_ids() )
@@ -425,16 +425,16 @@ class Product extends WC_Post {
 				case apply_filters( "graphql_{$type}_product_model_use_virtual_data_fields", 'simple' === $type ):
 					$fields += [
 						'virtual'        => function() {
-							return ! is_null( $this->wc_data->is_virtual() ) ? $this->wc_data->is_virtual() : null;
+							return $this->wc_data->is_virtual();
 						},
 						'downloadExpiry' => function() {
-							return ! is_null( $this->wc_data->get_download_expiry() ) ? $this->wc_data->get_download_expiry() : null;
+							return $this->wc_data->get_download_expiry();
 						},
 						'downloadable'   => function() {
-							return ! is_null( $this->wc_data->is_downloadable() ) ? $this->wc_data->is_downloadable() : null;
+							return $this->wc_data->is_downloadable();
 						},
 						'downloadLimit'  => function() {
-							return ! is_null( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
+							return ! empty( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
 						},
 						'downloads'      => function() {
 							return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;

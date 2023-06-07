@@ -483,7 +483,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}//end foreach
 		}//end if
 
-		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
+		if ( ! empty( $tax_query ) && 1 < count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
 		}
 
@@ -535,8 +535,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$args['meta_query'] = $meta_query;
 		}
 
-		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
-			$on_sale_key = $where_args['onSale'] ? 'post__in' : 'post__not_in';
+		if ( isset( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
+			$on_sale_key = false !== $where_args['onSale'] ? 'post__in' : 'post__not_in';
 			$on_sale_ids = \wc_get_product_ids_on_sale();
 
 			$on_sale_ids          = empty( $on_sale_ids ) ? [ 0 ] : $on_sale_ids;

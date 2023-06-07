@@ -42,7 +42,7 @@ class Root_Query {
 						}
 
 						$cart = Factory::resolve_cart();
-						if ( ! empty( $args['recalculateTotals'] ) && $args['recalculateTotals'] ) {
+						if ( ! empty( $args['recalculateTotals'] ) ) {
 							$cart->calculate_totals();
 						}
 

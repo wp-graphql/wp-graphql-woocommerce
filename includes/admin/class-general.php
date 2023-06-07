@@ -49,9 +49,9 @@ class General extends Section {
 			]
 		);
 
-		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( CART_URL_NONCE_PARAM );
-		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( CHECKOUT_URL_NONCE_PARAM );
-		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( ADD_PAYMENT_METHOD_URL_NONCE_PARAM );
+		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( constant( 'CART_URL_NONCE_PARAM' ) );
+		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( constant( 'CHECKOUT_URL_NONCE_PARAM' ) );
+		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
 		return [
 			[

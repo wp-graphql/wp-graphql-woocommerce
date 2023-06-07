@@ -347,7 +347,7 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_version() ) ? $this->wc_data->get_version() : null;
 				},
 				'pricesIncludeTax'      => function() {
-					return ! is_null( $this->wc_data->get_prices_include_tax() ) ? $this->wc_data->get_prices_include_tax() : null;
+					return $this->wc_data->get_prices_include_tax();
 				},
 				'cartHash'              => function() {
 					return ! empty( $this->wc_data->get_cart_hash() ) ? $this->wc_data->get_cart_hash() : null;
@@ -356,7 +356,7 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_customer_note() ) ? $this->wc_data->get_customer_note() : null;
 				},
 				'isDownloadPermitted'   => function() {
-					return ! is_null( $this->wc_data->is_download_permitted() ) ? $this->wc_data->is_download_permitted() : null;
+					return $this->wc_data->is_download_permitted();
 				},
 				'billing'               => function() {
 					return ! empty( $this->wc_data->get_address( 'billing' ) ) ? $this->wc_data->get_address( 'billing' ) : null;
@@ -371,22 +371,22 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_shipping_address_map_url() ) ? $this->wc_data->get_shipping_address_map_url() : null;
 				},
 				'hasBillingAddress'     => function() {
-					return ! is_null( $this->wc_data->has_billing_address() ) ? $this->wc_data->has_billing_address() : null;
+					return $this->wc_data->has_billing_address();
 				},
 				'hasShippingAddress'    => function() {
-					return ! is_null( $this->wc_data->has_shipping_address() ) ? $this->wc_data->has_shipping_address() : null;
+					return $this->wc_data->has_shipping_address();
 				},
 				'needsShippingAddress'  => function() {
-					return ! is_null( $this->wc_data->needs_shipping_address() ) ? $this->wc_data->needs_shipping_address() : null;
+					return $this->wc_data->needs_shipping_address();
 				},
 				'hasDownloadableItem'   => function() {
-					return ! is_null( $this->wc_data->has_downloadable_item() ) ? $this->wc_data->has_downloadable_item() : null;
+					return $this->wc_data->has_downloadable_item();
 				},
 				'needsPayment'          => function() {
-					return ! is_null( $this->wc_data->needs_payment() ) ? $this->wc_data->needs_payment() : null;
+					return $this->wc_data->needs_payment();
 				},
 				'needsProcessing'       => function() {
-					return ! is_null( $this->wc_data->needs_processing() ) ? $this->wc_data->needs_processing() : null;
+					return $this->wc_data->needs_processing();
 				},
 				/**
 				 * Connection resolvers fields

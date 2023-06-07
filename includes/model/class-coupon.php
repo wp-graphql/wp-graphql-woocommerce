@@ -91,10 +91,10 @@ class Coupon extends WC_Post {
 					return ! empty( $this->wc_data->get_date_expires() ) ? $this->wc_data->get_date_expires() : null;
 				},
 				'usageCount'                    => function() {
-					return ! is_null( $this->wc_data->get_usage_count() ) ? $this->wc_data->get_usage_count() : null;
+					return ! empty( $this->wc_data->get_usage_count() ) ? $this->wc_data->get_usage_count() : null;
 				},
 				'individualUse'                 => function() {
-					return ! is_null( $this->wc_data->get_individual_use() ) ? $this->wc_data->get_individual_use() : null;
+					return $this->wc_data->get_individual_use();
 				},
 				'usageLimit'                    => function() {
 					return ! empty( $this->wc_data->get_usage_limit() ) ? $this->wc_data->get_usage_limit() : null;
@@ -106,10 +106,10 @@ class Coupon extends WC_Post {
 					return ! empty( $this->wc_data->get_limit_usage_to_x_items() ) ? $this->wc_data->get_limit_usage_to_x_items() : null;
 				},
 				'freeShipping'                  => function() {
-					return ! is_null( $this->wc_data->get_free_shipping() ) ? $this->wc_data->get_free_shipping() : null;
+					return $this->wc_data->get_free_shipping();
 				},
 				'excludeSaleItems'              => function() {
-					return ! is_null( $this->wc_data->get_exclude_sale_items() ) ? $this->wc_data->get_exclude_sale_items() : null;
+					return $this->wc_data->get_exclude_sale_items();
 				},
 				'minimumAmount'                 => function() {
 					return ! empty( $this->wc_data->get_minimum_amount() ) ? $this->wc_data->get_minimum_amount() : null;

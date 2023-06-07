@@ -421,14 +421,14 @@ class Order_Mutation {
 	/**
 	 * Purge object when creating.
 	 *
-	 * @param \WC_Order|Order $order         Object data.
+	 * @param null|\WC_Order|Order $order         Object data.
 	 * @param boolean        $force_delete  Delete or put in trash.
 	 *
 	 * @return bool
 	 * @throws UserError  Failed to delete order.
 	 */
 	public static function purge( $order, $force_delete = true ) {
-		if ( is_callable( [ $order, 'delete' ] ) ) {
+		if ( ! empty( $order ) ) {
 			return $order->delete( $force_delete );
 		}
 

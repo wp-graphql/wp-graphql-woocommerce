@@ -18,9 +18,9 @@ class Protected_Router {
 	/**
 	 * Stores the instance of the Protected_Router class
 	 *
-	 * @var Protected_Router The one true Protected_Router
+	 * @var null|Protected_Router The one true Protected_Router
 	 */
-	private static $instance;
+	private static $instance = null;
 
 	/**
 	 * The default route
@@ -70,7 +70,7 @@ class Protected_Router {
 	 * @return Protected_Router
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
 

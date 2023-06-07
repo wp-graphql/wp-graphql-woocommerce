@@ -126,7 +126,7 @@ class Product_Variation extends WC_Post {
 					return ! empty( $this->wc_data->get_date_on_sale_to() ) ? $this->wc_data->get_date_on_sale_to() : null;
 				},
 				'onSale'            => function () {
-					return ! is_null( $this->wc_data->is_on_sale() ) ? $this->wc_data->is_on_sale() : null;
+					return $this->wc_data->is_on_sale();
 				},
 				'status'            => function() {
 					return ! empty( $this->wc_data->get_status() ) ? $this->wc_data->get_status() : null;
@@ -135,25 +135,25 @@ class Product_Variation extends WC_Post {
 					return ! empty( $this->wc_data->is_purchasable() ) ? $this->wc_data->is_purchasable() : null;
 				},
 				'virtual'           => function() {
-					return ! is_null( $this->wc_data->is_virtual() ) ? $this->wc_data->is_virtual() : null;
+					return $this->wc_data->is_virtual();
 				},
 				'downloadable'      => function() {
-					return ! is_null( $this->wc_data->is_downloadable() ) ? $this->wc_data->is_downloadable() : null;
+					return $this->wc_data->is_downloadable();
 				},
 				'downloads'         => function() {
 					return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;
 				},
 				'downloadLimit'     => function() {
-					return ! is_null( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
+					return ! empty( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
 				},
 				'downloadExpiry'    => function() {
-					return ! is_null( $this->wc_data->get_download_expiry() ) ? $this->wc_data->get_download_expiry() : null;
+					return ! empty( $this->wc_data->get_download_expiry() ) ? $this->wc_data->get_download_expiry() : null;
 				},
 				'taxStatus'         => function() {
 					return ! empty( $this->wc_data->get_tax_status() ) ? $this->wc_data->get_tax_status() : null;
 				},
 				'taxClass'          => function() {
-					return ! is_null( $this->wc_data->get_tax_class() ) ? $this->wc_data->get_tax_class() : '';
+					return $this->wc_data->get_tax_class();
 				},
 				'manageStock'       => function() {
 					return ! empty( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
@@ -168,7 +168,7 @@ class Product_Variation extends WC_Post {
 					return ! empty( $this->wc_data->get_backorders() ) ? $this->wc_data->get_backorders() : null;
 				},
 				'backordersAllowed' => function() {
-					return ! is_null( $this->wc_data->backorders_allowed() ) ? $this->wc_data->backorders_allowed() : null;
+					return $this->wc_data->backorders_allowed();
 				},
 				'weight'            => function() {
 					return ! empty( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
@@ -183,7 +183,7 @@ class Product_Variation extends WC_Post {
 					return ! empty( $this->wc_data->get_height() ) ? $this->wc_data->get_height() : null;
 				},
 				'menuOrder'         => function() {
-					return ! is_null( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
+					return ! empty( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
 				},
 				'purchaseNote'      => function() {
 					return ! empty( $this->wc_data->get_purchase_note() ) ? $this->wc_data->get_purchase_note() : null;

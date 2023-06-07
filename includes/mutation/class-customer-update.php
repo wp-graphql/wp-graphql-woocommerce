@@ -114,7 +114,7 @@ class Customer_Update {
 			$customer = ! $session_only ? new WC_Customer( $payload['id'] ) : \WC()->customer;
 
 			// Copy billing address as shipping address.
-			if ( ! empty( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
+			if ( isset( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
 				$customer_args['shipping'] = array_merge(
 					Customer_Mutation::empty_shipping(),
 					array_intersect_key( $customer->get_billing( 'edit' ), Customer_Mutation::empty_shipping() )

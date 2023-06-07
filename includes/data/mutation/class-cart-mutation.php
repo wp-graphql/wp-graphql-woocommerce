@@ -121,7 +121,7 @@ class Cart_Mutation {
 	public static function retrieve_cart_items( $input, $context, $info, $mutation = '' ) {
 		$items = null;
 		// If "all" flag provided, retrieve all cart items.
-		if ( ! empty( $input['all'] ) && $input['all'] ) {
+		if ( ! empty( $input['all'] ) ) {
 			$items = array_values( \WC()->cart->get_cart() );
 		}
 		

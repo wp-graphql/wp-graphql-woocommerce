@@ -116,7 +116,7 @@ class Coupon_Delete {
 
 		$fields_to_cache = $info->getFieldSelection( 2 );
 		foreach ( $fields_to_cache['coupon'] as $field => $_ ) {
-			$coupon->$field;
+			$cached = $coupon->$field;
 		}
 
 		$force_delete = isset( $input['forceDelete'] ) ? $input['forceDelete'] : false;

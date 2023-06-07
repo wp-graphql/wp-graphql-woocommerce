@@ -277,10 +277,16 @@ if ( ! function_exists( 'woographql_get_session_uid' ) ) :
 	/**
 	 * Returns end-user's customer ID.
 	 *
-	 * @return string|int
+	 * @return int
 	 */
 	function woographql_get_session_uid() {
-		return WC()->session->get_customer_id();
+		/**
+		 * Session Handler
+		 * 
+		 * @var QL_Session_Handler|Transfer_Session_Handler $session 
+		 */
+		$session = WC()->session;
+		return $session->get_customer_id();
 	}
 endif;
 

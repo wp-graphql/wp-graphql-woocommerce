@@ -73,10 +73,7 @@ function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = [] 
 	}
 
 	if ( ! empty( $input['parentIn'] ) ) {
-		if ( ! isset( $args['post_parent__in'] ) ) {
-			$args['post_parent__in'] = [];
-		}
-		$args['post_parent__in'] = array_merge( $args['post_parent__in'], $input['parentIn'] );
+		$args['post_parent__in'] = $input['parentIn'];
 	}
 
 	if ( ! empty( $input['parentNotIn'] ) ) {

@@ -19,17 +19,11 @@ use function WC;
  * Class - Checkout_Mutation
  */
 class Checkout_Mutation {
-	/**
-	 * Stores checkout fields
-	 *
-	 * @var array
-	 */
-	private static $fields;
 
 	/**
 	 * Caches customer object. @see get_value.
 	 *
-	 * @var \WC_Customer
+	 * @var null|\WC_Customer
 	 */
 	private static $logged_in_customer = null;
 
@@ -426,7 +420,7 @@ class Checkout_Mutation {
 					$country      = isset( $data[ $fieldset_key . '_country' ] ) ? $data[ $fieldset_key . '_country' ] : WC()->customer->{"get_{$fieldset_key}_country"}();
 					$valid_states = WC()->countries->get_states( $country );
 
-					if ( ! empty( $valid_states ) && is_array( $valid_states ) && count( $valid_states ) > 0 ) {
+					if ( ! empty( $valid_states ) && is_array( $valid_states ) ) {
 						$valid_state_values = array_map( 'wc_strtoupper', array_flip( array_map( 'wc_strtoupper', $valid_states ) ) );
 						$data[ $key ]       = wc_strtoupper( $data[ $key ] );
 
@@ -609,7 +603,7 @@ class Checkout_Mutation {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
-		if ( WC()->cart->needs_payment() && ( empty( $input['isPaid'] ) || false === $input['isPaid'] ) ) {
+		if ( WC()->cart->needs_payment() && ( empty( $input['isPaid'] ) ) ) {
 			$results = self::process_order_payment( $order_id, $data['payment_method'] );
 		} else {
 			$transaction_id = ! empty( $input['transactionId'] ) ? $input['transactionId'] : '';

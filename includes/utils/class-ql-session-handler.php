@@ -51,13 +51,6 @@ class QL_Session_Handler extends WC_Session_Handler {
 	protected $_issuing_new_token = false; // @codingStandardsIgnoreLine
 
 	/**
-	 * Manages connection to the session transaction queue.
-	 *
-	 * @var Session_Transaction_Manager
-	 */
-	private $transaction_manager = null;
-
-	/**
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
@@ -99,7 +92,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	public function init() {
 		$this->init_session_token();
-		$this->transaction_manager = Session_Transaction_Manager::get( $this );
+		Session_Transaction_Manager::get( $this );
 
 		add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
 		add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );

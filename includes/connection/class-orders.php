@@ -359,19 +359,12 @@ class Orders {
 				switch ( $field ) {
 					case 'customerId':
 					case 'customersIn':
-						if ( is_null( $value ) ) {
-							$meta_query[] = [
-								'key'     => '_customer_user',
-								'value'   => 0,
-								'compare' => '=',
-							];
-						} else {
-							$meta_query[] = [
-								'key'     => '_customer_user',
-								'value'   => $value,
-								'compare' => is_array( $value ) ? 'IN' : '=',
-							];
-						}
+						$meta_query[] = [
+							'key'     => '_customer_user',
+							'value'   => $value,
+							'compare' => is_array( $value ) ? 'IN' : '=',
+						];
+						break;
 				}
 			}
 		}//end foreach

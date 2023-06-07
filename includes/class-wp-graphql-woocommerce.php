@@ -21,9 +21,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Stores the instance of the WP_GraphQL_WooCommerce class
 		 *
-		 * @var WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
+		 * @var null|WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
 		 */
-		private static $instance;
+		private static $instance = null;
 
 		/**
 		 * Returns a WP_GraphQL_WooCommerce Instance.
@@ -31,7 +31,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return WP_GraphQL_WooCommerce
 		 */
 		public static function instance() {
-			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+			if ( is_null( self::$instance ) ) {
 				self::$instance = new self();
 				self::$instance->includes();
 				self::$instance->setup();

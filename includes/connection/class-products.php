@@ -863,7 +863,7 @@ class Products {
 			$query_args['meta_query'] = $meta_query;
 		}
 
-		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
+		if ( isset( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
 			$on_sale_key = $where_args['onSale'] ? 'post__in' : 'post__not_in';
 			$on_sale_ids = \wc_get_product_ids_on_sale();
 
