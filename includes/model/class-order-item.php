@@ -89,7 +89,6 @@ class Order_Item extends Model {
 		$this->data                = $item;
 		$this->item_type           = $item->get_type();
 		$order_id                  = $item->get_order_id();
-		$author_id                 = get_post_field( 'post_author', $order_id );
 		$this->order               = ! empty( $item->cached_order ) ? $item->cached_order : new Order( $order_id );
 		$allowed_restricted_fields = [
 			'isRestricted',
@@ -102,7 +101,7 @@ class Order_Item extends Model {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
 
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, 1 );
 	}
 
 	/**

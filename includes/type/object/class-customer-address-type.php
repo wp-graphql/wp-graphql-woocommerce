@@ -17,6 +17,8 @@ class Customer_Address_Type {
 
 	/**
 	 * Registers Customer WPObject type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(

@@ -22,6 +22,8 @@ class Cart_Remove_Items {
 
 	/**
 	 * Registers mutation
+	 * 
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(

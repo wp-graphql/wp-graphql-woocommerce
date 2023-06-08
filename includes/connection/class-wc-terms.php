@@ -71,6 +71,10 @@ class WC_Terms extends TermObjects {
 
 		// From Coupons to ProductCategory connections.
 		$tax_object = get_taxonomy( 'product_cat' );
+		if ( ! $tax_object ) {
+			throw new \Exception( __( '"product_cat" taxonomy not found', 'wp-graphql-woocommerce' ) );
+		}
+
 		register_graphql_connection(
 			self::get_connection_config(
 				$tax_object,

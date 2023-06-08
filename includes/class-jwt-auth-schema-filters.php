@@ -20,6 +20,8 @@ use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
 class JWT_Auth_Schema_Filters {
 	/**
 	 * Register filters
+	 * 
+	 * @return void
 	 */
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is installed.
@@ -49,6 +51,7 @@ class JWT_Auth_Schema_Filters {
 	 * @param array                             $fields         Mutation output field definitions.
 	 * @param \WPGraphQL\Type\WPInputObjectType $object         The WPInputObjectType the fields are be added to.
 	 * @param \WPGraphQL\Registry\TypeRegistry  $type_registry  TypeRegistry instance.
+	 * 
 	 * @return array
 	 */
 	public static function add_jwt_output_fields( $fields, $object, $type_registry ): array {
@@ -60,6 +63,10 @@ class JWT_Auth_Schema_Filters {
 					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
+
+						if ( ! $user ) {
+							throw new UserError( __( 'User not found.', 'wp-graphql-woocommerce' ) );
+						}
 
 						/**
 						 * This method is typed wrong upstream.
@@ -80,6 +87,11 @@ class JWT_Auth_Schema_Filters {
 					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
+
+						if ( ! $user ) {
+							throw new UserError( __( 'User not found.', 'wp-graphql-woocommerce' ) );
+						}
+
 						/**
 						 * This method is typed wrong upstream.
 						 *
@@ -102,6 +114,8 @@ class JWT_Auth_Schema_Filters {
 
 	/**
 	 * Adds "customer" field to "login" mutation payload.
+	 * 
+	 * @return void
 	 */
 	public static function add_customer_to_login_payload() {
 		register_graphql_field(
@@ -128,7 +142,7 @@ class JWT_Auth_Schema_Filters {
 						/**
 						 * Session Handler.
 						 *
-						 * @var QL_Session_Handler|Transfer_Session_Handler $session
+						 * @var QL_Session_Handler $session
 						 */
 						$session = \WC()->session;
 

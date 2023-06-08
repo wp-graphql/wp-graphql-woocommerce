@@ -25,6 +25,8 @@ class Order_Delete {
 
 	/**
 	 * Registers mutation
+	 * 
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(

@@ -20,6 +20,8 @@ class Orders {
 
 	/**
 	 * Registers the various connections from other Types to Customer
+	 * 
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From RootQuery To Orders.
@@ -88,8 +90,9 @@ class Orders {
 								'return'        => 'ids',
 							]
 						);
+						$customer_orders = is_array( $customer_orders ) ? array_map( 'absint', $customer_orders ) : [ '0' ];
 
-						$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $customer_orders ) );
+						$resolver->set_query_arg( 'post_parent__in', $customer_orders );
 
 						return $resolver->get_connection();
 					},
@@ -102,8 +105,8 @@ class Orders {
 	/**
 	 * Returns order connection filter by customer.
 	 *
-	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
-	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
+	 * @param PostObjectConnectionResolver $resolver  Connection resolver.
+	 * @param \WC_Customer                 $customer  Customer object of querying user.
 	 *
 	 * @return array
 	 */

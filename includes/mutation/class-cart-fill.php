@@ -22,6 +22,8 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 class Cart_Fill {
 	/**
 	 * Registers mutation
+	 * 
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(

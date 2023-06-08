@@ -14,6 +14,8 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Product_Types {
 	/**
 	 * Registers type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		$values = apply_filters(

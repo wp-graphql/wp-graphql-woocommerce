@@ -134,7 +134,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'product.reviewCount', (int) $product->get_review_count() ),
 			$this->expectedField(
 				'product.backordersAllowed',
-				$this->maybe( $product->backorders_allowed(), self::IS_NULL )
+				$this->maybe( $product->backorders_allowed(), self::IS_FALSY )
 			),
 			$this->expectedField( 'product.onSale', $product->is_on_sale() ),
 			$this->expectedField( 'product.purchasable', $product->is_purchasable() ),
@@ -151,7 +151,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						$is_shop_manager && $product->get_total_sales(),
 						$product->get_total_sales(),
 					],
-					self::IS_NULL
+					self::IS_FALSY
 				)
 			),
 			$this->expectedField(

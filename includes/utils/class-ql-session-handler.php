@@ -16,8 +16,8 @@ use WC_Session_Handler;
 /**
  * Class - QL_Session_Handler
  *
- * @property float $_session_expiring
- * @property float $_session_expiration
+ * @property int $_session_expiring
+ * @property int $_session_expiration
  * @property int|string $_customer_id
  */
 class QL_Session_Handler extends WC_Session_Handler {
@@ -89,6 +89,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Init hooks and session data.
+	 * 
+	 * @return void
 	 */
 	public function init() {
 		$this->init_session_token();
@@ -109,6 +111,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Setup token and customer ID.
 	 *
 	 * @throws UserError Invalid token.
+	 * 
+	 * @return void
 	 */
 	public function init_session_token() {
 		$token = $this->get_session_token();
@@ -313,6 +317,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Warning: Headers will only be set if this is called before the headers are sent.
 	 *
 	 * @param bool $set Should the session cookie be set.
+	 * 
+	 * @return void
 	 */
 	public function set_customer_session_token( $set ) {
 		if ( ! empty( $this->_session_issued ) && $set ) {
@@ -348,6 +354,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Set session expiration.
+	 * 
+	 * @return void
 	 */
 	public function set_session_expiration() {
 		$this->_session_issued = time();
@@ -363,6 +371,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Forget all session data without destroying it.
+	 * 
+	 * @return void
 	 */
 	public function forget_session() {
 		if ( isset( $this->_token_to_be_sent ) ) {
@@ -386,6 +396,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @param array                                $args     Operation arguments.
 	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
 	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
+	 * 
+	 * @return void
 	 */
 	public function save_if_dirty( $source, $args, $context, $info ) {
 		// Bail early, if not one of the session mutations.
@@ -409,6 +421,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * For refreshing session data mid-request when changes occur in concurrent requests.
+	 * 
+	 * @return void
 	 */
 	public function reload_data() {
 		\WC_Cache_Helper::invalidate_cache_group( WC_SESSION_CACHE_GROUP );
@@ -421,6 +435,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Prevents potential crticial errors when calling this method.
 	 *
 	 * @param bool $set Should the session cookie be set.
+	 * 
+	 * @return void
 	 */
 	public function set_customer_session_cookie( $set ) {}
 

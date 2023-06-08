@@ -16,7 +16,7 @@ use WPGraphQL\Model\Model;
 /**
  * Class Shipping_Method
  *
- * @property \WC_Shipping_Method $wc_data
+ * @property \WC_Shipping_Method $data
  *
  * @property int    $ID
  * @property string $id
@@ -31,7 +31,7 @@ class Shipping_Method extends Model {
 	/**
 	 * Shipping_Method constructor
 	 *
-	 * @param int $method - Shipping method object.
+	 * @param \WC_Shipping_Method $method - Shipping method object.
 	 */
 	public function __construct( $method ) {
 		$this->data                = $method;

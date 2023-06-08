@@ -20,7 +20,9 @@ use WPGraphQL\WooCommerce\Data\Factory;
  */
 class Root_Query {
 	/**
-	 * Return WooCommerce GraphQL queries.
+	 * Registers WC-related root queries.
+	 * 
+	 * @return void
 	 */
 	public static function register_fields() {
 		register_graphql_fields(

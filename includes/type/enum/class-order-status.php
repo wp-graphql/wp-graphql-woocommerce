@@ -14,6 +14,8 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Order_Status {
 	/**
 	 * Registers type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		$statuses = \wc_get_order_statuses();

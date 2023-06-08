@@ -86,8 +86,11 @@ class Product_Variation extends WC_Post {
 			parent::init();
 
 			$fields = [
+				'ID'                => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'product_variation', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'product_variation', "{$this->ID}" ) : null;
 				},
 				'name'              => function() {
 					return ! empty( $this->wc_data->get_name() ) ? $this->wc_data->get_name() : null;
@@ -218,7 +221,7 @@ class Product_Variation extends WC_Post {
 					return ! empty( $this->wc_data->get_parent_id() ) ? $this->wc_data->get_parent_id() : null;
 				},
 				'parentId'          => function() {
-					return ! empty( $this->wc_data->get_parent_id() ) ? Relay::toGlobalId( 'product', $this->wc_data->get_parent_id() ) : null;
+					return ! empty( $this->wc_data->get_parent_id() ) ? Relay::toGlobalId( 'product', (string) $this->wc_data->get_parent_id() ) : null;
 				},
 				'shipping_class_id' => function() {
 					return ! empty( $this->wc_data->get_shipping_class_id() ) ? $this->wc_data->get_shipping_class_id() : null;

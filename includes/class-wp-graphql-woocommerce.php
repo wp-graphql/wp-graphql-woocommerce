@@ -86,7 +86,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Returns GraphQL Product Type name for product types not supported by the GraphQL schema.
 		 *
-		 * @return array
+		 * @return string
 		 */
 		public static function get_supported_product_type() {
 			return apply_filters(
@@ -148,6 +148,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * Uses composer's autoload
 		 *
 		 * @since  0.0.1
+		 * @return void
 		 */
 		private function includes() {
 			$include_directory_path = get_includes_directory();
@@ -399,6 +400,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 		/**
 		 * Sets up WooGraphQL schema.
+		 * 
+		 * @return void
 		 */
 		private function setup() {
 			// Initialize WooGraphQL Settings.

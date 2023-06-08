@@ -16,7 +16,7 @@ use WPGraphQL\Model\Model;
 /**
  * Class Tax_Rate
  *
- * @property \WC_Tax_Rate $wc_data
+ * @property object $data
  *
  * @property int    $ID
  * @property string $id
@@ -40,7 +40,7 @@ class Tax_Rate extends Model {
 	/**
 	 * Tax_Rate constructor
 	 *
-	 * @param int $rate - Tax rate object.
+	 * @param object $rate - Tax rate object.
 	 */
 	public function __construct( $rate ) {
 		$this->data                = $rate;

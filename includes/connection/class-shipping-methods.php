@@ -21,6 +21,8 @@ class Shipping_Methods {
 
 	/**
 	 * Registers the various connections from other Types to TaxRate
+	 * 
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From RootQuery.

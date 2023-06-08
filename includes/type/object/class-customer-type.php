@@ -27,6 +27,7 @@ class Customer_Type {
 	 * Returns the "Customer" type fields.
 	 *
 	 * @param array $other_fields Extra fields configs to be added or override the default field definitions.
+	 *
 	 * @return array
 	 */
 	public static function get_fields( $other_fields = [] ) {
@@ -151,6 +152,7 @@ class Customer_Type {
 	 * Returns the "Customer" type connections.
 	 *
 	 * @param array $other_connections Extra connections configs to be added or override the default connection definitions.
+	 *
 	 * @return array
 	 */
 	public static function get_connections( $other_connections = [] ) {

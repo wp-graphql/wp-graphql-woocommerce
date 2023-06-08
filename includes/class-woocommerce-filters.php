@@ -24,6 +24,8 @@ class WooCommerce_Filters {
 
 	/**
 	 * Initializes hooks for WooCommerce-related utilities.
+	 * 
+	 * @return void
 	 */
 	public static function setup() {
 		self::$session_header = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
@@ -135,6 +137,8 @@ class WooCommerce_Filters {
 	 *
 	 * @param array  $gateway_args    Arguments to be passed to the gateway `process_payment` method.
 	 * @param string $payment_method  Payment gateway ID.
+	 * 
+	 * @return array
 	 */
 	public static function woographql_stripe_gateway_args( $gateway_args, $payment_method ) {
 		if ( 'stripe' === $payment_method ) {

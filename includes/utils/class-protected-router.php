@@ -18,21 +18,21 @@ class Protected_Router {
 	/**
 	 * Stores the instance of the Protected_Router class
 	 *
-	 * @var null|Protected_Router The one true Protected_Router
+	 * @var null|Protected_Router
 	 */
 	private static $instance = null;
 
 	/**
 	 * The default route
 	 *
-	 * @var string $route
+	 * @var string 
 	 */
 	public static $default_route = 'transfer-session';
 
 	/**
 	 * Sets the route to use as the endpoint
 	 *
-	 * @var string $route
+	 * @var string
 	 */
 	public static $route = null;
 
@@ -326,9 +326,10 @@ class Protected_Router {
 
 		// If Session ID is a user ID authenticate as session user.
 		if ( 0 !== absint( $session_id ) ) {
+			$user_id = absint( $session_id );
 			wp_clear_auth_cookie();
-			wp_set_current_user( $session_id );
-			wp_set_auth_cookie( $session_id );
+			wp_set_current_user( $user_id );
+			wp_set_auth_cookie( $user_id );
 		}
 
 		/**

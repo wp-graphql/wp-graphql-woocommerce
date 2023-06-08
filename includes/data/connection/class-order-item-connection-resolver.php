@@ -138,6 +138,10 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		$offset = $cursor
 			? array_search( $cursor, array_map( $get_item_id, $items ), true )
 			: 0;
+		
+		if ( false === $offset ) {
+			$offset = 0;
+		}
 
 		// If cursor set, move index up one to ensure cursor not included in keys.
 		if ( $cursor ) {

@@ -171,6 +171,8 @@ class Checkout_Mutation {
 	 * Update customer and session data from the posted checkout data.
 	 *
 	 * @param array $data Order data.
+	 * 
+	 * @return void
 	 */
 	protected static function update_session( $data ) {
 		// Update both shipping and billing to the passed billing address first if set.
@@ -257,6 +259,8 @@ class Checkout_Mutation {
 	 * @param array $data Checkout data.
 	 *
 	 * @throws UserError When not able to create customer.
+	 * 
+	 * @return void
 	 */
 	protected static function process_customer( $data ) {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -338,6 +342,8 @@ class Checkout_Mutation {
 	 *
 	 * @param string $field String to update.
 	 * @param array  $data  Array of data to get the value from.
+	 * 
+	 * @return void
 	 */
 	protected static function set_customer_address_fields( $field, $data ) {
 		$billing_value  = null;
@@ -367,6 +373,8 @@ class Checkout_Mutation {
 	 * @param array $data  Checkout data.
 	 *
 	 * @throws UserError Invalid input.
+	 * 
+	 * @return void
 	 */
 	protected static function validate_data( &$data ) {
 		foreach ( self::get_checkout_fields( '', true ) as $fieldset_key => $fieldset ) {
@@ -445,6 +453,8 @@ class Checkout_Mutation {
 	 * @param array $data  An array of posted data.
 	 *
 	 * @throws UserError Invalid input.
+	 * 
+	 * @return void
 	 */
 	protected static function validate_checkout( &$data ) {
 		self::validate_data( $data );
@@ -502,14 +512,16 @@ class Checkout_Mutation {
 	 *
 	 * @param int    $order_id       Order ID.
 	 * @param string $payment_method Payment method.
+	 * 
+	 * @throws UserError When payment method is invalid.
 	 *
-	 * @return array.
+	 * @return array Processed payment results.
 	 */
 	protected static function process_order_payment( $order_id, $payment_method ) {
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 		if ( ! isset( $available_gateways[ $payment_method ] ) ) {
-			return;
+			throw new UserError( __( 'Cannot process invalid payment method.', 'wp-graphql-woocommerce' ) );
 		}
 
 		// Store Order ID in session so it can be re-used after payment failure.
@@ -555,6 +567,8 @@ class Checkout_Mutation {
 	 * @param array       $results  Order status.
 	 *
 	 * @throws UserError When validation fails.
+	 * 
+	 * @return int Order ID.
 	 */
 	public static function process_checkout( $data, $input, $context, $info, &$results = null ) {
 		wc_maybe_define_constant( 'WOOCOMMERCE_CHECKOUT', true );
@@ -706,6 +720,8 @@ class Checkout_Mutation {
 	 * @param array       $input      Order properties.
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
+	 * 
+	 * @return void
 	 */
 	public static function update_order_meta( $order_id, $meta_data, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );

@@ -21,6 +21,8 @@ class Product_Attributes {
 
 	/**
 	 * Registers the various connections from other Types to ProductAttribute.
+	 * 
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From Product to ProductAttribute.

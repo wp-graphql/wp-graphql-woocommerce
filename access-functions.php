@@ -86,7 +86,7 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 	/**
 	 * Format the price with a currency symbol.
 	 *
-	 * @param  float $price Raw price.
+	 * @param  float|string $price Raw price.
 	 * @param  array $args  Arguments to format a price {
 	 *     Array of arguments.
 	 *     Defaults to empty array.
@@ -167,8 +167,8 @@ if ( ! function_exists( 'wc_graphql_price_range' ) ) {
 	/**
 	 * Format a price range for display.
 	 *
-	 * @param  string $from Price from.
-	 * @param  string $to   Price to.
+	 * @param  string|float $from Price from.
+	 * @param  string|float $to   Price to.
 	 * @return string
 	 */
 	function wc_graphql_price_range( $from, $to ) {
@@ -312,6 +312,8 @@ if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	 * Creates WooGraphQL session transfer nonces.
 	 *
 	 * @param string|int $action  Nonce name.
+	 * 
+	 * @return string The nonce.
 	 */
 	function woographql_create_nonce( $action = -1 ) {
 		$uid   = woographql_get_session_uid();

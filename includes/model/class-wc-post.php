@@ -27,7 +27,7 @@ abstract class WC_Post extends Post {
 	/**
 	 * Stores the WC_Data object connected to the model.
 	 *
-	 * @var \WC_Data $data
+	 * @var \WC_Data
 	 */
 	protected $wc_data;
 

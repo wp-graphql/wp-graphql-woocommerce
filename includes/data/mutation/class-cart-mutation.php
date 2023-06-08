@@ -297,6 +297,8 @@ class Cart_Mutation {
 	 * Checks for errors thrown by the QL_Session_Handler during session token validation.
 	 *
 	 * @throws UserError If GRAPHQL_DEBUG is set to true and errors found.
+	 * 
+	 * @return void
 	 */
 	public static function check_session_token() {
 		$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );

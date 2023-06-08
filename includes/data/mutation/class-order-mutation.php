@@ -107,6 +107,8 @@ class Order_Mutation {
 	 * @param int         $order_id  Order object.
 	 * @param AppContext  $context   AppContext instance.
 	 * @param ResolveInfo $info      ResolveInfo instance.
+	 * 
+	 * @return void
 	 */
 	public static function add_items( $input, $order_id, $context, $info ) {
 		$item_group_keys = [
@@ -167,6 +169,8 @@ class Order_Mutation {
 	 * @param array       $item_keys  Item key map.
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
+	 * 
+	 * @return int
 	 */
 	protected static function map_input_to_item( $item_id, $input, $item_keys, $context, $info ) {
 		$order_item = \WC_Order_Factory::get_order_item( $item_id );
@@ -281,6 +285,8 @@ class Order_Mutation {
 	 * @param ResolveInfo $info       ResolveInfo instance.
 	 *
 	 * @throws UserError  Invalid item input.
+	 * 
+	 * @return void
 	 */
 	protected static function update_item_meta_data( $item_id, $meta_data, $context, $info ) {
 		$item = \WC_Order_Factory::get_order_item( $item_id );
@@ -301,6 +307,8 @@ class Order_Mutation {
 	 * @param array       $input     Order properties.
 	 * @param AppContext  $context   AppContext instance.
 	 * @param ResolveInfo $info      ResolveInfo instance.
+	 * 
+	 * @return void
 	 */
 	public static function add_order_meta( $order_id, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
@@ -353,6 +361,8 @@ class Order_Mutation {
 	 * @param array   $address   Address data.
 	 * @param integer $order_id  WC_Order instance.
 	 * @param string  $type      Address type.
+	 * 
+	 * @return void
 	 */
 	protected static function update_address( $address, $order_id, $type = 'billing' ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
@@ -371,6 +381,8 @@ class Order_Mutation {
 	 *
 	 * @param int   $order_id  Order ID.
 	 * @param array $coupons   Coupon codes to be applied to order.
+	 * 
+	 * @return void
 	 */
 	public static function apply_coupons( $order_id, $coupons ) {
 		$order = \WC_Order_Factory::get_order( $order_id );

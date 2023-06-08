@@ -21,6 +21,8 @@ class Coupons {
 
 	/**
 	 * Registers the various connections from other Types to Coupon
+	 * 
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From RootQuery.

@@ -17,6 +17,8 @@ class Product_Attribute_Types {
 
 	/**
 	 * Registers ProductAttribute types
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		// Local.

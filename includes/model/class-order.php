@@ -140,10 +140,9 @@ class Order extends WC_Post {
 	 */
 	protected function owner_matches_current_user() {
 		// Get Customer ID.
+		$customer_id = 0;
 		if ( in_array( $this->post_type, $this->get_viewable_order_types(), true ) ) {
 			$customer_id = $this->wc_data->get_customer_id();
-		} else {
-			$customer_id = get_post_meta( '_customer_user', $this->wc_data->get_parent_id(), true );
 		}
 
 		if ( 0 === $customer_id ) {
@@ -163,10 +162,9 @@ class Order extends WC_Post {
 	 * @return bool
 	 */
 	public function guest_order_customer_matches_current_user() {
+		$customer_email = null;
 		if ( in_array( $this->post_type, $this->get_viewable_order_types(), true ) ) {
 			$customer_email = $this->wc_data->get_billing_email();
-		} else {
-			$customer_email = get_post_meta( '_billing_email', $this->wc_data->get_parent_id(), true );
 		}
 
 		$session_customer = new \WC_Customer( 0, true );
@@ -245,8 +243,11 @@ class Order extends WC_Post {
 			parent::init();
 
 			$fields = [
+				'ID'                    => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                    => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'shop_order', "{$this->ID}" ) : null;
 				},
 				'date'                  => function() {
 					return ! empty( $this->wc_data->get_date_created() ) ? $this->wc_data->get_date_created() : null;

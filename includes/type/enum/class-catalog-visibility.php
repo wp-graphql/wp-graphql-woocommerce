@@ -14,6 +14,8 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Catalog_Visibility {
 	/**
 	 * Registers type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		$values = [

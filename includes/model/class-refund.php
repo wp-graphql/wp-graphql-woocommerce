@@ -47,7 +47,7 @@ class Refund extends Order {
 
 			$fields = [
 				'id'             => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order_refund', (string) $this->wc_data->get_id() ) : null;
 				},
 				'title'          => function() {
 					return ! empty( $this->wc_data->get_post_title() ) ? $this->wc_data->get_post_title() : null;

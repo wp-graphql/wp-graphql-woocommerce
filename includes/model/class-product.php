@@ -187,8 +187,11 @@ class Product extends WC_Post {
 
 			$type   = $this->wc_data->get_type();
 			$fields = [
+				'ID'                => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                  => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'product', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'product', "{$this->ID}" ) : null;
 				},
 				'type'                => function() {
 					return ! empty( $this->wc_data->get_type() ) ? $this->wc_data->get_type() : null;
@@ -252,13 +255,13 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_purchase_note() ) ? $this->wc_data->get_purchase_note() : null;
 				},
 				'menuOrder'           => function() {
-					return ! empty( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
+					return $this->wc_data->get_menu_order();
 				},
 				'averageRating'       => function() {
-					return ! empty( $this->wc_data->get_average_rating() ) ? $this->wc_data->get_average_rating() : null;
+					return $this->wc_data->get_average_rating();
 				},
 				'reviewCount'         => function() {
-					return ! empty( $this->wc_data->get_review_count() ) ? $this->wc_data->get_review_count() : null;
+					return $this->wc_data->get_review_count();
 				},
 				'onSale'              => function () {
 					return $this->wc_data->is_on_sale();
@@ -278,7 +281,7 @@ class Product extends WC_Post {
 				],
 				'totalSales'          => [
 					'callback'   => function() {
-						return ! empty( $this->wc_data->get_total_sales() ) ? $this->wc_data->get_total_sales() : null;
+						return $this->wc_data->get_total_sales();
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				],
@@ -375,7 +378,7 @@ class Product extends WC_Post {
 			) {
 				$fields += [
 					'manageStock'       => function() {
-						return ! empty( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
+						return $this->wc_data->get_manage_stock();
 					},
 					'stockQuantity'     => function() {
 						return ! empty( $this->wc_data->get_stock_quantity() ) ? $this->wc_data->get_stock_quantity() : null;

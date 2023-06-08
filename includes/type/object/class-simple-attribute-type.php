@@ -17,6 +17,8 @@ class Simple_Attribute_Type {
 
 	/**
 	 * Register SimpleAttribute type to the WPGraphQL schema
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(

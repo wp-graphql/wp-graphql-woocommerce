@@ -26,6 +26,8 @@ class Checkout {
 
 	/**
 	 * Registers mutation
+	 * 
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -145,10 +147,6 @@ class Checkout {
 				do_action( 'graphql_woocommerce_before_checkout', $args, $input, $context, $info );
 
 				$order_id = Checkout_Mutation::process_checkout( $args, $input, $context, $info, $results );
-
-				if ( is_wp_error( $order_id ) ) {
-					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
-				}
 
 				$order = \WC_Order_Factory::get_order( $order_id );
 				/**

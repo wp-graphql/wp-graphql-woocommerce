@@ -14,6 +14,8 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Taxonomy_Operator {
 	/**
 	 * Registers type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_enum_type(

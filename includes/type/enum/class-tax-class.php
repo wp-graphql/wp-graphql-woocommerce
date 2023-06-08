@@ -16,6 +16,8 @@ use WPGraphQL\Type\WPEnumType;
 class Tax_Class {
 	/**
 	 * Registers type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		$values = [

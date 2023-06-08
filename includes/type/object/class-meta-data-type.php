@@ -19,6 +19,8 @@ class Meta_Data_Type {
 
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(

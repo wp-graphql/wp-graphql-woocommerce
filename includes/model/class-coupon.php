@@ -36,12 +36,12 @@ use WC_Coupon;
  * @property string $excludeSaleItems
  * @property string $minimumAmount
  * @property string $maximumAmount
- * @property string $emailRestrictions
- * @property string $product_ids
- * @property string $excluded_product_ids
- * @property string $product_category_ids
- * @property string $excluded_product_category_ids
- * @property string $used_by_ids
+ * @property array  $emailRestrictions
+ * @property array  $product_ids
+ * @property array  $excluded_product_ids
+ * @property array  $product_category_ids
+ * @property array  $excluded_product_category_ids
+ * @property array  $used_by_ids
  *
  * @package WPGraphQL\WooCommerce\Model
  */
@@ -66,8 +66,11 @@ class Coupon extends WC_Post {
 			parent::init();
 
 			$fields = [
+				'ID'                            => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                            => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'shop_coupon', "{$this->ID}" ) : null;
 				},
 				'code'                          => function() {
 					return ! empty( $this->wc_data->get_code() ) ? $this->wc_data->get_code() : null;
@@ -91,7 +94,7 @@ class Coupon extends WC_Post {
 					return ! empty( $this->wc_data->get_date_expires() ) ? $this->wc_data->get_date_expires() : null;
 				},
 				'usageCount'                    => function() {
-					return ! empty( $this->wc_data->get_usage_count() ) ? $this->wc_data->get_usage_count() : null;
+					return $this->wc_data->get_usage_count();
 				},
 				'individualUse'                 => function() {
 					return $this->wc_data->get_individual_use();

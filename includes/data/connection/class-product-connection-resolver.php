@@ -38,7 +38,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $post_type;
 

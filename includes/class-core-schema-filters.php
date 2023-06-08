@@ -21,6 +21,8 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 class Core_Schema_Filters {
 	/**
 	 * Register filters
+	 * 
+	 * @return void
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs.
@@ -308,6 +310,8 @@ class Core_Schema_Filters {
 	 *
 	 * @param array                       $config    WPUnion config.
 	 * @param \WPGraphQL\Type\WPUnionType $wp_union  WPUnion object.
+	 * 
+	 * @return array
 	 */
 	public static function inject_union_types( $config, $wp_union ) {
 		$refresh_callback = false;
@@ -346,6 +350,8 @@ class Core_Schema_Filters {
 	 * @param \WPGraphQL\Type\WPObjectType $type      Type be resolve to.
 	 * @param mixed                        $value     Object for which the type is being resolve config.
 	 * @param \WPGraphQL\Type\WPUnionType  $wp_union  WPUnion object.
+	 * 
+	 * @return \WPGraphQL\Type\WPObjectType
 	 */
 	public static function inject_union_type_resolver( $type, $value, $wp_union ) {
 		switch ( get_class( $value ) ) {

@@ -24,6 +24,8 @@ class Customer_Update {
 
 	/**
 	 * Registers mutation
+	 * 
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(

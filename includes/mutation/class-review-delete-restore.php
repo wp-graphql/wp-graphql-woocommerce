@@ -23,6 +23,8 @@ class Review_Delete_Restore {
 
 	/**
 	 * Registers mutation
+	 * 
+	 * @return void
 	 */
 	public static function register_mutation() {
 		// Trash/Delete mutation.
@@ -99,7 +101,7 @@ class Review_Delete_Restore {
 				'resolve'     => function( $payload ) {
 					$deleted = (object) $payload['commentObject'];
 
-					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', absint( $deleted->comment_ID ) ) : null;
+					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', (string) $deleted->comment_ID ) : null;
 				},
 			],
 			'review'     => [

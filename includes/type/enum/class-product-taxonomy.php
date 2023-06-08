@@ -16,6 +16,8 @@ use WPGraphQL\Type\WPEnumType;
 class Product_Taxonomy {
 	/**
 	 * Registers type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		// Get values from taxonomies connected to products.

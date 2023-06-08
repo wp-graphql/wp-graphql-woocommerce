@@ -22,6 +22,8 @@ class Tax_Rate_Type {
 
 	/**
 	 * Registers tax rate type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(

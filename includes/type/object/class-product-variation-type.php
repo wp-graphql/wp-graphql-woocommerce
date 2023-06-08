@@ -22,6 +22,8 @@ class Product_Variation_Type {
 
 	/**
 	 * Register ProductVariation type to the WPGraphQL schema
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(

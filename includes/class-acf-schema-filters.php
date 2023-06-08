@@ -15,6 +15,8 @@ class ACF_Schema_Filters {
 
 	/**
 	 * Register filters
+	 * 
+	 * @return void
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs && taxonomies.

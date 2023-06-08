@@ -76,7 +76,7 @@ class Factory {
 	/**
 	 * Returns the order item Model for the order item.
 	 *
-	 * @param int $item - order item crud object instance.
+	 * @param \WC_Order_Item $item - order item crud object instance.
 	 *
 	 * @return Order_Item
 	 * @access public
@@ -96,7 +96,7 @@ class Factory {
 	/**
 	 * Returns the tax rate Model for the tax rate ID.
 	 *
-	 * @param string     $id - Tax rate ID.
+	 * @param int     $id - Tax rate ID.
 	 * @param AppContext $context - AppContext object.
 	 *
 	 * @return null|Deferred object
@@ -178,7 +178,7 @@ class Factory {
 	 * Resolves Relay node for some WooGraphQL types.
 	 *
 	 * @param mixed      $node     Node object.
-	 * @param string     $id       Object unique ID.
+	 * @param int        $id       Object unique ID.
 	 * @param string     $type     Node type.
 	 * @param AppContext $context  AppContext instance.
 	 *

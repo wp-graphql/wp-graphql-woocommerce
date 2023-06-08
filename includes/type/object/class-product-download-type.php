@@ -17,6 +17,8 @@ class Product_Download_Type {
 
 	/**
 	 * Register ProductDownload type
+	 * 
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
