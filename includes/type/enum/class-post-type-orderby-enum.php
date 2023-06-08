@@ -73,7 +73,7 @@ class Post_Type_Orderby_Enum {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

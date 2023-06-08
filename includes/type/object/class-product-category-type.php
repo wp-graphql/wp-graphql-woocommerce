@@ -19,7 +19,7 @@ class Product_Category_Type {
 
 	/**
 	 * Registers fields to ProductCategory.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_fields() {

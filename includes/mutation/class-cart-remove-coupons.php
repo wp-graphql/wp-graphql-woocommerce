@@ -20,7 +20,7 @@ class Cart_Remove_Coupons {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

@@ -14,7 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Tax_Rate_Connection_Orderby_Enum {
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

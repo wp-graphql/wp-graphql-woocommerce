@@ -89,7 +89,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Init hooks and session data.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -111,7 +111,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Setup token and customer ID.
 	 *
 	 * @throws UserError Invalid token.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function init_session_token() {
@@ -317,7 +317,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Warning: Headers will only be set if this is called before the headers are sent.
 	 *
 	 * @param bool $set Should the session cookie be set.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_customer_session_token( $set ) {
@@ -354,7 +354,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Set session expiration.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_session_expiration() {
@@ -371,7 +371,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Forget all session data without destroying it.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function forget_session() {
@@ -396,7 +396,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @param array                                $args     Operation arguments.
 	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
 	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function save_if_dirty( $source, $args, $context, $info ) {
@@ -421,7 +421,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * For refreshing session data mid-request when changes occur in concurrent requests.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function reload_data() {
@@ -435,7 +435,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Prevents potential crticial errors when calling this method.
 	 *
 	 * @param bool $set Should the session cookie be set.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_customer_session_cookie( $set ) {}

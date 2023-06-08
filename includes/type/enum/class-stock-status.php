@@ -14,7 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Stock_Status {
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

@@ -15,7 +15,7 @@ class Product_Taxonomy_Input {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

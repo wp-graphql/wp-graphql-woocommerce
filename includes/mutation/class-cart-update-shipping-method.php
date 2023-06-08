@@ -20,7 +20,7 @@ class Cart_Update_Shipping_Method {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Setups WPGraphQL WooCommerce constants
- * 
+ *
  * @return void
  */
 function constants() {
@@ -111,7 +111,7 @@ function dependencies_not_ready( &$deps = [] ) {
 
 /**
  * Initializes WPGraphQL WooCommerce
- * 
+ *
  * @return void
  */
 function init() {
@@ -146,7 +146,7 @@ add_action( 'graphql_init', 'WPGraphQL\WooCommerce\init' );
 
 /**
  * Initializes Protected Router
- * 
+ *
  * @return void
  */
 function init_auth_router() {

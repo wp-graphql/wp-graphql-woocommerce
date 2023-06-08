@@ -15,7 +15,7 @@ class Cart_Item_Quantity_Input {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

@@ -22,7 +22,7 @@ class Cart_Empty {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

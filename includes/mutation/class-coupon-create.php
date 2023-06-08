@@ -24,7 +24,7 @@ class Coupon_Create {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

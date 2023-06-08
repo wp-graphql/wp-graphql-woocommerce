@@ -157,8 +157,8 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 							'return'        => 'ids',
 						]
 					);
-					$customer_orders = is_array( $customer_orders ) ? array_map( 'absint', $customer_orders ) : [ '0' ];
-					$query_args['post_parent__in'] = $customer_orders ;
+					$customer_orders               = is_array( $customer_orders ) ? array_map( 'absint', $customer_orders ) : [ '0' ];
+					$query_args['post_parent__in'] = $customer_orders;
 				}
 				break;
 			default:

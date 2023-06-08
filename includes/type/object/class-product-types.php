@@ -25,7 +25,7 @@ class Product_Types {
 
 	/**
 	 * Registers product types to the WPGraphQL schema
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {
@@ -254,7 +254,7 @@ class Product_Types {
 
 	/**
 	 * Register "SimpleProduct" type.
-	 * 
+	 *
 	 * @return void
 	 */
 	private static function register_simple_product_type() {
@@ -276,7 +276,7 @@ class Product_Types {
 
 	/**
 	 * Registers "VariableProduct" type.
-	 * 
+	 *
 	 * @return void
 	 */
 	private static function register_variable_product_type() {
@@ -297,7 +297,7 @@ class Product_Types {
 
 	/**
 	 * Registers "ExternalProduct" type.
-	 * 
+	 *
 	 * @return void
 	 */
 	private static function register_external_product_type() {
@@ -326,7 +326,7 @@ class Product_Types {
 
 	/**
 	 * Registers "GroupProduct" type.
-	 * 
+	 *
 	 * @return void
 	 */
 	private static function register_group_product_type() {
@@ -387,7 +387,7 @@ class Product_Types {
 
 	/**
 	 * Register "SimpleProduct" type.
-	 * 
+	 *
 	 * @return void
 	 */
 	private static function register_unsupported_product_type() {

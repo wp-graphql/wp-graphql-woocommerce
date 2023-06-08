@@ -122,6 +122,8 @@ class Customer_Type {
 					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
 					'resolve'     => function ( $source ) {
 						/**
+						 * Session Handler.
+						 *
 						 * @var \WC_Session_Handler $session
 						 */
 						$session = \WC()->session;
@@ -288,6 +290,8 @@ class Customer_Type {
 				'resolve'     => function( $source ) {
 					if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
 						/**
+						 * Session handler.
+						 *
 						 * @var QL_Session_Handler $session
 						 */
 						$session = \WC()->session;
@@ -311,6 +315,8 @@ class Customer_Type {
 				'resolve'     => function( $source ) {
 					if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						/**
+						 * Session handler
+						 *
 						 * @var QL_Session_Handler $session
 						 */
 						$session = \WC()->session;

@@ -23,7 +23,7 @@ class Review_Delete_Restore {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

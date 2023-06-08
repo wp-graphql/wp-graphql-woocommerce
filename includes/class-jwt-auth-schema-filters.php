@@ -20,7 +20,7 @@ use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
 class JWT_Auth_Schema_Filters {
 	/**
 	 * Register filters
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function add_filters() {
@@ -51,7 +51,7 @@ class JWT_Auth_Schema_Filters {
 	 * @param array                             $fields         Mutation output field definitions.
 	 * @param \WPGraphQL\Type\WPInputObjectType $object         The WPInputObjectType the fields are be added to.
 	 * @param \WPGraphQL\Registry\TypeRegistry  $type_registry  TypeRegistry instance.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function add_jwt_output_fields( $fields, $object, $type_registry ): array {
@@ -114,7 +114,7 @@ class JWT_Auth_Schema_Filters {
 
 	/**
 	 * Adds "customer" field to "login" mutation payload.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function add_customer_to_login_payload() {

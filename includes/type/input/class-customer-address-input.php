@@ -15,7 +15,7 @@ class Customer_Address_Input {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

@@ -23,7 +23,7 @@ class Coupon_Delete {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

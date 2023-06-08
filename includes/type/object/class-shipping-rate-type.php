@@ -17,7 +17,7 @@ class Shipping_Rate_Type {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

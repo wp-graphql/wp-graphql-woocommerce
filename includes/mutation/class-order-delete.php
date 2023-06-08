@@ -25,7 +25,7 @@ class Order_Delete {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {
@@ -110,8 +110,9 @@ class Order_Delete {
 				$force_delete = $input['forceDelete'];
 			}
 
-			// Get Order model instance for output.
 			/**
+			 * Get Order model instance for output.
+			 *
 			 * @var \WC_Order $order
 			 */
 			$order = new Order( $order_id );

@@ -21,7 +21,7 @@ class Order_Item_Type {
 
 	/**
 	 * Register order item type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

@@ -15,7 +15,7 @@ class Cart_Error_Types {
 
 	/**
 	 * Registers types to the GraphQL schema.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

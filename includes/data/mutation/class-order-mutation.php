@@ -107,7 +107,7 @@ class Order_Mutation {
 	 * @param int         $order_id  Order object.
 	 * @param AppContext  $context   AppContext instance.
 	 * @param ResolveInfo $info      ResolveInfo instance.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function add_items( $input, $order_id, $context, $info ) {
@@ -169,7 +169,7 @@ class Order_Mutation {
 	 * @param array       $item_keys  Item key map.
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
-	 * 
+	 *
 	 * @return int
 	 */
 	protected static function map_input_to_item( $item_id, $input, $item_keys, $context, $info ) {
@@ -285,7 +285,7 @@ class Order_Mutation {
 	 * @param ResolveInfo $info       ResolveInfo instance.
 	 *
 	 * @throws UserError  Invalid item input.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected static function update_item_meta_data( $item_id, $meta_data, $context, $info ) {
@@ -307,7 +307,7 @@ class Order_Mutation {
 	 * @param array       $input     Order properties.
 	 * @param AppContext  $context   AppContext instance.
 	 * @param ResolveInfo $info      ResolveInfo instance.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function add_order_meta( $order_id, $input, $context, $info ) {
@@ -361,7 +361,7 @@ class Order_Mutation {
 	 * @param array   $address   Address data.
 	 * @param integer $order_id  WC_Order instance.
 	 * @param string  $type      Address type.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected static function update_address( $address, $order_id, $type = 'billing' ) {
@@ -381,7 +381,7 @@ class Order_Mutation {
 	 *
 	 * @param int   $order_id  Order ID.
 	 * @param array $coupons   Coupon codes to be applied to order.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function apply_coupons( $order_id, $coupons ) {
@@ -390,6 +390,8 @@ class Order_Mutation {
 		// Remove all coupons first to ensure calculation is correct.
 		foreach ( $order->get_items( 'coupon' ) as $coupon ) {
 			/**
+			 * Order item coupon.
+			 *
 			 * @var \WC_Order_Item_Coupon $coupon
 			 */
 

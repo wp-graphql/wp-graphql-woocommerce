@@ -23,7 +23,7 @@ class Refund_Type {
 
 	/**
 	 * Register Refund type and queries to the WPGraphQL schema.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

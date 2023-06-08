@@ -87,9 +87,9 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 	 * Format the price with a currency symbol.
 	 *
 	 * @param  float|string $price Raw price.
-	 * @param  array $args  Arguments to format a price {
-	 *     Array of arguments.
-	 *     Defaults to empty array.
+	 * @param  array        $args  Arguments to format a price {
+	 *            Array of arguments.
+	 *            Defaults to empty array.
 	 *
 	 *     @type string $currency           Currency code.
 	 *                                      Defaults to empty string (Use the result from get_woocommerce_currency()).
@@ -312,7 +312,7 @@ if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	 * Creates WooGraphQL session transfer nonces.
 	 *
 	 * @param string|int $action  Nonce name.
-	 * 
+	 *
 	 * @return string The nonce.
 	 */
 	function woographql_create_nonce( $action = -1 ) {

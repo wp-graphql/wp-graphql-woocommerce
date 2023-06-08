@@ -25,7 +25,7 @@ class Cart_Type {
 
 	/**
 	 * Register Cart-related types and queries to the WPGraphQL schema
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {
@@ -438,7 +438,7 @@ class Cart_Type {
 
 	/**
 	 * Registers Cart type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_cart() {
@@ -468,7 +468,7 @@ class Cart_Type {
 
 	/**
 	 * Registers CartItem type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_cart_item() {
@@ -710,7 +710,7 @@ class Cart_Type {
 
 	/**
 	 * Registers CartFee type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_cart_fee() {
@@ -767,7 +767,7 @@ class Cart_Type {
 	}
 	/**
 	 * Registers CartTax type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_cart_tax() {
@@ -827,7 +827,7 @@ class Cart_Type {
 
 	/**
 	 * Registers AppliedCoupon type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_applied_coupon() {

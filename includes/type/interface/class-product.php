@@ -23,7 +23,7 @@ class Product {
 
 	/**
 	 * Registers the "Product" interface.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_interface() {

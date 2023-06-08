@@ -17,7 +17,7 @@ class Payment_Gateway_Type {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

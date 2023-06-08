@@ -22,7 +22,7 @@ class Cart_Restore_Items {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

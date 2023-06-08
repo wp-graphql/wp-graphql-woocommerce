@@ -22,7 +22,7 @@ class Variation_Attributes {
 
 	/**
 	 * Registers the various connections from other Types to VariationAttribute
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_connections() {

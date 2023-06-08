@@ -17,7 +17,7 @@ class Coupon_Update {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

@@ -21,7 +21,7 @@ class Products {
 
 	/**
 	 * Registers the various connections from other Types to Product
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_connections() {

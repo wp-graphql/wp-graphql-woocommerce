@@ -15,7 +15,7 @@ class Create_Account_Input {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

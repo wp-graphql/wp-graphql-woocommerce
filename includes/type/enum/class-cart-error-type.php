@@ -14,7 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Cart_Error_Type {
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

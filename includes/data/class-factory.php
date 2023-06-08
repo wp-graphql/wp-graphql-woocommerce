@@ -96,7 +96,7 @@ class Factory {
 	/**
 	 * Returns the tax rate Model for the tax rate ID.
 	 *
-	 * @param int     $id - Tax rate ID.
+	 * @param int        $id - Tax rate ID.
 	 * @param AppContext $context - AppContext object.
 	 *
 	 * @return null|Deferred object

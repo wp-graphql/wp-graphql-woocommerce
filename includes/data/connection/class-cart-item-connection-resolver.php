@@ -58,11 +58,11 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 				$needs_shipping          = $where_args['needsShipping'];
 				$query_args['filters'][] = function( $cart_item ) use ( $needs_shipping ) {
 					$product = \WC()->product_factory->get_product( $cart_item['product_id'] );
-					
+
 					if ( ! is_object( $product ) ) {
 						return false;
 					}
-					
+
 					return $needs_shipping === (bool) $product->needs_shipping();
 				};
 			}

@@ -21,7 +21,7 @@ class Shipping_Method_Type {
 
 	/**
 	 * Registers shipping method type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

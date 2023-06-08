@@ -25,7 +25,7 @@ class Protected_Router {
 	/**
 	 * The default route
 	 *
-	 * @var string 
+	 * @var string
 	 */
 	public static $default_route = 'transfer-session';
 

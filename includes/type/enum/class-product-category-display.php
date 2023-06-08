@@ -14,7 +14,7 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Product_Category_Display {
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

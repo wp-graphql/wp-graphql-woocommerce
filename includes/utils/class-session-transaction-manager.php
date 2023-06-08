@@ -27,7 +27,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Instance of parent session handler
 	 *
-	 * @var QL_Session_Handler 
+	 * @var QL_Session_Handler
 	 */
 	private $session_handler = null;
 
@@ -208,7 +208,7 @@ class Session_Transaction_Manager {
 	 * Pop transaction ID off the top of the queue, ending the transaction.
 	 *
 	 * @throws UserError If transaction ID is not on the top of the queue.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function pop_transaction_id() {
@@ -236,7 +236,7 @@ class Session_Transaction_Manager {
 	 * Saves transaction queue.
 	 *
 	 * @param array $queue  Transaction queue.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function save_transaction_queue( $queue = [] ) {

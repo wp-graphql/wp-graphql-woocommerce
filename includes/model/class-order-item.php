@@ -132,9 +132,8 @@ class Order_Item extends Model {
 					return ! empty( $this->data->get_order_id() ) ? $this->data->get_order_id() : null;
 				},
 				'id'         => function() {
-					// phpcs:ignore 
-					return ( ! empty( $this->orderId ) && ! empty( $this->ID ) )
-						? Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID )
+					return ( ! empty( $this->orderId ) && ! empty( $this->ID ) ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						? Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						: null;
 				},
 				'type'       => function() {

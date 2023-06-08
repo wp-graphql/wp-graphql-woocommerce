@@ -26,7 +26,7 @@ class Payment_Method_Set_Default {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

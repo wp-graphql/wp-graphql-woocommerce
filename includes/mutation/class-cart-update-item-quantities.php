@@ -23,7 +23,7 @@ class Cart_Update_Item_Quantities {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

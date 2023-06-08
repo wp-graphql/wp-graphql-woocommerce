@@ -17,7 +17,7 @@ class Variation_Attribute_Type {
 
 	/**
 	 * Register VariationAttribute type to the WPGraphQL schema
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

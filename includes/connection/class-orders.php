@@ -20,7 +20,7 @@ class Orders {
 
 	/**
 	 * Registers the various connections from other Types to Customer
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_connections() {

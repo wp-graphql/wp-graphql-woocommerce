@@ -21,7 +21,7 @@ class Cart_Apply_Coupon {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {

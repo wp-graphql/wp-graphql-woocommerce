@@ -15,7 +15,7 @@ class Line_Item_Input {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

@@ -24,7 +24,7 @@ class Update_Session {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {
@@ -63,6 +63,8 @@ class Update_Session {
 				'type'    => [ 'list_of' => 'MetaData' ],
 				'resolve' => function ( $payload ) {
 					/**
+					 * Session handler.
+					 *
 					 * @var QL_Session_Handler $session
 					 */
 					$session      = \WC()->session;
@@ -104,6 +106,8 @@ class Update_Session {
 			$session_data_input = $input['sessionData'];
 
 			/**
+			 * Session handler.
+			 *
 			 * @var QL_Session_Handler $session
 			 */
 			$session = \WC()->session;

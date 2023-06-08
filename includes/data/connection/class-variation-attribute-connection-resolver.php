@@ -67,7 +67,7 @@ class Variation_Attribute_Connection_Resolver {
 	 * @param array       $args       - Connection arguments.
 	 * @param AppContext  $context    - AppContext object.
 	 * @param ResolveInfo $info       - ResolveInfo object.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {

@@ -22,7 +22,7 @@ class Coupon_Type {
 
 	/**
 	 * Register Coupon type and queries to the WPGraphQL schema
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {

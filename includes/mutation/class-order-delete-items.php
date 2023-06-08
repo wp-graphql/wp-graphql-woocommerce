@@ -24,7 +24,7 @@ class Order_Delete_Items {
 
 	/**
 	 * Registers mutation
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_mutation() {
@@ -114,6 +114,8 @@ class Order_Delete_Items {
 
 			// Get Order model instance for output.
 			/**
+			 * Order model instance.
+			 *
 			 * @var \WC_Order $order
 			 */
 			$order = new Order( $order_id );
@@ -128,8 +130,9 @@ class Order_Delete_Items {
 			$order->get_items( 'coupon' );
 			// @codingStandardsIgnoreEnd.
 
-			// Get working order model.
 			/**
+			 * Working order model instance.
+			 *
 			 * @var \WC_Order $working_order
 			 */
 			$working_order = new Order( $order_id );

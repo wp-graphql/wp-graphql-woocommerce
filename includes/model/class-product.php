@@ -145,6 +145,8 @@ class Product extends WC_Post {
 	 */
 	private function get_variation_price( $pricing_type = '', $raw = false ) {
 		/**
+		 * Variable product data source.
+		 *
 		 * @var \WC_Product_Variable $data
 		 */
 		$data = $this->wc_data;
@@ -187,7 +189,7 @@ class Product extends WC_Post {
 
 			$type   = $this->wc_data->get_type();
 			$fields = [
-				'ID'                => function() {
+				'ID'                  => function() {
 					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
 				},
 				'id'                  => function() {

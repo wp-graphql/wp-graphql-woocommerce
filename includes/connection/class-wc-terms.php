@@ -26,9 +26,17 @@ class WC_Terms extends TermObjects {
 
 	/**
 	 * Registers the various connections from other Types to WooCommerce taxonomies.
+	 *
+	 * @throws \Exception If the "product_cat" taxonomy is not found.
+	 *
+	 * @return void
 	 */
 	public static function register_connections() {
-		/** @var array<string,\WP_Taxonomy> $allowed_taxonomies */
+		/**
+		 * Get the allowed taxonomies.
+		 *
+		 * @var array<string,\WP_Taxonomy> $allowed_taxonomies
+		 */
 		$allowed_taxonomies = WPGraphQL::get_allowed_taxonomies( 'objects' );
 		$wc_post_types      = WP_GraphQL_WooCommerce::get_post_types();
 

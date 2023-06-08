@@ -400,7 +400,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 		/**
 		 * Sets up WooGraphQL schema.
-		 * 
+		 *
 		 * @return void
 		 */
 		private function setup() {

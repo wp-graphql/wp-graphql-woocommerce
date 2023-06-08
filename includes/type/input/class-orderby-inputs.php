@@ -20,7 +20,7 @@ class Orderby_Inputs {
 	 * Registers Orderby WPInputObject type to schema.
 	 *
 	 * @param string $base_name  Base name of WPInputObject being registered.
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register_orderby_input( $base_name ) {
@@ -42,7 +42,7 @@ class Orderby_Inputs {
 
 	/**
 	 * Registers type
-	 * 
+	 *
 	 * @return void
 	 */
 	public static function register() {
