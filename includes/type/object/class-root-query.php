@@ -224,6 +224,7 @@ class Root_Query {
 						$post_type     = get_post_type_object( 'shop_order' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
 						if ( ! $is_authorized && get_current_user_id() ) {
+							/** @var \WC_Order[] $orders */
 							$orders = wc_get_orders(
 								[
 									'type'          => 'shop_order',
@@ -333,7 +334,9 @@ class Root_Query {
 						if ( get_current_user_id() ) {
 							$refund   = \wc_get_order( $refund_id );
 							$order_id = $refund->get_parent_id();
-							$orders   = wc_get_orders(
+
+							/** @var \WC_Order[] $orders */
+							$orders = wc_get_orders(
 								[
 									'type'          => 'shop_order',
 									'post__in'      => [ $order_id ],

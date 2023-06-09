@@ -111,6 +111,12 @@ trait WC_CPT_Loader_Common {
 	 * @return mixed|null
 	 */
 	public function get_cpt_model_by_id( $id ) {
-		return $this->loader->resolve_model( get_post_type( $id ), $id );
+		$post_type = get_post_type( $id );
+
+		if ( ! $post_type ) {
+			return null;
+		}
+
+		return $this->loader->resolve_model( $post_type, $id );
 	}
 }

@@ -90,7 +90,7 @@ class Customer_Register {
 				'type'    => 'User',
 				'resolve' => function ( $payload ) {
 					$user = get_user_by( 'ID', $payload['id'] );
-					return new User( $user );
+					return false !== $user ? new User( $user ) : null;
 				},
 			],
 		];

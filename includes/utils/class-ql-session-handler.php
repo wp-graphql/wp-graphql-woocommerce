@@ -96,6 +96,11 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->init_session_token();
 		Session_Transaction_Manager::get( $this );
 
+		/**
+		 *  Necessary since Session_Transaction_Manager applies to the reference.
+		 *
+		 * @var self $this
+		 */
 		add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
 		add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
 		add_action( 'graphql_after_resolve_field', [ $this, 'save_if_dirty' ], 10, 4 );

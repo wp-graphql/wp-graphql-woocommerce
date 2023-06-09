@@ -79,7 +79,19 @@ class Cart_Mutation {
 	 * @throws UserError  Invalid cart attribute provided.
 	 */
 	private static function prepare_attributes( $product_id, array $variation_data = [] ) {
-		$product         = wc_get_product( $product_id );
+		$product = wc_get_product( $product_id );
+
+		// Bail if bad product ID.
+		if ( ! $product ) {
+			throw new UserError(
+				sprintf(
+					/* translators: %s: product ID */
+					__( 'No product found matching the ID provided: %s', 'wp-graphql-woocommerce' ),
+					$product_id
+				)
+			);
+		}
+
 		$attribute_names = array_keys( $product->get_attributes() );
 
 		$attributes = [];
@@ -253,10 +265,14 @@ class Cart_Mutation {
 	 *
 	 * @throws UserError  Invalid shipping method.
 	 *
-	 * @return array
+	 * @return array<string,string>
 	 */
 	public static function prepare_shipping_methods( $posted_shipping_methods ) {
-		// Get current shipping methods.
+		/**
+		 * Get current shipping methods.
+		 *
+		 * @var array<string,string> $chosen_shipping_methods
+		 */
 		$chosen_shipping_methods = \WC()->session->get( 'chosen_shipping_methods' );
 
 		// Update current shipping methods.

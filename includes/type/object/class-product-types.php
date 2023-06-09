@@ -355,6 +355,10 @@ class Product_Types {
 								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ), 'wc_products_array_filter_visible_grouped' );
 
 								foreach ( $children as $child ) {
+									if ( ! $child ) {
+										continue;
+									}
+
 									if ( '' !== $child->get_price() ) {
 										$child_prices[] = 'incl' === $tax_display_mode ? wc_get_price_including_tax( $child ) : wc_get_price_excluding_tax( $child );
 									}
