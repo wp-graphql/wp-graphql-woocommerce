@@ -53,6 +53,8 @@
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.Commenting">
+		<!-- Allow for inline @var typing -->
+		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.PHP.CommentedOutCode.Found">
