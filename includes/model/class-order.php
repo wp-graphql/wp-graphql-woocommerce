@@ -433,7 +433,7 @@ class Order extends WC_Post {
 							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 							'meta_key'   => 'is_customer_note',
 							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-							'meta_value' => true,
+							'meta_value' => '1',
 						];
 					}
 
