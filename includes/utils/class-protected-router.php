@@ -286,12 +286,36 @@ class Protected_Router {
 		$nonce_names = $this->get_nonce_names();
 		if ( empty( $nonce_names ) ) {
 			$this->redirect_to_home();
+			return;
 		}
 
+		/**
+		 * Nonce prefix
+		 *
+		 * @var string $nonce_prefix
+		 */
 		$nonce_prefix = null;
-		$session_id   = null;
-		$nonce        = null;
-		$field        = null;
+
+		/**
+		 * Session ID
+		 *
+		 * @var string $session_id
+		 */
+		$session_id = null;
+
+		/**
+		 * Nonce
+		 *
+		 * @var string $nonce
+		 */
+		$nonce = null;
+
+		/**
+		 * Field
+		 *
+		 * @var string $field
+		 */
+		$field = null;
 		foreach ( $nonce_names as $possible_field => $nonce_param ) {
 			if ( in_array( $nonce_param, array_keys( $_REQUEST ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$field        = $possible_field;
@@ -302,14 +326,19 @@ class Protected_Router {
 			}
 		}
 
-		if ( empty( $field ) | empty( $nonce_prefix ) | empty( $session_id ) | empty( $nonce ) ) {
+		if ( empty( $field ) || empty( $nonce_prefix ) || empty( $session_id ) || empty( $nonce ) ) {
 			$this->redirect_to_home();
 			return;
 		}
 
 		// Bail early if session user already authenticated.
 		if ( 0 !== get_current_user_id() && get_current_user_id() === absint( $session_id ) ) {
-			wp_safe_redirect( $this->get_target_endpoint( $field ) );
+			$redirect_url = $this->get_target_endpoint( (string) $field );
+			if ( empty( $redirect_url ) ) {
+				$this->redirect_to_home();
+				return;
+			}
+			wp_safe_redirect( $redirect_url );
 			exit;
 		}
 
@@ -320,7 +349,7 @@ class Protected_Router {
 		}
 
 		// Verify nonce.
-		if ( ! woographql_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
+		if ( null !== $nonce && ! woographql_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
 			$this->redirect_to_home();
 		}
 
@@ -343,7 +372,7 @@ class Protected_Router {
 		$session_data = $session->get_session( $session_id );
 
 		// We were passed a session ID, yet no session was found. Let's log this and bail.
-		if ( empty( $session_data ) ) {
+		if ( ! is_array( $session_data ) || empty( $session_data ) ) {
 			// TODO: Switch to WC Notices.
 			throw new \Exception( 'Could not locate WooCommerce session on checkout' );
 		}
@@ -358,7 +387,12 @@ class Protected_Router {
 		$session->set_customer_session_cookie( true );
 
 		// After session has been restored on redirect to destination.
-		wp_safe_redirect( $this->get_target_endpoint( $field ) );
+		$redirect_url = $this->get_target_endpoint( (string) $field );
+		if ( empty( $redirect_url ) ) {
+			$this->redirect_to_home();
+			return;
+		}
+		wp_safe_redirect( $redirect_url );
 		exit;
 	}
 }

@@ -122,6 +122,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
+		/**
+		 * Get product post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( $this->post_type );
 		$query_args    = [
 			'post_type'           => $this->post_type,

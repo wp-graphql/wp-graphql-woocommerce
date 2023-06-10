@@ -15,7 +15,8 @@ use GraphQLRelay\Relay;
 /**
  * Class Order
  *
- * @property \WC_Order $wc_data
+ * @property \WC_Order     $wc_data
+ * @property \WP_Post_Type $post_type_object
  *
  * @property int    $ID
  * @property string $id
@@ -85,9 +86,16 @@ class Order extends WC_Post {
 	 * Order constructor.
 	 *
 	 * @param int|\WC_Data $id - shop_order post-type ID.
+	 *
+	 * @throws \Exception - Failed to retrieve order data source.
 	 */
 	public function __construct( $id ) {
 		$data = \wc_get_order( $id );
+
+		// Check if order is valid.
+		if ( ! is_object( $data ) ) {
+			throw new \Exception( __( 'Failed to retrieve order data source', 'wp-graphql-woocommerce' ) );
+		}
 
 		parent::__construct( $data );
 	}
@@ -335,7 +343,7 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
 				},
 				'subtotal'              => function() {
-					$price = ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : null;
+					$price = ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
 				'subtotalRaw'           => function() {
@@ -433,7 +441,7 @@ class Order extends WC_Post {
 
 					add_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
-					return count( $notes );
+					return is_array( $notes ) ? count( $notes ) : 0;
 				},
 				'commentStatus'         => function() {
 					return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ? 'open' : 'closed';

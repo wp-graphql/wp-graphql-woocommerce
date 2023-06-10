@@ -138,7 +138,13 @@ class Order_Delete {
 			do_action( 'graphql_woocommerce_before_order_delete', $order, $input, $context, $info );
 
 			// Delete order.
-			$success = Order_Mutation::purge( WC_Order_Factory::get_order( $order->get_id() ), $force_delete );
+			$order_to_be_deleted = WC_Order_Factory::get_order( $order->get_id() );
+
+			if ( ! is_object( $order_to_be_deleted ) ) {
+				throw new UserError( __( 'Order to be deleted could not be found.', 'wp-graphql-woocommerce' ) );
+			}
+
+			$success = Order_Mutation::purge( $order_to_be_deleted, $force_delete );
 
 			if ( ! $success ) {
 				throw new UserError(

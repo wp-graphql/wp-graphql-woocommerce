@@ -126,6 +126,10 @@ class Order_Update {
 
 			$order = WC_Order_Factory::get_order( $order_id );
 
+			if ( ! is_object( $order ) ) {
+				throw new UserError( __( 'Order not found.', 'wp-graphql-woocommerce' ) );
+			}
+
 			// Make sure gateways are loaded so hooks from gateways fire on save/create.
 			\WC()->payment_gateways();
 

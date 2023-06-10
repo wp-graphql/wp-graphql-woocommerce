@@ -50,7 +50,7 @@ class Customer extends Model {
 	 * @param WC_Customer|int|string $id - User ID.
 	 */
 	public function __construct( $id = 'session' ) {
-		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( $id );
+		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( absint( $id ) );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
@@ -61,8 +61,7 @@ class Customer extends Model {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'customer_restricted_cap', 'session' === $id ? '' : 'list_users' );
-
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, $id );
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, $this->data->get_id() );
 	}
 
 	/**

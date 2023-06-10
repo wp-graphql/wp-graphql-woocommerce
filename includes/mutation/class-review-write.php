@@ -84,6 +84,11 @@ class Review_Write {
 						return null;
 					}
 					$comment = get_comment( $payload['id'] );
+
+					if ( null === $comment ) {
+						return null;
+					}
+
 					return new Comment( $comment );
 				},
 			],

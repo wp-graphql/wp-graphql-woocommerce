@@ -20,81 +20,82 @@ use WC_Product_Simple;
 /**
  * Class Product
  *
- * @property \WC_Product $wc_data
+ * @property \WC_Product   $wc_data
+ * @property \WP_Post_Type $post_type_object
  *
- * @property int         $ID
- * @property string      $id
- * @property string      $type
- * @property string      $slug
- * @property string      $name
- * @property string      $date
- * @property string      $modified
- * @property string      $status
- * @property bool        $featured
- * @property string      $description
- * @property string      $descriptionRaw
- * @property string      $shortDescription
- * @property string      $shortDescriptionRaw
- * @property string      $sku
- * @property string      $dateOnSaleFrom
- * @property string      $dateOnSaleTo
- * @property bool        $reviewsAllowed
- * @property string      $purchaseNote
- * @property int         $menuOrder
- * @property float       $averageRating
- * @property int         $reviewCount
- * @property bool        $onSale
- * @property bool        $purchasable
- * @property string      $catalogVisibility
- * @property int         $totalSales
+ * @property int           $ID
+ * @property string        $id
+ * @property string        $type
+ * @property string        $slug
+ * @property string        $name
+ * @property string        $date
+ * @property string        $modified
+ * @property string        $status
+ * @property bool          $featured
+ * @property string        $description
+ * @property string        $descriptionRaw
+ * @property string        $shortDescription
+ * @property string        $shortDescriptionRaw
+ * @property string        $sku
+ * @property string        $dateOnSaleFrom
+ * @property string        $dateOnSaleTo
+ * @property bool          $reviewsAllowed
+ * @property string        $purchaseNote
+ * @property int           $menuOrder
+ * @property float         $averageRating
+ * @property int           $reviewCount
+ * @property bool          $onSale
+ * @property bool          $purchasable
+ * @property string        $catalogVisibility
+ * @property int           $totalSales
  *
- * @property array       $upsell_ids
- * @property array       $attributes
- * @property array       $default_attributes
- * @property int         $image_id
- * @property array       $gallery_image_ids
- * @property array       $category_ids
- * @property array       $tag_ids
- * @property int         $parent_id
+ * @property array         $upsell_ids
+ * @property array         $attributes
+ * @property array         $default_attributes
+ * @property int           $image_id
+ * @property int[]         $gallery_image_ids
+ * @property int[]         $category_ids
+ * @property int[]         $tag_ids
+ * @property int           $parent_id
  *
- * @property bool        $manageStock
- * @property int         $stockQuantity
- * @property string      $backorders
- * @property bool        $backordersAllowed
- * @property bool        $soldIndividually
- * @property float       $weight
- * @property float       $length
- * @property float       $width
- * @property float       $height
- * @property int         $shippingClassId
- * @property bool        $shippingRequired
- * @property bool        $shippingTaxable
- * @property array       $cross_sell_ids
- * @property string      $stockStatus
+ * @property bool          $manageStock
+ * @property int           $stockQuantity
+ * @property string        $backorders
+ * @property bool          $backordersAllowed
+ * @property bool          $soldIndividually
+ * @property float         $weight
+ * @property float         $length
+ * @property float         $width
+ * @property float         $height
+ * @property int           $shippingClassId
+ * @property bool          $shippingRequired
+ * @property bool          $shippingTaxable
+ * @property array         $cross_sell_ids
+ * @property string        $stockStatus
  *
- * @property bool        $virtual
- * @property int         $downloadExpiry
- * @property bool        $downloadable
- * @property int         $downloadLimit
- * @property array       $downloads
+ * @property bool          $virtual
+ * @property int           $downloadExpiry
+ * @property bool          $downloadable
+ * @property int           $downloadLimit
+ * @property array         $downloads
  *
- * @property string      $price
- * @property float|array $priceRaw
- * @property string      $regularPrice
- * @property float|array $regularPriceRaw
- * @property string      $salePrice
- * @property float|array $salePriceRaw
- * @property string      $taxStatus
- * @property string      $taxClass
+ * @property string        $price
+ * @property float|float[] $priceRaw
+ * @property string        $regularPrice
+ * @property float|float[] $regularPriceRaw
+ * @property string        $salePrice
+ * @property float|float[] $salePriceRaw
+ * @property string        $taxStatus
+ * @property string        $taxClass
  *
- * @property string      $externalUrl
- * @property string      $buttonText
+ * @property string        $externalUrl
+ * @property string        $buttonText
  *
- * @property string      $addToCartText
- * @property string      $addToCartDescription
- * @property array       $grouped_ids
+ * @property string        $addToCartText
+ * @property string        $addToCartDescription
+ * @property int[]         $grouped_ids
  *
- * @property array       $variation_ids
+ * @property int[]         $variation_ids
  *
  * @package WPGraphQL\WooCommerce\Model
  */
@@ -118,10 +119,17 @@ class Product extends WC_Post {
 	 * Product constructor.
 	 *
 	 * @param int|\WC_Data $id - product post-type ID.
+	 *
+	 * @throws \Exception  Failed to retrieve product data source.
 	 */
 	public function __construct( $id ) {
 		// Get WC_Product object.
 		$data = \wc_get_product( $id );
+
+		// Check if product is valid.
+		if ( ! is_object( $data ) ) {
+			throw new \Exception( __( 'Failed to retrieve product data source', 'wp-graphql-woocommerce' ) );
+		}
 
 		parent::__construct( $data );
 	}

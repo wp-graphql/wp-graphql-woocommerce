@@ -16,7 +16,9 @@ use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Product as Model;
 use WPGraphQL\WooCommerce\Type\WPInterface\Product;
+
 
 /**
  * Class Product_Types
@@ -349,10 +351,11 @@ class Product_Types {
 						'price'                => [
 							'type'        => 'String',
 							'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => function( Model $source ) {
 								$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
 								$child_prices     = [];
-								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ), 'wc_products_array_filter_visible_grouped' );
+								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ) );
+								$children         = array_filter( $children, 'wc_products_array_filter_visible_grouped' );
 
 								foreach ( $children as $child ) {
 									if ( ! $child ) {

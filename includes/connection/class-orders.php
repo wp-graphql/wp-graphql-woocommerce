@@ -167,6 +167,11 @@ class Orders {
 	 */
 	public static function get_connection_config( $args = [], $post_type = 'shop_order' ): array {
 		// Get Post type object for use in connection resolve function.
+		/**
+		 * Get connection post type.
+		 *
+		 * @var \WP_Post_Type $post_object
+		 */
 		$post_object = get_post_type_object( $post_type );
 
 		return array_merge(

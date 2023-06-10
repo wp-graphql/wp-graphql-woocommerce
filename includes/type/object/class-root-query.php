@@ -120,6 +120,11 @@ class Root_Query {
 						}
 
 						// Check if user authorized to view coupon.
+						/**
+						 * Get coupon post type.
+						 *
+						 * @var \WP_Post_Type $post_type
+						 */
 						$post_type     = get_post_type_object( 'shop_coupon' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
 						if ( ! $is_authorized ) {
@@ -129,7 +134,10 @@ class Root_Query {
 						if ( empty( $coupon_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No coupon ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-						} elseif ( get_post( $coupon_id )->post_type !== 'shop_coupon' ) {
+						}
+
+						$coupon = get_post( $coupon_id );
+						if ( ! is_object( $coupon ) || 'shop_coupon' !== $coupon->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No coupon exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
@@ -215,12 +223,20 @@ class Root_Query {
 						if ( empty( $order_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-						} elseif ( get_post( $order_id )->post_type !== 'shop_order' ) {
+						}
+
+						$order = get_post( $order_id );
+						if ( ! is_object( $order ) || 'shop_order' !== $order->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
 
 						// Check if user authorized to view order.
+						/**
+						 * Get order post type.
+						 *
+						 * @var \WP_Post_Type $post_type
+						 */
 						$post_type     = get_post_type_object( 'shop_order' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
 						if ( ! $is_authorized && get_current_user_id() ) {
@@ -280,7 +296,10 @@ class Root_Query {
 						if ( empty( $variation_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-						} elseif ( get_post( $variation_id )->post_type !== 'product_variation' ) {
+						}
+
+						$variation = get_post( $variation_id );
+						if ( ! is_object( $variation ) || 'product_variation' !== $variation->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
@@ -323,16 +342,26 @@ class Root_Query {
 						if ( empty( $refund_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-						} elseif ( get_post( $refund_id )->post_type !== 'shop_order_refund' ) {
+						}
+						$refund = get_post( $refund_id );
+						if ( ! is_object( $refund ) || 'shop_order_refund' !== $refund->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
 
 						// Check if user authorized to view order.
+						/**
+						 * Get refund post type.
+						 *
+						 * @var \WP_Post_Type $post_type
+						 */
 						$post_type     = get_post_type_object( 'shop_order_refund' );
 						$is_authorized = current_user_can( $post_type->cap->edit_others_posts );
 						if ( get_current_user_id() ) {
-							$refund   = \wc_get_order( $refund_id );
+							$refund = \wc_get_order( $refund_id );
+							if ( ! is_object( $refund ) || ! is_a( $refund, \WC_Order_Refund::class ) ) {
+								throw new UserError( __( 'Failed to retrieve refund', 'wp-graphql-woocommerce' ) );
+							}
 							$order_id = $refund->get_parent_id();
 
 							/** @var \WC_Order[] $orders */
@@ -349,7 +378,7 @@ class Root_Query {
 							if ( in_array( $order_id, $orders, true ) ) {
 								$is_authorized = true;
 							}
-						}
+						}//end if
 
 						$refund = $is_authorized ? Factory::resolve_crud_object( $refund_id, $context ) : null;
 
@@ -538,10 +567,15 @@ class Root_Query {
 						if ( empty( $product_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
-						} elseif ( \WC()->product_factory->get_product_type( $product_id ) !== $type_key && 'off' === $unsupported_type_enabled ) {
+						}
+
+						if ( \WC()->product_factory->get_product_type( $product_id ) !== $type_key && 'off' === $unsupported_type_enabled ) {
 							/* translators: Invalid product type message %1$s: Product ID, %2$s: Product type */
 							throw new UserError( sprintf( __( 'This product of ID %1$s is not a %2$s product', 'wp-graphql-woocommerce' ), $product_id, $type_key ) );
-						} elseif ( get_post( $product_id )->post_type !== 'product' ) {
+						}
+
+						$product = get_post( $product_id );
+						if ( ! is_object( $product ) || 'product' !== $product->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
 						}

@@ -163,6 +163,10 @@ class Order_Create {
 
 				$order = WC_Order_Factory::get_order( $order_id );
 
+				if ( ! is_object( $order ) ) {
+					throw new UserError( __( 'Order could not be created.', 'wp-graphql-woocommerce' ) );
+				}
+
 				// Make sure gateways are loaded so hooks from gateways fire on save/create.
 				WC()->payment_gateways();
 
@@ -199,7 +203,12 @@ class Order_Create {
 
 				return [ 'id' => $order->get_id() ];
 			} catch ( Exception $e ) {
-				Order_Mutation::purge( $order );
+				// Delete order if it was created.
+				if ( is_object( $order ) ) {
+					Order_Mutation::purge( $order );
+				}
+
+				// Throw error.
 				throw new UserError( $e->getMessage() );
 			}//end try
 		};

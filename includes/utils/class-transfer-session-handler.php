@@ -65,13 +65,30 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	}
 
 	/**
+	 * Retrieve session data by field key.
+	 *
+	 * @param string     $name    Session property name.
+	 * @param null|mixed $default Default value.
+	 *
+	 * @return mixed
+	 */
+	public function get( $name, $default = null ) {
+		return parent::get( $name, $default );
+	}
+
+	/**
 	 * Returns client session ID.
 	 *
 	 * @return string
 	 */
 	public function get_client_session_id() {
-		$session_id   = $this->get_posted_session_id();
-		$session_data = 0 !== $session_id ? $this->get_session( $session_id ) : null;
+		$session_id = $this->get_posted_session_id();
+		/**
+		 * Get session data.
+		 *
+		 * @var null|array{ client_session_id: string, client_session_id_expiration: int } $session_data
+		 */
+		$session_data = 0 !== $session_id ? $this->get_session( (string) $session_id ) : null;
 
 		if ( ! empty( $session_data ) ) {
 			$client_session_id            = $session_data['client_session_id'];

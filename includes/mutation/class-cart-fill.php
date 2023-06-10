@@ -217,8 +217,9 @@ class Cart_Fill {
 					}
 
 					// If any session error notices, capture them.
-					if ( empty( $reason ) && ! empty( \WC()->session->get( 'wc_notices' ) ) ) {
-						$reason = implode( ' ', array_column( \WC()->session->get( 'wc_notices' ), 'notice' ) );
+					$error_notices = \WC()->session->get( 'wc_notices' );
+					if ( empty( $reason ) && is_array( $error_notices ) && ! empty( $error_notices ) ) {
+						$reason = implode( ' ', array_column( $error_notices, 'notice' ) );
 						\wc_clear_notices();
 					}
 

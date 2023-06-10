@@ -71,9 +71,16 @@ class Product_Variation extends WC_Post {
 	 * Product_Variation constructor
 	 *
 	 * @param int|\WC_Data $id - product_variation post-type ID.
+	 *
+	 * @throws \Exception  If product variation cannot be retrieved.
 	 */
 	public function __construct( $id ) {
 		$data = \wc_get_product( $id );
+
+		// Check if product variation is valid.
+		if ( ! is_object( $data ) ) {
+			throw new \Exception( __( 'Failed to retrieve product variation data source', 'wp-graphql-woocommerce' ) );
+		}
 
 		parent::__construct( $data );
 	}

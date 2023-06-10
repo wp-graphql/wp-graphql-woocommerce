@@ -83,6 +83,11 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		/**
+		 * Get refund post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( 'shop_order_refund' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):

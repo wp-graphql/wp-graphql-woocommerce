@@ -28,7 +28,7 @@ class Payment_Gateway_Connection_Resolver {
 	 * @param ResolveInfo $info       - ResolveInfo object.
 	 *
 	 * @throws UserError User not authorized.
-	 * @return array
+	 * @return array|null
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		if ( ( ! empty( $args['where']['all'] ) ) && true === $args['where']['all'] ) {

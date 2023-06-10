@@ -137,8 +137,26 @@ class WC_Db_Loader extends AbstractDataLoader {
 	public function load_tax_rate_from_id( $id ) {
 		global $wpdb;
 
+		/**
+		 * Get tax rate from WooCommerce.
+		 *
+		 * @var object{
+		 *  tax_rate_id: int,
+		 *  tax_rate_class: string,
+		 *  tax_rate_country: string,
+		 *  tax_rate_state: string,
+		 *  tax_rate: string,
+		 *  tax_rate_name: string,
+		 *  tax_rate_priority: int,
+		 *  tax_rate_compound: bool,
+		 *  tax_rate_shipping: bool,
+		 *  tax_rate_order: int,
+		 *  tax_rate_city: string,
+		 *  tax_rate_postcode: string
+		 *  } $rate
+		 */
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
-		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) && is_object( $rate ) ) {
+		if ( ! empty( $rate ) && is_object( $rate ) ) {
 			// Get locales from a tax rate.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$locales = $wpdb->get_results(

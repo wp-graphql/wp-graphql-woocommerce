@@ -29,6 +29,11 @@ class Order_Mutation {
 	 * @return boolean
 	 */
 	public static function authorized( $input, $context, $info, $mutation = 'create', $order_id = null ) {
+		/**
+		 * Get order post type.
+		 *
+		 * @var \WP_Post_Type $post_type_object
+		 */
 		$post_type_object = get_post_type_object( 'shop_order' );
 
 		return apply_filters(
@@ -170,12 +175,18 @@ class Order_Mutation {
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
 	 *
+	 * @throws \Exception  Failed to retrieve order item | Failed to retrieve connected product.
+	 *
 	 * @return int
 	 */
 	protected static function map_input_to_item( $item_id, $input, $item_keys, $context, $info ) {
 		$order_item = \WC_Order_Factory::get_order_item( $item_id );
-		$args       = [];
-		$meta_data  = null;
+		if ( ! is_object( $order_item ) ) {
+			throw new \Exception( __( 'Failed to retrieve order item.', 'wp-graphql-woocommerce' ) );
+		}
+
+		$args      = [];
+		$meta_data = null;
 		foreach ( $input as $key => $value ) {
 			if ( array_key_exists( $key, $item_keys ) ) {
 				$args[ $item_keys[ $key ] ] = $value;
@@ -187,10 +198,15 @@ class Order_Mutation {
 		}
 
 		// Calculate to subtotal/total for line items.
+
 		if ( isset( $args['quantity'] ) ) {
-			$product          = ( ! empty( $order_item['product_id'] ) )
+			$product = ( ! empty( $order_item['product_id'] ) )
 				? wc_get_product( $order_item['product_id'] )
 				: wc_get_product( self::get_product_id( $args ) );
+			if ( ! is_object( $product ) ) {
+				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'wp-graphql-woocommerce' ) );
+			}
+
 			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ] );
 			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
 			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;
@@ -284,12 +300,16 @@ class Order_Mutation {
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
 	 *
-	 * @throws UserError  Invalid item input.
+	 * @throws UserError|\Exception  Invalid item input | Failed to retrieve order item.
 	 *
 	 * @return void
 	 */
 	protected static function update_item_meta_data( $item_id, $meta_data, $context, $info ) {
 		$item = \WC_Order_Factory::get_order_item( $item_id );
+		if ( ! is_object( $item ) ) {
+			throw new \Exception( __( 'Failed to retrieve order item.', 'wp-graphql-woocommerce' ) );
+		}
+
 		foreach ( $meta_data as $entry ) {
 			$exists = $item->get_meta( $entry['key'], true, 'edit' );
 			if ( '' !== $exists && $exists !== $entry['value'] ) {
@@ -308,10 +328,15 @@ class Order_Mutation {
 	 * @param AppContext  $context   AppContext instance.
 	 * @param ResolveInfo $info      ResolveInfo instance.
 	 *
+	 * @throws \Exception  Failed to retrieve order.
+	 *
 	 * @return void
 	 */
 	public static function add_order_meta( $order_id, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
+		if ( ! is_object( $order ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
 
 		foreach ( $input as $key => $value ) {
 			switch ( $key ) {
@@ -362,10 +387,15 @@ class Order_Mutation {
 	 * @param integer $order_id  WC_Order instance.
 	 * @param string  $type      Address type.
 	 *
+	 * @throws \Exception  Failed to retrieve order.
+	 *
 	 * @return void
 	 */
 	protected static function update_address( $address, $order_id, $type = 'billing' ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
+		if ( ! is_object( $order ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
 
 		$formatted_address = Customer_Mutation::address_input_mapping( $address, $type );
 		foreach ( $formatted_address as $key => $value ) {
@@ -382,10 +412,15 @@ class Order_Mutation {
 	 * @param int   $order_id  Order ID.
 	 * @param array $coupons   Coupon codes to be applied to order.
 	 *
+	 * @throws \Exception  Failed to retrieve order.
+	 *
 	 * @return void
 	 */
 	public static function apply_coupons( $order_id, $coupons ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
+		if ( ! is_object( $order ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
 
 		// Remove all coupons first to ensure calculation is correct.
 		foreach ( $order->get_items( 'coupon' ) as $coupon ) {
@@ -399,7 +434,7 @@ class Order_Mutation {
 		}
 
 		foreach ( $coupons as $code ) {
-			$results = $order->apply_coupon( wc_clean( $code ) );
+			$results = $order->apply_coupon( sanitize_text_field( $code ) );
 			if ( is_wp_error( $results ) ) {
 				do_action( 'graphql_woocommerce_' . $results->get_error_code(), $results, $code, $coupons, $order );
 			}

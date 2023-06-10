@@ -138,6 +138,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			$post_type = get_post_type( $key );
 			if ( ! $post_type ) {
 				$loaded_posts[ $key ] = null;
+				continue;
 			}
 
 			if ( ! in_array( $post_type, $wc_post_types, true ) ) {

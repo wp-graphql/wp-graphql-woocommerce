@@ -68,15 +68,15 @@ class Checkout_Mutation {
 	 * @return array
 	 */
 	public static function prepare_checkout_args( $input, $context, $info ) {
-		$data    = [
+		$data = [
 			'terms'                     => (int) isset( $input['terms'] ),
 			'createaccount'             => (int) ! empty( $input['account'] ),
 			'payment_method'            => isset( $input['paymentMethod'] ) ? $input['paymentMethod'] : '',
 			'shipping_method'           => isset( $input['shippingMethod'] ) ? $input['shippingMethod'] : '',
 			'ship_to_different_address' => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
 		];
-		$skipped = [];
 
+		$skipped = [];
 		foreach ( self::get_checkout_fields() as $fieldset_key => $fieldset ) {
 			if ( self::maybe_skip_fieldset( $fieldset_key, $data ) ) {
 				$skipped[] = $fieldset_key;
@@ -115,7 +115,7 @@ class Checkout_Mutation {
 	 * @param string  $fieldset Target fieldset.
 	 * @param boolean $prefixed Prefixed field keys with fieldset name.
 	 *
-	 * @return bool|array
+	 * @return array
 	 */
 	public static function get_checkout_fields( $fieldset = '', $prefixed = false ) {
 		$fields = [
@@ -161,7 +161,7 @@ class Checkout_Mutation {
 		}
 
 		if ( ! empty( $fieldset ) ) {
-			return ! empty( $fields[ $fieldset ] ) ? $fields[ $fieldset ] : false;
+			return ! empty( $fields[ $fieldset ] ) ? $fields[ $fieldset ] : [];
 		}
 
 		return $fields;
@@ -544,10 +544,16 @@ class Checkout_Mutation {
 	 * @param int    $order_id        Order ID.
 	 * @param string $transaction_id  Payment transaction ID.
 	 *
+	 * @throws \Exception Order cannot be retrieved.
+	 *
 	 * @return array
 	 */
 	protected static function process_order_without_payment( $order_id, $transaction_id = '' ) {
 		$order = wc_get_order( $order_id );
+		if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
+
 		$order->payment_complete( $transaction_id );
 
 		return [
@@ -605,7 +611,7 @@ class Checkout_Mutation {
 			throw new UserError( $order_id->get_error_message() );
 		}
 
-		if ( ! $order ) {
+		if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
 			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
 		}
 
@@ -721,10 +727,15 @@ class Checkout_Mutation {
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
 	 *
+	 * @throws \Exception Order cannot be retrieved.
+	 *
 	 * @return void
 	 */
 	public static function update_order_meta( $order_id, $meta_data, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
+		if ( ! is_object( $order ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
 
 		if ( $meta_data ) {
 			foreach ( $meta_data as $meta ) {

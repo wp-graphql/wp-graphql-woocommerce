@@ -16,7 +16,20 @@ use WPGraphQL\Model\Model;
 /**
  * Class Tax_Rate
  *
- * @property object $data
+ * @property object{
+ *  tax_rate_id: int,
+ *  tax_rate_class: string,
+ *  tax_rate_country: string,
+ *  tax_rate_state: string,
+ *  tax_rate: string,
+ *  tax_rate_name: string,
+ *  tax_rate_priority: int,
+ *  tax_rate_compound: bool,
+ *  tax_rate_shipping: bool,
+ *  tax_rate_order: int,
+ *  tax_rate_city: string,
+ *  tax_rate_postcode: string
+ *  } $data
  *
  * @property int    $ID
  * @property string $id
@@ -40,7 +53,20 @@ class Tax_Rate extends Model {
 	/**
 	 * Tax_Rate constructor
 	 *
-	 * @param object $rate - Tax rate object.
+	 * @param object{
+	 *  tax_rate_id: int,
+	 *  tax_rate_class: string,
+	 *  tax_rate_country: string,
+	 *  tax_rate_state: string,
+	 *  tax_rate: string,
+	 *  tax_rate_name: string,
+	 *  tax_rate_priority: int,
+	 *  tax_rate_compound: bool,
+	 *  tax_rate_shipping: bool,
+	 *  tax_rate_order: int,
+	 *  tax_rate_city: string,
+	 *  tax_rate_postcode: string
+	 *  } $rate - Tax rate object.
 	 */
 	public function __construct( $rate ) {
 		$this->data                = $rate;
@@ -77,7 +103,7 @@ class Tax_Rate extends Model {
 					return $this->data->tax_rate_id;
 				},
 				'id'         => function() {
-					return ! empty( $this->data->tax_rate_id ) ? Relay::toGlobalId( 'tax_rate', $this->data->tax_rate_id ) : null;
+					return ! empty( $this->data->tax_rate_id ) ? Relay::toGlobalId( 'tax_rate', (string) $this->data->tax_rate_id ) : null;
 				},
 				'databaseId' => function() {
 					return ! empty( $this->ID ) ? $this->ID : null;

@@ -73,25 +73,38 @@ trait WC_CPT_Loader_Common {
 			$args['orderby'] = [];
 			foreach ( $input['orderby'] as $orderby_input ) {
 				/**
+				 * Stores orderby field
+				 *
+				 * @var null|string $orderby_field
+				 */
+				$orderby_field = isset( $orderby_input['field'] ) ? (string) $orderby_input['field'] : null;
+
+				if ( null === $orderby_field ) {
+					continue;
+				}
+
+				$default_order = isset( $this->args['last'] ) ? 'ASC' : 'DESC';
+				/**
+				 * Stores orderby direction
+				 *
+				 * @var string $orderby_order
+				 */
+				$orderby_order = isset( $orderby_input['order'] ) ? $orderby_input['order'] : $default_order;
+
+				/**
 				 * These orderby options should not include the order parameter.
 				 */
-				if ( in_array(
-					$orderby_input['field'],
-					[ 'post__in', 'post_name__in', 'post_parent__in' ],
-					true
-				) ) {
-					$args['orderby'] = esc_sql( $orderby_input['field'] );
+				$post_fields = [ 'post__in', 'post_name__in', 'post_parent__in' ];
+				if ( in_array( $orderby_field, $post_fields, true ) ) {
+					$args['orderby'][ $orderby_field ] = $orderby_order;
 
 					// Handle meta fields.
-				} elseif ( in_array( $orderby_input['field'], $this->ordering_meta(), true ) ) {
-					$args['orderby']['meta_value_num'] = $orderby_input['order'];
+				} elseif ( in_array( $orderby_field, $this->ordering_meta(), true ) ) {
+					$args['orderby']['meta_value_num'] = $orderby_order;
 					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					$args['meta_key'] = esc_sql( $orderby_input['field'] );
-					// WPCS: slow query ok.
-
-					// Handle post object fields.
-				} elseif ( ! empty( $orderby_input['field'] ) ) {
-					$args['orderby'][ esc_sql( $orderby_input['field'] ) ] = esc_sql( $orderby_input['order'] );
+					$args['meta_key'] = $orderby_field;
+				} else {
+					$args['orderby'][ $orderby_field ] = $orderby_order;
 				}
 			}//end foreach
 		}//end if

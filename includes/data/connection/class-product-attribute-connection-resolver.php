@@ -82,7 +82,7 @@ class Product_Attribute_Connection_Resolver {
 	 * @param AppContext  $context  AppContext object.
 	 * @param ResolveInfo $info     ResolveInfo object.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$attributes = $this->get_items( $source->attributes, $source, $args, $context, $info );

@@ -106,12 +106,17 @@ class Coupon_Delete {
 		}
 
 		if ( ! wc_rest_check_post_permissions( 'shop_coupon', 'delete', $coupon->ID ) ) {
-			$post_object_type = get_post_type_object( 'shop_coupon' );
+			/**
+			 * Get coupon post type.
+			 *
+			 * @var \WP_Post_Type $post_type_object
+			 */
+			$post_type_object = get_post_type_object( 'shop_coupon' );
 			throw new UserError(
 				sprintf(
 					/* translators: %s: post type */
 					__( 'Sorry, you are not allowed to delete %s.', 'wp-graphql-woocommerce' ),
-					lcfirst( $post_object_type->label )
+					lcfirst( $post_type_object->label )
 				)
 			);
 		}

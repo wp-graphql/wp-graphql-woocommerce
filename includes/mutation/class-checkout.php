@@ -149,10 +149,15 @@ class Checkout {
 				$order_id = Checkout_Mutation::process_checkout( $args, $input, $context, $info, $results );
 
 				$order = \WC_Order_Factory::get_order( $order_id );
+
+				if ( ! is_object( $order ) ) {
+					throw new UserError( __( 'Failed to retrieve order after checkout', 'wp-graphql-woocommerce' ) );
+				}//end if
+
 				/**
 				 * Action called after checking out.
 				 *
-				 * @param \WC_Order    $order   WC_Order instance.
+				 * @param \WC_Order   $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
 				 * @param AppContext  $context Request AppContext instance.
 				 * @param ResolveInfo $info    Request ResolveInfo instance.
@@ -161,7 +166,11 @@ class Checkout {
 
 				return array_merge( [ 'id' => $order_id ], $results );
 			} catch ( Exception $e ) {
-				Order_Mutation::purge( $order );
+				// Delete order if it was created.
+				if ( is_object( $order ) ) {
+					Order_Mutation::purge( $order );
+				}
+				// Throw error.
 				throw new UserError( $e->getMessage() );
 			}//end try
 		};

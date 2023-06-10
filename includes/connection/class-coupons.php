@@ -66,6 +66,11 @@ class Coupons {
 	 * @return bool
 	 */
 	public static function should_execute() {
+		/**
+		 * Get coupon post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( 'shop_coupon' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):

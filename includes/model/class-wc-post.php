@@ -35,6 +35,8 @@ abstract class WC_Post extends Post {
 	 * WC_Post constructor
 	 *
 	 * @param \WC_Data $data  Data object to be used by the model.
+	 *
+	 * @throws \Exception  Failed to retrieve data source post object.
 	 */
 	public function __construct( $data ) {
 		// Store CRUD object.
@@ -42,6 +44,11 @@ abstract class WC_Post extends Post {
 
 		// Get WP_Post object.
 		$post = get_post( $data->get_id() );
+
+		// Check if product is valid.
+		if ( ! is_object( $post ) ) {
+			throw new \Exception( __( 'Failed to retrieve data source post object', 'wp-graphql-woocommerce' ) );
+		}
 
 		// Add $allowed_restricted_fields.
 		if ( ! has_filter( 'graphql_allowed_fields_on_restricted_type', [ static::class, 'add_allowed_restricted_fields' ] ) ) {
@@ -114,7 +121,17 @@ abstract class WC_Post extends Post {
 	 * @return boolean
 	 */
 	public function delete( $force_delete = false ) {
-		if ( ! current_user_can( $this->post_type_object->cap->edit_posts ) ) {
+		$post_type_object = $this->post_type_object;
+		if ( empty( $post_type_object ) ) {
+			throw new UserError(
+				__(
+					'Post type object not found.',
+					'wp-graphql-woocommerce'
+				)
+			);
+		}
+
+		if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
 			throw new UserError(
 				__(
 					'User does not have the capabilities necessary to delete this object.',

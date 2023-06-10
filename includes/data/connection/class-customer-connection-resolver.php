@@ -104,9 +104,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 				if ( in_array( $orderby_input['field'], [ 'login__in', 'nicename__in' ], true ) ) {
 					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
 				} elseif ( ! empty( $orderby_input['field'] ) ) {
-					$query_args['orderby'] = [
-						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
-					];
+					$query_args['orderby'] = [ $orderby_input['field'] => $orderby_input['order'] ];
 				}
 			}
 		}
