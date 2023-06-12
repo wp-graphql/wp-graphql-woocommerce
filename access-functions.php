@@ -258,7 +258,11 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 		/**
 		 * Get the value from the stored data, or return the default
 		 */
-		$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		if ( is_array( $default ) ) {
+			$value = is_array( $section_fields ) && ! empty( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		} else {
+			$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		}
 
 		/**
 		 * Filter the value before returning it

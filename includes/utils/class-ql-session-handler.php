@@ -148,7 +148,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 					$this->_data = $this->get_session_data();
 				}
 
-				$this->save_data( $guest_session_id );
+				// @phpstan-ignore-next-line
+				$this->save_data( $guest_session_id ); 
 				$this->set_customer_session_token( true );
 			}
 
