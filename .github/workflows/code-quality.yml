@@ -16,7 +16,7 @@ jobs:
   run:
     runs-on: ubuntu-latest
 
-    name: Testing WooGraphQL Code Quality w/ PHPStan
+    name: Testing WooGraphQL code quality w/ PHPStan
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
         if: ${{ github.event_name == 'pull_request' }}
