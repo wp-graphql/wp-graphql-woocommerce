@@ -185,7 +185,7 @@ class COT_Cursor extends AbstractCursor {
 	 */
 	private function compare_with( $by, $order ) {
 		$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : [];
-		if ( in_array( $by, $meta_orderby_keys, true ) ) {
+		if ( in_array( $by, $meta_orderby_keys, true ) && null !== $this->meta_query ) {
 			$orderby = $this->meta_query->get_orderby_clause_for_key( $by );
 			$value   = $this->cursor_node->get_meta( $by, true ) ?? null;
 		} else {

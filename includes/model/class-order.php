@@ -17,61 +17,64 @@ use WPGraphQL\Model\Model;
 /**
  * Class Order
  *
- * @property \WC_Order     $wc_data
- * @property \WP_Post_Type $post_type_object
+ * @property int           $ID
+ * @property string        $id
+ * @property int           $databaseId
+ * @property string        $orderNumber
+ * @property string        $orderKey
+ * @property string        $status
+ * @property string        $date
+ * @property string        $modified
+ * @property string        $datePaid
+ * @property string        $dateCompleted
+ * @property string        $customerNote
+ * @property array         $billing
+ * @property array         $shipping
+ * @property string        $discountTotal
+ * @property float         $discountTotalRaw
+ * @property string        $discountTax
+ * @property string        $discountTaxRaw
+ * @property string        $shippingTotal
+ * @property float         $shippingTotalRaw
+ * @property string        $shippingTax
+ * @property string        $shippingTaxRaw
+ * @property string        $cartTax
+ * @property string        $cartTaxRaw
+ * @property string        $subtotal
+ * @property float         $subtotalRaw
+ * @property string        $total
+ * @property float         $totalRaw
+ * @property string        $totalTax
+ * @property float         $totalTaxRaw
+ * @property bool          $isDownloadPermitted
+ * @property string        $shippingAddressMapUrl
+ * @property bool          $hasBillingAddress
+ * @property bool          $hasShippingAddress
+ * @property bool          $needsShippingAddress
+ * @property bool          $needsPayment
+ * @property bool          $needsProcessing
+ * @property bool          $hasDownloadableItem
+ * @property array         $downloadable_items
+ * @property int           $commentCount
+ * @property string        $commentStatus
+ * @property string        $currency
+ * @property string        $paymentMethod
+ * @property string        $paymentMethodTitle
+ * @property string        $transactionId
+ * @property string        $customerIpAddress
+ * @property string        $customerUserAgent
+ * @property string        $createdVia
+ * @property string        $orderKey
+ * @property string        $pricesIncludeTax
+ * @property string        $cartHash
+ * @property string        $customerNote
+ * @property string        $orderVersion
  *
- * @property int    $ID
- * @property string $id
- * @property int    $databaseId
- * @property string $orderNumber
- * @property string $orderKey
- * @property string $status
- * @property string $date
- * @property string $modified
- * @property string $datePaid
- * @property string $dateCompleted
- * @property string $customerNote
- * @property array  $billing
- * @property array  $shipping
- * @property string $discountTotal
- * @property float  $discountTotalRaw
- * @property string $discountTax
- * @property string $discountTaxRaw
- * @property string $shippingTotal
- * @property float  $shippingTotalRaw
- * @property string $shippingTax
- * @property string $shippingTaxRaw
- * @property string $cartTax
- * @property string $cartTaxRaw
- * @property string $subtotal
- * @property float  $subtotalRaw
- * @property string $total
- * @property float  $totalRaw
- * @property string $totalTax
- * @property float  $totalTaxRaw
- * @property bool   $isDownloadPermitted
- * @property string $shippingAddressMapUrl
- * @property bool   $hasBillingAddress
- * @property bool   $hasShippingAddress
- * @property bool   $needsShippingAddress
- * @property bool   $needsPayment
- * @property bool   $needsProcessing
- * @property bool   $hasDownloadableItem
- * @property array  $downloadable_items
- * @property int    $commentCount
- * @property string $commentStatus
- * @property string $currency
- * @property string $paymentMethod
- * @property string $paymentMethodTitle
- * @property string $transactionId
- * @property string $customerIpAddress
- * @property string $customerUserAgent
- * @property string $createdVia
- * @property string $orderKey
- * @property string $pricesIncludeTax
- * @property string $cartHash
- * @property string $customerNote
- * @property string $orderVersion
+ * @property string        $title
+ * @property float         $amount
+ * @property string        $reason
+ * @property string        $refunded_by_id
+ * @property string        $date
  *
  * @package WPGraphQL\WooCommerce\Model
  */
@@ -80,7 +83,7 @@ class Order extends Model {
 	/**
 	 * Stores the incoming order data
 	 *
-	 * @var \WC_Order $data
+	 * @var \WC_Order|\WC_Order_Refund $data
 	 */
 	protected $data;
 
@@ -106,13 +109,14 @@ class Order extends Model {
 	 * @throws \Exception - Failed to retrieve order data source.
 	 */
 	public function __construct( $id ) {
-		$this->data                = wc_get_order( $id );
+		$data = wc_get_order( $id );
 
 		// Check if order is valid.
-		if ( ! is_object( $this->data ) ) {
+		if ( ! is_object( $data ) ) {
 			throw new \Exception( __( 'Failed to retrieve order data source', 'wp-graphql-woocommerce' ) );
 		}
 
+		$this->data                = $data;
 		$this->post_type           = $this->get_post_type();
 		$this->post_type_object    = ! empty( $this->post_type ) ? get_post_type_object( $this->post_type ) : null;
 		$this->current_user        = wp_get_current_user();
@@ -240,6 +244,15 @@ class Order extends Model {
 			'woographql_viewable_order_types',
 			wc_get_order_types( 'view-orders' ),
 		);
+	}
+
+	/**
+	 * Returns order type.
+	 *
+	 * @return string
+	 */
+	public function get_type() {
+		return $this->data->get_type();
 	}
 
 	/**

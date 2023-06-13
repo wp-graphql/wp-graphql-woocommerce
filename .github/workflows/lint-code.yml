@@ -15,7 +15,7 @@ on:
 jobs:
   Coding-Standards:
     runs-on: ubuntu-latest
-    name: "Linting WooGraphQL code with PHPCS"
+    name: "Linting WooGraphQL code w/ PHPCS"
     steps:
       - name: Checkout
         uses: actions/checkout@v1

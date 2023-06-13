@@ -114,6 +114,8 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * Sets whether or not the query should execute
 	 *
 	 * @param bool $should_execute Whether or not the query should execute.
+	 * 
+	 * @return void
 	 */
 	public function set_should_execute( bool $should_execute ) {
 		$this->should_execute = $should_execute;
@@ -121,6 +123,8 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * Creates query arguments array
+	 * 
+	 * @return array
 	 */
 	public function get_query_args() {
 		// Prepare for later use.
@@ -197,9 +201,9 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WC_Order_Query
-	 *
 	 * @throws InvariantViolation  Filter currently not supported for WC_Order_Query.
+	 *
+	 * @return \WC_Order_Query
 	 */
 	public function get_query() {
 		$query = new \WC_Order_Query( $this->query_args );

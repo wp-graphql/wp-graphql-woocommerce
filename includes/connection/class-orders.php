@@ -99,8 +99,8 @@ class Orders {
 	/**
 	 * Returns order connection filter by customer.
 	 *
-	 * @param PostObjectConnectionResolver $resolver  Connection resolver.
-	 * @param \WC_Customer                 $customer  Customer object of querying user.
+	 * @param Order_Connection_Resolver $resolver  Connection resolver.
+	 * @param \WC_Customer              $customer  Customer object of querying user.
 	 *
 	 * @return array
 	 */
@@ -129,8 +129,8 @@ class Orders {
 	/**
 	 * Returns refund connection filter by customer.
 	 *
-	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
-	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
+	 * @param Order_Connection_Resolver $resolver  Connection resolver.
+	 * @param \WC_Customer              $customer  Customer object of querying user.
 	 *
 	 * @return array
 	 */
@@ -153,7 +153,11 @@ class Orders {
 				'customer_id' => $customer_id,
 				'return'      => 'ids',
 			];
-			$order_ids = wc_get_orders( $args );
+			$order_ids_by_customer_id = wc_get_orders( $args );
+
+			if ( is_array( $order_ids_by_customer_id ) ) {
+				$order_ids = $order_ids_by_customer_id;
+			}
 		}
 
 		if ( ! empty( $billing_email ) ) {
@@ -163,7 +167,9 @@ class Orders {
 			];
 			$order_ids_by_email = wc_get_orders( $args );
 			// Merge the arrays of order IDs.
-			$order_ids = array_merge( $order_ids, $order_ids_by_email );
+			if ( is_array( $order_ids_by_email ) ) {
+				$order_ids = array_merge( $order_ids, $order_ids_by_email );
+			}
 		}
 
 		// If no orders found, return empty connection.
