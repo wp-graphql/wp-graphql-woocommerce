@@ -469,18 +469,6 @@ class QL_Session_Handler extends WC_Session_Handler {
 	public function set_customer_session_cookie( $set ) {}
 
 	/**
-	 * Retrieve session data by field key.
-	 *
-	 * @param string     $name    Session property name.
-	 * @param null|mixed $default Default value.
-	 *
-	 * @return mixed
-	 */
-	public function get( $name, $default = null ) {
-		return parent::get( $name, $default );
-	}
-
-	/**
 	 * Returns "client_session_id". "client_session_id_expiration" is used
 	 * to keep "client_session_id" as fresh as possible.
 	 *
@@ -500,6 +488,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 		// If client session ID valid return it.
 		if ( false !== $client_session_id && time() < $client_session_id_expiration ) {
+			// @phpstan-ignore-next-line
 			return $client_session_id;
 		}
 

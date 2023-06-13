@@ -65,18 +65,6 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	}
 
 	/**
-	 * Retrieve session data by field key.
-	 *
-	 * @param string     $name    Session property name.
-	 * @param null|mixed $default Default value.
-	 *
-	 * @return mixed
-	 */
-	public function get( $name, $default = null ) {
-		return parent::get( $name, $default );
-	}
-
-	/**
 	 * Returns client session ID.
 	 *
 	 * @return string
@@ -99,6 +87,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 		}
 
 		if ( false !== $client_session_id && time() < $client_session_id_expiration ) {
+			// @phpstan-ignore-next-line
 			return $client_session_id;
 		}
 

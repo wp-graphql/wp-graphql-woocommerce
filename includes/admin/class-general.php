@@ -89,10 +89,10 @@ class General extends Section {
 				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
 				'disabled'          => $enable_auth_urls_hardcoded ? true : false,
 				'sanitize_callback' => function( $value ) {
-                    if ( empty( $value ) ) {
-                        return [];
-                    }
-                },
+					if ( empty( $value ) ) {
+						return [];
+					}
+				},
 			],
 			[
 				'name'     => 'authorizing_url_endpoint',
