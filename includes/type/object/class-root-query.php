@@ -224,8 +224,8 @@ class Root_Query {
 						if ( empty( $order_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-						} 
-						
+						}
+
 						if ( 'shop_order' !== OrderUtil::get_order_type( $order_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
@@ -346,8 +346,8 @@ class Root_Query {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
-						
-						if ( 'shop_order_refund' !== OrderUtil::get_order_type( $refund_id )) {
+
+						if ( 'shop_order_refund' !== OrderUtil::get_order_type( $refund_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}

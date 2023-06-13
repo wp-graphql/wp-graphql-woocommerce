@@ -114,7 +114,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * Sets whether or not the query should execute
 	 *
 	 * @param bool $should_execute Whether or not the query should execute.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_should_execute( bool $should_execute ) {
@@ -123,7 +123,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * Creates query arguments array
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get_query_args() {

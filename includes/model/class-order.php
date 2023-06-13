@@ -190,7 +190,7 @@ class Order extends Model {
 	 * @param array  $args  - function call arguments.
 	 *
 	 * @throws BadMethodCallException Method not found on WC data object.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {

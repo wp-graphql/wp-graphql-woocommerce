@@ -149,7 +149,7 @@ class Orders {
 		$customer_id   = $customer->get_id();
 		$billing_email = $customer->get_billing_email();
 		if ( ! empty( $customer_id ) ) {
-			$args      = [
+			$args                     = [
 				'customer_id' => $customer_id,
 				'return'      => 'ids',
 			];

@@ -40,13 +40,17 @@ class DB_Hooks {
 	 *
 	 * @return string[]
 	 */
-	public function add_cursor( $clauses, $query, $args ) { // @phpstan-ignore-line
+	public function add_cursor( $clauses, $query, $args ) {
+
+		// @phpstan-ignore-line
 		if ( true !== is_graphql_request() ) {
 			return $clauses;
 		}
 
-		$order_datastore = wc_get_container()->get( OrdersTableDataStore::class ); // @phpstan-ignore-line
-		$tables          = $order_datastore::get_all_table_names_with_id(); // @phpstan-ignore-line
+		$order_datastore = wc_get_container()->get( OrdersTableDataStore::class );
+		// @phpstan-ignore-line
+		$tables = $order_datastore::get_all_table_names_with_id();
+		// @phpstan-ignore-line
 
 		// apply the after cursor to the query.
 		if ( ! empty( $args['graphql_after_cursor'] ) ) {
