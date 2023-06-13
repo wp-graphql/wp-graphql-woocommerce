@@ -60,9 +60,9 @@ class Root_Query {
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => function( $source, array $args, AppContext $context ) {
-						$item = $context->get_loader( 'cart_item' )->load_deferred( $args['key'] );
-						if ( empty( $item ) ) {
-							throw new UserError( __( 'The key input is invalid', 'wp-graphql-woocommerce' ) );
+						$item = Factory::resolve_cart()->get_cart_item( $args['key'] );
+						if ( empty( $item ) || empty( $item['key'] ) ) {
+							throw new UserError( __( 'Failed to retrieve cart item.', 'wp-graphql-woocommerce' ) );
 						}
 
 						return $item;
