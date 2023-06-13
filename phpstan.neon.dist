@@ -17,5 +17,3 @@ parameters:
 		scanFiles:
 			- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
 			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
-		scanDirectories:
-			- ../wp-graphql-jwt-authentication

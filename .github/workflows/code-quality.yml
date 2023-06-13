@@ -15,11 +15,13 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    name: Check code
     strategy:
       matrix:
+        wordpress: ['6.2', '6.1', '6.0']
         php: [ '8.1', '8.0', '7.4', '7.3' ]
+      fail-fast: false
 
+    name: Testing Code Quality in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
         if: ${{ github.event_name == 'pull_request' }}
@@ -36,11 +38,13 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer:v2
           coverage: none
-      
+
       - name: Install dependencies
-        uses: ramsey/composer-install@v2
-        with:
-          composer-options: "--no-progress"
+        run: |
+          cp .env.testing .env
+          rm -rf composer.lock
+          composer install
+          WP_VERSION=${{ matrix.wordpress }} SKIP_DB_CREATE=true SKIP_WP_SETUP=true composer installTestEnv
 
       - name: Run PHPStan
         run: composer stan
