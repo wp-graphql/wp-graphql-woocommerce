@@ -21,6 +21,8 @@ class Coupons {
 
 	/**
 	 * Registers the various connections from other Types to Coupon
+	 *
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From RootQuery.
@@ -64,6 +66,11 @@ class Coupons {
 	 * @return bool
 	 */
 	public static function should_execute() {
+		/**
+		 * Get coupon post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( 'shop_coupon' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):
@@ -136,7 +143,6 @@ class Coupons {
 		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
 		 * @param AppContext  $context    The AppContext object
 		 * @param ResolveInfo $info       The ResolveInfo object
-		 * @param mixed|string|array      $post_type  The post type for the query
 		 */
 		$query_args = apply_filters(
 			'graphql_map_input_fields_to_coupon_query',

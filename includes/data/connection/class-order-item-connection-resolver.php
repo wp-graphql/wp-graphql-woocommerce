@@ -66,7 +66,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return array
 	 */
 	public function get_query() {
 		// @codingStandardsIgnoreLine
@@ -87,7 +87,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				/**
 				 * Filter the $item_type to allow non-core item types.
 				 *
-				 * @param array       $query_args The args that will be passed to the WP_Query.
+				 * @param string      $item_type  Order item type.
 				 * @param mixed       $source     The source that's passed down the GraphQL queries.
 				 * @param array       $args       The inputArgs on the field.
 				 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
@@ -106,9 +106,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 		$items = [];
 		foreach ( $this->source->get_items( $type ) as $id => $item ) {
-			$item->cached_order = $this->source;
-			$item->cached_id    = $id;
-			$items[]            = $item;
+			$items[] = $item;
 		}
 
 		if ( empty( $items ) ) {
@@ -139,6 +137,10 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			? array_search( $cursor, array_map( $get_item_id, $items ), true )
 			: 0;
 
+		if ( false === $offset ) {
+			$offset = 0;
+		}
+
 		// If cursor set, move index up one to ensure cursor not included in keys.
 		if ( $cursor ) {
 			$offset++;
@@ -150,7 +152,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		foreach ( $items as $item ) {
 			$this->loader->prime(
 				$item->get_id(),
-				new \WPGraphQL\WooCommerce\Model\Order_Item( $item )
+				new \WPGraphQL\WooCommerce\Model\Order_Item( $item, $this->source )
 			);
 		}
 

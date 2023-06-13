@@ -14,13 +14,18 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\Extension\WooCommerce\Model\Order;
-use WPGraphQL\Extension\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
+use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Model\Coupon;
 
 /**
  * Class Coupon_Connection_Resolver
  *
  * @deprecated v0.10.0
+ *
+ * @property WC_CPT_Loader $loader
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -80,6 +85,11 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		/**
+		 * Get coupon post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( 'shop_coupon' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):

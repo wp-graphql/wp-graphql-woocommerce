@@ -15,8 +15,12 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use function WC;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\Model\Refund;
 use WPGraphQL\WooCommerce\Model\Order_Item;
 use WPGraphQL\WooCommerce\Model\Product;
+use WPGraphQL\WooCommerce\Model\Product_Variation;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
@@ -41,21 +45,15 @@ class Factory {
 	 * @param int        $id      - user ID of the customer being retrieved.
 	 * @param AppContext $context - AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 * @access public
 	 */
 	public static function resolve_customer( $id, AppContext $context ) {
-		if ( empty( $id ) || ! absint( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
-		$customer_id = absint( $id );
-		$loader      = $context->get_loader( 'wc_customer' );
-		$loader->buffer( [ $customer_id ] );
-		return new Deferred(
-			function () use ( $loader, $customer_id ) {
-				return $loader->load( $customer_id );
-			}
-		);
+
+		return $context->get_loader( 'wc_customer' )->load_deferred( absint( $id ) );
 	}
 
 	/**
@@ -64,26 +62,21 @@ class Factory {
 	 * @param int        $id      - post ID of the crud object being retrieved.
 	 * @param AppContext $context - AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 * @access public
 	 */
 	public static function resolve_crud_object( $id, AppContext $context ) {
-		if ( empty( $id ) || ! absint( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
 
-		$context->get_loader( 'wc_post' )->buffer( [ $id ] );
-		return new Deferred(
-			function () use ( $id, $context ) {
-				return $context->get_loader( 'wc_post' )->load( $id );
-			}
-		);
+		return $context->get_loader( 'wc_post' )->load_deferred( absint( $id ) );
 	}
 
 	/**
 	 * Returns the order item Model for the order item.
 	 *
-	 * @param int $item - order item crud object instance.
+	 * @param \WC_Order_Item $item - order item crud object instance.
 	 *
 	 * @return Order_Item
 	 * @access public
@@ -103,24 +96,17 @@ class Factory {
 	/**
 	 * Returns the tax rate Model for the tax rate ID.
 	 *
-	 * @param string     $id - Tax rate ID.
+	 * @param int        $id - Tax rate ID.
 	 * @param AppContext $context - AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 */
 	public static function resolve_tax_rate( $id, AppContext $context ) {
-		if ( empty( $id ) || ! is_numeric( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
 
-		$id     = absint( $id );
-		$loader = $context->get_loader( 'tax_rate' );
-		$loader->buffer( [ $id ] );
-		return new Deferred(
-			function () use ( $loader, $id ) {
-				return $loader->load( $id );
-			}
-		);
+		return $context->get_loader( 'tax_rate' )->load_deferred( absint( $id ) );
 	}
 
 	/**
@@ -162,34 +148,14 @@ class Factory {
 	 * @param string     $key      Cart item key.
 	 * @param AppContext $context  AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 */
 	public static function resolve_cart_item( $key, AppContext $context ) {
 		if ( empty( $key ) ) {
 			return null;
 		}
 
-		$context->get_loader( 'cart_item' )->buffer( [ $key ] );
-		return new Deferred(
-			function () use ( $key, $context ) {
-				return $context->get_loader( 'cart_item' )->load( $key );
-			}
-		);
-	}
-
-	/**
-	 * Resolves a fee object by ID.
-	 *
-	 * @param int $id Fee object generated ID.
-	 *
-	 * @return object
-	 */
-	public static function resolve_cart_fee( $id ) {
-		if ( ! empty( self::resolve_cart()->get_fees()[ $id ] ) ) {
-			return self::resolve_cart()->get_fees()[ $id ];
-		}
-
-		return null;
+		return $context->get_loader( 'cart_item' )->load_deferred( $key );
 	}
 
 	/**
@@ -198,27 +164,21 @@ class Factory {
 	 * @param int        $id       Downloadable item ID.
 	 * @param AppContext $context  AppContext object.
 	 *
-	 * @return Deferred object
+	 * @return null|Deferred object
 	 */
 	public static function resolve_downloadable_item( $id, AppContext $context ) {
-		if ( empty( $id ) || ! absint( $id ) ) {
+		if ( 0 === absint( $id ) ) {
 			return null;
 		}
-		$object_id = absint( $id );
-		$loader    = $context->get_loader( 'downloadable_item' );
-		$loader->buffer( [ $object_id ] );
-		return new Deferred(
-			function () use ( $loader, $object_id ) {
-				return $loader->load( $object_id );
-			}
-		);
+
+		return $context->get_loader( 'downloadable_item' )->load_deferred( absint( $id ) );
 	}
 
 	/**
 	 * Resolves Relay node for some WooGraphQL types.
 	 *
 	 * @param mixed      $node     Node object.
-	 * @param string     $id       Object unique ID.
+	 * @param int        $id       Object unique ID.
 	 * @param string     $type     Node type.
 	 * @param AppContext $context  AppContext instance.
 	 *
@@ -266,16 +226,16 @@ class Factory {
 			case is_a( $node, Order::class ):
 				$type = 'Order';
 				break;
-			case is_a( $node, Product::class ) && 'simple' === $node->type:
+			case is_a( $node, Product::class ) && 'simple' === $node->get_type():
 				$type = 'SimpleProduct';
 				break;
-			case is_a( $node, Product::class ) && 'variable' === $node->type:
+			case is_a( $node, Product::class ) && 'variable' === $node->get_type():
 				$type = 'VariableProduct';
 				break;
-			case is_a( $node, Product::class ) && 'external' === $node->type:
+			case is_a( $node, Product::class ) && 'external' === $node->get_type():
 				$type = 'ExternalProduct';
 				break;
-			case is_a( $node, Product::class ) && 'grouped' === $node->type:
+			case is_a( $node, Product::class ) && 'grouped' === $node->get_type():
 				$type = 'GroupProduct';
 				break;
 			case is_a( $node, Product_Variation::class ):

@@ -10,9 +10,11 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Order;
 
@@ -20,6 +22,8 @@ use WPGraphQL\WooCommerce\Model\Order;
  * Class Order_Connection_Resolver
  *
  * @deprecated v0.10.0
+ *
+ * @property WC_CPT_Loader $loader
  */
 class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -30,7 +34,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $post_type;
 
@@ -80,6 +84,11 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		/**
+		 * Get order post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( $this->post_type );
 		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
 			return true;

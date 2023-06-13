@@ -15,13 +15,23 @@ use WPGraphQL\Model\Model;
 
 /**
  * Class Shipping_Method
+ *
+ * @property \WC_Shipping_Method $data
+ *
+ * @property int    $ID
+ * @property string $id
+ * @property int    $databaseId
+ * @property string $title
+ * @property string $description
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Shipping_Method extends Model {
 
 	/**
 	 * Shipping_Method constructor
 	 *
-	 * @param int $method - Shipping method object.
+	 * @param \WC_Shipping_Method $method - Shipping method object.
 	 */
 	public function __construct( $method ) {
 		$this->data                = $method;
@@ -61,7 +71,7 @@ class Shipping_Method extends Model {
 					return ! empty( $this->data->id ) ? Relay::toGlobalId( 'shipping_method', $this->data->id ) : null;
 				},
 				'databaseId'  => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'title'       => function() {
 					return ! empty( $this->data->method_title ) ? $this->data->method_title : null;

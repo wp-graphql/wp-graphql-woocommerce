@@ -25,6 +25,8 @@ class Review_Write {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -82,6 +84,11 @@ class Review_Write {
 						return null;
 					}
 					$comment = get_comment( $payload['id'] );
+
+					if ( null === $comment ) {
+						return null;
+					}
+
 					return new Comment( $comment );
 				},
 			],

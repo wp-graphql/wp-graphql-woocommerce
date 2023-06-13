@@ -16,7 +16,9 @@ use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Model\Product as Model;
 use WPGraphQL\WooCommerce\Type\WPInterface\Product;
+
 
 /**
  * Class Product_Types
@@ -25,6 +27,8 @@ class Product_Types {
 
 	/**
 	 * Registers product types to the WPGraphQL schema
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		self::register_simple_product_type();
@@ -252,6 +256,8 @@ class Product_Types {
 
 	/**
 	 * Register "SimpleProduct" type.
+	 *
+	 * @return void
 	 */
 	private static function register_simple_product_type() {
 		register_graphql_object_type(
@@ -272,6 +278,8 @@ class Product_Types {
 
 	/**
 	 * Registers "VariableProduct" type.
+	 *
+	 * @return void
 	 */
 	private static function register_variable_product_type() {
 		register_graphql_object_type(
@@ -291,6 +299,8 @@ class Product_Types {
 
 	/**
 	 * Registers "ExternalProduct" type.
+	 *
+	 * @return void
 	 */
 	private static function register_external_product_type() {
 		register_graphql_object_type(
@@ -318,6 +328,8 @@ class Product_Types {
 
 	/**
 	 * Registers "GroupProduct" type.
+	 *
+	 * @return void
 	 */
 	private static function register_group_product_type() {
 		register_graphql_object_type(
@@ -339,12 +351,17 @@ class Product_Types {
 						'price'                => [
 							'type'        => 'String',
 							'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => function( Model $source ) {
 								$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
 								$child_prices     = [];
-								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ), 'wc_products_array_filter_visible_grouped' );
+								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ) );
+								$children         = array_filter( $children, 'wc_products_array_filter_visible_grouped' );
 
 								foreach ( $children as $child ) {
+									if ( ! $child ) {
+										continue;
+									}
+
 									if ( '' !== $child->get_price() ) {
 										$child_prices[] = 'incl' === $tax_display_mode ? wc_get_price_including_tax( $child ) : wc_get_price_excluding_tax( $child );
 									}
@@ -377,6 +394,8 @@ class Product_Types {
 
 	/**
 	 * Register "SimpleProduct" type.
+	 *
+	 * @return void
 	 */
 	private static function register_unsupported_product_type() {
 		register_graphql_object_type(

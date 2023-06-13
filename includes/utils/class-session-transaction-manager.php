@@ -20,14 +20,14 @@ class Session_Transaction_Manager {
 	/**
 	 * The request's transaction ID.
 	 *
-	 * @var string
+	 * @var null|string
 	 */
 	public $transaction_id = null;
 
 	/**
 	 * Instance of parent session handler
 	 *
-	 * @var \WC_Session
+	 * @var QL_Session_Handler
 	 */
 	private $session_handler = null;
 
@@ -35,7 +35,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Singleton instance of class.
 	 *
-	 * @var Session_Transaction_Manager $session_handler
+	 * @var Session_Transaction_Manager
 	 */
 	private static $instance = null;
 
@@ -43,7 +43,7 @@ class Session_Transaction_Manager {
 	 * Singleton retriever and cleaner.
 	 * Should not be called anywhere but in the session handler init function.
 	 *
-	 * @param \WC_Session $session_handler  WooCommerce Session Handler instance.
+	 * @param QL_Session_Handler $session_handler  WooCommerce Session Handler instance.
 	 *
 	 * @return Session_Transaction_Manager
 	 */
@@ -59,7 +59,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Session_Transaction_Manager constructor
 	 *
-	 * @param \WC_Session $session_handler  Reference back to session handler.
+	 * @param QL_Session_Handler $session_handler  Reference back to session handler.
 	 */
 	public function __construct( &$session_handler ) {
 		$this->session_handler = $session_handler;
@@ -114,10 +114,12 @@ class Session_Transaction_Manager {
 	 * Creates an transaction ID if executing mutations that alter the session data, and stales
 	 * execution until the transaction ID is at the top of the queue.
 	 *
-	 * @param mixed                 $source   Operation root object.
-	 * @param array                 $args     Operation arguments.
-	 * @param \WPGraphQL\AppContext $context  AppContext instance.
-	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
+	 * @param mixed                                $source   Operation root object.
+	 * @param array                                $args     Operation arguments.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
+	 *
+	 * @return void
 	 */
 	public function update_transaction_queue( $source, $args, $context, $info ) {
 		// Bail early, if not one of the session mutations.
@@ -206,6 +208,8 @@ class Session_Transaction_Manager {
 	 * Pop transaction ID off the top of the queue, ending the transaction.
 	 *
 	 * @throws UserError If transaction ID is not on the top of the queue.
+	 *
+	 * @return void
 	 */
 	public function pop_transaction_id() {
 		// Bail if transaction not started.
@@ -232,6 +236,8 @@ class Session_Transaction_Manager {
 	 * Saves transaction queue.
 	 *
 	 * @param array $queue  Transaction queue.
+	 *
+	 * @return void
 	 */
 	public function save_transaction_queue( $queue = [] ) {
 		// If queue empty delete transient and bail.

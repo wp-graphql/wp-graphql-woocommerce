@@ -25,6 +25,8 @@ class Order_Type {
 
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -423,10 +425,10 @@ class Order_Type {
 	/**
 	 * Order Item connection resolver callback
 	 *
-	 * @param \WPGraphQL\Model\Order $source   Source order.
-	 * @param array                  $args     Connection args.
-	 * @param AppContext             $context  AppContext instance.
-	 * @param ResolveInfo            $info     ResolveInfo instance.
+	 * @param \WPGraphQL\WooCommerce\Model\Order $source   Source order.
+	 * @param array                              $args     Connection args.
+	 * @param AppContext                         $context  AppContext instance.
+	 * @param ResolveInfo                        $info     ResolveInfo instance.
 	 *
 	 * @return array
 	 */

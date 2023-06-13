@@ -17,7 +17,9 @@ use GraphQL\Error\UserError;
 class Payment_Token {
 
 	/**
-	 * Registers the "PaymentToken" interface..
+	 * Registers the "PaymentToken" interface.
+	 *
+	 * @return void
 	 */
 	public static function register_interface() {
 		register_graphql_interface_type(

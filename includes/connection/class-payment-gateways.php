@@ -20,6 +20,8 @@ class Payment_Gateways {
 
 	/**
 	 * Registers the various connections from other Types to Customer.
+	 *
+	 * @return void
 	 */
 	public static function register_connections() {
 		register_graphql_connection( self::get_connection_config() );

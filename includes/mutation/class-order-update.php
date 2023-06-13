@@ -25,6 +25,8 @@ class Order_Update {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -124,6 +126,10 @@ class Order_Update {
 
 			$order = WC_Order_Factory::get_order( $order_id );
 
+			if ( ! is_object( $order ) ) {
+				throw new UserError( __( 'Order not found.', 'wp-graphql-woocommerce' ) );
+			}
+
 			// Make sure gateways are loaded so hooks from gateways fire on save/create.
 			\WC()->payment_gateways();
 
@@ -153,7 +159,7 @@ class Order_Update {
 			/**
 			 * Action called after order is updated.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
+			 * @param \WC_Order    $order   WC_Order instance.
 			 * @param array       $input   Input data describing order
 			 * @param AppContext  $context Request AppContext instance.
 			 * @param ResolveInfo $info    Request ResolveInfo instance.

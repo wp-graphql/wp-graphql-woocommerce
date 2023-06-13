@@ -25,6 +25,8 @@ class Customer_Register {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -88,7 +90,7 @@ class Customer_Register {
 				'type'    => 'User',
 				'resolve' => function ( $payload ) {
 					$user = get_user_by( 'ID', $payload['id'] );
-					return new User( $user );
+					return false !== $user ? new User( $user ) : null;
 				},
 			],
 		];
@@ -161,7 +163,7 @@ class Customer_Register {
 			}
 
 			// Copy billing address as shipping address.
-			if ( ! empty( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
+			if ( isset( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
 				$customer_args['shipping'] = array_merge(
 					Customer_Mutation::empty_shipping(),
 					array_intersect_key( $customer->get_billing( 'edit' ), Customer_Mutation::empty_shipping() )

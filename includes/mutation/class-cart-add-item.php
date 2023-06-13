@@ -22,6 +22,8 @@ class Cart_Add_Item {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(

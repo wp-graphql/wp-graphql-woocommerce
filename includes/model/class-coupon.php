@@ -15,6 +15,35 @@ use WC_Coupon;
 
 /**
  * Class Coupon
+ *
+ * @property \WC_Coupon $wc_data
+ *
+ * @property int $ID
+ * @property string $id
+ * @property string $code
+ * @property string $date
+ * @property string $modified
+ * @property string $description
+ * @property string $discountType
+ * @property string $amount
+ * @property string $dateExpiry
+ * @property string $usageCount
+ * @property string $individualUse
+ * @property string $usageLimit
+ * @property string $usageLimitPerUser
+ * @property string $limitUsageToXItems
+ * @property string $freeShipping
+ * @property string $excludeSaleItems
+ * @property string $minimumAmount
+ * @property string $maximumAmount
+ * @property array  $emailRestrictions
+ * @property array  $product_ids
+ * @property array  $excluded_product_ids
+ * @property array  $product_category_ids
+ * @property array  $excluded_product_category_ids
+ * @property array  $used_by_ids
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Coupon extends WC_Post {
 
@@ -37,8 +66,11 @@ class Coupon extends WC_Post {
 			parent::init();
 
 			$fields = [
+				'ID'                            => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                            => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_coupon', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'shop_coupon', "{$this->ID}" ) : null;
 				},
 				'code'                          => function() {
 					return ! empty( $this->wc_data->get_code() ) ? $this->wc_data->get_code() : null;
@@ -62,10 +94,10 @@ class Coupon extends WC_Post {
 					return ! empty( $this->wc_data->get_date_expires() ) ? $this->wc_data->get_date_expires() : null;
 				},
 				'usageCount'                    => function() {
-					return ! is_null( $this->wc_data->get_usage_count() ) ? $this->wc_data->get_usage_count() : null;
+					return $this->wc_data->get_usage_count();
 				},
 				'individualUse'                 => function() {
-					return ! is_null( $this->wc_data->get_individual_use() ) ? $this->wc_data->get_individual_use() : null;
+					return $this->wc_data->get_individual_use();
 				},
 				'usageLimit'                    => function() {
 					return ! empty( $this->wc_data->get_usage_limit() ) ? $this->wc_data->get_usage_limit() : null;
@@ -77,10 +109,10 @@ class Coupon extends WC_Post {
 					return ! empty( $this->wc_data->get_limit_usage_to_x_items() ) ? $this->wc_data->get_limit_usage_to_x_items() : null;
 				},
 				'freeShipping'                  => function() {
-					return ! is_null( $this->wc_data->get_free_shipping() ) ? $this->wc_data->get_free_shipping() : null;
+					return $this->wc_data->get_free_shipping();
 				},
 				'excludeSaleItems'              => function() {
-					return ! is_null( $this->wc_data->get_exclude_sale_items() ) ? $this->wc_data->get_exclude_sale_items() : null;
+					return $this->wc_data->get_exclude_sale_items();
 				},
 				'minimumAmount'                 => function() {
 					return ! empty( $this->wc_data->get_minimum_amount() ) ? $this->wc_data->get_minimum_amount() : null;

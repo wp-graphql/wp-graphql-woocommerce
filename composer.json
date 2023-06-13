@@ -26,16 +26,25 @@
     },
     "require-dev": {
         "automattic/vipwpcs": "^2.3",
+        "axepress/wp-graphql-stubs": "^1.14",
+        "php-stubs/woocommerce-stubs": "^7.7",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan": "^1.10",
         "squizlabs/php_codesniffer": "^3.5",
+        "szepeviktor/phpstan-wordpress": "^1.3",
         "wp-coding-standards/wpcs": "^2.3"
     },
     "config": {
+        "platform": {
+            "php": "7.3"
+        },
         "optimize-autoloader": true,
         "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
             "johnpbloch/wordpress-core-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true,
             "composer/installers": true
         }
     },
@@ -64,7 +73,8 @@
         "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker-compose run --rm run_tests",
         "dDestroy": "docker-compose down -v",
         "lint": "vendor/bin/phpcs -vp .",
-        "fix": "vendor/bin/phpcbf -vp ."
+        "fix": "vendor/bin/phpcbf -vp .",
+        "stan": "phpstan analyze --ansi --memory-limit=1G"
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
@@ -78,16 +88,19 @@
             "/docs",
             "/local",
             "/plugin-build",
+            "/phpstan",
             "/tests",
             "!/vendor",
             "/codeception.dist.yml",
             "/codeception.yml",
+            "/codeclimate.yml",
             "/composer.json",
             "/composer.lock",
             "/docker-compose.yml",
             "/Dockerfile",
             "/netlify.toml",
-            "/README.md"
+            "/README.md",
+            "/phpstan.neon.dist"
         ]
     }
 }

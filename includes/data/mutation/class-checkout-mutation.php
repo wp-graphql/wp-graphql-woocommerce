@@ -9,6 +9,8 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL\AppContext;
 use WP_Error;
 
 use function WC;
@@ -17,17 +19,11 @@ use function WC;
  * Class - Checkout_Mutation
  */
 class Checkout_Mutation {
-	/**
-	 * Stores checkout fields
-	 *
-	 * @var array
-	 */
-	private static $fields;
 
 	/**
 	 * Caches customer object. @see get_value.
 	 *
-	 * @var WC_Customer
+	 * @var null|\WC_Customer
 	 */
 	private static $logged_in_customer = null;
 
@@ -72,15 +68,15 @@ class Checkout_Mutation {
 	 * @return array
 	 */
 	public static function prepare_checkout_args( $input, $context, $info ) {
-		$data    = [
+		$data = [
 			'terms'                     => (int) isset( $input['terms'] ),
 			'createaccount'             => (int) ! empty( $input['account'] ),
 			'payment_method'            => isset( $input['paymentMethod'] ) ? $input['paymentMethod'] : '',
 			'shipping_method'           => isset( $input['shippingMethod'] ) ? $input['shippingMethod'] : '',
 			'ship_to_different_address' => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
 		];
-		$skipped = [];
 
+		$skipped = [];
 		foreach ( self::get_checkout_fields() as $fieldset_key => $fieldset ) {
 			if ( self::maybe_skip_fieldset( $fieldset_key, $data ) ) {
 				$skipped[] = $fieldset_key;
@@ -119,7 +115,7 @@ class Checkout_Mutation {
 	 * @param string  $fieldset Target fieldset.
 	 * @param boolean $prefixed Prefixed field keys with fieldset name.
 	 *
-	 * @return bool|array
+	 * @return array
 	 */
 	public static function get_checkout_fields( $fieldset = '', $prefixed = false ) {
 		$fields = [
@@ -165,7 +161,7 @@ class Checkout_Mutation {
 		}
 
 		if ( ! empty( $fieldset ) ) {
-			return ! empty( $fields[ $fieldset ] ) ? $fields[ $fieldset ] : false;
+			return ! empty( $fields[ $fieldset ] ) ? $fields[ $fieldset ] : [];
 		}
 
 		return $fields;
@@ -175,6 +171,8 @@ class Checkout_Mutation {
 	 * Update customer and session data from the posted checkout data.
 	 *
 	 * @param array $data Order data.
+	 *
+	 * @return void
 	 */
 	protected static function update_session( $data ) {
 		// Update both shipping and billing to the passed billing address first if set.
@@ -261,6 +259,8 @@ class Checkout_Mutation {
 	 * @param array $data Checkout data.
 	 *
 	 * @throws UserError When not able to create customer.
+	 *
+	 * @return void
 	 */
 	protected static function process_customer( $data ) {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -342,6 +342,8 @@ class Checkout_Mutation {
 	 *
 	 * @param string $field String to update.
 	 * @param array  $data  Array of data to get the value from.
+	 *
+	 * @return void
 	 */
 	protected static function set_customer_address_fields( $field, $data ) {
 		$billing_value  = null;
@@ -371,6 +373,8 @@ class Checkout_Mutation {
 	 * @param array $data  Checkout data.
 	 *
 	 * @throws UserError Invalid input.
+	 *
+	 * @return void
 	 */
 	protected static function validate_data( &$data ) {
 		foreach ( self::get_checkout_fields( '', true ) as $fieldset_key => $fieldset ) {
@@ -404,7 +408,7 @@ class Checkout_Mutation {
 				}
 
 				if ( \wc_graphql_ends_with( $key, 'phone' ) ) {
-					if ( $validate_fieldset && '' !== $data[ $key ] && ! WC_Validation::is_phone( $data[ $key ] ) ) {
+					if ( $validate_fieldset && '' !== $data[ $key ] && ! \WC_Validation::is_phone( $data[ $key ] ) ) {
 						/* translators: %s: phone number */
 						throw new UserError( sprintf( __( '%s is not a valid phone number.', 'wp-graphql-woocommerce' ), $field_label ) );
 					}
@@ -424,7 +428,7 @@ class Checkout_Mutation {
 					$country      = isset( $data[ $fieldset_key . '_country' ] ) ? $data[ $fieldset_key . '_country' ] : WC()->customer->{"get_{$fieldset_key}_country"}();
 					$valid_states = WC()->countries->get_states( $country );
 
-					if ( ! empty( $valid_states ) && is_array( $valid_states ) && count( $valid_states ) > 0 ) {
+					if ( ! empty( $valid_states ) && is_array( $valid_states ) ) {
 						$valid_state_values = array_map( 'wc_strtoupper', array_flip( array_map( 'wc_strtoupper', $valid_states ) ) );
 						$data[ $key ]       = wc_strtoupper( $data[ $key ] );
 
@@ -449,6 +453,8 @@ class Checkout_Mutation {
 	 * @param array $data  An array of posted data.
 	 *
 	 * @throws UserError Invalid input.
+	 *
+	 * @return void
 	 */
 	protected static function validate_checkout( &$data ) {
 		self::validate_data( $data );
@@ -507,13 +513,15 @@ class Checkout_Mutation {
 	 * @param int    $order_id       Order ID.
 	 * @param string $payment_method Payment method.
 	 *
-	 * @return array.
+	 * @throws UserError When payment method is invalid.
+	 *
+	 * @return array Processed payment results.
 	 */
 	protected static function process_order_payment( $order_id, $payment_method ) {
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 		if ( ! isset( $available_gateways[ $payment_method ] ) ) {
-			return;
+			throw new UserError( __( 'Cannot process invalid payment method.', 'wp-graphql-woocommerce' ) );
 		}
 
 		// Store Order ID in session so it can be re-used after payment failure.
@@ -536,10 +544,16 @@ class Checkout_Mutation {
 	 * @param int    $order_id        Order ID.
 	 * @param string $transaction_id  Payment transaction ID.
 	 *
+	 * @throws \Exception Order cannot be retrieved.
+	 *
 	 * @return array
 	 */
 	protected static function process_order_without_payment( $order_id, $transaction_id = '' ) {
 		$order = wc_get_order( $order_id );
+		if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
+
 		$order->payment_complete( $transaction_id );
 
 		return [
@@ -559,6 +573,8 @@ class Checkout_Mutation {
 	 * @param array       $results  Order status.
 	 *
 	 * @throws UserError When validation fails.
+	 *
+	 * @return int Order ID.
 	 */
 	public static function process_checkout( $data, $input, $context, $info, &$results = null ) {
 		wc_maybe_define_constant( 'WOOCOMMERCE_CHECKOUT', true );
@@ -595,7 +611,7 @@ class Checkout_Mutation {
 			throw new UserError( $order_id->get_error_message() );
 		}
 
-		if ( ! $order ) {
+		if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
 			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
 		}
 
@@ -607,7 +623,7 @@ class Checkout_Mutation {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		do_action( 'woocommerce_checkout_order_processed', $order_id, $data, $order );
 
-		if ( WC()->cart->needs_payment() && ( empty( $input['isPaid'] ) || false === $input['isPaid'] ) ) {
+		if ( WC()->cart->needs_payment() && ( empty( $input['isPaid'] ) ) ) {
 			$results = self::process_order_payment( $order_id, $data['payment_method'] );
 		} else {
 			$transaction_id = ! empty( $input['transactionId'] ) ? $input['transactionId'] : '';
@@ -616,7 +632,7 @@ class Checkout_Mutation {
 			 * Use this to do some last minute transaction ID validation.
 			 *
 			 * @param bool        $is_valid        Is transaction ID valid.
-			 * @param WC_Order    $order           Order being processed.
+			 * @param \WC_Order   $order           Order being processed.
 			 * @param String|null $transaction_id  Order payment transaction ID.
 			 * @param array       $data            Order data.
 			 * @param array       $input           Order raw input data.
@@ -710,9 +726,16 @@ class Checkout_Mutation {
 	 * @param array       $input      Order properties.
 	 * @param AppContext  $context    AppContext instance.
 	 * @param ResolveInfo $info       ResolveInfo instance.
+	 *
+	 * @throws \Exception Order cannot be retrieved.
+	 *
+	 * @return void
 	 */
 	public static function update_order_meta( $order_id, $meta_data, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
+		if ( ! is_object( $order ) ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
 
 		if ( $meta_data ) {
 			foreach ( $meta_data as $meta ) {
@@ -723,7 +746,7 @@ class Checkout_Mutation {
 		/**
 		 * Action called before changes to order meta are saved.
 		 *
-		 * @param WC_Order    $order      WC_Order instance.
+		 * @param \WC_Order   $order      WC_Order instance.
 		 * @param array       $meta_data  Order meta data.
 		 * @param array       $props      Order props array.
 		 * @param AppContext  $context    Request AppContext instance.

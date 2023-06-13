@@ -17,9 +17,9 @@ class Type_Registry {
 	/**
 	 * Registers WooGraphQL types, connections, unions, and mutations to GraphQL schema
 	 *
-	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry  Instance of the WPGraphQL TypeRegistry.
+	 * @return void
 	 */
-	public function init( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
+	public function init() {
 		/**
 		 * Enumerations.
 		 */
@@ -67,10 +67,10 @@ class Type_Registry {
 		 * Interfaces.
 		 */
 		Type\WPInterface\Product::register_interface();
-		Type\WPInterface\Attribute::register_interface( $type_registry );
-		Type\WPInterface\Product_Attribute::register_interface( $type_registry );
-		Type\WPInterface\Cart_Error::register_interface( $type_registry );
-		Type\WPInterface\Payment_Token::register_interface( $type_registry );
+		Type\WPInterface\Attribute::register_interface();
+		Type\WPInterface\Product_Attribute::register_interface();
+		Type\WPInterface\Cart_Error::register_interface();
+		Type\WPInterface\Payment_Token::register_interface();
 
 		/**
 		 * Objects.

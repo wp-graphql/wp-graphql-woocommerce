@@ -15,13 +15,61 @@ use GraphQLRelay\Relay;
 
 /**
  * Class Order_Item
+ *
+ * @property \WC_Order_Item $wc_data
+ *
+ * @property int    $ID
+ * @property string $id
+ * @property int    $databaseId
+ * @property int    $orderId
+ * @property string $type
+ *
+ * @property ?string $code
+ * @property ?string $discount
+ * @property ?string $discountTax
+ * @property ?string $coupon_id
+ *
+ * @property ?float  $amount
+ * @property ?string $name
+ * @property ?string $taxStatus
+ * @property ?string $taxClass
+ * @property ?float  $total
+ * @property ?float  $totalTax
+ * @property ?string $taxes
+ *
+ * @property ?string $methodTitle
+ * @property ?string $method_id
+ * @property ?string $shippingTaxTotal
+ * @property ?array  $taxes
+ * @property ?string $taxClass
+ *
+ * @property ?string $rateCode
+ * @property ?string $label
+ * @property ?float  $taxTotal
+ * @property ?float  $shippingTaxTotal
+ * @property ?bool   $isCompound
+ * @property ?int    $rate_id
+ *
+ * @property ?int    $productId
+ * @property ?int    $variationId
+ * @property ?int    $quantity
+ * @property ?float  $subtotal
+ * @property ?float  $subtotalTax
+ * @property ?float  $total
+ * @property ?float  $totalTax
+ * @property ?string $taxes
+ * @property ?array  $itemDownloads
+ * @property ?string $taxStatus
+ * @property ?string $taxClass
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Order_Item extends Model {
 
 	/**
 	 * Stores order item type.
 	 *
-	 * @var int
+	 * @var string
 	 */
 	protected $item_type;
 
@@ -35,14 +83,14 @@ class Order_Item extends Model {
 	/**
 	 * Order_Item constructor
 	 *
-	 * @param int $item - order item crud object.
+	 * @param \WC_Order_Item $item          Order item crud object.
+	 * @param null|Order     $cached_order  Preloaded parent order model.
 	 */
-	public function __construct( $item ) {
+	public function __construct( $item, $cached_order = null ) {
 		$this->data                = $item;
 		$this->item_type           = $item->get_type();
 		$order_id                  = $item->get_order_id();
-		$author_id                 = get_post_field( 'post_author', $order_id );
-		$this->order               = ! empty( $item->cached_order ) ? $item->cached_order : new Order( $order_id );
+		$this->order               = ! empty( $cached_order ) ? $cached_order : new Order( $order_id );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
@@ -54,7 +102,7 @@ class Order_Item extends Model {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
 
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, $author_id );
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, 1 );
 	}
 
 	/**
@@ -79,14 +127,15 @@ class Order_Item extends Model {
 				},
 
 				'databaseId' => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'orderId'    => function() {
 					return ! empty( $this->data->get_order_id() ) ? $this->data->get_order_id() : null;
 				},
 				'id'         => function() {
-					// phpcs:ignore 
-					return Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID );
+					return ( ! empty( $this->orderId ) && ! empty( $this->ID ) ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						? Relay::toGlobalId( 'order_item', $this->orderId . '+' . $this->ID ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						: null;
 				},
 				'type'       => function() {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
@@ -283,6 +332,6 @@ class Order_Item extends Model {
 	 * @return string
 	 */
 	protected function get_restricted_cap() {
-		return $this->order->get_restricted_cap();
+		return '';
 	}
 }

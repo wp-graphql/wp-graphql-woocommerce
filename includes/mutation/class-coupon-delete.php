@@ -23,6 +23,8 @@ class Coupon_Delete {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -82,7 +84,7 @@ class Coupon_Delete {
 	 *
 	 * @throws UserError Invalid ID provided | Lack of capabilities.
 	 *
-	 * @return callable
+	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		// Retrieve order ID.
@@ -104,19 +106,24 @@ class Coupon_Delete {
 		}
 
 		if ( ! wc_rest_check_post_permissions( 'shop_coupon', 'delete', $coupon->ID ) ) {
-			$post_object_type = get_post_type_object( 'shop_coupon' );
+			/**
+			 * Get coupon post type.
+			 *
+			 * @var \WP_Post_Type $post_type_object
+			 */
+			$post_type_object = get_post_type_object( 'shop_coupon' );
 			throw new UserError(
 				sprintf(
 					/* translators: %s: post type */
 					__( 'Sorry, you are not allowed to delete %s.', 'wp-graphql-woocommerce' ),
-					lcfirst( $post_object_type->label )
+					lcfirst( $post_type_object->label )
 				)
 			);
 		}
 
 		$fields_to_cache = $info->getFieldSelection( 2 );
 		foreach ( $fields_to_cache['coupon'] as $field => $_ ) {
-			$coupon->$field;
+			$cached = $coupon->$field;
 		}
 
 		$force_delete = isset( $input['forceDelete'] ) ? $input['forceDelete'] : false;

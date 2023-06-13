@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Data\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Refund;
@@ -21,6 +22,8 @@ use WPGraphQL\WooCommerce\Model\Refund;
  * Class Refund_Connection_Resolver
  *
  * @deprecated v0.10.0
+ *
+ * @property WC_CPT_Loader $loader
  */
 class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -80,6 +83,11 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		/**
+		 * Get refund post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( 'shop_order_refund' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):
@@ -154,7 +162,8 @@ class Refund_Connection_Resolver extends AbstractConnectionResolver {
 							'return'        => 'ids',
 						]
 					);
-					$query_args['post_parent__in'] = array_map( 'absint', $customer_orders );
+					$customer_orders               = is_array( $customer_orders ) ? array_map( 'absint', $customer_orders ) : [ '0' ];
+					$query_args['post_parent__in'] = $customer_orders;
 				}
 				break;
 			default:

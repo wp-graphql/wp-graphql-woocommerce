@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 /**
  * Class - Update_Session
@@ -23,6 +24,8 @@ class Update_Session {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -59,7 +62,13 @@ class Update_Session {
 			'session'  => [
 				'type'    => [ 'list_of' => 'MetaData' ],
 				'resolve' => function ( $payload ) {
-					$session_data = \WC()->session->get_session_data();
+					/**
+					 * Session handler.
+					 *
+					 * @var QL_Session_Handler $session
+					 */
+					$session      = \WC()->session;
+					$session_data = $session->get_session_data();
 					$session      = [];
 					foreach ( $session_data as $key => $value ) {
 						$meta        = new \stdClass();
@@ -96,19 +105,26 @@ class Update_Session {
 			}
 			$session_data_input = $input['sessionData'];
 
+			/**
+			 * Session handler.
+			 *
+			 * @var QL_Session_Handler $session
+			 */
+			$session = \WC()->session;
+
 			// Save session data input.
 			foreach ( $session_data_input as $meta ) {
-				\WC()->session->set( $meta['key'], $meta['value'] );
+				$session->set( $meta['key'], $meta['value'] );
 			}
 
-			if ( is_a( \WC()->session, '\WC_Session_Handler' ) ) {
-				\WC()->session->save_data();
+			if ( is_a( $session, '\WC_Session_Handler' ) ) {
+				$session->save_data();
 			}
 
 			do_action( 'woographql_update_session', true );
 
 			// Process errors or return successful.
-			$notices = \WC()->session->get( 'wc_notices' );
+			$notices = $session->get( 'wc_notices' );
 			if ( ! empty( $notices['error'] ) ) {
 				$error_messages = implode( ' ', array_column( $notices['error'], 'notice' ) );
 				\wc_clear_notices();

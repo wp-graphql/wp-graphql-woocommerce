@@ -14,6 +14,8 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Countries {
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		$wc_countries = new \WC_Countries();

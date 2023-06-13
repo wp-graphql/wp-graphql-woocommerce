@@ -23,6 +23,8 @@ class Review_Delete_Restore {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		// Trash/Delete mutation.
@@ -99,7 +101,7 @@ class Review_Delete_Restore {
 				'resolve'     => function( $payload ) {
 					$deleted = (object) $payload['commentObject'];
 
-					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', absint( $deleted->comment_ID ) ) : null;
+					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', (string) $deleted->comment_ID ) : null;
 				},
 			],
 			'review'     => [
@@ -145,6 +147,10 @@ class Review_Delete_Restore {
 				case 'restoreReview':
 					$classname = '\WPGraphQL\Mutation\CommentRestore';
 					break;
+			}
+
+			if ( empty( $classname ) || ! class_exists( $classname ) ) {
+				throw new UserError( __( 'Failed to find mutation resolver. Please contact site adminstrator', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Get the comment mutation resolver.

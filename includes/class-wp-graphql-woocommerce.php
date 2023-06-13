@@ -21,9 +21,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Stores the instance of the WP_GraphQL_WooCommerce class
 		 *
-		 * @var WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
+		 * @var null|WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
 		 */
-		private static $instance;
+		private static $instance = null;
 
 		/**
 		 * Returns a WP_GraphQL_WooCommerce Instance.
@@ -31,7 +31,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return WP_GraphQL_WooCommerce
 		 */
 		public static function instance() {
-			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+			if ( is_null( self::$instance ) ) {
 				self::$instance = new self();
 				self::$instance->includes();
 				self::$instance->setup();
@@ -86,7 +86,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Returns GraphQL Product Type name for product types not supported by the GraphQL schema.
 		 *
-		 * @return array
+		 * @return string
 		 */
 		public static function get_supported_product_type() {
 			return apply_filters(
@@ -148,6 +148,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * Uses composer's autoload
 		 *
 		 * @since  0.0.1
+		 * @return void
 		 */
 		private function includes() {
 			$include_directory_path = get_includes_directory();
@@ -394,11 +395,13 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public static function load_auth_router() {
 			require get_includes_directory() . 'utils/class-protected-router.php';
-			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'instance' ] );
+			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'initialize' ] );
 		}
 
 		/**
 		 * Sets up WooGraphQL schema.
+		 *
+		 * @return void
 		 */
 		private function setup() {
 			// Initialize WooGraphQL Settings.
@@ -421,7 +424,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Initialize WooGraphQL TypeRegistry.
 			$registry = new Type_Registry();
-			add_action( 'graphql_register_types', [ $registry, 'init' ], 10, 1 );
+			add_action( 'graphql_register_types', [ $registry, 'init' ] );
 		}
 	}
 

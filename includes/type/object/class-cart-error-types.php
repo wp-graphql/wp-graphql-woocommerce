@@ -15,6 +15,8 @@ class Cart_Error_Types {
 
 	/**
 	 * Registers types to the GraphQL schema.
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -100,6 +102,15 @@ class Cart_Error_Types {
 						},
 					],
 				],
+			]
+		);
+
+		register_graphql_object_type(
+			'UnknownCartError',
+			[
+				'description' => __( 'Error that occurred with no recognizable reason.', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'CartError' ],
+				'fields'      => [],
 			]
 		);
 	}

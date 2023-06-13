@@ -17,43 +17,53 @@ use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class Variation_Attribute_Connection_Resolver
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Variation_Attribute_Connection_Resolver {
 
 	/**
 	 * Returns data array from WC_Product_Attribute ArrayAccess object.
 	 *
-	 * @param array  $attrs      WC_Product_Attribute object.
-	 * @param string $parent_id  ProductVariation Relay ID.
+	 * @param array      $attrs      WC_Product_Attribute object.
+	 * @param string|int $parent_id  ProductVariation Relay ID.
 	 *
 	 * @return array
 	 */
 	public static function to_data_array( $attrs = [], $parent_id = 0 ) {
 		$attributes = [];
-		if ( [ '0' ] !== $attrs ) {
-			foreach ( $attrs as $name => $value ) {
-				$term = \get_term_by( 'slug', $value, $name );
-				if ( empty( $term ) ) {
-					$attributes[] = [
-						// ID create for caching only, not object retrieval.
-						// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-						'id'          => base64_encode( $parent_id . '||' . $name . '||' . $value ),
-						'attributeId' => 0,
-						'name'        => $name,
-						'value'       => $value,
-					];
-				} else {
-					$attributes[] = [
-						// ID create for caching only, not object retrieval.
-						// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-						'id'          => base64_encode( $parent_id . '||' . $name . '||' . $value ),
-						'attributeId' => $term->term_id,
-						'name'        => $term->taxonomy,
-						'value'       => $term->name,
-					];
-				}
-			}//end foreach
-		}//end if
+
+		// Bail early if explicitly '0' attributes.
+		if ( [ '0' ] === $attrs ) {
+			return $attributes;
+		}
+
+		foreach ( $attrs as $name => $value ) {
+			$term = \get_term_by( 'slug', $value, $name );
+
+			// ID create for caching only, not object retrieval.
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			$id = base64_encode( $parent_id . '||' . $name . '||' . $value );
+
+			if ( ! $term instanceof \WP_Term ) {
+				$attributes[] = [
+
+					'id'          => $id,
+					'attributeId' => 0,
+					'name'        => $name,
+					'value'       => $value,
+				];
+
+				continue;
+			}
+
+			$attributes[] = [
+				'id'          => $id,
+				'attributeId' => $term->term_id,
+				'name'        => $term->taxonomy,
+				'value'       => $term->name,
+			];
+		}//end foreach
 
 		return $attributes;
 	}
@@ -65,6 +75,8 @@ class Variation_Attribute_Connection_Resolver {
 	 * @param array       $args       - Connection arguments.
 	 * @param AppContext  $context    - AppContext object.
 	 * @param ResolveInfo $info       - ResolveInfo object.
+	 *
+	 * @return array|null
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		if ( is_a( $source, Product::class ) ) {

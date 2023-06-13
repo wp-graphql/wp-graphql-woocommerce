@@ -8,10 +8,6 @@
 
 namespace WPGraphQL\WooCommerce;
 
-use WPGraphQL\WooCommerce\Model\Coupon;
-use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Product;
-
 /**
  * Class ACF_Schema_Filters
  */
@@ -19,6 +15,8 @@ class ACF_Schema_Filters {
 
 	/**
 	 * Register filters
+	 *
+	 * @return void
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs && taxonomies.
@@ -36,7 +34,7 @@ class ACF_Schema_Filters {
 	 */
 	public static function resolve_crud_root_id( $id, $root ) {
 		switch ( true ) {
-			case $root instanceof \WPGraphQL\WooCommerce\Model\CRUD_CPT:
+			case $root instanceof Model\WC_Post:
 				$id = absint( $root->ID );
 				break;
 		}
@@ -58,13 +56,13 @@ class ACF_Schema_Filters {
 		if ( $post instanceof \WP_Post ) {
 			switch ( $post->post_type ) {
 				case 'shop_coupon':
-					$source = new Coupon( $post->ID );
+					$source = new Model\Coupon( $post->ID );
 					break;
 				case 'shop_order':
-					$source = new Order( $post->ID );
+					$source = new Model\Order( $post->ID );
 					break;
 				case 'product':
-					$source = new Product( $post->ID );
+					$source = new Model\Product( $post->ID );
 					break;
 			}
 		}

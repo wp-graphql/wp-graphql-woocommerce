@@ -19,6 +19,85 @@ use WC_Product_Simple;
 
 /**
  * Class Product
+ *
+ * @property \WC_Product   $wc_data
+ * @property \WP_Post_Type $post_type_object
+ *
+ * @property int           $ID
+ * @property string        $id
+ * @property string        $type
+ * @property string        $slug
+ * @property string        $name
+ * @property string        $date
+ * @property string        $modified
+ * @property string        $status
+ * @property bool          $featured
+ * @property string        $description
+ * @property string        $descriptionRaw
+ * @property string        $shortDescription
+ * @property string        $shortDescriptionRaw
+ * @property string        $sku
+ * @property string        $dateOnSaleFrom
+ * @property string        $dateOnSaleTo
+ * @property bool          $reviewsAllowed
+ * @property string        $purchaseNote
+ * @property int           $menuOrder
+ * @property float         $averageRating
+ * @property int           $reviewCount
+ * @property bool          $onSale
+ * @property bool          $purchasable
+ * @property string        $catalogVisibility
+ * @property int           $totalSales
+ *
+ * @property array         $upsell_ids
+ * @property array         $attributes
+ * @property array         $default_attributes
+ * @property int           $image_id
+ * @property int[]         $gallery_image_ids
+ * @property int[]         $category_ids
+ * @property int[]         $tag_ids
+ * @property int           $parent_id
+ *
+ * @property bool          $manageStock
+ * @property int           $stockQuantity
+ * @property string        $backorders
+ * @property bool          $backordersAllowed
+ * @property bool          $soldIndividually
+ * @property float         $weight
+ * @property float         $length
+ * @property float         $width
+ * @property float         $height
+ * @property int           $shippingClassId
+ * @property bool          $shippingRequired
+ * @property bool          $shippingTaxable
+ * @property array         $cross_sell_ids
+ * @property string        $stockStatus
+ *
+ * @property bool          $virtual
+ * @property int           $downloadExpiry
+ * @property bool          $downloadable
+ * @property int           $downloadLimit
+ * @property array         $downloads
+ *
+ * @property string        $price
+ * @property float|float[] $priceRaw
+ * @property string        $regularPrice
+ * @property float|float[] $regularPriceRaw
+ * @property string        $salePrice
+ * @property float|float[] $salePriceRaw
+ * @property string        $taxStatus
+ * @property string        $taxClass
+ *
+ * @property string        $externalUrl
+ * @property string        $buttonText
+ *
+ * @property string        $addToCartText
+ * @property string        $addToCartDescription
+ * @property int[]         $grouped_ids
+ *
+ * @property int[]         $variation_ids
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Product extends WC_Post {
 
@@ -40,12 +119,28 @@ class Product extends WC_Post {
 	 * Product constructor.
 	 *
 	 * @param int|\WC_Data $id - product post-type ID.
+	 *
+	 * @throws \Exception  Failed to retrieve product data source.
 	 */
 	public function __construct( $id ) {
 		// Get WC_Product object.
 		$data = \wc_get_product( $id );
 
+		// Check if product is valid.
+		if ( ! is_object( $data ) ) {
+			throw new \Exception( __( 'Failed to retrieve product data source', 'wp-graphql-woocommerce' ) );
+		}
+
 		parent::__construct( $data );
+	}
+
+	/**
+	 * Returns the product type.
+	 *
+	 * @return string
+	 */
+	public function get_type() {
+		return $this->wc_data->get_type();
 	}
 
 	/**
@@ -57,7 +152,14 @@ class Product extends WC_Post {
 	 * @return string|null
 	 */
 	private function get_variation_price( $pricing_type = '', $raw = false ) {
-		$prices = $this->wc_data->get_variation_prices( true );
+		/**
+		 * Variable product data source.
+		 *
+		 * @var \WC_Product_Variable $data
+		 */
+		$data = $this->wc_data;
+
+		$prices = $data->get_variation_prices( true );
 
 		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->wc_data->is_on_sale() ) ) {
 			return null;
@@ -95,8 +197,11 @@ class Product extends WC_Post {
 
 			$type   = $this->wc_data->get_type();
 			$fields = [
+				'ID'                  => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                  => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'product', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'product', "{$this->ID}" ) : null;
 				},
 				'type'                => function() {
 					return ! empty( $this->wc_data->get_type() ) ? $this->wc_data->get_type() : null;
@@ -117,7 +222,7 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_status() ) ? $this->wc_data->get_status() : null;
 				},
 				'featured'            => function() {
-					return ! is_null( $this->wc_data->get_featured() ) ? $this->wc_data->get_featured() : null;
+					return $this->wc_data->get_featured();
 				},
 				'description'         => function() {
 					return ! empty( $this->wc_data->get_description() )
@@ -160,19 +265,19 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_purchase_note() ) ? $this->wc_data->get_purchase_note() : null;
 				},
 				'menuOrder'           => function() {
-					return ! is_null( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
+					return $this->wc_data->get_menu_order();
 				},
 				'averageRating'       => function() {
-					return ! is_null( $this->wc_data->get_average_rating() ) ? $this->wc_data->get_average_rating() : null;
+					return $this->wc_data->get_average_rating();
 				},
 				'reviewCount'         => function() {
-					return ! is_null( $this->wc_data->get_review_count() ) ? $this->wc_data->get_review_count() : null;
+					return $this->wc_data->get_review_count();
 				},
 				'onSale'              => function () {
-					return ! is_null( $this->wc_data->is_on_sale() ) ? $this->wc_data->is_on_sale() : null;
+					return $this->wc_data->is_on_sale();
 				},
 				'purchasable'         => function () {
-					return ! is_null( $this->wc_data->is_purchasable() ) ? $this->wc_data->is_purchasable() : null;
+					return $this->wc_data->is_purchasable();
 				},
 
 				/**
@@ -186,7 +291,7 @@ class Product extends WC_Post {
 				],
 				'totalSales'          => [
 					'callback'   => function() {
-						return ! is_null( $this->wc_data->get_total_sales() ) ? $this->wc_data->get_total_sales() : null;
+						return $this->wc_data->get_total_sales();
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
 				],
@@ -270,7 +375,7 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_tax_status() ) ? $this->wc_data->get_tax_status() : null;
 					},
 					'taxClass'        => function() {
-						return ! is_null( $this->wc_data->get_tax_class() ) ? $this->wc_data->get_tax_class() : '';
+						return $this->wc_data->get_tax_class();
 					},
 				];
 			}//end if
@@ -283,7 +388,7 @@ class Product extends WC_Post {
 			) {
 				$fields += [
 					'manageStock'       => function() {
-						return ! is_null( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
+						return $this->wc_data->get_manage_stock();
 					},
 					'stockQuantity'     => function() {
 						return ! empty( $this->wc_data->get_stock_quantity() ) ? $this->wc_data->get_stock_quantity() : null;
@@ -292,10 +397,10 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_backorders() ) ? $this->wc_data->get_backorders() : null;
 					},
 					'backordersAllowed' => function() {
-						return ! empty( $this->wc_data->backorders_allowed() ) ? $this->wc_data->backorders_allowed() : null;
+						return $this->wc_data->backorders_allowed();
 					},
 					'soldIndividually'  => function() {
-						return ! is_null( $this->wc_data->is_sold_individually() ) ? $this->wc_data->is_sold_individually() : null;
+						return $this->wc_data->is_sold_individually();
 					},
 					'weight'            => function() {
 						return ! empty( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
@@ -313,10 +418,10 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_shipping_class_id() : null;
 					},
 					'shippingRequired'  => function() {
-						return ! is_null( $this->wc_data->needs_shipping() ) ? $this->wc_data->needs_shipping() : null;
+						return $this->wc_data->needs_shipping();
 					},
 					'shippingTaxable'   => function() {
-						return ! is_null( $this->wc_data->is_shipping_taxable() ) ? $this->wc_data->is_shipping_taxable() : null;
+						return $this->wc_data->is_shipping_taxable();
 					},
 					'cross_sell_ids'    => function() {
 						return ! empty( $this->wc_data->get_cross_sell_ids() )
@@ -333,16 +438,16 @@ class Product extends WC_Post {
 				case apply_filters( "graphql_{$type}_product_model_use_virtual_data_fields", 'simple' === $type ):
 					$fields += [
 						'virtual'        => function() {
-							return ! is_null( $this->wc_data->is_virtual() ) ? $this->wc_data->is_virtual() : null;
+							return $this->wc_data->is_virtual();
 						},
 						'downloadExpiry' => function() {
-							return ! is_null( $this->wc_data->get_download_expiry() ) ? $this->wc_data->get_download_expiry() : null;
+							return $this->wc_data->get_download_expiry();
 						},
 						'downloadable'   => function() {
-							return ! is_null( $this->wc_data->is_downloadable() ) ? $this->wc_data->is_downloadable() : null;
+							return $this->wc_data->is_downloadable();
 						},
 						'downloadLimit'  => function() {
-							return ! is_null( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
+							return ! empty( $this->wc_data->get_download_limit() ) ? $this->wc_data->get_download_limit() : null;
 						},
 						'downloads'      => function() {
 							return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;
@@ -379,10 +484,22 @@ class Product extends WC_Post {
 				case apply_filters( "graphql_{$type}_product_model_use_external_fields", 'external' === $type ):
 					$fields += [
 						'externalUrl' => function() {
-							return ! empty( $this->wc_data->get_product_url() ) ? $this->wc_data->get_product_url() : null;
+							/**
+							 * External product
+							 *
+							 * @var \WC_Product_External $data
+							 */
+							$data = $this->wc_data;
+							return ! empty( $data->get_product_url() ) ? $data->get_product_url() : null;
 						},
 						'buttonText'  => function() {
-							return ! empty( $this->wc_data->get_button_text() ) ? $this->wc_data->get_button_text() : null;
+							/**
+							 * External product
+							 *
+							 * @var \WC_Product_External $data
+							 */
+							$data = $this->wc_data;
+							return ! empty( $data->get_button_text() ) ? $data->get_button_text() : null;
 						},
 					];
 					break;
@@ -414,11 +531,11 @@ class Product extends WC_Post {
 			$fields += [
 				'commentCount'  => function() {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					return $this->reviewCount;
+					return ! empty( $this->reviewCount ) ? $this->reviewCount : null;
 				},
 				'commentStatus' => function() {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					return $this->reviewsAllowed ? 'open' : 'closed';
+					return isset( $this->reviewsAllowed ) && $this->reviewsAllowed ? 'open' : 'closed';
 				},
 			];
 

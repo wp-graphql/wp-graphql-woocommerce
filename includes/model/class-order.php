@@ -14,6 +14,64 @@ use GraphQLRelay\Relay;
 
 /**
  * Class Order
+ *
+ * @property \WC_Order     $wc_data
+ * @property \WP_Post_Type $post_type_object
+ *
+ * @property int    $ID
+ * @property string $id
+ * @property int    $databaseId
+ * @property string $orderNumber
+ * @property string $orderKey
+ * @property string $status
+ * @property string $date
+ * @property string $modified
+ * @property string $datePaid
+ * @property string $dateCompleted
+ * @property string $customerNote
+ * @property array  $billing
+ * @property array  $shipping
+ * @property string $discountTotal
+ * @property float  $discountTotalRaw
+ * @property string $discountTax
+ * @property string $discountTaxRaw
+ * @property string $shippingTotal
+ * @property float  $shippingTotalRaw
+ * @property string $shippingTax
+ * @property string $shippingTaxRaw
+ * @property string $cartTax
+ * @property string $cartTaxRaw
+ * @property string $subtotal
+ * @property float  $subtotalRaw
+ * @property string $total
+ * @property float  $totalRaw
+ * @property string $totalTax
+ * @property float  $totalTaxRaw
+ * @property bool   $isDownloadPermitted
+ * @property string $shippingAddressMapUrl
+ * @property bool   $hasBillingAddress
+ * @property bool   $hasShippingAddress
+ * @property bool   $needsShippingAddress
+ * @property bool   $needsPayment
+ * @property bool   $needsProcessing
+ * @property bool   $hasDownloadableItem
+ * @property array  $downloadable_items
+ * @property int    $commentCount
+ * @property string $commentStatus
+ * @property string $currency
+ * @property string $paymentMethod
+ * @property string $paymentMethodTitle
+ * @property string $transactionId
+ * @property string $customerIpAddress
+ * @property string $customerUserAgent
+ * @property string $createdVia
+ * @property string $orderKey
+ * @property string $pricesIncludeTax
+ * @property string $cartHash
+ * @property string $customerNote
+ * @property string $orderVersion
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Order extends WC_Post {
 
@@ -28,9 +86,16 @@ class Order extends WC_Post {
 	 * Order constructor.
 	 *
 	 * @param int|\WC_Data $id - shop_order post-type ID.
+	 *
+	 * @throws \Exception - Failed to retrieve order data source.
 	 */
 	public function __construct( $id ) {
 		$data = \wc_get_order( $id );
+
+		// Check if order is valid.
+		if ( ! is_object( $data ) ) {
+			throw new \Exception( __( 'Failed to retrieve order data source', 'wp-graphql-woocommerce' ) );
+		}
 
 		parent::__construct( $data );
 	}
@@ -83,10 +148,9 @@ class Order extends WC_Post {
 	 */
 	protected function owner_matches_current_user() {
 		// Get Customer ID.
+		$customer_id = 0;
 		if ( in_array( $this->post_type, $this->get_viewable_order_types(), true ) ) {
 			$customer_id = $this->wc_data->get_customer_id();
-		} else {
-			$customer_id = get_post_meta( '_customer_user', $this->wc_data->get_parent_id(), true );
 		}
 
 		if ( 0 === $customer_id ) {
@@ -106,10 +170,9 @@ class Order extends WC_Post {
 	 * @return bool
 	 */
 	public function guest_order_customer_matches_current_user() {
+		$customer_email = null;
 		if ( in_array( $this->post_type, $this->get_viewable_order_types(), true ) ) {
 			$customer_email = $this->wc_data->get_billing_email();
-		} else {
-			$customer_email = get_post_meta( '_billing_email', $this->wc_data->get_parent_id(), true );
 		}
 
 		$session_customer = new \WC_Customer( 0, true );
@@ -188,8 +251,11 @@ class Order extends WC_Post {
 			parent::init();
 
 			$fields = [
+				'ID'                    => function() {
+					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
+				},
 				'id'                    => function() {
-					return ! empty( $this->wc_data->get_id() ) ? Relay::toGlobalId( 'shop_order', $this->wc_data->get_id() ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'shop_order', "{$this->ID}" ) : null;
 				},
 				'date'                  => function() {
 					return ! empty( $this->wc_data->get_date_created() ) ? $this->wc_data->get_date_created() : null;
@@ -277,7 +343,7 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_total_tax() ) ? $this->wc_data->get_total_tax() : 0;
 				},
 				'subtotal'              => function() {
-					$price = ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : null;
+					$price = ! empty( $this->wc_data->get_subtotal() ) ? $this->wc_data->get_subtotal() : 0;
 					return \wc_graphql_price( $price, [ 'currency' => $this->wc_data->get_currency() ] );
 				},
 				'subtotalRaw'           => function() {
@@ -290,7 +356,7 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_version() ) ? $this->wc_data->get_version() : null;
 				},
 				'pricesIncludeTax'      => function() {
-					return ! is_null( $this->wc_data->get_prices_include_tax() ) ? $this->wc_data->get_prices_include_tax() : null;
+					return $this->wc_data->get_prices_include_tax();
 				},
 				'cartHash'              => function() {
 					return ! empty( $this->wc_data->get_cart_hash() ) ? $this->wc_data->get_cart_hash() : null;
@@ -299,7 +365,7 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_customer_note() ) ? $this->wc_data->get_customer_note() : null;
 				},
 				'isDownloadPermitted'   => function() {
-					return ! is_null( $this->wc_data->is_download_permitted() ) ? $this->wc_data->is_download_permitted() : null;
+					return $this->wc_data->is_download_permitted();
 				},
 				'billing'               => function() {
 					return ! empty( $this->wc_data->get_address( 'billing' ) ) ? $this->wc_data->get_address( 'billing' ) : null;
@@ -314,22 +380,22 @@ class Order extends WC_Post {
 					return ! empty( $this->wc_data->get_shipping_address_map_url() ) ? $this->wc_data->get_shipping_address_map_url() : null;
 				},
 				'hasBillingAddress'     => function() {
-					return ! is_null( $this->wc_data->has_billing_address() ) ? $this->wc_data->has_billing_address() : null;
+					return $this->wc_data->has_billing_address();
 				},
 				'hasShippingAddress'    => function() {
-					return ! is_null( $this->wc_data->has_shipping_address() ) ? $this->wc_data->has_shipping_address() : null;
+					return $this->wc_data->has_shipping_address();
 				},
 				'needsShippingAddress'  => function() {
-					return ! is_null( $this->wc_data->needs_shipping_address() ) ? $this->wc_data->needs_shipping_address() : null;
+					return $this->wc_data->needs_shipping_address();
 				},
 				'hasDownloadableItem'   => function() {
-					return ! is_null( $this->wc_data->has_downloadable_item() ) ? $this->wc_data->has_downloadable_item() : null;
+					return $this->wc_data->has_downloadable_item();
 				},
 				'needsPayment'          => function() {
-					return ! is_null( $this->wc_data->needs_payment() ) ? $this->wc_data->needs_payment() : null;
+					return $this->wc_data->needs_payment();
 				},
 				'needsProcessing'       => function() {
-					return ! is_null( $this->wc_data->needs_processing() ) ? $this->wc_data->needs_processing() : null;
+					return $this->wc_data->needs_processing();
 				},
 				/**
 				 * Connection resolvers fields
@@ -367,7 +433,7 @@ class Order extends WC_Post {
 							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 							'meta_key'   => 'is_customer_note',
 							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-							'meta_value' => true,
+							'meta_value' => '1',
 						];
 					}
 
@@ -375,7 +441,7 @@ class Order extends WC_Post {
 
 					add_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
-					return count( $notes );
+					return is_array( $notes ) ? count( $notes ) : 0;
 				},
 				'commentStatus'         => function() {
 					return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ? 'open' : 'closed';

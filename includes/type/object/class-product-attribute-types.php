@@ -17,6 +17,8 @@ class Product_Attribute_Types {
 
 	/**
 	 * Registers ProductAttribute types
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		// Local.
@@ -78,7 +80,8 @@ class Product_Attribute_Types {
 						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
 						'resolve'     => function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
-							return $taxonomy->labels->singular_name;
+
+							return $taxonomy ? $taxonomy->labels->singular_name : null;
 						},
 					],
 					'slug'  => [

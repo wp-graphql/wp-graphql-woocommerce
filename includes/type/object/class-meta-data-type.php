@@ -19,6 +19,8 @@ class Meta_Data_Type {
 
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -85,7 +87,7 @@ class Meta_Data_Type {
 			],
 			'resolve'     => function( $source, array $args ) {
 				// Set unique flag.
-				$single = ! empty( $args['multiple'] ) ? ! $args['multiple'] : true;
+				$single = ! empty( $args['multiple'] ) ? false : true;
 
 				// Check "key" argument and format meta_data objects.
 				if ( ! empty( $args['key'] ) && $source->meta_exists( $args['key'] ) ) {

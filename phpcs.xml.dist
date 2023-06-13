@@ -53,6 +53,8 @@
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.Commenting">
+		<!-- Allow for inline @var typing -->
+		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.PHP.CommentedOutCode.Found">
@@ -75,6 +77,7 @@
 	<file>wp-graphql-woocommerce.php</file>
 	<file>access-functions.php</file>
 	<file>includes/</file>
+	<exclude-pattern>/phpstan/</exclude-pattern>
 	<exclude-pattern>/vendor/</exclude-pattern>
 	<exclude-pattern>/node_modules/</exclude-pattern>
 	<exclude-pattern>local/*</exclude-pattern>

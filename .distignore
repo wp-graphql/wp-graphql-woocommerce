@@ -10,6 +10,7 @@
 /docs
 /local
 /tests
+/phpstan
 
 .DS_Store
 .coveralls.yml
@@ -26,4 +27,5 @@ c3.php
 netlify.toml
 docker-compose.yml
 codeception.yml
+phpstan.neon.dist
 Dockerfile

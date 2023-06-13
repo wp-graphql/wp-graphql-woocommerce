@@ -6,6 +6,9 @@
  * @since 0.0.1
  */
 
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
+use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
+
 if ( ! function_exists( 'wc_graphql_starts_with' ) ) {
 	/**
 	 * Checks if source string starts with the target string
@@ -83,10 +86,10 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 	/**
 	 * Format the price with a currency symbol.
 	 *
-	 * @param  float $price Raw price.
-	 * @param  array $args  Arguments to format a price {
-	 *     Array of arguments.
-	 *     Defaults to empty array.
+	 * @param  float|string $price Raw price.
+	 * @param  array        $args  Arguments to format a price {
+	 *            Array of arguments.
+	 *            Defaults to empty array.
 	 *
 	 *     @type string $currency           Currency code.
 	 *                                      Defaults to empty string (Use the result from get_woocommerce_currency()).
@@ -153,7 +156,8 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 		 * @param string $return            Price HTML markup.
 		 * @param string $price             Formatted price.
 		 * @param array  $args              Pass on the args.
-		 * @param float  $unformatted_price Price as float to allow plugins custom formatting. Since 3.2.0.
+		 * @param float  $unformatted_price Price as float to allow plugins custom formatting.
+		 * @param string $symbol            Currency symbol.
 		 */
 		return apply_filters( 'graphql_woocommerce_price', $return, $price, $args, $unformatted_price, $symbol );
 	}
@@ -163,8 +167,8 @@ if ( ! function_exists( 'wc_graphql_price_range' ) ) {
 	/**
 	 * Format a price range for display.
 	 *
-	 * @param  string $from Price from.
-	 * @param  string $to   Price to.
+	 * @param  string|float $from Price from.
+	 * @param  string|float $to   Price to.
 	 * @return string
 	 */
 	function wc_graphql_price_range( $from, $to ) {
@@ -254,7 +258,11 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 		/**
 		 * Get the value from the stored data, or return the default
 		 */
-		$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		if ( is_array( $default ) ) {
+			$value = is_array( $section_fields ) && ! empty( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		} else {
+			$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		}
 
 		/**
 		 * Filter the value before returning it
@@ -273,10 +281,16 @@ if ( ! function_exists( 'woographql_get_session_uid' ) ) :
 	/**
 	 * Returns end-user's customer ID.
 	 *
-	 * @return string|int
+	 * @return int
 	 */
 	function woographql_get_session_uid() {
-		return WC()->session->get_customer_id();
+		/**
+		 * Session Handler
+		 *
+		 * @var QL_Session_Handler|Transfer_Session_Handler $session
+		 */
+		$session = WC()->session;
+		return $session->get_customer_id();
 	}
 endif;
 
@@ -287,7 +301,13 @@ if ( ! function_exists( 'woographql_get_session_token' ) ) :
 	 * @return string
 	 */
 	function woographql_get_session_token() {
-		return WC()->session->get_client_session_id();
+		/**
+		 * Session Handler
+		 *
+		 * @var QL_Session_Handler|Transfer_Session_Handler $session
+		 */
+		$session = WC()->session;
+		return $session->get_client_session_id();
 	}
 endif;
 
@@ -295,7 +315,9 @@ if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	/**
 	 * Creates WooGraphQL session transfer nonces.
 	 *
-	 * @param string $action  Nonce name.
+	 * @param string|int $action  Nonce name.
+	 *
+	 * @return string The nonce.
 	 */
 	function woographql_create_nonce( $action = -1 ) {
 		$uid   = woographql_get_session_uid();
@@ -313,7 +335,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	 * @param string         $nonce   Nonce to validated.
 	 * @param integer|string $action  Nonce name.
 	 *
-	 * @return bool
+	 * @return false|int
 	 */
 	function woographql_verify_nonce( $nonce, $action = -1 ) {
 		$nonce = (string) $nonce;
@@ -345,7 +367,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 		 *
 		 * @param string     $nonce  The invalid nonce.
 		 * @param string|int $action The nonce action.
-		 * @param WP_User    $user   The current user object.
+		 * @param string|int $uid    User ID.
 		 * @param string     $token  The user's session token.
 		 */
 		do_action( 'graphql_verify_nonce_failed', $nonce, $action, $uid, $token );

@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Data\Loader;
 
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
+use WPGraphQL\AppContext;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
@@ -119,7 +120,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Downloadable item ID.
 	 *
-	 * @return WC_Customer_Download|null
+	 * @return \WC_Customer_Download|null
 	 */
 	public function load_downloadable_item_from_id( $id ) {
 		$node = new \WC_Customer_Download( $id );
@@ -136,8 +137,26 @@ class WC_Db_Loader extends AbstractDataLoader {
 	public function load_tax_rate_from_id( $id ) {
 		global $wpdb;
 
+		/**
+		 * Get tax rate from WooCommerce.
+		 *
+		 * @var object{
+		 *  tax_rate_id: int,
+		 *  tax_rate_class: string,
+		 *  tax_rate_country: string,
+		 *  tax_rate_state: string,
+		 *  tax_rate: string,
+		 *  tax_rate_name: string,
+		 *  tax_rate_priority: int,
+		 *  tax_rate_compound: bool,
+		 *  tax_rate_shipping: bool,
+		 *  tax_rate_order: int,
+		 *  tax_rate_city: string,
+		 *  tax_rate_postcode: string
+		 *  } $rate
+		 */
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
-		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
+		if ( ! empty( $rate ) && is_object( $rate ) ) {
 			// Get locales from a tax rate.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$locales = $wpdb->get_results(
@@ -190,7 +209,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Order item IDs.
 	 *
-	 * @return \WPGraphQL\Model\Order_Item|null
+	 * @return \WPGraphQL\WooCommerce\Model\Order_Item|null
 	 */
 	public function load_order_item_from_id( $id ) {
 		$item = \WC()->order_factory::get_order_item( $id );
@@ -199,7 +218,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 			return null;
 		}
 
-		$item = new \WPGraphQL\WooCommerce\ModelOrder_Item( $item );
+		$item = new \WPGraphQL\WooCommerce\Model\Order_Item( $item );
 
 		return $item;
 	}

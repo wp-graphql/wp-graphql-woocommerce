@@ -22,6 +22,8 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 class Cart_Fill {
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -99,23 +101,32 @@ class Cart_Fill {
 					);
 
 					foreach ( $all_error_data as $error_data ) {
+						$cart_error = [];
 						switch ( true ) {
 							case isset( $error_data['cart_item_data'] ):
 								$cart_error         = $error_data['cart_item_data'];
 								$cart_error['type'] = 'INVALID_CART_ITEM';
 								break;
 							case isset( $error_data['code'] ):
-								$cart_error         = [ 'code' => $error_data['code'] ];
-								$cart_error['type'] = 'INVALID_COUPON';
+								$cart_error = [
+									'code' => $error_data['code'],
+									'type' => 'INVALID_COUPON',
+								];
 								break;
 							case isset( $error_data['package'] ):
-								$cart_error         = [
+								$cart_error = [
 									'package'       => $error_data['package'],
 									'chosen_method' => $error_data['chosen_method'],
+									'type'          => 'INVALID_SHIPPING_METHOD',
 								];
-								$cart_error['type'] = 'INVALID_SHIPPING_METHOD';
 								break;
-						}
+							default:
+								$cart_error = [
+									'reasons' => [ 'Unknown error occurred.' ],
+									'type'    => 'UNKNOWN',
+								];
+								break;
+						}//end switch
 
 						if ( ! empty( $error_data['reasons'] ) ) {
 							$cart_error['reasons'] = $error_data['reasons'];
@@ -206,8 +217,9 @@ class Cart_Fill {
 					}
 
 					// If any session error notices, capture them.
-					if ( empty( $reason ) && ! empty( \WC()->session->get( 'wc_notices' ) ) ) {
-						$reason = implode( ' ', array_column( \WC()->session->get( 'wc_notices' ), 'notice' ) );
+					$error_notices = \WC()->session->get( 'wc_notices' );
+					if ( empty( $reason ) && is_array( $error_notices ) && ! empty( $error_notices ) ) {
+						$reason = implode( ' ', array_column( $error_notices, 'notice' ) );
 						\wc_clear_notices();
 					}
 

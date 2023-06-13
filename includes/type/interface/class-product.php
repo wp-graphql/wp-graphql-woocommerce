@@ -23,6 +23,8 @@ class Product {
 
 	/**
 	 * Registers the "Product" interface.
+	 *
+	 * @return void
 	 */
 	public static function register_interface() {
 
@@ -75,7 +77,9 @@ class Product {
 					if ( empty( $product_id ) ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
 						throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					} elseif ( get_post( $product_id )->post_type !== 'product' ) {
+					}
+					$product = get_post( $product_id );
+					if ( ! is_object( $product ) || 'product' !== $product->post_type ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
 						throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					}

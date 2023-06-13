@@ -14,10 +14,15 @@ use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Tax_Rate_Connection_Resolver
+ *
+ * @property WC_Db_Loader $loader
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -179,15 +184,11 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		if (
-			isset( $where_args['class'] )
-			|| ! empty( $where_args['postCode'] )
-			|| ! empty( $where_args['postCodeIn'] )
-		) {
-			$args['where'] = '';
-		}
+		$args['where'] = '1=1';
 
 		if ( isset( $where_args['class'] ) ) {
+			$args['where'] .= ' AND ';
+
 			if ( empty( $where_args['class'] ) ) {
 				$args['where'] .= 'tax_rate_class = ""';
 			} else {
@@ -197,18 +198,13 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( ! empty( $where_args['postCode'] ) ) {
-			if ( ! empty( $args['where'] ) ) {
-				$args['where'] .= ' AND ';
-			}
-
+			$args['where'] .= ' AND ';
 			$post_code      = $where_args['postCode'];
 			$args['where'] .= "location_code = '{$post_code}'";
 		}
 
 		if ( ! empty( $where_args['postCodeIn'] ) ) {
-			if ( ! empty( $args['where'] ) ) {
-				$args['where'] .= ' AND ';
-			}
+			$args['where'] .= ' AND ';
 
 			$args['where'] .= ' (';
 			foreach ( $where_args['postCodeIn'] as $i => $post_code ) {

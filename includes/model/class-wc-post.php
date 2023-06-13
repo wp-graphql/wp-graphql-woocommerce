@@ -16,20 +16,27 @@ use WP_Post_Type;
 
 /**
  * Class WC_Post
+ *
+ * @property \WC_Data $wc_data
+ * @property \WP_Post $data
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 abstract class WC_Post extends Post {
 
 	/**
 	 * Stores the WC_Data object connected to the model.
 	 *
-	 * @var \WC_Data $data
+	 * @var \WC_Data
 	 */
 	protected $wc_data;
 
 	/**
 	 * WC_Post constructor
 	 *
-	 * @param int $data  Data object to be used by the model.
+	 * @param \WC_Data $data  Data object to be used by the model.
+	 *
+	 * @throws \Exception  Failed to retrieve data source post object.
 	 */
 	public function __construct( $data ) {
 		// Store CRUD object.
@@ -37,6 +44,11 @@ abstract class WC_Post extends Post {
 
 		// Get WP_Post object.
 		$post = get_post( $data->get_id() );
+
+		// Check if product is valid.
+		if ( ! is_object( $post ) ) {
+			throw new \Exception( __( 'Failed to retrieve data source post object', 'wp-graphql-woocommerce' ) );
+		}
 
 		// Add $allowed_restricted_fields.
 		if ( ! has_filter( 'graphql_allowed_fields_on_restricted_type', [ static::class, 'add_allowed_restricted_fields' ] ) ) {
@@ -89,7 +101,7 @@ abstract class WC_Post extends Post {
 	 *
 	 * @return mixed
 	 *
-	 * @throws BadMethodCallException Method not found on WC data object.
+	 * @throws \BadMethodCallException Method not found on WC data object.
 	 */
 	public function __call( $method, $args ) {
 		if ( \is_callable( [ $this->wc_data, $method ] ) ) {
@@ -97,7 +109,7 @@ abstract class WC_Post extends Post {
 		}
 
 		$class = __CLASS__;
-		throw new BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
+		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 
 	/**
@@ -109,7 +121,17 @@ abstract class WC_Post extends Post {
 	 * @return boolean
 	 */
 	public function delete( $force_delete = false ) {
-		if ( ! current_user_can( $this->post_type_object->cap->edit_posts ) ) {
+		$post_type_object = $this->post_type_object;
+		if ( empty( $post_type_object ) ) {
+			throw new UserError(
+				__(
+					'Post type object not found.',
+					'wp-graphql-woocommerce'
+				)
+			);
+		}
+
+		if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
 			throw new UserError(
 				__(
 					'User does not have the capabilities necessary to delete this object.',
@@ -124,18 +146,20 @@ abstract class WC_Post extends Post {
 	/**
 	 * Method for determining if the data should be considered private or not
 	 *
-	 * @param WP_Post $post_object The object of the post we need to verify permissions for.
+	 * @param \WP_Post $post_object The object of the post we need to verify permissions for.
 	 *
 	 * @return bool
 	 */
 	protected function is_post_private( $post_object = null ) {
+		/**
+		 * Stores the incoming post type object for the post being modeled
+		 *
+		 * @var null|\WP_Post_Type $post_type_object
+		 */
 		$post_type_object = $this->post_type_object;
 
 		if ( empty( $post_object ) ) {
 			$post_object = $this->data;
-		}
-
-		if ( empty( $post_object ) ) {
 			return true;
 		}
 
@@ -166,11 +190,6 @@ abstract class WC_Post extends Post {
 			}
 
 			$parent_post_type_obj = $post_type_object;
-
-			if ( empty( $parent_post_type_obj ) ) {
-				return true;
-			}
-
 			if ( 'private' === $parent->post_status ) {
 				$cap = isset( $parent_post_type_obj->cap->read_private_posts ) ? $parent_post_type_obj->cap->read_private_posts : 'read_private_posts';
 			} else {

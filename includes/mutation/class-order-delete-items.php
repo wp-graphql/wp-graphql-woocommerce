@@ -24,6 +24,8 @@ class Order_Delete_Items {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -111,11 +113,16 @@ class Order_Delete_Items {
 			$ids = $input['itemIds'];
 
 			// Get Order model instance for output.
+			/**
+			 * Order model instance.
+			 *
+			 * @var \WC_Order $order
+			 */
 			$order = new Order( $order_id );
 
 			// Cache items to prevent null value errors.
 			// @codingStandardsIgnoreStart
-			$order->downloadableItems;
+			$order->get_downloadable_items();
 			$order->get_items();
 			$order->get_items( 'fee' );
 			$order->get_items( 'shipping' );
@@ -123,16 +130,21 @@ class Order_Delete_Items {
 			$order->get_items( 'coupon' );
 			// @codingStandardsIgnoreEnd.
 
-			// Get working order model.
+			/**
+			 * Working order model instance.
+			 *
+			 * @var \WC_Order $working_order
+			 */
 			$working_order = new Order( $order_id );
 
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
-			 * @param array       $input   Input data describing order.
-			 * @param AppContext  $context Request AppContext instance.
-			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 * @param array           $item_ids  Order item IDs of items being deleted.
+			 * @param \WC_Order|Order $order     Order model instance.
+			 * @param array           $input     Input data describing order.
+			 * @param AppContext      $context   Request AppContext instance.
+			 * @param ResolveInfo     $info      Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_before_order_items_delete', $ids, $working_order, $input, $context, $info );
 
@@ -146,10 +158,11 @@ class Order_Delete_Items {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
-			 * @param array       $input   Input data describing order
-			 * @param AppContext  $context Request AppContext instance.
-			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 * @param array           $item_ids  Order item IDs of items being deleted.
+			 * @param \WC_Order|Order $order     Order model instance.
+			 * @param array           $input     Input data describing order
+			 * @param AppContext      $context   Request AppContext instance.
+			 * @param ResolveInfo     $info      Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $ids, $working_order, $input, $context, $info );
 

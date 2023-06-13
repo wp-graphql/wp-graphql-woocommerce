@@ -15,11 +15,16 @@ use GraphQLRelay\Relay;
 use GraphQLRelay\Connection\ArrayConnection;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Downloadable_Item_Connection_Resolver
+ *
+ * @property WC_Db_Loader $loader
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 
@@ -107,7 +112,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return array
 	 */
 	public function get_query() {
 		$items = 0;
@@ -168,6 +173,6 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	protected function is_valid_model( $model ) {
-		return isset( $model ) && ! empty( $model['download_id'] );
+		return ! empty( $model ) && ! empty( $model['download_id'] );
 	}
 }

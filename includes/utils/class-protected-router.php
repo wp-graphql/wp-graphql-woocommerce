@@ -18,21 +18,21 @@ class Protected_Router {
 	/**
 	 * Stores the instance of the Protected_Router class
 	 *
-	 * @var Protected_Router The one true Protected_Router
+	 * @var null|Protected_Router
 	 */
-	private static $instance;
+	private static $instance = null;
 
 	/**
 	 * The default route
 	 *
-	 * @var string $route
+	 * @var string
 	 */
 	public static $default_route = 'transfer-session';
 
 	/**
 	 * Sets the route to use as the endpoint
 	 *
-	 * @var string $route
+	 * @var string
 	 */
 	public static $route = null;
 
@@ -65,17 +65,26 @@ class Protected_Router {
 	}
 
 	/**
-	 * Returns a Protected_Router Instance.
+	 * Returns the Protected_Router singleton instance.
 	 *
 	 * @return Protected_Router
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
 
 		// Return the Protected_Router Instance.
 		return self::$instance;
+	}
+
+	/**
+	 * Initializes the Protected_Router singleton.
+	 *
+	 * @return void
+	 */
+	public static function initialize() {
+		self::instance();
 	}
 
 	/**
@@ -277,13 +286,39 @@ class Protected_Router {
 		$nonce_names = $this->get_nonce_names();
 		if ( empty( $nonce_names ) ) {
 			$this->redirect_to_home();
+			return;
 		}
 
+		/**
+		 * Nonce prefix
+		 *
+		 * @var string $nonce_prefix
+		 */
 		$nonce_prefix = null;
-		$session_id   = null;
-		$nonce        = null;
-		foreach ( $nonce_names as $field => $nonce_param ) {
+
+		/**
+		 * Session ID
+		 *
+		 * @var string $session_id
+		 */
+		$session_id = null;
+
+		/**
+		 * Nonce
+		 *
+		 * @var string $nonce
+		 */
+		$nonce = null;
+
+		/**
+		 * Field
+		 *
+		 * @var string $field
+		 */
+		$field = null;
+		foreach ( $nonce_names as $possible_field => $nonce_param ) {
 			if ( in_array( $nonce_param, array_keys( $_REQUEST ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$field        = $possible_field;
 				$nonce_prefix = $this->get_nonce_prefix( $field );
 				$session_id   = isset( $_REQUEST['session_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['session_id'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$nonce        = isset( $_REQUEST[ $nonce_param ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $nonce_param ] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -291,13 +326,19 @@ class Protected_Router {
 			}
 		}
 
-		if ( empty( $nonce_prefix ) | empty( $session_id ) | empty( $nonce ) ) {
+		if ( empty( $field ) || empty( $nonce_prefix ) || empty( $session_id ) || empty( $nonce ) ) {
 			$this->redirect_to_home();
+			return;
 		}
 
 		// Bail early if session user already authenticated.
 		if ( 0 !== get_current_user_id() && get_current_user_id() === absint( $session_id ) ) {
-			wp_safe_redirect( $this->get_target_endpoint( $field ) );
+			$redirect_url = $this->get_target_endpoint( (string) $field );
+			if ( empty( $redirect_url ) ) {
+				$this->redirect_to_home();
+				return;
+			}
+			wp_safe_redirect( $redirect_url );
 			exit;
 		}
 
@@ -308,37 +349,50 @@ class Protected_Router {
 		}
 
 		// Verify nonce.
-		if ( ! woographql_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
+		if ( null !== $nonce && ! woographql_verify_nonce( $nonce, $nonce_prefix . $session_id ) ) {
 			$this->redirect_to_home();
 		}
 
 		// If Session ID is a user ID authenticate as session user.
 		if ( 0 !== absint( $session_id ) ) {
+			$user_id = absint( $session_id );
 			wp_clear_auth_cookie();
-			wp_set_current_user( $session_id );
-			wp_set_auth_cookie( $session_id );
+			wp_set_current_user( $user_id );
+			wp_set_auth_cookie( $user_id );
 		}
 
+		/**
+		 * Session object
+		 *
+		 * @var Transfer_Session_Handler $session
+		 */
+		$session = \WC()->session;
+
 		// Read session data connected to session ID.
-		$session_data = \WC()->session->get_session( $session_id );
+		$session_data = $session->get_session( $session_id );
 
 		// We were passed a session ID, yet no session was found. Let's log this and bail.
-		if ( empty( $session_data ) ) {
+		if ( ! is_array( $session_data ) || empty( $session_data ) ) {
 			// TODO: Switch to WC Notices.
 			throw new \Exception( 'Could not locate WooCommerce session on checkout' );
 		}
 
 		// Reinitialize session and save session cookie before redirect.
-		\WC()->session->init_session_cookie();
+		$session->init_session_cookie();
 
 		// Set the session variable.
 		foreach ( $session_data as $key => $value ) {
-			\WC()->session->set( $key, maybe_unserialize( $value ) );
+			$session->set( $key, maybe_unserialize( $value ) );
 		}
-		\WC()->session->set_customer_session_cookie( true );
+		$session->set_customer_session_cookie( true );
 
 		// After session has been restored on redirect to destination.
-		wp_safe_redirect( $this->get_target_endpoint( $field ) );
+		$redirect_url = $this->get_target_endpoint( (string) $field );
+		if ( empty( $redirect_url ) ) {
+			$this->redirect_to_home();
+			return;
+		}
+		wp_safe_redirect( $redirect_url );
 		exit;
 	}
 }

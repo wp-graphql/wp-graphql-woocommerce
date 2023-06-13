@@ -36,7 +36,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	/**
 	 * Returns "session_id" if proper conditions met.
 	 *
-	 * @return int
+	 * @return int|string
 	 */
 	protected function get_posted_session_id() {
 		if ( ! $this->verify_auth_request_credentials_exists() ) {
@@ -53,7 +53,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 * Reads in customer ID from query parameters if specific conditions are met otherwise
 	 * a guest ID are generated as usual.
 	 *
-	 * @return string
+	 * @return int|string
 	 */
 	public function generate_customer_id() {
 		$session_id = $this->get_posted_session_id();
@@ -70,8 +70,13 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 	 * @return string
 	 */
 	public function get_client_session_id() {
-		$session_id   = $this->get_posted_session_id();
-		$session_data = 0 !== $session_id ? $this->get_session( $session_id ) : null;
+		$session_id = $this->get_posted_session_id();
+		/**
+		 * Get session data.
+		 *
+		 * @var null|array{ client_session_id: string, client_session_id_expiration: int } $session_data
+		 */
+		$session_data = 0 !== $session_id ? $this->get_session( (string) $session_id ) : null;
 
 		if ( ! empty( $session_data ) ) {
 			$client_session_id            = $session_data['client_session_id'];
@@ -82,6 +87,7 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 		}
 
 		if ( false !== $client_session_id && time() < $client_session_id_expiration ) {
+			// @phpstan-ignore-next-line
 			return $client_session_id;
 		}
 

@@ -13,6 +13,8 @@ namespace WPGraphQL\WooCommerce\Functions;
 
 /**
  * Initializes minor integrations with other WordPress plugins.
+ *
+ * @return void
  */
 function setup_minor_integrations() {
 	add_filter(
@@ -27,6 +29,7 @@ function setup_minor_integrations() {
  * QL Search integration - Adds to product types to the SWPResult possible types
  *
  * @param array $type_names SWPResults possible types.
+ *
  * @return array
  */
 function woographql_swp_result_possible_types( array $type_names ) {

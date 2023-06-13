@@ -17,6 +17,8 @@ class Country_State_Type {
 
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(

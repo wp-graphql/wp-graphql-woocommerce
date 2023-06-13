@@ -16,16 +16,41 @@ use WC_Customer;
 
 /**
  * Class Customer
+ *
+ * @property \WC_Customer $wc_data
+ *
+ * @property int $ID
+ * @property string $id
+ * @property int $databaseId
+ * @property bool $isVatExempt
+ * @property bool $hasCalculatedShipping
+ * @property bool $calculatedShipping
+ * @property int $orderCount
+ * @property float $totalSpent
+ * @property string $username
+ * @property string $email
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $displayName
+ * @property string $role
+ * @property string $date
+ * @property string $modified
+ * @property array $billing
+ * @property array $shipping
+ * @property bool $isPayingCustomer
+ * @property int $last_order_id
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Customer extends Model {
 
 	/**
 	 * Customer constructor
 	 *
-	 * @param WC_Customer|int $id - User ID.
+	 * @param WC_Customer|int|string $id - User ID.
 	 */
 	public function __construct( $id = 'session' ) {
-		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( $id );
+		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( absint( $id ) );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
@@ -36,8 +61,7 @@ class Customer extends Model {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'customer_restricted_cap', 'session' === $id ? '' : 'list_users' );
-
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, $id );
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, $this->data->get_id() );
 	}
 
 	/**
@@ -66,7 +90,7 @@ class Customer extends Model {
 						: 'guest';
 				},
 				'databaseId'            => function() {
-					return $this->ID;
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
 				'isVatExempt'           => function() {
 					return ! is_null( $this->data->get_is_vat_exempt() ) ? $this->data->get_is_vat_exempt() : null;

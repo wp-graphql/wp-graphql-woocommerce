@@ -16,6 +16,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Model\Term;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Model\Coupon;
 use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Product;
@@ -25,6 +26,8 @@ use WPGraphQL\WooCommerce\Model\Product_Variation;
  * Class Product_Connection_Resolver
  *
  * @deprecated v0.10.0
+ *
+ * @property WC_CPT_Loader $loader
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -35,7 +38,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $post_type;
 
@@ -89,7 +92,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_node_by_id( $id ) {
 		$post = get_post( $id );
-		if ( empty( $post ) || is_wp_error( $post ) ) {
+		if ( empty( $post ) ) {
 			return null;
 		}
 
@@ -119,6 +122,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
+		/**
+		 * Get product post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( $this->post_type );
 		$query_args    = [
 			'post_type'           => $this->post_type,
@@ -472,7 +480,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				}
 
 				// Set sub tax query relation.
-				if ( 1 > count( $sub_tax_query ) ) {
+				if ( 1 > count( $sub_tax_query ) && ! empty( $relation ) ) {
 					$sub_tax_query['relation'] = strtoupper( $relation );
 				}
 
@@ -480,7 +488,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}//end foreach
 		}//end if
 
-		if ( ! empty( $tax_query ) && 1 > count( $tax_query ) ) {
+		if ( ! empty( $tax_query ) && 1 < count( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
 		}
 
@@ -532,8 +540,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$args['meta_query'] = $meta_query;
 		}
 
-		if ( ! empty( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
-			$on_sale_key = $where_args['onSale'] ? 'post__in' : 'post__not_in';
+		if ( isset( $where_args['onSale'] ) && is_bool( $where_args['onSale'] ) ) {
+			$on_sale_key = false !== $where_args['onSale'] ? 'post__in' : 'post__not_in';
 			$on_sale_ids = \wc_get_product_ids_on_sale();
 
 			$on_sale_ids          = empty( $on_sale_ids ) ? [ 0 ] : $on_sale_ids;

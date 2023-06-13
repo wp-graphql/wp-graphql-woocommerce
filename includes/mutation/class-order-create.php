@@ -25,6 +25,8 @@ class Order_Create {
 
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -161,6 +163,10 @@ class Order_Create {
 
 				$order = WC_Order_Factory::get_order( $order_id );
 
+				if ( ! is_object( $order ) ) {
+					throw new UserError( __( 'Order could not be created.', 'wp-graphql-woocommerce' ) );
+				}
+
 				// Make sure gateways are loaded so hooks from gateways fire on save/create.
 				WC()->payment_gateways();
 
@@ -188,7 +194,7 @@ class Order_Create {
 				/**
 				 * Action called after order is created.
 				 *
-				 * @param WC_Order    $order   WC_Order instance.
+				 * @param \WC_Order    $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
 				 * @param AppContext  $context Request AppContext instance.
 				 * @param ResolveInfo $info    Request ResolveInfo instance.
@@ -197,7 +203,12 @@ class Order_Create {
 
 				return [ 'id' => $order->get_id() ];
 			} catch ( Exception $e ) {
-				Order_Mutation::purge( $order );
+				// Delete order if it was created.
+				if ( is_object( $order ) ) {
+					Order_Mutation::purge( $order );
+				}
+
+				// Throw error.
 				throw new UserError( $e->getMessage() );
 			}//end try
 		};

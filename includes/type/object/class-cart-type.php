@@ -25,6 +25,8 @@ class Cart_Type {
 
 	/**
 	 * Register Cart-related types and queries to the WPGraphQL schema
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		self::register_cart_fee();
@@ -38,6 +40,7 @@ class Cart_Type {
 	 * Returns the "Cart" type fields.
 	 *
 	 * @param array $other_fields Extra fields configs to be added or override the default field definitions.
+	 *
 	 * @return array
 	 */
 	public static function get_cart_fields( $other_fields = [] ) {
@@ -435,6 +438,8 @@ class Cart_Type {
 
 	/**
 	 * Registers Cart type
+	 *
+	 * @return void
 	 */
 	public static function register_cart() {
 		register_graphql_object_type(
@@ -463,6 +468,8 @@ class Cart_Type {
 
 	/**
 	 * Registers CartItem type
+	 *
+	 * @return void
 	 */
 	public static function register_cart_item() {
 		register_graphql_object_type(
@@ -703,6 +710,8 @@ class Cart_Type {
 
 	/**
 	 * Registers CartFee type
+	 *
+	 * @return void
 	 */
 	public static function register_cart_fee() {
 		register_graphql_object_type(
@@ -758,6 +767,8 @@ class Cart_Type {
 	}
 	/**
 	 * Registers CartTax type
+	 *
+	 * @return void
 	 */
 	public static function register_cart_tax() {
 		register_graphql_object_type(
@@ -816,6 +827,8 @@ class Cart_Type {
 
 	/**
 	 * Registers AppliedCoupon type
+	 *
+	 * @return void
 	 */
 	public static function register_applied_coupon() {
 		register_graphql_object_type(

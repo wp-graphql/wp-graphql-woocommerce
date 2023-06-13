@@ -20,6 +20,8 @@ class Orders {
 
 	/**
 	 * Registers the various connections from other Types to Customer
+	 *
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From RootQuery To Orders.
@@ -88,8 +90,9 @@ class Orders {
 								'return'        => 'ids',
 							]
 						);
+						$customer_orders = is_array( $customer_orders ) ? array_map( 'absint', $customer_orders ) : [ '0' ];
 
-						$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $customer_orders ) );
+						$resolver->set_query_arg( 'post_parent__in', $customer_orders );
 
 						return $resolver->get_connection();
 					},
@@ -102,8 +105,8 @@ class Orders {
 	/**
 	 * Returns order connection filter by customer.
 	 *
-	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
-	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
+	 * @param PostObjectConnectionResolver $resolver  Connection resolver.
+	 * @param \WC_Customer                 $customer  Customer object of querying user.
 	 *
 	 * @return array
 	 */
@@ -154,25 +157,6 @@ class Orders {
 	}
 
 	/**
-	 * Returns refund connection filter by customer.
-	 *
-	 * @param PostObjectConnectionResolver                       $resolver  Connection resolver.
-	 * @param \WC_Customer|\WPGraphQL\WooCommerce\Model\Customer $customer  Customer object of querying user.
-	 *
-	 * @return array
-	 */
-	private static function get_customer_refund_connection( $resolver, $customer ) {
-		// If not "billing email" or "ID" set bail early by returning an empty connection.
-		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return [
-				'pageInfo' => null,
-				'nodes'    => [],
-				'edges'    => [],
-			];
-		}
-	}
-
-	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults.
 	 *
@@ -183,6 +167,11 @@ class Orders {
 	 */
 	public static function get_connection_config( $args = [], $post_type = 'shop_order' ): array {
 		// Get Post type object for use in connection resolve function.
+		/**
+		 * Get connection post type.
+		 *
+		 * @var \WP_Post_Type $post_object
+		 */
 		$post_object = get_post_type_object( $post_type );
 
 		return array_merge(
@@ -378,19 +367,12 @@ class Orders {
 				switch ( $field ) {
 					case 'customerId':
 					case 'customersIn':
-						if ( is_null( $value ) ) {
-							$meta_query[] = [
-								'key'     => '_customer_user',
-								'value'   => 0,
-								'compare' => '=',
-							];
-						} else {
-							$meta_query[] = [
-								'key'     => '_customer_user',
-								'value'   => $value,
-								'compare' => is_array( $value ) ? 'IN' : '=',
-							];
-						}
+						$meta_query[] = [
+							'key'     => '_customer_user',
+							'value'   => $value,
+							'compare' => is_array( $value ) ? 'IN' : '=',
+						];
+						break;
 				}
 			}
 		}//end foreach
