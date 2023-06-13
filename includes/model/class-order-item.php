@@ -83,13 +83,14 @@ class Order_Item extends Model {
 	/**
 	 * Order_Item constructor
 	 *
-	 * @param \WC_Order_Item $item - order item crud object.
+	 * @param \WC_Order_Item $item          Order item crud object.
+	 * @param null|Order     $cached_order  Preloaded parent order model.
 	 */
-	public function __construct( $item ) {
+	public function __construct( $item, $cached_order = null ) {
 		$this->data                = $item;
 		$this->item_type           = $item->get_type();
 		$order_id                  = $item->get_order_id();
-		$this->order               = ! empty( $item->cached_order ) ? $item->cached_order : new Order( $order_id );
+		$this->order               = ! empty( $cached_order ) ? $cached_order : new Order( $order_id );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',

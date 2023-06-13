@@ -298,7 +298,6 @@ class Order_Item_Type {
 								return null;
 							}
 
-							$item->cached_order = $source;
 							return Factory::resolve_order_item( $item );
 						},
 					],

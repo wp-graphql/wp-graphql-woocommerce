@@ -53,7 +53,7 @@ class General extends Section {
 		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( constant( 'CHECKOUT_URL_NONCE_PARAM' ) );
 		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
-		$enable_auth_urls_hardcoded       = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
+		$enable_auth_urls_hardcoded = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
 		return [
 			[
@@ -73,12 +73,12 @@ class General extends Section {
 				'default' => 'off',
 			],
 			[
-				'name'     => 'enable_authorizing_url_fields',
-				'label'    => __( 'Enable User Session transferring URLs', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'URL fields to add to the <strong>Customer</strong> type.', 'wp-graphql-woocommerce' )
+				'name'              => 'enable_authorizing_url_fields',
+				'label'             => __( 'Enable User Session transferring URLs', 'wp-graphql-woocommerce' ),
+				'desc'              => __( 'URL fields to add to the <strong>Customer</strong> type.', 'wp-graphql-woocommerce' )
 					. ( $enable_auth_urls_hardcoded ? __( ' This setting is disabled. The "WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
-				'type'     => 'multicheck',
-				'options'  => apply_filters(
+				'type'              => 'multicheck',
+				'options'           => apply_filters(
 					'woographql_settings_enable_authorizing_url_options',
 					[
 						'cart_url'               => __( 'Cart URL. Field name: <strong>cartUrl</strong>', 'wp-graphql-woocommerce' ),
@@ -86,8 +86,13 @@ class General extends Section {
 						'add_payment_method_url' => __( 'Add Payment Method URL. Field name: <strong>addPaymentMethodUrl</strong>', 'wp-graphql-woocommerce' ),
 					]
 				),
-				'value'    => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
-				'disabled' => $enable_auth_urls_hardcoded ? true : false,
+				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
+				'disabled'          => $enable_auth_urls_hardcoded ? true : false,
+				'sanitize_callback' => function( $value ) {
+                    if ( empty( $value ) ) {
+                        return [];
+                    }
+                },
 			],
 			[
 				'name'     => 'authorizing_url_endpoint',

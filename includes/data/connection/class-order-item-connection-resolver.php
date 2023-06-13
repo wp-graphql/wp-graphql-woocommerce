@@ -106,9 +106,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 		$items = [];
 		foreach ( $this->source->get_items( $type ) as $id => $item ) {
-			$item->cached_order = $this->source;
-			$item->cached_id    = $id;
-			$items[]            = $item;
+			$items[] = $item;
 		}
 
 		if ( empty( $items ) ) {
@@ -154,7 +152,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		foreach ( $items as $item ) {
 			$this->loader->prime(
 				$item->get_id(),
-				new \WPGraphQL\WooCommerce\Model\Order_Item( $item )
+				new \WPGraphQL\WooCommerce\Model\Order_Item( $item, $this->source )
 			);
 		}
 
