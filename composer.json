@@ -93,6 +93,7 @@
             "!/vendor",
             "/codeception.dist.yml",
             "/codeception.yml",
+            "/codeclimate.yml",
             "/composer.json",
             "/composer.lock",
             "/docker-compose.yml",
