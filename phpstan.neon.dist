@@ -1,5 +1,5 @@
 parameters:
-		level: 8 # Gotta start somewhere
+		level: 8
 		inferPrivatePropertyTypeFromConstructor: true
 		checkMissingIterableValueType: false
 		treatPhpDocTypesAsCertain: false
@@ -14,6 +14,9 @@ parameters:
 			- wp-graphql-woocommerce.php
 			- access-functions.php
 			- includes/
+		scanDirectories:
+			- ../wp-graphql-jwt-authentication/
+			- ../woocommerce/src/Internal/DataStores/Orders/
 		scanFiles:
 			- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
 			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php

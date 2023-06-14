@@ -125,16 +125,16 @@
         },
         {
             "name": "axepress/wp-graphql-stubs",
-            "version": "v1.14.3",
+            "version": "v1.14.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AxeWP/wp-graphql-stubs.git",
-                "reference": "84399dce808db09a876fd79013db56af5d8da4da"
+                "reference": "1c5b0cb3ce978d1e88a828c158383877ba7c223a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/84399dce808db09a876fd79013db56af5d8da4da",
-                "reference": "84399dce808db09a876fd79013db56af5d8da4da",
+                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/1c5b0cb3ce978d1e88a828c158383877ba7c223a",
+                "reference": "1c5b0cb3ce978d1e88a828c158383877ba7c223a",
                 "shasum": ""
             },
             "require": {
@@ -165,7 +165,7 @@
             ],
             "support": {
                 "issues": "https://github.com/AxeWP/wp-graphql-stubs/issues",
-                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v1.14.3"
+                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v1.14.4"
             },
             "funding": [
                 {
@@ -173,7 +173,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-04-28T12:31:19+00:00"
+            "time": "2023-06-14T01:39:23+00:00"
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -252,16 +252,16 @@
         },
         {
             "name": "php-stubs/woocommerce-stubs",
-            "version": "v7.7.2",
+            "version": "v7.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "55edb87032a1c5a21f5539312b93941217d2eeec"
+                "reference": "1e9180bbac115884bf41bf1d2ee0f72338c0a566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/55edb87032a1c5a21f5539312b93941217d2eeec",
-                "reference": "55edb87032a1c5a21f5539312b93941217d2eeec",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/1e9180bbac115884bf41bf1d2ee0f72338c0a566",
+                "reference": "1e9180bbac115884bf41bf1d2ee0f72338c0a566",
                 "shasum": ""
             },
             "require": {
@@ -290,9 +290,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v7.7.2"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v7.8.0"
             },
-            "time": "2023-06-01T02:36:24+00:00"
+            "time": "2023-06-13T20:06:40+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -385,16 +385,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.16",
+            "version": "1.10.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "352bdbb960bb523e3d71b834862589f910921c23"
+                "reference": "52b6416c579663eebdd2f1d97df21971daf3b43f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/352bdbb960bb523e3d71b834862589f910921c23",
-                "reference": "352bdbb960bb523e3d71b834862589f910921c23",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/52b6416c579663eebdd2f1d97df21971daf3b43f",
+                "reference": "52b6416c579663eebdd2f1d97df21971daf3b43f",
                 "shasum": ""
             },
             "require": {
@@ -443,7 +443,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-05T08:21:46+00:00"
+            "time": "2023-06-07T22:00:43+00:00"
         },
         {
             "name": "sirbrillig/phpcs-variable-analysis",
