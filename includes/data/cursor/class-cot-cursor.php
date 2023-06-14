@@ -76,6 +76,7 @@ class COT_Cursor extends AbstractCursor {
 		$this->query = $query;
 
 		// Get tables.
+		/** @var \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore $order_datastore */
 		$order_datastore       = wc_get_container()->get( OrdersTableDataStore::class );
 		$this->tables          = $order_datastore::get_all_table_names_with_id();
 		$mappings              = $order_datastore->get_all_order_column_mappings();
@@ -103,7 +104,7 @@ class COT_Cursor extends AbstractCursor {
 		// Get the order.
 		$order = wc_get_order( $this->cursor_offset );
 
-		return false !== $order ? $order : null;
+		return $order instanceof \WC_Abstract_Order ? $order : null;
 	}
 
 	/**
@@ -185,6 +186,7 @@ class COT_Cursor extends AbstractCursor {
 	 */
 	private function compare_with( $by, $order ) {
 		$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : [];
+
 		if ( in_array( $by, $meta_orderby_keys, true ) && null !== $this->meta_query ) {
 			$orderby = $this->meta_query->get_orderby_clause_for_key( $by );
 			$value   = $this->cursor_node->get_meta( $by, true ) ?? null;
