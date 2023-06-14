@@ -183,7 +183,7 @@ class Product extends WC_Post {
 			return implode( ', ', $prices );
 		}
 
-		return \wc_graphql_price_range( current( $prices ), end( $prices ) );
+		return wc_graphql_price_range( current( $prices ), end( $prices ) );
 	}
 
 	/**
@@ -342,7 +342,7 @@ class Product extends WC_Post {
 				$fields += [
 					'price'           => function() {
 						return ! empty( $this->wc_data->get_price() )
-							? \wc_graphql_price( \wc_get_price_to_display( $this->wc_data ) )
+							? wc_graphql_price( \wc_get_price_to_display( $this->wc_data ) )
 							: null;
 					},
 					'priceRaw'        => function() {
@@ -350,7 +350,7 @@ class Product extends WC_Post {
 					},
 					'regularPrice'    => function() {
 						return ! empty( $this->wc_data->get_regular_price() )
-							? \wc_graphql_price( \wc_get_price_to_display( $this->wc_data, [ 'price' => $this->wc_data->get_regular_price() ] ) )
+							? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, [ 'price' => $this->wc_data->get_regular_price() ] ) )
 							: null;
 					},
 					'regularPriceRaw' => function() {
@@ -358,7 +358,7 @@ class Product extends WC_Post {
 					},
 					'salePrice'       => function() {
 						return ! empty( $this->wc_data->get_sale_price() )
-							? \wc_graphql_price(
+							? wc_graphql_price(
 								\wc_get_price_to_display(
 									$this->wc_data,
 									[

@@ -66,7 +66,7 @@ use WPGraphQL\Model\Model;
  * @property string        $customerUserAgent
  * @property string        $createdVia
  * @property string        $orderKey
- * @property string        $pricesIncludeTax
+ * @property bool          $pricesIncludeTax
  * @property string        $cartHash
  * @property string        $customerNote
  * @property string        $orderVersion
@@ -157,7 +157,7 @@ class Order extends Model {
 
 		$restricted_cap = $this->get_restricted_cap();
 
-		parent::__construct( $restricted_cap, $allowed_restricted_fields, true );
+		parent::__construct( $restricted_cap, $allowed_restricted_fields, 1 );
 	}
 
 	/**
@@ -257,13 +257,31 @@ class Order extends Model {
 	}
 
 	/**
+	 * Returns order/refund('s) parent ID
+	 *
+	 * @return int
+	 */
+	public function get_parent_id() {
+		return absint( $this->data->get_parent_id() );
+	}
+
+
+	/**
 	 * Whether or not the customer of the order matches the current user.
 	 *
 	 * @return bool
 	 */
 	protected function owner_matches_current_user() {
-		// Get Order.
+		/**
+		 * Get Order.
+		 *
+		 * @var \WC_Order $order
+		 */
 		$order = 'shop_order' !== $this->get_type() ? \wc_get_order( $this->get_parent_id() ) : $this->data;
+
+		if ( ! is_object( $order ) ) {
+			return false;
+		}
 
 		// Get Customer ID.
 		$customer_id = 0;
@@ -291,7 +309,11 @@ class Order extends Model {
 	 * @return bool
 	 */
 	public function guest_order_customer_matches_current_user() {
-		// Get Order.
+		/**
+		 * Get Order.
+		 *
+		 * @var \WC_Order $order
+		 */
 		$order = 'shop_order' !== $this->get_type() ? \wc_get_order( $this->get_parent_id() ) : $this->data;
 
 		// Get Customer Email.
@@ -346,17 +368,17 @@ class Order extends Model {
 	 */
 	protected function abstract_order_fields() {
 		return [
-			'id'               => function() {
-				return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'order', (string) $this->data->get_id() ) : null;
-			},
 			'ID'               => function() {
 				return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
+			},
+			'id'               => function() {
+				return ! empty( $this->ID ) ? Relay::toGlobalId( 'order', "{$this->ID}" ) : null;
 			},
 			'databaseId'       => function() {
 				return $this->ID;
 			},
 			'parent_id'        => function() {
-				return ! empty( $this->data ) ? $this->data->get_parent_id() : null;
+				return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
 			},
 			'status'           => function() {
 				return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
@@ -368,7 +390,7 @@ class Order extends Model {
 				return ! empty( $this->data->get_version() ) ? $this->data->get_version() : null;
 			},
 			'pricesIncludeTax' => function() {
-				return ! empty( $this->data->get_version() ) ? $this->data->get_version() : null;
+				return ! empty( $this->data->get_prices_include_tax() ) ? $this->data->get_prices_include_tax() : null;
 			},
 			'dateCreated'      => function() {
 				return ! empty( $this->data->get_date_created() ) ? $this->data->get_date_created() : null;
@@ -377,50 +399,52 @@ class Order extends Model {
 				return ! empty( $this->data->get_date_modified() ) ? $this->data->get_date_modified() : null;
 			},
 			'discountTotal'    => function() {
-				$price = ! empty( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				$price = ! is_null( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
+				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
 			'discountTotalRaw' => function() {
 				return ! empty( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
 			},
 			'discountTax'      => function() {
-				$price = ! empty( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				$price = ! is_null( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : 0;
+				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
 			'discountTaxRaw'   => function() {
 				return ! empty( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : 0;
 			},
 			'shippingTotal'    => function() {
-				$price = ! empty( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				$price = ! is_null( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
+				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
 			'shippingTotalRaw' => function() {
 				return ! empty( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
 			},
 			'shippingTax'      => function() {
-				$price = ! empty( $this->data->get_shipping_tax() ) ? $this->data->get_shipping_tax() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				$price = ! is_null( $this->data->get_shipping_tax() ) ? $this->data->get_shipping_tax() : 0;
+				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
 			'shippingTaxRaw'   => function() {
 				return ! empty( $this->data->get_shipping_tax() ) ? $this->data->get_shipping_tax() : 0;
 			},
 			'cartTax'          => function() {
-				$price = ! empty( $this->data->get_cart_tax() ) ? $this->data->get_cart_tax() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				$price = ! is_null( $this->data->get_cart_tax() ) ? $this->data->get_cart_tax() : 0;
+				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
 			'cartTaxRaw'       => function() {
 				return ! empty( $this->data->get_cart_tax() ) ? $this->data->get_cart_tax() : 0;
 			},
 			'total'            => function() {
-				$price = ! empty( $this->data->get_total() ) ? $this->data->get_total() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				return ! is_null( $this->data->get_total() )
+					? wc_graphql_price( $this->data->get_total(), [ 'currency' => $this->data->get_currency() ] )
+					: null;
 			},
 			'totalRaw'         => function() {
 				return ! empty( $this->data->get_total() ) ? $this->data->get_total() : 0;
 			},
 			'totalTax'         => function() {
-				$price = ! empty( $this->data->get_total_tax() ) ? $this->data->get_total_tax() : 0;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				return ! is_null( $this->data->get_total_tax() )
+					? wc_graphql_price( $this->data->get_total_tax(), [ 'currency' => $this->data->get_currency() ] )
+					: null;
 			},
 			'totalTaxRaw'      => function() {
 				return ! empty( $this->data->get_total_tax() ) ? $this->data->get_total_tax() : 0;
@@ -476,8 +500,9 @@ class Order extends Model {
 				return ! empty( $this->data->get_date_paid() ) ? $this->data->get_date_paid() : null;
 			},
 			'subtotal'              => function() {
-				$price = ! empty( $this->data->get_subtotal() ) ? $this->data->get_subtotal() : null;
-				return \wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
+				return ! empty( $this->data->get_subtotal() )
+					? wc_graphql_price( $this->data->get_subtotal(), [ 'currency' => $this->data->get_currency() ] )
+					: null;
 			},
 			'subtotalRaw'           => function() {
 				return ! empty( $this->data->get_subtotal() ) ? $this->data->get_subtotal() : 0;
@@ -591,12 +616,16 @@ class Order extends Model {
 					'type'    => '',
 				];
 
-				if ( ! current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ) {
+				$is_allowed_to_edit = null !== $this->post_type_object
+					? current_user_can( $this->post_type_object->cap->edit_posts, $this->ID )
+					: current_user_can( 'manage_woocommerce' );
+
+				if ( ! $is_allowed_to_edit ) {
 					$args += [
 						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 						'meta_key'   => 'is_customer_note',
 						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-						'meta_value' => true,
+						'meta_value' => '1',
 					];
 				}
 
@@ -604,10 +633,13 @@ class Order extends Model {
 
 				add_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
-				return count( $notes );
+				return is_array( $notes ) ? count( $notes ) : 0;
 			},
 			'commentStatus'         => function() {
-				return current_user_can( $this->post_type_object->cap->edit_posts, $this->ID ) ? 'open' : 'closed';
+				$is_allowed_to_comment = null !== $this->post_type_object
+					? current_user_can( $this->post_type_object->cap->edit_posts, $this->ID )
+					: current_user_can( 'manage_woocommerce' );
+				return $is_allowed_to_comment ? 'open' : 'closed';
 			},
 		];
 	}

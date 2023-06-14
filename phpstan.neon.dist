@@ -15,8 +15,8 @@ parameters:
 			- access-functions.php
 			- includes/
 		scanDirectories:
-			- ../wp-graphql-jwt-authentication/
-			- ../woocommerce/src/Internal/DataStores/Orders/
+			- local/public/wp-content/plugins/wp-graphql-jwt-authentication/
+			- local/public/wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/
 		scanFiles:
 			- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
 			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php

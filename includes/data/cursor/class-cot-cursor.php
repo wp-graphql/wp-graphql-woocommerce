@@ -185,6 +185,10 @@ class COT_Cursor extends AbstractCursor {
 	 * @return void
 	 */
 	private function compare_with( $by, $order ) {
+		if ( null === $this->cursor_node ) {
+			return;
+		}
+
 		$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : [];
 
 		if ( in_array( $by, $meta_orderby_keys, true ) && null !== $this->meta_query ) {
@@ -218,8 +222,12 @@ class COT_Cursor extends AbstractCursor {
 	 * @return void
 	 */
 	private function compare_with_date() {
-		$date_created = $this->cursor_node->get_date_created();
-		$value        = ! empty( $date_created ) ? ( new \DateTime( $date_created ) )->setTimezone( new \DateTimeZone( '+00:00' ) )->format( 'Y-m-d H:i:s' ) : null;
+		$value = null;
+		if ( null !== $this->cursor_node ) {
+			$date_created = $this->cursor_node->get_date_created();
+			$value        = ! empty( $date_created ) ? ( new \DateTime( $date_created ) )->setTimezone( new \DateTimeZone( '+00:00' ) )->format( 'Y-m-d H:i:s' ) : null;
+		}
+
 		$this->builder->add_field( "{$this->tables['orders']}.date_created_gmt", $value, 'DATETIME' );
 	}
 }

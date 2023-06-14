@@ -380,10 +380,10 @@ class Product_Types {
 								}
 
 								if ( $min_price !== $max_price ) {
-									return \wc_graphql_price_range( $min_price, $max_price );
+									return wc_graphql_price_range( $min_price, $max_price );
 								}
 
-								return \wc_graphql_price( $min_price );
+								return wc_graphql_price( $min_price );
 							},
 						],
 					]
