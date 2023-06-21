@@ -1,4 +1,6 @@
-<img src="./logo.svg" width="250px" />
+<p align="center">
+  <img src="./logo.svg" width="200px" alt="WPGraphQL WooCommerce (WooGraphQL) Logo" />
+</p>
 
 # WPGraphQL WooCommerce (WooGraphQL)
 
@@ -7,6 +9,7 @@
 [![Automated-Testing](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Automated-Testing/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Automated-Testing%22) [![Coding-Standards](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Coding-Standards/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Coding-Standards%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
 
 ## Install
+
 ### Installing manually
 
 1. Install and activate [WPGraphQL](https://wpgraphql.com/) and [WooCommerce](https://woocommerce.com/)
