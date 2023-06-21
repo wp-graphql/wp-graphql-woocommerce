@@ -741,7 +741,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
 				]
 			),
-			$this->expectedField( 'checkout.customer', self::IS_NULL ),
+			$this->expectedField( 'checkout.customer.id', 'guest' ),
 			$this->expectedField( 'checkout.result', 'success' ),
 			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
 		];
@@ -862,7 +862,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 					$this->expectedField( 'product.node.id', self::NOT_NULL ),
 				]
 			),
-			$this->expectedField( 'checkout.customer', self::IS_NULL ),
+			$this->expectedField( 'checkout.customer.id', 'guest' ),
 			$this->expectedField( 'checkout.result', 'success' ),
 			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
 		];

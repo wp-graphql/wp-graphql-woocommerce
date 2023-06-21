@@ -424,6 +424,8 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$query = '
 			query {
 				customer {
+					id
+					billing { email }
 					orders {
 						nodes {
 							databaseId
@@ -445,6 +447,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
+
+		// Clear customer cache.
+		$this->clearLoaderCache( 'wc_customer' );
 
 		/**
 		 * Assertion Two

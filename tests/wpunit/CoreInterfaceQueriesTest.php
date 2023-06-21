@@ -101,7 +101,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'order' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
+					'id'            => \GraphQLRelay\Relay::toGlobalId( 'order', $order_id ),
 					'commentCount'  => 2,
 					'commentStatus' => 'open',
 				],
@@ -123,7 +123,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'order' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
+					'id'            => \GraphQLRelay\Relay::toGlobalId( 'order', $order_id ),
 					'commentCount'  => 1,
 					'commentStatus' => 'closed',
 				],

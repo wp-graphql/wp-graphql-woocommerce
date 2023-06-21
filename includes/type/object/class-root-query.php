@@ -8,6 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
@@ -225,8 +226,7 @@ class Root_Query {
 							throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
 
-						$order = get_post( $order_id );
-						if ( ! is_object( $order ) || 'shop_order' !== $order->post_type ) {
+						if ( 'shop_order' !== OrderUtil::get_order_type( $order_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
@@ -256,9 +256,12 @@ class Root_Query {
 							}
 						}
 
-						$order = $is_authorized ? Factory::resolve_crud_object( $order_id, $context ) : null;
+						// Throw if authorized to view order.
+						if ( ! $is_authorized ) {
+							throw new UserError( __( 'Not authorized to access this order', 'wp-graphql-woocommerce' ) );
+						}
 
-						return $order;
+						return Factory::resolve_crud_object( $order_id, $context );
 					},
 				],
 				'productVariation'     => [
@@ -343,8 +346,8 @@ class Root_Query {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
-						$refund = get_post( $refund_id );
-						if ( ! is_object( $refund ) || 'shop_order_refund' !== $refund->post_type ) {
+
+						if ( 'shop_order_refund' !== OrderUtil::get_order_type( $refund_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
 							throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 						}
@@ -380,9 +383,12 @@ class Root_Query {
 							}
 						}//end if
 
-						$refund = $is_authorized ? Factory::resolve_crud_object( $refund_id, $context ) : null;
+						// Throw if authorized to view refund.
+						if ( ! $is_authorized ) {
+							throw new UserError( __( 'Not authorized to access this refund', 'wp-graphql-woocommerce' ) );
+						}
 
-						return $refund;
+						return Factory::resolve_crud_object( $refund_id, $context );
 					},
 				],
 				'shippingMethod'       => [

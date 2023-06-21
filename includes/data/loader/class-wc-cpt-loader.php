@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Data\Loader;
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
@@ -51,9 +52,9 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			case 'shop_coupon':
 				return new Coupon( $id );
 			case 'shop_order':
-				return new Order( $id );
 			case 'shop_order_refund':
-				return new Refund( $id );
+			case 'shop_order_placehold':
+				return new Order( $id );
 			default:
 				$model = apply_filters( 'graphql_woocommerce_cpt_loader_model', null, $post_type );
 				if ( ! empty( $model ) ) {
@@ -141,7 +142,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				continue;
 			}
 
-			if ( ! in_array( $post_type, $wc_post_types, true ) ) {
+			if ( ! in_array( $post_type, $wc_post_types, true ) && ! OrderUtil::is_order( $key, wc_get_order_types() ) ) {
 				/* translators: invalid post-type error message */
 				throw new UserError( sprintf( __( '%s is not a valid WooCommerce post-type', 'wp-graphql-woocommerce' ), $post_type ) );
 			}

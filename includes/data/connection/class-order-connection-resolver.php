@@ -20,10 +20,6 @@ use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Order_Connection_Resolver
- *
- * @deprecated v0.10.0
- *
- * @property WC_CPT_Loader $loader
  */
 class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -39,23 +35,36 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	protected $post_type;
 
 	/**
+	 * This stores the should
+	 *
+	 * @var boolean
+	 */
+	protected $should_execute = false;
+
+	/**
 	 * Refund_Connection_Resolver constructor.
 	 *
 	 * @param mixed       $source    The object passed down from the previous level in the Resolve tree.
 	 * @param array       $args      The input arguments for the query.
 	 * @param AppContext  $context   The context of the request.
 	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
+	 * @param string      $post_type The post type for the connection resolver.
 	 */
-	public function __construct( $source, $args, $context, $info ) {
+	public function __construct( $source, $args, $context, $info, $post_type = 'shop_order' ) {
 		/**
-		 * Set the post type for the resolver
+		 * Set the post type for the resolver.
 		 */
-		$this->post_type = 'shop_order';
+		$this->post_type = $post_type;
 
 		/**
-		 * Call the parent construct to setup class data
+		 * Call the parent construct to setup class data.
 		 */
 		parent::__construct( $source, $args, $context, $info );
+
+		/**
+		 * Default to true.
+		 */
+		$this->should_execute = true;
 	}
 
 	/**
@@ -92,15 +101,30 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$post_type_obj = get_post_type_object( $this->post_type );
 		if ( current_user_can( $post_type_obj->cap->edit_posts ) ) {
 			return true;
-		} elseif ( isset( $this->query_args['customer_id'] ) ) {
-			return get_current_user_id() === $this->query_args['customer_id'];
+		} elseif ( isset( $this->query_args['customer_id'], $this->source ) && $this->source->ID === $this->query_args['customer_id'] ) {
+			return true;
+		} elseif ( isset( $this->query_args['billing_email'], $this->source ) && $this->source->email === $this->query_args['billing_email'] ) {
+			return true;
 		}
 
-		return false;
+		return $this->should_execute;
+	}
+
+	/**
+	 * Sets whether or not the query should execute
+	 *
+	 * @param bool $should_execute Whether or not the query should execute.
+	 *
+	 * @return void
+	 */
+	public function set_should_execute( bool $should_execute ) {
+		$this->should_execute = $should_execute;
 	}
 
 	/**
 	 * Creates query arguments array
+	 *
+	 * @return array
 	 */
 	public function get_query_args() {
 		// Prepare for later use.
@@ -109,27 +133,32 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Set the $query_args based on various defaults and primary input $args.
 		$query_args = [
-			'post_type'     => 'shop_order',
+			'post_type'     => $this->post_type,
 			'no_rows_found' => true,
 			'return'        => 'ids',
 			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 		];
 
 		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
-		 * to filter the WP_Query to support cursor pagination
+		 * Set posts_per_page the highest value of $first and $last, with a (filterable) max of 100
 		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['posts_per_page'] = $this->one_to_one ? 1 : min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1;
 
 		/**
-		 * If the starting offset is not 0 sticky posts will not be queried as the automatic checks in wp-query don't
-		 * trigger due to the page parameter not being set in the query_vars, fixes #732
+		 * Set the graphql cursor args.
 		 */
-		if ( 0 !== $cursor_offset ) {
+		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['graphql_after_cursor']   = $this->get_after_offset();
+		$query_args['graphql_before_cursor']  = $this->get_before_offset();
+
+		/**
+		 * If the cursor offsets not empty,
+		 * ignore sticky posts on the query
+		 */
+		if ( ! empty( $this->get_after_offset() ) || ! empty( $this->get_after_offset() ) ) {
 			$query_args['ignore_sticky_posts'] = true;
 		}
+
 		/**
 		 * Pass the graphql $args to the WP_Query
 		 */
@@ -151,7 +180,8 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
 		 */
 		if ( empty( $query_args['orderby'] ) ) {
-			$query_args['order'] = ! empty( $last ) ? 'ASC' : 'DESC';
+			$query_args['order']   = ! empty( $last ) ? 'ASC' : 'DESC';
+			$query_args['orderby'] = [ 'date' => $query_args['order'] ];
 		}
 
 		/**
@@ -171,9 +201,9 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WC_Order_Query
-	 *
 	 * @throws InvariantViolation  Filter currently not supported for WC_Order_Query.
+	 *
+	 * @return \WC_Order_Query
 	 */
 	public function get_query() {
 		$query = new \WC_Order_Query( $this->query_args );
@@ -186,12 +216,17 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Return an array of items from the query
-	 *
-	 * @return array
+	 * {@inheritDoc}
 	 */
-	public function get_ids() {
-		return ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
+	public function get_ids_from_query() {
+		$ids = ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
+
+		// If we're going backwards, we need to reverse the array.
+		if ( ! empty( $this->args['last'] ) ) {
+			$ids = array_reverse( $ids );
+		}
+
+		return $ids;
 	}
 
 	/**
@@ -309,13 +344,15 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Wrapper for "WC_Connection_Functions::is_valid_post_offset()"
+	 * Determine whether or not the the offset is valid, i.e the order corresponding to the offset
+	 * exists. Offset is equivalent to order_id. So this function is equivalent to checking if the
+	 * post with the given ID exists.
 	 *
-	 * @param integer $offset Post ID.
+	 * @param int $offset The ID of the node used in the cursor offset.
 	 *
 	 * @return bool
 	 */
 	public function is_valid_offset( $offset ) {
-		return $this->is_valid_post_offset( $offset );
+		return (bool) \wc_get_order( absint( $offset ) );
 	}
 }

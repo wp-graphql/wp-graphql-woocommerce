@@ -224,7 +224,7 @@ class Factory {
 				$type = 'Customer';
 				break;
 			case is_a( $node, Order::class ):
-				$type = 'Order';
+				$type = $node->get_type() === 'shop_order_refund' ? 'Refund' : 'Order';
 				break;
 			case is_a( $node, Product::class ) && 'simple' === $node->get_type():
 				$type = 'SimpleProduct';
@@ -240,9 +240,6 @@ class Factory {
 				break;
 			case is_a( $node, Product_Variation::class ):
 				$type = 'ProductVariation';
-				break;
-			case is_a( $node, Refund::class ):
-				$type = 'Refund';
 				break;
 			case is_a( $node, Shipping_Method::class ):
 				$type = 'ShippingMethod';

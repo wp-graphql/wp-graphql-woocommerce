@@ -20,8 +20,6 @@ coverage:
   exclude:
     - 'local/*'
     - 'vendor/*'
-    - 'includes/utils/class-ql-session-handler.php'
-    - 'class-woographql-inflect.php'
     - 'wp-graphql-woocommerce.php'
   show_only_summary: false
 extensions:

@@ -12,6 +12,8 @@ use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Trait WC_CPT_Loader_Common
+ *
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader $loader
  */
 trait WC_CPT_Loader_Common {
 	/**

@@ -86,13 +86,6 @@ class Core_Schema_Filters {
 		);
 
 		add_filter(
-			'graphql_post_object_connection_query_args',
-			[ '\WPGraphQL\WooCommerce\Connection\Orders', 'post_object_connection_query_args' ],
-			10,
-			5
-		);
-
-		add_filter(
 			'graphql_map_input_fields_to_wp_query',
 			[ '\WPGraphQL\WooCommerce\Connection\Coupons', 'map_input_fields_to_wp_query' ],
 			10,
@@ -102,13 +95,6 @@ class Core_Schema_Filters {
 		add_filter(
 			'graphql_map_input_fields_to_wp_query',
 			[ '\WPGraphQL\WooCommerce\Connection\Products', 'map_input_fields_to_wp_query' ],
-			10,
-			7
-		);
-
-		add_filter(
-			'graphql_map_input_fields_to_wp_query',
-			[ '\WPGraphQL\WooCommerce\Connection\Orders', 'map_input_fields_to_wp_query' ],
 			10,
 			7
 		);

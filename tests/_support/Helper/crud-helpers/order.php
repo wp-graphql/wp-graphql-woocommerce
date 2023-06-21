@@ -11,7 +11,7 @@ class OrderHelper extends WCG_Helper {
 	}
 
 	public function to_relay_id( $id ) {
-		return Relay::toGlobalId( 'shop_order', $id );
+		return Relay::toGlobalId( 'order', $id );
 	}
 
     public function set_to_customer_billing_address( $order, $customer, $save = true ) {

@@ -11,7 +11,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$this->factory->order->add_coupon_line( $order_id );
 		$order        = new WC_Order( $order_id );
 		$coupon_lines = $order->get_items( 'coupon' );
-		$id           = $this->toRelayId( 'shop_order', $order_id );
+		$id           = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -65,7 +65,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$this->factory->order->add_fee( $order_id );
 		$order     = new WC_Order( $order_id );
 		$fee_lines = $order->get_items( 'fee' );
-		$id        = $this->toRelayId( 'shop_order', $order_id );
+		$id        = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -125,7 +125,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$order_id       = $this->factory->order->createNew();
 		$order          = new WC_Order( $order_id );
 		$shipping_lines = $order->get_items( 'shipping' );
-		$id             = $this->toRelayId( 'shop_order', $order_id );
+		$id             = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -184,7 +184,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$this->factory->order->add_tax( $order_id );
 		$order     = new WC_Order( $order_id );
 		$tax_lines = $order->get_items( 'tax' );
-		$id        = $this->toRelayId( 'shop_order', $order_id );
+		$id        = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -237,7 +237,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$order_id   = $this->factory->order->createNew();
 		$order      = new WC_Order( $order_id );
 		$line_items = $order->get_items();
-		$id         = $this->toRelayId( 'shop_order', $order_id );
+		$id         = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {

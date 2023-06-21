@@ -62,7 +62,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'subtotalTax'              => [
@@ -81,7 +81,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'discountTotal'            => [
@@ -100,7 +100,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'discountTax'              => [
@@ -119,7 +119,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'availableShippingMethods' => [
@@ -175,7 +175,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'shippingTax'              => [
@@ -194,7 +194,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'contentsTotal'            => [
@@ -221,7 +221,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'contentsTax'              => [
@@ -242,7 +242,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'feeTotal'                 => [
@@ -261,7 +261,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'feeTax'                   => [
@@ -280,7 +280,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'total'                    => [
@@ -302,7 +302,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'totalTax'                 => [
@@ -321,7 +321,7 @@ class Cart_Type {
 							return $price;
 						}
 
-						return \wc_graphql_price( $price );
+						return wc_graphql_price( $price );
 					},
 				],
 				'totalTaxes'               => [
@@ -508,7 +508,7 @@ class Cart_Type {
 								return $price;
 							}
 
-							return \wc_graphql_price( $price );
+							return wc_graphql_price( $price );
 						},
 					],
 					'subtotalTax' => [
@@ -527,7 +527,7 @@ class Cart_Type {
 								return $price;
 							}
 
-							return \wc_graphql_price( $price );
+							return wc_graphql_price( $price );
 						},
 					],
 					'total'       => [
@@ -548,7 +548,7 @@ class Cart_Type {
 								return $price;
 							}
 
-							return \wc_graphql_price( $price );
+							return wc_graphql_price( $price );
 						},
 					],
 					'tax'         => [
@@ -567,7 +567,7 @@ class Cart_Type {
 								return $price;
 							}
 
-							return \wc_graphql_price( $price );
+							return wc_graphql_price( $price );
 						},
 					],
 					'extraData'   => [
@@ -817,7 +817,7 @@ class Cart_Type {
 								return $amount;
 							}
 
-							return \wc_graphql_price( $amount );
+							return wc_graphql_price( $amount );
 						},
 					],
 				],
@@ -864,7 +864,7 @@ class Cart_Type {
 								return $amount;
 							}
 
-							return \wc_graphql_price( $amount );
+							return wc_graphql_price( $amount );
 						},
 					],
 					'discountTax'    => [
@@ -883,7 +883,7 @@ class Cart_Type {
 								return $tax;
 							}
 
-							return \wc_graphql_price( $tax );
+							return wc_graphql_price( $tax );
 						},
 					],
 					'description'    => [

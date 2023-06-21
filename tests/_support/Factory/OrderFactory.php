@@ -402,6 +402,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function get_order_key( $id ) {
-		return (string) get_post_meta( $id, '_order_key', true );
+		$object = $this->get_object_by_id( $id );
+		return $object->get_order_key();
 	}
 }

@@ -23,19 +23,21 @@ jobs:
     strategy:
       matrix:
         php: ['8.0', '7.4', '7.3']
-        wordpress: ['6.0', '5.9', '5.6']
+        wordpress: ['6.2', '6.1', '6.0']
         composer_version: ['v2']
         include:
           - php: '7.4'
-            wordpress: '5.9'
+            wordpress: '6.2'
             coverage: '--coverage --coverage-xml'
             xdebug: 1
           - php: '7.3'
-            wordpress: '5.6'
+            wordpress: '6.1'
             debug: '--debug'
+          - wordpress: '6.2'
+            hpos: 0
 
       fail-fast: false
-    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+    name: Running Automated Tests w/ WPBrowser in WordPress v${{ matrix.wordpress }} on PHP${{ matrix.php }} ${{ matrix.hpos == 1 && 'with HPOS activated ' || '' }}${{ matrix.coverage == '--coverage --coverage-xml' && 'with Codecoverage ' || '' }}${{ matrix.debug == '--debug' && 'in Debug Mode ' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -54,12 +56,12 @@ jobs:
           composer install
           WP_VERSION=${{ matrix.wordpress }} SKIP_DB_CREATE=true SKIP_WP_SETUP=true composer installTestEnv
 
-      - name: Run Tests w/ Docker.
+      - name: Run Tests.
         env:
           USING_XDEBUG: ${{ matrix.xdebug }}
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
-        run: FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
+        run: HPOS="${{ matrix.hpos }}" FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Push Codecoverage to Coveralls.io
         if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY != null }}

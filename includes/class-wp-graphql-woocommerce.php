@@ -164,7 +164,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'model/class-product.php';
 			require $include_directory_path . 'model/class-product-variation.php';
 			require $include_directory_path . 'model/class-order.php';
-			require $include_directory_path . 'model/class-refund.php';
 			require $include_directory_path . 'model/class-order-item.php';
 			require $include_directory_path . 'model/class-shipping-method.php';
 			require $include_directory_path . 'model/class-tax-rate.php';
@@ -176,8 +175,10 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Include connection resolver trait/class files.
 			require $include_directory_path . 'data/connection/trait-wc-db-loader-common.php';
+			require $include_directory_path . 'data/connection/trait-wc-cpt-loader-common.php';
 			require $include_directory_path . 'data/connection/class-cart-item-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-downloadable-item-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-order-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-order-item-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-payment-gateway-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-product-attribute-connection-resolver.php';
@@ -186,11 +187,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/connection/class-variation-attribute-connection-resolver.php';
 
 			// Include deprecated resolver trait/class files.
-			require $include_directory_path . 'data/connection/trait-wc-cpt-loader-common.php';
 			require $include_directory_path . 'data/connection/class-coupon-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-product-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-refund-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-order-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-customer-connection-resolver.php';
 
 			// Include mutation processor class files.
@@ -202,6 +200,10 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Include factory class file.
 			require $include_directory_path . 'data/class-factory.php';
+
+			// Include DB hooks class files.
+			require $include_directory_path . 'data/cursor/class-cot-cursor.php';
+			require $include_directory_path . 'data/class-db-hooks.php';
 
 			// Include enum type class files.
 			require $include_directory_path . 'type/enum/class-backorders.php';
@@ -381,11 +383,20 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		/**
 		 * Returns true if any authorizing urls are enabled.
 		 *
+		 * @return array
+		 */
+		public static function get_enabled_auth_urls() {
+			return woographql_setting( 'enable_authorizing_url_fields', [] );
+		}
+
+		/**
+		 * Returns true if any authorizing urls are enabled.
+		 *
 		 * @return bool
 		 */
 		public static function auth_router_is_enabled() {
 			return defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' )
-				|| ! empty( array_keys( woographql_setting( 'enable_authorizing_url_fields', [] ) ) );
+				|| ! empty( self::get_enabled_auth_urls() );
 		}
 
 		/**
@@ -406,6 +417,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		private function setup() {
 			// Initialize WooGraphQL Settings.
 			new Admin();
+
+			// Initialize WooGraphQL DB hooks.
+			new Data\DB_Hooks();
 
 			// Setup minor integrations.
 			Functions\setup_minor_integrations();
