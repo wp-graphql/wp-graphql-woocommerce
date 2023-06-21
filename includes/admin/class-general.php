@@ -93,6 +93,8 @@ class General extends Section {
 					if ( empty( $value ) ) {
 						return [];
 					}
+
+					return $value;
 				},
 			],
 			[
