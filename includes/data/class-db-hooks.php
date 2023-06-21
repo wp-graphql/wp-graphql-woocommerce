@@ -3,6 +3,7 @@
  * Register hooks for the filtering DB queries.
  *
  * @package WPGraphQL\WooCommerce\Data
+ * @since 0.14.0
  */
 
 namespace WPGraphQL\WooCommerce\Data;

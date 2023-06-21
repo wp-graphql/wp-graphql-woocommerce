@@ -2,7 +2,7 @@
 
 # WPGraphQL WooCommerce (WooGraphQL)
 
-<a href="https://woographql.com/" target="_blank">Docs</a> • <a href="https://www.axistaylor.com" target="_blank">AxisTaylor</a> • <a href="https://join.slack.com/t/wp-graphql/shared_invite/zt-3vloo60z-PpJV2PFIwEathWDOxCTTLA" target="_blank">Join Slack</a>
+<a href="https://woographql.com" target="_blank">Website</a> • <a href="https://woographql.com/docs" target="_blank">Docs</a> • <a href="https://www.axistaylor.com" target="_blank">AxisTaylor</a> • <a href="https://join.slack.com/t/wp-graphql/shared_invite/zt-3vloo60z-PpJV2PFIwEathWDOxCTTLA" target="_blank">Join Slack</a>
 
 [![Automated-Testing](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Automated-Testing/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Automated-Testing%22) [![Coding-Standards](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Coding-Standards/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Coding-Standards%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
 
@@ -56,6 +56,48 @@ Thank you for your patience
 
 - Product CRUD mutations.
 - And some other stuff I'm sure :thinking_face:
+
+## For WooCommerce Extensions Support
+
+WooGraphQL Pro is an advanced version of WooGraphQL that provides compatibility with a variety of popular WooCommerce extensions. This compatibility empowers you to leverage these extensions within the context of the GraphQL API, thereby enabling you to build more dynamic and powerful headless eCommerce applications.
+
+The following WooCommerce extensions are supported by WooGraphQL Pro:
+
+- WooCommerce Subscriptions
+- WooCommerce Product Bundles
+- WooCommerce Product Add-Ons
+- WooCommerce Composite Products
+
+### Installing Supported WooCommerce Extensions (Optional)
+
+If you wish to use any of the supported WooCommerce extensions with WooGraphQL Pro, follow these steps:
+
+1. Purchase your desired extensions from the WooCommerce marketplace. The supported extensions are listed above.
+2. Download the `.zip` file(s) for your purchased extension(s) from your WooCommerce account.
+3. In your WordPress Admin Dashboard, navigate to Plugins > Add New > Upload Plugin, and upload the downloaded `.zip` file(s).
+4. Once the upload is complete, click on 'Activate Plugin' to activate the extension(s).
+
+### Installing and Activating WooGraphQL Pro
+
+To install and activate WooGraphQL Pro, follow these steps:
+
+1. Purchase WooGraphQL Pro from our official [website](https://woographql.com/pro).
+2. After purchase you should find yourself on your account dashboard. Go to the `Licenses` page and generate and new license and copy it for later.
+3. Next go to the `Downloads` page and download the latest version of WooGraphQL Pro.
+4. Go to your WordPress Admin Dashboard, navigate to Plugins > Add New > Upload Plugin, and upload the `woographql-pro.zip` file you downloaded.
+5. After uploading, click 'Activate Plugin' to activate WooGraphQL Pro.
+
+### Enabling Schema Support for Installed Extensions
+
+To enable schema support for your installed extensions, follow these steps:
+
+1. Navigate to the WPGraphQL settings page on your WordPress Admin Dashboard.
+2. Click on the 'WooGraphQL' tab.
+3. Here, you'll find a list of WooGraphQL configuration options. Go below to the **WooGraphQL Pro** section and paste in license and check the boxes next to your installed extensions to enable schema support for them.
+
+Note: The 'Enable Unsupported Product Type' option can be found on the same settings tab. If you enable this option, any product type without a proper GraphQL type will default to the `UnsupportedProduct` type, which is identical to the `SimpleProduct` type. With this type, the client can use the `metaData` field to get a `string` representation of the meta data on the type. This could potentially be all that's needed for simpler product types.
+
+With WooGraphQL Pro and your chosen extensions now installed, you're ready to build more sophisticated, feature-rich eCommerce solutions with WordPress and WooCommerce.
 
 ## Playground
 

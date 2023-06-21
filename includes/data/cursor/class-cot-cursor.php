@@ -6,6 +6,7 @@
  * for the custom orders table/HPOS
  *
  * @package WPGraphQL\WooCommerce\Data\Cursor;
+ * @since   0.14.0
  */
 
 namespace WPGraphQL\WooCommerce\Data\Cursor;

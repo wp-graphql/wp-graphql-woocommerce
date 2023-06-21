@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.14.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.14.0) (2023-06-21)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.13.0...v0.14.0)
+
+**Breaking changes:**
+
+- feat: HPOS support added. [\#748](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/748) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- chore: setup PHPStan [\#746](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/746) ([justlevine](https://github.com/justlevine))
+
 ## [v0.13.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.13.0) (2023-05-22)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.12.5...v0.13.0)
