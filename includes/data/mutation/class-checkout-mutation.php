@@ -47,7 +47,7 @@ class Checkout_Mutation {
 	 * @return bool
 	 */
 	protected static function maybe_skip_fieldset( $fieldset_key, $data ) {
-		if ( 'shipping' === $fieldset_key && ( ! $data['ship_to_different_address'] || ! \WC()->cart->needs_shipping_address() ) ) {
+		if ( 'shipping' === $fieldset_key && ( ! $data['ship_to_different_address'] && ! \WC()->cart->needs_shipping_address() ) ) {
 			return true;
 		}
 
