@@ -438,6 +438,64 @@ class Customer_Type {
 			);
 		}//end if
 
+		if ( in_array( 'account_url', $fields_to_register, true ) ) {
+			register_graphql_fields(
+				'Customer',
+				[
+					'accountUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'A nonce link to the account page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							if ( ! is_user_logged_in() ) {
+								return null;
+							}
+
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+
+							// Build nonced url as an unauthenticated user.
+							$nonce_name = woographql_setting( 'account_url_nonce_param', '_wc_account' );
+							$url        = add_query_arg(
+								[
+									'session_id' => $customer_id,
+									$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
+								],
+								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+							);
+
+							return esc_url_raw( $url );
+						},
+					],
+					'accountNonce' => [
+						'type'        => 'String',
+						'description' => __( 'A nonce for the account page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							if ( ! is_user_logged_in() ) {
+								return null;
+							}
+
+							// Get current customer and user ID.
+							$customer_id     = $source->ID;
+							$current_user_id = get_current_user_id();
+
+							// Return null if current user not user being queried.
+							if ( 0 !== $current_user_id && $current_user_id !== $customer_id ) {
+								return null;
+							}
+
+							return woographql_create_nonce( "load-account_{$customer_id}" );
+						},
+					],
+				]
+			);
+		}//end if
+
 		if ( in_array( 'add_payment_method_url', $fields_to_register, true ) ) {
 			register_graphql_fields(
 				'Customer',
@@ -464,7 +522,7 @@ class Customer_Type {
 							$url        = add_query_arg(
 								[
 									'session_id' => $customer_id,
-									$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
+									$nonce_name  => woographql_create_nonce( "add-payment-method_{$customer_id}" ),
 								],
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
@@ -476,6 +534,10 @@ class Customer_Type {
 						'type'        => 'String',
 						'description' => __( 'A nonce for the add payment method page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
+							if ( ! is_user_logged_in() ) {
+								return null;
+							}
+
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
@@ -485,7 +547,7 @@ class Customer_Type {
 								return null;
 							}
 
-							return woographql_create_nonce( "load-account_{$customer_id}" );
+							return woographql_create_nonce( "add-payment-method_{$customer_id}" );
 						},
 					],
 				]

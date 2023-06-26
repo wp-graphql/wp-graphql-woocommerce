@@ -237,8 +237,10 @@ class Protected_Router {
 				return 'load-cart_';
 			case 'checkout_url':
 				return 'load-checkout_';
-			case 'add_payment_method_url':
+			case 'account_url':
 				return 'load-account_';
+			case 'add_payment_method_url':
+				return 'add-payment-method_';
 			default:
 				return apply_filters( 'woographql_auth_nonce_prefix', null, $field, $this );
 		}
@@ -256,6 +258,8 @@ class Protected_Router {
 				return wc_get_endpoint_url( 'cart' );
 			case 'checkout_url':
 				return wc_get_endpoint_url( 'checkout' );
+			case 'account_url':
+				return wc_get_endpoint_url( 'myaccount' );
 			case 'add_payment_method_url':
 				return wc_get_account_endpoint_url( 'add-payment-method' );
 			default:

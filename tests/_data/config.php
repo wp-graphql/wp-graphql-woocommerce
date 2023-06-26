@@ -21,6 +21,9 @@ if ( ! defined( 'CART_URL_NONCE_PARAM' ) ) {
 if ( ! defined( 'CHECKOUT_URL_NONCE_PARAM' ) ) {
 	define( 'CHECKOUT_URL_NONCE_PARAM', '_wc_checkout' );
 }
+if ( ! defined( 'ACCOUNT_URL_NONCE_PARAM' ) ) {
+	define( 'ACCOUNT_URL_NONCE_PARAM', '_wc_account' );
+}
 if ( ! defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) ) {
 	define( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM', '_wc_payment' );
 }
