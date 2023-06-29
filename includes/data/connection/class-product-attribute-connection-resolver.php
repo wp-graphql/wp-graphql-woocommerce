@@ -48,8 +48,8 @@ class Product_Attribute_Connection_Resolver {
 			$items[]         = $data;
 		}
 
-		if ( ! empty( $args['type'] ) ) {
-			switch ( $args['type'] ) {
+		if ( ! empty( $args['where']['type'] ) ) {
+			switch ( $args['where']['type'] ) {
 				case 'local':
 					$items = array_filter(
 						$items,

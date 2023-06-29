@@ -26,7 +26,13 @@ class Product_Attributes {
 	 */
 	public static function register_connections() {
 		// From Product to ProductAttribute.
-		register_graphql_connection( self::get_connection_config() );
+		register_graphql_connection(
+			self::get_connection_config(
+				[
+					'connectionArgs' => self::get_connection_args(),
+				]
+			)
+		);
 
 		// From Product to LocalProductAttribute.
 		register_graphql_connection(
@@ -59,13 +65,20 @@ class Product_Attributes {
 	public static function get_connection_config( $args = [] ): array {
 		return array_merge(
 			[
-				'fromType'       => 'Product',
-				'toType'         => 'ProductAttribute',
-				'fromFieldName'  => 'attributes',
-				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'fromType'      => 'Product',
+				'toType'        => 'ProductAttribute',
+				'fromFieldName' => 'attributes',
+				'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Product_Attribute_Connection_Resolver();
-
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					switch ( $info->fieldName ) {
+						case 'globalAttributes':
+							$args['where']['type'] = 'global';
+							break;
+						case 'localAttributes':
+							$args['where']['type'] = 'local';
+							break;
+					}
 					return $resolver->resolve( $source, $args, $context, $info );
 				},
 			],
