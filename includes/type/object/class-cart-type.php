@@ -685,7 +685,7 @@ class Cart_Type {
 										}
 									}
 
-									return Variation_Attribute_Connection_Resolver::to_data_array( $attributes, $variation->ID );
+									return Variation_Attribute_Connection_Resolver::variation_attributes_to_data_array( $attributes, $variation->ID );
 								},
 							],
 						],

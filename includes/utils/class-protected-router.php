@@ -222,6 +222,7 @@ class Protected_Router {
 		foreach ( array_keys( $enabled_authorizing_url_fields ) as $field ) {
 			$nonce_names[ $field ] = WooCommerce_Filters::get_authorizing_url_nonce_param_name( $field );
 		}
+
 		return array_filter( $nonce_names );
 	}
 
@@ -249,17 +250,23 @@ class Protected_Router {
 	/**
 	 * Returns the target endpoint url for the provided field.
 	 *
+	 * @todo Add error logging here when WC Page needs to be created.
+	 *
 	 * @param string $field  Field.
 	 * @return string|null
 	 */
 	public function get_target_endpoint( $field ) {
 		switch ( $field ) {
 			case 'cart_url':
-				return wc_get_endpoint_url( 'cart' );
+				$cart_page_id  = wc_get_page_id( 'cart' );
+				$cart_page_url = get_permalink( $cart_page_id );
+				return $cart_page_url ? $cart_page_url : null;
 			case 'checkout_url':
 				return wc_get_endpoint_url( 'checkout' );
 			case 'account_url':
-				return wc_get_endpoint_url( 'myaccount' );
+				$account_page_id  = get_option( 'woocommerce_myaccount_page_id' );
+				$account_page_url = get_permalink( $account_page_id );
+				return $account_page_url ? $account_page_url : null;
 			case 'add_payment_method_url':
 				return wc_get_account_endpoint_url( 'add-payment-method' );
 			default:

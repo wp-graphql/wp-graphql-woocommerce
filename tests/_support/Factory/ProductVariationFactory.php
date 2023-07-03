@@ -74,26 +74,33 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function get_object_by_id( $product_id ) {
-		return \wc_get_product( absint( $product_id ) );
+		return wc_get_product( absint( $product_id ) );
 	}
 
-	public function createSome( $product = null, $args = [] ) {
-		if ( ! $product ) {
-			$product = $this->factory->product->createVariable();
+	public function createSome( $product_id = null, $args = [] ) {
+		if ( ! $product_id ) {
+			$product_id = $this->factory->product->createVariable();
 		}
+		$product = wc_get_product( $product_id );
 
 		// Create variation stub data.
 		$variation_data = [
 			[
-				'parent_id'     => $product,
-				'attributes'    => [ 'pa_size' => 'small' ],
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pa_size' => 'small',
+					'logo'    => 'Yes',
+				],
 				'image_id'      => null,
 				'downloads'     => [ $this->factory->product->createDownload() ],
 				'regular_price' => 10,
 			],
 			[
-				'parent_id'     => $product,
-				'attributes'    => [ 'pa_size' => 'medium' ],
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pa_size' => 'medium',
+					'logo'    => 'No',
+				],
 				'image_id'      => $this->factory->post->create(
 					[
 						'post_status'  => 'publish',
@@ -105,8 +112,11 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 				'regular_price' => 15,
 			],
 			[
-				'parent_id'     => $product,
-				'attributes'    => [ 'pa_size' => 'large' ],
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pa_size' => 'large',
+					'logo'    => 'Yes',
+				],
 				'image_id'      => null,
 				'downloads'     => [],
 				'regular_price' => 20,
@@ -121,6 +131,16 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 			$variations[] = $variation->get_id();
 		}
 
-		return compact( 'product', 'variations' );
+		$product->set_default_attributes(
+			[
+				'pa_size' => 'medium',
+			]
+		);
+		$product->save();
+
+		return [
+			'product'    => $product_id,
+			'variations' => $variations,
+		];
 	}
 }

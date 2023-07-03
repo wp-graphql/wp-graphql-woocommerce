@@ -18,7 +18,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 						'label',
 						$attribute->is_taxonomy()
 							? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
-							: self::IS_NULL
+							: ucfirst( $attribute->get_name() )
 					),
 					$this->expectedField( 'options', $attribute->get_slugs() ),
 					$this->expectedField( 'position', $attribute->get_position() ),

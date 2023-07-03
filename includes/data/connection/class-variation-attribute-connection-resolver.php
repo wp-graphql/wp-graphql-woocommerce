@@ -25,12 +25,57 @@ class Variation_Attribute_Connection_Resolver {
 	/**
 	 * Returns data array from WC_Product_Attribute ArrayAccess object.
 	 *
-	 * @param array      $attrs      WC_Product_Attribute object.
-	 * @param string|int $parent_id  ProductVariation Relay ID.
+	 * @param array $attrs       Source Product's WC_Product_Attribute(s) object.
+	 * @param int   $product_id  Source Product ID.
+	 * @return array
+	 */
+	public static function product_attributes_to_data_array( $attrs, $product_id ) {
+		$attributes = [];
+
+		foreach ( $attrs as $attribute ) {
+			if ( ! is_a( $attribute, 'WC_Product_Attribute' ) ) {
+				continue;
+			}
+			$name = wc_attribute_label( $attribute->get_name() );
+
+			if ( $attribute->is_taxonomy() ) {
+				$attribute_taxonomy = $attribute->get_taxonomy_object();
+				$attribute_values   = wc_get_product_terms( $product_id, $attribute->get_name(), [ 'fields' => 'all' ] );
+				foreach ( $attribute_values as $attribute_value ) {
+					$id           = base64_encode( $product_id . '|' . $name . '|' . $attribute_value->name ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+					$attributes[] = [
+						'id'          => $id,
+						'attributeId' => $attribute_value->term_id,
+						'name'        => $name,
+						'value'       => $attribute_value->name,
+					];
+				}
+			} else {
+				$values = $attribute->get_options();
+				foreach ( $values as $attribute_value ) {
+					$id           = base64_encode( $product_id . '|' . $name . '|' . $attribute_value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+					$attributes[] = [
+						'id'          => $id,
+						'attributeId' => 0,
+						'name'        => $name,
+						'value'       => $attribute_value,
+					];
+				}
+			}//end if
+		}//end foreach
+
+		return $attributes;
+	}
+
+	/**
+	 * Returns data array from WC_Product_Attribute ArrayAccess object.
+	 *
+	 * @param array      $attrs         WC_Product_Attribute object.
+	 * @param string|int $variation_id  Variable Product or Variation ID.
 	 *
 	 * @return array
 	 */
-	public static function to_data_array( $attrs = [], $parent_id = 0 ) {
+	public static function variation_attributes_to_data_array( $attrs, $variation_id ) {
 		$attributes = [];
 
 		// Bail early if explicitly '0' attributes.
@@ -43,26 +88,23 @@ class Variation_Attribute_Connection_Resolver {
 
 			// ID create for caching only, not object retrieval.
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			$id = base64_encode( $parent_id . '||' . $name . '||' . $value );
+			$id = base64_encode( $variation_id . '||' . $name . '||' . $value );
 
 			if ( ! $term instanceof \WP_Term ) {
 				$attributes[] = [
-
 					'id'          => $id,
 					'attributeId' => 0,
 					'name'        => $name,
 					'value'       => $value,
 				];
-
-				continue;
+			} else {
+				$attributes[] = [
+					'id'          => $id,
+					'attributeId' => $term->term_id,
+					'name'        => $term->taxonomy,
+					'value'       => $term->name,
+				];
 			}
-
-			$attributes[] = [
-				'id'          => $id,
-				'attributeId' => $term->term_id,
-				'name'        => $term->taxonomy,
-				'value'       => $term->name,
-			];
 		}//end foreach
 
 		return $attributes;
@@ -79,10 +121,13 @@ class Variation_Attribute_Connection_Resolver {
 	 * @return array|null
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
-		if ( is_a( $source, Product::class ) ) {
-			$attributes = self::to_data_array( $source->default_attributes, $source->ID );
+		if ( is_a( $source, Product::class ) && 'simple' === $source->get_type() ) {
+			$attributes = self::product_attributes_to_data_array( $source->attributes, $source->ID );
 		} else {
-			$attributes = self::to_data_array( $source->attributes, $source->ID );
+			$attributes = self::variation_attributes_to_data_array(
+				is_a( $source, Product::class ) ? $source->default_attributes : $source->attributes,
+				$source->ID
+			);
 		}
 
 		$connection = Relay::connectionFromArray( $attributes, $args );

@@ -33,6 +33,11 @@ class General extends Section {
 		return array_values( array_diff_key( $nonce_values, [ $excluded => '' ] ) );
 	}
 
+	/**
+	 * Returns the enabled authorizing URL fields.
+	 *
+	 * @return array
+	 */
 	public static function enabled_authorizing_url_fields_value() {
 		return apply_filters(
 			'woographql_enabled_authorizing_url_fields',
@@ -51,17 +56,17 @@ class General extends Section {
 	 * @return array
 	 */
 	public static function get_fields() {
-		$custom_endpoint                  = apply_filters( 'woographql_authorizing_url_endpoint', null );
-		$enabled_authorizing_url_fields   = woographql_setting( 'enable_authorizing_url_fields', [] );
-		$enabled_authorizing_url_fields   = ! empty( $enabled_authorizing_url_fields ) ? array_keys( $enabled_authorizing_url_fields ) : [];
-		$all_urls_checked                 = self::enabled_authorizing_url_fields_value();
+		$custom_endpoint                = apply_filters( 'woographql_authorizing_url_endpoint', null );
+		$enabled_authorizing_url_fields = woographql_setting( 'enable_authorizing_url_fields', [] );
+		$enabled_authorizing_url_fields = ! empty( $enabled_authorizing_url_fields ) ? array_keys( $enabled_authorizing_url_fields ) : [];
+		$all_urls_checked               = self::enabled_authorizing_url_fields_value();
 
 		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( constant( 'CART_URL_NONCE_PARAM' ) );
 		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( constant( 'CHECKOUT_URL_NONCE_PARAM' ) );
 		$account_url_hardcoded            = defined( 'ACCOUNT_URL_NONCE_PARAM' ) && ! empty( constant( 'ACCOUNT_URL_NONCE_PARAM' ) );
 		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
-		$enable_auth_urls_hardcoded       = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
+		$enable_auth_urls_hardcoded = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
 		return [
 			[
@@ -91,7 +96,7 @@ class General extends Section {
 					[
 						'cart_url'               => __( 'Cart URL. Field name: <strong>cartUrl</strong>', 'wp-graphql-woocommerce' ),
 						'checkout_url'           => __( 'Checkout URL. Field name: <strong>checkoutUrl</strong>', 'wp-graphql-woocommerce' ),
-						'account_url'            => __( 'Account URL. Field name: <strong>accountUrl</strong>', 'wp-graphql-wooocommerce' ),
+						'account_url'            => __( 'Account URL. Field name: <strong>accountUrl</strong>', 'wp-graphql-woocommerce' ),
 						'add_payment_method_url' => __( 'Add Payment Method URL. Field name: <strong>addPaymentMethodUrl</strong>', 'wp-graphql-woocommerce' ),
 					]
 				),
