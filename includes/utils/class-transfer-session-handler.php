@@ -10,8 +10,24 @@ namespace WPGraphQL\WooCommerce\Utils;
 
 /**
  * Class Transfer_Session_Handler
+ *
+ * @property string|int $_customer_id
+ *
+ * @package WPGraphQL\WooCommerce\Utils
  */
 class Transfer_Session_Handler extends \WC_Session_Handler {
+	/**
+	 * Setup cookie and customer ID.
+	 *
+	 * @return void
+	 */
+	public function init_session_cookie() {
+		// Retrieve a customer's previous session from DB.
+		$this->set_session_expiration();
+		$this->_customer_id = $this->generate_customer_id();
+		$this->_data        = $this->get_session_data();
+	}
+
 	/**
 	 * Return true, if valid credential exists
 	 *

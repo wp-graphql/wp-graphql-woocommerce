@@ -25,11 +25,29 @@ class General extends Section {
 			[
 				'cart_url'               => woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
 				'checkout_url'           => woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
+				'account_url'            => woographql_setting( 'account_url_nonce_param', '_wc_account' ),
 				'add_payment_method_url' => woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
 			]
 		);
 
 		return array_values( array_diff_key( $nonce_values, [ $excluded => '' ] ) );
+	}
+
+	/**
+	 * Returns the enabled authorizing URL fields.
+	 *
+	 * @return array
+	 */
+	public static function enabled_authorizing_url_fields_value() {
+		return apply_filters(
+			'woographql_enabled_authorizing_url_fields',
+			[
+				'cart_url'               => 'cart_url',
+				'checkout_url'           => 'checkout_url',
+				'account_url'            => 'account_url',
+				'add_payment_method_url' => 'add_payment_method_url',
+			]
+		);
 	}
 
 	/**
@@ -41,17 +59,11 @@ class General extends Section {
 		$custom_endpoint                = apply_filters( 'woographql_authorizing_url_endpoint', null );
 		$enabled_authorizing_url_fields = woographql_setting( 'enable_authorizing_url_fields', [] );
 		$enabled_authorizing_url_fields = ! empty( $enabled_authorizing_url_fields ) ? array_keys( $enabled_authorizing_url_fields ) : [];
-		$all_urls_checked               = apply_filters(
-			'woographql_enabled_authorizing_url_fields',
-			[
-				'cart_url'               => 'cart_url',
-				'checkout_url'           => 'checkout_url',
-				'add_payment_method_url' => 'add_payment_method_url',
-			]
-		);
+		$all_urls_checked               = self::enabled_authorizing_url_fields_value();
 
 		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( constant( 'CART_URL_NONCE_PARAM' ) );
 		$checkout_url_hardcoded           = defined( 'CHECKOUT_URL_NONCE_PARAM' ) && ! empty( constant( 'CHECKOUT_URL_NONCE_PARAM' ) );
+		$account_url_hardcoded            = defined( 'ACCOUNT_URL_NONCE_PARAM' ) && ! empty( constant( 'ACCOUNT_URL_NONCE_PARAM' ) );
 		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
 		$enable_auth_urls_hardcoded = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
@@ -84,6 +96,7 @@ class General extends Section {
 					[
 						'cart_url'               => __( 'Cart URL. Field name: <strong>cartUrl</strong>', 'wp-graphql-woocommerce' ),
 						'checkout_url'           => __( 'Checkout URL. Field name: <strong>checkoutUrl</strong>', 'wp-graphql-woocommerce' ),
+						'account_url'            => __( 'Account URL. Field name: <strong>accountUrl</strong>', 'wp-graphql-woocommerce' ),
 						'add_payment_method_url' => __( 'Add Payment Method URL. Field name: <strong>addPaymentMethodUrl</strong>', 'wp-graphql-woocommerce' ),
 					]
 				),
@@ -153,6 +166,30 @@ class General extends Section {
 						);
 
 						return '_wc_checkout';
+					}
+
+					return $value;
+				},
+			],
+			[
+				'name'              => 'account_url_nonce_param',
+				'label'             => __( 'Account URL nonce name', 'wp-graphql-woocommerce' ),
+				'desc'              => __( 'Query parameter name of the nonce included in the "accountUrl" field', 'wp-graphql-woocommerce' )
+					. ( $account_url_hardcoded ? __( ' This setting is disabled. The "ACCOUNT_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
+				'type'              => 'text',
+				'value'             => $account_url_hardcoded ? ACCOUNT_URL_NONCE_PARAM : woographql_setting( 'account_url_nonce_param', '_wc_account' ),
+				'disabled'          => defined( 'ACCOUNT_URL_NONCE_PARAM' ) || ! in_array( 'account_url', $enabled_authorizing_url_fields, true ),
+				'sanitize_callback' => function ( $value ) {
+					$other_nonces = self::get_other_nonce_values( 'account_url' );
+					if ( in_array( $value, $other_nonces, true ) ) {
+						add_settings_error(
+							'account_url_nonce_param',
+							'unique',
+							__( 'The <strong>Account URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
+							'error'
+						);
+
+						return '_wc_account';
 					}
 
 					return $value;

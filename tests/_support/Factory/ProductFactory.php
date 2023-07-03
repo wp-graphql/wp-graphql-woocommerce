@@ -141,6 +141,11 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 				'attribute_data' => [
 					$this->createAttribute( 'size', [ 'small', 'medium', 'large' ] ), // Create Size attribute.
 					$this->createAttribute( 'color', [ 'red', 'blue', 'green' ] ), // Create Color attribute.
+					[
+						'attribute_id'       => 0,
+						'attribute_taxonomy' => 'logo',
+						'term_ids'           => [ 'Yes', 'No' ],
+					], // Create Logo attribute.
 				],
 			],
 			$args

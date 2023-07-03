@@ -19,6 +19,36 @@ class TransferSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		$this->session = new Transfer_Session_Handler();
 	}
 
+	public function tearDown(): void {
+		// after
+		parent::tearDown();
+
+		$_REQUEST = [];
+	}
+
+	public function testInitSessionCookie() {
+		// Assert session data is empty, when invalid creds are provided.
+		$_REQUEST['_wc_cart']   = 'test';
+		$_REQUEST['session_id'] = 'test-session-id';
+		$this->session->init_session_cookie();
+		$this->assertEmpty( $this->session->get_session_data() );
+		$this->assertEquals( 'test-session-id', $this->session->get_customer_id() );
+		$this->session->set( 'test', 'test' );
+		$this->session->save_data();
+
+		// Reset session data.
+		unset( $_REQUEST['_wc_cart'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		unset( $_REQUEST['session_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$this->session->init_session_cookie();
+		$this->assertEmpty( $this->session->get_session_data() );
+
+		// Assert session data is empty, when invalid creds are provided.
+		$_REQUEST['_wc_cart']   = 'test';
+		$_REQUEST['session_id'] = 'test-session-id';
+		$this->session->init_session_cookie();
+		$this->assertEmpty( $this->session->get_session_data() );
+	}
+
 	public function testGenerateCustomerId() {
 		// Assert random customer ID is generated when invalid creds are provided.
 		$this->session->init_session_cookie();
