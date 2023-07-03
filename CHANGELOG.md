@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.14.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.14.1) (2023-07-03)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.14.0...v0.14.1)
+
+**New Features:**
+
+- fix: Account URL added to Auth URLs, and VariationAttribute connection fixed [\#755](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/755) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.14.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.14.0) (2023-06-21)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.13.0...v0.14.0)
@@ -7,6 +15,10 @@
 **Breaking changes:**
 
 - feat: HPOS support added. [\#748](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/748) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: Minor settings bug patched. [\#753](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/753) ([kidunot89](https://github.com/kidunot89))
 
 **Other Changes:**
 
