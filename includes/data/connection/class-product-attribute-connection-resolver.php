@@ -89,7 +89,6 @@ class Product_Attribute_Connection_Resolver {
 	 * @return array|null
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info, $type = null ) {
-
 		$attributes = $this->get_items( $source->attributes, $source, $args, $context, $info, $type );
 
 		$connection = Relay::connectionFromArray( $attributes, $args );
