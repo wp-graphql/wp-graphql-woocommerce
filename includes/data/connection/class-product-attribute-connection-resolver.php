@@ -30,11 +30,12 @@ class Product_Attribute_Connection_Resolver {
 	 * @param array       $args        Connection arguments.
 	 * @param AppContext  $context     AppContext object.
 	 * @param ResolveInfo $info        ResolveInfo object.
+	 * @param string      $type     Attribute type.
 	 *
 	 * @throws UserError  Invalid product attribute enumeration value.
 	 * @return array
 	 */
-	private function get_items( $attributes, $source, $args, $context, $info ) {
+	private function get_items( $attributes, $source, $args, $context, $info, $type = null ) {
 		$items = [];
 		foreach ( $attributes as $attribute_name => $data ) {
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
@@ -48,8 +49,10 @@ class Product_Attribute_Connection_Resolver {
 			$items[]         = $data;
 		}
 
-		if ( ! empty( $args['where']['type'] ) ) {
-			switch ( $args['where']['type'] ) {
+		$type = ! empty( $args['where']['type'] ) ? $args['where']['type'] : $type;
+
+		if ( ! is_null( $type ) ) {
+			switch ( $type ) {
 				case 'local':
 					$items = array_filter(
 						$items,
@@ -81,11 +84,13 @@ class Product_Attribute_Connection_Resolver {
 	 * @param array       $args     Connection arguments.
 	 * @param AppContext  $context  AppContext object.
 	 * @param ResolveInfo $info     ResolveInfo object.
+	 * @param string      $type     Attribute type.
 	 *
 	 * @return array|null
 	 */
-	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
-		$attributes = $this->get_items( $source->attributes, $source, $args, $context, $info );
+	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info, $type = null ) {
+
+		$attributes = $this->get_items( $source->attributes, $source, $args, $context, $info, $type );
 
 		$connection = Relay::connectionFromArray( $attributes, $args );
 		$nodes      = [];
