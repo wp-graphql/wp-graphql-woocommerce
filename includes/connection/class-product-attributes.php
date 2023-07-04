@@ -28,9 +28,7 @@ class Product_Attributes {
 		// From Product to ProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
-					'connectionArgs' => self::get_connection_args(),
-				]
+				[ 'connectionArgs' => self::get_connection_args() ]
 			)
 		);
 
