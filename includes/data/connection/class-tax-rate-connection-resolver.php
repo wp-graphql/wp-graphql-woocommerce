@@ -73,12 +73,13 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['items_per_page'] = min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1;
 
 		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
-		 * to filter the WP_Query to support cursor pagination
+		 * Set the cursor args.
+		 *
+		 * @see \WPGraphQL\Data\Config::graphql_wp_query_cursor_pagination_support
 		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['graphql_after_cursor']   = $this->get_after_offset();
+		$query_args['graphql_before_cursor']  = $this->get_before_offset();
+		$query_args['graphql_cursor_compare'] = ! empty( $last ) ? '>' : '<';
 
 		/**
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
