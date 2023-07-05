@@ -110,8 +110,11 @@ class Order_Create {
 				'type'        => 'Boolean',
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
 			],
+			'createdVia'         => array(
+				'type'        => 'String',
+				'description' => __( 'Order created via', 'wp-graphql-woocommerce' ),
+			)
 		];
-
 		return $input_fields;
 	}
 
@@ -175,7 +178,7 @@ class Order_Create {
 					throw new UserError( __( 'Customer ID is invalid.', 'wp-graphql-woocommerce' ) );
 				}
 
-				$order->set_created_via( 'graphql-api' );
+				$order->set_created_via( ! empty( $input['createdVia'] ) ? $input['createdVia'] : 'graphql-api' );
 				$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
 				$order->calculate_totals( true );
 

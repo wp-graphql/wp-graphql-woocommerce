@@ -105,6 +105,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
                         transactionId
                         dateCompleted
                         datePaid
+						createdVia
                         cartHash
                         shippingAddressMapUrl
                         hasBillingAddress
@@ -483,7 +484,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 			],
 			'paymentMethod'      => 'bacs',
 			'paymentMethodTitle' => 'Direct Bank Transfer',
-			'billing'            => [
+			'billing'            => array(
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -808,7 +809,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 			],
 			'paymentMethod'      => 'bacs',
 			'paymentMethodTitle' => 'Direct Bank Transfer',
-			'billing'            => [
+			'billing'            => array(
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
@@ -959,7 +960,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 			],
 			'paymentMethod'      => 'bacs',
 			'paymentMethodTitle' => 'Direct Bank Transfer',
-			'billing'            => [
+			'billing'            => array(
 				'firstName' => 'May',
 				'lastName'  => 'Parker',
 				'address1'  => '20 Ingram St',
