@@ -68,7 +68,6 @@ class DB_Hooks {
 			? $clauses['orderby'] . ','
 			: '';
 
-		\codecept_debug( $orderby );
 		if ( ! isset( $args['graphql_cursor_compare'] ) ) {
 			$clauses['orderby'] = "{$orderby} {$tables['orders']}.id DESC ";
 		} else {
