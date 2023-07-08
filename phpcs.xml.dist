@@ -78,4 +78,40 @@
 			<property name="text_domain" type="array" value="wp-graphql-woocommerce"/>
 		</properties>
 	</rule>
+	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
+		<properties>
+			<property name="blank_line_check" value="true"/>
+		</properties>
+	</rule>
+
+	<!-- Enforce Short array syntax `[]`  -->
+	<rule ref="WordPress">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+	<!-- Rules to exclude for test files -->
+	<rule ref="WordPress.NamingConventions">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting">
+		<!-- Allow for inline @var typing -->
+		<exclude name="Generic.Commenting.DocComment.MissingShort" />
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.PHP.CommentedOutCode.Found">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.PHP.DontExtract">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
 </ruleset>

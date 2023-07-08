@@ -14,7 +14,10 @@ node_modules/
 .idea
 .vscode/settings.json
 .github_changelog_generator
-vendor/*
+vendor
+!vendor-prefixed/
+vendor-prefixed/*
+!vendor-prefixed/.gitkeep
 !tests
 tests/*.suite.yml
 build/
@@ -28,3 +31,4 @@ php-coveralls.phar
 codeception.yml
 .editorconfig
 plugin-build
+bin/strauss.phar

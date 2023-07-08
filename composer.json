@@ -46,6 +46,22 @@
             "composer/installers": true
         }
     },
+		"extra" : {
+			"strauss" : {
+				"target_directory": "vendor-prefixed",
+				"namespace_prefix": "WPGraphQL\\WooCommerce\\Vendor\\",
+				"classmap_prefix": "WP_GraphQL_WooCommerce_Vendor",
+				"constant_prefix": "WPGRAPHQL_WOOCOMMERCE_VENDOR",
+				"delete_vendor_files": true,
+				"include_modified_date": false,
+				"packages" : [
+					"firebase/php-jwt"
+				],
+				"exclude_from_prefix": {
+					"file_patterns": []
+				}
+			}
+		},
     "autoload-dev": {
         "files": [
             "tests/_data/config.php"
@@ -72,7 +88,18 @@
         "dDestroy": "docker-compose down -v",
         "lint": "vendor/bin/phpcs -vp .",
         "fix": "vendor/bin/phpcbf -vp .",
-        "stan": "phpstan analyze --ansi --memory-limit=1G"
+        "stan": "phpstan analyze --ansi --memory-limit=1G",
+				"strauss": [
+					"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
+					"@php bin/strauss.phar",
+					"composer dump-autoload --optimize"
+				],
+				"post-install-cmd": [
+					"@strauss"
+				],
+				"post-update-cmd": [
+					"@strauss"
+				]
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
@@ -88,7 +115,8 @@
             "/plugin-build",
             "/phpstan",
             "/tests",
-            "!/vendor",
+            "/vendor",
+						"!/vendor-prefixed",
             "/codeception.dist.yml",
             "/codeception.yml",
             "/codeclimate.yml",
