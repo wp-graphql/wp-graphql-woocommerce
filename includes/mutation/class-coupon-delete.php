@@ -77,12 +77,12 @@ class Coupon_Delete {
 	/**
 	 * Defines the mutation data modification closure.
 	 *
-	 * @param array       $input    Mutation input.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     ResolveInfo instance. Can be
+	 * @param array                                $input    Mutation input.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance. Can be
 	 * use to get info about the current node in the GraphQL tree.
 	 *
-	 * @throws UserError Invalid ID provided | Lack of capabilities.
+	 * @throws \GraphQL\Error\UserError Invalid ID provided | Lack of capabilities.
 	 *
 	 * @return array
 	 */

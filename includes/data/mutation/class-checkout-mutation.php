@@ -61,9 +61,9 @@ class Checkout_Mutation {
 	/**
 	 * Returns order data for use when user checking out.
 	 *
-	 * @param array       $input    Input data describing order.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     ResolveInfo instance.
+	 * @param array                                $input    Input data describing order.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance.
 	 *
 	 * @return array
 	 */
@@ -258,7 +258,7 @@ class Checkout_Mutation {
 	 *
 	 * @param array $data Checkout data.
 	 *
-	 * @throws UserError When not able to create customer.
+	 * @throws \GraphQL\Error\UserError When not able to create customer.
 	 *
 	 * @return void
 	 */
@@ -372,7 +372,7 @@ class Checkout_Mutation {
 	 *
 	 * @param array $data  Checkout data.
 	 *
-	 * @throws UserError Invalid input.
+	 * @throws \GraphQL\Error\UserError Invalid input.
 	 *
 	 * @return void
 	 */
@@ -452,7 +452,7 @@ class Checkout_Mutation {
 	 *
 	 * @param array $data  An array of posted data.
 	 *
-	 * @throws UserError Invalid input.
+	 * @throws \GraphQL\Error\UserError Invalid input.
 	 *
 	 * @return void
 	 */
@@ -513,7 +513,7 @@ class Checkout_Mutation {
 	 * @param int    $order_id       Order ID.
 	 * @param string $payment_method Payment method.
 	 *
-	 * @throws UserError When payment method is invalid.
+	 * @throws \GraphQL\Error\UserError When payment method is invalid.
 	 *
 	 * @return array Processed payment results.
 	 */
@@ -566,13 +566,13 @@ class Checkout_Mutation {
 	/**
 	 * Process the checkout.
 	 *
-	 * @param array       $data     Order data.
-	 * @param array       $input    Input data describing order.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     ResolveInfo instance.
-	 * @param array       $results  Order status.
+	 * @param array                                $data     Order data.
+	 * @param array                                $input    Input data describing order.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance.
+	 * @param array                                $results  Order status.
 	 *
-	 * @throws UserError When validation fails.
+	 * @throws \GraphQL\Error\UserError When validation fails.
 	 *
 	 * @return int Order ID.
 	 */
@@ -636,8 +636,8 @@ class Checkout_Mutation {
 			 * @param String|null $transaction_id  Order payment transaction ID.
 			 * @param array       $data            Order data.
 			 * @param array       $input           Order raw input data.
-			 * @param AppContext  $context         Request's AppContext instance.
-			 * @param ResolveInfo $info            Request's ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext  $context         Request's AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo $info            Request's ResolveInfo instance.
 			 */
 			$valid = apply_filters(
 				'graphql_checkout_prepaid_order_validation',
@@ -721,11 +721,11 @@ class Checkout_Mutation {
 	/**
 	 * Add or update meta data not set in WC_Checkout::create_order().
 	 *
-	 * @param int         $order_id   Order ID.
-	 * @param array       $meta_data  Order meta data.
-	 * @param array       $input      Order properties.
-	 * @param AppContext  $context    AppContext instance.
-	 * @param ResolveInfo $info       ResolveInfo instance.
+	 * @param int                                  $order_id   Order ID.
+	 * @param array                                $meta_data  Order meta data.
+	 * @param array                                $input      Order properties.
+	 * @param \WPGraphQL\AppContext                $context    AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
 	 *
 	 * @throws \Exception Order cannot be retrieved.
 	 *
@@ -749,8 +749,8 @@ class Checkout_Mutation {
 		 * @param \WC_Order   $order      WC_Order instance.
 		 * @param array       $meta_data  Order meta data.
 		 * @param array       $props      Order props array.
-		 * @param AppContext  $context    Request AppContext instance.
-		 * @param ResolveInfo $info       Request ResolveInfo instance.
+		 * @param \WPGraphQL\AppContext  $context    Request AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       Request ResolveInfo instance.
 		 */
 		do_action( 'graphql_woocommerce_before_checkout_meta_save', $order, $meta_data, $input, $context, $info );
 

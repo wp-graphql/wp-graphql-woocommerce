@@ -292,7 +292,7 @@ class Customer_Type {
 						/**
 						 * Session handler.
 						 *
-						 * @var QL_Session_Handler $session
+						 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
 						 */
 						$session = \WC()->session;
 
@@ -317,7 +317,7 @@ class Customer_Type {
 						/**
 						 * Session handler
 						 *
-						 * @var QL_Session_Handler $session
+						 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
 						 */
 						$session = \WC()->session;
 

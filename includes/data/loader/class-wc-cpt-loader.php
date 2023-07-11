@@ -41,7 +41,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param boolean $fatal      Throw if no model found.
 	 *
 	 * @return mixed
-	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
+	 * @throws \GraphQL\Error\UserError - throws if no corresponding Model is registered to the post-type.
 	 */
 	public static function resolve_model( $post_type, $id, $fatal = true ) {
 		switch ( $post_type ) {
@@ -78,7 +78,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws UserError - throws if no corresponding Data store exists with the ID.
+	 * @throws \GraphQL\Error\UserError - throws if no corresponding Data store exists with the ID.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {

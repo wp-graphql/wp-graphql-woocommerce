@@ -425,10 +425,10 @@ class Order_Type {
 	/**
 	 * Order Item connection resolver callback
 	 *
-	 * @param \WPGraphQL\WooCommerce\Model\Order $source   Source order.
-	 * @param array                              $args     Connection args.
-	 * @param AppContext                         $context  AppContext instance.
-	 * @param ResolveInfo                        $info     ResolveInfo instance.
+	 * @param \WPGraphQL\WooCommerce\Model\Order   $source   Source order.
+	 * @param array                                $args     Connection args.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance.
 	 *
 	 * @return array
 	 */

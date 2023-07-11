@@ -121,7 +121,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Setup token and customer ID.
 	 *
-	 * @throws UserError Invalid token.
+	 * @throws \GraphQL\Error\UserError Invalid token.
 	 *
 	 * @return void
 	 */

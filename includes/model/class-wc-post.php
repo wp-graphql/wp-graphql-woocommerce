@@ -115,7 +115,7 @@ abstract class WC_Post extends Post {
 	/**
 	 * Wrapper function for deleting
 	 *
-	 * @throws UserError Not authorized.
+	 * @throws \GraphQL\Error\UserError Not authorized.
 	 *
 	 * @param boolean $force_delete Should the data be deleted permanently.
 	 * @return boolean

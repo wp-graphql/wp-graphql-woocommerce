@@ -130,10 +130,10 @@ class Order_Delete {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param \WC_Order|Order $order   Order model instance.
+			 * @param \WC_Order|\WPGraphQL\WooCommerce\Model\Order $order   Order model instance.
 			 * @param array           $input   Input data describing order.
-			 * @param AppContext      $context Request AppContext instance.
-			 * @param ResolveInfo     $info    Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext      $context Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo     $info    Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_before_order_delete', $order, $input, $context, $info );
 
@@ -159,10 +159,10 @@ class Order_Delete {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param \WC_Order|Order $order   Order model instance.
+			 * @param \WC_Order|\WPGraphQL\WooCommerce\Model\Order $order   Order model instance.
 			 * @param array           $input   Input data describing order
-			 * @param AppContext      $context Request AppContext instance.
-			 * @param ResolveInfo     $info    Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext      $context Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo     $info    Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $order, $input, $context, $info );
 

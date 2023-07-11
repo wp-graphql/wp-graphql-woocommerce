@@ -111,7 +111,7 @@ class Product extends WC_Post {
 	/**
 	 * Stores product factory.
 	 *
-	 * @var WC_Product_Factory|null
+	 * @var \WC_Product_Factory|null
 	 */
 	protected static $product_factory = null;
 

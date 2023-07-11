@@ -360,7 +360,7 @@ class Core_Schema_Filters {
 	 * @param \WPGraphQL\Type\WPObjectType|null $type   Type be resolve to.
 	 * @param mixed                             $value  Object for which the type is being resolve config.
 	 *
-	 * @throws UserError Invalid product type received.
+	 * @throws \GraphQL\Error\UserError Invalid product type received.
 	 *
 	 * @return \WPGraphQL\Type\WPObjectType|null
 	 */

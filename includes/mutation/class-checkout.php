@@ -141,8 +141,8 @@ class Checkout {
 				 *
 				 * @param array       $args    Order data.
 				 * @param array       $input   Raw input data .
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_before_checkout', $args, $input, $context, $info );
 
@@ -159,8 +159,8 @@ class Checkout {
 				 *
 				 * @param \WC_Order   $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 

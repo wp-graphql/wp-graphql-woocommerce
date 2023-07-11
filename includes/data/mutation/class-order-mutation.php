@@ -20,11 +20,11 @@ class Order_Mutation {
 	/**
 	 * Filterable authentication function.
 	 *
-	 * @param array        $input     Input data describing order.
-	 * @param AppContext   $context   AppContext instance.
-	 * @param ResolveInfo  $info      ResolveInfo instance.
-	 * @param string       $mutation  Mutation being executed.
-	 * @param integer|null $order_id  Order ID.
+	 * @param array                                $input     Input data describing order.
+	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
+	 * @param string                               $mutation  Mutation being executed.
+	 * @param integer|null                         $order_id  Order ID.
 	 *
 	 * @return boolean
 	 */
@@ -53,13 +53,13 @@ class Order_Mutation {
 	/**
 	 * Create an order.
 	 *
-	 * @param array       $input    Input data describing order.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     ResolveInfo instance.
+	 * @param array                                $input    Input data describing order.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance.
 	 *
 	 * @return integer
 	 *
-	 * @throws UserError  Error creating order.
+	 * @throws \GraphQL\Error\UserError  Error creating order.
 	 */
 	public static function create_order( $input, $context, $info ) {
 		$order_keys = [
@@ -82,8 +82,8 @@ class Order_Mutation {
 		 * Action called before order is created.
 		 *
 		 * @param array       $input   Input data describing order.
-		 * @param AppContext  $context Request AppContext instance.
-		 * @param ResolveInfo $info    Request ResolveInfo instance.
+		 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 		 */
 		do_action( 'graphql_woocommerce_before_order_create', $input, $context, $info );
 
@@ -97,8 +97,8 @@ class Order_Mutation {
 		 *
 		 * @param \WC_Order    $order   WC_Order instance.
 		 * @param array       $input   Input data describing order.
-		 * @param AppContext  $context Request AppContext instance.
-		 * @param ResolveInfo $info    Request ResolveInfo instance.
+		 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 		 */
 		do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 
@@ -108,10 +108,10 @@ class Order_Mutation {
 	/**
 	 * Add items to order.
 	 *
-	 * @param array       $input     Input data describing order.
-	 * @param int         $order_id  Order object.
-	 * @param AppContext  $context   AppContext instance.
-	 * @param ResolveInfo $info      ResolveInfo instance.
+	 * @param array                                $input     Input data describing order.
+	 * @param int                                  $order_id  Order object.
+	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
 	 *
 	 * @return void
 	 */
@@ -132,8 +132,8 @@ class Order_Mutation {
 				 *
 				 * @param array       $items     Item data being added.
 				 * @param integer     $order_id  ID of target order.
-				 * @param AppContext  $context   Request AppContext instance.
-				 * @param ResolveInfo $info      Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context   Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
 				 */
 				do_action( "graphql_woocommerce_before_{$type}s_added_to_order", $items, $order_id, $context, $info );
 
@@ -158,8 +158,8 @@ class Order_Mutation {
 				 *
 				 * @param array       $items     Item data being added.
 				 * @param integer     $order_id  ID of target order.
-				 * @param AppContext  $context   Request AppContext instance.
-				 * @param ResolveInfo $info      Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context   Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
 				 */
 				do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $items, $order_id, $context, $info );
 			}//end if
@@ -169,11 +169,11 @@ class Order_Mutation {
 	/**
 	 * Return array of item mapped with the provided $item_keys and extracts $meta_data
 	 *
-	 * @param integer     $item_id    Order item ID.
-	 * @param array       $input      Item input data.
-	 * @param array       $item_keys  Item key map.
-	 * @param AppContext  $context    AppContext instance.
-	 * @param ResolveInfo $info       ResolveInfo instance.
+	 * @param integer                              $item_id    Order item ID.
+	 * @param array                                $input      Item input data.
+	 * @param array                                $item_keys  Item key map.
+	 * @param \WPGraphQL\AppContext                $context    AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
 	 *
 	 * @throws \Exception  Failed to retrieve order item | Failed to retrieve connected product.
 	 *
@@ -276,7 +276,7 @@ class Order_Mutation {
 	 * @param array $data  Line item data.
 	 *
 	 * @return integer
-	 * @throws UserError When SKU or ID is not valid.
+	 * @throws \GraphQL\Error\UserError When SKU or ID is not valid.
 	 */
 	protected static function get_product_id( $data ) {
 		if ( ! empty( $data['sku'] ) ) {
@@ -295,12 +295,12 @@ class Order_Mutation {
 	/**
 	 * Create/Update order item meta data.
 	 *
-	 * @param int         $item_id    Order item ID.
-	 * @param array       $meta_data  Array of meta data.
-	 * @param AppContext  $context    AppContext instance.
-	 * @param ResolveInfo $info       ResolveInfo instance.
+	 * @param int                                  $item_id    Order item ID.
+	 * @param array                                $meta_data  Array of meta data.
+	 * @param \WPGraphQL\AppContext                $context    AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
 	 *
-	 * @throws UserError|\Exception  Invalid item input | Failed to retrieve order item.
+	 * @throws \GraphQL\Error\UserError|\Exception  Invalid item input | Failed to retrieve order item.
 	 *
 	 * @return void
 	 */
@@ -323,10 +323,10 @@ class Order_Mutation {
 	/**
 	 * Add meta data not set in self::create_order().
 	 *
-	 * @param int         $order_id  Order ID.
-	 * @param array       $input     Order properties.
-	 * @param AppContext  $context   AppContext instance.
-	 * @param ResolveInfo $info      ResolveInfo instance.
+	 * @param int                                  $order_id  Order ID.
+	 * @param array                                $input     Order properties.
+	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
 	 *
 	 * @throws \Exception  Failed to retrieve order.
 	 *
@@ -372,8 +372,8 @@ class Order_Mutation {
 		 *
 		 * @param \WC_Order   $order   WC_Order instance.
 		 * @param array       $props   Order props array.
-		 * @param AppContext  $context Request AppContext instance.
-		 * @param ResolveInfo $info    Request ResolveInfo instance.
+		 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 		 */
 		do_action( 'graphql_woocommerce_before_order_meta_save', $order, $input, $context, $info );
 
@@ -470,11 +470,11 @@ class Order_Mutation {
 	/**
 	 * Purge object when creating.
 	 *
-	 * @param null|\WC_Order|Order $order         Object data.
-	 * @param boolean              $force_delete  Delete or put in trash.
+	 * @param null|\WC_Order|\WPGraphQL\WooCommerce\Model\Order $order         Object data.
+	 * @param boolean                                           $force_delete  Delete or put in trash.
 	 *
 	 * @return bool
-	 * @throws UserError  Failed to delete order.
+	 * @throws \GraphQL\Error\UserError  Failed to delete order.
 	 */
 	public static function purge( $order, $force_delete = true ) {
 		if ( ! empty( $order ) ) {

@@ -99,8 +99,8 @@ class Orders {
 	/**
 	 * Returns order connection filter by customer.
 	 *
-	 * @param Order_Connection_Resolver $resolver  Connection resolver.
-	 * @param \WC_Customer              $customer  Customer object of querying user.
+	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
+	 * @param \WC_Customer                                                     $customer  Customer object of querying user.
 	 *
 	 * @return array
 	 */
@@ -129,8 +129,8 @@ class Orders {
 	/**
 	 * Returns refund connection filter by customer.
 	 *
-	 * @param Order_Connection_Resolver $resolver  Connection resolver.
-	 * @param \WC_Customer              $customer  Customer object of querying user.
+	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
+	 * @param \WC_Customer                                                     $customer  Customer object of querying user.
 	 *
 	 * @return array
 	 */

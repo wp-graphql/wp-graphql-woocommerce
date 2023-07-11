@@ -55,8 +55,8 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param array       $query_args The args that will be passed to the WP_Query.
 		 * @param mixed       $source     The source that's passed down the GraphQL queries.
 		 * @param array       $args       The inputArgs on the field.
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_order_item_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -90,8 +90,8 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				 * @param string      $item_type  Order item type.
 				 * @param mixed       $source     The source that's passed down the GraphQL queries.
 				 * @param array       $args       The inputArgs on the field.
-				 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-				 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+				 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 				 */
 				$type = apply_filters(
 					'graphql_order_item_connection_item_type',

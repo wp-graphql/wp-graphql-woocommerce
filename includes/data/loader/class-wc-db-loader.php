@@ -39,8 +39,8 @@ class WC_Db_Loader extends AbstractDataLoader {
 	/**
 	 * WC_Db_Loader constructor
 	 *
-	 * @param AppContext $context      AppContext instance.
-	 * @param string     $loader_type  Type of loader be initialized.
+	 * @param \WPGraphQL\AppContext $context      AppContext instance.
+	 * @param string                $loader_type  Type of loader be initialized.
 	 */
 	public function __construct( $context, $loader_type ) {
 		$this->loader_type = $loader_type;
@@ -132,7 +132,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Tax rate IDs.
 	 *
-	 * @return Tax_Rate|null
+	 * @return \WPGraphQL\WooCommerce\Model\Tax_Rate|null
 	 */
 	public function load_tax_rate_from_id( $id ) {
 		global $wpdb;
@@ -185,9 +185,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Shipping method ID.
 	 *
-	 * @return Shipping_Method
+	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Method
 	 * @access public
-	 * @throws UserError Invalid object.
+	 * @throws \GraphQL\Error\UserError Invalid object.
 	 */
 	public function load_shipping_method_from_id( $id ) {
 		$wc_shipping = \WC_Shipping::instance();

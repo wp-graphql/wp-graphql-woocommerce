@@ -65,7 +65,7 @@ class Update_Session {
 					/**
 					 * Session handler.
 					 *
-					 * @var QL_Session_Handler $session
+					 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
 					 */
 					$session      = \WC()->session;
 					$session_data = $session->get_session_data();
@@ -108,7 +108,7 @@ class Update_Session {
 			/**
 			 * Session handler.
 			 *
-			 * @var QL_Session_Handler $session
+			 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
 			 */
 			$session = \WC()->session;
 

@@ -196,8 +196,8 @@ class Order_Create {
 				 *
 				 * @param \WC_Order    $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 

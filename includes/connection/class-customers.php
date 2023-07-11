@@ -126,12 +126,12 @@ class Customers {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array       $query_args  The mapped query arguments.
-	 * @param array       $where_args  Query "where" args.
-	 * @param mixed       $source      The query results for a query calling this.
-	 * @param array       $args        All of the arguments for the query (not just the "where" args).
-	 * @param AppContext  $context     The AppContext object.
-	 * @param ResolveInfo $info        The ResolveInfo object.
+	 * @param array                                $query_args  The mapped query arguments.
+	 * @param array                                $where_args  Query "where" args.
+	 * @param mixed                                $source      The query results for a query calling this.
+	 * @param array                                $args        All of the arguments for the query (not just the "where" args).
+	 * @param \WPGraphQL\AppContext                $context     The AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info        The ResolveInfo object.
 	 *
 	 * @return array Query arguments.
 	 */
@@ -173,12 +173,12 @@ class Customers {
 		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 		 * from a GraphQL Query to the WP_Query
 		 *
-		 * @param array       $args       The mapped query arguments
-		 * @param array       $where_args Query "where" args
-		 * @param mixed       $source     The query results for a query calling this
-		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param AppContext  $context    The AppContext object
-		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param array                                $args       The mapped query arguments
+		 * @param array                                $where_args Query "where" args
+		 * @param mixed                                $source     The query results for a query calling this
+		 * @param array                                $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param \WPGraphQL\AppContext                $context    The AppContext object
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
 		 */
 		$query_args = apply_filters(
 			'graphql_map_input_fields_to_customer_query',
@@ -197,8 +197,8 @@ class Customers {
 	 * Temporary function until necessary functionality
 	 * has been added to the UserConnectionResolver
 	 *
-	 * @param array                      $connection  Resolved connection.
-	 * @param AbstractConnectionResolver $resolver  Resolver class.
+	 * @param array                                                 $connection  Resolved connection.
+	 * @param \WPGraphQL\Data\Connection\AbstractConnectionResolver $resolver  Resolver class.
 	 *
 	 * @return array
 	 */

@@ -32,7 +32,7 @@ class Factory {
 	/**
 	 * Returns the current woocommerce customer object tied to the current session.
 	 *
-	 * @return Customer
+	 * @return \WPGraphQL\WooCommerce\Model\Customer
 	 * @access public
 	 */
 	public static function resolve_session_customer() {
@@ -42,10 +42,10 @@ class Factory {
 	/**
 	 * Returns the Customer store object for the provided user ID
 	 *
-	 * @param int        $id      - user ID of the customer being retrieved.
-	 * @param AppContext $context - AppContext object.
+	 * @param int                   $id      - user ID of the customer being retrieved.
+	 * @param \WPGraphQL\AppContext $context - AppContext object.
 	 *
-	 * @return null|Deferred object
+	 * @return null|\GraphQL\Deferred object
 	 * @access public
 	 */
 	public static function resolve_customer( $id, AppContext $context ) {
@@ -59,10 +59,10 @@ class Factory {
 	/**
 	 * Returns the WooCommerce CRUD object for the post ID
 	 *
-	 * @param int        $id      - post ID of the crud object being retrieved.
-	 * @param AppContext $context - AppContext object.
+	 * @param int                   $id      - post ID of the crud object being retrieved.
+	 * @param \WPGraphQL\AppContext $context - AppContext object.
 	 *
-	 * @return null|Deferred object
+	 * @return null|\GraphQL\Deferred object
 	 * @access public
 	 */
 	public static function resolve_crud_object( $id, AppContext $context ) {
@@ -78,9 +78,9 @@ class Factory {
 	 *
 	 * @param \WC_Order_Item $item - order item crud object instance.
 	 *
-	 * @return Order_Item
+	 * @return \WPGraphQL\WooCommerce\Model\Order_Item
 	 * @access public
-	 * @throws UserError Invalid object.
+	 * @throws \GraphQL\Error\UserError Invalid object.
 	 */
 	public static function resolve_order_item( $item ) {
 		/**
@@ -96,10 +96,10 @@ class Factory {
 	/**
 	 * Returns the tax rate Model for the tax rate ID.
 	 *
-	 * @param int        $id - Tax rate ID.
-	 * @param AppContext $context - AppContext object.
+	 * @param int                   $id - Tax rate ID.
+	 * @param \WPGraphQL\AppContext $context - AppContext object.
 	 *
-	 * @return null|Deferred object
+	 * @return null|\GraphQL\Deferred object
 	 */
 	public static function resolve_tax_rate( $id, AppContext $context ) {
 		if ( 0 === absint( $id ) ) {
@@ -114,9 +114,9 @@ class Factory {
 	 *
 	 * @param int $id - Shipping method ID.
 	 *
-	 * @return Shipping_Method
+	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Method
 	 * @access public
-	 * @throws UserError Invalid object.
+	 * @throws \GraphQL\Error\UserError Invalid object.
 	 */
 	public static function resolve_shipping_method( $id ) {
 		$wc_shipping = \WC_Shipping::instance();
@@ -145,10 +145,10 @@ class Factory {
 	/**
 	 * Resolves a cart item by key.
 	 *
-	 * @param string     $key      Cart item key.
-	 * @param AppContext $context  AppContext object.
+	 * @param string                $key      Cart item key.
+	 * @param \WPGraphQL\AppContext $context  AppContext object.
 	 *
-	 * @return null|Deferred object
+	 * @return null|\GraphQL\Deferred object
 	 */
 	public static function resolve_cart_item( $key, AppContext $context ) {
 		if ( empty( $key ) ) {
@@ -161,10 +161,10 @@ class Factory {
 	/**
 	 * Resolves a downloadable item by ID.
 	 *
-	 * @param int        $id       Downloadable item ID.
-	 * @param AppContext $context  AppContext object.
+	 * @param int                   $id       Downloadable item ID.
+	 * @param \WPGraphQL\AppContext $context  AppContext object.
 	 *
-	 * @return null|Deferred object
+	 * @return null|\GraphQL\Deferred object
 	 */
 	public static function resolve_downloadable_item( $id, AppContext $context ) {
 		if ( 0 === absint( $id ) ) {
@@ -177,10 +177,10 @@ class Factory {
 	/**
 	 * Resolves Relay node for some WooGraphQL types.
 	 *
-	 * @param mixed      $node     Node object.
-	 * @param int        $id       Object unique ID.
-	 * @param string     $type     Node type.
-	 * @param AppContext $context  AppContext instance.
+	 * @param mixed                 $node     Node object.
+	 * @param int                   $id       Object unique ID.
+	 * @param string                $type     Node type.
+	 * @param \WPGraphQL\AppContext $context  AppContext instance.
 	 *
 	 * @return mixed
 	 */

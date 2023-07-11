@@ -18,7 +18,7 @@ class Protected_Router {
 	/**
 	 * Stores the instance of the Protected_Router class
 	 *
-	 * @var null|Protected_Router
+	 * @var null|\WPGraphQL\WooCommerce\Utils\Protected_Router
 	 */
 	private static $instance = null;
 
@@ -67,7 +67,7 @@ class Protected_Router {
 	/**
 	 * Returns the Protected_Router singleton instance.
 	 *
-	 * @return Protected_Router
+	 * @return \WPGraphQL\WooCommerce\Utils\Protected_Router
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
@@ -375,7 +375,7 @@ class Protected_Router {
 		/**
 		 * Session object
 		 *
-		 * @var Transfer_Session_Handler $session
+		 * @var \WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler $session
 		 */
 		$session = \WC()->session;
 
