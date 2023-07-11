@@ -371,27 +371,27 @@ class Order_Type {
 				'taxLines'          => [
 					'toType'         => 'TaxLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'feeLines'          => [
 					'toType'         => 'FeeLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'shippingLines'     => [
 					'toType'         => 'ShippingLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'couponLines'       => [
 					'toType'         => 'CouponLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'lineItems'         => [
 					'toType'         => 'LineItem',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'downloadableItems' => [
 					'toType'         => 'DownloadableItem',

@@ -107,7 +107,7 @@ abstract class WC_Post extends Post {
 			return $this->wc_data->$method( ...$args );
 		}
 
-		$class = __CLASS__;
+		$class = self::class;
 		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 

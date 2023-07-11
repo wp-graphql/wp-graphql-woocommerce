@@ -24,10 +24,10 @@ class JWT_Auth_Schema_Filters {
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is installed.
 		if ( \class_exists( '\WPGraphQL\JWT_Authentication\Auth' ) ) {
-			add_filter( 'graphql_jwt_user_types', [ __CLASS__, 'add_customer_to_jwt_user_types' ], 10 );
-			add_filter( 'graphql_registerCustomerPayload_fields', [ __CLASS__, 'add_jwt_output_fields' ], 10, 3 );
-			add_filter( 'graphql_updateCustomerPayload_fields', [ __CLASS__, 'add_jwt_output_fields' ], 10, 3 );
-			add_action( 'graphql_register_types', [ __CLASS__, 'add_customer_to_login_payload' ], 10 );
+			add_filter( 'graphql_jwt_user_types', [ self::class, 'add_customer_to_jwt_user_types' ], 10 );
+			add_filter( 'graphql_registerCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
+			add_filter( 'graphql_updateCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
+			add_action( 'graphql_register_types', [ self::class, 'add_customer_to_login_payload' ], 10 );
 		}
 	}
 

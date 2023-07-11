@@ -26,14 +26,14 @@ class Core_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs.
-		add_filter( 'register_post_type_args', [ __CLASS__, 'register_post_types' ], 10, 2 );
-		add_filter( 'graphql_post_entities_allowed_post_types', [ __CLASS__, 'skip_type_registry' ], 10 );
+		add_filter( 'register_post_type_args', [ self::class, 'register_post_types' ], 10, 2 );
+		add_filter( 'graphql_post_entities_allowed_post_types', [ self::class, 'skip_type_registry' ], 10 );
 
 		// Registers WooCommerce taxonomies.
-		add_filter( 'register_taxonomy_args', [ __CLASS__, 'register_taxonomy_args' ], 10, 2 );
+		add_filter( 'register_taxonomy_args', [ self::class, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
-		add_filter( 'graphql_data_loaders', [ __CLASS__, 'graphql_data_loaders' ], 10, 2 );
+		add_filter( 'graphql_data_loaders', [ self::class, 'graphql_data_loaders' ], 10, 2 );
 
 		// Add node resolvers.
 		add_filter(
@@ -52,21 +52,21 @@ class Core_Schema_Filters {
 		// Filter Unions.
 		add_filter(
 			'graphql_wp_union_type_config',
-			[ __CLASS__, 'inject_union_types' ],
+			[ self::class, 'inject_union_types' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'graphql_union_resolve_type',
-			[ __CLASS__, 'inject_type_resolver' ],
+			[ self::class, 'inject_type_resolver' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'graphql_interface_resolve_type',
-			[ __CLASS__, 'inject_type_resolver' ],
+			[ self::class, 'inject_type_resolver' ],
 			10,
 			2
 		);
@@ -120,7 +120,7 @@ class Core_Schema_Filters {
 
 		add_filter(
 			'woographql_cart_connection_definitions',
-			[ __CLASS__, 'skip_cart_item_connection' ]
+			[ self::class, 'skip_cart_item_connection' ]
 		);
 	}
 

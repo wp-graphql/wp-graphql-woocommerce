@@ -32,7 +32,7 @@ class Coupon_Delete {
 			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => [ __CLASS__, 'mutate_and_get_payload' ],
+				'mutateAndGetPayload' => [ self::class, 'mutate_and_get_payload' ],
 			]
 		);
 	}

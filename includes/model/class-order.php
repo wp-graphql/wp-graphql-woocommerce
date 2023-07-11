@@ -198,7 +198,7 @@ class Order extends Model {
 			return $this->data->$method( ...$args );
 		}
 
-		$class = __CLASS__;
+		$class = self::class;
 		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 
