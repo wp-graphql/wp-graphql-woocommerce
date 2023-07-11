@@ -146,6 +146,9 @@ class Checkout {
 				 */
 				do_action( 'graphql_woocommerce_before_checkout', $args, $input, $context, $info );
 
+				// We define this now and pass it as a reference.
+				$results = [];
+
 				$order_id = Checkout_Mutation::process_checkout( $args, $input, $context, $info, $results );
 
 				$order = \WC_Order_Factory::get_order( $order_id );

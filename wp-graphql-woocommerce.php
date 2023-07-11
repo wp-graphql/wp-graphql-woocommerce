@@ -115,6 +115,9 @@ function dependencies_not_ready( &$deps = [] ) {
  * @return void
  */
 function init() {
+	// We define this now and pass it as a reference.
+	$not_ready = [];
+
 	if ( empty( dependencies_not_ready( $not_ready ) ) ) {
 		require_once get_includes_directory() . 'class-wp-graphql-woocommerce.php';
 		WP_GraphQL_WooCommerce::instance();
