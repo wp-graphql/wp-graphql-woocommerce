@@ -57,7 +57,7 @@ class Variation_Attributes {
 				'toType'         => 'VariationAttribute',
 				'fromFieldName'  => 'attributes',
 				'connectionArgs' => [],
-				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Variation_Attribute_Connection_Resolver();
 
 					return $resolver->resolve( $source, $args, $context, $info );

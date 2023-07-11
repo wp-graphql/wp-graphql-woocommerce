@@ -75,7 +75,7 @@ class Cart_Add_Item {
 		return [
 			'cartItem' => [
 				'type'    => 'CartItem',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$item = \WC()->cart->get_cart_item( $payload['key'] );
 
 					return $item;
@@ -91,7 +91,7 @@ class Cart_Add_Item {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Prepare args for "add_to_cart" from input data.

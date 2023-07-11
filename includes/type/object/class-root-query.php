@@ -38,7 +38,7 @@ class Root_Query {
 						],
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $_, $args ) {
+					'resolve'     => static function( $_, $args ) {
 						$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
 						if ( $token_invalid ) {
 							throw new UserError( $token_invalid );
@@ -60,7 +60,7 @@ class Root_Query {
 						],
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source, array $args, AppContext $context ) {
+					'resolve'     => static function( $source, array $args, AppContext $context ) {
 						$item = Factory::resolve_cart()->get_cart_item( $args['key'] );
 						if ( empty( $item ) || empty( $item['key'] ) ) {
 							throw new UserError( __( 'Failed to retrieve cart item.', 'wp-graphql-woocommerce' ) );
@@ -77,7 +77,7 @@ class Root_Query {
 						],
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$fees   = Factory::resolve_cart()->get_fees();
 						$fee_id = $args['id'];
 
@@ -98,7 +98,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -159,7 +159,7 @@ class Root_Query {
 							'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$customer_id = 0;
 						if ( ! empty( $args['id'] ) ) {
 							$id_components = Relay::fromGlobalId( $args['id'] );
@@ -199,7 +199,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -277,7 +277,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -323,7 +323,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -404,7 +404,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args ) {
+					'resolve'     => static function ( $source, array $args ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -439,7 +439,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -464,7 +464,7 @@ class Root_Query {
 				'allowedCountries'     => [
 					'type'        => [ 'list_of' => 'CountriesEnum' ],
 					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
-					'resolve'     => function() {
+					'resolve'     => static function() {
 						$wc_countries = new \WC_Countries();
 						$countries    = $wc_countries->get_allowed_countries();
 
@@ -480,7 +480,7 @@ class Root_Query {
 						],
 					],
 					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $_, $args ) {
+					'resolve'     => static function( $_, $args ) {
 						$country      = $args['country'];
 						$wc_countries = new \WC_Countries();
 						$states       = $wc_countries->get_shipping_country_states();
@@ -544,7 +544,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key, $unsupported_type_enabled ) {
+					'resolve'     => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key, $unsupported_type_enabled ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 

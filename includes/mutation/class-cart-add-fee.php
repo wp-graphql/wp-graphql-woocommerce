@@ -73,7 +73,7 @@ class Cart_Add_Fee {
 		return [
 			'cartFee' => [
 				'type'    => 'CartFee',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$fees = \WC()->cart->get_fees();
 					return $fees[ $payload['id'] ];
 				},
@@ -88,7 +88,7 @@ class Cart_Add_Fee {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( ! current_user_can( 'edit_shop_orders' ) ) {

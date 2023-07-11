@@ -64,7 +64,7 @@ class Cart_Update_Shipping_Method {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input ) {
+		return static function( $input ) {
 			Cart_Mutation::check_session_token();
 
 			if ( empty( $input['shippingMethods'] ) ) {

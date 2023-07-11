@@ -34,7 +34,7 @@ class Comments extends Comments_Core {
 						'averageRating' => [
 							'type'        => 'Float',
 							'description' => __( 'Average review rating for this product.', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => static function( $source ) {
 								if ( empty( $source['edges'] ) ) {
 									return 0;
 								}
@@ -47,7 +47,7 @@ class Comments extends Comments_Core {
 						'rating' => [
 							'type'        => 'Float',
 							'description' => __( 'Review rating', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => static function( $source ) {
 								$review = $source['node'];
 								// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 								$rating = get_comment_meta( $review->commentId, 'rating', true );
@@ -55,7 +55,7 @@ class Comments extends Comments_Core {
 							},
 						],
 					],
-					'resolve'          => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'          => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new \WPGraphQL\Data\Connection\CommentConnectionResolver( $source, $args, $context, $info );
 
 						$resolver->set_query_arg( 'post_type', 'product' );
@@ -78,14 +78,14 @@ class Comments extends Comments_Core {
 						'isCustomerNote' => [
 							'type'        => 'Boolean',
 							'description' => __( 'Is this a customer note?', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => static function( $source ) {
 								$note = $source['node'];
 								// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 								return get_comment_meta( $note->commentId, 'is_customer_note', true );
 							},
 						],
 					],
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new \WPGraphQL\Data\Connection\CommentConnectionResolver( $source, $args, $context, $info );
 
 						$resolver->set_query_arg( 'post_id', $source->ID );

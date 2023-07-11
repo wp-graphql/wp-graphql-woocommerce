@@ -48,7 +48,7 @@ class Cart_Empty {
 			'deletedCart' => Cart_Mutation::get_cart_field(),
 			'cart'        => [
 				'type'    => 'Cart',
-				'resolve' => function () {
+				'resolve' => static function () {
 					return \WC()->cart;
 				},
 			],
@@ -61,7 +61,7 @@ class Cart_Empty {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Get/Clone WC_Cart instance.

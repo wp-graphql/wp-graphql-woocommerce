@@ -58,7 +58,7 @@ class Cart_Add_Items {
 		return [
 			'added'      => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$items = [];
 					foreach ( $payload['added'] as $key ) {
 						$items[] = \WC()->cart->get_cart_item( $key );
@@ -69,7 +69,7 @@ class Cart_Add_Items {
 			],
 			'cartErrors' => [
 				'type'    => [ 'list_of' => 'CartItemError' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$errors = [];
 					foreach ( $payload['failure'] as $error_data ) {
 						$cart_error         = $error_data['cart_item_data'];
@@ -97,7 +97,7 @@ class Cart_Add_Items {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Throw error, if no cart item data provided.

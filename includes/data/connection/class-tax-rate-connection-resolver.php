@@ -141,7 +141,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		}//end if
 
 		$results = array_map(
-			function( $rate ) {
+			static function( $rate ) {
 				return $rate->tax_rate_id;
 			},
 			(array) $results

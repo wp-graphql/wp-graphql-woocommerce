@@ -56,7 +56,7 @@ class Product_Attribute_Connection_Resolver {
 				case 'local':
 					$items = array_filter(
 						$items,
-						function( $item ) {
+						static function( $item ) {
 							return ! $item->is_taxonomy();
 						}
 					);
@@ -64,7 +64,7 @@ class Product_Attribute_Connection_Resolver {
 				case 'global':
 					$items = array_filter(
 						$items,
-						function( $item ) {
+						static function( $item ) {
 							return $item->is_taxonomy();
 						}
 					);

@@ -137,13 +137,13 @@ class Coupon_Create {
 		return [
 			'coupon' => [
 				'type'    => 'Coupon',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return new Coupon( $payload['id'] );
 				},
 			],
 			'code'   => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return $payload['code'];
 				},
 			],

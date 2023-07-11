@@ -63,7 +63,7 @@ class Cart_Remove_Items {
 		return [
 			'cartItems' => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['items'];
 				},
 			],
@@ -77,7 +77,7 @@ class Cart_Remove_Items {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( \WC()->cart->is_empty() ) {

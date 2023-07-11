@@ -65,7 +65,7 @@ class Payment_Method_Delete {
 			'status' => [
 				'type'        => 'String',
 				'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
-				'resolve'     => function ( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
 				},
 			],
@@ -78,7 +78,7 @@ class Payment_Method_Delete {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			global $wp;
 			if ( ! is_user_logged_in() ) {
 				throw new UserError( __( 'Must be authenticated to set a default payment method', 'wp-graphql-woocommerce' ) );

@@ -80,7 +80,7 @@ class Customer_Update {
 		return [
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Customer( $payload['id'] );
 				},
 			],
@@ -93,7 +93,7 @@ class Customer_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			$session_only = empty( $input['id'] );
 			$payload      = null;
 

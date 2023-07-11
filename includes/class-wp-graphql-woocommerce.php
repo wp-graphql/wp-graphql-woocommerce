@@ -360,7 +360,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 				if ( ! class_exists( 'Firebase\JWT\JWT' ) ) {
 					add_action(
 						'admin_notices',
-						function () {
+						static function () {
 							if ( ! current_user_can( 'manage_options' ) ) {
 								return;
 							}

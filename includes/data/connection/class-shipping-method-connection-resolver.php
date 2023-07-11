@@ -60,7 +60,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Get shipping method IDs.
 		$methods = array_map(
-			function( $item ) {
+			static function( $item ) {
 				return $item->id;
 			},
 			array_values( $methods )

@@ -26,7 +26,7 @@ class Cart_Mutation {
 	public static function get_cart_field( $fallback = false ) {
 		return [
 			'type'    => 'Cart',
-			'resolve' => function ( $payload ) use ( $fallback ) {
+			'resolve' => static function ( $payload ) use ( $fallback ) {
 				$cart = ! empty( $payload['cart'] ) ? $payload['cart'] : null;
 
 				if ( is_null( $cart ) && $fallback ) {

@@ -55,7 +55,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -74,7 +74,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -93,7 +93,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_discount_total() ) ? $source->get_discount_total() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -112,7 +112,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_discount_tax() ) ? $source->get_discount_tax() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -125,7 +125,7 @@ class Cart_Type {
 				'availableShippingMethods' => [
 					'type'        => [ 'list_of' => 'ShippingPackage' ],
 					'description' => __( 'Available shipping methods for this order.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						$packages = [];
 
 						$available_packages = $source->needs_shipping()
@@ -143,7 +143,7 @@ class Cart_Type {
 				'chosenShippingMethods'    => [
 					'type'        => [ 'list_of' => 'String' ],
 					'description' => __( 'Shipping method chosen for this order.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						$chosen_shipping_methods = [];
 
 						$available_packages = $source->needs_shipping()
@@ -168,7 +168,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_shipping_total() ) ? $source->get_shipping_total() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -187,7 +187,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_shipping_tax() ) ? $source->get_shipping_tax() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -206,7 +206,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						if ( $source->display_prices_including_tax() ) {
 							$cart_subtotal = $source->get_subtotal() + $source->get_subtotal_tax();
 						} else {
@@ -233,7 +233,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_cart_contents_tax() )
 							? $source->get_cart_contents_tax()
 							: 0;
@@ -254,7 +254,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_fee_total() ) ? $source->get_fee_total() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -273,7 +273,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_fee_tax() ) ? $source->get_fee_tax() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -292,7 +292,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$source->calculate_totals();
 						$price = isset( $source->get_totals()['total'] )
 							? apply_filters( 'graphql_woocommerce_cart_get_total', $source->get_totals()['total'] )
@@ -314,7 +314,7 @@ class Cart_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, array $args ) {
+					'resolve'     => static function( $source, array $args ) {
 						$price = ! is_null( $source->get_total_tax() ) ? $source->get_total_tax() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -327,7 +327,7 @@ class Cart_Type {
 				'totalTaxes'               => [
 					'type'        => [ 'list_of' => 'CartTax' ],
 					'description' => __( 'Cart total taxes itemized', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						$taxes = $source->get_tax_totals();
 						return ! empty( $taxes ) ? array_values( $taxes ) : null;
 					},
@@ -335,14 +335,14 @@ class Cart_Type {
 				'isEmpty'                  => [
 					'type'        => 'Boolean',
 					'description' => __( 'Is cart empty', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						return ! is_null( $source->is_empty() ) ? $source->is_empty() : null;
 					},
 				],
 				'displayPricesIncludeTax'  => [
 					'type'        => 'Boolean',
 					'description' => __( 'Do display prices include taxes', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						return ! is_null( $source->display_prices_including_tax() )
 							? $source->display_prices_including_tax()
 							: null;
@@ -351,7 +351,7 @@ class Cart_Type {
 				'needsShippingAddress'     => [
 					'type'        => 'Boolean',
 					'description' => __( 'Is customer shipping address needed', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						return ! is_null( $source->needs_shipping_address() )
 							? $source->needs_shipping_address()
 							: null;
@@ -360,7 +360,7 @@ class Cart_Type {
 				'fees'                     => [
 					'type'        => [ 'list_of' => 'CartFee' ],
 					'description' => __( 'Additional fees on the cart.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						$fees = $source->get_fees();
 						return ! empty( $fees ) ? array_values( $fees ) : null;
 					},
@@ -368,7 +368,7 @@ class Cart_Type {
 				'appliedCoupons'           => [
 					'type'        => [ 'list_of' => 'AppliedCoupon' ],
 					'description' => __( 'Coupons applied to the cart', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						$applied_coupons = $source->get_applied_coupons();
 
 						return ! empty( $applied_coupons ) ? $applied_coupons : null;
@@ -400,7 +400,7 @@ class Cart_Type {
 						'itemCount'    => [
 							'type'        => 'Int',
 							'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => static function( $source ) {
 								if ( empty( $source['edges'] ) ) {
 									return 0;
 								}
@@ -416,7 +416,7 @@ class Cart_Type {
 						'productCount' => [
 							'type'        => 'Int',
 							'description' => __( 'Total number of different products in the cart', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( $source ) {
+							'resolve'     => static function( $source ) {
 								if ( empty( $source['edges'] ) ) {
 									return 0;
 								}
@@ -425,7 +425,7 @@ class Cart_Type {
 							},
 						],
 					],
-					'resolve'          => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'          => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Cart_Item_Connection_Resolver( $source, $args, $context, $info );
 
 						return $resolver->get_connection();
@@ -481,14 +481,14 @@ class Cart_Type {
 					'key'         => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'CartItem ID', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source['key'] ) ? $source['key'] : null;
 						},
 					],
 					'quantity'    => [
 						'type'        => 'Int',
 						'description' => __( 'Quantity of the product', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return isset( $source['quantity'] ) ? absint( $source['quantity'] ) : null;
 						},
 					],
@@ -501,7 +501,7 @@ class Cart_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$price = isset( $source['line_subtotal'] ) ? floatval( $source['line_subtotal'] ) : 0;
 
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -520,7 +520,7 @@ class Cart_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$price = isset( $source['line_subtotal_tax'] ) ? floatval( $source['line_subtotal_tax'] ) : 0;
 
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -539,7 +539,7 @@ class Cart_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : 0;
 							$tax               = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
 							$price             = $price_without_tax + $tax;
@@ -560,7 +560,7 @@ class Cart_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$price = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
 
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -583,7 +583,7 @@ class Cart_Type {
 								'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							// Check if "key" argument set and assigns to target "keys" array.
 							if ( ! empty( $args['key'] ) && ! empty( $source[ $args['key'] ] ) ) {
 								$keys = [ $args['key'] ];
@@ -640,7 +640,7 @@ class Cart_Type {
 							'simpleVariations' => [
 								'type'        => [ 'list_of' => 'SimpleAttribute' ],
 								'description' => __( 'Simple variation attribute data', 'wp-graphql-woocommerce' ),
-								'resolve'     => function( $source ) {
+								'resolve'     => static function( $source ) {
 									$attributes = [];
 
 									$variation             = $source['node'];
@@ -654,7 +654,7 @@ class Cart_Type {
 								},
 							],
 						],
-						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'    => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$id       = $source['product_id'];
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
@@ -671,7 +671,7 @@ class Cart_Type {
 							'attributes' => [
 								'type'        => [ 'list_of' => 'VariationAttribute' ],
 								'description' => __( 'Attributes of the variation.', 'wp-graphql-woocommerce' ),
-								'resolve'     => function( $source ) {
+								'resolve'     => static function( $source ) {
 									$attributes = [];
 
 									$variation           = $source['node'];
@@ -689,7 +689,7 @@ class Cart_Type {
 								},
 							],
 						],
-						'resolve'    => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'    => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$id       = $source['variation_id'];
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
@@ -722,42 +722,42 @@ class Cart_Type {
 					'id'       => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Fee ID', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
 					],
 					'name'     => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Fee name', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->name ) ? $source->name : null;
 						},
 					],
 					'taxClass' => [
 						'type'        => 'TaxClassEnum',
 						'description' => __( 'Fee tax class', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->tax_class ) ? $source->tax_class : null;
 						},
 					],
 					'taxable'  => [
 						'type'        => 'Boolean',
 						'description' => __( 'Is fee taxable?', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! is_null( $source->taxable ) ? $source->taxable : null;
 						},
 					],
 					'amount'   => [
 						'type'        => 'Float',
 						'description' => __( 'Fee amount', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! is_null( $source->amount ) ? $source->amount : 0;
 						},
 					],
 					'total'    => [
 						'type'        => 'Float',
 						'description' => __( 'Fee total', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! is_null( $source->total ) ? $source->total : 0;
 						},
 					],
@@ -779,21 +779,21 @@ class Cart_Type {
 					'id'         => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Tax Rate ID', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->tax_rate_id ) ? $source->tax_rate_id : null;
 						},
 					],
 					'label'      => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Tax label', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->label ) ? $source->label : null;
 						},
 					],
 					'isCompound' => [
 						'type'        => 'Boolean',
 						'description' => __( 'Is tax compound?', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->is_compound ) ? $source->is_compound : null;
 						},
 					],
@@ -806,7 +806,7 @@ class Cart_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$amount = ! empty( $source->amount ) ? $source->amount : null;
 
 							if ( ! $amount ) {
@@ -839,7 +839,7 @@ class Cart_Type {
 					'code'           => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Coupon code', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return $source;
 						},
 					],
@@ -856,7 +856,7 @@ class Cart_Type {
 							],
 						],
 						'description' => __( 'Discount applied with this coupon', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$ex_tax = ! empty( $args['excludeTax'] ) ? $args['excludeTax'] : true;
 							$amount = Factory::resolve_cart()->get_coupon_discount_amount( $source, $ex_tax );
 
@@ -876,7 +876,7 @@ class Cart_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$tax = Factory::resolve_cart()->get_coupon_discount_tax_amount( $source );
 
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -889,7 +889,7 @@ class Cart_Type {
 					'description'    => [
 						'type'        => 'String',
 						'description' => __( 'Description of applied coupon', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args ) {
+						'resolve'     => static function( $source, array $args ) {
 							$coupon = new \WC_Coupon( $source );
 							return $coupon->get_description();
 						},

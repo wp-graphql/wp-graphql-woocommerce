@@ -30,7 +30,7 @@ class Posts extends PostObjects {
 					'fromType'      => 'Product',
 					'toType'        => 'MediaItem',
 					'fromFieldName' => 'galleryImages',
-					'resolve'       => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'attachment' );
 						$resolver->set_query_arg( 'post_type', 'attachment' );
 						$resolver->set_query_arg( 'post__in', $source->gallery_image_ids );

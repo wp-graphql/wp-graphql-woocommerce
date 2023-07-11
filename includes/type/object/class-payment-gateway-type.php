@@ -30,28 +30,28 @@ class Payment_Gateway_Type {
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'gateway\'s title', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
 					],
 					'title'       => [
 						'type'        => 'String',
 						'description' => __( 'gateway\'s title', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->title ) ? $source->title : null;
 						},
 					],
 					'description' => [
 						'type'        => 'String',
 						'description' => __( 'gateway\'s description', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->description ) ? $source->description : null;
 						},
 					],
 					'icon'        => [
 						'type'        => 'String',
 						'description' => __( 'gateway\'s icon', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source->icon ) ? $source->icon : null;
 						},
 					],

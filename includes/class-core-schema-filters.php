@@ -306,7 +306,7 @@ class Core_Schema_Filters {
 			$config['typeNames'] = array_merge(
 				array_filter(
 					$config['typeNames'],
-					function( $type ) {
+					static function( $type ) {
 						return 'Product' !== $type;
 					}
 				),
@@ -318,7 +318,7 @@ class Core_Schema_Filters {
 
 		// Update 'types' callback.
 		if ( $refresh_callback ) {
-			$config['types'] = function () use ( $config, $wp_union ) {
+			$config['types'] = static function () use ( $config, $wp_union ) {
 				$prepared_types = [];
 				foreach ( $config['typeNames'] as $type_name ) {
 					$prepared_types[] = $wp_union->type_registry->get_type( $type_name );

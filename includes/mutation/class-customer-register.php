@@ -82,13 +82,13 @@ class Customer_Register {
 		return [
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Customer( $payload['id'] );
 				},
 			],
 			'viewer'   => [
 				'type'    => 'User',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$user = get_user_by( 'ID', $payload['id'] );
 					return false !== $user ? new User( $user ) : null;
 				},
@@ -102,7 +102,7 @@ class Customer_Register {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			// Validate input.
 			if ( empty( $input['email'] ) ) {
 				throw new UserError( __( 'Please provide a valid email address.', 'wp-graphql-woocommerce' ) );

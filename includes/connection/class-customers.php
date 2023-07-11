@@ -32,7 +32,7 @@ class Customers {
 				'toType'         => 'Customer',
 				'fromFieldName'  => 'customers',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
 
 					if ( ! self::should_execute() ) {
@@ -55,7 +55,7 @@ class Customers {
 				'toType'         => 'Customer',
 				'fromFieldName'  => 'usedBy',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
 
 					$resolver->set_query_arg( 'include', $source->used_by_ids );

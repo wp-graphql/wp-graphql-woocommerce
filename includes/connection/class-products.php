@@ -33,7 +33,7 @@ class Products {
 			self::get_connection_config(
 				[
 					'fromType' => 'Coupon',
-					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'  => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -55,7 +55,7 @@ class Products {
 				[
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProducts',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -88,7 +88,7 @@ class Products {
 							],
 						]
 					),
-					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -97,7 +97,7 @@ class Products {
 						if ( empty( $args['where']['shuffle'] ) ) {
 							add_filter(
 								'woocommerce_product_related_posts_shuffle',
-								function() {
+								static function() {
 									return false;
 								}
 							);
@@ -121,7 +121,7 @@ class Products {
 				[
 					'fromType'      => 'Product',
 					'fromFieldName' => 'upsell',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -144,7 +144,7 @@ class Products {
 			self::get_connection_config(
 				[
 					'fromType' => 'GroupProduct',
-					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'  => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -165,7 +165,7 @@ class Products {
 		// Product cross-sell connections.
 		$cross_sell_config = [
 			'fromFieldName' => 'crossSell',
-			'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+			'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 				add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 				remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -198,7 +198,7 @@ class Products {
 					'fromType'      => 'VariableProduct',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -228,7 +228,7 @@ class Products {
 				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql-woocommerce' ),
 				'oneToOne'      => true,
 				'queryClass'    => '\WC_Product_Query',
-				'resolve'       => function( $source, $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'       => static function( $source, $args, AppContext $context, ResolveInfo $info ) {
 					if ( empty( $source->parent_id ) ) {
 						return null;
 					}
@@ -255,7 +255,7 @@ class Products {
 						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
 						'toType'        => 'ProductVariation',
 						'fromFieldName' => 'variations',
-						'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							global $wpdb;
 							add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
@@ -325,7 +325,7 @@ class Products {
 
 		$taxonomies = self::get_product_connected_taxonomies();
 		if ( 'Product' === $to_type && in_array( $from_type, $taxonomies, true ) ) {
-			$config['resolve'] = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+			$config['resolve'] = static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 				add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 				remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
@@ -362,7 +362,7 @@ class Products {
 				'fromFieldName'  => 'products',
 				'queryClass'     => '\WC_Product_Query',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 					remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
