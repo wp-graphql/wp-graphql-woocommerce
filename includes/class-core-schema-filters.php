@@ -120,7 +120,7 @@ class Core_Schema_Filters {
 
 		add_filter(
 			'woographql_cart_connection_definitions',
-			[ __CLASS__, 'skip_cart_item_connection' ],
+			[ __CLASS__, 'skip_cart_item_connection' ]
 		);
 	}
 

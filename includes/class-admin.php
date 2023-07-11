@@ -37,7 +37,7 @@ class Admin {
 
 		$manager->settings_api->register_fields(
 			'woographql_settings',
-			General::get_fields(),
+			General::get_fields()
 		);
 	}
 }

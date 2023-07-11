@@ -146,7 +146,7 @@ class Customer_Type {
 					},
 				],
 			],
-			$other_fields,
+			$other_fields
 		);
 	}
 

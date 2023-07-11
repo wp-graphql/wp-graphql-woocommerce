@@ -243,7 +243,7 @@ class Order extends Model {
 	protected function get_viewable_order_types() {
 		return apply_filters(
 			'woographql_viewable_order_types',
-			wc_get_order_types( 'view-orders' ),
+			wc_get_order_types( 'view-orders' )
 		);
 	}
 
