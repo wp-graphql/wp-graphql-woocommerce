@@ -11,8 +11,6 @@ namespace WPGraphQL\WooCommerce;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Model\Customer;
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
-use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
 
 /**
  * Class JWT_Auth_Schema_Filters

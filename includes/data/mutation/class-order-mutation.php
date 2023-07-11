@@ -9,9 +9,6 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class - Order_Mutation

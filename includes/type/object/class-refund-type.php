@@ -10,11 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Refund_Type

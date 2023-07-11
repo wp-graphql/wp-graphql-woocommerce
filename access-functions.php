@@ -6,9 +6,6 @@
  * @since 0.0.1
  */
 
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
-use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
-
 if ( ! function_exists( 'wc_graphql_starts_with' ) ) {
 	/**
 	 * Checks if source string starts with the target string

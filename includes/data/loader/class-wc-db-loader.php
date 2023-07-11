@@ -10,9 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Data\Loader;
 
-use GraphQL\Deferred;
 use GraphQL\Error\UserError;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;

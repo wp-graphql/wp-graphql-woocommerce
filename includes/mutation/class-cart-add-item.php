@@ -100,7 +100,7 @@ class Cart_Add_Item {
 			// Add item to cart and get item key.
 			try {
 				$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
-			} catch ( \Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// Repackage any errors.
 				throw new UserError( $e->getMessage() );
 			}

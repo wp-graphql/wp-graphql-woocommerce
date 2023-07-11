@@ -14,7 +14,6 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Model\Product;
 
 const GLOBAL_ID_DELIMITER = ':';
 

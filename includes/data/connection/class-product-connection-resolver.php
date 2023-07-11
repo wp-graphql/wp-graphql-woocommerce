@@ -12,15 +12,9 @@ namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Error\InvariantViolation;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\Model\Term;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
-use WPGraphQL\WooCommerce\Model\Coupon;
-use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class Product_Connection_Resolver

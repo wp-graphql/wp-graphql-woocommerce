@@ -11,10 +11,9 @@
 
 namespace WPGraphQL\WooCommerce\Data\Cursor;
 
-use WPGraphQL\Data\Cursor\AbstractCursor;
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery;
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableMetaQuery;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
+use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableMetaQuery;
+use WPGraphQL\Data\Cursor\AbstractCursor;
 
 /**
  * Class COT_Cursor

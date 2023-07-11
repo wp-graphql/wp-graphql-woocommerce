@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Coupon;
 

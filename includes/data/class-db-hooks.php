@@ -8,7 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Data;
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 
 /**

@@ -11,8 +11,8 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WPGraphQL\Model\Model;
 use WC_Customer;
+use WPGraphQL\Model\Model;
 
 /**
  * Class Customer

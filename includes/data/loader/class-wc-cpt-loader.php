@@ -14,13 +14,11 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
-use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Refund;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class WC_CPT_Loader

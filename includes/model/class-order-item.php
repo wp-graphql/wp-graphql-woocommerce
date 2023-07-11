@@ -10,8 +10,8 @@
 
 namespace WPGraphQL\WooCommerce\Model;
 
-use WPGraphQL\Model\Model;
 use GraphQLRelay\Relay;
+use WPGraphQL\Model\Model;
 
 /**
  * Class Order_Item

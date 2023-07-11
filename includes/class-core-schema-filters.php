@@ -9,10 +9,10 @@
 namespace WPGraphQL\WooCommerce;
 
 use GraphQL\Error\UserError;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**

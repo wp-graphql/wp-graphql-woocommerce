@@ -11,11 +11,6 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WC_Product_Factory;
-use WC_Product_External;
-use WC_Product_Grouped;
-use WC_Product_Variable;
-use WC_Product_Simple;
 
 /**
  * Class Product

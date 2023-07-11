@@ -8,10 +8,9 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
+use WC_Session_Handler;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use GraphQL\Error\UserError;
-use WC_Session_Handler;
 
 /**
  * Class - QL_Session_Handler
@@ -234,7 +233,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( empty( $token->data ) || empty( $token->data->customer_id ) ) {
 				throw new \Exception( __( 'Customer ID not found in the token', 'wp-graphql-woocommerce' ) );
 			}
-		} catch ( \Exception $error ) {
+		} catch ( \Throwable $error ) {
 			return new \WP_Error( 'invalid_token', $error->getMessage() );
 		}//end try
 

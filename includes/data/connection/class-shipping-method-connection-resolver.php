@@ -10,9 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 
 /**

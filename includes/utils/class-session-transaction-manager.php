@@ -8,9 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use Firebase\JWT\JWT;
 use GraphQL\Error\UserError;
-use WC_Session_Handler;
 
 /**
  * Class - Session_Transaction_Manager

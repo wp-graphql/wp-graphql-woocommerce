@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use WPGraphQL\WooCommerce\Data\Factory;
-
 /**
  * Trait WC_Db_Loader_Common
  */

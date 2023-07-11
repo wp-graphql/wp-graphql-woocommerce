@@ -10,10 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Product_Variation_Type

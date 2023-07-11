@@ -15,7 +15,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 /**
  * Class - Update_Session

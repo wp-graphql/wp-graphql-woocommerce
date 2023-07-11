@@ -10,13 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use GraphQLRelay\Connection\ArrayConnection;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Cart_Item_Connection_Resolver

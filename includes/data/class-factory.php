@@ -10,20 +10,17 @@
 
 namespace WPGraphQL\WooCommerce\Data;
 
-use GraphQL\Deferred;
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use function WC;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Refund;
 use WPGraphQL\WooCommerce\Model\Order_Item;
 use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
-use WPGraphQL\WooCommerce\Model\Customer;
-use WPGraphQL\WooCommerce\Model\Tax_Rate;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Model\Tax_Rate;
+use function WC;
 
 /**
  * Class Factory

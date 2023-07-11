@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\Model\Post;
-use WP_Post_Type;
 
 /**
  * Class WC_Post

@@ -11,8 +11,8 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - Products

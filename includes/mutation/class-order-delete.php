@@ -13,10 +13,10 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
+use WC_Order_Factory;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WC_Order_Factory;
 
 /**
  * Class Order_Delete

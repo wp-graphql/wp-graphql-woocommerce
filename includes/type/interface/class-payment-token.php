@@ -8,8 +8,8 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
-use GraphQLRelay\Relay;
 use GraphQL\Error\UserError;
+use GraphQLRelay\Relay;
 
 /**
  * Class Payment_Token

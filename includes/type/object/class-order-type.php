@@ -10,13 +10,11 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Downloadable_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Order_Type

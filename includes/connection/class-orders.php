@@ -9,10 +9,8 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
-use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
 
 /**

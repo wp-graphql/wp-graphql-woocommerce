@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Model;
 
-use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Error\UserError;
 use GraphQLRelay\Relay;
 use WPGraphQL\Model\Model;

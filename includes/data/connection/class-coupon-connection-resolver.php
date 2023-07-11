@@ -11,12 +11,7 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Error\InvariantViolation;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
-use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Coupon;
 
 /**
  * Class Coupon_Connection_Resolver

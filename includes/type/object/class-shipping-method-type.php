@@ -10,10 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
-use WPGraphQL\WooCommerce\Data\Factory;
-
 /**
  * Class Shipping_Method_Type
  */

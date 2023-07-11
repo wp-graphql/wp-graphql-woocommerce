@@ -10,8 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-
 /**
  * Class Meta_Data_Type
  */
