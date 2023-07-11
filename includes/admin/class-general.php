@@ -76,7 +76,7 @@ class General extends Section {
 					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'on' : woographql_setting( 'disable_ql_session_handler', 'off' ),
-				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ) ? true : false,
+				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'    => 'enable_unsupported_product_type',
@@ -101,7 +101,7 @@ class General extends Section {
 					]
 				),
 				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
-				'disabled'          => $enable_auth_urls_hardcoded ? true : false,
+				'disabled'          => $enable_auth_urls_hardcoded,
 				'sanitize_callback' => static function( $value ) {
 					if ( empty( $value ) ) {
 						return [];

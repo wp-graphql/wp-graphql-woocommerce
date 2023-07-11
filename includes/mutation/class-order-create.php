@@ -44,7 +44,7 @@ class Order_Create {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = [
+		return [
 			'parentId'           => [
 				'type'        => 'Int',
 				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
@@ -110,8 +110,6 @@ class Order_Create {
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
 			],
 		];
-
-		return $input_fields;
 	}
 
 	/**

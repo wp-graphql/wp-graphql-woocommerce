@@ -237,13 +237,12 @@ class Customer_Type {
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
-							$tokens = array_filter(
+							return array_filter(
 								array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) ),
 								static function ( $token ) {
 									return 'CC' === $token->get_type();
 								}
 							);
-							return $tokens;
 						}
 
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
@@ -254,13 +253,12 @@ class Customer_Type {
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
-							$tokens = array_filter(
+							return array_filter(
 								array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) ),
 								static function ( $token ) {
 									return 'eCheck' === $token->get_type();
 								}
 							);
-							return $tokens;
 						}
 
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );

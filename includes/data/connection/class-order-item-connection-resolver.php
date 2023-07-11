@@ -99,7 +99,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		}//end switch
 
 		$items = [];
-		foreach ( $this->source->get_items( $type ) as $id => $item ) {
+		foreach ( $this->source->get_items( $type ) as $item ) {
 			$items[] = $item;
 		}
 

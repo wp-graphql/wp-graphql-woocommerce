@@ -103,9 +103,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * {@inheritDoc}
 	 */
 	public function get_ids_from_query() {
-		$ids = ! empty( $this->query ) ? $this->query : [];
-
-		return $ids;
+		return ! empty( $this->query ) ? $this->query : [];
 	}
 
 	/**

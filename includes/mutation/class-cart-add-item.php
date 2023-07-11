@@ -76,9 +76,7 @@ class Cart_Add_Item {
 			'cartItem' => [
 				'type'    => 'CartItem',
 				'resolve' => static function ( $payload ) {
-					$item = \WC()->cart->get_cart_item( $payload['key'] );
-
-					return $item;
+					return \WC()->cart->get_cart_item( $payload['key'] );
 				},
 			],
 			'cart'     => Cart_Mutation::get_cart_field( true ),

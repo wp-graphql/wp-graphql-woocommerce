@@ -85,7 +85,7 @@ class Meta_Data_Type {
 			],
 			'resolve'     => static function( $source, array $args ) {
 				// Set unique flag.
-				$single = ! empty( $args['multiple'] ) ? false : true;
+				$single = empty( $args['multiple'] );
 
 				// Check "key" argument and format meta_data objects.
 				if ( ! empty( $args['key'] ) && $source->meta_exists( $args['key'] ) ) {
