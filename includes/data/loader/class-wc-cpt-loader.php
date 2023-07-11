@@ -178,7 +178,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			 * instead of loading once per entity, thus reducing the n+1 problem.
 			 */
 			$load_dependencies = new Deferred(
-				function() use ( $key, $post_type, $customer_id, $parent_id, $context ) {
+				function () use ( $key, $post_type, $customer_id, $parent_id, $context ) {
 					if ( ! empty( $customer_id ) ) {
 						$context->get_loader( 'wc_customer' )->load( $customer_id );
 					}
@@ -200,7 +200,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			 * Once dependencies are loaded, return the Post Object
 			 */
 			$loaded_posts[ $key ] = $load_dependencies->then(
-				static function() use ( $post_type, $key ) {
+				static function () use ( $post_type, $key ) {
 					return self::resolve_model( $post_type, $key );
 				}
 			);

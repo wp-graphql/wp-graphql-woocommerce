@@ -17,7 +17,6 @@ use function WC;
  * Class - Checkout_Mutation
  */
 class Checkout_Mutation {
-
 	/**
 	 * Caches customer object. @see get_value.
 	 *

@@ -59,7 +59,7 @@ class JWT_Auth_Schema_Filters {
 				'authToken'    => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $payload ) {
+					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
 						if ( ! $user ) {
@@ -83,7 +83,7 @@ class JWT_Auth_Schema_Filters {
 				'refreshToken' => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $payload ) {
+					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
 						if ( ! $user ) {
@@ -122,7 +122,7 @@ class JWT_Auth_Schema_Filters {
 			[
 				'type'        => 'Customer',
 				'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					$id = $payload['id'];
 					return new Customer( $id );
 				},
@@ -136,7 +136,7 @@ class JWT_Auth_Schema_Filters {
 				[
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $payload ) {
+					'resolve'     => static function ( $payload ) {
 						/**
 						 * Session Handler.
 						 *

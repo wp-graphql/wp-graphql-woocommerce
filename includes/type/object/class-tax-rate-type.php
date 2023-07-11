@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Tax_Rate_Type
  */
 class Tax_Rate_Type {
-
 	/**
 	 * Registers tax rate type
 	 *

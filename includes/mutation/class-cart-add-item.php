@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Add_Item
  */
 class Cart_Add_Item {
-
 	/**
 	 * Registers mutation
 	 *
@@ -89,7 +88,7 @@ class Cart_Add_Item {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Prepare args for "add_to_cart" from input data.

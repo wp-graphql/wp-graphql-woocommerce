@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Country_State_Type
  */
 class Country_State_Type {
-
 	/**
 	 * Registers type
 	 *

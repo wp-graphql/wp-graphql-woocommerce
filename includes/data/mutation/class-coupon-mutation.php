@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Data\Mutation;
  * Class - Coupon_Mutation
  */
 class Coupon_Mutation {
-
 	/**
 	 * Prepares coupon args from input.
 	 *

@@ -69,7 +69,6 @@ class COT_Cursor extends AbstractCursor {
 	 * @param string|null                                                         $cursor      Whether to generate the before or after cursor. Default "after".
 	 */
 	public function __construct( $query_vars, $query, $cursor = 'after' ) {
-
 		// Initialize the class properties.
 		parent::__construct( $query_vars, $cursor );
 

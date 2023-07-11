@@ -79,7 +79,6 @@ use WPGraphQL\Model\Model;
  * @package WPGraphQL\WooCommerce\Model
  */
 class Order extends Model {
-
 	/**
 	 * Stores the incoming order data
 	 *
@@ -264,7 +263,6 @@ class Order extends Model {
 		return absint( $this->data->get_parent_id() );
 	}
 
-
 	/**
 	 * Whether or not the customer of the order matches the current user.
 	 *
@@ -367,85 +365,85 @@ class Order extends Model {
 	 */
 	protected function abstract_order_fields() {
 		return [
-			'ID'               => function() {
+			'ID'               => function () {
 				return ! empty( $this->data->get_id() ) ? $this->data->get_id() : null;
 			},
-			'id'               => function() {
+			'id'               => function () {
 				return ! empty( $this->ID ) ? Relay::toGlobalId( 'order', "{$this->ID}" ) : null;
 			},
-			'databaseId'       => function() {
+			'databaseId'       => function () {
 				return $this->ID;
 			},
-			'parent_id'        => function() {
+			'parent_id'        => function () {
 				return ! empty( $this->data->get_parent_id() ) ? $this->data->get_parent_id() : null;
 			},
-			'status'           => function() {
+			'status'           => function () {
 				return ! empty( $this->data->get_status() ) ? $this->data->get_status() : null;
 			},
-			'currency'         => function() {
+			'currency'         => function () {
 				return ! empty( $this->data->get_currency() ) ? $this->data->get_currency() : null;
 			},
-			'version'          => function() {
+			'version'          => function () {
 				return ! empty( $this->data->get_version() ) ? $this->data->get_version() : null;
 			},
-			'pricesIncludeTax' => function() {
+			'pricesIncludeTax' => function () {
 				return ! empty( $this->data->get_prices_include_tax() ) ? $this->data->get_prices_include_tax() : null;
 			},
-			'dateCreated'      => function() {
+			'dateCreated'      => function () {
 				return ! empty( $this->data->get_date_created() ) ? $this->data->get_date_created() : null;
 			},
-			'dateModified'     => function() {
+			'dateModified'     => function () {
 				return ! empty( $this->data->get_date_modified() ) ? $this->data->get_date_modified() : null;
 			},
-			'discountTotal'    => function() {
+			'discountTotal'    => function () {
 				$price = ! is_null( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
 				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
-			'discountTotalRaw' => function() {
+			'discountTotalRaw' => function () {
 				return ! empty( $this->data->get_discount_total() ) ? $this->data->get_discount_total() : 0;
 			},
-			'discountTax'      => function() {
+			'discountTax'      => function () {
 				$price = ! is_null( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : 0;
 				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
-			'discountTaxRaw'   => function() {
+			'discountTaxRaw'   => function () {
 				return ! empty( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : 0;
 			},
-			'shippingTotal'    => function() {
+			'shippingTotal'    => function () {
 				$price = ! is_null( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
 				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
-			'shippingTotalRaw' => function() {
+			'shippingTotalRaw' => function () {
 				return ! empty( $this->data->get_shipping_total() ) ? $this->data->get_shipping_total() : 0;
 			},
-			'shippingTax'      => function() {
+			'shippingTax'      => function () {
 				$price = ! is_null( $this->data->get_shipping_tax() ) ? $this->data->get_shipping_tax() : 0;
 				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
-			'shippingTaxRaw'   => function() {
+			'shippingTaxRaw'   => function () {
 				return ! empty( $this->data->get_shipping_tax() ) ? $this->data->get_shipping_tax() : 0;
 			},
-			'cartTax'          => function() {
+			'cartTax'          => function () {
 				$price = ! is_null( $this->data->get_cart_tax() ) ? $this->data->get_cart_tax() : 0;
 				return wc_graphql_price( $price, [ 'currency' => $this->data->get_currency() ] );
 			},
-			'cartTaxRaw'       => function() {
+			'cartTaxRaw'       => function () {
 				return ! empty( $this->data->get_cart_tax() ) ? $this->data->get_cart_tax() : 0;
 			},
-			'total'            => function() {
+			'total'            => function () {
 				return ! is_null( $this->data->get_total() )
 					? wc_graphql_price( $this->data->get_total(), [ 'currency' => $this->data->get_currency() ] )
 					: null;
 			},
-			'totalRaw'         => function() {
+			'totalRaw'         => function () {
 				return ! empty( $this->data->get_total() ) ? $this->data->get_total() : 0;
 			},
-			'totalTax'         => function() {
+			'totalTax'         => function () {
 				return ! is_null( $this->data->get_total_tax() )
 					? wc_graphql_price( $this->data->get_total_tax(), [ 'currency' => $this->data->get_currency() ] )
 					: null;
 			},
-			'totalTaxRaw'      => function() {
+			'totalTaxRaw'      => function () {
 				return ! empty( $this->data->get_total_tax() ) ? $this->data->get_total_tax() : 0;
 			},
 		];
@@ -458,127 +456,127 @@ class Order extends Model {
 	 */
 	protected function order_fields() {
 		return [
-			'date'                  => function() {
+			'date'                  => function () {
 				return ! empty( $this->data->get_date_created() ) ? $this->data->get_date_created() : null;
 			},
-			'modified'              => function() {
+			'modified'              => function () {
 				return ! empty( $this->data->get_date_modified() ) ? $this->data->get_date_modified() : null;
 			},
-			'orderKey'              => function() {
+			'orderKey'              => function () {
 				$order_key = method_exists( $this->data, 'get_order_key' ) ? $this->data->get_order_key() : null;
 				return ! empty( $order_key ) ? $order_key : null;
 			},
-			'paymentMethod'         => function() {
+			'paymentMethod'         => function () {
 				$payment_method = method_exists( $this->data, 'get_payment_method' ) ? $this->data->get_payment_method() : null;
 				return ! empty( $payment_method ) ? $payment_method : null;
 			},
-			'paymentMethodTitle'    => function() {
+			'paymentMethodTitle'    => function () {
 				$payment_method_title = method_exists( $this->data, 'get_payment_method_title' ) ? $this->data->get_payment_method_title() : null;
 				return ! empty( $payment_method_title ) ? $payment_method_title : null;
 			},
-			'transactionId'         => function() {
+			'transactionId'         => function () {
 				$transaction_id = method_exists( $this->data, 'get_transaction_id' ) ? $this->data->get_transaction_id() : null;
 				return ! empty( $transaction_id ) ? $transaction_id : null;
 			},
-			'customerIpAddress'     => function() {
+			'customerIpAddress'     => function () {
 				$customer_ip_address = method_exists( $this->data, 'get_customer_ip_address' ) ? $this->data->get_customer_ip_address() : null;
 				return ! empty( $customer_ip_address ) ? $customer_ip_address : null;
 			},
-			'customerUserAgent'     => function() {
+			'customerUserAgent'     => function () {
 				$customer_user_agent = method_exists( $this->data, 'get_customer_user_agent' ) ? $this->data->get_customer_user_agent() : null;
 				return ! empty( $customer_user_agent ) ? $customer_user_agent : null;
 			},
-			'createdVia'            => function() {
+			'createdVia'            => function () {
 				$created_via = method_exists( $this->data, 'get_created_via' ) ? $this->data->get_created_via() : null;
 				return ! empty( $created_via ) ? $created_via : null;
 			},
-			'dateCompleted'         => function() {
+			'dateCompleted'         => function () {
 				return ! empty( $this->data->get_date_completed() ) ? $this->data->get_date_completed() : null;
 			},
-			'datePaid'              => function() {
+			'datePaid'              => function () {
 				return ! empty( $this->data->get_date_paid() ) ? $this->data->get_date_paid() : null;
 			},
-			'subtotal'              => function() {
+			'subtotal'              => function () {
 				return ! empty( $this->data->get_subtotal() )
 					? wc_graphql_price( $this->data->get_subtotal(), [ 'currency' => $this->data->get_currency() ] )
 					: null;
 			},
-			'subtotalRaw'           => function() {
+			'subtotalRaw'           => function () {
 				return ! empty( $this->data->get_subtotal() ) ? $this->data->get_subtotal() : 0;
 			},
-			'orderNumber'           => function() {
+			'orderNumber'           => function () {
 				$order_number = method_exists( $this->data, 'get_order_number' ) ? $this->data->get_order_number() : null;
 				return ! empty( $order_number ) ? $order_number : null;
 			},
-			'orderVersion'          => function() {
+			'orderVersion'          => function () {
 				return ! empty( $this->data->get_version() ) ? $this->data->get_version() : null;
 			},
-			'pricesIncludeTax'      => function() {
+			'pricesIncludeTax'      => function () {
 				return ! is_null( $this->data->get_prices_include_tax() ) ? $this->data->get_prices_include_tax() : null;
 			},
-			'cartHash'              => function() {
+			'cartHash'              => function () {
 				$cart_hash = method_exists( $this->data, 'get_cart_hash' ) ? $this->data->get_cart_hash() : null;
 				return ! empty( $cart_hash ) ? $cart_hash : null;
 			},
-			'customerNote'          => function() {
+			'customerNote'          => function () {
 				$customer_note = method_exists( $this->data, 'get_customer_note' ) ? $this->data->get_customer_note() : null;
 				return ! empty( $customer_note ) ? $customer_note : null;
 			},
-			'isDownloadPermitted'   => function() {
+			'isDownloadPermitted'   => function () {
 				if ( ! method_exists( $this->data, 'is_download_permitted' ) ) {
 					return null;
 				}
 
 				return $this->data->is_download_permitted();
 			},
-			'billing'               => function() {
+			'billing'               => function () {
 				$billing = method_exists( $this->data, 'get_address' ) ? $this->data->get_address( 'billing' ) : null;
 				return ! empty( $billing ) ? $billing : null;
 			},
-			'shipping'              => function() {
+			'shipping'              => function () {
 				$shipping = method_exists( $this->data, 'get_address' ) ? $this->data->get_address( 'shipping' ) : null;
 				return ! empty( $shipping ) ? $shipping : null;
 			},
-			'shippingAddressMapUrl' => function() {
+			'shippingAddressMapUrl' => function () {
 				$shipping_address_map_url = method_exists( $this->data, 'get_shipping_address_map_url' ) ? $this->data->get_shipping_address_map_url() : null;
 				return ! empty( $shipping_address_map_url ) ? $shipping_address_map_url : null;
 			},
-			'hasBillingAddress'     => function() {
+			'hasBillingAddress'     => function () {
 				if ( ! method_exists( $this->data, 'has_billing_address' ) ) {
 					return null;
 				}
 
 				return $this->data->has_billing_address();
 			},
-			'hasShippingAddress'    => function() {
+			'hasShippingAddress'    => function () {
 				if ( ! method_exists( $this->data, 'has_shipping_address' ) ) {
 					return null;
 				}
 
 				return $this->data->has_shipping_address();
 			},
-			'needsShippingAddress'  => function() {
+			'needsShippingAddress'  => function () {
 				if ( ! method_exists( $this->data, 'needs_shipping_address' ) ) {
 					return null;
 				}
 
 				return $this->data->needs_shipping_address();
 			},
-			'hasDownloadableItem'   => function() {
+			'hasDownloadableItem'   => function () {
 				if ( ! method_exists( $this->data, 'has_downloadable_item' ) ) {
 					return null;
 				}
 
 				return $this->data->has_downloadable_item();
 			},
-			'needsPayment'          => function() {
+			'needsPayment'          => function () {
 				if ( ! method_exists( $this->data, 'needs_payment' ) ) {
 					return null;
 				}
 
 				return $this->data->needs_payment();
 			},
-			'needsProcessing'       => function() {
+			'needsProcessing'       => function () {
 				if ( ! method_exists( $this->data, 'needs_processing' ) ) {
 					return null;
 				}
@@ -591,11 +589,11 @@ class Order extends Model {
 			 * These field resolvers are used in connection resolvers to define WP_Query argument
 			 * Note: underscore naming style is used as a quick identifier
 			 */
-			'customer_id'           => function() {
+			'customer_id'           => function () {
 				$customer_id = method_exists( $this->data, 'get_customer_id' ) ? $this->data->get_customer_id() : null;
 				return ! empty( $customer_id ) ? $customer_id : null;
 			},
-			'downloadable_items'    => function() {
+			'downloadable_items'    => function () {
 				$downloadable_items = method_exists( $this->data, 'get_downloadable_items' ) ? $this->data->get_downloadable_items() : null;
 				return ! empty( $downloadable_items ) ? $downloadable_items : null;
 			},
@@ -605,7 +603,7 @@ class Order extends Model {
 			 * These fields are used primarily by WPGraphQL core Node* interfaces
 			 * and some fields act as aliases/decorator for existing fields.
 			 */
-			'commentCount'          => function() {
+			'commentCount'          => function () {
 				remove_filter( 'comments_clauses', [ 'WC_Comments', 'exclude_order_comments' ] );
 
 				$args = [
@@ -634,7 +632,7 @@ class Order extends Model {
 
 				return is_array( $notes ) ? count( $notes ) : 0;
 			},
-			'commentStatus'         => function() {
+			'commentStatus'         => function () {
 				$is_allowed_to_comment = null !== $this->post_type_object
 					? current_user_can( $this->post_type_object->cap->edit_posts, $this->ID )
 					: current_user_can( 'manage_woocommerce' );
@@ -650,26 +648,26 @@ class Order extends Model {
 	 */
 	protected function refund_fields() {
 		return [
-			'title'          => function() {
+			'title'          => function () {
 				$post_title = method_exists( $this->data, 'get_post_title' ) ? $this->data->get_post_title() : null;
 				return ! empty( $post_title ) ? $post_title : null;
 			},
-			'amount'         => function() {
+			'amount'         => function () {
 				$amount = method_exists( $this->data, 'get_amount' ) ? $this->data->get_amount() : null;
 				return ! empty( $amount ) ? $amount : null;
 			},
-			'reason'         => function() {
+			'reason'         => function () {
 				$reason = method_exists( $this->data, 'get_reason' ) ? $this->data->get_reason() : null;
 				return ! empty( $reason ) ? $reason : null;
 			},
 			'refunded_by_id' => [
-				'callback'   => function() {
+				'callback'   => function () {
 					$refunded_by = method_exists( $this->data, 'get_refunded_by' ) ? $this->data->get_refunded_by() : null;
 					return ! empty( $refunded_by ) ? $refunded_by : null;
 				},
 				'capability' => 'list_users',
 			],
-			'date'           => function() {
+			'date'           => function () {
 				return ! empty( $this->data->get_date_modified() ) ? $this->data->get_date_modified() : null;
 			},
 		];

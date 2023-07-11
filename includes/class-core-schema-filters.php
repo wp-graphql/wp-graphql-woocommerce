@@ -141,7 +141,7 @@ class Core_Schema_Filters {
 			$args['graphql_interfaces']               = [ 'ContentNode' ];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
-			$args['graphql_resolve_type']             = static function( $value ) {
+			$args['graphql_resolve_type']             = static function ( $value ) {
 				$type_registry  = \WPGraphQL::get_type_registry();
 				$possible_types = WooGraphQL::get_enabled_product_types();
 				if ( isset( $possible_types[ $value->type ] ) ) {
@@ -306,7 +306,7 @@ class Core_Schema_Filters {
 			$config['typeNames'] = array_merge(
 				array_filter(
 					$config['typeNames'],
-					static function( $type ) {
+					static function ( $type ) {
 						return 'Product' !== $type;
 					}
 				),

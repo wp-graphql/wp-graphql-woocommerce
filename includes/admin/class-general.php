@@ -11,7 +11,6 @@ namespace WPGraphQL\WooCommerce\Admin;
  * General class
  */
 class General extends Section {
-
 	/**
 	 * Returns the other nonce values besides the one provided.
 	 *
@@ -102,7 +101,7 @@ class General extends Section {
 				),
 				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
 				'disabled'          => $enable_auth_urls_hardcoded,
-				'sanitize_callback' => static function( $value ) {
+				'sanitize_callback' => static function ( $value ) {
 					if ( empty( $value ) ) {
 						return [];
 					}

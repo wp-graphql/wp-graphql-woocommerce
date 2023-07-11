@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Coupon_Type
  */
 class Coupon_Type {
-
 	/**
 	 * Register Coupon type and queries to the WPGraphQL schema
 	 *

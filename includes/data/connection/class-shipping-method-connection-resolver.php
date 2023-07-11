@@ -16,7 +16,6 @@ use WPGraphQL\Data\Connection\AbstractConnectionResolver;
  * Class Shipping_Method_Connection_Resolver
  */
 class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -57,7 +56,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Get shipping method IDs.
 		$methods = array_map(
-			static function( $item ) {
+			static function ( $item ) {
 				return $item->id;
 			},
 			array_values( $methods )
@@ -116,5 +115,4 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		return $offset;
 	}
-
 }

@@ -15,7 +15,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Orderby_Inputs
  */
 class Orderby_Inputs {
-
 	/**
 	 * Registers Orderby WPInputObject type to schema.
 	 *

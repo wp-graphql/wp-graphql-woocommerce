@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Variation_Attribute_Type
  */
 class Variation_Attribute_Type {
-
 	/**
 	 * Register VariationAttribute type to the WPGraphQL schema
 	 *

@@ -16,7 +16,6 @@ use WPGraphQL\Data\Connection\AbstractConnectionResolver;
  * Class Order_Item_Connection_Resolver
  */
 class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -122,7 +121,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$items = array_reverse( $items );
 		}
 
-		$get_item_id = static function( $item ) {
+		$get_item_id = static function ( $item ) {
 			return $item->get_id();
 		};
 

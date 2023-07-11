@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Meta_Data_Type
  */
 class Meta_Data_Type {
-
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
 	 *
@@ -83,7 +82,7 @@ class Meta_Data_Type {
 					'description' => __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' ),
 				],
 			],
-			'resolve'     => static function( $source, array $args ) {
+			'resolve'     => static function ( $source, array $args ) {
 				// Set unique flag.
 				$single = empty( $args['multiple'] );
 
@@ -93,7 +92,7 @@ class Meta_Data_Type {
 					if ( ! is_array( $data ) ) {
 						$data = array_filter(
 							$source->get_meta_data(),
-							static function( $meta ) use ( $data ) {
+							static function ( $meta ) use ( $data ) {
 								return $meta->value === $data;
 							}
 						);
@@ -105,7 +104,7 @@ class Meta_Data_Type {
 					$found = [];
 					$data  = array_filter(
 						$source->get_meta_data(),
-						static function( $meta ) use ( $keys, $single, &$found ) {
+						static function ( $meta ) use ( $keys, $single, &$found ) {
 							if ( in_array( $meta->key, $keys, true ) ) {
 								if ( $single ) {
 									if ( ! in_array( $meta->key, $found, true ) ) {
@@ -123,7 +122,7 @@ class Meta_Data_Type {
 					$found = [];
 					$data  = array_filter(
 						$source->get_meta_data(),
-						static function( $meta ) use ( $single, &$found ) {
+						static function ( $meta ) use ( $single, &$found ) {
 							if ( $single ) {
 								if ( ! in_array( $meta->key, $found, true ) ) {
 									$found[] = $meta->key;

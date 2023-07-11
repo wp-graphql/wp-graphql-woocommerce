@@ -20,7 +20,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Update_Item_Quantities
  */
 class Cart_Update_Item_Quantities {
-
 	/**
 	 * Registers mutation
 	 *
@@ -96,7 +95,7 @@ class Cart_Update_Item_Quantities {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Confirm "items" exists.
@@ -138,7 +137,7 @@ class Cart_Update_Item_Quantities {
 				$errors = array_keys(
 					array_filter(
 						array_merge( $removed, $updated ),
-						static function( $value ) {
+						static function ( $value ) {
 							return ! $value;
 						}
 					)

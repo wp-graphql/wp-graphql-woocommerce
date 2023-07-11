@@ -17,7 +17,6 @@ use WPGraphQL\WooCommerce\Data\Connection\Payment_Gateway_Connection_Resolver;
  * Class - PaymentGateways
  */
 class Payment_Gateways {
-
 	/**
 	 * Registers the various connections from other Types to Customer.
 	 *

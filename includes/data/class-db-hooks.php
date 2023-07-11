@@ -14,7 +14,6 @@ use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
  * Class DB_Hooks
  */
 class DB_Hooks {
-
 	/**
 	 * DB_Hooks constructor.
 	 */

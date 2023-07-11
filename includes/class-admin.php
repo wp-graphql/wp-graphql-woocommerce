@@ -15,7 +15,6 @@ use WPGraphQL\WooCommerce\Admin\General;
  * Class Admin
  */
 class Admin {
-
 	/**
 	 * Admin constructor
 	 */

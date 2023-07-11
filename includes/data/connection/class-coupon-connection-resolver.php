@@ -48,6 +48,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		 * Set the post type for the resolver
 		 */
 		$this->post_type = 'shop_coupon';
+
 		/**
 		 * Call the parent construct to setup class data
 		 */

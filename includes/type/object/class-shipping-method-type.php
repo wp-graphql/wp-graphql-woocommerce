@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Shipping_Method_Type
  */
 class Shipping_Method_Type {
-
 	/**
 	 * Registers shipping method type
 	 *

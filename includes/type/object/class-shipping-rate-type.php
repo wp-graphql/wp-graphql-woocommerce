@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Shipping_Rate_Type
  */
 class Shipping_Rate_Type {
-
 	/**
 	 * Registers type
 	 *

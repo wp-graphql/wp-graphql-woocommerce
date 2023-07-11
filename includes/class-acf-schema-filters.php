@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce;
  * Class ACF_Schema_Filters
  */
 class ACF_Schema_Filters {
-
 	/**
 	 * Register filters
 	 *

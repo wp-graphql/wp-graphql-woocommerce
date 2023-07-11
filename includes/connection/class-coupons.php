@@ -15,7 +15,6 @@ use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
  * Class - Coupons
  */
 class Coupons {
-
 	/**
 	 * Registers the various connections from other Types to Coupon
 	 *

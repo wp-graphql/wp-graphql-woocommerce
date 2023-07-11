@@ -22,7 +22,6 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class - Customer_Register
  */
 class Customer_Register {
-
 	/**
 	 * Registers mutation
 	 *
@@ -102,7 +101,7 @@ class Customer_Register {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Validate input.
 			if ( empty( $input['email'] ) ) {
 				throw new UserError( __( 'Please provide a valid email address.', 'wp-graphql-woocommerce' ) );

@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Product_Download_Type
  */
 class Product_Download_Type {
-
 	/**
 	 * Register ProductDownload type
 	 *

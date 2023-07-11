@@ -17,7 +17,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Apply_Coupon
  */
 class Cart_Apply_Coupon {
-
 	/**
 	 * Registers mutation
 	 *
@@ -57,7 +56,7 @@ class Cart_Apply_Coupon {
 		return [
 			'applied' => [
 				'type'    => 'AppliedCoupon',
-				'resolve' => static function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['code'];
 				},
 			],
@@ -71,7 +70,7 @@ class Cart_Apply_Coupon {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input ) {
+		return static function ( $input ) {
 			Cart_Mutation::check_session_token();
 
 			$reason = '';

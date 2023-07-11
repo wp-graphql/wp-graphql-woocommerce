@@ -14,7 +14,6 @@ use WPGraphQL\WooCommerce\WooCommerce_Filters;
  * Class Protected_Router
  */
 class Protected_Router {
-
 	/**
 	 * Stores the instance of the Protected_Router class
 	 *

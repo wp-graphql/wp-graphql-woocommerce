@@ -18,7 +18,6 @@ use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
  * Class Product_Attributes
  */
 class Product_Attributes {
-
 	/**
 	 * Registers the various connections from other Types to ProductAttribute.
 	 *

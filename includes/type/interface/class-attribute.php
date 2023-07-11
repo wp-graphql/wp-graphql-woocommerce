@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
  * Class Attribute
  */
 class Attribute {
-
 	/**
 	 * Registers the "Product" interface.
 	 *
@@ -40,7 +39,7 @@ class Attribute {
 						},
 					],
 				],
-				'resolveType' => static function( $value ) {
+				'resolveType' => static function ( $value ) {
 					$type_registry = \WPGraphQL::get_type_registry();
 					if ( $value->is_taxonomy() ) {
 						return $type_registry->get_type( 'SimpleAttribute' );

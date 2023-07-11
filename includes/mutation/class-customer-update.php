@@ -21,7 +21,6 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class - Customer_Update
  */
 class Customer_Update {
-
 	/**
 	 * Registers mutation
 	 *
@@ -93,7 +92,7 @@ class Customer_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			$session_only = empty( $input['id'] );
 			$payload      = null;
 

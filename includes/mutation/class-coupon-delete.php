@@ -20,7 +20,6 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  * Class Coupon_Delete
  */
 class Coupon_Delete {
-
 	/**
 	 * Registers mutation
 	 *
@@ -66,7 +65,7 @@ class Coupon_Delete {
 			[
 				'coupon' => [
 					'type'    => 'Coupon',
-					'resolve' => static function( $payload ) {
+					'resolve' => static function ( $payload ) {
 						return ! empty( $payload['coupon'] ) ? $payload['coupon'] : null;
 					},
 				],

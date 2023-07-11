@@ -18,7 +18,6 @@ use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
  * Class - Shipping_Methods
  */
 class Shipping_Methods {
-
 	/**
 	 * Registers the various connections from other Types to TaxRate
 	 *
@@ -43,7 +42,7 @@ class Shipping_Methods {
 				'toType'         => 'ShippingMethod',
 				'fromFieldName'  => 'shippingMethods',
 				'connectionArgs' => [],
-				'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Shipping_Method_Connection_Resolver( $source, $args, $context, $info );
 
 					return $resolver->get_connection();

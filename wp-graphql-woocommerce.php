@@ -127,7 +127,7 @@ function init() {
 	foreach ( $not_ready as $dep ) {
 		add_action(
 			'admin_notices',
-			static function() use ( $dep ) {
+			static function () use ( $dep ) {
 				?>
 				<div class="error notice">
 					<p>

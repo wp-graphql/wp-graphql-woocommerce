@@ -14,7 +14,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
  * Class WooCommerce_Filters
  */
 class WooCommerce_Filters {
-
 	/**
 	 * Stores instance session header name.
 	 *

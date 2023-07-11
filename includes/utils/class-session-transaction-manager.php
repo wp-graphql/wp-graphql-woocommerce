@@ -14,7 +14,6 @@ use GraphQL\Error\UserError;
  * Class - Session_Transaction_Manager
  */
 class Session_Transaction_Manager {
-
 	/**
 	 * The request's transaction ID.
 	 *
@@ -28,7 +27,6 @@ class Session_Transaction_Manager {
 	 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler
 	 */
 	private $session_handler = null;
-
 
 	/**
 	 * Singleton instance of class.
@@ -52,7 +50,6 @@ class Session_Transaction_Manager {
 
 		return self::$instance;
 	}
-
 
 	/**
 	 * Session_Transaction_Manager constructor

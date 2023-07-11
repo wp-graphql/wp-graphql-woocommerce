@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Simple_Attribute_Type
  */
 class Simple_Attribute_Type {
-
 	/**
 	 * Register SimpleAttribute type to the WPGraphQL schema
 	 *
