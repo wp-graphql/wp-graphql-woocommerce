@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb3dcd97101e5ff66f9f812e417aa977",
+    "content-hash": "1fe0d1a5418403ab97ed669378c504f9",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -125,16 +125,16 @@
         },
         {
             "name": "axepress/wp-graphql-stubs",
-            "version": "v1.14.4",
+            "version": "v1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AxeWP/wp-graphql-stubs.git",
-                "reference": "1c5b0cb3ce978d1e88a828c158383877ba7c223a"
+                "reference": "1455a46043f758b77a49337c9520cb79c5a0a31f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/1c5b0cb3ce978d1e88a828c158383877ba7c223a",
-                "reference": "1c5b0cb3ce978d1e88a828c158383877ba7c223a",
+                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/1455a46043f758b77a49337c9520cb79c5a0a31f",
+                "reference": "1455a46043f758b77a49337c9520cb79c5a0a31f",
                 "shasum": ""
             },
             "require": {
@@ -165,7 +165,7 @@
             ],
             "support": {
                 "issues": "https://github.com/AxeWP/wp-graphql-stubs/issues",
-                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v1.14.4"
+                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v1.14.0"
             },
             "funding": [
                 {
@@ -173,7 +173,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-14T01:39:23+00:00"
+            "time": "2023-03-09T01:45:16+00:00"
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -252,16 +252,16 @@
         },
         {
             "name": "php-stubs/woocommerce-stubs",
-            "version": "v7.8.0",
+            "version": "v7.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "1e9180bbac115884bf41bf1d2ee0f72338c0a566"
+                "reference": "9a735c3a66fb3eab4bdbb9e998db00b1fbd268d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/1e9180bbac115884bf41bf1d2ee0f72338c0a566",
-                "reference": "1e9180bbac115884bf41bf1d2ee0f72338c0a566",
+                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/9a735c3a66fb3eab4bdbb9e998db00b1fbd268d7",
+                "reference": "9a735c3a66fb3eab4bdbb9e998db00b1fbd268d7",
                 "shasum": ""
             },
             "require": {
@@ -290,9 +290,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/woocommerce-stubs/issues",
-                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v7.8.0"
+                "source": "https://github.com/php-stubs/woocommerce-stubs/tree/v7.5.0"
             },
-            "time": "2023-06-13T20:06:40+00:00"
+            "time": "2023-03-14T14:19:48+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
@@ -385,16 +385,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.21",
+            "version": "1.10.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5"
+                "reference": "578f4e70d117f9a90699324c555922800ac38d8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
-                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/578f4e70d117f9a90699324c555922800ac38d8c",
+                "reference": "578f4e70d117f9a90699324c555922800ac38d8c",
                 "shasum": ""
             },
             "require": {
@@ -443,7 +443,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-21T20:07:58+00:00"
+            "time": "2023-07-06T12:11:37+00:00"
         },
         {
             "name": "sirbrillig/phpcs-variable-analysis",
@@ -756,7 +756,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1.0"
+        "php": ">=7.2"
     },
     "platform-dev": [],
     "platform-overrides": {

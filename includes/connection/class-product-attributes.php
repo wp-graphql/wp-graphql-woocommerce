@@ -37,7 +37,7 @@ class Product_Attributes {
 					'toType'         => 'LocalProductAttribute',
 					'fromFieldName'  => 'localAttributes',
 					'connectionArgs' => [],
-				],
+				]
 			)
 		);
 
