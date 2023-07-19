@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
  * Class Coupon_Update
  */
 class Coupon_Update {
-
 	/**
 	 * Registers mutation
 	 *

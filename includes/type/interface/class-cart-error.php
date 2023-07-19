@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
  * Class Cart_Error
  */
 class Cart_Error {
-
 	/**
 	 * Registers the "CartError" interface.
 	 *
@@ -24,7 +23,7 @@ class Cart_Error {
 			[
 				'description' => __( 'An error that occurred when updating the cart', 'wp-graphql-woocommerce' ),
 				'fields'      => self::get_fields(),
-				'resolveType' => static function( array $value ) {
+				'resolveType' => static function ( array $value ) {
 					$type_registry = \WPGraphQL::get_type_registry();
 					switch ( $value['type'] ) {
 						case 'INVALID_CART_ITEM':

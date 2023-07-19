@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Add_Fee
  */
 class Cart_Add_Fee {
-
 	/**
 	 * Registers mutation
 	 *
@@ -86,7 +85,7 @@ class Cart_Add_Fee {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( ! current_user_can( 'edit_shop_orders' ) ) {

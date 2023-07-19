@@ -14,7 +14,6 @@ use GraphQLRelay\Relay;
  * Class Product_Attribute_Types
  */
 class Product_Attribute_Types {
-
 	/**
 	 * Registers ProductAttribute types
 	 *

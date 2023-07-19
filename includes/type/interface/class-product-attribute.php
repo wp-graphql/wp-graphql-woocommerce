@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
  * Class Product_Attribute
  */
 class Product_Attribute {
-
 	/**
 	 * Registers the "Product" interface.
 	 *
@@ -25,7 +24,7 @@ class Product_Attribute {
 				'description' => __( 'Product attribute object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
-				'resolveType' => static function( $value ) {
+				'resolveType' => static function ( $value ) {
 					$type_registry = \WPGraphQL::get_type_registry();
 					if ( $value->is_taxonomy() ) {
 						return $type_registry->get_type( 'GlobalProductAttribute' );

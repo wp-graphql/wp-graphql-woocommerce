@@ -42,6 +42,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 */
 	public function __construct( $context, $loader_type ) {
 		$this->loader_type = $loader_type;
+
 		parent::__construct( $context );
 	}
 

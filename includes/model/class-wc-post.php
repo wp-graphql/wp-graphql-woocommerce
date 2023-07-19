@@ -22,7 +22,6 @@ use WPGraphQL\Model\Post;
  * @package WPGraphQL\WooCommerce\Model
  */
 abstract class WC_Post extends Post {
-
 	/**
 	 * Stores the WC_Data object connected to the model.
 	 *
@@ -107,7 +106,7 @@ abstract class WC_Post extends Post {
 			return $this->wc_data->$method( ...$args );
 		}
 
-		$class = __CLASS__;
+		$class = self::class;
 		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 

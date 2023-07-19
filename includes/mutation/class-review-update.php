@@ -20,7 +20,6 @@ use WPGraphQL\Mutation\CommentUpdate;
  * Class Review_Update
  */
 class Review_Update {
-
 	/**
 	 * Registers mutation
 	 *
@@ -69,7 +68,7 @@ class Review_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Set comment type to "review".
 			$input['type'] = 'review';
 

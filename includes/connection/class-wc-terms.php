@@ -22,7 +22,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
  * Class - WC_Terms
  */
 class WC_Terms extends TermObjects {
-
 	/**
 	 * Registers the various connections from other Types to WooCommerce taxonomies.
 	 *
@@ -60,7 +59,7 @@ class WC_Terms extends TermObjects {
 								'fromType'      => $post_type_object->graphql_single_name,
 								'toType'        => $tax_object->graphql_single_name,
 								'fromFieldName' => $tax_object->graphql_plural_name,
-								'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
+								'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 									$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 
 									$term_ids = \wc_get_object_terms( $source->ID, $tax_object->name, 'term_id' );
@@ -88,7 +87,7 @@ class WC_Terms extends TermObjects {
 				[
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'productCategories',
-					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 						$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 						$resolver->set_query_arg( 'term_taxonomy_id', $source->product_category_ids );
 
@@ -103,7 +102,7 @@ class WC_Terms extends TermObjects {
 				[
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProductCategories',
-					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 						$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
 						$resolver->set_query_arg( 'term_taxonomy_id', $source->excluded_product_category_ids );
 
@@ -120,7 +119,7 @@ class WC_Terms extends TermObjects {
 				'queryClass'     => 'WP_Term_Query',
 				'fromFieldName'  => 'terms',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					if ( ! $source->is_taxonomy() ) {
 						throw new UserError( __( 'Invalid product attribute', 'wp-graphql-woocommerce' ) );
 					}

@@ -19,7 +19,6 @@ use WPGraphQL\AppContext;
  * Class Payment_Method_Delete
  */
 class Payment_Method_Delete {
-
 	/**
 	 * Registers mutation
 	 *
@@ -74,7 +73,7 @@ class Payment_Method_Delete {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			global $wp;
 			if ( ! is_user_logged_in() ) {
 				throw new UserError( __( 'Must be authenticated to set a default payment method', 'wp-graphql-woocommerce' ) );

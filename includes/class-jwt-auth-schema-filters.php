@@ -24,10 +24,10 @@ class JWT_Auth_Schema_Filters {
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is installed.
 		if ( \class_exists( '\WPGraphQL\JWT_Authentication\Auth' ) ) {
-			add_filter( 'graphql_jwt_user_types', [ __CLASS__, 'add_customer_to_jwt_user_types' ], 10 );
-			add_filter( 'graphql_registerCustomerPayload_fields', [ __CLASS__, 'add_jwt_output_fields' ], 10, 3 );
-			add_filter( 'graphql_updateCustomerPayload_fields', [ __CLASS__, 'add_jwt_output_fields' ], 10, 3 );
-			add_action( 'graphql_register_types', [ __CLASS__, 'add_customer_to_login_payload' ], 10 );
+			add_filter( 'graphql_jwt_user_types', [ self::class, 'add_customer_to_jwt_user_types' ], 10 );
+			add_filter( 'graphql_registerCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
+			add_filter( 'graphql_updateCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
+			add_action( 'graphql_register_types', [ self::class, 'add_customer_to_login_payload' ], 10 );
 		}
 	}
 
@@ -59,7 +59,7 @@ class JWT_Auth_Schema_Filters {
 				'authToken'    => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $payload ) {
+					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
 						if ( ! $user ) {
@@ -83,7 +83,7 @@ class JWT_Auth_Schema_Filters {
 				'refreshToken' => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $payload ) {
+					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
 						if ( ! $user ) {
@@ -122,7 +122,7 @@ class JWT_Auth_Schema_Filters {
 			[
 				'type'        => 'Customer',
 				'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					$id = $payload['id'];
 					return new Customer( $id );
 				},
@@ -136,7 +136,7 @@ class JWT_Auth_Schema_Filters {
 				[
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $payload ) {
+					'resolve'     => static function ( $payload ) {
 						/**
 						 * Session Handler.
 						 *

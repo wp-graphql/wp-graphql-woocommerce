@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Factory;
  * Class Downloadable_Item_Type
  */
 class Downloadable_Item_Type {
-
 	/**
 	 * Registers type
 	 *

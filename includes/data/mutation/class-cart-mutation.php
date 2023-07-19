@@ -172,7 +172,6 @@ class Cart_Mutation {
 		return apply_filters( 'graphql_woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
 
-
 	/**
 	 * Validates coupon and checks if application is possible
 	 *

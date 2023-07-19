@@ -21,7 +21,6 @@ use WPGraphQL\WooCommerce\Model\Product;
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Variation_Attribute_Connection_Resolver {
-
 	/**
 	 * Returns data array from WC_Product_Attribute ArrayAccess object.
 	 *

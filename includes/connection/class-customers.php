@@ -18,7 +18,6 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class - Customers
  */
 class Customers {
-
 	/**
 	 * Registers the various connections from other Types to Customer
 	 *

@@ -21,7 +21,6 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  * Class Coupon_Create
  */
 class Coupon_Create {
-
 	/**
 	 * Registers mutation
 	 *
@@ -33,7 +32,7 @@ class Coupon_Create {
 			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => [ __CLASS__, 'mutate_and_get_payload' ],
+				'mutateAndGetPayload' => [ self::class, 'mutate_and_get_payload' ],
 			]
 		);
 	}
@@ -137,13 +136,13 @@ class Coupon_Create {
 		return [
 			'coupon' => [
 				'type'    => 'Coupon',
-				'resolve' => static function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Coupon( $payload['id'] );
 				},
 			],
 			'code'   => [
 				'type'    => 'String',
-				'resolve' => static function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['code'];
 				},
 			],

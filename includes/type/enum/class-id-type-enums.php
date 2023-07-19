@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
  * Class - Id_Type_Enums
  */
 class Id_Type_Enums {
-
 	/**
 	 * Register the Enum used for setting the field to identify WC crud objects by
 	 *

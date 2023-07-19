@@ -20,7 +20,6 @@ use WPGraphQL\WooCommerce\Data\Factory;
  * Class Order_Type
  */
 class Order_Type {
-
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
 	 *
@@ -129,7 +128,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->discountTotalRaw;
@@ -148,7 +147,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->discountTaxRaw;
@@ -167,7 +166,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->shippingTotalRaw;
@@ -186,7 +185,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->shippingTaxRaw;
@@ -205,7 +204,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->cartTaxRaw;
@@ -224,7 +223,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->totalRaw;
@@ -242,7 +241,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->totalTaxRaw;
@@ -261,7 +260,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->subtotalRaw;
@@ -309,14 +308,14 @@ class Order_Type {
 				'parent'                => [
 					'type'        => 'Order',
 					'description' => __( 'Parent order', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $order, array $args, AppContext $context ) {
+					'resolve'     => static function ( $order, array $args, AppContext $context ) {
 						return Factory::resolve_crud_object( $order->parent_id, $context );
 					},
 				],
 				'customer'              => [
 					'type'        => 'Customer',
 					'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function( $order, array $args, AppContext $context ) {
+					'resolve'     => static function ( $order, array $args, AppContext $context ) {
 						if ( empty( $order->customer_id ) ) {
 							// Guest orders don't have an attached customer.
 							return null;
@@ -371,27 +370,27 @@ class Order_Type {
 				'taxLines'          => [
 					'toType'         => 'TaxLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'feeLines'          => [
 					'toType'         => 'FeeLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'shippingLines'     => [
 					'toType'         => 'ShippingLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'couponLines'       => [
 					'toType'         => 'CouponLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'lineItems'         => [
 					'toType'         => 'LineItem',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'downloadableItems' => [
 					'toType'         => 'DownloadableItem',

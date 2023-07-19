@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Remove_Items
  */
 class Cart_Remove_Items {
-
 	/**
 	 * Registers mutation
 	 *
@@ -77,7 +76,7 @@ class Cart_Remove_Items {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( \WC()->cart->is_empty() ) {

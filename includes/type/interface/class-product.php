@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Factory;
  * Class - Product
  */
 class Product {
-
 	/**
 	 * Registers the "Product" interface.
 	 *
@@ -121,7 +120,7 @@ class Product {
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					],
 				],
-				'resolve'     => static function( $source, $args ) {
+				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 						// @codingStandardsIgnoreLine.
 						return $source->descriptionRaw;
@@ -138,7 +137,7 @@ class Product {
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					],
 				],
-				'resolve'     => static function( $source, $args ) {
+				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 						// @codingStandardsIgnoreLine.
 						return $source->shortDescriptionRaw;
@@ -186,7 +185,7 @@ class Product {
 			'image'             => [
 				'type'        => 'MediaItem',
 				'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function( $source, array $args, AppContext $context ) {
+				'resolve'     => static function ( $source, array $args, AppContext $context ) {
 					// @codingStandardsIgnoreLine.
 					if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
 						return null;

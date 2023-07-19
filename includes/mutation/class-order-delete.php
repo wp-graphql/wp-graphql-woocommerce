@@ -22,7 +22,6 @@ use WPGraphQL\WooCommerce\Model\Order;
  * Class Order_Delete
  */
 class Order_Delete {
-
 	/**
 	 * Registers mutation
 	 *
@@ -72,7 +71,7 @@ class Order_Delete {
 		return [
 			'order' => [
 				'type'    => 'Order',
-				'resolve' => static function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['order'];
 				},
 			],
@@ -85,7 +84,7 @@ class Order_Delete {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve order ID.
 			$order_id = null;
 			if ( ! empty( $input['id'] ) ) {

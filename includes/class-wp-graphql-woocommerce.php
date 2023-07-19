@@ -17,7 +17,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 	 * Class WP_GraphQL_WooCommerce
 	 */
 	final class WP_GraphQL_WooCommerce {
-
 		/**
 		 * Stores the instance of the WP_GraphQL_WooCommerce class
 		 *

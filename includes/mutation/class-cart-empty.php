@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Empty
  */
 class Cart_Empty {
-
 	/**
 	 * Registers mutation
 	 *
@@ -61,7 +60,7 @@ class Cart_Empty {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Get/Clone WC_Cart instance.

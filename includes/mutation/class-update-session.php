@@ -20,7 +20,6 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class - Update_Session
  */
 class Update_Session {
-
 	/**
 	 * Registers mutation
 	 *
@@ -95,7 +94,7 @@ class Update_Session {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Guard against missing input.

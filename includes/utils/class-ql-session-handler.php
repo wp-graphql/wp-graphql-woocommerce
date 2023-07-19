@@ -8,9 +8,9 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use WC_Session_Handler;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use WC_Session_Handler;
 
 /**
  * Class - QL_Session_Handler
@@ -20,7 +20,6 @@ use Firebase\JWT\Key;
  * @property int|string $_customer_id
  */
 class QL_Session_Handler extends WC_Session_Handler {
-
 	/**
 	 * Stores the name of the HTTP header used to pass the session token.
 	 *
@@ -163,7 +162,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( is_wp_error( $token ) ) {
 				add_filter(
 					'graphql_woocommerce_session_token_errors',
-					static function( $errors ) use ( $token ) {
+					static function ( $errors ) use ( $token ) {
 						$errors = $token->get_error_message();
 						return $errors;
 					}
@@ -349,7 +348,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			 */
 			add_filter(
 				'graphql_response_headers_to_send',
-				function( $headers ) {
+				function ( $headers ) {
 					$token = $this->build_token();
 					if ( $token ) {
 						$headers[ $this->_token ] = $token;
@@ -501,5 +500,4 @@ class QL_Session_Handler extends WC_Session_Handler {
 		// Return new client session ID.
 		return $client_session_id;
 	}
-
 }

@@ -20,7 +20,6 @@ use WPGraphQL\Data\DataSource;
  * Class Review_Delete_Restore
  */
 class Review_Delete_Restore {
-
 	/**
 	 * Registers mutation
 	 *
@@ -87,7 +86,7 @@ class Review_Delete_Restore {
 			'rating'     => [
 				'type'        => 'Float',
 				'description' => __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['rating'] ) ) {
 						return null;
 					}
@@ -98,7 +97,7 @@ class Review_Delete_Restore {
 			'affectedId' => [
 				'type'        => 'Id',
 				'description' => __( 'The affected product review ID', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					$deleted = (object) $payload['commentObject'];
 
 					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', (string) $deleted->comment_ID ) : null;
@@ -107,7 +106,7 @@ class Review_Delete_Restore {
 			'review'     => [
 				'type'        => 'Comment',
 				'description' => __( 'The affected product review', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function( $payload, $args, AppContext $context, ResolveInfo $info ) use ( $restore ) {
+				'resolve'     => static function ( $payload, $args, AppContext $context, ResolveInfo $info ) use ( $restore ) {
 					if ( empty( $payload['commentObject'] ) ) {
 						return null;
 					}
@@ -130,7 +129,7 @@ class Review_Delete_Restore {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve the product review rating for the payload.
 			$id_parts = Relay::fromGlobalId( $input['id'] );
 			if ( empty( $id_parts['id'] ) ) {

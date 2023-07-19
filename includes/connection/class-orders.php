@@ -17,7 +17,6 @@ use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
  * Class - Orders
  */
 class Orders {
-
 	/**
 	 * Registers the various connections from other Types to Customer
 	 *
@@ -35,7 +34,7 @@ class Orders {
 				[
 					'fromType'      => 'Customer',
 					'fromFieldName' => 'orders',
-					'resolve'       => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Order_Connection_Resolver( $source, $args, $context, $info );
 
 						return self::get_customer_order_connection( $resolver, $source );
@@ -63,7 +62,7 @@ class Orders {
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
-					'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Order_Connection_Resolver( $source, $args, $context, $info, 'shop_order_refund' );
 
 						$resolver->set_should_execute( true );
@@ -83,7 +82,7 @@ class Orders {
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
-					'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Order_Connection_Resolver( $source, $args, $context, $info, 'shop_order_refund' );
 
 						return self::get_customer_refund_connection( $resolver, $source );
@@ -213,7 +212,7 @@ class Orders {
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
 				'connectionArgs' => self::get_connection_args( 'private' ),
-				'resolve'        => static function( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $post_object ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $post_object ) {
 					// Check if user shop manager.
 					$not_manager = ! current_user_can( $post_object->cap->edit_posts );
 

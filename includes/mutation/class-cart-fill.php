@@ -78,14 +78,14 @@ class Cart_Fill {
 			],
 			'applied'               => [
 				'type'    => [ 'list_of' => 'AppliedCoupon' ],
-				'resolve' => static function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$codes = $payload['applied'];
 					return ! empty( $codes ) ? $codes : null;
 				},
 			],
 			'chosenShippingMethods' => [
 				'type'    => [ 'list_of' => 'String' ],
-				'resolve' => static function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$methods = $payload['chosen_shipping_methods'];
 					return ! empty( $methods ) ? $methods : null;
 				},
@@ -150,7 +150,7 @@ class Cart_Fill {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Throw error, if no cart item data provided.
