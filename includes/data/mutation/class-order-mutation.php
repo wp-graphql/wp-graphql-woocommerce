@@ -262,8 +262,7 @@ class Order_Mutation {
 				 * @param array  $item_keys  Order item keys.
 				 * @param string $type       Order item type slug.
 				 */
-				$item_keys = apply_filters( 'woographql_get_order_item_keys', [], $type );
-				return $item_keys;
+				return apply_filters( 'woographql_get_order_item_keys', [], $type );
 		}//end switch
 	}
 

@@ -150,8 +150,8 @@ class Order_Update {
 			// Actions for after the order is saved.
 			if ( true === $input['isPaid'] ) {
 				$order->payment_complete(
-					! empty( $input['transactionId'] ) ?
-						$input['transactionId']
+					! empty( $input['transactionId'] )
+						? $input['transactionId']
 						: ''
 				);
 			}

@@ -299,7 +299,7 @@ class Order extends Model {
 		}
 
 		// If customer ID matches current user, return true.
-		return absint( $customer_id ) === absint( $this->current_user->ID ) ? true : false;
+		return absint( $customer_id ) === absint( $this->current_user->ID );
 	}
 
 	/**
@@ -327,7 +327,7 @@ class Order extends Model {
 		}
 
 		// If customer email matches current user, return true.
-		return $customer_email === $session_customer->get_billing_email() ? true : false;
+		return $customer_email === $session_customer->get_billing_email();
 	}
 
 	/**
@@ -336,7 +336,7 @@ class Order extends Model {
 	 * @return bool
 	 */
 	public function is_private() {
-		return wc_is_order_status( 'wc-' . $this->data->get_status() ) ? false : true;
+		return ! wc_is_order_status( 'wc-' . $this->data->get_status() );
 	}
 
 	/**

@@ -40,7 +40,7 @@ class WC_Terms extends TermObjects {
 		$wc_post_types      = WP_GraphQL_WooCommerce::get_post_types();
 
 		// Loop through the allowed_taxonomies to register appropriate connections.
-		foreach ( $allowed_taxonomies as $taxonomy => $tax_object ) {
+		foreach ( $allowed_taxonomies as $tax_object ) {
 			foreach ( $wc_post_types as $post_type ) {
 				if ( 'product' === $post_type ) {
 					continue;

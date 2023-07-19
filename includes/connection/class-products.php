@@ -398,7 +398,7 @@ class Products {
 	 * @return \WPGraphQL\Data\Connection\PostObjectConnectionResolver
 	 */
 	public static function set_ordering_query_args( $resolver, $args ) {
-		$backward = isset( $args['last'] ) ? true : false;
+		$backward = isset( $args['last'] );
 
 		if ( ! empty( $args['where']['orderby'] ) ) {
 			$default_fields = [

@@ -586,9 +586,7 @@ class Root_Query {
 							throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
 						}
 
-						$product = Factory::resolve_crud_object( $product_id, $context );
-
-						return $product;
+						return Factory::resolve_crud_object( $product_id, $context );
 					},
 				]
 			);

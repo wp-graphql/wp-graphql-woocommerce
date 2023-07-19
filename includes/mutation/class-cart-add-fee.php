@@ -42,7 +42,7 @@ class Cart_Add_Fee {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = [
+		return [
 			'name'     => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'Unique name for the fee.', 'wp-graphql-woocommerce' ),
@@ -60,8 +60,6 @@ class Cart_Add_Fee {
 				'description' => __( 'The tax class for the fee if taxable.', 'wp-graphql-woocommerce' ),
 			],
 		];
-
-		return $input_fields;
 	}
 
 	/**
