@@ -128,7 +128,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$items = array_reverse( $items );
 		}
 
-		$get_item_id = function( $item ) {
+		$get_item_id = static function( $item ) {
 			return $item->get_id();
 		};
 

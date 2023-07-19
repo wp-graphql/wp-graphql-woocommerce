@@ -74,7 +74,7 @@ class Product_Variation_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, $args ) {
+						'resolve'     => static function( $source, $args ) {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
                                 // @codingStandardsIgnoreLine.
                                 return $source->priceRaw;
@@ -92,7 +92,7 @@ class Product_Variation_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, $args ) {
+						'resolve'     => static function( $source, $args ) {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
                                 // @codingStandardsIgnoreLine.
                                 return $source->regularPriceRaw;
@@ -111,7 +111,7 @@ class Product_Variation_Type {
 								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'resolve'     => function( $source, $args ) {
+						'resolve'     => static function( $source, $args ) {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
                                 // @codingStandardsIgnoreLine.
                                 return $source->salePriceRaw;
@@ -232,7 +232,7 @@ class Product_Variation_Type {
 					'image'             => [
 						'type'        => 'MediaItem',
 						'description' => __( 'Product variation main image', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
+						'resolve'     => static function( $source, array $args, AppContext $context ) {
 							return ! empty( $source->image_id )
 								? $context->get_loader( 'post' )->load_deferred( $source->image_id )
 								: null;

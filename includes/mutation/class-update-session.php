@@ -61,7 +61,7 @@ class Update_Session {
 		return [
 			'session'  => [
 				'type'    => [ 'list_of' => 'MetaData' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					/**
 					 * Session handler.
 					 *
@@ -83,7 +83,7 @@ class Update_Session {
 			],
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function () {
+				'resolve' => static function () {
 					return new Customer( 'session' );
 				},
 			],
@@ -96,7 +96,7 @@ class Update_Session {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Guard against missing input.

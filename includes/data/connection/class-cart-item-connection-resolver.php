@@ -56,7 +56,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$where_args = $this->args['where'];
 			if ( isset( $where_args['needsShipping'] ) ) {
 				$needs_shipping          = $where_args['needsShipping'];
-				$query_args['filters'][] = function( $cart_item ) use ( $needs_shipping ) {
+				$query_args['filters'][] = static function( $cart_item ) use ( $needs_shipping ) {
 					$product = \WC()->product_factory->get_product( $cart_item['product_id'] );
 
 					if ( ! is_object( $product ) ) {

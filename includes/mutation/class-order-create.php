@@ -124,13 +124,13 @@ class Order_Create {
 		return [
 			'order'   => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return new Order( $payload['id'] );
 				},
 			],
 			'orderId' => [
 				'type'    => 'Int',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return $payload['id'];
 				},
 			],
@@ -143,7 +143,7 @@ class Order_Create {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			// Check if authorized to create this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'create', null ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to create an order.', 'wp-graphql-woocommerce' ) );

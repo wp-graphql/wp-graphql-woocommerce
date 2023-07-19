@@ -60,7 +60,7 @@ class Cart_Update_Item_Quantities {
 		return [
 			'updated' => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$items = [];
 					foreach ( $payload['updated'] as $key ) {
 						$items[] = WC()->cart->get_cart_item( $key );
@@ -71,13 +71,13 @@ class Cart_Update_Item_Quantities {
 			],
 			'removed' => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['removed'];
 				},
 			],
 			'items'   => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$updated = [];
 					foreach ( $payload['updated'] as $key ) {
 						$updated[] = \WC()->cart->get_cart_item( $key );
@@ -96,7 +96,7 @@ class Cart_Update_Item_Quantities {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Confirm "items" exists.
@@ -138,7 +138,7 @@ class Cart_Update_Item_Quantities {
 				$errors = array_keys(
 					array_filter(
 						array_merge( $removed, $updated ),
-						function( $value ) {
+						static function( $value ) {
 							return ! $value;
 						}
 					)

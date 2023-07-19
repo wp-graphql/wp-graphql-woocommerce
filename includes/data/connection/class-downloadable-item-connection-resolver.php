@@ -58,7 +58,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			if ( isset( $where_args['active'] ) ) {
 				$active = $where_args['active'];
 
-				$query_args['filters'][] = function( $downloadable_item ) use ( $active ) {
+				$query_args['filters'][] = static function( $downloadable_item ) use ( $active ) {
 					$is_expired          = isset( $downloadable_item['access_expires'] )
 						? time() > $downloadable_item['access_expires']->getTimestamp()
 						: false;
@@ -73,7 +73,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			if ( isset( $where_args['expired'] ) ) {
 				$expired = $where_args['expired'];
 
-				$query_args['filters'][] = function( $downloadable_item ) use ( $expired ) {
+				$query_args['filters'][] = static function( $downloadable_item ) use ( $expired ) {
 					$is_expired = isset( $downloadable_item['access_expires'] )
 						? time() < $downloadable_item['access_expires']->getTimestamp()
 						: false;
@@ -85,7 +85,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			if ( isset( $where_args['hasDownloadsRemaining'] ) ) {
 				$has_downloads_remaining = $where_args['hasDownloadsRemaining'];
 
-				$query_args['filters'][] = function( $downloadable_item ) use ( $has_downloads_remaining ) {
+				$query_args['filters'][] = static function( $downloadable_item ) use ( $has_downloads_remaining ) {
 					$downloads_remaining = ( 'integer' === gettype( $downloadable_item['downloads_remaining'] ) )
 						? 0 < $downloadable_item['downloads_remaining']
 						: true;

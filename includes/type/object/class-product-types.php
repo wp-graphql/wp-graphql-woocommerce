@@ -159,7 +159,7 @@ class Product_Types {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->priceRaw;
@@ -177,7 +177,7 @@ class Product_Types {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->regularPriceRaw;
@@ -196,7 +196,7 @@ class Product_Types {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->salePriceRaw;
@@ -351,7 +351,7 @@ class Product_Types {
 						'price'                => [
 							'type'        => 'String',
 							'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( Model $source ) {
+							'resolve'     => static function( Model $source ) {
 								$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
 								$child_prices     = [];
 								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ) );
@@ -409,7 +409,7 @@ class Product_Types {
 						'type' => [
 							'type'        => 'ProductTypesEnum',
 							'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
-							'resolve'     => function () {
+							'resolve'     => static function () {
 								return 'unsupported';
 							},
 						],

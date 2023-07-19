@@ -35,35 +35,35 @@ class Downloadable_Item_Type {
 					'id'                 => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_id'] ) ? Relay::toGlobalId( 'download', $source['download_id'] ) : null;
 						},
 					],
 					'downloadId'         => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Downloadable item ID.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_id'] ) ? $source['download_id'] : null;
 						},
 					],
 					'url'                => [
 						'type'        => 'String',
 						'description' => __( 'Download URL of the downloadable item.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_url'] ) ? $source['download_url'] : null;
 						},
 					],
 					'name'               => [
 						'type'        => 'String',
 						'description' => __( 'Name of the downloadable item.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_name'] ) ? $source['download_name'] : null;
 						},
 					],
 					'downloadsRemaining' => [
 						'type'        => 'Int',
 						'description' => __( 'Number of times the item can be downloaded.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['downloads_remaining'] ) && 'integer' === gettype( $source['downloads_remaining'] )
 								? $source['downloads_remaining']
 								: null;
@@ -72,21 +72,21 @@ class Downloadable_Item_Type {
 					'accessExpires'      => [
 						'type'        => 'String',
 						'description' => __( 'The date the downloadable item expires', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['access_expires'] ) ? $source['access_expires'] : null;
 						},
 					],
 					'product'            => [
 						'type'        => 'Product',
 						'description' => __( 'Product of downloadable item.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source, array $args, AppContext $context ) {
+						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source['product_id'], $context );
 						},
 					],
 					'download'           => [
 						'type'        => 'ProductDownload',
 						'description' => __( 'ProductDownload of the downloadable item', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							$download_id = $source['download_id'];
 							$product_id  = $source['product_id'];
 							$files       = array_filter( (array) get_post_meta( $product_id, '_downloadable_files', true ) );

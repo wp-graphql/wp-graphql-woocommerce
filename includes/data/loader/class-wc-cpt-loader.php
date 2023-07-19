@@ -111,7 +111,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		 */
 		add_filter(
 			'split_the_query',
-			function ( $split, \WP_Query $query ) {
+			static function ( $split, \WP_Query $query ) {
 				if ( false === $query->get( 'split_the_query' ) ) {
 					return false;
 				}
@@ -202,7 +202,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			 * Once dependencies are loaded, return the Post Object
 			 */
 			$loaded_posts[ $key ] = $load_dependencies->then(
-				function() use ( $post_type, $key ) {
+				static function() use ( $post_type, $key ) {
 					return self::resolve_model( $post_type, $key );
 				}
 			);

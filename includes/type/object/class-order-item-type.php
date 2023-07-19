@@ -46,7 +46,7 @@ class Order_Item_Type {
 					'coupon'      => [
 						'type'        => 'Coupon',
 						'description' => __( 'Line\'s Coupon', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
+						'resolve'     => static function( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source->coupon_id, $context );
 						},
 					],
@@ -115,7 +115,7 @@ class Order_Item_Type {
 					'shippingMethod' => [
 						'type'        => 'ShippingMethod',
 						'description' => __( 'Shipping Line\'s shipping method', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return Factory::resolve_shipping_method( $source->method_id );
 						},
 					],
@@ -149,7 +149,7 @@ class Order_Item_Type {
 					'taxRate'          => [
 						'type'        => 'TaxRate',
 						'description' => __( 'Tax line\'s tax rate', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
+						'resolve'     => static function( $source, array $args, AppContext $context ) {
 							return Factory::resolve_tax_rate( $source->rate_id, $context );
 						},
 					],
@@ -210,7 +210,7 @@ class Order_Item_Type {
 					'product'   => [
 						'toType'   => 'Product',
 						'oneToOne' => true,
-						'resolve'  => function ( $source, array $args, AppContext $context, $info ) {
+						'resolve'  => static function ( $source, array $args, AppContext $context, $info ) {
 							$id       = $source->productId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
 
@@ -223,7 +223,7 @@ class Order_Item_Type {
 					'variation' => [
 						'toType'   => 'ProductVariation',
 						'oneToOne' => true,
-						'resolve'  => function ( $source, array $args, AppContext $context, $info ) {
+						'resolve'  => static function ( $source, array $args, AppContext $context, $info ) {
 							$id       = $source->variationId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
 
@@ -263,35 +263,35 @@ class Order_Item_Type {
 					'taxLineId' => [
 						'type'        => [ 'non_null' => 'Int' ],
 						'description' => __( 'Order item ID for tax line connected to this statement', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source['ID'] ) ? $source['ID'] : null;
 						},
 					],
 					'subtotal'  => [
 						'type'        => 'Float',
 						'description' => __( 'Subtotal', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source['subtotal'] ) ? $source['subtotal'] : null;
 						},
 					],
 					'total'     => [
 						'type'        => 'Float',
 						'description' => __( 'Total', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source['total'] ) ? $source['total'] : null;
 						},
 					],
 					'amount'    => [
 						'type'        => 'Float',
 						'description' => __( 'Amount taxed', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							return ! empty( $source['amount'] ) ? $source['amount'] : null;
 						},
 					],
 					'taxLine'   => [
 						'type'        => 'TaxLine',
 						'description' => __( 'Tax line connected to this statement', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							$item = \WC_Order_Factory::get_order_item( $source['ID'] );
 							// Return early if the item is not found.
 							if ( false === $item ) {

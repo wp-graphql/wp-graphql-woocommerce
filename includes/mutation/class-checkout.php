@@ -99,25 +99,25 @@ class Checkout {
 		return [
 			'order'    => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return new Order( $payload['id'] );
 				},
 			],
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function() {
+				'resolve' => static function() {
 					return is_user_logged_in() ? new Customer( get_current_user_id() ) : new Customer();
 				},
 			],
 			'result'   => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return $payload['result'];
 				},
 			],
 			'redirect' => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function( $payload ) {
 					return $payload['redirect'];
 				},
 			],
@@ -130,7 +130,7 @@ class Checkout {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function( $input, AppContext $context, ResolveInfo $info ) {
 			// Create order.
 			$order = null;
 			try {

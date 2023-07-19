@@ -41,7 +41,7 @@ class Payment_Gateways {
 				'toType'         => 'PaymentGateway',
 				'fromFieldName'  => 'paymentGateways',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Payment_Gateway_Connection_Resolver();
 
 					return $resolver->resolve( $source, $args, $context, $info );

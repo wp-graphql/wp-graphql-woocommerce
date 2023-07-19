@@ -43,7 +43,7 @@ class Coupons {
 				'toType'         => 'Coupon',
 				'fromFieldName'  => 'coupons',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, $args, $context, $info ) {
+				'resolve'        => static function ( $source, $args, $context, $info ) {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_coupon' );
 
 					if ( ! self::should_execute() ) {

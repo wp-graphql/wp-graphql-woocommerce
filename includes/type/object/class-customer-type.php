@@ -40,7 +40,7 @@ class Customer_Type {
 				'databaseId'            => [
 					'type'        => 'Int',
 					'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						$database_id = absint( $source->ID );
 						return ! empty( $database_id ) ? $database_id : null;
 					},
@@ -60,7 +60,7 @@ class Customer_Type {
 				'lastOrder'             => [
 					'type'        => 'Order',
 					'description' => __( 'Gets the customers last order.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source, array $args, AppContext $context ) {
+					'resolve'     => static function( $source, array $args, AppContext $context ) {
 						return Factory::resolve_crud_object( $source->last_order_id, $context );
 					},
 				],
@@ -120,7 +120,7 @@ class Customer_Type {
 				'session'               => [
 					'type'        => [ 'list_of' => 'MetaData' ],
 					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
-					'resolve'     => function ( $source ) {
+					'resolve'     => static function ( $source ) {
 						/**
 						 * Session Handler.
 						 *
@@ -176,7 +176,7 @@ class Customer_Type {
 							'description' => __( 'Limit results to downloadable items that have downloads remaining.', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Downloadable_Item_Connection_Resolver( $source, $args, $context, $info );
 
 						return $resolver->get_connection();
@@ -226,7 +226,7 @@ class Customer_Type {
 				'availablePaymentMethods'   => [
 					'type'        => [ 'list_of' => 'PaymentToken' ],
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
 							return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
 						}
@@ -237,11 +237,11 @@ class Customer_Type {
 				'availablePaymentMethodsCC' => [
 					'type'        => [ 'list_of' => 'PaymentTokenCC' ],
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
 							$tokens = array_filter(
 								array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) ),
-								function ( $token ) {
+								static function ( $token ) {
 									return 'CC' === $token->get_type();
 								}
 							);
@@ -254,11 +254,11 @@ class Customer_Type {
 				'availablePaymentMethodsEC' => [
 					'type'        => [ 'list_of' => 'PaymentTokenECheck' ],
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $source ) {
+					'resolve'     => static function( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
 							$tokens = array_filter(
 								array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) ),
-								function ( $token ) {
+								static function ( $token ) {
 									return 'eCheck' === $token->get_type();
 								}
 							);
@@ -287,7 +287,7 @@ class Customer_Type {
 			[
 				'type'        => 'String',
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source ) {
+				'resolve'     => static function( $source ) {
 					if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
 						/**
 						 * Session handler.
@@ -312,7 +312,7 @@ class Customer_Type {
 			[
 				'type'        => 'String',
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source ) {
+				'resolve'     => static function( $source ) {
 					if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						/**
 						 * Session handler
@@ -345,7 +345,7 @@ class Customer_Type {
 					'cartUrl'   => [
 						'type'        => 'String',
 						'description' => __( 'A nonced link to the cart page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
@@ -371,7 +371,7 @@ class Customer_Type {
 					'cartNonce' => [
 						'type'        => 'String',
 						'description' => __( 'A nonce for the cart page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
@@ -395,7 +395,7 @@ class Customer_Type {
 					'checkoutUrl'   => [
 						'type'        => 'String',
 						'description' => __( 'A nonce link to the checkout page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
@@ -421,7 +421,7 @@ class Customer_Type {
 					'checkoutNonce' => [
 						'type'        => 'String',
 						'description' => __( 'A nonce for the checkout page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							// Get current customer and user ID.
 							$customer_id     = $source->ID;
 							$current_user_id = get_current_user_id();
@@ -445,7 +445,7 @@ class Customer_Type {
 					'accountUrl'   => [
 						'type'        => 'String',
 						'description' => __( 'A nonce link to the account page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							if ( ! is_user_logged_in() ) {
 								return null;
 							}
@@ -475,7 +475,7 @@ class Customer_Type {
 					'accountNonce' => [
 						'type'        => 'String',
 						'description' => __( 'A nonce for the account page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							if ( ! is_user_logged_in() ) {
 								return null;
 							}
@@ -503,7 +503,7 @@ class Customer_Type {
 					'addPaymentMethodUrl'   => [
 						'type'        => 'String',
 						'description' => __( 'A nonce link to the add payment method page for the authenticated user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							if ( ! is_user_logged_in() ) {
 								return null;
 							}
@@ -533,7 +533,7 @@ class Customer_Type {
 					'addPaymentMethodNonce' => [
 						'type'        => 'String',
 						'description' => __( 'A nonce for the add payment method page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function( $source ) {
 							if ( ! is_user_logged_in() ) {
 								return null;
 							}

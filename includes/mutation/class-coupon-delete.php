@@ -66,7 +66,7 @@ class Coupon_Delete {
 			[
 				'coupon' => [
 					'type'    => 'Coupon',
-					'resolve' => function( $payload ) {
+					'resolve' => static function( $payload ) {
 						return ! empty( $payload['coupon'] ) ? $payload['coupon'] : null;
 					},
 				],

@@ -164,7 +164,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( is_wp_error( $token ) ) {
 				add_filter(
 					'graphql_woocommerce_session_token_errors',
-					function( $errors ) use ( $token ) {
+					static function( $errors ) use ( $token ) {
 						$errors = $token->get_error_message();
 						return $errors;
 					}
