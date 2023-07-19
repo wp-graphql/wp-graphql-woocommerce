@@ -61,12 +61,13 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['number']      = $this->get_query_amount() + 1;
 
 		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_user_query_cursor_pagination_support
-		 * to filter the WP_User_Query to support cursor pagination
+		 * Set the cursor args.
+		 *
+		 * @see \WPGraphQL\Data\Config::graphql_wp_query_cursor_pagination_support
 		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['graphql_after_cursor']   = $this->get_after_offset();
+		$query_args['graphql_before_cursor']  = $this->get_before_offset();
+		$query_args['graphql_cursor_compare'] = ! empty( $last ) ? '>' : '<';
 
 		$input_fields = [];
 		if ( ! empty( $this->args['where'] ) ) {

@@ -84,35 +84,4 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	public function is_valid_offset( $offset ) {
 		return is_string( $offset );
 	}
-
-	/**
-	 * Get_offset
-	 *
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		/**
-		 * Defaults
-		 */
-		$offset = 0;
-
-		/**
-		 * Get the $after offset
-		 */
-		if ( ! empty( $this->args['after'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
-		}
-
-		/**
-		 * Return the higher of the two values
-		 */
-		return $offset;
-	}
 }

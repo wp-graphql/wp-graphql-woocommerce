@@ -112,7 +112,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		$cursor = absint( $this->get_offset() );
+		$cursor = (int) $this->get_offset_for_cursor( $this->args['after'] ?? ( $this->args['before'] ?? 0 ) );
 		$first  = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 		$last   = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 
@@ -170,36 +170,5 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function is_valid_offset( $offset ) {
 		return 'string' === gettype( $offset );
-	}
-
-	/**
-	 * Get_offset
-	 *
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		/**
-		 * Defaults
-		 */
-		$offset = 0;
-
-		/**
-		 * Get the $after offset
-		 */
-		if ( ! empty( $this->args['after'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
-		}
-
-		/**
-		 * Return the higher of the two values
-		 */
-		return $offset;
 	}
 }
