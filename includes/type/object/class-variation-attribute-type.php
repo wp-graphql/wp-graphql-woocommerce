@@ -48,8 +48,9 @@ class Variation_Attribute_Type {
 								return null;
 							}
 
-							$slug = \wc_attribute_taxonomy_slug( $source['name'] );
-							return ucwords( str_replace( '_', ' ', $slug ) );
+							$slug  = \wc_attribute_taxonomy_slug( $source['name'] );
+							$label = preg_replace( '/(-|_)/', ' ', $slug );
+							return ! empty( $label ) ? ucwords( $label ) : null;
 						},
 					],
 					'name'        => [

@@ -95,8 +95,8 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 		$session_data = 0 !== $session_id ? $this->get_session( (string) $session_id ) : null;
 
 		if ( ! empty( $session_data ) ) {
-			$client_session_id            = $session_data['client_session_id'];
-			$client_session_id_expiration = $session_data['client_session_id_expiration'];
+			$client_session_id            = ! empty( $session_data['client_session_id'] ) ? $session_data['client_session_id'] : false;
+			$client_session_id_expiration = ! empty( $session_data['client_session_id_expiration'] ) ? $session_data['client_session_id_expiration'] : 0;
 		} else {
 			$client_session_id            = $this->get( 'client_session_id', false );
 			$client_session_id_expiration = absint( $this->get( 'client_session_id_expiration', 0 ) );

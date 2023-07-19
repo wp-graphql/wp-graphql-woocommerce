@@ -65,7 +65,7 @@ class General extends Section {
 		$account_url_hardcoded            = defined( 'ACCOUNT_URL_NONCE_PARAM' ) && ! empty( constant( 'ACCOUNT_URL_NONCE_PARAM' ) );
 		$add_payment_method_url_hardcoded = defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
 
-		$enable_auth_urls_hardcoded = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) );
+		$enable_auth_urls_hardcoded = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) );
 
 		return [
 			[

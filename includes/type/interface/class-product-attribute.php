@@ -65,7 +65,7 @@ class Product_Attribute {
 				'type'        => 'String',
 				'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $attribute ) {
-					return ! empty( $attribute->get_name() ) ? ucwords( $attribute->get_name() ) : null;
+					return ! empty( $attribute->get_name() ) ? ucwords( preg_replace( '/(-|_)/', ' ', $attribute->get_name() ) ) : null;
 				},
 			],
 			'options'     => [

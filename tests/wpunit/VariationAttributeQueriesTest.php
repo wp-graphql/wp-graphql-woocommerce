@@ -43,7 +43,7 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
 		$expected = [];
 		foreach ( $attributes as $attribute ) {
-			$name = wc_attribute_label( $attribute->get_name() );
+			$name = $attribute->get_name();
 			if ( $attribute->is_taxonomy() ) {
 				$attribute_values = wc_get_product_terms( $id, $attribute->get_name(), [ 'fields' => 'all' ] );
 				foreach ( $attribute_values as $attribute_value ) {
