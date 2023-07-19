@@ -49,7 +49,7 @@ class Variation_Attribute_Type {
 							}
 
 							$slug = \wc_attribute_taxonomy_slug( $source['name'] );
-							return ucwords( str_replace( '_', ' ', $slug ) );
+							return ucwords( preg_replace( '/(-|_)/', ' ', $slug ) );
 						},
 					],
 					'name'        => [

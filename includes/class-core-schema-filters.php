@@ -144,8 +144,9 @@ class Core_Schema_Filters {
 			$args['graphql_resolve_type']             = static function ( $value ) {
 				$type_registry  = \WPGraphQL::get_type_registry();
 				$possible_types = WooGraphQL::get_enabled_product_types();
-				if ( isset( $possible_types[ $value->type ] ) ) {
-					return $type_registry->get_type( $possible_types[ $value->type ] );
+				$product_type   = $value->get_type();
+				if ( isset( $possible_types[ $product_type ] ) ) {
+					return $type_registry->get_type( $possible_types[ $product_type ] );
 				} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 					$unsupported_type = WooGraphQL::get_supported_product_type();
 					return $type_registry->get_type( $unsupported_type );
