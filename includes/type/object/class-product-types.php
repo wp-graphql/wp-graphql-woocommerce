@@ -10,21 +10,15 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Product as Model;
 use WPGraphQL\WooCommerce\Type\WPInterface\Product;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 
 /**
  * Class Product_Types
  */
 class Product_Types {
-
 	/**
 	 * Registers product types to the WPGraphQL schema
 	 *
@@ -159,7 +153,7 @@ class Product_Types {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->priceRaw;
@@ -177,7 +171,7 @@ class Product_Types {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->regularPriceRaw;
@@ -196,7 +190,7 @@ class Product_Types {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->salePriceRaw;
@@ -351,7 +345,7 @@ class Product_Types {
 						'price'                => [
 							'type'        => 'String',
 							'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
-							'resolve'     => function( Model $source ) {
+							'resolve'     => static function ( Model $source ) {
 								$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
 								$child_prices     = [];
 								$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ) );
@@ -409,7 +403,7 @@ class Product_Types {
 						'type' => [
 							'type'        => 'ProductTypesEnum',
 							'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
-							'resolve'     => function () {
+							'resolve'     => static function () {
 								return 'unsupported';
 							},
 						],

@@ -10,8 +10,8 @@
  * Domain Path: /languages
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
- * WC requires at least: 4.8.0
- * WC tested up to: 7.5.1
+ * WC requires at least: 7.5.0
+ * WC tested up to: 7.8.2
  * WPGraphQL requires at least: 1.14.0+
  * WPGraphQL-JWT-Authentication requires at least: 0.7.0+
  *
@@ -115,6 +115,9 @@ function dependencies_not_ready( &$deps = [] ) {
  * @return void
  */
 function init() {
+	// We define this now and pass it as a reference.
+	$not_ready = [];
+
 	if ( empty( dependencies_not_ready( $not_ready ) ) ) {
 		require_once get_includes_directory() . 'class-wp-graphql-woocommerce.php';
 		WP_GraphQL_WooCommerce::instance();
@@ -124,7 +127,7 @@ function init() {
 	foreach ( $not_ready as $dep ) {
 		add_action(
 			'admin_notices',
-			function() use ( $dep ) {
+			static function () use ( $dep ) {
 				?>
 				<div class="error notice">
 					<p>

@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
  * Class Attribute
  */
 class Attribute {
-
 	/**
 	 * Registers the "Product" interface.
 	 *
@@ -28,19 +27,19 @@ class Attribute {
 					'name'  => [
 						'type'        => 'String',
 						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
 					],
 					'value' => [
 						'type'        => 'String',
 						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;
 						},
 					],
 				],
-				'resolveType' => function( $value ) {
+				'resolveType' => static function ( $value ) {
 					$type_registry = \WPGraphQL::get_type_registry();
 					if ( $value->is_taxonomy() ) {
 						return $type_registry->get_type( 'SimpleAttribute' );

@@ -8,14 +8,12 @@
 
 namespace WPGraphQL\WooCommerce\Data;
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 
 /**
  * Class DB_Hooks
  */
 class DB_Hooks {
-
 	/**
 	 * DB_Hooks constructor.
 	 */
@@ -68,7 +66,6 @@ class DB_Hooks {
 			? $clauses['orderby'] . ','
 			: '';
 
-		\codecept_debug( $orderby );
 		if ( ! isset( $args['graphql_cursor_compare'] ) ) {
 			$clauses['orderby'] = "{$orderby} {$tables['orders']}.id DESC ";
 		} else {

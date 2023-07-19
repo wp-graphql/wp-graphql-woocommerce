@@ -21,7 +21,6 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  * Class Coupon_Create
  */
 class Coupon_Create {
-
 	/**
 	 * Registers mutation
 	 *
@@ -33,7 +32,7 @@ class Coupon_Create {
 			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => [ __CLASS__, 'mutate_and_get_payload' ],
+				'mutateAndGetPayload' => [ self::class, 'mutate_and_get_payload' ],
 			]
 		);
 	}
@@ -137,13 +136,13 @@ class Coupon_Create {
 		return [
 			'coupon' => [
 				'type'    => 'Coupon',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Coupon( $payload['id'] );
 				},
 			],
 			'code'   => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['code'];
 				},
 			],
@@ -153,12 +152,12 @@ class Coupon_Create {
 	/**
 	 * Defines the mutation data modification closure.
 	 *
-	 * @param array       $input    Mutation input.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     ResolveInfo instance. Can be
+	 * @param array                                $input    Mutation input.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance. Can be
 	 * use to get info about the current node in the GraphQL tree.
 	 *
-	 * @throws UserError Invalid ID provided | Lack of capabilities.
+	 * @throws \GraphQL\Error\UserError Invalid ID provided | Lack of capabilities.
 	 *
 	 * @return array
 	 */

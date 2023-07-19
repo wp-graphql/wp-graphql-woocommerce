@@ -67,7 +67,7 @@ class Cart_Fill {
 		return [
 			'added'                 => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$items = [];
 					foreach ( $payload['added'] as $key ) {
 						$items[] = \WC()->cart->get_cart_item( $key );
@@ -78,21 +78,21 @@ class Cart_Fill {
 			],
 			'applied'               => [
 				'type'    => [ 'list_of' => 'AppliedCoupon' ],
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$codes = $payload['applied'];
 					return ! empty( $codes ) ? $codes : null;
 				},
 			],
 			'chosenShippingMethods' => [
 				'type'    => [ 'list_of' => 'String' ],
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$methods = $payload['chosen_shipping_methods'];
 					return ! empty( $methods ) ? $methods : null;
 				},
 			],
 			'cartErrors'            => [
 				'type'    => [ 'list_of' => 'CartError' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$errors         = [];
 					$all_error_data = array_merge(
 						$payload['invalid_cart_items'],
@@ -150,7 +150,7 @@ class Cart_Fill {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Throw error, if no cart item data provided.
@@ -186,7 +186,7 @@ class Cart_Fill {
 						$reason               = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );
 						$invalid_cart_items[] = compact( 'cart_item_data', 'reason' );
 					}
-				} catch ( \Exception $e ) {
+				} catch ( \Throwable $e ) {
 					// Get thrown error message.
 					$reason = $e->getMessage();
 

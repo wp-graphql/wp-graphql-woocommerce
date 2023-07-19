@@ -10,24 +10,17 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use GraphQLRelay\Connection\ArrayConnection;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Downloadable_Item_Connection_Resolver
  *
- * @property WC_Db_Loader $loader
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader $loader
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -58,7 +51,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			if ( isset( $where_args['active'] ) ) {
 				$active = $where_args['active'];
 
-				$query_args['filters'][] = function( $downloadable_item ) use ( $active ) {
+				$query_args['filters'][] = static function ( $downloadable_item ) use ( $active ) {
 					$is_expired          = isset( $downloadable_item['access_expires'] )
 						? time() > $downloadable_item['access_expires']->getTimestamp()
 						: false;
@@ -73,7 +66,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			if ( isset( $where_args['expired'] ) ) {
 				$expired = $where_args['expired'];
 
-				$query_args['filters'][] = function( $downloadable_item ) use ( $expired ) {
+				$query_args['filters'][] = static function ( $downloadable_item ) use ( $expired ) {
 					$is_expired = isset( $downloadable_item['access_expires'] )
 						? time() < $downloadable_item['access_expires']->getTimestamp()
 						: false;
@@ -85,7 +78,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 			if ( isset( $where_args['hasDownloadsRemaining'] ) ) {
 				$has_downloads_remaining = $where_args['hasDownloadsRemaining'];
 
-				$query_args['filters'][] = function( $downloadable_item ) use ( $has_downloads_remaining ) {
+				$query_args['filters'][] = static function ( $downloadable_item ) use ( $has_downloads_remaining ) {
 					$downloads_remaining = ( 'integer' === gettype( $downloadable_item['downloads_remaining'] ) )
 						? 0 < $downloadable_item['downloads_remaining']
 						: true;
@@ -101,8 +94,8 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param array       $query_args The args that will be passed to the WP_Query.
 		 * @param mixed       $source     The source that's passed down the GraphQL queries.
 		 * @param array       $args       The inputArgs on the field.
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_downloadable_item_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -146,9 +139,7 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids_from_query() {
-		$ids = ! empty( $this->query ) ? $this->query : [];
-
-		return $ids;
+		return ! empty( $this->query ) ? $this->query : [];
 	}
 
 	/**

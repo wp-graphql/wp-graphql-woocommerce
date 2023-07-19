@@ -14,7 +14,6 @@ use GraphQLRelay\Relay;
  * Class Product_Attribute_Types
  */
 class Product_Attribute_Types {
-
 	/**
 	 * Registers ProductAttribute types
 	 *
@@ -31,14 +30,14 @@ class Product_Attribute_Types {
 					'id'    => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'LocalProductAttribute', $attribute->get_id() );
 						},
 					],
 					'scope' => [
 						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function () {
+						'resolve'     => static function () {
 							return 'local';
 						},
 					],
@@ -56,21 +55,21 @@ class Product_Attribute_Types {
 					'id'    => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
 						},
 					],
 					'scope' => [
 						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function () {
+						'resolve'     => static function () {
 							return 'global';
 						},
 					],
 					'label' => [
 						'type'        => 'String',
 						'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => static function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
 							return $taxonomy ? ucwords( $taxonomy->labels->singular_name ) : null;
 						},
@@ -78,7 +77,7 @@ class Product_Attribute_Types {
 					'name'  => [
 						'type'        => 'String',
 						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => static function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
 
 							return $taxonomy ? $taxonomy->labels->singular_name : null;
@@ -87,7 +86,7 @@ class Product_Attribute_Types {
 					'slug'  => [
 						'type'        => 'String',
 						'description' => __( 'Product attribute slug', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $attribute ) {
+						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 						},
 					],
@@ -104,14 +103,14 @@ class Product_Attribute_Types {
 					'attributeName'  => [
 						'type'        => 'String',
 						'description' => __( 'Attribute name.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( array $attribute ) {
+						'resolve'     => static function ( array $attribute ) {
 							return ! empty( $attribute['attributeName'] ) ? $attribute['attributeName'] : null;
 						},
 					],
 					'attributeValue' => [
 						'type'        => 'String',
 						'description' => __( 'Attribute value.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( array $attribute ) {
+						'resolve'     => static function ( array $attribute ) {
 							return ! empty( $attribute['attributeValue'] ) ? $attribute['attributeValue'] : null;
 						},
 					],

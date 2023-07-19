@@ -12,17 +12,15 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use WC_Order_Factory;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WC_Order_Factory;
-use Exception;
 
 /**
  * Class Order_Create
  */
 class Order_Create {
-
 	/**
 	 * Registers mutation
 	 *
@@ -45,7 +43,7 @@ class Order_Create {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = [
+		return [
 			'parentId'           => [
 				'type'        => 'Int',
 				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
@@ -111,8 +109,6 @@ class Order_Create {
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
 			],
 		];
-
-		return $input_fields;
 	}
 
 	/**
@@ -124,13 +120,13 @@ class Order_Create {
 		return [
 			'order'   => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Order( $payload['id'] );
 				},
 			],
 			'orderId' => [
 				'type'    => 'Int',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['id'];
 				},
 			],
@@ -143,7 +139,7 @@ class Order_Create {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Check if authorized to create this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'create', null ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to create an order.', 'wp-graphql-woocommerce' ) );
@@ -196,13 +192,13 @@ class Order_Create {
 				 *
 				 * @param \WC_Order    $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 
 				return [ 'id' => $order->get_id() ];
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// Delete order if it was created.
 				if ( is_object( $order ) ) {
 					Order_Mutation::purge( $order );

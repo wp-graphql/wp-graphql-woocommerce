@@ -10,19 +10,16 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Downloadable_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Order_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Order_Type
  */
 class Order_Type {
-
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
 	 *
@@ -131,7 +128,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->discountTotalRaw;
@@ -150,7 +147,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->discountTaxRaw;
@@ -169,7 +166,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->shippingTotalRaw;
@@ -188,7 +185,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->shippingTaxRaw;
@@ -207,7 +204,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->cartTaxRaw;
@@ -226,7 +223,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->totalRaw;
@@ -244,7 +241,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->totalTaxRaw;
@@ -263,7 +260,7 @@ class Order_Type {
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => function( $source, $args ) {
+					'resolve'     => static function ( $source, $args ) {
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 							// @codingStandardsIgnoreLine.
 							return $source->subtotalRaw;
@@ -311,14 +308,14 @@ class Order_Type {
 				'parent'                => [
 					'type'        => 'Order',
 					'description' => __( 'Parent order', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $order, array $args, AppContext $context ) {
+					'resolve'     => static function ( $order, array $args, AppContext $context ) {
 						return Factory::resolve_crud_object( $order->parent_id, $context );
 					},
 				],
 				'customer'              => [
 					'type'        => 'Customer',
 					'description' => __( 'Order customer', 'wp-graphql-woocommerce' ),
-					'resolve'     => function( $order, array $args, AppContext $context ) {
+					'resolve'     => static function ( $order, array $args, AppContext $context ) {
 						if ( empty( $order->customer_id ) ) {
 							// Guest orders don't have an attached customer.
 							return null;
@@ -373,27 +370,27 @@ class Order_Type {
 				'taxLines'          => [
 					'toType'         => 'TaxLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'feeLines'          => [
 					'toType'         => 'FeeLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'shippingLines'     => [
 					'toType'         => 'ShippingLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'couponLines'       => [
 					'toType'         => 'CouponLine',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'lineItems'         => [
 					'toType'         => 'LineItem',
 					'connectionArgs' => [],
-					'resolve'        => [ __CLASS__, 'resolve_item_connection' ],
+					'resolve'        => [ self::class, 'resolve_item_connection' ],
 				],
 				'downloadableItems' => [
 					'toType'         => 'DownloadableItem',
@@ -411,7 +408,7 @@ class Order_Type {
 							'description' => __( 'Limit results to downloadable items that have downloads remaining.', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Downloadable_Item_Connection_Resolver( $source, $args, $context, $info );
 
 						return $resolver->get_connection();
@@ -425,10 +422,10 @@ class Order_Type {
 	/**
 	 * Order Item connection resolver callback
 	 *
-	 * @param \WPGraphQL\WooCommerce\Model\Order $source   Source order.
-	 * @param array                              $args     Connection args.
-	 * @param AppContext                         $context  AppContext instance.
-	 * @param ResolveInfo                        $info     ResolveInfo instance.
+	 * @param \WPGraphQL\WooCommerce\Model\Order   $source   Source order.
+	 * @param array                                $args     Connection args.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance.
 	 *
 	 * @return array
 	 */

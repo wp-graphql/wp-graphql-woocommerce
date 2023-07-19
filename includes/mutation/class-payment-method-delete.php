@@ -12,18 +12,13 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\Model\Comment;
-use WPGraphQL\Mutation\CommentCreate;
 use WC_Payment_Tokens;
+use WPGraphQL\AppContext;
 
 /**
  * Class Payment_Method_Delete
  */
 class Payment_Method_Delete {
-
 	/**
 	 * Registers mutation
 	 *
@@ -65,7 +60,7 @@ class Payment_Method_Delete {
 			'status' => [
 				'type'        => 'String',
 				'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
-				'resolve'     => function ( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
 				},
 			],
@@ -78,7 +73,7 @@ class Payment_Method_Delete {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			global $wp;
 			if ( ! is_user_logged_in() ) {
 				throw new UserError( __( 'Must be authenticated to set a default payment method', 'wp-graphql-woocommerce' ) );

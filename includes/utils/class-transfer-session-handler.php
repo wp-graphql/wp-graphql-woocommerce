@@ -107,8 +107,6 @@ class Transfer_Session_Handler extends \WC_Session_Handler {
 			return $client_session_id;
 		}
 
-		$client_session_id = '';
-
-		return $client_session_id;
+		return '';
 	}
 }

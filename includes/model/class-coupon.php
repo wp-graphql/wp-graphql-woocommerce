@@ -46,7 +46,6 @@ use WC_Coupon;
  * @package WPGraphQL\WooCommerce\Model
  */
 class Coupon extends WC_Post {
-
 	/**
 	 * Coupon constructor
 	 *
@@ -66,61 +65,61 @@ class Coupon extends WC_Post {
 			parent::init();
 
 			$fields = [
-				'ID'                            => function() {
+				'ID'                            => function () {
 					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
 				},
-				'id'                            => function() {
+				'id'                            => function () {
 					return ! empty( $this->ID ) ? Relay::toGlobalId( 'shop_coupon', "{$this->ID}" ) : null;
 				},
-				'code'                          => function() {
+				'code'                          => function () {
 					return ! empty( $this->wc_data->get_code() ) ? $this->wc_data->get_code() : null;
 				},
-				'date'                          => function() {
+				'date'                          => function () {
 					return ! empty( $this->wc_data->get_date_created() ) ? $this->wc_data->get_date_created() : null;
 				},
-				'modified'                      => function() {
+				'modified'                      => function () {
 					return ! empty( $this->wc_data->get_date_modified() ) ? $this->wc_data->get_date_modified() : null;
 				},
-				'description'                   => function() {
+				'description'                   => function () {
 					return ! empty( $this->wc_data->get_description() ) ? $this->wc_data->get_description() : null;
 				},
-				'discountType'                  => function() {
+				'discountType'                  => function () {
 					return ! empty( $this->wc_data->get_discount_type() ) ? $this->wc_data->get_discount_type() : null;
 				},
-				'amount'                        => function() {
+				'amount'                        => function () {
 					return ! empty( $this->wc_data->get_amount() ) ? $this->wc_data->get_amount() : null;
 				},
-				'dateExpiry'                    => function() {
+				'dateExpiry'                    => function () {
 					return ! empty( $this->wc_data->get_date_expires() ) ? $this->wc_data->get_date_expires() : null;
 				},
-				'usageCount'                    => function() {
+				'usageCount'                    => function () {
 					return $this->wc_data->get_usage_count();
 				},
-				'individualUse'                 => function() {
+				'individualUse'                 => function () {
 					return $this->wc_data->get_individual_use();
 				},
-				'usageLimit'                    => function() {
+				'usageLimit'                    => function () {
 					return ! empty( $this->wc_data->get_usage_limit() ) ? $this->wc_data->get_usage_limit() : null;
 				},
-				'usageLimitPerUser'             => function() {
+				'usageLimitPerUser'             => function () {
 					return ! empty( $this->wc_data->get_usage_limit_per_user() ) ? $this->wc_data->get_usage_limit_per_user() : null;
 				},
-				'limitUsageToXItems'            => function() {
+				'limitUsageToXItems'            => function () {
 					return ! empty( $this->wc_data->get_limit_usage_to_x_items() ) ? $this->wc_data->get_limit_usage_to_x_items() : null;
 				},
-				'freeShipping'                  => function() {
+				'freeShipping'                  => function () {
 					return $this->wc_data->get_free_shipping();
 				},
-				'excludeSaleItems'              => function() {
+				'excludeSaleItems'              => function () {
 					return $this->wc_data->get_exclude_sale_items();
 				},
-				'minimumAmount'                 => function() {
+				'minimumAmount'                 => function () {
 					return ! empty( $this->wc_data->get_minimum_amount() ) ? $this->wc_data->get_minimum_amount() : null;
 				},
-				'maximumAmount'                 => function() {
+				'maximumAmount'                 => function () {
 					return ! empty( $this->wc_data->get_maximum_amount() ) ? $this->wc_data->get_maximum_amount() : null;
 				},
-				'emailRestrictions'             => function() {
+				'emailRestrictions'             => function () {
 					return ! empty( $this->wc_data->get_email_restrictions() ) ? $this->wc_data->get_email_restrictions() : null;
 				},
 				/**
@@ -129,19 +128,19 @@ class Coupon extends WC_Post {
 				 * These field resolvers are used in connection resolvers to define WP_Query argument
 				 * Note: underscore naming style is used as a quick identifier
 				 */
-				'product_ids'                   => function() {
+				'product_ids'                   => function () {
 					return ! empty( $this->wc_data->get_product_ids() ) ? $this->wc_data->get_product_ids() : [ '0' ];
 				},
-				'excluded_product_ids'          => function() {
+				'excluded_product_ids'          => function () {
 					return ! empty( $this->wc_data->get_excluded_product_ids() ) ? $this->wc_data->get_excluded_product_ids() : [ '0' ];
 				},
-				'product_category_ids'          => function() {
+				'product_category_ids'          => function () {
 					return ! empty( $this->wc_data->get_product_categories() ) ? $this->wc_data->get_product_categories() : [ '0' ];
 				},
-				'excluded_product_category_ids' => function() {
+				'excluded_product_category_ids' => function () {
 					return ! empty( $this->wc_data->get_excluded_product_categories() ) ? $this->wc_data->get_excluded_product_categories() : [ '0' ];
 				},
-				'used_by_ids'                   => function() {
+				'used_by_ids'                   => function () {
 					return ! empty( $this->wc_data->get_used_by() ) ? $this->wc_data->get_used_by() : [ '0' ];
 				},
 			];

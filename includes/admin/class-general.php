@@ -11,7 +11,6 @@ namespace WPGraphQL\WooCommerce\Admin;
  * General class
  */
 class General extends Section {
-
 	/**
 	 * Returns the other nonce values besides the one provided.
 	 *
@@ -76,7 +75,7 @@ class General extends Section {
 					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'on' : woographql_setting( 'disable_ql_session_handler', 'off' ),
-				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ) ? true : false,
+				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'    => 'enable_unsupported_product_type',
@@ -101,8 +100,8 @@ class General extends Section {
 					]
 				),
 				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
-				'disabled'          => $enable_auth_urls_hardcoded ? true : false,
-				'sanitize_callback' => function( $value ) {
+				'disabled'          => $enable_auth_urls_hardcoded,
+				'sanitize_callback' => static function ( $value ) {
 					if ( empty( $value ) ) {
 						return [];
 					}
@@ -131,7 +130,7 @@ class General extends Section {
 				'type'              => 'text',
 				'value'             => $cart_url_hardcoded ? CART_URL_NONCE_PARAM : woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
 				'disabled'          => defined( 'CART_URL_NONCE_PARAM' ) || ! in_array( 'cart_url', $enabled_authorizing_url_fields, true ),
-				'sanitize_callback' => function ( $value ) {
+				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'cart_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(
@@ -155,7 +154,7 @@ class General extends Section {
 				'type'              => 'text',
 				'value'             => $checkout_url_hardcoded ? CHECKOUT_URL_NONCE_PARAM : woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
 				'disabled'          => defined( 'CHECKOUT_URL_NONCE_PARAM' ) || ! in_array( 'checkout_url', $enabled_authorizing_url_fields, true ),
-				'sanitize_callback' => function ( $value ) {
+				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'checkout_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(
@@ -179,7 +178,7 @@ class General extends Section {
 				'type'              => 'text',
 				'value'             => $account_url_hardcoded ? ACCOUNT_URL_NONCE_PARAM : woographql_setting( 'account_url_nonce_param', '_wc_account' ),
 				'disabled'          => defined( 'ACCOUNT_URL_NONCE_PARAM' ) || ! in_array( 'account_url', $enabled_authorizing_url_fields, true ),
-				'sanitize_callback' => function ( $value ) {
+				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'account_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(
@@ -203,7 +202,7 @@ class General extends Section {
 				'type'              => 'text',
 				'value'             => $add_payment_method_url_hardcoded ? ADD_PAYMENT_METHOD_URL_NONCE_PARAM : woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
 				'disabled'          => defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) || ! in_array( 'add_payment_method_url', $enabled_authorizing_url_fields, true ),
-				'sanitize_callback' => function ( $value ) {
+				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'add_payment_method_url' );
 					if ( in_array( $value, $other_nonces, true ) ) {
 						add_settings_error(

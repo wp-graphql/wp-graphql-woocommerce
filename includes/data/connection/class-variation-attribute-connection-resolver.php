@@ -21,7 +21,6 @@ use WPGraphQL\WooCommerce\Model\Product;
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Variation_Attribute_Connection_Resolver {
-
 	/**
 	 * Returns data array from WC_Product_Attribute ArrayAccess object.
 	 *
@@ -113,10 +112,10 @@ class Variation_Attribute_Connection_Resolver {
 	/**
 	 * Creates connection
 	 *
-	 * @param mixed       $source     - Connection source Model instance.
-	 * @param array       $args       - Connection arguments.
-	 * @param AppContext  $context    - AppContext object.
-	 * @param ResolveInfo $info       - ResolveInfo object.
+	 * @param mixed                                $source     - Connection source Model instance.
+	 * @param array                                $args       - Connection arguments.
+	 * @param \WPGraphQL\AppContext                $context    - AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       - ResolveInfo object.
 	 *
 	 * @return array|null
 	 */

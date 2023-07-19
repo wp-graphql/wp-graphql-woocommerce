@@ -10,13 +10,10 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-
 /**
  * Class Meta_Data_Type
  */
 class Meta_Data_Type {
-
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
 	 *
@@ -31,21 +28,21 @@ class Meta_Data_Type {
 					'id'    => [
 						'type'        => 'ID',
 						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
 					],
 					'key'   => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source->key ) ? (string) $source->key : null;
 						},
 					],
 					'value' => [
 						'type'        => 'String',
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							if ( empty( $source->value ) ) {
 								return null;
 							}
@@ -85,9 +82,9 @@ class Meta_Data_Type {
 					'description' => __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' ),
 				],
 			],
-			'resolve'     => function( $source, array $args ) {
+			'resolve'     => static function ( $source, array $args ) {
 				// Set unique flag.
-				$single = ! empty( $args['multiple'] ) ? false : true;
+				$single = empty( $args['multiple'] );
 
 				// Check "key" argument and format meta_data objects.
 				if ( ! empty( $args['key'] ) && $source->meta_exists( $args['key'] ) ) {
@@ -95,7 +92,7 @@ class Meta_Data_Type {
 					if ( ! is_array( $data ) ) {
 						$data = array_filter(
 							$source->get_meta_data(),
-							function( $meta ) use ( $data ) {
+							static function ( $meta ) use ( $data ) {
 								return $meta->value === $data;
 							}
 						);
@@ -107,7 +104,7 @@ class Meta_Data_Type {
 					$found = [];
 					$data  = array_filter(
 						$source->get_meta_data(),
-						function( $meta ) use ( $keys, $single, &$found ) {
+						static function ( $meta ) use ( $keys, $single, &$found ) {
 							if ( in_array( $meta->key, $keys, true ) ) {
 								if ( $single ) {
 									if ( ! in_array( $meta->key, $found, true ) ) {
@@ -125,7 +122,7 @@ class Meta_Data_Type {
 					$found = [];
 					$data  = array_filter(
 						$source->get_meta_data(),
-						function( $meta ) use ( $single, &$found ) {
+						static function ( $meta ) use ( $single, &$found ) {
 							if ( $single ) {
 								if ( ! in_array( $meta->key, $found, true ) ) {
 									$found[] = $meta->key;

@@ -9,8 +9,6 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -26,7 +24,7 @@ class Cart_Mutation {
 	public static function get_cart_field( $fallback = false ) {
 		return [
 			'type'    => 'Cart',
-			'resolve' => function ( $payload ) use ( $fallback ) {
+			'resolve' => static function ( $payload ) use ( $fallback ) {
 				$cart = ! empty( $payload['cart'] ) ? $payload['cart'] : null;
 
 				if ( is_null( $cart ) && $fallback ) {
@@ -40,11 +38,11 @@ class Cart_Mutation {
 	/**
 	 * Returns a cart item.
 	 *
-	 * @param array       $input   Input data describing cart item.
-	 * @param AppContext  $context AppContext instance.
-	 * @param ResolveInfo $info    Query info.
+	 * @param array                                $input   Input data describing cart item.
+	 * @param \WPGraphQL\AppContext                $context AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info    Query info.
 	 *
-	 * @throws UserError Missing/Invalid input.
+	 * @throws \GraphQL\Error\UserError Missing/Invalid input.
 	 *
 	 * @return array
 	 */
@@ -76,7 +74,7 @@ class Cart_Mutation {
 	 *
 	 * @return array
 	 *
-	 * @throws UserError  Invalid cart attribute provided.
+	 * @throws \GraphQL\Error\UserError  Invalid cart attribute provided.
 	 */
 	private static function prepare_attributes( $product_id, array $variation_data = [] ) {
 		$product = wc_get_product( $product_id );
@@ -122,13 +120,13 @@ class Cart_Mutation {
 	/**
 	 * Returns an array of cart items.
 	 *
-	 * @param array       $input    Input data describing cart items.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     Query info.
-	 * @param string      $mutation Mutation type.
+	 * @param array                                $input    Input data describing cart items.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Query info.
+	 * @param string                               $mutation Mutation type.
 	 *
 	 * @return array
-	 * @throws UserError Cart item not found message.
+	 * @throws \GraphQL\Error\UserError Cart item not found message.
 	 */
 	public static function retrieve_cart_items( $input, $context, $info, $mutation = '' ) {
 		$items = null;
@@ -157,9 +155,9 @@ class Cart_Mutation {
 	/**
 	 * Return array of data to be when defining a cart fee.
 	 *
-	 * @param array       $input   input data describing cart item.
-	 * @param AppContext  $context AppContext instance.
-	 * @param ResolveInfo $info    query info.
+	 * @param array                                $input   input data describing cart item.
+	 * @param \WPGraphQL\AppContext                $context AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info    query info.
 	 *
 	 * @return array
 	 */
@@ -173,7 +171,6 @@ class Cart_Mutation {
 
 		return apply_filters( 'graphql_woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
-
 
 	/**
 	 * Validates coupon and checks if application is possible
@@ -263,7 +260,7 @@ class Cart_Mutation {
 	 *
 	 * @param array $posted_shipping_methods  Chosen shipping methods.
 	 *
-	 * @throws UserError  Invalid shipping method.
+	 * @throws \GraphQL\Error\UserError  Invalid shipping method.
 	 *
 	 * @return array<string,string>
 	 */
@@ -312,7 +309,7 @@ class Cart_Mutation {
 	/**
 	 * Checks for errors thrown by the QL_Session_Handler during session token validation.
 	 *
-	 * @throws UserError If GRAPHQL_DEBUG is set to true and errors found.
+	 * @throws \GraphQL\Error\UserError If GRAPHQL_DEBUG is set to true and errors found.
 	 *
 	 * @return void
 	 */

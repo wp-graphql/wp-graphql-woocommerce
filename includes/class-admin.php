@@ -15,7 +15,6 @@ use WPGraphQL\WooCommerce\Admin\General;
  * Class Admin
  */
 class Admin {
-
 	/**
 	 * Admin constructor
 	 */
@@ -26,7 +25,7 @@ class Admin {
 	/**
 	 * Registers the WooGraphQL Settings tab.
 	 *
-	 * @param Settings $manager  Settings Manager.
+	 * @param \WPGraphQL\Admin\Settings\Settings $manager  Settings Manager.
 	 * @return void
 	 */
 	public function register_settings( Settings $manager ) {
@@ -37,7 +36,7 @@ class Admin {
 
 		$manager->settings_api->register_fields(
 			'woographql_settings',
-			General::get_fields(),
+			General::get_fields()
 		);
 	}
 }

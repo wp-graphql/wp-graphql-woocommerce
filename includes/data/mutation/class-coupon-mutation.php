@@ -8,14 +8,10 @@
 
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
-use GraphQL\Error\UserError;
-use WPGraphQL\WooCommerce\Data\Factory;
-
 /**
  * Class - Coupon_Mutation
  */
 class Coupon_Mutation {
-
 	/**
 	 * Prepares coupon args from input.
 	 *

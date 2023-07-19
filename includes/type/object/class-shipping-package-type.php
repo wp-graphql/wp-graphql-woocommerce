@@ -14,7 +14,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Shipping_Package_Type
  */
 class Shipping_Package_Type {
-
 	/**
 	 * Registers type.
 	 *
@@ -29,7 +28,7 @@ class Shipping_Package_Type {
 					'packageDetails'             => [
 						'type'        => 'String',
 						'description' => __( 'Shipping package details', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function ( $source ) {
 							$product_names = [];
 							foreach ( $source['contents'] as $item_id => $values ) {
 								$product_names[ $item_id ] = html_entity_decode( $values['data']->get_name() . ' &times;' . $values['quantity'] );
@@ -44,14 +43,14 @@ class Shipping_Package_Type {
 					'rates'                      => [
 						'type'        => [ 'list_of' => 'ShippingRate' ],
 						'description' => __( 'Shipping package rates', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['rates'] ) ? $source['rates'] : null;
 						},
 					],
 					'supportsShippingCalculator' => [
 						'type'        => 'Boolean',
 						'description' => __( 'This shipping package supports the shipping calculator.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function ( $source ) {
 							// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 							return apply_filters( 'woocommerce_shipping_show_shipping_calculator', true, $source['index'], $source );
 						},

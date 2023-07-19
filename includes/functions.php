@@ -37,7 +37,7 @@ function woographql_swp_result_possible_types( array $type_names ) {
 		$type_names = array_merge(
 			array_filter(
 				$type_names,
-				function( $type_name ) {
+				static function ( $type_name ) {
 					return 'Product' !== $type_name;
 				}
 			),

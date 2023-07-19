@@ -15,13 +15,11 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 /**
  * Class - Update_Session
  */
 class Update_Session {
-
 	/**
 	 * Registers mutation
 	 *
@@ -61,11 +59,11 @@ class Update_Session {
 		return [
 			'session'  => [
 				'type'    => [ 'list_of' => 'MetaData' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					/**
 					 * Session handler.
 					 *
-					 * @var QL_Session_Handler $session
+					 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
 					 */
 					$session      = \WC()->session;
 					$session_data = $session->get_session_data();
@@ -83,7 +81,7 @@ class Update_Session {
 			],
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function () {
+				'resolve' => static function () {
 					return new Customer( 'session' );
 				},
 			],
@@ -96,7 +94,7 @@ class Update_Session {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Guard against missing input.
@@ -108,7 +106,7 @@ class Update_Session {
 			/**
 			 * Session handler.
 			 *
-			 * @var QL_Session_Handler $session
+			 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
 			 */
 			$session = \WC()->session;
 

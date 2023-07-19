@@ -11,10 +11,9 @@
 
 namespace WPGraphQL\WooCommerce\Data\Cursor;
 
-use WPGraphQL\Data\Cursor\AbstractCursor;
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery;
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableMetaQuery;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
+use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableMetaQuery;
+use WPGraphQL\Data\Cursor\AbstractCursor;
 
 /**
  * Class COT_Cursor
@@ -37,7 +36,7 @@ class COT_Cursor extends AbstractCursor {
 	/**
 	 * The query instance to use when building the SQL statement.
 	 *
-	 * @var OrdersTableQuery
+	 * @var \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery
 	 */
 	public $query;
 
@@ -58,19 +57,18 @@ class COT_Cursor extends AbstractCursor {
 	/**
 	 * Meta query parser.
 	 *
-	 * @var OrdersTableMetaQuery|null
+	 * @var \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableMetaQuery|null
 	 */
 	private $meta_query;
 
 	/**
 	 * COT_Cursor constructor.
 	 *
-	 * @param array            $query_vars  The query vars to use when building the SQL statement.
-	 * @param OrdersTableQuery $query       The query to use when building the SQL statement.
-	 * @param string|null      $cursor      Whether to generate the before or after cursor. Default "after".
+	 * @param array                                                               $query_vars  The query vars to use when building the SQL statement.
+	 * @param \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery $query       The query to use when building the SQL statement.
+	 * @param string|null                                                         $cursor      Whether to generate the before or after cursor. Default "after".
 	 */
 	public function __construct( $query_vars, $query, $cursor = 'after' ) {
-
 		// Initialize the class properties.
 		parent::__construct( $query_vars, $cursor );
 

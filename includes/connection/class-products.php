@@ -11,14 +11,13 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - Products
  */
 class Products {
-
 	/**
 	 * Registers the various connections from other Types to Product
 	 *
@@ -33,10 +32,10 @@ class Products {
 			self::get_connection_config(
 				[
 					'fromType' => 'Coupon',
-					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					'resolve'  => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+						remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 						$resolver->set_query_arg( 'post__in', $source->product_ids );
 
@@ -55,10 +54,10 @@ class Products {
 				[
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProducts',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+						remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 						$resolver->set_query_arg( 'post__in', $source->excluded_product_ids );
 
@@ -88,16 +87,16 @@ class Products {
 							],
 						]
 					),
-					'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+						remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 						// Bypass randomization by default for pagination support.
 						if ( empty( $args['where']['shuffle'] ) ) {
 							add_filter(
 								'woocommerce_product_related_posts_shuffle',
-								function() {
+								static function () {
 									return false;
 								}
 							);
@@ -121,10 +120,10 @@ class Products {
 				[
 					'fromType'      => 'Product',
 					'fromFieldName' => 'upsell',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+						remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 						$resolver->set_query_arg( 'post__in', $source->upsell_ids );
 
@@ -144,10 +143,10 @@ class Products {
 			self::get_connection_config(
 				[
 					'fromType' => 'GroupProduct',
-					'resolve'  => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					'resolve'  => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+						remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 						$resolver->set_query_arg( 'post__in', $source->grouped_ids );
 
@@ -165,10 +164,10 @@ class Products {
 		// Product cross-sell connections.
 		$cross_sell_config = [
 			'fromFieldName' => 'crossSell',
-			'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-				add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+			'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-				remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+				remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 				$resolver->set_query_arg( 'post__in', $source->cross_sell_ids );
 
@@ -198,10 +197,10 @@ class Products {
 					'fromType'      => 'VariableProduct',
 					'toType'        => 'ProductVariation',
 					'fromFieldName' => 'variations',
-					'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 						$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-						remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+						remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 						$resolver->set_query_arg( 'post_parent', $source->ID );
 						$resolver->set_query_arg( 'post_type', 'product_variation' );
@@ -228,14 +227,14 @@ class Products {
 				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql-woocommerce' ),
 				'oneToOne'      => true,
 				'queryClass'    => '\WC_Product_Query',
-				'resolve'       => function( $source, $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'       => static function ( $source, $args, AppContext $context, ResolveInfo $info ) {
 					if ( empty( $source->parent_id ) ) {
 						return null;
 					}
 
-					add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+					add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-					remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+					remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 					$resolver->set_query_arg( 'p', $source->parent_id );
 
@@ -255,11 +254,11 @@ class Products {
 						'fromType'      => ucfirst( graphql_format_field_name( $attribute ) ),
 						'toType'        => 'ProductVariation',
 						'fromFieldName' => 'variations',
-						'resolve'       => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							global $wpdb;
-							add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+							add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
-							remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+							remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 							// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
@@ -325,10 +324,10 @@ class Products {
 
 		$taxonomies = self::get_product_connected_taxonomies();
 		if ( 'Product' === $to_type && in_array( $from_type, $taxonomies, true ) ) {
-			$config['resolve'] = function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-				add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+			$config['resolve'] = static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 				$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-				remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+				remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 				$tax_query = [
 					[
 						'taxonomy'         => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -362,10 +361,10 @@ class Products {
 				'fromFieldName'  => 'products',
 				'queryClass'     => '\WC_Product_Query',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					add_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10, 3 );
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					add_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10, 3 );
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
-					remove_filter( 'graphql_post_object_connection_args', [ __CLASS__, 'bypass_get_args_sanitization' ], 10 );
+					remove_filter( 'graphql_post_object_connection_args', [ self::class, 'bypass_get_args_sanitization' ], 10 );
 
 					$resolver = self::set_ordering_query_args( $resolver, $args );
 
@@ -379,9 +378,9 @@ class Products {
 	/**
 	 * Bypass arg sanization in Post Object Connection Resolver.
 	 *
-	 * @param array                        $args                Sanitized GraphQL args passed to the resolver.
-	 * @param PostObjectConnectionResolver $connection_resolver Instance of the ConnectionResolver.
-	 * @param array                        $all_args            array of arguments input in the field as part of the GraphQL query.
+	 * @param array                                                   $args                Sanitized GraphQL args passed to the resolver.
+	 * @param \WPGraphQL\Data\Connection\PostObjectConnectionResolver $connection_resolver Instance of the ConnectionResolver.
+	 * @param array                                                   $all_args            array of arguments input in the field as part of the GraphQL query.
 
 	 * @return array
 	 */
@@ -392,13 +391,13 @@ class Products {
 	/**
 	 * Undocumented function
 	 *
-	 * @param PostObjectConnectionResolver $resolver  Connection resolver instance.
-	 * @param array                        $args      Connection provided args.
+	 * @param \WPGraphQL\Data\Connection\PostObjectConnectionResolver $resolver  Connection resolver instance.
+	 * @param array                                                   $args      Connection provided args.
 	 *
-	 * @return PostObjectConnectionResolver
+	 * @return \WPGraphQL\Data\Connection\PostObjectConnectionResolver
 	 */
 	public static function set_ordering_query_args( $resolver, $args ) {
-		$backward = isset( $args['last'] ) ? true : false;
+		$backward = isset( $args['last'] );
 
 		if ( ! empty( $args['where']['orderby'] ) ) {
 			$default_fields = [
@@ -578,13 +577,13 @@ class Products {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $args       Query "where" args.
-	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $all_args   All of the arguments for the query (not just the "where" args).
-	 * @param AppContext         $context    The AppContext object.
-	 * @param ResolveInfo        $info       The ResolveInfo object.
-	 * @param mixed|string|array $post_type  The post type for the query.
+	 * @param array                                $query_args The mapped query arguments.
+	 * @param array                                $args       Query "where" args.
+	 * @param mixed                                $source     The query results for a query calling this.
+	 * @param array                                $all_args   All of the arguments for the query (not just the "where" args).
+	 * @param \WPGraphQL\AppContext                $context    The AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object.
+	 * @param mixed|string|array                   $post_type  The post type for the query.
 	 *
 	 * @return array Query arguments.
 	 */
@@ -882,8 +881,8 @@ class Products {
 		 * @param array       $where_args Query "where" args
 		 * @param mixed       $source     The query results for a query calling this
 		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param AppContext  $context    The AppContext object
-		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param \WPGraphQL\AppContext  $context    The AppContext object
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
 		 * @param mixed|string|array      $post_type  The post type for the query
 		 */
 		$query_args = apply_filters_deprecated(
@@ -903,5 +902,4 @@ class Products {
 
 		return $query_args;
 	}
-
 }

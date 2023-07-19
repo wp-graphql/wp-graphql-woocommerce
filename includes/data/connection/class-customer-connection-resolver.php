@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Coupon;
 
@@ -50,7 +49,8 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Prepare for later use
 		 */
-		$last = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
+		$last       = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
+		$query_args = [];
 
 		/**
 		 * Set the $query_args based on various defaults and primary input $args

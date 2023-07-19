@@ -11,16 +11,11 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
-use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Tax_Rate_Connection_Resolver
  *
- * @property WC_Db_Loader $loader
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader $loader
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
@@ -97,8 +92,8 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param array       $query_args The args that will be passed to the WP_Query
 		 * @param mixed       $source     The source that's passed down the GraphQL queries
 		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_tax_rate_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -142,7 +137,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		}//end if
 
 		$results = array_map(
-			function( $rate ) {
+			static function ( $rate ) {
 				return $rate->tax_rate_id;
 			},
 			(array) $results

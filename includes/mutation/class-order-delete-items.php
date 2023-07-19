@@ -21,7 +21,6 @@ use WPGraphQL\WooCommerce\Model\Order;
  * Class Order_Delete_Items
  */
 class Order_Delete_Items {
-
 	/**
 	 * Registers mutation
 	 *
@@ -71,7 +70,7 @@ class Order_Delete_Items {
 		return [
 			'order' => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['order'];
 				},
 			],
@@ -84,7 +83,7 @@ class Order_Delete_Items {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve order ID.
 			$order_id = null;
 			if ( ! empty( $input['id'] ) ) {
@@ -141,10 +140,10 @@ class Order_Delete_Items {
 			 * Action called before order is deleted.
 			 *
 			 * @param array           $item_ids  Order item IDs of items being deleted.
-			 * @param \WC_Order|Order $order     Order model instance.
+			 * @param \WC_Order|\WPGraphQL\WooCommerce\Model\Order $order     Order model instance.
 			 * @param array           $input     Input data describing order.
-			 * @param AppContext      $context   Request AppContext instance.
-			 * @param ResolveInfo     $info      Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext      $context   Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo     $info      Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_before_order_items_delete', $ids, $working_order, $input, $context, $info );
 
@@ -159,10 +158,10 @@ class Order_Delete_Items {
 			 * Action called before order is deleted.
 			 *
 			 * @param array           $item_ids  Order item IDs of items being deleted.
-			 * @param \WC_Order|Order $order     Order model instance.
+			 * @param \WC_Order|\WPGraphQL\WooCommerce\Model\Order $order     Order model instance.
 			 * @param array           $input     Input data describing order
-			 * @param AppContext      $context   Request AppContext instance.
-			 * @param ResolveInfo     $info      Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext      $context   Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo     $info      Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $ids, $working_order, $input, $context, $info );
 

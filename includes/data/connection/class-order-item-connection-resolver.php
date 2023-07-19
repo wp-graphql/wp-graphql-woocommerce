@@ -10,19 +10,12 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use GraphQLRelay\Connection\ArrayConnection;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Order_Item_Connection_Resolver
  */
 class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -55,8 +48,8 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param array       $query_args The args that will be passed to the WP_Query.
 		 * @param mixed       $source     The source that's passed down the GraphQL queries.
 		 * @param array       $args       The inputArgs on the field.
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_order_item_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -90,8 +83,8 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				 * @param string      $item_type  Order item type.
 				 * @param mixed       $source     The source that's passed down the GraphQL queries.
 				 * @param array       $args       The inputArgs on the field.
-				 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-				 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+				 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 				 */
 				$type = apply_filters(
 					'graphql_order_item_connection_item_type',
@@ -105,7 +98,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		}//end switch
 
 		$items = [];
-		foreach ( $this->source->get_items( $type ) as $id => $item ) {
+		foreach ( $this->source->get_items( $type ) as $item ) {
 			$items[] = $item;
 		}
 
@@ -128,7 +121,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$items = array_reverse( $items );
 		}
 
-		$get_item_id = function( $item ) {
+		$get_item_id = static function ( $item ) {
 			return $item->get_id();
 		};
 

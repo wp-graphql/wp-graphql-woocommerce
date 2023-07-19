@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Cart_Item_Input
  */
 class Cart_Item_Input {
-
 	/**
 	 * Registers type
 	 *

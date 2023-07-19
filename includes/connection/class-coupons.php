@@ -9,16 +9,12 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 /**
  * Class - Coupons
  */
 class Coupons {
-
 	/**
 	 * Registers the various connections from other Types to Coupon
 	 *
@@ -43,7 +39,7 @@ class Coupons {
 				'toType'         => 'Coupon',
 				'fromFieldName'  => 'coupons',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, $args, $context, $info ) {
+				'resolve'        => static function ( $source, $args, $context, $info ) {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_coupon' );
 
 					if ( ! self::should_execute() ) {
@@ -101,13 +97,13 @@ class Coupons {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array              $query_args The mapped query arguments.
-	 * @param array              $where_args       Query "where" args.
-	 * @param mixed              $source     The query results for a query calling this.
-	 * @param array              $args   All of the arguments for the query (not just the "where" args).
-	 * @param AppContext         $context    The AppContext object.
-	 * @param ResolveInfo        $info       The ResolveInfo object.
-	 * @param mixed|string|array $post_type  The post type for the query.
+	 * @param array                                $query_args The mapped query arguments.
+	 * @param array                                $where_args       Query "where" args.
+	 * @param mixed                                $source     The query results for a query calling this.
+	 * @param array                                $args   All of the arguments for the query (not just the "where" args).
+	 * @param \WPGraphQL\AppContext                $context    The AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object.
+	 * @param mixed|string|array                   $post_type  The post type for the query.
 	 *
 	 * @return array Query arguments.
 	 */
@@ -141,8 +137,8 @@ class Coupons {
 		 * @param array       $where_args Query "where" args
 		 * @param mixed       $source     The query results for a query calling this
 		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param AppContext  $context    The AppContext object
-		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param \WPGraphQL\AppContext  $context    The AppContext object
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
 		 */
 		$query_args = apply_filters(
 			'graphql_map_input_fields_to_coupon_query',

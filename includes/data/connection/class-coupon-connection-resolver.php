@@ -11,19 +11,14 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Error\InvariantViolation;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
-use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Coupon;
 
 /**
  * Class Coupon_Connection_Resolver
  *
  * @deprecated v0.10.0
  *
- * @property WC_CPT_Loader $loader
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader $loader
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
  */
@@ -43,16 +38,17 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Refund_Connection_Resolver constructor.
 	 *
-	 * @param mixed       $source    The object passed down from the previous level in the Resolve tree.
-	 * @param array       $args      The input arguments for the query.
-	 * @param AppContext  $context   The context of the request.
-	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
+	 * @param mixed                                $source    The object passed down from the previous level in the Resolve tree.
+	 * @param array                                $args      The input arguments for the query.
+	 * @param \WPGraphQL\AppContext                $context   The context of the request.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info      The resolve info passed down the Resolve tree.
 	 */
 	public function __construct( $source, $args, $context, $info ) {
 		/**
 		 * Set the post type for the resolver
 		 */
 		$this->post_type = 'shop_coupon';
+
 		/**
 		 * Call the parent construct to setup class data
 		 */
@@ -73,7 +69,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @param integer $id Node ID.
 	 *
-	 * @return mixed|Coupon|null
+	 * @return mixed|\WPGraphQL\WooCommerce\Model\Coupon|null
 	 */
 	public function get_node_by_id( $id ) {
 		return $this->get_cpt_model_by_id( $id );
@@ -166,8 +162,8 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param array       $query_args The args that will be passed to the WP_Query
 		 * @param mixed       $source     The source that's passed down the GraphQL queries
 		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_coupon_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -177,7 +173,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @throws InvariantViolation Filtering suppressed.
+	 * @throws \GraphQL\Error\InvariantViolation Filtering suppressed.
 	 *
 	 * @return \WP_Query
 	 */
@@ -239,8 +235,8 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		 * @param array       $where_args Query "where" args
 		 * @param mixed       $source     The query results for a query calling this
 		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param AppContext  $context    The AppContext object
-		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param \WPGraphQL\AppContext  $context    The AppContext object
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
 		 * @param mixed|string|array      $post_type  The post type for the query
 		 */
 		$args = apply_filters(

@@ -10,16 +10,10 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-
 /**
  * Class Tax_Rate_Type
  */
 class Tax_Rate_Type {
-
 	/**
 	 * Registers tax rate type
 	 *

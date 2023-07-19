@@ -22,7 +22,7 @@ class Countries {
 		$countries    = $wc_countries->get_countries();
 		array_walk(
 			$countries,
-			function( &$value, $code ) {
+			static function ( &$value, $code ) {
 				$value = [ 'value' => $code ];
 			}
 		);

@@ -9,10 +9,10 @@
 namespace WPGraphQL\WooCommerce;
 
 use GraphQL\Error\UserError;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
@@ -26,14 +26,14 @@ class Core_Schema_Filters {
 	 */
 	public static function add_filters() {
 		// Registers WooCommerce CPTs.
-		add_filter( 'register_post_type_args', [ __CLASS__, 'register_post_types' ], 10, 2 );
-		add_filter( 'graphql_post_entities_allowed_post_types', [ __CLASS__, 'skip_type_registry' ], 10 );
+		add_filter( 'register_post_type_args', [ self::class, 'register_post_types' ], 10, 2 );
+		add_filter( 'graphql_post_entities_allowed_post_types', [ self::class, 'skip_type_registry' ], 10 );
 
 		// Registers WooCommerce taxonomies.
-		add_filter( 'register_taxonomy_args', [ __CLASS__, 'register_taxonomy_args' ], 10, 2 );
+		add_filter( 'register_taxonomy_args', [ self::class, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
-		add_filter( 'graphql_data_loaders', [ __CLASS__, 'graphql_data_loaders' ], 10, 2 );
+		add_filter( 'graphql_data_loaders', [ self::class, 'graphql_data_loaders' ], 10, 2 );
 
 		// Add node resolvers.
 		add_filter(
@@ -52,21 +52,21 @@ class Core_Schema_Filters {
 		// Filter Unions.
 		add_filter(
 			'graphql_wp_union_type_config',
-			[ __CLASS__, 'inject_union_types' ],
+			[ self::class, 'inject_union_types' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'graphql_union_resolve_type',
-			[ __CLASS__, 'inject_type_resolver' ],
+			[ self::class, 'inject_type_resolver' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'graphql_interface_resolve_type',
-			[ __CLASS__, 'inject_type_resolver' ],
+			[ self::class, 'inject_type_resolver' ],
 			10,
 			2
 		);
@@ -120,7 +120,7 @@ class Core_Schema_Filters {
 
 		add_filter(
 			'woographql_cart_connection_definitions',
-			[ __CLASS__, 'skip_cart_item_connection' ],
+			[ self::class, 'skip_cart_item_connection' ]
 		);
 	}
 
@@ -141,7 +141,7 @@ class Core_Schema_Filters {
 			$args['graphql_interfaces']               = [ 'ContentNode' ];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
-			$args['graphql_resolve_type']             = static function( $value ) {
+			$args['graphql_resolve_type']             = static function ( $value ) {
 				$type_registry  = \WPGraphQL::get_type_registry();
 				$possible_types = WooGraphQL::get_enabled_product_types();
 				if ( isset( $possible_types[ $value->type ] ) ) {
@@ -306,7 +306,7 @@ class Core_Schema_Filters {
 			$config['typeNames'] = array_merge(
 				array_filter(
 					$config['typeNames'],
-					function( $type ) {
+					static function ( $type ) {
 						return 'Product' !== $type;
 					}
 				),
@@ -318,7 +318,7 @@ class Core_Schema_Filters {
 
 		// Update 'types' callback.
 		if ( $refresh_callback ) {
-			$config['types'] = function () use ( $config, $wp_union ) {
+			$config['types'] = static function () use ( $config, $wp_union ) {
 				$prepared_types = [];
 				foreach ( $config['typeNames'] as $type_name ) {
 					$prepared_types[] = $wp_union->type_registry->get_type( $type_name );
@@ -360,7 +360,7 @@ class Core_Schema_Filters {
 	 * @param \WPGraphQL\Type\WPObjectType|null $type   Type be resolve to.
 	 * @param mixed                             $value  Object for which the type is being resolve config.
 	 *
-	 * @throws UserError Invalid product type received.
+	 * @throws \GraphQL\Error\UserError Invalid product type received.
 	 *
 	 * @return \WPGraphQL\Type\WPObjectType|null
 	 */

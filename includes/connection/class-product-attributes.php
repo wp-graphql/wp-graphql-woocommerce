@@ -18,7 +18,6 @@ use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
  * Class Product_Attributes
  */
 class Product_Attributes {
-
 	/**
 	 * Registers the various connections from other Types to ProductAttribute.
 	 *
@@ -37,7 +36,7 @@ class Product_Attributes {
 					'toType'         => 'LocalProductAttribute',
 					'fromFieldName'  => 'localAttributes',
 					'connectionArgs' => [],
-				],
+				]
 			)
 		);
 
@@ -67,7 +66,7 @@ class Product_Attributes {
 				'toType'         => 'ProductAttribute',
 				'fromFieldName'  => 'attributes',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Product_Attribute_Connection_Resolver();
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					switch ( $info->fieldName ) {

@@ -12,9 +12,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\Model\Comment;
 use WPGraphQL\Mutation\CommentCreate;
 
@@ -22,7 +20,6 @@ use WPGraphQL\Mutation\CommentCreate;
  * Class Review_Write
  */
 class Review_Write {
-
 	/**
 	 * Registers mutation
 	 *
@@ -69,7 +66,7 @@ class Review_Write {
 			'rating' => [
 				'type'        => 'Float',
 				'description' => __( 'The product rating of the review that was created', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
 					}
@@ -79,7 +76,7 @@ class Review_Write {
 			'review' => [
 				'type'        => 'Comment',
 				'description' => __( 'The product review that was created', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $payload, $args, AppContext $context ) {
+				'resolve'     => static function ( $payload, $args, AppContext $context ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
 					}
@@ -101,7 +98,7 @@ class Review_Write {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Set comment type to "review".
 			$input['type'] = 'review';
 

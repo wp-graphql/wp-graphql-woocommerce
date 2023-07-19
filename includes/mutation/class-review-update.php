@@ -14,14 +14,12 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\Mutation\CommentUpdate;
 
 /**
  * Class Review_Update
  */
 class Review_Update {
-
 	/**
 	 * Registers mutation
 	 *
@@ -70,7 +68,7 @@ class Review_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Set comment type to "review".
 			$input['type'] = 'review';
 

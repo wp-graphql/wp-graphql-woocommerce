@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\Model\Post;
-use WP_Post_Type;
 
 /**
  * Class WC_Post
@@ -23,7 +22,6 @@ use WP_Post_Type;
  * @package WPGraphQL\WooCommerce\Model
  */
 abstract class WC_Post extends Post {
-
 	/**
 	 * Stores the WC_Data object connected to the model.
 	 *
@@ -108,14 +106,14 @@ abstract class WC_Post extends Post {
 			return $this->wc_data->$method( ...$args );
 		}
 
-		$class = __CLASS__;
+		$class = self::class;
 		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
 	}
 
 	/**
 	 * Wrapper function for deleting
 	 *
-	 * @throws UserError Not authorized.
+	 * @throws \GraphQL\Error\UserError Not authorized.
 	 *
 	 * @param boolean $force_delete Should the data be deleted permanently.
 	 * @return boolean

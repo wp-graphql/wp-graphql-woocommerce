@@ -13,16 +13,15 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
+use WC_Order_Factory;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WC_Order_Factory;
 
 /**
  * Class Order_Update
  */
 class Order_Update {
-
 	/**
 	 * Registers mutation
 	 *
@@ -73,7 +72,7 @@ class Order_Update {
 		return [
 			'order' => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Order( $payload['id'] );
 				},
 			],
@@ -86,7 +85,7 @@ class Order_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve order ID.
 			$order_id = null;
 			if ( ! empty( $input['id'] ) ) {
@@ -111,8 +110,8 @@ class Order_Update {
 			 *
 			 * @param int         $order_id  Order ID.
 			 * @param array       $input     Input data describing order
-			 * @param AppContext  $context   Request AppContext instance.
-			 * @param ResolveInfo $info      Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext  $context   Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_before_order_update', $order_id, $input, $context, $info );
 
@@ -150,8 +149,8 @@ class Order_Update {
 			// Actions for after the order is saved.
 			if ( true === $input['isPaid'] ) {
 				$order->payment_complete(
-					! empty( $input['transactionId'] ) ?
-						$input['transactionId']
+					! empty( $input['transactionId'] )
+						? $input['transactionId']
 						: ''
 				);
 			}
@@ -161,8 +160,8 @@ class Order_Update {
 			 *
 			 * @param \WC_Order    $order   WC_Order instance.
 			 * @param array       $input   Input data describing order
-			 * @param AppContext  $context Request AppContext instance.
-			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_after_order_update', $order, $input, $context, $info );
 

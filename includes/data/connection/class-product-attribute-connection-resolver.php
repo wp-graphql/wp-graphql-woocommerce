@@ -14,7 +14,6 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Model\Product;
 
 const GLOBAL_ID_DELIMITER = ':';
 
@@ -25,14 +24,14 @@ class Product_Attribute_Connection_Resolver {
 	/**
 	 * Builds Product attribute items
 	 *
-	 * @param array       $attributes  Array of WC_Product_Attributes instances.
-	 * @param Product     $source      Parent product model.
-	 * @param array       $args        Connection arguments.
-	 * @param AppContext  $context     AppContext object.
-	 * @param ResolveInfo $info        ResolveInfo object.
-	 * @param string      $type     Attribute type.
+	 * @param array                                $attributes  Array of WC_Product_Attributes instances.
+	 * @param \WPGraphQL\WooCommerce\Model\Product $source      Parent product model.
+	 * @param array                                $args        Connection arguments.
+	 * @param \WPGraphQL\AppContext                $context     AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info        ResolveInfo object.
+	 * @param string                               $type     Attribute type.
 	 *
-	 * @throws UserError  Invalid product attribute enumeration value.
+	 * @throws \GraphQL\Error\UserError  Invalid product attribute enumeration value.
 	 * @return array
 	 */
 	private function get_items( $attributes, $source, $args, $context, $info, $type = null ) {
@@ -56,7 +55,7 @@ class Product_Attribute_Connection_Resolver {
 				case 'local':
 					$items = array_filter(
 						$items,
-						function( $item ) {
+						static function ( $item ) {
 							return ! $item->is_taxonomy();
 						}
 					);
@@ -64,7 +63,7 @@ class Product_Attribute_Connection_Resolver {
 				case 'global':
 					$items = array_filter(
 						$items,
-						function( $item ) {
+						static function ( $item ) {
 							return $item->is_taxonomy();
 						}
 					);
@@ -80,11 +79,11 @@ class Product_Attribute_Connection_Resolver {
 	/**
 	 * Creates connection
 	 *
-	 * @param mixed       $source   Connection source Model instance.
-	 * @param array       $args     Connection arguments.
-	 * @param AppContext  $context  AppContext object.
-	 * @param ResolveInfo $info     ResolveInfo object.
-	 * @param string      $type     Attribute type.
+	 * @param mixed                                $source   Connection source Model instance.
+	 * @param array                                $args     Connection arguments.
+	 * @param \WPGraphQL\AppContext                $context  AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo object.
+	 * @param string                               $type     Attribute type.
 	 *
 	 * @return array|null
 	 */

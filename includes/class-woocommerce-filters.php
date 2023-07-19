@@ -14,7 +14,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
  * Class WooCommerce_Filters
  */
 class WooCommerce_Filters {
-
 	/**
 	 * Stores instance session header name.
 	 *
@@ -32,13 +31,13 @@ class WooCommerce_Filters {
 
 		// Check if request is a GraphQL POST request.
 		if ( ! self::is_session_handler_disabled() ) {
-			add_filter( 'woocommerce_session_handler', [ __CLASS__, 'woocommerce_session_handler' ] );
-			add_filter( 'graphql_response_headers_to_send', [ __CLASS__, 'add_session_header_to_expose_headers' ] );
-			add_filter( 'graphql_access_control_allow_headers', [ __CLASS__, 'add_session_header_to_allow_headers' ] );
+			add_filter( 'woocommerce_session_handler', [ self::class, 'woocommerce_session_handler' ] );
+			add_filter( 'graphql_response_headers_to_send', [ self::class, 'add_session_header_to_expose_headers' ] );
+			add_filter( 'graphql_access_control_allow_headers', [ self::class, 'add_session_header_to_allow_headers' ] );
 		}
 
 		// Add better support for Stripe payment gateway.
-		add_filter( 'graphql_stripe_process_payment_args', [ __CLASS__, 'woographql_stripe_gateway_args' ], 10, 2 );
+		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
 	}
 
 	/**

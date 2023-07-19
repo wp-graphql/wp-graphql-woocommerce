@@ -17,18 +17,17 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 	 * Class WP_GraphQL_WooCommerce
 	 */
 	final class WP_GraphQL_WooCommerce {
-
 		/**
 		 * Stores the instance of the WP_GraphQL_WooCommerce class
 		 *
-		 * @var null|WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
+		 * @var null|\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
 		 */
 		private static $instance = null;
 
 		/**
 		 * Returns a WP_GraphQL_WooCommerce Instance.
 		 *
-		 * @return WP_GraphQL_WooCommerce
+		 * @return \WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce
 		 */
 		public static function instance() {
 			if ( is_null( self::$instance ) ) {
@@ -40,7 +39,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Fire off init action
 			 *
-			 * @param WP_GraphQL_WooCommerce $instance The instance of the WP_GraphQL_WooCommerce class
+			 * @param \WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce $instance The instance of the WP_GraphQL_WooCommerce class
 			 */
 			do_action( 'graphql_woocommerce_init', self::$instance );
 
@@ -360,7 +359,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 				if ( ! class_exists( 'Firebase\JWT\JWT' ) ) {
 					add_action(
 						'admin_notices',
-						function () {
+						static function () {
 							if ( ! current_user_can( 'manage_options' ) ) {
 								return;
 							}

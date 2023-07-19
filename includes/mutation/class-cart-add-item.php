@@ -19,7 +19,6 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Add_Item
  */
 class Cart_Add_Item {
-
 	/**
 	 * Registers mutation
 	 *
@@ -75,10 +74,8 @@ class Cart_Add_Item {
 		return [
 			'cartItem' => [
 				'type'    => 'CartItem',
-				'resolve' => function ( $payload ) {
-					$item = \WC()->cart->get_cart_item( $payload['key'] );
-
-					return $item;
+				'resolve' => static function ( $payload ) {
+					return \WC()->cart->get_cart_item( $payload['key'] );
 				},
 			],
 			'cart'     => Cart_Mutation::get_cart_field( true ),
@@ -91,7 +88,7 @@ class Cart_Add_Item {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Prepare args for "add_to_cart" from input data.
@@ -100,7 +97,7 @@ class Cart_Add_Item {
 			// Add item to cart and get item key.
 			try {
 				$cart_item_key = \WC()->cart->add_to_cart( ...$cart_item_args );
-			} catch ( \Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// Repackage any errors.
 				throw new UserError( $e->getMessage() );
 			}

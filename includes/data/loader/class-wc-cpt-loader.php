@@ -14,13 +14,11 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
-use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Refund;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class WC_CPT_Loader
@@ -41,7 +39,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param boolean $fatal      Throw if no model found.
 	 *
 	 * @return mixed
-	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
+	 * @throws \GraphQL\Error\UserError - throws if no corresponding Model is registered to the post-type.
 	 */
 	public static function resolve_model( $post_type, $id, $fatal = true ) {
 		switch ( $post_type ) {
@@ -78,7 +76,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws UserError - throws if no corresponding Data store exists with the ID.
+	 * @throws \GraphQL\Error\UserError - throws if no corresponding Data store exists with the ID.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {
@@ -111,7 +109,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		 */
 		add_filter(
 			'split_the_query',
-			function ( $split, \WP_Query $query ) {
+			static function ( $split, \WP_Query $query ) {
 				if ( false === $query->get( 'split_the_query' ) ) {
 					return false;
 				}
@@ -180,7 +178,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			 * instead of loading once per entity, thus reducing the n+1 problem.
 			 */
 			$load_dependencies = new Deferred(
-				function() use ( $key, $post_type, $customer_id, $parent_id, $context ) {
+				function () use ( $key, $post_type, $customer_id, $parent_id, $context ) {
 					if ( ! empty( $customer_id ) ) {
 						$context->get_loader( 'wc_customer' )->load( $customer_id );
 					}
@@ -202,7 +200,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			 * Once dependencies are loaded, return the Post Object
 			 */
 			$loaded_posts[ $key ] = $load_dependencies->then(
-				function() use ( $post_type, $key ) {
+				static function () use ( $post_type, $key ) {
 					return self::resolve_model( $post_type, $key );
 				}
 			);

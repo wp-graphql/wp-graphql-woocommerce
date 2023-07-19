@@ -10,7 +10,6 @@ namespace WPGraphQL\WooCommerce\Utils;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use GraphQL\Error\UserError;
 use WC_Session_Handler;
 
 /**
@@ -21,7 +20,6 @@ use WC_Session_Handler;
  * @property int|string $_customer_id
  */
 class QL_Session_Handler extends WC_Session_Handler {
-
 	/**
 	 * Stores the name of the HTTP header used to pass the session token.
 	 *
@@ -121,7 +119,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Setup token and customer ID.
 	 *
-	 * @throws UserError Invalid token.
+	 * @throws \GraphQL\Error\UserError Invalid token.
 	 *
 	 * @return void
 	 */
@@ -164,7 +162,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( is_wp_error( $token ) ) {
 				add_filter(
 					'graphql_woocommerce_session_token_errors',
-					function( $errors ) use ( $token ) {
+					static function ( $errors ) use ( $token ) {
 						$errors = $token->get_error_message();
 						return $errors;
 					}
@@ -234,7 +232,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( empty( $token->data ) || empty( $token->data->customer_id ) ) {
 				throw new \Exception( __( 'Customer ID not found in the token', 'wp-graphql-woocommerce' ) );
 			}
-		} catch ( \Exception $error ) {
+		} catch ( \Throwable $error ) {
 			return new \WP_Error( 'invalid_token', $error->getMessage() );
 		}//end try
 
@@ -350,7 +348,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			 */
 			add_filter(
 				'graphql_response_headers_to_send',
-				function( $headers ) {
+				function ( $headers ) {
 					$token = $this->build_token();
 					if ( $token ) {
 						$headers[ $this->_token ] = $token;
@@ -502,5 +500,4 @@ class QL_Session_Handler extends WC_Session_Handler {
 		// Return new client session ID.
 		return $client_session_id;
 	}
-
 }
