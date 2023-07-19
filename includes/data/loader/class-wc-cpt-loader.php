@@ -14,13 +14,11 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Coupon;
+use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Product;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
-use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\WooCommerce\Model\Refund;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class WC_CPT_Loader
@@ -41,7 +39,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param boolean $fatal      Throw if no model found.
 	 *
 	 * @return mixed
-	 * @throws UserError - throws if no corresponding Model is registered to the post-type.
+	 * @throws \GraphQL\Error\UserError - throws if no corresponding Model is registered to the post-type.
 	 */
 	public static function resolve_model( $post_type, $id, $fatal = true ) {
 		switch ( $post_type ) {
@@ -78,7 +76,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param array $keys - array of IDs.
 	 *
 	 * @return array
-	 * @throws UserError - throws if no corresponding Data store exists with the ID.
+	 * @throws \GraphQL\Error\UserError - throws if no corresponding Data store exists with the ID.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {

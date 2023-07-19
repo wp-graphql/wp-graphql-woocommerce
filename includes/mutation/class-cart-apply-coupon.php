@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
-use WC_Coupon;
 
 /**
  * Class - Cart_Apply_Coupon

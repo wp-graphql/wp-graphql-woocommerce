@@ -10,13 +10,12 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Error\UserError;
-use WPGraphQL\AppContext;
-use WPGraphQL\Type\Connection\TermObjects;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
+use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL;
+use WPGraphQL\AppContext;
+use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
+use WPGraphQL\Type\Connection\TermObjects;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**

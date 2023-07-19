@@ -22,12 +22,12 @@ class Payment_Gateway_Connection_Resolver {
 	/**
 	 * Creates connection
 	 *
-	 * @param mixed       $source     - Connection source Model instance.
-	 * @param array       $args       - Connection arguments.
-	 * @param AppContext  $context    - AppContext object.
-	 * @param ResolveInfo $info       - ResolveInfo object.
+	 * @param mixed                                $source     - Connection source Model instance.
+	 * @param array                                $args       - Connection arguments.
+	 * @param \WPGraphQL\AppContext                $context    - AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       - ResolveInfo object.
 	 *
-	 * @throws UserError User not authorized.
+	 * @throws \GraphQL\Error\UserError User not authorized.
 	 * @return array|null
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {

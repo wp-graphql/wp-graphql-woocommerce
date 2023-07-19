@@ -12,11 +12,10 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use WC_Order_Factory;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WC_Order_Factory;
-use Exception;
 
 /**
  * Class Order_Create
@@ -196,13 +195,13 @@ class Order_Create {
 				 *
 				 * @param \WC_Order    $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_after_order_create', $order, $input, $context, $info );
 
 				return [ 'id' => $order->get_id() ];
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// Delete order if it was created.
 				if ( is_object( $order ) ) {
 					Order_Mutation::purge( $order );

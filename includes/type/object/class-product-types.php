@@ -10,14 +10,9 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Product as Model;
 use WPGraphQL\WooCommerce\Type\WPInterface\Product;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 
 /**

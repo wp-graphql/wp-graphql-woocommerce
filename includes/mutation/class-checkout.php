@@ -15,9 +15,8 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Checkout_Mutation;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
-use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Customer;
-use Exception;
+use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Checkout
@@ -141,8 +140,8 @@ class Checkout {
 				 *
 				 * @param array       $args    Order data.
 				 * @param array       $input   Raw input data .
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_before_checkout', $args, $input, $context, $info );
 
@@ -159,13 +158,13 @@ class Checkout {
 				 *
 				 * @param \WC_Order   $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 
 				return array_merge( [ 'id' => $order_id ], $results );
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// Delete order if it was created.
 				if ( is_object( $order ) ) {
 					Order_Mutation::purge( $order );

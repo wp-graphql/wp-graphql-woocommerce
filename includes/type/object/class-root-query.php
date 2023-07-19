@@ -13,8 +13,8 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
  * Class - Root_Query

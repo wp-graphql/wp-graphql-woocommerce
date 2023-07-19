@@ -10,12 +10,11 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 use WPGraphQL\WooCommerce\Data\Connection\Cart_Item_Connection_Resolver;
+use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**

@@ -186,7 +186,7 @@ class Cart_Fill {
 						$reason               = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );
 						$invalid_cart_items[] = compact( 'cart_item_data', 'reason' );
 					}
-				} catch ( \Exception $e ) {
+				} catch ( \Throwable $e ) {
 					// Get thrown error message.
 					$reason = $e->getMessage();
 

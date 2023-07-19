@@ -8,9 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
-use GraphQL\Error\UserError;
-use WPGraphQL\WooCommerce\Data\Factory;
-
 /**
  * Class - Coupon_Mutation
  */

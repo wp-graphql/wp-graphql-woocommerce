@@ -10,8 +10,8 @@
 
 namespace WPGraphQL\WooCommerce\Model;
 
-use WPGraphQL\Model\Model;
 use GraphQLRelay\Relay;
+use WPGraphQL\Model\Model;
 
 /**
  * Class Order_Item
@@ -76,15 +76,15 @@ class Order_Item extends Model {
 	/**
 	 * Stores parent order model.
 	 *
-	 * @var Order
+	 * @var \WPGraphQL\WooCommerce\Model\Order
 	 */
 	protected $order;
 
 	/**
 	 * Order_Item constructor
 	 *
-	 * @param \WC_Order_Item $item          Order item crud object.
-	 * @param null|Order     $cached_order  Preloaded parent order model.
+	 * @param \WC_Order_Item                          $item          Order item crud object.
+	 * @param null|\WPGraphQL\WooCommerce\Model\Order $cached_order  Preloaded parent order model.
 	 */
 	public function __construct( $item, $cached_order = null ) {
 		$this->data                = $item;

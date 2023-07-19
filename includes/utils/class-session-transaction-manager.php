@@ -8,9 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use Firebase\JWT\JWT;
 use GraphQL\Error\UserError;
-use WC_Session_Handler;
 
 /**
  * Class - Session_Transaction_Manager
@@ -27,7 +25,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Instance of parent session handler
 	 *
-	 * @var QL_Session_Handler
+	 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler
 	 */
 	private $session_handler = null;
 
@@ -35,7 +33,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Singleton instance of class.
 	 *
-	 * @var Session_Transaction_Manager
+	 * @var \WPGraphQL\WooCommerce\Utils\Session_Transaction_Manager
 	 */
 	private static $instance = null;
 
@@ -43,9 +41,9 @@ class Session_Transaction_Manager {
 	 * Singleton retriever and cleaner.
 	 * Should not be called anywhere but in the session handler init function.
 	 *
-	 * @param QL_Session_Handler $session_handler  WooCommerce Session Handler instance.
+	 * @param \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session_handler  WooCommerce Session Handler instance.
 	 *
-	 * @return Session_Transaction_Manager
+	 * @return \WPGraphQL\WooCommerce\Utils\Session_Transaction_Manager
 	 */
 	public static function get( &$session_handler ) {
 		if ( is_null( self::$instance ) ) {
@@ -59,7 +57,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Session_Transaction_Manager constructor
 	 *
-	 * @param QL_Session_Handler $session_handler  Reference back to session handler.
+	 * @param \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session_handler  Reference back to session handler.
 	 */
 	public function __construct( &$session_handler ) {
 		$this->session_handler = $session_handler;
@@ -207,7 +205,7 @@ class Session_Transaction_Manager {
 	/**
 	 * Pop transaction ID off the top of the queue, ending the transaction.
 	 *
-	 * @throws UserError If transaction ID is not on the top of the queue.
+	 * @throws \GraphQL\Error\UserError If transaction ID is not on the top of the queue.
 	 *
 	 * @return void
 	 */

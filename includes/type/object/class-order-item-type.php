@@ -11,8 +11,8 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Order_Item_Type

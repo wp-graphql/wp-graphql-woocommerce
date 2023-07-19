@@ -11,8 +11,8 @@
 namespace WPGraphQL\WooCommerce\Model;
 
 use GraphQLRelay\Relay;
-use WPGraphQL\Model\Model;
 use WC_Customer;
+use WPGraphQL\Model\Model;
 
 /**
  * Class Customer
@@ -47,7 +47,7 @@ class Customer extends Model {
 	/**
 	 * Customer constructor
 	 *
-	 * @param WC_Customer|int|string $id - User ID.
+	 * @param \WC_Customer|int|string $id - User ID.
 	 */
 	public function __construct( $id = 'session' ) {
 		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( absint( $id ) );

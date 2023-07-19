@@ -26,7 +26,7 @@ class Admin {
 	/**
 	 * Registers the WooGraphQL Settings tab.
 	 *
-	 * @param Settings $manager  Settings Manager.
+	 * @param \WPGraphQL\Admin\Settings\Settings $manager  Settings Manager.
 	 * @return void
 	 */
 	public function register_settings( Settings $manager ) {

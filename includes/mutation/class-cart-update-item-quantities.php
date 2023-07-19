@@ -10,11 +10,11 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
+use Exception;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
-use Exception;
 
 /**
  * Class - Cart_Update_Item_Quantities
@@ -152,7 +152,7 @@ class Cart_Update_Item_Quantities {
 						)
 					);
 				}
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				throw new UserError( $e->getMessage() );
 			}//end try
 

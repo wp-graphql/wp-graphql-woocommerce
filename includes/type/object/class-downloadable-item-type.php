@@ -11,9 +11,9 @@
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use GraphQLRelay\Relay;
+use WC_Product_Download;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
-use WC_Product_Download;
 
 /**
  * Class Downloadable_Item_Type
