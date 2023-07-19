@@ -35,7 +35,7 @@ class Variation_Attribute_Connection_Resolver {
 			if ( ! is_a( $attribute, 'WC_Product_Attribute' ) ) {
 				continue;
 			}
-			$name = wc_attribute_label( $attribute->get_name() );
+			$name = $attribute->get_name();
 
 			if ( $attribute->is_taxonomy() ) {
 				$attribute_taxonomy = $attribute->get_taxonomy_object();
