@@ -13,12 +13,12 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 				[
 					$this->expectedField( 'id', base64_encode( $attribute_name . ':' . $product_id . ':' . $attribute->get_name() ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 					$this->expectedField( 'attributeId', $attribute->get_id() ),
-					$this->expectedField( 'name', str_replace( 'pa_', '', $attribute->get_name() ) ),
+					$this->expectedField( 'name', $attribute->get_name() ),
 					$this->expectedField(
 						'label',
 						$attribute->is_taxonomy()
 							? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
-							: ucfirst( $attribute->get_name() )
+							: ucwords( preg_replace( '/(-|_)/', ' ', $attribute->get_name() ) )
 					),
 					$this->expectedField( 'options', $attribute->get_slugs() ),
 					$this->expectedField( 'position', $attribute->get_position() ),

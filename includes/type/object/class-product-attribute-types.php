@@ -78,9 +78,7 @@ class Product_Attribute_Types {
 						'type'        => 'String',
 						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
-							$taxonomy = get_taxonomy( $attribute->get_name() );
-
-							return $taxonomy ? $taxonomy->labels->singular_name : null;
+							return $attribute->get_name();
 						},
 					],
 					'slug'  => [
