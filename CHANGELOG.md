@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.15.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.15.0) (2023-07-20)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.14.1...v0.15.0)
+
+**Breaking changes:**
+
+- fix: Product attributes `label` inconsistences + syntax errors fix [\#771](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/771) ([kidunot89](https://github.com/kidunot89))
+- fix: localAttributes and globalAttributes filtering and returned wrong values. [\#757](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/757) ([creative-andrew](https://github.com/creative-andrew))
+
+**Fixed:**
+
+- dev: remove deprecated usage of `AbstractConnectionResolver::get_offset()` [\#760](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/760) ([justlevine](https://github.com/justlevine))
+- fix: remove `codecept_debug()` call from production code [\#759](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/759) ([justlevine](https://github.com/justlevine))
+- fix: Fixed shipping address getting skipped unnecessary [\#752](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/752) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- chore: implement WPGraphQL Coding Standards [\#769](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/769) ([justlevine](https://github.com/justlevine))
+- fix: remove trailing commas from function calls [\#768](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/768) ([justlevine](https://github.com/justlevine))
+- chore: use fully-qualified class names for PHPDoc types [\#767](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/767) ([justlevine](https://github.com/justlevine))
+- fix: cleanup useless variables and ternaries [\#766](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/766) ([justlevine](https://github.com/justlevine))
+- fix: initialize arrays before using [\#765](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/765) ([justlevine](https://github.com/justlevine))
+- fix: use static closures when possible [\#764](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/764) ([justlevine](https://github.com/justlevine))
+- fix!: update version requirements to what's actually needed by code [\#763](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/763) ([justlevine](https://github.com/justlevine))
+
 ## [v0.14.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.14.1) (2023-07-03)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.14.0...v0.14.1)
