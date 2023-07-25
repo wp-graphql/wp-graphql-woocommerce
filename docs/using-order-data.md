@@ -1,3 +1,10 @@
+---
+title: "Using Order Data"
+description: ""
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL"
+author: "Geoff Taylor"
+---
+
 # Using Order Data
 
 In this section, we will delve into how to utilize the Order queries and types provided by WooGraphQL. This tutorial assumes that you have already gone through the previous documentation pages and have a basic understanding of how to use GraphQL with WooCommerce.
@@ -80,4 +87,4 @@ Replace `'YOUR_GRAPHQL_ENDPOINT'` with your GraphQL endpoint and `'Bearer YOUR_W
 
 For more information on WordPress Application Passwords, refer to the [official WordPress Application Password documentation](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/application-passwords/).
 
-In the next section, we will build upon this code to create a more interactive order status page.
+In the next section, we will build upon this code to create the account pages for an authenticated user.

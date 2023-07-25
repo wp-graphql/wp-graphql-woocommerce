@@ -1,4 +1,11 @@
-I apologize for the oversight. Let's start from the beginning.
+---
+title: "Using Composite Product Data + Mutations"
+description: ""
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL"
+author: "Geoff Taylor"
+---
+
+# Using Composite Product Data + Mutations
 
 In this section, we will be discussing how to use composite product data and mutations. We will be building on the code written in the previous sections of the documentation, specifically the sections on [using product data](https://woographql.com/docs/using-product-data) and [handling user session and using cart mutations](https://woographql.com/docs/handling-user-session-and-using-cart-mutations).
 
