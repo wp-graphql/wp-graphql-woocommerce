@@ -253,23 +253,23 @@ class Orders {
 				return array_merge(
 					get_wc_cpt_connection_args(),
 					[
-						'statuses'    => [
+						'statuses'     => [
 							'type'        => [ 'list_of' => 'OrderStatusEnum' ],
 							'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
 						],
-						'customerId'  => [
+						'customerId'   => [
 							'type'        => 'Int',
 							'description' => __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' ),
 						],
-						'customersIn' => [
+						'customersIn'  => [
 							'type'        => [ 'list_of' => 'Int' ],
 							'description' => __( 'Limit result set to orders assigned a specific group of customers.', 'wp-graphql-woocommerce' ),
 						],
-						'productId'   => [
+						'productId'    => [
 							'type'        => 'Int',
 							'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
 						],
-						'orderby'     => [
+						'orderby'      => [
 							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
 							'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
 						],
