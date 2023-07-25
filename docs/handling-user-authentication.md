@@ -64,7 +64,7 @@ To help you understand the differences, let's briefly discuss how the session to
 
 ```javascript
 export function hasCredentials() {
-  const authToken = sessionStorage.getItem(process.env.AUTH_TOKEN_LS_KEY);
+  const authToken = sessionStorage.getItem(process.env.AUTH_TOKEN_SS_KEY);
   const refreshToken = localStorage.getItem(process.env.REFRESH_TOKEN_LS_KEY);
 
   if (!!authToken && !!refreshToken) {
@@ -79,7 +79,7 @@ As the name states it all it confirms the existence of the auth and refresh toke
 
 ```javascript
 export async function getAuthToken() {
-  let authToken = sessionStorage.getItem(process.env.AUTH_TOKEN_LS_KEY );
+  let authToken = sessionStorage.getItem(process.env.AUTH_TOKEN_SS_KEY );
   if (!authToken || !tokenSetter) {
     authToken = await fetchAuthToken();
   }
@@ -112,7 +112,7 @@ async function fetchAuthToken() {
   }
 
   // Save token.
-  sessionStorage.setItem(process.env.AUTH_TOKEN_LS_KEY, authToken);
+  sessionStorage.setItem(process.env.AUTH_TOKEN_SS_KEY, authToken);
   if (tokenSetter) {
     clearInterval(tokenSetter);
   }
@@ -196,7 +196,7 @@ We'll start by making a quick helper that'll sort our newly obtained credentials
 ```javascript
 
 function saveCredentials(authToken, sessionToken, refreshToken = null) {
-  sessionStorage.setItem(process.env.AUTH_TOKEN_LS_KEY, authToken);
+  sessionStorage.setItem(process.env.AUTH_TOKEN_SS_KEY, authToken);
   sessionStorage.setItem(process.env.SESSION_TOKEN_LS_KEY, sessionToken);
   if (refreshToken) {
     localStorage.setItem(process.env.REFRESH_TOKEN_LS_KEY, refreshToken);

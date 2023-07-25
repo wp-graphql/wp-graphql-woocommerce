@@ -21,13 +21,6 @@ In this guide, we will demonstrate how to implement cart controls on the single 
 ```javascript
 import { gql } from '@apollo/client';
 
-export const CustomerContent = gql`
-  fragment CustomerContent on Customer {
-    id
-    sessionToken
-  }
-`;
-
 export const ProductContentSlice = gql`
   fragment ProductContentSlice on Product {
     id
@@ -197,6 +190,8 @@ export const CartItemContent = gql`
       value
     }
   }
+  ${ProductContentSlice}
+  ${ProductVariationContentSlice}
 `;
 
 export const CartContent = gql`
@@ -235,7 +230,103 @@ export const CartContent = gql`
     discountTax
     discountTotal
   }
+  ${CartItemContent}
 `;
+
+export const AddressFields = gql`
+  fragment AddressFields on CustomerAddress {
+    firstName
+    lastName
+    company
+    address1
+    address2
+    city
+    state
+    country
+    postcode
+    phone
+  }
+`;
+
+export const LineItemFields = gql`
+  fragment LineItemFields on LineItem {
+    databaseId
+    product {
+      node {
+        ...ProductContentSlice
+      }
+    }
+    orderId
+    quantity
+    subtotal
+    total
+    totalTax
+  }
+  ${ProductContentSlice}
+`;
+
+export const OrderFields = gql`
+  fragment OrderFields on Order {
+    id
+    databaseId
+    orderNumber
+    orderVersion
+    status
+    needsProcessing
+    subtotal
+    paymentMethodTitle
+    total
+    totalTax
+    date
+    dateCompleted
+    datePaid
+    billing {
+      ...AddressFields
+    }
+    shipping {
+      ...AddressFields
+    }
+    lineItems(first: 100) {
+      nodes {
+          ...LineItemFields
+      }
+    }
+  }
+  ${AddressFields}
+  ${LineItemFields}
+`;
+
+export const CustomerFields = gql`
+  fragment CustomerFields on Customer {
+    id
+    databaseId
+    firstName
+    lastName
+    displayName
+    billing {
+      ...AddressFields
+    }
+    shipping {
+      ...AddressFields
+    }
+    orders(first: 100) {
+      nodes {
+        ...OrderFields
+      } 
+    }
+  }
+  ${AddressFields}
+  ${OrderFields}
+`;
+
+export const CustomerContent = gql`
+  fragment CustomerContent on Customer {
+    id
+    sessionToken
+  }
+`;
+
+
 
 export const GetProduct = gql`
   query GetProduct($id: ID!, $idType: ProductIdTypeEnum) {
@@ -243,6 +334,7 @@ export const GetProduct = gql`
       ...ProductContentFull
     }
   }
+  ${ProductContentFull}
 `;
 
 export const GetProductVariation = gql`
@@ -251,6 +343,7 @@ export const GetProductVariation = gql`
       ...VariationContent
     }
   }
+  ${VariationContent}
 `;
 
 export const GetCart = gql`
@@ -262,6 +355,8 @@ export const GetCart = gql`
       ...CustomerContent
     }
   }
+  ${CartContent}
+  ${CustomerContent}
 `;
 
 export const AddToCart = gql`
@@ -277,6 +372,8 @@ export const AddToCart = gql`
       }
     }
   }
+  ${CartContent}
+  ${CartItemContent}
 `;
 
 export const UpdateCartItemQuantities = gql`
@@ -290,6 +387,8 @@ export const UpdateCartItemQuantities = gql`
       }
     }
   }
+  ${CartContent}
+  ${CartItemContent}
 `;
 
 export const RemoveItemsFromCart = gql`
@@ -303,8 +402,32 @@ export const RemoveItemsFromCart = gql`
       }
     }
   }
+  ${CartContent}
+  ${CartItemContent}
+`;
+export const Login = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(input: { username: $username, password: $password }) {
+      authToken
+      refreshToken
+      customer {
+        ...CustomerFields
+      }
+    }
+  }
+  ${CustomerFields}
 `;
 
+export const UpdateCustomer = gql`
+  mutation UpdateCustomer($input: UpdateCustomerInput!) {
+    updateCustomer(input: $input) {
+      customer {
+        ...CustomerFields
+      }
+    }
+  }
+  ${CustomerFields}
+`;
 ```
 
 We've included all the queries will be using going forward and leveraging some fragments here and there. Now we can move onto implementing the components sourcing these queries and mutations.
@@ -318,8 +441,8 @@ Here is the code for `UserSessionProvider.jsx`:
 
 ```jsx
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { useQuery } from '@apollo/client';
-import { GetCart } from './graphql';
+import { useQuery, useMutation } from '@apollo/client';
+import { GetCart, Login, UpdateCustomer } from './graphql';
 
 const initialSession = {
   cart: null,
@@ -351,6 +474,8 @@ export function SessionProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialSession);
 
   const { data, loading: fetching } = useQuery(GetCart);
+  const [executeLogin, { data: loginData, errors: loginErrors }] = useMutation(Login);
+  const [executeUpdateCustomer, { data: updateCustomerData, errors: updateCustomerErrors }] = useMutation(UpdateCustomer);
 
   useEffect(() => {
     if (data?.cart) {
@@ -378,11 +503,44 @@ export function SessionProvider({ children }) {
     payload: customer,
   });
 
+  useEffect(() => {
+    if (loginData.login) {
+      const { 
+        authToken,
+        refreshToken,
+        customer
+      } = loginData.login;
+
+      sessionStorage.getItem(process.env.AUTH_TOKEN_SS_KEY, authToken);
+      localStorage.getItem(process.env.REFRESH_TOKEN_LS_KEY, refreshToken);
+
+      setCustomer(customer);
+    }
+  }, [loginData]);
+
+  useEffect(() => {
+    if (updateCustomerData.updateCustomer) {
+      const { customer } = updateCustomerData.updateCustomer;
+
+      setCustomer(customer);
+    }
+  }, [updateCustomerData]);
+
+  const login = (username, password) => {
+    return executeLogin({ username, password });
+  }
+
+  const updateCustomer = (input) => {
+    return executeUpdateCustomer({ input });
+  }
+
   const store = {
     ...state,
     fetching,
     setCart,
     setCustomer,
+    login,
+    updateCustomer,
   };
   return (
     <Provider value={store}>{children}</Provider>
