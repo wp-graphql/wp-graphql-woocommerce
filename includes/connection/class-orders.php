@@ -273,6 +273,10 @@ class Orders {
 							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
 							'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
 						],
+						'billingEmail' => [
+							'type'        => 'String',
+							'description' => __( 'Limit result set to orders assigned a specific billing email.', 'wp-graphql-woocommerce' ),
+						],
 					]
 				);
 
