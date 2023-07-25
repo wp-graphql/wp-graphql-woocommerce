@@ -1,7 +1,7 @@
 ---
-title: "Using Checkout Mutation + Order Mutations"
-description: ""
-keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, checkout, headless, shopping experience"
+title: "Using Checkout Mutation + Order Mutations with WooGraphQL"
+description: "Learn how to handle repeat shoppers with existing payment methods using the `checkout` mutation, and side-stepping WooCommerce's management of the session completely by using the `createOrder` mutation."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, checkout mutation, createOrder mutation, session management"
 author: "Geoff Taylor"
 ---
 
