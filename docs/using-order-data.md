@@ -25,31 +25,34 @@ import { useSession } from './SessionProvider';
 
 function OrderStatusPage() {
   const { customer, updateCustomer, fetching } = useSession();
-  const { email, setEmail } = useState('');
+  const [email, setEmail] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    updateCustomer(input: { email })
+    updateCustomer({
+      billing: { email }
+    })
   };
 
   if (!customer) {
     return null;
   }
 
-  if (!customer.email) {
+  if (!customer?.billing?.email) {
     return (
       <form onSubmit={handleSubmit}>
         <label>
           Email:
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
         </label>
-        <input type="submit" value="Submit" />
+        <input type="submit" disabled={fetching} value="Submit" />
       </form>
     );
   }
 
-  const orders = (customer?.orders?.nodes || []);
+  const orders = customer?.orders?.nodes || [];
 
   return (
     <div>
@@ -70,18 +73,19 @@ function OrderStatusPage() {
           <p>Order ID: {selectedOrder.databaseId}</p>
           <p>Status: {selectedOrder.status}</p>
           <p>Total: {selectedOrder.total}</p>
-          <p>Date: {new Date(selectedOrder.date as string).toLocaleDateString()}</p>
+          <p>Date: {new Date(selectedOrder.date).toLocaleDateString()}</p>
         </div>
       )}
     </div>
   );
-  
 }
 
 export default OrderStatusPage;
 ```
 
-After the email has been submitted, we will use the `updateCustomer` callback from the `SessionProvider` to set the current viewer's `billingEmail` as the provided email address. Then, we will run the `GetCustomer` query to get the `orders` field.
+After the email has been submitted, we will use the `updateCustomer` callback from the `SessionProvider` to set the current viewer's `billingEmail` as the provided email address. Then, we will the `orders` field from the resulting `customer` object after it's saved in the `SessionProvider`.
+
+![Order status page states](images/order-status-page-states.gif)
 
 However, this method is not ideal for all situations. A recommended method is to use a serverless function, such as a Next API route, with admin access through a WordPress Application Password, to query for the orders using the root-level `orders` queries with the `where.billingEmail` argument set.
 
