@@ -100,65 +100,122 @@ import React, { useEffect } from 'react';
 import { useSession } from './SessionProvider';
 
 function DashboardPage() {
-  const { customer } = useSession();
-  const {
-    firstName,
-    displayName,
-    id
-  } = customer;
-
+  const { customer, logout, fetching } = useSession();
   useEffect(() => {
+    if (fetching) {
+      return;
+    }
+
     if (!customer?.id || customer.id === 'guest') {
       // redirect to login
       window.location.href = `${process.env.APP_URL}/login`;
     }
-  });
+  }, [customer]);
 
-  return <h1>Welcome, {firstName || displayName}!</h1>;
+  if (fetching) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (!customer) {
+    return null;
+  }
+
+  const {
+    firstName,
+    displayName,
+  } = customer as Customer;
+
+  const name = firstName || displayName;
+
+  return (
+    <>
+      <p className="mb-4">
+        {`Hello ${name} (not ${name}? `}
+        <button
+          type="button"
+          className="bg-transparent text-sm text-cello m-0 p-0 whitespace-nowrap hover:text-wedgewood transition-colors duration-500 hover:outline-none"
+          onClick={() => logout()}
+        >
+          Log out
+        </button>
+        )
+      </p>
+      <p>
+        {"From your account dashboard you can view your "}
+        <a href="/account/orders">recent orders</a>
+        {", manage your "}
+        <a href="/account/addresses">shipping and billing addresses</a>
+        {", and " }
+        <a href="/account/details">edit your password and account details</a>
+        .
+      </p>
+    </>
+  );
 }
 
 export default DashboardPage;
 ```
 
-This code is rather simple. We display a welcome message with the user's first name or display name. If the user is not authenticated, there redirected back to login.
+![Login page to dashboard](images/login-to-account-dashboard.gif)
+
+This code is rather simple. We display a welcome message with links to the other account pages. If the user is not authenticated, there redirected back to login.
 
 ## Orders Page
 
 The orders page will display a list of the user's orders. When an order is selected, more details about the selected order will be displayed. We'll use the `orders` field on the `customer` type to fetch the user's orders. Here's what the code for our orders page might look like:
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from './SessionProvider';
 
 function OrdersPage() {
-  const { customer } = useSession();
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const orders = customer?.orders?.nodes || [];
+  const { customer, fetching } = useSession();
+  const [selectedOrder, setSelectedOrder] = useState<Order|null>(null);
+  const orders = (customer?.orders?.nodes || []) as Order[];
 
   useEffect(() => {
+    if (fetching) {
+      return;
+    }
     if (!customer?.id || customer.id === 'guest') {
       // redirect to login
       window.location.href = `${process.env.APP_URL}/login`;
     }
-  });
+  }, [customer]);
+
+  if (fetching) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (!customer) {
+    return null;
+  }
 
   return (
     <div>
       <h1>Your Orders</h1>
       <ul>
         {orders.map((order) => (
-          <li key={order.id} onClick={() => setSelectedOrder(order)}>
-            Order #{order.orderId} - {order.status} - {order.total}
+          <li
+            key={order.id}
+            onClick={() => setSelectedOrder(order)}
+            style={{
+              fontWeight: selectedOrder?.id === order.id ? 'bold' : 'normal',
+              cursor: selectedOrder?.id === order.id ? 'default' : 'pointer',
+            }}
+          >
+            Order #{order.databaseId} - {order.status} - {order.total}
           </li>
         ))}
       </ul>
+      <hr />
       {selectedOrder && (
         <div>
           <h2>Order Details</h2>
-          <p>Order ID: {selectedOrder.orderId}</p>
+          <p>Order ID: {selectedOrder.databaseId}</p>
           <p>Status: {selectedOrder.status}</p>
           <p>Total: {selectedOrder.total}</p>
-          <p>Date: {new Date(selectedOrder.date).toLocaleDateString()}</p>
+          <p>Date: {new Date(selectedOrder.date as string).toLocaleDateString()}</p>
         </div>
       )}
     </div>
@@ -167,6 +224,8 @@ function OrdersPage() {
 
 export default OrdersPage;
 ```
+
+![Account dashboard to orders](images/account-dashboard-to-orders.gif)
 
 In this code, we're using the `customer` object again. We're displaying the customer's `orders` and if one is selected this order is highlighted and displayed in more detail below.
 
@@ -181,7 +240,7 @@ import { useSession } from './SessionProvider';
 function AddressesPage() {
   const [billing, setBilling] = useState({});
   const [shipping, setShipping] = useState({});
-  const { customer, updateCustomer } = useSession();
+  const { customer, updateCustomer, fetching } = useSession();
 
   useEffect(() => {
     if (!customer?.id || customer.id === 'guest') {
@@ -191,8 +250,8 @@ function AddressesPage() {
   });
 
   useEffect(() => {
-    setBilling(customer.billing);
-    setShipping(customer.shipping);
+    customer?.billing && setBilling(customer.billing);
+    customer?.shipping && setShipping(customer.shipping);
   }, [customer]);
 
   const handleBillingChange = (event) => {
@@ -209,40 +268,61 @@ function AddressesPage() {
     updateCustomer({ billing, shipping });
   };
 
+  if (!customer) {
+    return null;
+  }
+
   return (
-    <form onSubmit={handleUpdateCustomer}>
+    <form onSubmit={handleUpdateCustomer} style={{ display: 'flex', flexDirection: 'column' }}>
       <h1>Billing Address</h1>
       <input
         type="text"
-        name="address1"
-        value={billing.address1}
+        name="firstName"
+        value={billing.firstName}
         onChange={handleBillingChange}
-        placeholder="Address line 1"
+        placeholder="First name"
         required
       />
-      {/* Repeat for other billing fields... */}
+      <input
+        type="text"
+        name="lastName"
+        value={billing.lastName}
+        onChange={handleBillingChange}
+        placeholder="Last name"
+        required
+      />
+      {/* Repeat for other billing fields */}
 
       <h1>Shipping Address</h1>
       <input
         type="text"
-        name="address1"
-        value={shipping.address1}
+        name="firstName"
+        value={shipping.firstName}
         onChange={handleShippingChange}
-        placeholder="Address line 1"
+        placeholder="First name"
         required
       />
-      {/* Repeat for other shipping fields... */}
+      <input
+        type="text"
+        name="lastName"
+        value={shipping.lastName}
+        onChange={handleShippingChange}
+        placeholder="Last name"
+        required
+      />
+      {/* Repeat for other billing fields */}
 
-      <button type="submit" disabled={loading}>
+      <button type="submit" disabled={fetching}>
         Save Changes
       </button>
-      {error && <p>Error: {error.message}</p>}
     </form>
   );
 }
 
 export default AddressesPage;
 ```
+
+![Account address screenshot](images/account-address-screenshot.png)
 
 Forgive me for skipping the other form fields but they should be pretty obvious from this point if you use the fields I created as reference. This is the first page with a form and you'll note the use of an `useEffect` to update the `shipping`, and `billing` state after changes to the `customer` object. This `useEffect` should capture both the initial values on mount, although they may not get displayed until the second render, and the changes after `updateCustomer` has been run.
 
@@ -251,14 +331,19 @@ Forgive me for skipping the other form fields but they should be pretty obvious 
 The account details page will display a form for updating the user's `firstName`, `lastName`, `displayName`, `email`, and `password`. Upon form submission, the `updateCustomer` mutation will be executed by our `updateCustomer` callback to save the changes on the server. Here's what the code for our account details page might look like:
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from './SessionProvider';
 
 function AccountDetailsPage() {
   const [details, setDetails] = useState({});
-  const { customer, updateCustomer } = useSession();
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { customer, updateCustomer, fetching } = useSession();
 
   useEffect(() => {
+    if (fetching) {
+      return;
+    }
+
     if (!customer?.id || customer.id === 'guest') {
       // redirect to login
       window.location.href = `${process.env.APP_URL}/login`;
@@ -276,11 +361,20 @@ function AccountDetailsPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!!details.password && details.password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
     updateCustomer({ ...details });
   };
 
+  if (!customer) {
+    return null;
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
       <input
         type="text"
         name="firstName"
@@ -289,12 +383,26 @@ function AccountDetailsPage() {
         placeholder="First name"
         required
       />
-      {/* Repeat for other details fields... */}
+      {/* Repeat for other fields */}
+      <input
+        type="text"
+        name="password"
+        value={details.password}
+        onChange={handleChange}
+        placeholder="New Password"
 
-      <button type="submit" disabled={loading}>
+      />
+      <input
+        type="text"
+        name="firstName"
+        value={confirmPassword}
+        onChange={(event) => setConfirmPassword(event.target.value)}
+        placeholder="Confirm Password"
+      />
+
+      <button type="submit" disabled={fetching}>
         Save Changes
       </button>
-      {error && <p>Error: {error.message}</p>}
     </form>
   );
 }
@@ -304,13 +412,16 @@ export default AccountDetailsPage
 ;
 ```
 
-In this code, we're using the `updateCustomer` to execute our `updateCustomer` mutation when the form is submitted again. The logic pattern here is pretty identical to the `Addresses` page.
+![Account details screenshot](images/account-details-screenshot.png)
+
+In this code, we're using the `updateCustomer` to execute our `updateCustomer` mutation when the form is submitted again. The logic pattern here is pretty identical to the `Addresses` page. You'll notice the continued lack of sophiscated with no little to no error handling. This is done to keep noise out these code samples. You, the reader, should consider these samples incomplete until you've included proper error handling.
 
 ## Where's the rest of the application?
 
 With this the account pages are feature-complete sans some error-handling. You'll note there is a lack of error handling in the `SessionProvider` as well, consider it homework.
 
 I'll also reiterate that I left out anything pertaining the application structure like navigation bars and the application root. That is because I wanted these code samples to be as framework-agnostic as possible.
+This is also not quite a WooCommerce clone because it's missing the `Add Payment Methods` page. Implementing page is a lot like this page would be identical to `orders` page except the fields to be mapped to the listing are `customer.availablePaymentMethodsCC` or `customer.availablePaymentMethodsEC` instead of `customer.orders`. You'd also have to include a button to the `Add Payment Method` page on the WP Backend. See [Harmonizing With Wordpress](harmonizing-with-wordpress.md) for more details on how to get this URL.
 You'll note these samples also don't take into account React server components. That is due to the common nature of most Account pages/components will have to be powered by client-side/runtime queries and not static generation/build-time queries. Meaning they'll likely be executed after page load.
 
 ## Conclusion
