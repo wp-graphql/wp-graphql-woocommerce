@@ -199,10 +199,6 @@ function OrdersPage() {
           <li
             key={order.id}
             onClick={() => setSelectedOrder(order)}
-            style={{
-              fontWeight: selectedOrder?.id === order.id ? 'bold' : 'normal',
-              cursor: selectedOrder?.id === order.id ? 'default' : 'pointer',
-            }}
           >
             Order #{order.databaseId} - {order.status} - {order.total}
           </li>

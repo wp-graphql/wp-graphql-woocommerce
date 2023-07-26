@@ -21,32 +21,69 @@ First, let's create a simple form that takes an email as input. When the form is
 
 ```jsx
 import React, { useState } from 'react';
+import { useSession } from './SessionProvider';
 
 function OrderStatusPage() {
-  const [email, setEmail] = useState('');
+  const { customer, updateCustomer, fetching } = useSession();
+  const { email, setEmail } = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Fetch orders associated with the email
+    
+    updateCustomer(input: { email })
   };
 
+  if (!customer) {
+    return null;
+  }
+
+  if (!customer.email) {
+    return (
+      <form onSubmit={handleSubmit}>
+        <label>
+          Email:
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+
+  const orders = (customer?.orders?.nodes || []);
+
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Email:
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
-      </label>
-      <input type="submit" value="Submit" />
-    </form>
+    <div>
+      <ul>
+        {orders.map((order) => (
+          <li
+            key={order.id}
+            onClick={() => setSelectedOrder(order)}
+          >
+            Order #{order.databaseId} - {order.status} - {order.total}
+          </li>
+        ))}
+      </ul>
+      <hr />
+      {selectedOrder && (
+        <div>
+          <h2>Order Details</h2>
+          <p>Order ID: {selectedOrder.databaseId}</p>
+          <p>Status: {selectedOrder.status}</p>
+          <p>Total: {selectedOrder.total}</p>
+          <p>Date: {new Date(selectedOrder.date as string).toLocaleDateString()}</p>
+        </div>
+      )}
+    </div>
   );
+  
 }
 
 export default OrderStatusPage;
 ```
 
-After the email has been submitted, we will use the `updateCustomer` callback from the `SessionProvider` to set the current viewer's `billingEmail` as the provided email address. Then, we will run the `GetCustomer` query to get the `orders` field. 
+After the email has been submitted, we will use the `updateCustomer` callback from the `SessionProvider` to set the current viewer's `billingEmail` as the provided email address. Then, we will run the `GetCustomer` query to get the `orders` field.
 
-However, this method is not ideal. The recommended method is to use a serverless function, such as a Next API route, with admin access through a WordPress Application Password, to query for the orders using the root-level `orders` queries with the `where.billingEmail` argument set. 
+However, this method is not ideal for all situations. A recommended method is to use a serverless function, such as a Next API route, with admin access through a WordPress Application Password, to query for the orders using the root-level `orders` queries with the `where.billingEmail` argument set.
 
 Let's create a Next.js API route page that takes a billingEmail address and runs the query against the endpoint using `GraphQLClient` from the `graphql-request` library, and returns the orders. 
 
