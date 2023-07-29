@@ -33,7 +33,7 @@ Let's go over what each of these sections will do:
 - **Account Details**: This page will display a form for updating the user's `firstName`, `lastName`, `displayName`, `email`, and `password`. Upon form submission, the `updateCustomer` mutation will be executed to save the changes on the server.
 - **Logout**: Clicking this link will delete the user's credentials and return them to the login page.
 
-The next section will just right into defining this individual components while never really turning upon the application root. This is because you, the developer, actually have a lot of wiggle room when it comes to routing and application structure the only requirement is that all this component when used are wrapped by the same `SessionProvider` instance.
+The next section will just jump right into defining the individual components while never really turning upon the application root. This is because you, the developer, actually have a lot of wiggle room when it comes to routing and application structure. The only requirement is that all the component used are wrapped by the same `SessionProvider` instance.
 
 ## Login Page
 
@@ -158,7 +158,7 @@ export default DashboardPage;
 
 ![Login page to dashboard](images/login-to-account-dashboard.gif)
 
-This code is rather simple. We display a welcome message with links to the other account pages. If the user is not authenticated, there redirected back to login.
+This code is rather simple. We display a welcome message with links to the other account pages. If the user is not authenticated, they are redirected back to login.
 
 ## Orders Page
 
@@ -410,18 +410,18 @@ export default AccountDetailsPage
 
 ![Account details screenshot](images/account-details-screenshot.png)
 
-In this code, we're using the `updateCustomer` to execute our `updateCustomer` mutation when the form is submitted again. The logic pattern here is pretty identical to the `Addresses` page. You'll notice the continued lack of sophiscated with no little to no error handling. This is done to keep noise out these code samples. You, the reader, should consider these samples incomplete until you've included proper error handling.
+In this code, we're using the `updateCustomer` to execute our `updateCustomer` mutation when the form is submitted again. The logic pattern here is pretty identical to the `Addresses` page. You'll notice the continued lack of sophistication, with no little to no error handling. This is done to keep noise out these code samples. You, the reader, should consider these samples incomplete until you've included proper error handling.
 
 ## Where's the rest of the application?
 
-With this the account pages are feature-complete sans some error-handling. You'll note there is a lack of error handling in the `SessionProvider` as well, consider it homework.
+With this the account pages are feature-complete minus some error-handling. You'll note there is a lack of error handling in the `SessionProvider`, as well. Consider it homework.
 
 I'll also reiterate that I left out anything pertaining the application structure like navigation bars and the application root. That is because I wanted these code samples to be as framework-agnostic as possible.
-This is also not quite a WooCommerce clone because it's missing the `Add Payment Methods` page. Implementing page is a lot like this page would be identical to `orders` page except the fields to be mapped to the listing are `customer.availablePaymentMethodsCC` or `customer.availablePaymentMethodsEC` instead of `customer.orders`. You'd also have to include a button to the `Add Payment Method` page on the WP Backend. See [Harmonizing With Wordpress](harmonizing-with-wordpress.md) for more details on how to get this URL.
-You'll note these samples also don't take into account React server components. That is due to the common nature of most Account pages/components will have to be powered by client-side/runtime queries and not static generation/build-time queries. Meaning they'll likely be executed after page load.
+This is also not quite a WooCommerce clone because it's missing the `Add Payment Methods` page. Implementing this page would be identical to the `orders` page, except the fields to be mapped to the listing are `customer.availablePaymentMethodsCC` or `customer.availablePaymentMethodsEC` instead of `customer.orders`. You'd also have to include a button to the `Add Payment Method` page on the WP Backend. See [Harmonizing With Wordpress](harmonizing-with-wordpress.md) for more details on how to get this URL.
+You'll note these samples also don't take into account React server components. That is due to the common nature of most Account pages/components will have to be powered by client-side/runtime queries and not static generation/build-time queries - meaning they'll likely be executed after page load.
 
 ## Conclusion
 
-In this guide, we've seen how to use the WooGraphQL API to create a clone of WooCommerce's user account pages. We've used the `customer` query to fetch the user's details, the `orders` field on the `customer` type to fetch the user's orders, and the `updateCustomer` mutation to update the user's details and addresses. We've also seen how to handle user authentication with the `login` mutation and how to log out the user. It should be note that this was all made possible by proper usage our `SessionProvider`.
+In this guide, we've seen how to use the WooGraphQL API to create a clone of WooCommerce's user account pages. We've used the `customer` query to fetch the user's details, the `orders` field on the `customer` type to fetch the user's orders, and the `updateCustomer` mutation to update the user's details and addresses. We've also seen how to handle user authentication with the `login` mutation and how to log out the user. It should be noted that this was all made possible by proper usage our `SessionProvider`.
 
 With the completion of this section and all proceeding sections, you have been given an deep dive into the basic and intermediate usages of WooGraphQL. The following sections will be on WooGraphQL Pro functionality.

@@ -7,7 +7,7 @@ author: "Geoff Taylor"
 
 # Handling User Authentication
 
-In this guide, we'll pick where the last one stopped and focus on handling user authentication, auth tokens, and refresh tokens. This will allow your application to not only manage WooCommerce sessions effectively but also handle WordPress authentication, providing a seamless experience for your users.
+In this guide, we'll pick up where the last one stopped and focus on handling user authentication, auth tokens, and refresh tokens. This will allow your application to not only manage WooCommerce sessions effectively but also handle WordPress authentication, providing a seamless experience for your users.
 
 The execution of this part of the guide should be similar to the first part, with some additional steps to account for the different behavior around validation and renewal of auth tokens. We'll walk you through modifying the `createSessionLink`, `fetchSessionToken`,
 and `createErrorLink` functions, creating the `getAuthToken` function, and implementing the necessary steps to manage auth token renewal.
@@ -40,11 +40,11 @@ function createSessionLink() {
 }
 ```
 
-Not too much changing here it's still as simple as it was before except now we're set an `Authorization` header too.
+Not too much changing here - it's still as simple as it was before except now we're setting an `Authorization` header too.
 
 ## Creating the `getAuthToken` and `fetchAuthToken` functions.
 
-Next, we'll create a new function called getAuthToken. This function is similar to the getSessionToken function but has some key differences due to the way session tokens and auth tokens handle renewal. Starting with the following mutation.
+Next, we'll create a new function called `getAuthToken`. This function is similar to the `getSessionToken` function but has some key differences due to the way session tokens and auth tokens handle renewal. Start with the following mutation.
 
 ```javascript
 import { gql } from '@apollo/client';
@@ -75,7 +75,7 @@ export function hasCredentials() {
 }
 ```
 
-As the name states it all it confirms the existence of the auth and refresh tokens.
+As the name states, this confirms the existence of the auth and refresh tokens.
 
 ```javascript
 export async function getAuthToken() {
@@ -131,12 +131,12 @@ async function fetchAuthToken() {
 }
 ```
 
-There is a lot going on here, but it's very similar to our `fetchSessionToken()` from the previous guide the different here is the auth token in sessionStorage instead of localStorage, which means it will be deleted when the user closes the browser. A new auth token will be needed every time the user opens the page after closing the browser. To better breakdown the function let's step through the possible outcomes.
+There is a lot going on here, but it's very similar to our `fetchSessionToken()` from the previous guide. The difference here is the auth token is in `sessionStorage` instead of `localStorage`, which means it will be deleted when the user closes the browser. A new auth token will be needed every time the user opens the page after closing the browser. To better breakdown the function, let's step through the possible outcomes.
 
-1. The first being the quiet exit if no `refreshToken` is found. This is the scenario of an unauthenticated user. This is pretty much any new user that show up to your application.
-2. The next one is the error thrown if no `authToken` is returned. This is the scenario of an user with a invalid/expired refresh token, at which case you meant just want to delete the stored refresh token and quietly exit the function.
-3. The error handler is incase anything goes wrong during the `GraphQLClient.query()` call.
-4. And last if nothing goes wrong `tokenSetter` is assigned with a new recurring fetcher set for 5 minute interval and the `authToken` is returned.
+1. A quiet exit if no `refreshToken` is found. This is the scenario of an unauthenticated user. This is pretty much any new user that shows up to your application.
+2. An error thrown if no `authToken` is returned. This is the scenario of an user with a invalid/expired refresh token, in which case you may just want to delete the stored refresh token and quietly exit the function.
+3. The error handler is in case anything goes wrong during the `GraphQLClient.query()` call.
+4. Finally, if nothing goes wrong, `tokenSetter` is assigned with a new recurring fetcher set for 5 minute interval and the `authToken` is returned.
 
 The purpose of the `tokenSetter` fetcher is to address the short lifespan of the `authToken`. This also ensures that a invalid `authToken` is never sent, and because of this we don't have update the `createErrorLink` or `createUpdateLink` callbacks from the previous guide, but we do have to update our `fetchSessionToken()` function.
 
@@ -245,7 +245,7 @@ export async function login(username, password) {
 }
 ```
 
-Just like with `fetchSessionToken()` is highly recommend the you obscure the API calls here by deferring the logic to something like a serverless function or Next.js API route. Note, we are also return the `customer` object here which could potentially be problematic if sensitive information like the user's email or phone number is being pulled.
+Just like with `fetchSessionToken()`, it is highly recommended that you obscure the API calls here by deferring the logic to something like a serverless function or Next.js API route. Note, we are also return the `customer` object here which could potentially be problematic if sensitive information like the user's email or phone number is being pulled.
 
 ## Conclusion
 

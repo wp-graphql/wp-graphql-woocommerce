@@ -87,7 +87,7 @@ After the email has been submitted, we will use the `updateCustomer` callback fr
 
 ![Order status page states](images/order-status-page-states.gif)
 
-However, this method is not ideal for all situations. A recommended method is to use a serverless function, such as a Next API route, with admin access through a WordPress Application Password, to query for the orders using the root-level `orders` queries with the `where.billingEmail` argument set.
+As mentioned above, this is not the ideal approach due to privacy concerns.
 
 Let's create a Next.js API route page that takes a billingEmail address and runs the query against the endpoint using `GraphQLClient` from the `graphql-request` library, and returns the orders. 
 

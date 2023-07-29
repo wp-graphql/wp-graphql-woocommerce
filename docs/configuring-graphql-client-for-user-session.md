@@ -9,7 +9,7 @@ author: "Geoff Taylor"
 
 In this comprehensive guide, we'll walk you through the process of configuring a GraphQL client to manage user sessions and credentials when working with WooGraphQL. By following the steps outlined in this tutorial, you'll learn how to create a GraphQL client that maintains a valid WooCommerce session in the `woocommerce_sessions` DB table. This knowledge will enable you to build robust applications that interact smoothly with WooCommerce while providing a seamless experience for your users and shortening development time.
 
-By properly handling the session token, you can implement session pass-off functionality, allowing you to fallback on the cart page, my-account page, or any other page living in WordPress that relies on user sessions. Note that implementing the session pass-off functionality is out of the scope of this guide. So, let's dive in and explore the intricacies of setting up a GraphQL client that effectively manages user sessions for your e-commerce store!
+By properly handling the session token, you can implement session pass-off functionality, allowing you to fallback on the cart page, my-account page, or any other page living in WordPress that relies on user sessions. (Note that implementing the session pass-off functionality is out of the scope of this guide.) So, let's dive in and explore the intricacies of setting up a GraphQL client that effectively manages user sessions for your e-commerce store!
 
 ## Sending the `woocommerce-session` HTTP request header
 
@@ -52,7 +52,7 @@ fetch(endpoint, {
 
 This works for simple streamlined applications that don't rely heavily on cart functionality. Note that this example also does not retrieve the updated token from the `woocommerce-session` HTTP response header.
 
-And if you're using a library or framework like Apollo, configuring middleware and afterware layers are required, which makes things more confusing if not explained or demonstrated effectively. In this guide, we'll walk you through setting up the Apollo Client and its middleware/afterware to work with WooGraphQL.
+And if you're using a library or framework like Apollo, configuring middleware and afterware layers are required. In this guide, we'll walk you through setting up the Apollo Client and its middleware/afterware to work with WooGraphQL.
 
 ## Creating the Apollo Client instance
 
@@ -74,7 +74,7 @@ const client = new ApolloClient({
 });
 ```
 
-In the example you see the creation of our `client`. It include middleware/afterware callbacks managed by the `ApolloLink` class. For those not familiar with it, the `ApolloLink` class is allowed you to customize the flow of data by defining you networks behavior as a chain of link object. I'm stating this so you know the order of the callbacks is also important and it will be understood why as we define this callbacks themselves.
+In the example you see the creation of our `client`. It include middleware/afterware callbacks managed by the `ApolloLink` class. For those not familiar with it, the `ApolloLink` class allows you to customize the flow of data by defining your network's behavior as a chain of link objects. I'm stating this so you know the order of the callbacks is also important and it will be understood why as we define these callbacks themselves.
 
 ## Defining the `createSessionLink` function
 
@@ -104,14 +104,14 @@ function createSessionLink() {
 And that's our callback for applying the our session token to each request made through our client. Note that I am using the shorthand method of importing the `setContext` function, however most examples you will find will use the `ApolloLink` class directly to define the link object.
 
 ```javascript
-mport { ApolloLink } from '@apollo/client';
+import { ApolloLink } from '@apollo/client';
 
 const consoleLink = new ApolloLink((operation, forward) => {
   return operation.setContext(/* our callback */);
 });
 ```
 
-And this works fine too, but is more verbose and kinda overkill if your just make a stateless link like we are here. `Stateless` links are middleware callbacks that don't care to know anything about the context of the operation and just does it own thing regardless of what operation Apollo is about to execute.
+And this works fine too, but it's more verbose and kinda overkill if you're just making a stateless link like we are here. `Stateless` links are middleware callbacks that don't care to know anything about the context of the operation and just does it own thing regardless of what operation Apollo is about to execute.
 
 ## About the environment variables
 
@@ -141,7 +141,7 @@ export async function getSessionToken(forceFetch = false) {
 }
 ```
 
-The function is rather simple. It attempt to retrieve the `sessionToken` from `localStorage`, and if that fails or `forceFetch` is passed it fetches a new one using `fetchSessionToken()`. And `fetchSessionToken` is defined.
+The function is rather simple. It attempt to retrieve the `sessionToken` from `localStorage`, and if that fails or `forceFetch` is passed it fetches a new one using `fetchSessionToken()`. And now `fetchSessionToken` is defined.
 
 ```javascript
 import { GraphQLClient } from 'graphql-request';
@@ -172,7 +172,7 @@ async function fetchSessionToken() {
 
 ```
 
-For this example this works for most case but typically you want the obscure the retrieval of the token and the endpoint from the end-user, especially if dealing with authenticated users. There are a number of a ways to do this like serverless functions or Next.js API routes and they should be doing exactly what is done here retrieve the sessionToken and/or user authentication tokens and nothing else. See the `GetCartDocument` below in `./graphql`.
+This works for most cases but typically you want the obscure the retrieval of the token and the endpoint from the end-user, especially if dealing with authenticated users. There are a number of a ways to do this like serverless functions or Next.js API routes and they should be doing exactly what is done here: retrieve the sessionToken and/or user authentication tokens and nothing else. See the `GetCartDocument` below in `./graphql`.
 
 ```javascript
 import { gql } from '@apollo/client';
@@ -255,7 +255,7 @@ const targetErrors = [
 ];
 ```
 
-This our the error messages we are targeting. Each are exclusively results of an invalid tokens.
+These are the error messages we are targeting. Each are exclusively results of an invalid tokens.
 
 ```javascript
 let observable;
@@ -281,10 +281,11 @@ let observable;
             })
 ```
 
-This is the scary looking part if you are not familar with observables, but don't be. Observables are similar to Promises, but instead of handling a single asynchronous event, they handle multiple events over time. While Promises resolve only once and return a single value, Observables emit multiple values and can be canceled, providing greater control over asynchronous data streams.
-Our usage here is to tell Apollo to retry the last operation after we have retrieved a new token with `getSessionToken` if the current `graphQLError` matches any of our targetted errors, otherwise `observable` is left as a `undefined` value and Apollo continues as normal.
+This is the scary looking part if you are not familar with observables, so let me explain it briefly. Observables are similar to Promises, but instead of handling a single asynchronous event, they handle multiple events over time. While Promises resolve only once and return a single value, Observables emit multiple values and can be canceled, providing greater control over asynchronous data streams.
 
-Next is the `createUpdateLink` callback, responsible for retrieving an updated `sessionToken` from the `woocommerce-session` HTTP response token. The reason for this is the session token generated by WooGraphQL is self-managing and a new token with an updated expiration time of 14 days from the last action is generated on each request that a `woocommerce-session` HTTP request header is sent. To retrieve a store this updated token we use Apollo afterware.
+Our usage here is to tell Apollo to retry the last operation after we have retrieved a new token with `getSessionToken` if the current `graphQLError` matches any of our targetted errors, otherwise `observable` is left as an `undefined` value and Apollo continues as normal.
+
+Next is the `createUpdateLink` callback, responsible for retrieving an updated `sessionToken` from the `woocommerce-session` HTTP response token. The reason for this is the session token generated by WooGraphQL is self-managing and a new token with an updated expiration time of 14 days from the last action is generated on each request that a `woocommerce-session` HTTP request header is sent. To retrieve and store this updated token we use Apollo afterware.
 
 ## Defining the `createUpdateLink` function
 
@@ -313,15 +314,15 @@ function createUpdateLink(operation, forward) => {
 }
 ```
 
-This is an our Apollo afterware callback, and if you are wondering how does this differ from Apollo middleware look at the following.
+This is an our Apollo afterware callback, and if you are wondering how does this differ from Apollo middleware, look at the following.
 
 ```javascript
 return forward(operation).map((response) => {
 ```
 
-By calling `.map()` on the result of `forward()`, we're telling Apollo to execute this after operation completion, you can even take it a further by modifying the `response` object if necessary. It is not here, but I figured I should at least state that fact.
+By calling `.map()` on the result of `forward()`, we're telling Apollo to execute this after operation completion, you can even take it a further by modifying the `response` object if necessary. It is not necessary here, but I figured I should at least state that fact.
 
-We also put after the `createErrorLink` callback in our `from()` call when defining the `ApolloClient` to ensure it's never executed on a request failed due to an invalid token.
+We can also put the `createErrorLink` callback in our `from()` call when defining the `ApolloClient` to ensure it's never executed on a request failed due to an invalid token.
 
 And with the creation of the `createUpdateLink` link, we now have an Apollo Client that completely manages the WooCommerce session. Note that this doesn't account for all use cases, specifically dealing with registered WooCommerce customers. In such cases, you'll need to use a second JWT for identifying their WordPress account, called an Authentication Token or auth token for short. For handling user authentication, auth tokens, and refresh tokens, refer to the next guide.
 

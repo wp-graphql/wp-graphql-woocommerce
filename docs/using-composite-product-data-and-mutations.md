@@ -7,9 +7,9 @@ author: "Geoff Taylor"
 
 # Using Composite Product Data + Mutations
 
-In this section, we will be discussing how to use composite product data and mutations. We will be building on the code written in the previous sections of the documentation, specifically the sections on [using product data](https://woographql.com/docs/using-product-data) and [handling user session and using cart mutations](https://woographql.com/docs/handling-user-session-and-using-cart-mutations).
+In this section, we will be discussing how to use composite product data and mutations. We will be building on the code written in previous sections of the documentation, specifically the sections on [using product data](https://woographql.com/docs/using-product-data) and [handling user session and using cart mutations](https://woographql.com/docs/handling-user-session-and-using-cart-mutations).
 
-Composite products are a unique type of product in WooCommerce that allow store owners to build complex products by combining simple products. These products are designed to manage and provide a lot of visual context data, like the behavior for displaying certain parts of components or totals. It's up to the demand of the store and client application how much of this context should be used.
+Composite products are a unique type of product in WooCommerce that allow store owners to build complex products by combining simple products. These products are designed to manage and provide a lot of visual context data, like the behavior for displaying certain parts of components or totals. It's up to the demands of the store and client application how much of this context should be used.
 
 When adding a composite product to the cart, all components must be provided to the `AddCompositeToCart`'s `configuration` field, even optional components.
 
@@ -123,7 +123,7 @@ The component renders the product information and provides buttons to add, updat
 
 This component is a good starting point. You can further customize and extend it to suit your specific needs.
 
-Alright, let's start by updating the `SingleProduct` component to support composite products. We'll use the `CompositeCard` component code you provided, but we'll rename it to `CompositeProduct` for consistency. 
+Alright, let's start by updating the `SingleProduct` component to support composite products. We'll use the `CompositeCard` component code provided, but we'll rename it to `CompositeProduct` for consistency. 
 
 Here's the updated `SingleProduct` component:
 
@@ -241,9 +241,9 @@ export default useCartMutations;
 
 In the updated hook, we've added a new mutation `addCompositeToCart` and a new case in the `mutate` function to handle adding composite products to the cart.
 
-Now before finish up, let's revisit the most the facts touched upon at the started of section:
+Now before finishing up, let's revisit the facts touched upon at the started of section:
 
-1. Composite products are designed to manage and provide a lot of visual context data, like the behavior for displaying certain parts of components or totals. It's up to the demand of the store and client application how much of this context should be used. Some specific GraphQL fields that provide this optional context are the `CompositeProduct` type's `addToCartFormLocation` field, the `CompositeProductComponent` type's `optionsStyle` and `paginationStyle`.
+1. Composite products are designed to manage and provide a lot of visual context data, like the behavior for displaying certain parts of components or totals. It's up to the demands of the store and client application how much of this context should be used. Some specific GraphQL fields that provide this optional context are the `CompositeProduct` type's `addToCartFormLocation` field, the `CompositeProductComponent` type's `optionsStyle` and `paginationStyle`.
 
 2. All components must be provided to the `AddCompositeToCart`'s `configuration` field, even optional components. Optional components should be set with a quantity of `0`.
 

@@ -120,7 +120,7 @@ The `ShopPage` component fetches the data using the `nodeByUri` query and update
 
 The `ProductListing` component takes the products data and renders a list of products.
 
-_Notice that we are not checking to see if the fields that are nullable aren't empty values before rendering them and remember you should always do so, we just skipped it here to for readability._
+_Notice that we are not checking to see if the fields that are nullable aren't empty values before rendering them. You should always do so, but we skip it here for readability._
 
 ```jsx
 import React from 'react';
@@ -148,7 +148,7 @@ export default ProductListing;
 
 With the `ProductListing` component, we can display the product listing for both collection and single data object. This approach can also be applied to other pages such as `/product-category/*` or `/product-tag/*` pages, with the ability to change there slug names as well in the WP Dashboard.
 
-In the next section, we will focused further on rendering a product listing using the `nodeByUri` query by exploring adding features like pagination, sorting, and filtering to our shop page.
+In the next section, we will focus further on rendering a product listing using the `nodeByUri` query by exploring adding features like pagination, sorting, and filtering to our shop page.
 
 ## Pagination
 
@@ -486,7 +486,7 @@ const ShopPage = () => {
 export default ShopPage;
 ```
 
-With these changes, you can now search for products by typing in the search input, and the products will be fetched and displayed based on the search query. This is far from complete it needs many more things, like CSS styling, field validation, and error handling to name few.
+With these changes, you can now search for products by typing in the search input, and the products will be fetched and displayed based on the search query. This is far from complete. It needs many more things, like CSS styling, field validation, and error handling to name a few.
 
 ## Conclusion
 
