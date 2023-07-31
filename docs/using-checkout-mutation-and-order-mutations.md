@@ -7,7 +7,7 @@ author: "Geoff Taylor"
 
 # Using Checkout Mutation + Order Mutations
 
-This section of the documentation will focus on how to handle two distinct checkout scenarios using the `checkout` and `createOrder` mutations provided by WooGraphQL. 
+This section of the documentation will focus on how to handle two distinct checkout scenarios using the `checkout` and `createOrder` mutations provided by WooGraphQL.
 
 ## Scenario 1: Handling Checkout for an Existing User
 

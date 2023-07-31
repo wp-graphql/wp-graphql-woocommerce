@@ -7,9 +7,9 @@ author: "Geoff Taylor"
 
 # Handling User Authentication
 
-In this guide, we'll pick up where the last one stopped and focus on handling user authentication, auth tokens, and refresh tokens. This will allow your application to not only manage WooCommerce sessions effectively but also handle WordPress authentication, providing a seamless experience for your users.
+In this section, we'll pick up where the last one stopped and focus on handling user authentication, auth tokens, and refresh tokens. This will allow your application to not only manage WooCommerce sessions effectively but also handle WordPress authentication, providing a seamless experience for your users.
 
-The execution of this part of the guide should be similar to the first part, with some additional steps to account for the different behavior around validation and renewal of auth tokens. We'll walk you through modifying the `createSessionLink`, `fetchSessionToken`,
+The execution of this section of the documentation should be similar to the [previous section](configuring-graphql-client-for-user-session.md), with some additional steps to account for the different behavior around validation and renewal of auth tokens. We'll walk you through modifying the `createSessionLink`, `fetchSessionToken`,
 and `createErrorLink` functions, creating the `getAuthToken` function, and implementing the necessary steps to manage auth token renewal.
 
 ## Updating the `createSessionLink` function
@@ -58,7 +58,7 @@ const RefreshAuthTokenDocument = gql`
 `;
 ```
 
-To help you understand the differences, let's briefly discuss how the session token and auth token handle renewal. As stated in the previous guide session tokens are self-managed and renewed automatically by WooGraphQL when sent within the 14 day limit, and an updated session token is generated on every request. All you have to do is retrieve it. Auth tokens, on the other hand, require you to use the mutation above and the refresh token that's distributed with the auth token to get a new auth token before the auth token expires, which is approximately 15 minutes after creation 😅.
+To help you understand the differences, let's briefly discuss how the session token and auth token handle renewal. As stated in the previous section session tokens are self-managed and renewed automatically by WooGraphQL when sent within the 14 day limit, and an updated session token is generated on every request. All you have to do is retrieve it. Auth tokens, on the other hand, require you to use the mutation above and the refresh token that's distributed with the auth token to get a new auth token before the auth token expires, which is approximately 15 minutes after creation 😅.
 
 
 
@@ -87,7 +87,7 @@ export async function getAuthToken() {
 }
 ```
 
-This should look familiar if you read the previous guide, as it's almost identical `getSessionToken()`, only difference is there is no `forceFetch` option because it's simply not needed.
+This should look familiar if you read the previous section, as it's almost identical `getSessionToken()`, only difference is there is no `forceFetch` option because it's simply not needed.
 
 ```javascript
 let tokenSetter;
@@ -131,14 +131,14 @@ async function fetchAuthToken() {
 }
 ```
 
-There is a lot going on here, but it's very similar to our `fetchSessionToken()` from the previous guide. The difference here is the auth token is in `sessionStorage` instead of `localStorage`, which means it will be deleted when the user closes the browser. A new auth token will be needed every time the user opens the page after closing the browser. To better breakdown the function, let's step through the possible outcomes.
+There is a lot going on here, but it's very similar to our `fetchSessionToken()` from the previous section. The difference here is the auth token is in `sessionStorage` instead of `localStorage`, which means it will be deleted when the user closes the browser. A new auth token will be needed every time the user opens the page after closing the browser. To better breakdown the function, let's step through the possible outcomes.
 
 1. A quiet exit if no `refreshToken` is found. This is the scenario of an unauthenticated user. This is pretty much any new user that shows up to your application.
 2. An error thrown if no `authToken` is returned. This is the scenario of an user with a invalid/expired refresh token, in which case you may just want to delete the stored refresh token and quietly exit the function.
 3. The error handler is in case anything goes wrong during the `GraphQLClient.query()` call.
 4. Finally, if nothing goes wrong, `tokenSetter` is assigned with a new recurring fetcher set for 5 minute interval and the `authToken` is returned.
 
-The purpose of the `tokenSetter` fetcher is to address the short lifespan of the `authToken`. This also ensures that a invalid `authToken` is never sent, and because of this we don't have update the `createErrorLink` or `createUpdateLink` callbacks from the previous guide, but we do have to update our `fetchSessionToken()` function.
+The purpose of the `tokenSetter` fetcher is to address the short lifespan of the `authToken`. This also ensures that a invalid `authToken` is never sent, and because of this we don't have update the `createErrorLink` or `createUpdateLink` callbacks from the previous section, but we do have to update our `fetchSessionToken()` function.
 
 ## Updating the `fetchSessionToken()` function
 
@@ -251,4 +251,4 @@ Just like with `fetchSessionToken()`, it is highly recommended that you obscure 
 
 In summary, we demonstrated how to configure a GraphQL client to work with WooGraphQL, manage WooCommerce sessions, and handle WordPress authentication. With this setup, you should be able to create a robust and secure client that manages user authentication efficiently and seamlessly.
 
-The next guide will begin teaching how you best utilize the data received from WooGraphQL to create showstopping components.
+The next section will begin teaching how you best utilize the data received from WooGraphQL to create showstopping components.

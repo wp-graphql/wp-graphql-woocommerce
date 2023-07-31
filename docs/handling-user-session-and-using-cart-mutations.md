@@ -7,14 +7,14 @@ author: "Geoff Taylor"
 
 # Handling User Session and Using Cart Mutations
 
-In this guide, we will demonstrate how to implement cart controls on the single product page, which will take into account the state of the cart stored in the user session. This guide builds upon the app created in the previous guides, so use the code samples from those as a starting point. The guide is broken down into three parts: The implementation and use of `UserSessionProvider.jsx`, `useCartMutations.js`, and `CartOptions.jsx`.
+In this section, we will demonstrate how to implement cart controls on the single product page, which will take into account the state of the cart stored in the user session. This section builds upon the app created in the previous sections, so use the code samples from those as a starting point. The section is broken down into three parts: The implementation and use of `UserSessionProvider.jsx`, `useCartMutations.js`, and `CartOptions.jsx`.
 
 ## Prerequisites
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
 - A WPGraphQL/WooGraphQL backend.
-- Read previous guides on [Routing By URI](routing-by-uri.md) and [Using Product Data](using-product.data.md)
+- Read previous sections on [Routing By URI](routing-by-uri.md) and [Using Product Data](using-product.data.md)
 
 ## Step 0: Create our `graphql.js` file
 
@@ -435,7 +435,7 @@ We won't go over them into much detail here but you can learn more about them in
 
 ## Step 1: UserSessionProvider.jsx
 
-`UserSessionProvider.jsx` is a state manager that queries and maintains the app's copy of the end-user's session state from WooCommerce on the backend. We'll also be implementing a helper hook called `useSession()` that will provide the user session state to components nested within the provider. In order for the `UserSessionProvider` code in our samples to work properly, the end user will have to implement an ApolloClient with a middleware layer configured to manage the WooCommerce session token, like the one demonstrated in our [**Configuring GraphQL Client for User Session**](configuring-graphql-client-for-user-session.md) guide.
+`UserSessionProvider.jsx` is a state manager that queries and maintains the app's copy of the end-user's session state from WooCommerce on the backend. We'll also be implementing a helper hook called `useSession()` that will provide the user session state to components nested within the provider. In order for the `UserSessionProvider` code in our samples to work properly, the end user will have to implement an ApolloClient with a middleware layer configured to manage the WooCommerce session token, like the one demonstrated in our [**Configuring GraphQL Client for User Session**](configuring-graphql-client-for-user-session.md) section.
 
 Here is the code for `UserSessionProvider.jsx`:
 
@@ -694,7 +694,7 @@ With the `useCartMutations` hook implemented, you can use it within your compone
 
 You can now use this hook to create and manage cart interactions in your components. For instance, you can create an "Add to Cart" button that adds items to the cart, updates the quantity of an existing item, or removes an item from the cart.
 
-Here's an example of how you could use the useCartMutations hook within a React component using our SingleProduct component from the previous guide:
+Here's an example of how you could use the useCartMutations hook within a React component using our SingleProduct component from the previous section:
 
 ```jsx
 import React, { useEffect, useState } from 'react';
@@ -780,7 +780,7 @@ In this example, we have our `SingleProduct` component that receives a `productI
 
 The `handleAddOrUpdateAction` and `handleRemoveAction` functions call the `mutate` function returned by the `useCartMutations`. The `loading` flag is used to disable the buttons while any cart mutations are in progress.
 
-This is just an example of how you could use the `useCartMutations` hook using simple products, but as I'm sure you noticed, it support a `variationId` as the second parameter. Implementing Variable product support in our `SingleProduct` component is out of the scope this guide, but with what has been provided you should have no problem implementing variable product support.
+This is just an example of how you could use the `useCartMutations` hook using simple products, but as I'm sure you noticed, it support a `variationId` as the second parameter. Implementing Variable product support in our `SingleProduct` component is out of the scope this section, but with what has been provided you should have no problem implementing variable product support.
 
 ## Conclusion
 

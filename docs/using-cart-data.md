@@ -7,14 +7,14 @@ author: "Geoff Taylor"
 
 # Using Cart Data
 
-In this guide, we will create a "/cart" page that displays a table of the items in the cart. We will use the `UserSessionProvider` created in the last guide to pull the cart data using `useSession()`. The table will have four columns: `Product`, `Price`, `Quantity`, and `Total`. We will also create a cart totals table that displays the shipping totals, applied coupons, and the final total. Let's start by implementing the changes to the `useCartMutations` hook also created in the previous guide.
+In this section, we will create a "/cart" page that displays a table of the items in the cart. We will use the `UserSessionProvider` created in the last section to pull the cart data using `useSession()`. The table will have four columns: `Product`, `Price`, `Quantity`, and `Total`. We will also create a cart totals table that displays the shipping totals, applied coupons, and the final total. Let's start by implementing the changes to the `useCartMutations` hook also created in the previous section.
 
 ## Prerequisites
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
 - A setup WPGraphQL/WooGraphQL backend.
-- Read previous guides on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
+- Read previous sections on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
 
 ## Step 0: Create `graphql.js` file
 
@@ -751,4 +751,4 @@ Now, you can use the `CartPage` component in your app, allowing users to interac
 
 ## Conclusion
 
-With this you're essentially ready to develop a complete application. In the next couple guides we'll be exploring taking the user through checkout by passing the session back to WordPress.
+With this you're essentially ready to develop a complete application. In the next couple sections we'll be exploring taking the user through checkout.

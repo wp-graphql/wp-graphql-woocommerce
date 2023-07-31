@@ -7,9 +7,9 @@ author: "Geoff Taylor"
 
 # Configuring a GraphQL Client for WooCommerce User Session Management
 
-In this comprehensive guide, we'll walk you through the process of configuring a GraphQL client to manage user sessions and credentials when working with WooGraphQL. By following the steps outlined in this tutorial, you'll learn how to create a GraphQL client that maintains a valid WooCommerce session in the `woocommerce_sessions` DB table. This knowledge will enable you to build robust applications that interact smoothly with WooCommerce while providing a seamless experience for your users and shortening development time.
+In this section, we'll walk you through the process of configuring a GraphQL client to manage user sessions and credentials when working with WooGraphQL. By following the steps outlined in this tutorial, you'll learn how to create a GraphQL client that maintains a valid WooCommerce session in the `woocommerce_sessions` DB table. This knowledge will enable you to build robust applications that interact smoothly with WooCommerce while providing a seamless experience for your users and shortening development time.
 
-By properly handling the session token, you can implement session pass-off functionality, allowing you to fallback on the cart page, my-account page, or any other page living in WordPress that relies on user sessions. (Note that implementing the session pass-off functionality is out of the scope of this guide.) So, let's dive in and explore the intricacies of setting up a GraphQL client that effectively manages user sessions for your e-commerce store!
+By properly handling the session token, you can implement session pass-off functionality, allowing you to fallback on the cart page, my-account page, or any other page living in WordPress that relies on user sessions. (Note that implementing the session pass-off functionality is out of the scope of this section.) So, let's dive in and explore the intricacies of setting up a GraphQL client that effectively manages user sessions for your e-commerce store!
 
 ## Sending the `woocommerce-session` HTTP request header
 
@@ -52,7 +52,7 @@ fetch(endpoint, {
 
 This works for simple streamlined applications that don't rely heavily on cart functionality. Note that this example also does not retrieve the updated token from the `woocommerce-session` HTTP response header.
 
-And if you're using a library or framework like Apollo, configuring middleware and afterware layers are required. In this guide, we'll walk you through setting up the Apollo Client and its middleware/afterware to work with WooGraphQL.
+And if you're using a library or framework like Apollo, configuring middleware and afterware layers are required. In this section, we'll walk you through setting up the Apollo Client and its middleware/afterware to work with WooGraphQL.
 
 ## Creating the Apollo Client instance
 
@@ -115,7 +115,7 @@ And this works fine too, but it's more verbose and kinda overkill if you're just
 
 ## About the environment variables
 
-Before we dive into the guide, it's important to note that the `process.env.*` variables used throughout the tutorial are simply string values stored in an `.env` file and loaded using the [**dotenv**](https://www.npmjs.com/package/dotenv) package. As a reader, you can replace these variables with any values that suit your needs.
+Before we dive into the section, it's important to note that the `process.env.*` variables used throughout the tutorial are simply string values stored in an `.env` file and loaded using the [**dotenv**](https://www.npmjs.com/package/dotenv) package. As a reader, you can replace these variables with any values that suit your needs.
 
 Here's a sample .env file to help you get started:
 
@@ -324,6 +324,6 @@ By calling `.map()` on the result of `forward()`, we're telling Apollo to execut
 
 We can also put the `createErrorLink` callback in our `from()` call when defining the `ApolloClient` to ensure it's never executed on a request failed due to an invalid token.
 
-And with the creation of the `createUpdateLink` link, we now have an Apollo Client that completely manages the WooCommerce session. Note that this doesn't account for all use cases, specifically dealing with registered WooCommerce customers. In such cases, you'll need to use a second JWT for identifying their WordPress account, called an Authentication Token or auth token for short. For handling user authentication, auth tokens, and refresh tokens, refer to the next guide.
+And with the creation of the `createUpdateLink` link, we now have an Apollo Client that completely manages the WooCommerce session. Note that this doesn't account for all use cases, specifically dealing with registered WooCommerce customers. In such cases, you'll need to use a second JWT for identifying their WordPress account, called an Authentication Token or auth token for short. For handling user authentication, auth tokens, and refresh tokens, refer to the next section.
 
 This should provide you with a solid foundation for setting up a GraphQL client that effectively manages user sessions in your e-commerce application. By following the steps outlined, you'll be able to create a seamless experience for your users when interacting with both WooCommerce, ultimately saving development time and effort.

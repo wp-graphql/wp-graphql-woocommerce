@@ -7,7 +7,7 @@ author: "Geoff Taylor"
 
 # Routing By URI
 
-In this guide, we will create a simple app that demonstrates routing with WPGraphQL's `nodeByUri` query. We will use this query to fetch data for a shop page that displays a list of products with their "name", "shortDescription", "price", and "image". The shop page will use the uri parameter to fetch the data and render the page accordingly.
+In this section, we will create a simple app that demonstrates routing with WPGraphQL's `nodeByUri` query. We will use this query to fetch data for a shop page that displays a list of products with their "name", "shortDescription", "price", and "image". The shop page will use the uri parameter to fetch the data and render the page accordingly.
 
 ## Prerequisites
 
