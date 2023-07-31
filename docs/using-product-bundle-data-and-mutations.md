@@ -5,9 +5,11 @@ keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, Product Bundle functiona
 author: "Geoff Taylor"
 ---
 
-## Using Product Bundle Data + Mutations
+# Using Product Bundle Data + Mutations
 
-In this section, we will learn how to handle product bundles using WooGraphQL. Product bundles are a group of products that are sold together as a set. This functionality is extremely useful for e-commerce websites that sell products in bundles or sets.
+In the previous sections, we have explored various aspects of using WooGraphQL, from handling user sessions and cart mutations to working with different product types. Now, we are going to delve into the world of product bundles. Product bundles are a powerful feature in WooCommerce that allows merchants to sell multiple products together as a set, often at a discounted price. This can be a great way to increase average order value and move more inventory.
+
+In this section, we will demonstrate how to use the WooGraphQL API to work with product bundle data and mutations. We will build upon the code from the previous sections, specifically the ones on "Using Product Data" and "Creating Session Provider and using Cart Mutations". This will involve fetching product bundle data, adding product bundles to the cart, and handling the unique specifications of product bundles.
 
 We will be using the `BundleProduct` component and updating the `SingleProduct` and `useCartMutations` components to handle product bundles. We will be using the code samples from the [Using Product Data](https://woographql.com/docs/using-product-data) and [Handling User Session and Using Cart Mutations](https://woographql.com/docs/handling-user-session-and-using-cart-mutations) as a starting point.
 
@@ -84,4 +86,12 @@ export default function useCartMutations(productId) {
 }
 ```
 
-In this section, we have learned how to handle product bundles in WooGraphQL. We have updated the `SingleProduct` and `useCartMutations` components to handle product bundles, and we have created a new `BundleProduct` component for displaying product bundles. With these updates, your application should now be able to handle product bundles effectively.
+Now we have updated the `SingleProduct` and `useCartMutations` components to handle product bundles, and we have created a new `BundleProduct` component for displaying product bundles. With these updates, your application should now be able to handle product bundles effectively.
+
+## Conclusion
+
+Congratulations! You have now learned how to work with product bundle data and mutations using the WooGraphQL API. This includes fetching product bundle data, adding product bundles to the cart, and handling the unique specifications of product bundles.
+
+Remember, while product bundles are similar to other product types in many ways, they have unique specifications that require special handling. Therefore, it's important to understand these differences and how to work with them when building your headless WooCommerce application.
+
+In the next sections, we will continue to explore more advanced features of WooGraphQL, including working with product add-ons. Stay tuned!

@@ -5,9 +5,19 @@ keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, checkout mutation, creat
 author: "Geoff Taylor"
 ---
 
-# Using Checkout Mutation + Order Mutations
+# Using Checkout Mutation and Order Mutations
 
-This section of the documentation will focus on how to handle two distinct checkout scenarios using the `checkout` and `createOrder` mutations provided by WooGraphQL.
+In this section of the documentation, we will be building upon the knowledge gained from previous sections to explore more advanced functionalities provided by WooGraphQL. Specifically, we will delve into the `checkout` mutation and `createOrder` mutation, and how they can be used to handle repeat shoppers with existing payment methods and manage WooCommerce's session respectively.
+
+The `checkout` mutation allows us to handle repeat shoppers who have existing payment methods. This is particularly useful in creating a seamless shopping experience for your customers, as they do not have to re-enter their payment details every time they shop.
+
+On the other hand, the `createOrder` mutation allows us to bypass WooCommerce's session management completely. This is especially useful in scenarios where you want to have more control over the session management in your application.
+
+In this section, we will provide detailed examples and code snippets to demonstrate how these mutations can be used in a real-world application. We will also discuss potential use cases and best practices for using these mutations.
+
+Before proceeding, it is recommended that you have a good understanding of the basics of WooGraphQL and have gone through the previous sections of this documentation. This will ensure that you have the necessary background knowledge to fully understand the concepts and examples presented in this section.
+
+Let's get started!
 
 ## Scenario 1: Handling Checkout for an Existing User
 

@@ -17,7 +17,7 @@ With these prerequisites and objectives in mind, let's dive into creating our or
 
 ## Creating the Order Status Page
 
-First, let's create a simple form that takes an email as input. When the form is submitted, a list of orders associated with the entered email will be displayed. 
+First, let's create a simple form that takes an email as input. When the form is submitted, a list of orders associated with the entered email will be displayed.
 
 ```jsx
 import React, { useState } from 'react';
@@ -89,7 +89,7 @@ After the email has been submitted, we will use the `updateCustomer` callback fr
 
 As mentioned above, this is not the ideal approach due to privacy concerns.
 
-Let's create a Next.js API route page that takes a billingEmail address and runs the query against the endpoint using `GraphQLClient` from the `graphql-request` library, and returns the orders. 
+Let's create a Next.js API route page that takes a billingEmail address and runs the query against the endpoint using `GraphQLClient` from the `graphql-request` library, and returns the orders.
 
 ```jsx
 import { GraphQLClient } from 'graphql-request';
@@ -124,8 +124,16 @@ export default async function handler(req, res) {
 }
 ```
 
-Replace `'YOUR_GRAPHQL_ENDPOINT'` with your GraphQL endpoint and `'Bearer YOUR_WORDPRESS_APPLICATION_PASSWORD'` with your WordPress Application Password. 
+Replace `'YOUR_GRAPHQL_ENDPOINT'` with your GraphQL endpoint and `'Bearer YOUR_WORDPRESS_APPLICATION_PASSWORD'` with your WordPress Application Password.
 
 For more information on WordPress Application Passwords, refer to the [official WordPress Application Password documentation](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/application-passwords/).
 
-In the next section, we will build upon this code to create the account pages for an authenticated user.
+## Conclusion
+
+Well done! You've successfully navigated through the process of using order data in a WooGraphQL context. We've explored how to build a basic order status page in React.js, which takes an email address and returns a list of all the orders associated with that email. We've also discussed the recommended method of retrieving and utilizing order data, which involves using a serverless function like a Next API route.
+
+Remember, while the method we initially demonstrated works, it's not the most secure or efficient way to handle order data. We recommend using a serverless function with admin access, provided by a WordPress Application Password, to query for the orders. This method is more secure and efficient, and it allows for greater flexibility and control over the data.
+
+As you continue to build your headless WooCommerce application, keep these principles in mind. Understanding how to effectively and securely handle order data is crucial for providing a smooth and secure user experience.
+
+In the next sections, we will delve deeper into the capabilities of WooGraphQL, exploring topics like customer data and mutations, subscription data and mutations, and more. Stay tuned!

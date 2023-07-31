@@ -127,4 +127,12 @@ In the `SubscriptionsPage` component, we have added `renew`, `change payment met
 
 To learn more about the `changeSubPaymentMethodUrl` and `renewSubPaymentMethodUrl` URLs, please refer to the [Harmonizing with WordPress](https://woographql.com/docs/harmonizing-with-wordpress#harmonizing-with-wordpress) section of the WooGraphQL documentation.
 
-In the next sections, we will delve deeper into how to utilize other types of product data to further enhance our application.
+## Conclusion
+
+In this section, we have explored the Subscription functionality provided by WooGraphQL Pro. We have demonstrated how to rewrite the `ProductListing` and `SingleProduct` components to support `SubscriptionProduct` types. We also added a `Subscriptions` page to the account page clone, which utilizes the `subscriptions` field on the `Customer` type that returns a list of `SubscriptionOrder`.
+
+It's important to note that we did not discuss adding subscription products to the cart in this section. This is because the process of adding subscription products to the cart is no different than adding Simple products or variations, depending on whether you are utilizing simple subscription products or variable subscription products.
+
+However, this will not be the case in the upcoming sections on Composite Products and Product Bundles. These product types have unique specifications that require a different approach when adding them to the cart. We will delve into these specifics in the following sections, providing detailed examples and code snippets to guide you through the process.
+
+We hope this section has been informative and helpful in understanding how to use Subscription Data and Mutations with WooGraphQL Pro. As always, we encourage you to experiment with these concepts and apply them to your own projects. Happy coding!
