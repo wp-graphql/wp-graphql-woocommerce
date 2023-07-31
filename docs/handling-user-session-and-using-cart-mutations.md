@@ -7,26 +7,19 @@ author: "Geoff Taylor"
 
 # Handling User Session and Using Cart Mutations
 
-In this guide, we will demonstrate how to implement cart controls on the single product page, which will take into account the state of the cart stored in the user session. This guide builds upon the app created in the previous guides, so use the code samples from them as a starting point. The guide is broken down into three parts: The implementation and use of `UserSessionProvider.jsx`, `useCartMutations.js`, and `CartOptions.jsx`.
+In this section, we will demonstrate how to implement cart controls on the single product page, which will take into account the state of the cart stored in the user session. This section builds upon the app created in the previous sections, so use the code samples from those as a starting point. The section is broken down into three parts: The implementation and use of `UserSessionProvider.jsx`, `useCartMutations.js`, and `CartOptions.jsx`.
 
 ## Prerequisites
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
-- A setup WPGraphQL/WooGraphQL backend.
-- Read previous guides on [Routing By URI](routing-by-uri.md) and [Using Product Data](using-product.data.md)
+- A WPGraphQL/WooGraphQL backend.
+- Read previous sections on [Routing By URI](routing-by-uri.md) and [Using Product Data](using-product.data.md)
 
 ## Step 0: Create our `graphql.js` file
 
 ```javascript
 import { gql } from '@apollo/client';
-
-export const CustomerContent = gql`
-  fragment CustomerContent on Customer {
-    id
-    sessionToken
-  }
-`;
 
 export const ProductContentSlice = gql`
   fragment ProductContentSlice on Product {
@@ -197,6 +190,8 @@ export const CartItemContent = gql`
       value
     }
   }
+  ${ProductContentSlice}
+  ${ProductVariationContentSlice}
 `;
 
 export const CartContent = gql`
@@ -235,7 +230,103 @@ export const CartContent = gql`
     discountTax
     discountTotal
   }
+  ${CartItemContent}
 `;
+
+export const AddressFields = gql`
+  fragment AddressFields on CustomerAddress {
+    firstName
+    lastName
+    company
+    address1
+    address2
+    city
+    state
+    country
+    postcode
+    phone
+  }
+`;
+
+export const LineItemFields = gql`
+  fragment LineItemFields on LineItem {
+    databaseId
+    product {
+      node {
+        ...ProductContentSlice
+      }
+    }
+    orderId
+    quantity
+    subtotal
+    total
+    totalTax
+  }
+  ${ProductContentSlice}
+`;
+
+export const OrderFields = gql`
+  fragment OrderFields on Order {
+    id
+    databaseId
+    orderNumber
+    orderVersion
+    status
+    needsProcessing
+    subtotal
+    paymentMethodTitle
+    total
+    totalTax
+    date
+    dateCompleted
+    datePaid
+    billing {
+      ...AddressFields
+    }
+    shipping {
+      ...AddressFields
+    }
+    lineItems(first: 100) {
+      nodes {
+          ...LineItemFields
+      }
+    }
+  }
+  ${AddressFields}
+  ${LineItemFields}
+`;
+
+export const CustomerFields = gql`
+  fragment CustomerFields on Customer {
+    id
+    databaseId
+    firstName
+    lastName
+    displayName
+    billing {
+      ...AddressFields
+    }
+    shipping {
+      ...AddressFields
+    }
+    orders(first: 100) {
+      nodes {
+        ...OrderFields
+      } 
+    }
+  }
+  ${AddressFields}
+  ${OrderFields}
+`;
+
+export const CustomerContent = gql`
+  fragment CustomerContent on Customer {
+    id
+    sessionToken
+  }
+`;
+
+
 
 export const GetProduct = gql`
   query GetProduct($id: ID!, $idType: ProductIdTypeEnum) {
@@ -243,6 +334,7 @@ export const GetProduct = gql`
       ...ProductContentFull
     }
   }
+  ${ProductContentFull}
 `;
 
 export const GetProductVariation = gql`
@@ -251,6 +343,7 @@ export const GetProductVariation = gql`
       ...VariationContent
     }
   }
+  ${VariationContent}
 `;
 
 export const GetCart = gql`
@@ -262,6 +355,8 @@ export const GetCart = gql`
       ...CustomerContent
     }
   }
+  ${CartContent}
+  ${CustomerContent}
 `;
 
 export const AddToCart = gql`
@@ -277,6 +372,8 @@ export const AddToCart = gql`
       }
     }
   }
+  ${CartContent}
+  ${CartItemContent}
 `;
 
 export const UpdateCartItemQuantities = gql`
@@ -290,6 +387,8 @@ export const UpdateCartItemQuantities = gql`
       }
     }
   }
+  ${CartContent}
+  ${CartItemContent}
 `;
 
 export const RemoveItemsFromCart = gql`
@@ -303,23 +402,47 @@ export const RemoveItemsFromCart = gql`
       }
     }
   }
+  ${CartContent}
+  ${CartItemContent}
+`;
+export const Login = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(input: { username: $username, password: $password }) {
+      authToken
+      refreshToken
+      customer {
+        ...CustomerFields
+      }
+    }
+  }
+  ${CustomerFields}
 `;
 
+export const UpdateCustomer = gql`
+  mutation UpdateCustomer($input: UpdateCustomerInput!) {
+    updateCustomer(input: $input) {
+      customer {
+        ...CustomerFields
+      }
+    }
+  }
+  ${CustomerFields}
+`;
 ```
 
-We've included all the queries will be using going forward and leveraging some fragments here and there. Now we can move onto implementing the components sourcing these queries and mutations.
+We've included all the queries we'll be using going forward and leveraging some fragments here and there. Now we can move onto implementing the components sourcing these queries and mutations.
 We won't go over them into much detail here but you can learn more about them in the [schema](/schema) docs.
 
 ## Step 1: UserSessionProvider.jsx
 
-`UserSessionProvider.jsx` is a state manager that queries and maintains the app's copy of the end-user's session state from WooCommerce on the backend. We'll also be implementing a helper hook called `useSession()` that will provide the user session state to components nested within the provider. In order for the `UserSessionProvider` code in our samples to work properly, the end user will have to implement an ApolloClient with a middleware layer configured to manage the WooCommerce session token, like the one demonstrated in our [**Configuring GraphQL Client for User Session**](configuring-graphql-client-for-user-session.md) guide.
+`UserSessionProvider.jsx` is a state manager that queries and maintains the app's copy of the end-user's session state from WooCommerce on the backend. We'll also be implementing a helper hook called `useSession()` that will provide the user session state to components nested within the provider. In order for the `UserSessionProvider` code in our samples to work properly, the end user will have to implement an ApolloClient with a middleware layer configured to manage the WooCommerce session token, like the one demonstrated in our [**Configuring GraphQL Client for User Session**](configuring-graphql-client-for-user-session.md) section.
 
 Here is the code for `UserSessionProvider.jsx`:
 
 ```jsx
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { useQuery } from '@apollo/client';
-import { GetCart } from './graphql';
+import { useQuery, useMutation } from '@apollo/client';
+import { GetCart, Login, UpdateCustomer } from './graphql';
 
 const initialSession = {
   cart: null,
@@ -351,6 +474,8 @@ export function SessionProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialSession);
 
   const { data, loading: fetching } = useQuery(GetCart);
+  const [executeLogin, { data: loginData, errors: loginErrors }] = useMutation(Login);
+  const [executeUpdateCustomer, { data: updateCustomerData, errors: updateCustomerErrors }] = useMutation(UpdateCustomer);
 
   useEffect(() => {
     if (data?.cart) {
@@ -378,11 +503,44 @@ export function SessionProvider({ children }) {
     payload: customer,
   });
 
+  useEffect(() => {
+    if (loginData.login) {
+      const { 
+        authToken,
+        refreshToken,
+        customer
+      } = loginData.login;
+
+      sessionStorage.getItem(process.env.AUTH_TOKEN_SS_KEY, authToken);
+      localStorage.getItem(process.env.REFRESH_TOKEN_LS_KEY, refreshToken);
+
+      setCustomer(customer);
+    }
+  }, [loginData]);
+
+  useEffect(() => {
+    if (updateCustomerData.updateCustomer) {
+      const { customer } = updateCustomerData.updateCustomer;
+
+      setCustomer(customer);
+    }
+  }, [updateCustomerData]);
+
+  const login = (username, password) => {
+    return executeLogin({ username, password });
+  }
+
+  const updateCustomer = (input) => {
+    return executeUpdateCustomer({ input });
+  }
+
   const store = {
     ...state,
     fetching,
     setCart,
     setCustomer,
+    login,
+    updateCustomer,
   };
   return (
     <Provider value={store}>{children}</Provider>
@@ -392,7 +550,7 @@ export function SessionProvider({ children }) {
 export const useSession = () => useContext(SessionContext);
 ```
 
-To use the `SessionProvider`, you should wrap your root app component with it and wrap the `SessionProvider` with an ApolloProvider set with our session token managing ApolloClient. Make sure to demonstrate this for the reader against our previous code samples from previous posts.
+To use the `SessionProvider`, you should wrap your root app component with it and wrap the `SessionProvider` with an ApolloProvider set with our session token managing ApolloClient.
 
 ## Step 2: useCartMutations.js
 
@@ -536,7 +694,7 @@ With the `useCartMutations` hook implemented, you can use it within your compone
 
 You can now use this hook to create and manage cart interactions in your components. For instance, you can create an "Add to Cart" button that adds items to the cart, updates the quantity of an existing item, or removes an item from the cart.
 
-Here's an example of how you could use the useCartMutations hook within a React component use our SingleProduct component from the previous guide:
+Here's an example of how you could use the useCartMutations hook within a React component using our SingleProduct component from the previous section:
 
 ```jsx
 import React, { useEffect, useState } from 'react';
@@ -622,7 +780,7 @@ In this example, we have our `SingleProduct` component that receives a `productI
 
 The `handleAddOrUpdateAction` and `handleRemoveAction` functions call the `mutate` function returned by the `useCartMutations`. The `loading` flag is used to disable the buttons while any cart mutations are in progress.
 
-This is just an example of how you could use the `useCartMutations` hook and only using simple products, but as I'm sure you noticed it support a `variationId` as the second parameter. Implementing Variable product support in our `SingleProduct` component is out of the scope this guide, but with what has been provided you should have no problem implementing variable product support.
+This is just an example of how you could use the `useCartMutations` hook using simple products, but as I'm sure you noticed, it support a `variationId` as the second parameter. Implementing Variable product support in our `SingleProduct` component is out of the scope this section, but with what has been provided you should have no problem implementing variable product support.
 
 ## Conclusion
 

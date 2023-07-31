@@ -11,7 +11,7 @@
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * WC requires at least: 7.5.0
- * WC tested up to: 7.8.2
+ * WC tested up to: 7.9.0
  * WPGraphQL requires at least: 1.14.0+
  * WPGraphQL-JWT-Authentication requires at least: 0.7.0+
  *
@@ -165,3 +165,13 @@ constants();
 
 // Load access functions.
 require_once get_plugin_directory() . 'access-functions.php';
+
+// Confirm WC HPOS compatibility.
+add_action(
+	'before_woocommerce_init',
+	static function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	}
+);

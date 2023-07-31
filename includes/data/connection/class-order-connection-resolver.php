@@ -282,6 +282,12 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $where_args['customersIn'] ) ) {
 			$args['customer'] = $where_args['customersIn'];
 		}
+		if ( ! empty( $where_args['billingEmail'] ) ) {
+			$billing_email    = $where_args['billingEmail'];
+			$args['customer'] = ! empty( $args['customer'] )
+				? array_merge( $args['customer'], [ $billing_email ] )
+				: $billing_email;
+		}
 
 		// Search by product.
 		if ( ! empty( $where_args['productId'] ) ) {

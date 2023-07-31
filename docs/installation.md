@@ -7,7 +7,7 @@ keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, installation, setup, hea
 
 # Installation
 
-This guide will walk you through the process of installing and configuring WooGraphQL for your WordPress website.
+This section will walk you through the process of installing and configuring WooGraphQL for your WordPress website.
 
 ## Prerequisites
 

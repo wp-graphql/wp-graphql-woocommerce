@@ -7,7 +7,7 @@ author: "Geoff Taylor"
 
 # Harmonizing with WordPress
 
-In our [previous guide](using-cart-data.md), we created a cart page for our WooCommerce store. Now, we are going to add a "Checkout" button to this page and discuss how to ensure the security of the process.
+In our [previous section](using-cart-data.md), we created a cart page for our WooCommerce store. Now, we are going to add a "Checkout" button to this page and discuss how to ensure the security of the process.
 
 Our checkout button's `href` attribute will be a nonced URL that directs the user to a particular endpoint on the WP backend. The endpoint performs a set of operations such as validating the URL, loading the WooCommerce session, authenticating the registered user, and redirecting to the checkout page. If the URL validation fails, the user will be redirected to the WP homepage.
 
@@ -33,7 +33,7 @@ To create a checkout button in our CartPage component, we can use the `checkoutU
 
 ## Understanding URL Validation and Security
 
-Although our checkout button is now functional, it's important to note that the default URL validation process can be improved in terms of security. In the next part of this guide, we will discuss the security measures and how to enhance them.
+Although our checkout button is now functional, it's important to note that the default URL validation process can be improved in terms of security. In the next part of this section, we will discuss the security measures and how to enhance them.
 
 ### Improving Security with Client Session ID
 
@@ -72,11 +72,11 @@ const input = {
 }
 ```
 
-When the `client_session_id` or `client_session_id_expiration` values become invalid or expired, WooGraphQL generates new values with an expiration time of one hour. To avoid this, we recommend you to periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
+When the `client_session_id` or `client_session_id_expiration` values become invalid or expired, WooGraphQL generates new values with an expiration time of one hour. To avoid this, we recommend that you periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
 
 ## Reinventing Security: The Client-Side Nonce
 
-Next we're going to explore an advanced approach to enhance the security of our checkout procedure by generating a nonce on the client side. By doing this, and not pulling the Nonces or Auth URLs from WooGraphQL we remove any risk of leakage thru GraphQL request and further protect the end-user's data and the WordPress backend. This process will involve recreating some of PHP and WordPress core functions in JavaScript.
+Next we're going to explore an advanced approach to enhance the security of our checkout procedure by generating a nonce on the client side. By doing this, and not pulling the Nonces or Auth URLs from WooGraphQL we remove any risk of leakage thru GraphQL request and further protect the end-user's data and the WordPress backend. This process will involve recreating some PHP and WordPress core functions in JavaScript.
 
 1. **PHP `time` Function in JavaScript**
 
@@ -105,7 +105,7 @@ Next we're going to explore an advanced approach to enhance the security of our 
 
 3. **WordPress `wp_hash` Function in JavaScript**
 
-   The `wp_hash` function, another WordPress core function, will be adapted to JavaScript as well. This function uses the `wp_salt` function to retrieve the salt from WordPress Salt constants, usually defined in the `wp-config.php` file. In our context, we only need the `nonce` salt. Therefore, it's crucial to ensure the `NONCE_KEY` and `NONCE_SALT` constants are set on the WordPress installation, and their values are accessible in our front-end application.
+   The `wp_hash` function, another WordPress core function, will be adapted to JavaScript as well. This function uses the `wp_salt` function to retrieve the salt from WordPress Salt constants, usually defined in the `wp-config.php` file. In our context, we only need the `nonce` salt. Therefore, it's crucial to ensure the `NONCE_KEY` and `NONCE_SALT` constants are set on the WordPress installation and their values are accessible in our front-end application.
 
    `wp_hash` also uses `hash_hmac` and `md5` encryption to create the hash. For this, we'll utilize `crypto-js`, which you can install with `npm` using the command `npm install crypto-js`. Here's how to write `wp_hash` in JavaScript:
 
@@ -134,7 +134,7 @@ export function createNonce(action, uId, token) {
 
 In the function above:
 - The `action` parameter represents the nonce action name.
-- The `uId` parameter represents the end-user's session ID, either their WP User Database ID (if they are authenticated) or a random string (if they are a guest). To retrieve this value, we'll have to decode the WooCommerce Session Token used by ApolloClient.
+- The `uId` parameter represents the end-user's session ID - either their WP User Database ID (if they are authenticated) or a random string (if they are a guest). To retrieve this value, we'll have to decode the WooCommerce Session Token used by ApolloClient.
 - The `token` is our Client Session ID mentioned earlier.
 
 4. **Generating the URLs**
@@ -218,4 +218,4 @@ To confirm the validity of your URL, compare it with the Auth URLs generated by 
 
 ## Conclusion
 
-With this guide, you should now be able to add a secure checkout button to your WooCommerce cart page using WooGraphQL. Keep in mind that even though we've improved security by setting a client-side session ID and expiration, these measures should be part of a broader security strategy. Always ensure to follow best practices to keep your application and user data safe.
+With this section, you should now be able to add a secure checkout button to your WooCommerce cart page using WooGraphQL. Keep in mind that even though we've improved security by setting a client-side session ID and expiration, these measures should be part of a broader security strategy. Always ensure to follow best practices to keep your application and user data safe.

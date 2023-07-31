@@ -7,14 +7,14 @@ author: "Geoff Taylor"
 
 # Using Cart Data
 
-In this guide, we will create a "/cart" page that displays a table of the items in the cart. We will use the `UserSessionProvider` created in the last guide to pull the cart data using `useSession()`. The table will have four columns: `Product`, `Price`, `Quantity`, and `Total`. We will also create a cart totals table that displays the shipping totals, applied coupons, and the final total. Let's start by implementing the changes to the `useCartMutations` hook also created in the previous guide.
+In this section, we will create a "/cart" page that displays a table of the items in the cart. We will use the `UserSessionProvider` created in the last section to pull the cart data using `useSession()`. The table will have four columns: `Product`, `Price`, `Quantity`, and `Total`. We will also create a cart totals table that displays the shipping totals, applied coupons, and the final total. Let's start by implementing the changes to the `useCartMutations` hook also created in the previous section.
 
 ## Prerequisites
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
 - A setup WPGraphQL/WooGraphQL backend.
-- Read previous guides on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
+- Read previous sections on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
 
 ## Step 0: Create `graphql.js` file
 
@@ -510,7 +510,7 @@ export const useOtherCartMutations = () => {
 };
 ```
 
-This hook provides the helper callbacks for the other cart mutations. These mutations are the ones that affect the cart and not cart items, at least not directly, like `applyCoupon`.
+This hook provides the helper callbacks for the other cart mutations. These mutations are the ones that effect the cart and not the cart items, at least not directly, like `applyCoupon`.
 
 ## Step 2: Create the `/cart` page
 
@@ -524,7 +524,7 @@ import { ShippingInfo } from './ShippingInfo';
 import { ApplyCouponForm } from './ApplyCouponForm';
 ```
 
-You should see two import that don't exist yet, let's create them. `ShippingInfo.js` and `ApplyCouponForm.js` are components that will be used in the `CartPage` component to handle two particular actions:
+You should see two imports that don't exist yet. Let's create them. `ShippingInfo.js` and `ApplyCouponForm.js` are components that will be used in the `CartPage` component to handle two particular actions:
 
 First the `ShippingLocaleForm.js`.
 
@@ -619,7 +619,7 @@ const ShippingInfo = () => {
 export default ShippingInfo;
 ```
 
-This component works by confirming the session shipping requirements and status before return the proper output. If shipping is needed and a shipping address is set for the customer, the shipping rates are displayed for selection. If shipping is needed and no address is set, then a shipping address form is displayed to set the customer shipping address. If no shipping is needed `null` is returned.
+This component works by confirming the session shipping requirements and status before returning the proper output. If shipping is needed and a shipping address is set for the customer, the shipping rates are displayed for selection. If shipping is needed and no address is set, then a shipping address form is displayed to set the customer shipping address. If no shipping is needed, `null` is returned.
 
 Simple enough, now the `ApplyCoupon.js`
 
@@ -745,10 +745,10 @@ export default CartPage;
 
 In the `CartPage` component, we first fetch the `cart` from the `SessionProvider`. If the cart is not available, we show a loading message. Once the cart is loaded, we display the cart items in a table format, allowing users to remove items or update the quantity.
 
-Lastly, we display the cart's subtotal, applied coupons with their respective discounts and removal buttons, and follow that up the cart's total.
+Lastly, we display the cart's subtotal, applied coupons with their respective discounts and removal buttons, and follow that up with the cart's total.
 
 Now, you can use the `CartPage` component in your app, allowing users to interact with the cart, apply coupons, and manage shipping options.
 
 ## Conclusion
 
-With this you're essentially ready to develop a complete application. In the next couple guides we'll be exploring taking the user through checkout by passing the session back to WordPress.
+With this you're essentially ready to develop a complete application. In the next couple sections we'll be exploring taking the user through checkout.
