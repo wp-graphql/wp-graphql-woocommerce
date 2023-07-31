@@ -23,13 +23,15 @@ The default WooCommerce User Session Handler is responsible for capturing cart a
 
 ## Enable Unsupported types
 
-The settings is simple to understand and likely to be enabled if your using a WC extension that uses a product type that isn't support by WooGraphQL out-of-box. When enabled it will substitute the missing type with the SimpleProduct type. This way you can still you the product type and possibly pull what extra data you need from the `Product`'s `metaData` field.
+The settings is simple to understand and likely to be enabled if you're using a WC extension that uses a product type that isn't support by WooGraphQL out-of-box. When enabled it will substitute the missing type with the SimpleProduct type. This way you can still use the product type and possibly pull what extra data you need from the `Product`'s `metaData` field.
 
 ![Authorizing URL Settings Screenshot](images/authorizing-url-settings.png)
 
 ## Enable User Session transferring URLs
 
-This settings when enabled activated the WooCommerce Session-backed nonce generator and transfer session endpoint for passing a user's session from a client to the WordPress installation, the primary use of these nonces are to create authorizing URLs that enable the user to travel to the backend as if it were a part of the front-end application. This setting is disabled if the QL Session Handler is disabled as it required for nonce generation to work. The next four settings are all about customizing the names of different parts of the authorizing URL..
+This setting, when activated, enables WooCommerce Session-backed nonce generator and transfer session endpoint for passing a user's session from a client to the WordPress installation. The primary use of these nonces is to create authorizing URLs that enable the user to travel to the backend as if it were a part of the front-end application. This setting is disabled if the QL Session Handler is disabled as it required for nonce generation to work. 
+
+The next four settings are all about customizing the names of different parts of the authorizing URL..
 
 ### Endpoint for Authorizing URLs
 
@@ -37,9 +39,9 @@ The endpoint (path) for transferring user sessions on the site. Defaults to `tra
 
 ### Cart URL nonce name, Checkout URL nonce name, and Add Payment Method URL nonce name
 
-The name of the nonce param for each respective URLs. They have to be unique and cannot be identical.
+The name of the nonce param for each respective URL. They have to be unique and cannot be identical.
 
-Uses these settings alone is very insecure. It's highly recommended that specific measures be taken on the client to further secure the WP backend and end-user's data.
+Using these settings alone is very insecure. It's highly recommended that specific measures be taken on the client to further secure the WP backend and end-user's data.
 ## WooGraphQL Pro Settings
 
 These settings allow you to enable or disable the GraphQL schema types, queries, and mutations for various WooCommerce extensions supported by WooGraphQL Pro. This is useful if you have one of the supported extensions installed and activated but don't need it exposed to the GraphQL API, keeping the schema lightweight.

@@ -191,7 +191,7 @@ dimensions {
 weight
 ```
 
-Inside the SingleProduct component, after rendering the attributes
+Inside the SingleProduct component, render the attributes.
 
 ```jsx
 <div className="dimensions">
@@ -204,7 +204,7 @@ Inside the SingleProduct component, after rendering the attributes
 
 ## Step 4: Add cart options section
 
-Finally, add a section for cart options like desired quantity and the Add to Cart button. Use the `soldIndividually` and `stockStatus` fields to control the state of the cart controls. Add this inside the SingleProduct component, after rendering the weight information
+Finally, add a section for cart options like desired quantity and the Add to Cart button. Use the `soldIndividually` and `stockStatus` fields to control the state of the cart controls. Add this inside the SingleProduct component after rendering the weight information.
 
 ```jsx
   <div className="cart-options">
@@ -225,7 +225,7 @@ Finally, add a section for cart options like desired quantity and the Add to Car
 );
 ```
 
-With this implementation, the Single Product page displays the product information, dimensions, and weight. Additionally, it includes a section for cart options, such as the desired quantity and an Add to Cart button. The availability of the cart options is dictated by the `soldIndividually` and `stockStatus` fields. If the product is not sold individually, the user can select a quantity. The Add to Cart button is only shown if the product is in stock; otherwise, an "Out of stock" message is displayed. We could also go a step further and use the product's `stockQuantity` to set a hard max quantity limit, but it's outta of the scope of this guide.
+With this implementation, the Single Product page displays the product information, dimensions, and weight. Additionally, it includes a section for cart options, such as the desired quantity and an Add to Cart button. The availability of the cart options is dictated by the `soldIndividually` and `stockStatus` fields. If the product is not sold individually, the user can select a quantity. The Add to Cart button is only shown if the product is in stock; otherwise, an "Out of stock" message is displayed. We could also go a step further and use the product's `stockQuantity` to set a hard max quantity limit, but that's out of the scope of this guide.
 
 ## Conclusion
 
