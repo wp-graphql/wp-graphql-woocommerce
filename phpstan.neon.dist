@@ -15,6 +15,7 @@ parameters:
 			- access-functions.php
 			- includes/
 		scanDirectories:
+			- vendor/woographql/
 			- local/public/wp-content/plugins/wp-graphql-jwt-authentication/
 			- local/public/wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/
 		scanFiles:

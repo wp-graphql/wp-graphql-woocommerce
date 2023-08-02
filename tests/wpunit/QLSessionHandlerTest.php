@@ -3,8 +3,8 @@
  * Unit test for QL_Session_Handler
  */
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
+use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
 use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {

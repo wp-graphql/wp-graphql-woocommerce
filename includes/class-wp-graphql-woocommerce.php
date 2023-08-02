@@ -356,7 +356,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 				 * detected. This likely means the user cloned the repo from Github
 				 * but did not run `composer install`
 				 */
-				if ( ! class_exists( 'Firebase\JWT\JWT' ) ) {
+				if ( ! class_exists( 'WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT' ) ) {
 					add_action(
 						'admin_notices',
 						static function () {

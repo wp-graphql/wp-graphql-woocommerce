@@ -26,16 +26,14 @@
     },
     "require-dev": {
         "axepress/wp-graphql-cs": "^1.0.0-beta",
-        "axepress/wp-graphql-stubs": "1.14.0",
-        "php-stubs/woocommerce-stubs": "7.5.0",
+        "axepress/wp-graphql-stubs": "^1.14.0",
+        "php-stubs/woocommerce-stubs": "^7.5.0",
         "phpstan/extension-installer": "^1.3",
+        "phpstan/phpdoc-parser": "^1.22.0",
         "phpstan/phpstan": "^1.10",
         "szepeviktor/phpstan-wordpress": "^1.3"
     },
     "config": {
-        "platform": {
-            "php": "7.3"
-        },
         "optimize-autoloader": true,
         "process-timeout": 0,
         "sort-packages": true,
@@ -45,6 +43,11 @@
             "phpstan/extension-installer": true,
             "composer/installers": true
         }
+    },
+    "autoload": {
+        "classmap": [
+            "vendor/woographql/"
+        ]
     },
     "autoload-dev": {
         "files": [
@@ -58,21 +61,32 @@
         "installTestEnv": "bash bin/install-test-env.local.sh",
         "runPreCommitCleanup": "bash bin/cleanup.local.sh",
         "runWPUnitTest": "vendor/bin/codecept run wpunit",
-        "dBuild": "env $(sed -e '/^#/d' .env.testing) docker-compose build",
-        "dRunApp": "env $(sed -e '/^#/d' .env.testing) docker-compose up testable_app app_db mailhog",
-        "dRunTestingDb": "if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.testing) docker-compose up -d testing_db; fi",
-        "dSetMainDb": "docker-compose exec testable_app ./setup-database.sh main",
-        "dSetTestingDb": "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- ./setup-database.sh testing",
+        "dBuild": "env $(sed -e '/^#/d' .env.testing) docker compose build",
+        "dRunApp": "env $(sed -e '/^#/d' .env.testing) docker compose up testable_app app_db mailhog",
+        "dRunTestingDb": "if [ ! \"$(docker ps -a | grep testing_db)\" ]; then env $(sed -e '/^#/d' .env.testing) docker compose up -d testing_db; fi",
+        "dSetMainDb": "docker compose exec testable_app ./setup-database.sh main",
+        "dSetTestingDb": "docker compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- ./setup-database.sh testing",
         "dRunTest": [
             "@dRunTestingDb",
             "@dSetTestingDb",
-            "docker-compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- codecept run $FILTER"
+            "docker compose exec testable_app wait-for-it -s -t 300 testing_db:3306 -- codecept run $FILTER"
         ],
-        "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker-compose run --rm run_tests",
-        "dDestroy": "docker-compose down -v",
+        "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker compose run --rm run_tests",
+        "dDestroy": "docker compose down -v",
         "lint": "vendor/bin/phpcs -vp .",
         "fix": "vendor/bin/phpcbf -vp .",
-        "stan": "phpstan analyze --ansi --memory-limit=1G"
+        "stan": "phpstan analyze --ansi --memory-limit=1G",
+        "strauss": [
+            "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
+            "@php bin/strauss.phar",
+            "composer dump-autoload --optimize"
+        ],
+        "post-install-cmd": [
+            "@strauss"
+        ],
+        "post-update-cmd": [
+            "@strauss"
+        ]
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
@@ -88,7 +102,6 @@
             "/plugin-build",
             "/phpstan",
             "/tests",
-            "!/vendor",
             "/codeception.dist.yml",
             "/codeception.yml",
             "/codeclimate.yml",
@@ -100,5 +113,21 @@
             "/README.md",
             "/phpstan.neon.dist"
         ]
+    },
+    "extra": {
+        "strauss" : {
+            "target_directory": "vendor/woographql",
+            "namespace_prefix": "WPGraphQL\\WooCommerce\\Vendor\\",
+            "classmap_prefix": "WP_GraphQL_WooCommerce_Vendor",
+            "constant_prefix": "WPGRAPHQL_WOOCOMMERCE_VENDOR",
+            "delete_vendor_files": true,
+            "include_modified_date": false,
+            "packages" : [
+                "firebase/php-jwt"
+            ],
+            "exclude_from_prefix": {
+                "file_patterns": []
+            }
+        }
     }
 }

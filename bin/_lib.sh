@@ -107,7 +107,8 @@ remove_local_test_library() {
 
 cleanup_composer_file() {
 	echo "Removing extra config..."
-	composer config --unset extra
+	composer config --unset extra.wordpress-install-dir
+	composer config --unset extra.installer-paths
 	echo "Removing repositories..."
 	composer config --unset repositories
 
@@ -125,7 +126,11 @@ cleanup_local_files() {
 	fi
 
 	echo "Rebuilding lock file..."
-	rm -rf $PROJECT_ROOT_DIR/vendor
+	cd "$PROJECT_ROOT_DIR/vendor"
+	
+	find . ! -name '.gitkeep' -type f -exec rm -f {} +
+
+	cd $PROJECT_ROOT_DIR
 	composer install --no-dev
 }
 

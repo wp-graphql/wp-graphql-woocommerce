@@ -1,7 +1,7 @@
 <?php
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
+use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
 class QLSessionHandlerCest {
 	private $product_catalog;
 
