@@ -30,11 +30,11 @@ Have **PHP**, **MySQL** or **PostgreSQL**, **Composer**, and **[WP-CLI](https://
 3. Copy the `.env.dist` to `.env` by execute the following in your terminal in the **WooGraphQL** root directory.
 
     ```bash
-    cp .env.dist .env
+    cp .env.testing .env
     ```
 
-4. Open the .env and update the highlighted environmental variables to match your machine setup.
-![.env example](images/image-01.png)
+4. Open the .env and update the second group of boxed environmental variables in the image below to match your machine setup. If you're on Windows __(Not WSL)__ you'll have to set the first boxed group as well because by default the installation location is `./local/public` within the plugin directory is used, and Windows does not support symlink/shortcuts being nested inside their destination.
+![.env example](images/env-highlighted.png)
 5. Last thing to do is run the WordPress testing environment install script in the terminal.
 
     ```bash
@@ -47,7 +47,7 @@ This will create and configure a WordPress installation in a temporary directory
 
 Now that we have setup our testing environment, let's run the tests. To do this we will need to install the **Codeception** and the rest of our **devDependencies**
 
-1. First run `composer install` in the terminal.
+1. First run `composer installTestEnv` in the terminal.
 2. Next copy the `codeception.dist.yml` to `codeception.yml`
 
     ```bash
@@ -55,10 +55,9 @@ Now that we have setup our testing environment, let's run the tests. To do this 
     ```
 
 3. Open `codeception.yml` and make the following changes.
-![codeception.yml params config](images/image-02.png)
-![codeception.yml WPLoader config](images/image-03.png)
+![codeception.yml params config](images/codeception-yml-changes.png)
 
-Now you all set to run the tests.
+Now you all set to run the tests locally.
 
 ## Running the tests
 
@@ -71,7 +70,7 @@ vendor/bin/codecept run wpunit
 ```
 
 If everything is how it should be you should get all passing tests.
-![WPUnit test results](images/image-04.png)
+![WPUnit test results](images/wpunit-results.png)
 
 ## Writing your first WooGraphQL and WPGraphQL WPUnit test
 
@@ -105,16 +104,14 @@ The `ItemCountTest.php` file should be a familiar site to anyone whose used Code
 class ItemCountTest extends \Codeception\TestCase\WPTestCase
 {
 
-    public function setUp()
-    {
+    public function setUp(): void {
         // before
         parent::setUp();
 
         // your set up methods here
     }
 
-    public function tearDown()
-    {
+    public function tearDown(): void {
         // your tear down methods here
 
         // then
@@ -135,11 +132,32 @@ This functions execute before and after every function. The `setUp()` in particu
 There's also the `wpSetUpBeforeClass( $factory )` and `wpTearDownAfterClass( $factory )` that are run before all the tests, however their use-case is even move rare then `tearDown()` on account that these methods are static and don't have access to the same `$this` context as the `setUp()`, `tearDown()` or `test*()` function.
 
 #### test*() functions
+
 Class functions that are prefix with `test` are tests. These functions are run on isolation for the most part. Test function must be `public` access. The purpose of the test function is to confirm the correct data is provided by when requested. This is done using the `Assert` library provided by **PHPUnit** which is wrapped by the **Codeception** framework and used by will everything on top of it.
 
 ```php
 $this->assertEquals( array( 5 ), [ 5 ] );
 ```
+
+#### Extending the `WooGraphQLTestCase` class
+
+Now that we've gone over the basic functions of a Unit test let's go ahead and modify it for a needs.
+
+```php
+<?php
+
+use Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase;
+
+class ItemCountTest extends WooGraphQLTestCase {
+
+    // tests
+    public function testMe()
+    {
+    }
+}
+```
+
+Here we'll be utilizing a `WooGraphQLTestCase` bundled in the WooGraphQL test environment. It extends the WPGraphQLTestCase class provided by the [**WPGraphQL TestCase**](https://github.com/wp-graphql/wp-graphql-testcase) library. Which was designed specifically for testing WPGraphQL responses.
 
 ### Writing our test
 
@@ -189,63 +207,78 @@ Which shouldn't be surprising, in the next section we'll be taking this query an
 >}
 >```
 
-#### WooGraphQL Codeception Helpers
+#### WooGraphQL Codeception Factories
 
-WooCommerce is a vast WordPress plugin with a lot moving parts and getting them all to play nice can be a daunting task. To address this **WooGraphQL** provides a number of helpers for creating just the right scenario for testing our queries. In this guide you'll be expose to the `cart` and `product` helpers, but there are quite a few. However documentation on them is pretty non-existant at the time of creation for this guide. Until this is rectified, it's recommended that you view helper [files](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/develop/tests/_support/Helper/crud-helpers) directly to get a general idea of what they are and their capabilities.
+WooCommerce is a vast WordPress plugin with a lot moving parts and getting them all to play nice can be a daunting task. To address this the **WooGraphQLTestCase** class provides a number of factories for creating just the right scenario for testing our queries. In this guide you'll be expose to the `cart` and `product` factories, but there are quite a few. However documentation on them is pretty non-existant at the time of creation for this guide. Until this is rectified, it's recommended that you view factory [files](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/develop/tests/_support/Factory) directly to get a general idea of what they are and their capabilities.
 
-#### Our setUp()
+#### Setting up our scenario
 
 Let's finish begin writing out test by creating our scenario with the `setUp()`. Our scenario for this is test is rather simple, our query just need some products and those products have to be in the cart. Using `product` and `cart` helpers we can do this in a few lines of code.
 
 ```php
-public function setUp()
-{
-    // before
-    parent::setUp();
+public function testMe() {
+    // Our scenario
+    $products = [
+        [
+            'product_id' => $this->factory->product->createSimple(),
+            'quantity'   => 1,
+        ],
+        [
+            'product_id' => $this->factory->product->createSimple(),
+            'quantity'   => 1,
+        ],
+        [
+            'product_id' => $this->factory->product->createSimple(),
+            'quantity'   => 2,
+        ],
+        [
+            'product_id' => $this->factory->product->createSimple(),
+            'quantity'   => 3,
+        ],
+    ];
 
-    $this->product  = $this->getModule( '\Helper\Wpunit' )->product();
-    $this->cart     = $this->getModule( '\Helper\Wpunit' )->cart();
-    $this->products = array(
-        array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
-        array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
-        array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 ),
-        array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ),
-    );
-    $this->cart->add( ...$this->products );
+    $this->factory->cart->add( ...$products );
 }
 ```
 
 And that's it, scenario created. You maybe confused, but we'll break it down.
 
 ```php
-$this->product = $this->getModule( '\Helper\Wpunit' )->product();
-$this->cart    = $this->getModule( '\Helper\Wpunit' )->cart();
+$products = [
+    [
+        'product_id' => $this->factory->product->createSimple(),
+        'quantity'   => 1,
+    ],
+    [
+        'product_id' => $this->factory->product->createSimple(),
+        'quantity'   => 1,
+    ],
+    [
+        'product_id' => $this->factory->product->createSimple(),
+        'quantity'   => 2,
+    ],
+    [
+        'product_id' => $this->factory->product->createSimple(),
+        'quantity'   => 3,
+    ],
+];
 ```
 
-This just assigned the `product` and `cart` helpers to simple reusable class members for later use in the coming test and the rest of the `setUp()`.
+The `$product` array holds the `product_id`s and `quantity`s of products being add to our cart. `createSimple( $args = array() )` creates a new simple product with a random name and price and returns the `product_id` of the newly created product. There are `createExternal( $args = array() )`, `createGrouped( $args = array() )` and `createVariable( $args = array() )`, as well as many more create functions for creating other objects related to products.
 
 ```php
-$this->products      = array(
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 ),
-    array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ),
-);
+$this->factory->cart->add( ...$products );
 ```
 
-The `$product` array holds the `product_id`s and `quantity`s of products being add to our cart. `create_simple( $args = array() )` creates a new simple product with a random name and price and returns the `product_id` of the newly created product. There are `create_external( $args = array() )`, `create_grouped( $args = array() )` and `create_variable( $args = array() )`, as well as many more create functions for creating other objects related to products.
-
-```php
-$this->cart->add( ...$this->products );
-```
-
-And finally, you have probably figured out that this adds the products in `$products` to the cart. `cart` helper functions as a glorified wrapper for the `WC()->cart` instance with a extra features for testing.
+And finally, you have probably figured out that this adds the products in `$products` to the cart. `cart` factory functions as a glorified wrapper for the `WC()->cart` instance with a extra features for testing.
 
 Now that our scenario is set. Let's get to are test. We'll start by change the name of the test to `testItemCountField` and assign our query to a string variable.
 
 ```php
-public function testItemCountField()
-{
+public function testItemCountField() {
+    // Our scenario
+    ...
+
     $query = '
         query {
             cart {
@@ -264,73 +297,68 @@ public function testItemCountField()
 Simple enough, next we'll run our query through WPGraphQL using `graphql( $request_data = [] )`.
 
 ```php
-public function testItemCountField()
-{
+public function testItemCountField() {
+    // Our scenario
     ...
 
-    $actual = graphql( array( 'query' => $query ) );
-
-    // use --debug flag to view.
-    codecept_debug( $actual );
+    $response = $this->graphql( [ 'query' => $query ] );
 }
 ```
 
-`graphql()` is a function provided by WPGraphQL. It will process a GraphQL request and return the results as an associative array. This makes it a great tool for testing our queries.
+`$this->graphql()` is a simple wrapper for the `graphql()` function provided by WPGraphQL. It will process a GraphQL request and return the results as an associative array. This makes it a great tool for testing our queries.
 
-```php
-// use --debug flag to view.
-codecept_debug( $actual );
-```
-
-If you've taken a look at any of the other tests in WooGraphQL you may have noticed this snippet of code every always every `graphql()` call. `codecept_debug( $data )` is a debug function that dumps the value of `$data` to console. This dump information can viewed by using the `--debug` flag when using Codeception's `run` command. Its use here is great because when we run our test later in debug mode we'll know exactly what WPGraphQL is returning for our query.
+Another this about the wrapper is if the `--debug` flag is passed when using Codeception's `run` command, the response from `graphql()` is pretty printed to the console. Its use here is great because when we run our test later in debug mode we'll know exactly what WPGraphQL is returning for our query.
 
 The last step in our test is to confirm the we received the correct values for our `itemCount` field.
 
 ```php
-public function testItemCountField()
-{
+public function testItemCountField() {
+    // Our scenario
     ...
 
-    $expected = array_sum( array_column( $this->products, 'quantity' ) );
-    $this->assertEquals( $expected, $actual['data']['cart']['itemCount'] );
+    $expected = [
+        $this->expectedField(
+            'cart.itemCount',
+            array_sum( array_column( $products, 'quantity' ) )
+        ),
+    ];
+    $this->assertQuerySuccessful( $response, $expected );
 }
 ```
 
-And that's our test.
+And that's our test. You notice we're only testing our new field with the `expectedField` function and nothing else the query may have returned. That's the primary purpose of **WPGraphQL TestCase**. It provides functions like `expectedField` and `expectedNode` to isolate and test the parts of the query you care about and ignore everything else. This will save you from the hell that comes from testing groups of nodes that come in an order you've not predicted in your test.
 
 ```php
 <?php
 
-class ItemCountTest extends \Codeception\TestCase\WPTestCase
-{
+use Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase;
 
-    public function setUp()
-    {
-        // before
-        parent::setUp();
-
-        $this->product  = $this->getModule('\Helper\Wpunit')->product();
-        $this->cart     = $this->getModule('\Helper\Wpunit')->cart();
-        $this->products = array(
-            array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
-            array( 'product_id' => $this->product->create_simple(), 'quantity' => 1 ),
-            array( 'product_id' => $this->product->create_simple(), 'quantity' => 2 ),
-            array( 'product_id' => $this->product->create_simple(), 'quantity' => 3 ),
-        );
-        $this->cart->add(...$this->products);
-    }
-
-    public function tearDown()
-    {
-        // your tear down methods here
-
-        // then
-        parent::tearDown();
-    }
+class ItemCountTest extends WooGraphQLTestCase {
 
     // tests
-    public function testItemCountField()
-    {
+    public function testItemCountField() {
+        // Our scenario
+        $products = [
+            [
+                'product_id' => $this->factory->product->createSimple(),
+                'quantity'   => 1,
+            ],
+            [
+                'product_id' => $this->factory->product->createSimple(),
+                'quantity'   => 1,
+            ],
+            [
+                'product_id' => $this->factory->product->createSimple(),
+                'quantity'   => 2,
+            ],
+            [
+                'product_id' => $this->factory->product->createSimple(),
+                'quantity'   => 3,
+            ],
+        ];
+
+        $this->factory->cart->add( ...$products );
+
         $query = '
             query {
                 cart {
@@ -344,13 +372,14 @@ class ItemCountTest extends \Codeception\TestCase\WPTestCase
             }
         ';
 
-        $actual = graphql( array( 'query' => $query ) );
-
-        // use --debug flag to view.
-        codecept_debug( $actual );
-
-        $expected = array_sum( array_column( $this->products, 'quantity' ) );
-        $this->assertEquals( $expected, $actual['data']['cart']['itemCount'] );
+        $response = $this->graphql( [ 'query' => $query ] );
+        $expected = [
+            $this->expectedField(
+                'cart.itemCount',
+                array_sum( array_column( $products, 'quantity' ) )
+            ),
+        ];
+        $this->assertQuerySuccessful( $response, $expected );
     }
 }
 ```
@@ -365,10 +394,10 @@ vendor/bin/codecept run wpunit ItemCountTest --debug
 
 Running this statement in the terminal will make Codeception run just the `ItemCountTest` in debug mode. This way we can see exactly WPGraphQL returns for our query.
 
-![test failure results](images/image-05.png)
+![test failure results](images/item-count-test-debug-failure.png)
 Running the test will result in the error above. **Cannot query field "itemCount" on type "Cart".** The error is quite easy to understand. We cannot query a field that doesn't yet exist.
 
-### Implementing our changes
+### Adding the `itemCount` field to the GraphQL schema
 
 Before when jump into the code, lets discuss how WPGraphQL and WooGraphQL process requests.
 
@@ -389,52 +418,52 @@ Now to implement our changes we simply need to register our `itemCount` field to
 
 ```php
 register_graphql_field(
-  'Cart',
-  'itemCount',
-  array(
-    'type'        => 'Int',
-    'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
-    'resolve'     => function( \WC_Cart $source ) {
-      $items = $source->get_cart() );
-      if ( empty( $items ) ) {
-        return 0;
-      }
+    'Cart',
+    'itemCount',
+    [
+        'type'        => 'Int',
+        'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
+        'resolve'     => function( \WC_Cart $source ) {
+            $items = $source->get_cart();
+            if ( empty( $items ) ) {
+                return 0;
+            }
 
-      return array_sum( array_column( $items, 'quantity' ) );
-    },
-  ),
+            return array_sum( array_column( $items, 'quantity' ) );
+        },
+    ],
 );
 ```
 
 Simple enough, right. Now we can slap this at the end of the `TypeRegistry` and it would fine, however for a pull request that wouldn't work. So let's include this the inside the `register_graphql_object_type()` call for the `Cart` type with the rest of `Cart` fields. This call can be found in `Cart_Type::register_cart()` in `includes/type/object/class-cart-type.php`.
 
 ```php
-	/**
-	 * Registers Cart type
-	 */
-	public static function register_cart() {
-		register_graphql_object_type(
-			'Cart',
-			array(
-				'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-				'fields'      => array(
-          ... // Other cart fields
-          'itemCount' => array(
-            'type'        => 'Int',
-            'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
-            'resolve'     => function( \WC_Cart $source ) {
-              $items = $source->get_cart();
-              if ( empty( $items ) ) {
-                return 0;
-              }
+    /**
+     * Registers Cart type
+     */
+    public static function register_cart() {
+        register_graphql_object_type(
+            'Cart',
+            array(
+                'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
+                'fields'      => [
+                    ... // Other cart fields
+                    'itemCount' => [
+                        'type'        => 'Int',
+                        'description' => __( 'Total number of items in the cart.', 'wp-graphql-woocommerce' ),
+                        'resolve'     => function( \WC_Cart $source ) {
+                            $items = $source->get_cart();
+                            if ( empty( $items ) ) {
+                                return 0;
+                            }
 
-              return array_sum( array_column( $items, 'quantity' ) );
-            },
-          ),
-				),
-			)
-		);
-  }
+                            return array_sum( array_column( $items, 'quantity' ) );
+                        },
+                    ],
+                ],
+            )
+        );
+    }
 ```
 
 And :boom:! Changes made. Let's run our test!!
@@ -442,10 +471,10 @@ And :boom:! Changes made. Let's run our test!!
 ### Run test expecting success
 
 Now if you re-run `vendor/bin/codecept run wpunit ItemCountTest`
-![test successful results](images/image-06.png)
+![test successful results](images/item-count-test-success.png)
 
 And we have passed, and if we want to see our query response use the `--debug` flag
-![test successful query data](images/image-07.png)
+![test successful query data](images/item-count-test-debug-success.png)
 
 
 ## Going Forward
