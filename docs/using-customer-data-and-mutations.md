@@ -422,6 +422,6 @@ You'll note these samples also don't take into account React server components. 
 
 ## Conclusion
 
-In this guide, we've seen how to use the WooGraphQL API to create a clone of WooCommerce's user account pages. We've used the `customer` query to fetch the user's details, the `orders` field on the `customer` type to fetch the user's orders, and the `updateCustomer` mutation to update the user's details and addresses. We've also seen how to handle user authentication with the `login` mutation and how to log out the user. It should be noted that this was all made possible by proper usage our `SessionProvider`.
+In this section, we've seen how to use the WooGraphQL API to create a clone of WooCommerce's user account pages. We've used the `customer` query to fetch the user's details, the `orders` field on the `customer` type to fetch the user's orders, and the `updateCustomer` mutation to update the user's details and addresses. We've also seen how to handle user authentication with the `login` mutation and how to log out the user. It should be noted that this was all made possible by proper usage our `SessionProvider`.
 
 With the completion of this section and all proceeding sections, you have been given an deep dive into the basic and intermediate usages of WooGraphQL. The following sections will be on WooGraphQL Pro functionality.

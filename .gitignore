@@ -14,10 +14,10 @@ node_modules/
 .idea
 .vscode/settings.json
 .github_changelog_generator
-vendor
-!vendor-prefixed/
-vendor-prefixed/*
-!vendor-prefixed/.gitkeep
+vendor/*
+!vendor/woographql/
+vendor/woographql/*
+!vendor/woographql/.gitkeep
 !tests
 tests/*.suite.yml
 build/

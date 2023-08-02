@@ -77,7 +77,7 @@ function get_includes_directory() {
  * @return string
  */
 function get_vendor_directory() {
-	return trailingslashit( WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR ) . 'vendor-prefixed/';
+	return trailingslashit( WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR ) . 'vendor/';
 }
 
 /**
