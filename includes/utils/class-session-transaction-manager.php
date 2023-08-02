@@ -8,7 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use GraphQL\Error\UserError;
 
 /**

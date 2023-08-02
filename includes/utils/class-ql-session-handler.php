@@ -8,10 +8,9 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
+use WC_Session_Handler;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
-use GraphQL\Error\UserError;
-use WC_Session_Handler;
 
 /**
  * Class - QL_Session_Handler
