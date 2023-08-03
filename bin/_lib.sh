@@ -126,11 +126,8 @@ cleanup_local_files() {
 	fi
 
 	echo "Rebuilding lock file..."
-	cd "$PROJECT_ROOT_DIR/vendor"
-	
-	find . ! -name '.gitkeep' -type f -exec rm -f {} +
+	rm -rf $PROJECT_ROOT_DIR/vendor
 
-	cd $PROJECT_ROOT_DIR
 	composer install --no-dev
 }
 
