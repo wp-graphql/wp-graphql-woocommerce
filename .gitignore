@@ -15,9 +15,9 @@ node_modules/
 .vscode/settings.json
 .github_changelog_generator
 vendor/*
-!vendor/woographql/
-vendor/woographql/*
-!vendor/woographql/.gitkeep
+!vendor-prefixed/
+vendor-prefixed/*
+!vendor-prefixed/.gitkeep
 !tests
 tests/*.suite.yml
 build/

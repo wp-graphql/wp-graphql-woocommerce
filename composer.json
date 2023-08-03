@@ -46,7 +46,7 @@
     },
     "autoload": {
         "classmap": [
-            "vendor/woographql/"
+            "vendor-prefixed/"
         ]
     },
     "autoload-dev": {
@@ -116,7 +116,7 @@
     },
     "extra": {
         "strauss" : {
-            "target_directory": "vendor/woographql",
+            "target_directory": "vendor-prefixed",
             "namespace_prefix": "WPGraphQL\\WooCommerce\\Vendor\\",
             "classmap_prefix": "WP_GraphQL_WooCommerce_Vendor",
             "constant_prefix": "WPGRAPHQL_WOOCOMMERCE_VENDOR",
