@@ -8,6 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
+use Automattic\WooCommerce\StoreApi\Utilities\ProductQueryFilters;
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -515,6 +516,96 @@ class Root_Query {
 						return [];
 					},
 				],
+				'collectionStats'      => [
+					'type'        => 'CollectionStats',
+					'args'        => [
+						'calculatePriceRange'  => [
+							'type' => 'Boolean',
+						],
+						'calculateRatingCounts'  => [
+							'type' => 'Boolean',
+						],
+						'taxonomies'  => [
+							'type' => [ 'list_of' => 'CollectionStatsQueryInput' ],
+						],
+					],
+					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
+					'resolve'     => function ( $_, $args ) {
+						$data    = [
+							'min_price'           => null,
+							'max_price'           => null,
+							'attribute_counts'    => null,
+							'stock_status_counts' => null,
+							'rating_counts'       => null,
+						];
+						$filters = new ProductQueryFilters();
+						$request = new \WP_REST_Request();
+						$request->set_param( 'calculate_attribute_counts', ! empty( $args['taxonomies'] ) ? $args['taxonomies'] : null );
+						$request->set_param( 'calculate_price_range', ! empty( $args['calculatePriceRange'] ) );
+						$request->set_param( 'calculate_stock_status_counts', ! empty( $args['calculateStockStatusCounts'] ) );
+						$request->set_param( 'calculate_rating_counts', ! empty( $args['calculateRatingCounts'] ) );
+
+
+						if ( ! empty( $request['calculate_price_range'] ) ) {
+							$filter_request = clone $request;
+							$filter_request->set_param( 'min_price', null );
+							$filter_request->set_param( 'max_price', null );
+
+							$price_results     = $filters->get_filtered_price( $filter_request );
+							$data['min_price'] = $price_results->min_price;
+							$data['max_price'] = $price_results->max_price;
+						}
+
+						if ( ! empty( $request['calculate_stock_status_counts'] ) ) {
+							$filter_request = clone $request;
+							$counts = $filters->get_stock_status_counts( $filter_request );
+				
+							$data['stock_status_counts'] = [];
+				
+							foreach ( $counts as $key => $value ) {
+								$data['stock_status_counts'][] = (object) [
+									'status' => $key,
+									'count'  => $value,
+								];
+							}
+						}
+
+						if ( ! empty( $request['calculate_attribute_counts'] ) ) {
+							foreach ( $request['calculate_attribute_counts'] as $attributes_to_count ) {
+								if ( ! isset( $attributes_to_count['taxonomy'] ) ) {
+									continue;
+								}
+				
+								$counts = $filters->get_attribute_counts( $request, $attributes_to_count['taxonomy'] );
+				
+								foreach ( $counts as $key => $value ) {
+									$data['attribute_counts'][] = (object) [
+										'taxonomy' => $attributes_to_count['taxonomy'],
+										'termId'     => $key,
+										'count'    => $value,
+									];
+								}
+							}
+						}
+
+						if ( ! empty( $request['calculate_rating_counts'] ) ) {
+							$filter_request        = clone $request;
+							$counts                = $filters->get_rating_counts( $filter_request );
+							$data['rating_counts'] = [];
+				
+							foreach ( $counts as $key => $value ) {
+								$data['rating_counts'][] = (object) [
+									'rating' => $key,
+									'count'  => $value,
+								];
+							}
+						}
+
+						//wp_send_json( $data );
+
+						return $data;
+					},
+				]  
 			]
 		);
 

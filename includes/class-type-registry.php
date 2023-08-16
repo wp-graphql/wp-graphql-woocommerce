@@ -60,6 +60,7 @@ class Type_Registry {
 		Type\WPInputObject\Product_Taxonomy_Filter_Input::register();
 		Type\WPInputObject\Product_Taxonomy_Input::register();
 		Type\WPInputObject\Orderby_Inputs::register();
+		Type\WPInputObject\Collection_Stats_Query_Input::register();
 
 		/**
 		 * Interfaces.
@@ -104,6 +105,7 @@ class Type_Registry {
 		Type\WPObject\Cart_Error_Types::register();
 		Type\WPObject\Payment_Token_Types::register();
 		Type\WPObject\Country_State_Type::register();
+		Type\WPObject\Collection_Stats_Type::register();
 
 		/**
 		 * Object fields.
