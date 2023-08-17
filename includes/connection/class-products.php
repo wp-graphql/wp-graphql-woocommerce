@@ -561,6 +561,10 @@ class Products {
 				'type'        => 'Boolean',
 				'description' => __( 'Limit result types to types supported by WooGraphQL.', 'wp-graphql-woocommerce' ),
 			],
+			'includeVariations'   => [
+				'type'        => 'Boolean',
+				'description' => __( 'Include variations in the result set.', 'wp-graphql-woocommerce' ),
+			],
 		];
 
 		if ( wc_tax_enabled() ) {
@@ -609,6 +613,10 @@ class Products {
 			'tag__in',
 			'tag__not_in',
 		];
+
+		if ( isset( $where_args['includeVariations'] ) && $where_args['includeVariations'] ) {
+			$query_args['post_type'] = [ 'product', 'product_variation' ];
+		}
 
 		$query_args = array_diff_key( $query_args, array_flip( $remove ) );
 
