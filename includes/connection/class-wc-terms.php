@@ -41,7 +41,7 @@ class WC_Terms extends TermObjects {
 		// Loop through the allowed_taxonomies to register appropriate connections.
 		foreach ( $allowed_taxonomies as $tax_object ) {
 			foreach ( $wc_post_types as $post_type ) {
-				if ( 'product' === $post_type ) {
+				if ( 'product' === $post_type || 'product_variation' === $post_type ) {
 					continue;
 				}
 

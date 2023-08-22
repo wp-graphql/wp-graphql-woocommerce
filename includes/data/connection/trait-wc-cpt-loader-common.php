@@ -8,6 +8,8 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use WPGraphQL\Utils\Utils;
+
 /**
  * Trait WC_CPT_Loader_Common
  *
@@ -41,30 +43,17 @@ trait WC_CPT_Loader_Common {
 	 * @return array
 	 */
 	public function sanitize_common_inputs( array $input ) {
-		$args = [];
-		if ( ! empty( $input['include'] ) ) {
-			$args['post__in'] = $input['include'];
-		}
-
-		if ( ! empty( $input['exclude'] ) ) {
-			$args['post__not_in'] = $input['exclude'];
-		}
-
-		if ( ! empty( $input['parent'] ) ) {
-			$args['post_parent'] = $input['parent'];
-		}
-
-		if ( ! empty( $input['parentIn'] ) ) {
-			$args['post_parent__in'] = $input['parentIn'];
-		}
-
-		if ( ! empty( $input['parentNotIn'] ) ) {
-			$args['post_parent__not_in'] = $input['parentNotIn'];
-		}
-
-		if ( ! empty( $input['search'] ) ) {
-			$args['s'] = $input['search'];
-		}
+		$args = Utils::map_input(
+			$input,
+			[
+				'include'     => 'post__in',
+				'exclude'     => 'post__not_in',
+				'parent'      => 'post_parent',
+				'parentIn'    => 'post_parent__in',
+				'parentNotIn' => 'post_parent__not_in',
+				'search'      => 's',
+			]
+		);
 
 		/**
 		 * Map the orderby inputArgs to the WP_Query

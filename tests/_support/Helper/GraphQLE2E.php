@@ -746,6 +746,8 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @return void
 	 */
 	public function _setupStore() {
+		$wpdb = $this->getModule( 'WPDb' );
+		$wpdb->useTheme('twentytwentyone');
 		// Turn on tax calculations and store shipping countries. Important!
 		update_option( 'woocommerce_ship_to_countries', 'all' );
 		update_option( 'woocommerce_prices_include_tax', 'no' );

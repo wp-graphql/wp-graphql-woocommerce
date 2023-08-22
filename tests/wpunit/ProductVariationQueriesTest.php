@@ -1,28 +1,98 @@
 <?php
 
-use GraphQLRelay\Relay;
+use WPGraphQL\Type\WPEnumType;
 
-class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $products;
+class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-	public function setUp(): void {
-		parent::setUp();
+	public function expectedProductVariationData( $id ) {
+		$data = new WC_Product_Variation( $id );
 
-		$this->shop_manager   = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
-		$this->customer       = $this->factory->user->create( [ 'role' => 'customer' ] );
-		$this->product_helper = $this->getModule( '\Helper\Wpunit' )->product();
-		$this->helper         = $this->getModule( '\Helper\Wpunit' )->product_variation();
-		$this->products       = $this->helper->create( $this->product_helper->create_variable() );
-
-		\WPGraphQL::clear_schema();
+		return [
+			$this->expectedField( 'productVariation.id', $this->toRelayId( 'product_variation', $id ) ),
+			$this->expectedField( 'productVariation.databaseId', $data->get_id() ),
+			$this->expectedField( 'productVariation.name', $data->get_name() ),
+			$this->expectedField( 'productVariation.date', $data->get_date_created()->__toString() ),
+			$this->expectedField(
+				'productVariation.modified',
+				! empty( $data->get_date_created() )
+					? $data->get_date_created()->__toString()
+					: self::IS_NULL
+			),
+			$this->expectedField( 'productVariation.description', ! empty( $data->get_description() ) ? $data->get_description() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.sku', $data->get_sku() ),
+			$this->expectedField( 'productVariation.price', ! empty( $data->get_price() ) ? \wc_graphql_price( $data->get_price() ) : self::IS_NULL ),
+			$this->expectedField( 'productVariation.regularPrice', ! empty( $data->get_regular_price() ) ? \wc_graphql_price( $data->get_regular_price() ) : self::IS_NULL ),
+			$this->expectedField( 'productVariation.salePrice', ! empty( $data->get_sale_price() ) ? \wc_graphql_price( $data->get_sale_price() ) : self::IS_NULL ),
+			$this->expectedField(
+				'productVariation.dateOnSaleFrom',
+				! empty( $data->get_date_on_sale_from() )
+					? $data->get_date_on_sale_from()
+					: self::IS_NULL
+			),
+			$this->expectedField(
+				'productVariation.dateOnSaleTo',
+				! empty( $data->get_date_on_sale_to() )
+					? $data->get_date_on_sale_to()
+					: self::IS_NULL
+			),
+			$this->expectedField( 'productVariation.onSale', $data->is_on_sale() ),
+			$this->expectedField( 'productVariation.status', $data->get_status() ),
+			$this->expectedField( 'productVariation.purchasable', ! empty( $data->is_purchasable() ) ? $data->is_purchasable() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.virtual', $data->is_virtual() ),
+			$this->expectedField( 'productVariation.downloadable', $data->is_downloadable() ),
+			$this->expectedField( 'productVariation.downloadLimit', ! empty( $data->get_download_limit() ) ? $data->get_download_limit() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.downloadExpiry', ! empty( $data->get_download_expiry() ) ? $data->get_download_expiry() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.taxStatus', strtoupper( $data->get_tax_status() ) ),
+			$this->expectedField(
+				'productVariation.taxClass',
+				! empty( $data->get_tax_class() )
+					? WPEnumType::get_safe_name( $data->get_tax_class() )
+					: 'STANDARD'
+			),
+			$this->expectedField(
+				'productVariation.manageStock',
+				! empty( $data->get_manage_stock() )
+					? WPEnumType::get_safe_name( $data->get_manage_stock() )
+					: self::IS_NULL
+			),
+			$this->expectedField( 'productVariation.stockQuantity', ! empty( $data->get_stock_quantity() ) ? $data->get_stock_quantity() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.stockStatus', ProductHelper::get_stock_status_enum( $data->get_stock_status() ) ),
+			$this->expectedField(
+				'productVariation.backorders',
+				! empty( $data->get_backorders() )
+					? WPEnumType::get_safe_name( $data->get_backorders() )
+					: self::IS_NULL
+			),
+			$this->expectedField( 'productVariation.backordersAllowed', $data->backorders_allowed() ),
+			$this->expectedField( 'productVariation.weight', ! empty( $data->get_weight() ) ? $data->get_weight() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.length', ! empty( $data->get_length() ) ? $data->get_length() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.width', ! empty( $data->get_width() ) ? $data->get_width() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.height', ! empty( $data->get_height() ) ? $data->get_height() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.menuOrder', $data->get_menu_order() ),
+			$this->expectedField( 'productVariation.purchaseNote', ! empty( $data->get_purchase_note() ) ? $data->get_purchase_note() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.shippingClass', ! empty( $data->get_shipping_class() ) ? $data->get_shipping_class() : self::IS_NULL ),
+			$this->expectedField(
+				'productVariation.catalogVisibility',
+				! empty( $data->get_catalog_visibility() )
+					? WPEnumType::get_safe_name( $data->get_catalog_visibility() )
+					: self::IS_NULL
+			),
+			$this->expectedField( 'productVariation.hasAttributes', ! empty( $data->has_attributes() ) ? $data->has_attributes() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.type', WPEnumType::get_safe_name( $data->get_type() ) ),
+			$this->expectedField( 'productVariation.parent.node.id', $this->toRelayId( 'product', $data->get_parent_id() ) ),
+		];
 	}
 
 	// tests
 	public function testVariationQuery() {
-		$variation_id = $this->products['variations'][0];
-		$id           = $this->helper->to_relay_id( $variation_id );
+		// Create product variations.
+		$products     = $this->factory->product_variation->createSome(
+			$this->factory->product->createVariable()
+		);
+		$variation_id = $products['variations'][0];
+		$id           = $this->toRelayId( 'product_variation', $variation_id );
+
+		// Create query.
 		$query        = '
             query ($id: ID, $idType: ProductVariationIdTypeEnum) {
                 productVariation(id: $id, idType: $idType) {
@@ -78,20 +148,12 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'id'     => $id,
 			'idType' => 'ID',
 		];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
-		$expected  = [ 'data' => [ 'productVariation' => $this->helper->print_query( $variation_id ) ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = $this->expectedProductVariationData( $variation_id );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
-		$this->assertEquals( $expected, $actual );
-
-		$this->getModule( '\Helper\Wpunit' )->clear_loader_cache( 'wc_post' );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Two
@@ -103,24 +165,22 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'idType' => 'DATABASE_ID',
 
 		];
-		$actual   = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
-		$expected = [ 'data' => [ 'productVariation' => $this->helper->print_query( $variation_id ) ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = $this->expectedProductVariationData( $variation_id );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testVariationsQueryAndWhereArgs() {
-		$id         = $this->product_helper->to_relay_id( $this->products['product'] );
-		$product    = wc_get_product( $this->products['product'] );
-		$variations = $this->products['variations'];
+		// Create product variations.
+		$products     = $this->factory->product_variation->createSome(
+			$this->factory->product->createVariable()
+		);
+		$variation_id = $products['variations'][0];
+		$id           = $this->toRelayId( 'product', $products['product'] );
+		$product      = wc_get_product( $products['product'] );
+		$variations   = $products['variations'];
+		$prices       = $product->get_variation_prices( true );
 
 		$query = '
             query (
@@ -155,46 +215,31 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * Test query with no arguments
 		 */
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 		$variables = [ 'id' => $id ];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[0] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[1] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[2] ) ),
+			$this->expectedField(
+				'product.price',
+				\wc_graphql_price( current( $prices['price'] ) )
+					. ' - '
+					. \wc_graphql_price( end( $prices['price'] ) )
+			),
+			$this->expectedField(
+				'product.regularPrice',
+				\wc_graphql_price( current( $prices['regular_price'] ) )
+					. ' - '
+					. \wc_graphql_price( end( $prices['regular_price'] ) )
+			),
+			$this->expectedField( 'product.salePrice', self::IS_NULL )
+		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 
-		// Get product data.
-		$product_data = $actual['data']['product'];
-
-		// Assert variations.
-		foreach ( $variations as $vid ) {
-			$this->assertTrue(
-				in_array(
-					[ 'id' => $this->helper->to_relay_id( $vid ) ],
-					$product_data['variations']['nodes'],
-					true
-				),
-				$this->helper->to_relay_id( $vid ) . ' not a variation of ' . $product->get_name()
-			);
-		}
-
-		// Assert prices.
-		$prices         = $this->product_helper->field( $this->products['product'], 'variation_prices', [ true ] );
-		$expected_price = \wc_graphql_price( current( $prices['price'] ) )
-			. ' - '
-			. \wc_graphql_price( end( $prices['price'] ) );
-		$this->assertTrue( $expected_price === $product_data['price'] );
-
-		$expected_price = \wc_graphql_price( current( $prices['regular_price'] ) )
-			. ' - '
-			. \wc_graphql_price( end( $prices['regular_price'] ) );
-		$this->assertTrue( $expected_price === $product_data['regularPrice'] );
-
-		$this->assertTrue( null === $product_data['salePrice'] );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Two
@@ -205,39 +250,26 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 			'id'       => $id,
 			'minPrice' => 15,
 		];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->not()->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[0] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[1] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[2] ) ),
+		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		// Get product data.
-		$product_data = $actual['data']['product'];
-
-		// Assert variations.
-		$filter = function( $id ) {
-			$variation = new WC_Product_Variation( $id );
-			return 15.00 <= floatval( $variation->get_price() );
-		};
-
-		foreach ( array_filter( $variations, $filter ) as $vid ) {
-			$this->assertTrue(
-				in_array(
-					[ 'id' => $this->helper->to_relay_id( $vid ) ],
-					$product_data['variations']['nodes'],
-					true
-				),
-				$this->helper->to_relay_id( $vid ) . ' not a variation of ' . $product->get_name()
-			);
-		}
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductVariationToMediaItemConnections() {
-		$id    = $this->helper->to_relay_id( $this->products['variations'][1] );
+		// Create product variations.
+		$products     = $this->factory->product_variation->createSome(
+			$this->factory->product->createVariable()
+		);
+		$variation_id = $products['variations'][1];
+		$id           = $this->toRelayId( 'product_variation', $variation_id );
+		$product      = wc_get_product( $variation_id );
+
+		// Create query.
 		$query = '
 			query ($id: ID!) {
 				productVariation(id: $id) {
@@ -250,35 +282,26 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = [ 'id' => $id ];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			'data' => [
-				'productVariation' => [
-					'id'    => $id,
-					'image' => [
-						'id' => Relay::toGlobalId(
-							'post',
-							$this->helper->field( $this->products['variations'][1], 'image_id' )
-						),
-					],
-				],
-			],
+			$this->expectedField( 'productVariation.id', $id ),
+			$this->expectedField( 'productVariation.image.id', $this->toRelayId( 'post', $product->get_image_id() ) ),
 		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductVariationDownloads() {
-		$id = $this->helper->to_relay_id( $this->products['variations'][0] );
+		// Create product variations.
+		$products     = $products     = $this->factory->product_variation->createSome(
+			$this->factory->product->createVariable()
+		);
+		$variation_id = $products['variations'][0];
+		$id           = $this->toRelayId( 'product_variation', $variation_id );
+		$product      = wc_get_product( $variation_id );
+		$downloads    = (array) array_values( $product->get_downloads() );
 
+		// Create query.
 		$query = '
 			query ($id: ID!) {
 				productVariation(id: $id) {
@@ -298,24 +321,103 @@ class ProductVariationQueriesTest extends \Codeception\TestCase\WPTestCase {
 		';
 
 		$variables = [ 'id' => $id ];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			'data' => [
-				'productVariation' => [
-					'id'        => $id,
-					'downloads' => $this->helper->print_downloads( $this->products['variations'][0] ),
-				],
-			],
+			$this->expectedField( 'productVariation.id', $id ),
+			$this->expectedNode(
+				'productVariation.downloads',
+				[
+					$this->expectedField( 'name', $downloads[0]->get_name() ),
+					$this->expectedField( 'downloadId', $downloads[0]->get_id() ),
+					$this->expectedField( 'filePathType', $downloads[0]->get_type_of_file_path() ),
+					$this->expectedField( 'fileType', $downloads[0]->get_file_type() ),
+					$this->expectedField( 'fileExt', $downloads[0]->get_file_extension() ),
+					$this->expectedField( 'allowedFileType', $downloads[0]->is_allowed_filetype() ),
+					$this->expectedField( 'fileExists', $downloads[0]->file_exists() ),
+					$this->expectedField( 'file', $downloads[0]->get_file() ),
+				]
+			)
 		];
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 
-		$this->assertEquals( $expected, $actual );
+	public function testProductsQueriesWithVariations() {
+		// Create noise products.
+		$product_id   = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [ $this->factory->product->createAttribute( 'print', [ 'polka-dot', 'stripe', 'flames' ] ) ],
+			],
+		);
+		$variation_id = $this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pattern' => 'polka-dot',
+				],
+				'image_id'      => null,
+				'regular_price' => 10,
+			]
+		);
+
+
+		$other_variation_id = $this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pattern' => 'stripe',
+				],
+				'image_id'      => null,
+				'regular_price' => 10,
+			]
+		);
+
+		$query = '
+			query ( $type: ProductTypesEnum, $typeIn: [ProductTypesEnum], $includeVariations: Boolean ) {
+				products( where: { type: $type, typeIn: $typeIn includeVariations: $includeVariations } ) {
+					nodes {
+						id
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assert default results without "type", or "typeIn" excludes product variations.
+		 */
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $variation_id ) ),
+			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $other_variation_id ) ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assert result with "type" set to "VARIATION" only return variations.
+		 */
+		$variables = [ 'type' => 'VARIATION' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $variation_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $other_variation_id ) ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assert result with "typeIn" set to "VARIATION" & "VARIATION" products and variations are returned.
+		 */
+		$variables = [ 'includeVariations' => true ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $variation_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $other_variation_id ) ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }

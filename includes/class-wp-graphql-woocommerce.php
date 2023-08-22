@@ -74,10 +74,11 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			return apply_filters(
 				'graphql_woocommerce_product_types',
 				[
-					'simple'   => 'SimpleProduct',
-					'variable' => 'VariableProduct',
-					'external' => 'ExternalProduct',
-					'grouped'  => 'GroupProduct',
+					'simple'    => 'SimpleProduct',
+					'variable'  => 'VariableProduct',
+					'external'  => 'ExternalProduct',
+					'grouped'   => 'GroupProduct',
+					'variation' => 'ProductVariation',
 				]
 			);
 		}

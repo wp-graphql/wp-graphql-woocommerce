@@ -83,7 +83,7 @@ $cart_url = $success['data']['updateSession']['customer']['cartUrl'];
 
 $I->wantTo( 'Go cart page and confirm empty and session not seen' );
 $I->amOnPage( '/cart' );
-$I->see( 'Your cart is currently empty.' );
+$I->seeElement('.wc-empty-cart-message');
 
 $I->wantTo( 'Authenticate with cart url and confirm page redirect' );
 $I->stopFollowingRedirects();

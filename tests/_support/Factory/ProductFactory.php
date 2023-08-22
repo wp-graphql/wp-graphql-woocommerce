@@ -198,7 +198,7 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 						'show_ui'      => false,
 						'query_var'    => true,
 						'rewrite'      => false,
-					]
+					],
 				)
 			);
 

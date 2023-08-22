@@ -84,7 +84,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
-		$I->see( 'Your cart is currently empty.' );
+		$I->seeElement('.wc-empty-cart-message');
 
 		$I->wantTo( 'Authenticate with nonced url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();
@@ -99,8 +99,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Confirm session has been loaded.' );
 		$I->see( 'Checkout' );
-		$I->see( 'Apply Coupon' );
-		$I->see( 'T-Shirt' );
+		$I->see( 't-shirt' );
 	}
 
 
@@ -172,7 +171,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
-		$I->see( 'Your cart is currently empty.' );
+		$I->seeElement('.wc-empty-cart-message');
 
 		$I->wantTo( 'Attempt to authenticate with expired url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();
@@ -210,7 +209,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
-		$I->see( 'Your cart is currently empty.' );
+		$I->seeElement('.wc-empty-cart-message');
 
 		$I->wantTo( 'Attempt to authenticate with nonced url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();

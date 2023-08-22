@@ -66,6 +66,8 @@ wp-graphql wp-graphql-jwt-authentication \
 wp-graphql-woocommerce \
 --allow-root
 
+wp theme activate twentytwentyone --allow-root
+
 if ! wp config has GRAPHQL_JWT_AUTH_SECRET_KEY --allow-root; then
 	echo "Adding WPGraphQL-JWT-Authentication salt..."
     wp config set GRAPHQL_JWT_AUTH_SECRET_KEY 'test' --allow-root

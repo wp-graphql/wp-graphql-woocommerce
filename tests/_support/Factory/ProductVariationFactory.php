@@ -125,8 +125,8 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		$variations = [];
 		foreach ( $variation_data as $data ) {
-			$args      = array_merge( $data, $args );
-			$variation = $this->create_and_get( $args, [ 'variation_class' => '\WC_Product_Variation' ] );
+			$variation_args = array_merge( $data, $args );
+			$variation      = $this->create_and_get( $variation_args, [ 'variation_class' => '\WC_Product_Variation' ] );
 
 			$variations[] = $variation->get_id();
 		}
