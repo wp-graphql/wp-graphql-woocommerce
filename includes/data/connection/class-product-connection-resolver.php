@@ -161,7 +161,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * @var \WP_Post_Type
 		 */
 		$post_type_obj = get_post_type_object( 'product' );
-		    
+			
 		if ( empty( $this->args['where']['visibility'] ) && ! current_user_can( $post_type_obj->cap->read_private_posts ) ) {
 			if ( empty( $query_args['tax_query'] ) ) {
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
