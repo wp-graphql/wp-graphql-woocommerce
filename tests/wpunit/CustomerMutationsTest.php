@@ -1,64 +1,20 @@
 <?php
+use Faker\Factory;
 
 class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
+	/**
+	 * Faker instance.
+	 *
+	 * @var Faker\Factory
+	 */
+	private $faker;
+
 	public function setUp(): void {
 		// before
 		parent::setUp();
 
+		$this->faker = Factory::create();
 		update_option( 'users_can_register', 1 );
-
-		// Register Info
-		$this->first_name = 'Peter';
-		$this->last_name  = 'Parker';
-		$this->username   = 'spidersRLoose67';
-		$this->pass       = 'c@nalSt_@ll_DaY';
-		$this->email      = 'peter.parker@dailybugle.com';
-		$this->billing    = [
-			'firstName' => 'May',
-			'lastName'  => 'Parker',
-			'address1'  => '20 Ingram St',
-			'city'      => 'New York City',
-			'state'     => 'NY',
-			'postcode'  => '12345',
-			'country'   => 'US',
-			'email'     => 'superfreak500@gmail.com',
-			'phone'     => '555-555-1234',
-		];
-		$this->shipping   = [
-			'firstName' => 'Peter',
-			'lastName'  => 'Parker',
-			'address1'  => '202 Canal St',
-			'address2'  => 'Apt #4',
-			'city'      => 'New York City',
-			'state'     => 'NY',
-			'postcode'  => '12310',
-			'country'   => 'US',
-		];
-
-		// Update Info
-		$this->new_first_name = 'Ben';
-		$this->new_last_name  = 'Wallace';
-		$this->new_email      = 'we0utHere32@gmail.com';
-		$this->new_billing    = [
-			'firstName' => 'Jim',
-			'lastName'  => 'Bean',
-			'address1'  => '45 Vodka Rd',
-			'city'      => 'Norfolk',
-			'state'     => 'VA',
-			'postcode'  => '23456',
-			'country'   => 'US',
-			'email'     => '4daKnock0ut@yahoo.com',
-			'phone'     => '757-422-0989',
-		];
-		$this->new_shipping   = [
-			'firstName' => 'Ben',
-			'lastName'  => 'Wallace',
-			'address1'  => '478 Vodka Rd',
-			'city'      => 'Virginia Beach',
-			'state'     => 'VA',
-			'postcode'  => '23451',
-			'country'   => 'US',
-		];
 	}
 
 	public function tearDown(): void {
@@ -74,6 +30,49 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		parent::tearDown();
 	}
 
+	public function generateCustomerInput() {
+		$first_name = $this->faker->firstName();
+		$last_name  = $this->faker->lastName();
+		$username   = $this->faker->userName();
+		$password   = $this->faker->password();
+		$email      = $this->faker->email();
+		$phone	    = $this->faker->phoneNumber();
+		$address    = $this->faker->streetAddress();
+		$city       = $this->faker->city();
+		$state      = $this->faker->state();
+		$postcode   = $this->faker->postcode();
+		$country    = 'US';
+
+		return [
+			'firstName' => $first_name,
+			'lastName'  => $last_name,
+			'username'  => $username,
+			'password'  => $password,
+			'email'     => $email,
+			'billing'   => [
+				'firstName' => $first_name,
+				'lastName'  => $last_name,
+				'address1'  => $address,
+				'city'      => $city,
+				'state'     => $state,
+				'postcode'  => $postcode,
+				'country'   => $country,
+				'email'     => $email,
+				'phone'     => $phone,
+			],
+			'shipping'  => [
+				'firstName' => $first_name,
+				'lastName'  => $last_name,
+				'address1'  => $address,
+				'city'      => $city,
+				'state'     => $state,
+				'postcode'  => $postcode,
+				'country'   => $country,
+				'phone'     => $phone,
+			],
+		];
+	}
+
 	private function empty_shipping() {
 		return [
 			'firstName' => null,
@@ -85,17 +84,24 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'state'     => null,
 			'postcode'  => null,
 			'country'   => null,
+			'phone'		=> null,
 		];
 	}
 
 	private function empty_billing() {
-		return array_merge(
-			$this->empty_shipping(),
-			[
-				'email' => null,
-				'phone' => null,
-			]
-		);
+		return [
+			'firstName' => null,
+			'lastName'  => null,
+			'company'   => null,
+			'address1'  => null,
+			'address2'  => null,
+			'city'      => null,
+			'state'     => null,
+			'postcode'  => null,
+			'country'   => null,
+			'email'     => null,
+			'phone'		=> null,
+		];
 	}
 
 	private function executeRegisterCustomerMutation( $input ) {
@@ -134,6 +140,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 							state
 							postcode
 							country
+							phone
 						}
 					}
 					viewer {
@@ -185,6 +192,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 							state
 							postcode
 							country
+							phone
 						}
 					}
 				}
@@ -199,23 +207,27 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testRegisterMutationWithoutCustomerInfo() {
 		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$response = $this->executeRegisterCustomerMutation(
-			[
-				'clientMutationId' => 'someId',
-				'username'         => $this->username,
-				'password'         => $this->pass,
-				'email'            => $this->email,
-				'firstName'        => $this->first_name,
-				'lastName'         => $this->last_name,
-			]
+			array_merge(
+				$customer_input,
+				[
+					'billing'  => [],
+					'shipping' => [],
+				]
+			)
 		);
 
 		// Assert user created.
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$expected = [
@@ -225,10 +237,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'registerCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->email ),
-					$this->expectedField( 'username', $this->username ),
-					$this->expectedField( 'firstName', $this->first_name ),
-					$this->expectedField( 'lastName', $this->last_name ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'username', $customer_input['username'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', $this->empty_billing() ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
 				]
@@ -241,23 +253,25 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testRegisterMutationWithBillingInfo() {
 		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation with customer billing information.
 		 */
 		$response = $this->executeRegisterCustomerMutation(
-			[
-				'clientMutationId' => 'someId',
-				'username'         => $this->username,
-				'password'         => $this->pass,
-				'email'            => $this->email,
-				'firstName'        => $this->first_name,
-				'lastName'         => $this->last_name,
-				'billing'          => $this->billing,
-			]
+			array_merge(
+				$customer_input,
+				[
+					'shipping' => [],
+				]
+			)
 		);
 
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$expected = [
@@ -267,11 +281,11 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'registerCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->email ),
-					$this->expectedField( 'username', $this->username ),
-					$this->expectedField( 'firstName', $this->first_name ),
-					$this->expectedField( 'lastName', $this->last_name ),
-					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'username', $customer_input['username'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
+					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
 				]
 			),
@@ -283,24 +297,26 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testRegisterMutationWithShippingSameAsBillingInfo() {
 		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation using "shippingSameAsBilling" field.
 		 */
 		$response = $this->executeRegisterCustomerMutation(
-			[
-				'clientMutationId'      => 'someId',
-				'username'              => $this->username,
-				'password'              => $this->pass,
-				'email'                 => $this->email,
-				'firstName'             => $this->first_name,
-				'lastName'              => $this->last_name,
-				'billing'               => $this->billing,
-				'shippingSameAsBilling' => true,
-			]
+			array_merge(
+				$customer_input,
+				[
+					'shipping'              => [],
+					'shippingSameAsBilling' => true,
+				]
+			)
 		);
 
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$expected = [
@@ -310,16 +326,16 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'registerCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->email ),
-					$this->expectedField( 'username', $this->username ),
-					$this->expectedField( 'firstName', $this->first_name ),
-					$this->expectedField( 'lastName', $this->last_name ),
-					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'username', $customer_input['username'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
+					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField(
 						'shipping',
 						array_merge(
 							$this->empty_shipping(),
-							array_intersect_key( $this->billing, $this->empty_shipping() )
+							array_intersect_key( $customer_input['billing'], $this->empty_shipping() )
 						)
 					),
 				]
@@ -332,24 +348,18 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testRegisterMutationWithBillingAndShippingInfo() {
 		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation with customer shipping information.
 		 */
-		$response = $this->executeRegisterCustomerMutation(
-			[
-				'clientMutationId' => 'someId',
-				'username'         => $this->username,
-				'password'         => $this->pass,
-				'email'            => $this->email,
-				'firstName'        => $this->first_name,
-				'lastName'         => $this->last_name,
-				'billing'          => $this->billing,
-				'shipping'         => $this->shipping,
-			]
-		);
+		$response = $this->executeRegisterCustomerMutation( $customer_input );
 
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$expected = [
@@ -359,12 +369,12 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'registerCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->email ),
-					$this->expectedField( 'username', $this->username ),
-					$this->expectedField( 'firstName', $this->first_name ),
-					$this->expectedField( 'lastName', $this->last_name ),
-					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
-					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $this->shipping ) ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'username', $customer_input['username'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
+					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
+					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $customer_input['shipping'] ) ),
 				]
 			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
@@ -375,36 +385,49 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testUpdateMutation() {
 		/**
+		 * Get customer input.
+		 */
+		$initial_customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
-		$this->executeRegisterCustomerMutation(
-			[
-				'clientMutationId' => 'someId',
-				'username'         => $this->username,
-				'password'         => $this->pass,
-				'email'            => $this->email,
-				'firstName'        => $this->first_name,
-				'lastName'         => $this->last_name,
-				'billing'          => $this->billing,
-				'shipping'         => $this->shipping,
-			]
-		);
+		$response = $this->executeRegisterCustomerMutation( $initial_customer_input );
 
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $initial_customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$response = $this->executeUpdateCustomerMutation(
-			[
-				'clientMutationId' => 'someId',
-				'id'               => $this->toRelayId( 'customer', $user->ID ),
-				'email'            => $this->new_email,
-				'firstName'        => $this->new_first_name,
-				'lastName'         => $this->new_last_name,
-				'billing'          => array_merge( $this->new_billing, [ 'overwrite' => true ] ),
-				'shipping'         => array_merge( $this->new_shipping, [ 'overwrite' => true ] ),
-			]
+		$expected = [
+			$this->expectedObject(
+				'registerCustomer.customer',
+				[
+					$this->expectedField( 'databaseId', $user->ID ),
+					$this->expectedField( 'email', $initial_customer_input['email'] ),
+					$this->expectedField( 'username', $initial_customer_input['username'] ),
+					$this->expectedField( 'firstName', $initial_customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $initial_customer_input['lastName'] ),
+					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $initial_customer_input['billing'] ) ),
+					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $initial_customer_input['shipping'] ) ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+		unset( $customer_input['username'] );
+		$response       = $this->executeUpdateCustomerMutation(
+			array_merge(
+				$customer_input,
+				[
+					'id' => $this->toRelayId( 'customer', $user->ID ),
+				]
+			)
 		);
 
 		$expected = [
@@ -412,12 +435,12 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'updateCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->new_email ),
-					$this->expectedField( 'username', $this->username ),
-					$this->expectedField( 'firstName', $this->new_first_name ),
-					$this->expectedField( 'lastName', $this->new_last_name ),
-					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->new_billing ) ),
-					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $this->new_shipping ) ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'username', $initial_customer_input['username'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
+					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
+					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $customer_input['shipping'] ) ),
 				]
 			),
 		];
@@ -427,24 +450,25 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testUpdateMutationWithShippingSameAsBilling() {
 		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation without a providing WooCommerce specific customer information.
 		 */
 		$this->executeRegisterCustomerMutation(
-			[
-				'clientMutationId' => 'someId',
-				'username'         => $this->username,
-				'password'         => $this->pass,
-				'email'            => $this->email,
-				'firstName'        => $this->first_name,
-				'lastName'         => $this->last_name,
-				'billing'          => $this->billing,
-				'shipping'         => $this->shipping,
-			]
+			array_merge(
+				$customer_input,
+				[
+					'shipping' => [],
+				]
+			)
 		);
 
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$response = $this->executeUpdateCustomerMutation(
@@ -460,16 +484,16 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'updateCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->email ),
-					$this->expectedField( 'username', $this->username ),
-					$this->expectedField( 'firstName', $this->first_name ),
-					$this->expectedField( 'lastName', $this->last_name ),
-					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $this->billing ) ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'username', $customer_input['username'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
+					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField(
 						'shipping',
 						array_merge(
 							$this->empty_shipping(),
-							array_intersect_key( $this->billing, $this->empty_shipping() )
+							array_intersect_key( $customer_input['billing'], $this->empty_shipping() )
 						)
 					),
 				]
@@ -481,20 +505,24 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 
 	public function testRegisterMutationWithoutAnyInfo() {
 		/**
+		 * Get customer input.
+		 */
+		$customer_input = $this->generateCustomerInput();
+
+		/**
 		 * Assertion One
 		 *
 		 * Tests mutation without a providing an username and password.
 		 */
 		$response = $this->executeRegisterCustomerMutation(
 			[
-				'clientMutationId' => 'someId',
-				'email'            => $this->email,
-				'firstName'        => $this->first_name,
-				'lastName'         => $this->last_name,
+				'email'     => $customer_input['email'],
+				'firstName' => $customer_input['firstName'],
+				'lastName'  => $customer_input['lastName'],
 			]
 		);
 
-		$user = get_user_by( 'email', 'peter.parker@dailybugle.com' );
+		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$expected = [
@@ -502,9 +530,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'registerCustomer.customer',
 				[
 					$this->expectedField( 'databaseId', $user->ID ),
-					$this->expectedField( 'email', $this->email ),
-					$this->expectedField( 'firstName', $this->first_name ),
-					$this->expectedField( 'lastName', $this->last_name ),
+					$this->expectedField( 'email', $customer_input['email'] ),
+					$this->expectedField( 'firstName', $customer_input['firstName'] ),
+					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', $this->empty_billing() ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
 				]

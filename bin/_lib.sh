@@ -71,7 +71,8 @@ install_local_test_library() {
 		codeception/module-rest:* \
 		codeception/util-universalframework:^1.0  \
 		wp-graphql/wp-graphql-testcase:^2.3 \
-		stripe/stripe-php
+		stripe/stripe-php \
+		fakerphp/faker
 
 }
 
@@ -102,7 +103,8 @@ remove_local_test_library() {
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
-		stripe/stripe-php
+		stripe/stripe-php \
+		fakerphp/faker
 }
 
 cleanup_composer_file() {

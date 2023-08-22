@@ -96,6 +96,7 @@ class Customer_Mutation {
 			'state'      => '',
 			'postcode'   => '',
 			'country'    => '',
+			'phone'      => '',
 		];
 	}
 
@@ -107,10 +108,7 @@ class Customer_Mutation {
 	public static function empty_billing() {
 		return array_merge(
 			self::empty_shipping(),
-			[
-				'email' => '',
-				'phone' => '',
-			]
+			[ 'email' => '' ]
 		);
 	}
 

@@ -8,7 +8,7 @@
 
 namespace Tests\WPGraphQL\WooCommerce\Factory;
 
-use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
+use Faker\Factory;
 
 /**
  * Customer factory class for testing.
@@ -18,7 +18,7 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		parent::__construct( $factory );
 
 		$this->default_generation_definitions = [];
-		$this->dummy                          = Dummy::instance();
+		$this->dummy                          = Factory::create();
 	}
 
 	public function create_object( $args ) {
@@ -29,16 +29,16 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		$customer = new \WC_Customer();
 
 		// Create customer details
-		$username   = $this->dummy->username();
-		$first_name = $this->dummy->firstname();
-		$last_name  = $this->dummy->lastname();
-		$street     = $this->dummy->street();
+		$username   = $this->dummy->userName();
+		$first_name = $this->dummy->firstName();
+		$last_name  = $this->dummy->lastName();
+		$street     = $this->dummy->streetAddress();
 		$city       = $this->dummy->city();
 		$state      = $this->dummy->state();
-		$postcode   = $this->dummy->zipcode();
+		$postcode   = $this->dummy->postcode();
 		$country    = 'US';
 		$email      = $this->dummy->email();
-		$phone      = $this->dummy->telephone();
+		$phone      = $this->dummy->phoneNumber();
 
 		$args = array_merge(
 			[
@@ -66,6 +66,7 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		$customer->set_shipping_state( ! empty( $args['shipping']['state'] ) ? $args['shipping']['state'] : $state );
 		$customer->set_shipping_postcode( ! empty( $args['shipping']['postcode'] ) ? $args['shipping']['postcode'] : $postcode );
 		$customer->set_shipping_country( ! empty( $args['shipping']['country'] ) ? $args['shipping']['country'] : $country );
+		$customer->set_shipping_phone( ! empty( $args['shipping']['phone'] ) ? $args['shipping']['phone'] : $phone );
 
 		// Set data.
 		$customer->set_props(
