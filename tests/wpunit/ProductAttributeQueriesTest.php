@@ -69,18 +69,47 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 	}
 
 	public function testProductAttributeToProductConnectionQuery() {
-		$product_id    = $this->factory->product->createVariable();
-		$variation_ids = $this->factory->product_variation->createSome( $product_id )['variations'];
+		
+
+		// Create noise products.
+		$product_id   = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [ $this->factory->product->createAttribute( 'pattern', [ 'polka-dot', 'stripe', 'flames' ] ) ],
+			],
+		);
+		$variation_id = $this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pattern' => 'polka-dot',
+				],
+				'image_id'      => null,
+				'regular_price' => 10,
+			]
+		);
+
+		// Create variable product with attribute.
+		$other_product_id   = $this->factory->product->createVariable();
+		$other_variation_id = $this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_id,
+				'attributes'    => [
+					'pattern' => 'stripe',
+				],
+				'image_id'      => null,
+				'regular_price' => 10,
+			]
+		);	
+		$other_product_id_2 = $this->factory->product->createSimple();
+		$this->clearSchema();
 
 		$query = '
-            query attributeConnectionQuery( $color: [String!] ) {
-                allPaColor( where: { name: $color } ) {
+            query attributeConnectionQuery( $pattern: [String!] ) {
+                allPaPattern( where: { name: $pattern } ) {
                     nodes {
                         products {
                             nodes {
-                                ... on VariableProduct {
-                                    id
-                                }
+                                id
                             }
                         }
                     }
@@ -88,10 +117,13 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
             }
         ';
 
-		$variables = [ 'color' => 'red' ];
+		/**
+		 * Assert correct products are queried.
+		 */
+		$variables = [ 'pattern' => 'polka-dot' ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'allPaColor.nodes.0.products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'allPaPattern.nodes.0.products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );

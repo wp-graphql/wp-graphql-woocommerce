@@ -24,12 +24,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
  * Class WC_CPT_Loader
  */
 class WC_CPT_Loader extends AbstractDataLoader {
-	/**
-	 * Stores loaded CPTs.
-	 *
-	 * @var array
-	 */
-	protected $loaded_objects;
 
 	/**
 	 * Returns the Model for a given post-type and ID.
@@ -70,13 +64,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	}
 
 	/**
-	 * Given array of keys, loads and returns a map consisting of keys from `keys` array and loaded
-	 * posts as the values
-	 *
-	 * @param array $keys - array of IDs.
-	 *
-	 * @return array
-	 * @throws \GraphQL\Error\UserError - throws if no corresponding Data store exists with the ID.
+	 * {@inheritDoc}
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {
@@ -145,68 +133,50 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				throw new UserError( sprintf( __( '%s is not a valid WooCommerce post-type', 'wp-graphql-woocommerce' ), $post_type ) );
 			}
 
-			/**
-			 * If there's a customer connected to the order, we need to resolve the
-			 * customer
-			 */
-			$context     = $this->context;
-			$customer_id = null;
-			$parent_id   = null;
-
-			// Resolve post author for future capability checks.
-			switch ( $post_type ) {
-				case 'shop_order':
-					$customer_id = get_post_meta( $key, '_customer_user', true );
-					if ( ! empty( $customer_id ) ) {
-						$this->context->get_loader( 'wc_customer' )->buffer( [ $customer_id ] );
-					}
-					break;
-				case 'product_variation':
-				case 'shop_refund':
-					$parent_id = get_post_field( 'post_parent', $key );
-					$this->buffer( [ $parent_id ] );
-					break;
+			$post_object = get_post( (int) $key );
+			if ( ! $post_object instanceof \WP_Post ) {
+				$loaded_posts[ $key ] = null;
+			} else {
+				$loaded_posts[ $key ] = $post_object;
 			}
-
-			/**
-			 * This is a deferred function that allows us to do batch loading
-			 * of dependant resources. When the Model Layer attempts to determine
-			 * access control of a Post, it needs to know the owner of it, and
-			 * if it's a revision, it needs the Parent.
-			 *
-			 * This deferred function allows for the objects to be loaded all at once
-			 * instead of loading once per entity, thus reducing the n+1 problem.
-			 */
-			$load_dependencies = new Deferred(
-				function () use ( $key, $post_type, $customer_id, $parent_id, $context ) {
-					if ( ! empty( $customer_id ) ) {
-						$context->get_loader( 'wc_customer' )->load( $customer_id );
-					}
-					if ( ! empty( $parent_id ) ) {
-						$this->load( $parent_id );
-					}
-
-					/**
-					 * Run an action when the dependencies are being loaded for
-					 * Post Objects
-					 */
-					do_action( 'woographql_cpt_loader_load_dependencies', $this, $key, $post_type );
-
-					return;
-				}
-			);
-
-			/**
-			 * Once dependencies are loaded, return the Post Object
-			 */
-			$loaded_posts[ $key ] = $load_dependencies->then(
-				static function () use ( $post_type, $key ) {
-					return self::resolve_model( $post_type, $key );
-				}
-			);
 		}//end foreach
 
 		return $loaded_posts;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function get_model( $entry, $key ) {
+		if ( ! $entry ) {
+			return null;
+		}
+
+		/**
+		 * If there's a customer connected to the order, we need to resolve the
+		 * customer
+		 */
+		$context = $this->context;
+
+		// Resolve post author for future capability checks.
+		switch ( $post_type ) {
+			case 'shop_order':
+				$customer_id = get_post_meta( $key, '_customer_user', true );
+				if ( ! empty( $customer_id ) ) {
+					$context->get_loader( 'wc_customer' )->load_deferred( $customer_id );
+				}
+				break;
+			case 'product_variation':
+			case 'shop_refund':
+				$parent_id = $entry->post_parent;
+				if ( ! empty( $entry->post_parent ) ) {
+					$context->get_loader( 'wc_post' )->load_deferred( $entry->post_parent );
+				}
+				break;
+		}
+
+		\codecept_debug( compact( 'entry' ) );
+		return self::resolve_model( $entry->post_type, $key, false );
 	}
 
 	/**

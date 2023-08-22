@@ -261,7 +261,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$this->assertQuerySuccessful( $response, $expected );
 
 		// Clear cache
-		$this->getModule( '\Helper\Wpunit' )->clear_loader_cache( 'wc_post' );
+		$this->clearLoaderCache( 'wc_post' );
 
 		/**
 		 * Assertion Two

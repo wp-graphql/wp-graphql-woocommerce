@@ -191,7 +191,7 @@ class Product_Variation extends WC_Post {
 					return ! empty( $this->wc_data->get_height() ) ? $this->wc_data->get_height() : null;
 				},
 				'menuOrder'         => function () {
-					return ! empty( $this->wc_data->get_menu_order() ) ? $this->wc_data->get_menu_order() : null;
+					return $this->wc_data->get_menu_order();
 				},
 				'purchaseNote'      => function () {
 					return ! empty( $this->wc_data->get_purchase_note() ) ? $this->wc_data->get_purchase_note() : null;
