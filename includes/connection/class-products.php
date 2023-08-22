@@ -130,7 +130,7 @@ class Products {
 		$cross_sell_config = [
 			'fromFieldName' => 'crossSell',
 			'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-				$resolver = new Product_Connection_Resolver( $source, $args, $context, $info, 'product' );
+				$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 				$resolver->set_query_arg( 'post__in', $source->cross_sell_ids );
 				return $resolver->get_connection();
 			},
@@ -197,7 +197,7 @@ class Products {
 						'toType'        => 'ProductVariation',
 						'fromFieldName' => 'variations',
 						'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) );
+							$attribute_meta_key = 'attribute_' . strtolower( preg_replace( '/([A-Z])/', '_$1', $source->taxonomyName ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$meta_query         = [
 								'key'     => $attribute_meta_key,
 								'value'   => $source->slug,
@@ -254,12 +254,12 @@ class Products {
 			$config['resolve'] = static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 				$tax_query = [
 					[
-						'taxonomy'         => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						'operator'         => 'EXISTS',
-					]
+						'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						'operator' => 'EXISTS',
+					],
 				];
 
-				$resolver  = new Product_Connection_Resolver( $source, $args, $context, $info );
+				$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 				$resolver->add_tax_query( $tax_query );
 
 				return $resolver->get_connection();
@@ -467,7 +467,7 @@ class Products {
 				'type'        => 'Boolean',
 				'description' => __( 'Limit result types to types supported by WooGraphQL.', 'wp-graphql-woocommerce' ),
 			],
-			'includeVariations'   => [
+			'includeVariations'  => [
 				'type'        => 'Boolean',
 				'description' => __( 'Include variations in the result set.', 'wp-graphql-woocommerce' ),
 			],

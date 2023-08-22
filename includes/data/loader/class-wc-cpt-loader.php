@@ -11,7 +11,6 @@
 namespace WPGraphQL\WooCommerce\Data\Loader;
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
-use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Model\Coupon;
@@ -24,7 +23,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
  * Class WC_CPT_Loader
  */
 class WC_CPT_Loader extends AbstractDataLoader {
-
 	/**
 	 * Returns the Model for a given post-type and ID.
 	 *
@@ -32,8 +30,9 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param int     $id         Post ID.
 	 * @param boolean $fatal      Throw if no model found.
 	 *
-	 * @return mixed
 	 * @throws \GraphQL\Error\UserError - throws if no corresponding Model is registered to the post-type.
+	 * 
+	 * @return \WPGraphQL\Model\Model|null
 	 */
 	public static function resolve_model( $post_type, $id, $fatal = true ) {
 		switch ( $post_type ) {
@@ -50,6 +49,12 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			default:
 				$model = apply_filters( 'graphql_woocommerce_cpt_loader_model', null, $post_type );
 				if ( ! empty( $model ) ) {
+					/**
+					 * If a model is registered to the post-type, we can return an instance of that model
+					 * with the post ID passed in.
+					 * 
+					 * @var \WPGraphQL\Model\Model
+					 */
 					return new $model( $id );
 				}
 
@@ -65,6 +70,8 @@ class WC_CPT_Loader extends AbstractDataLoader {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws \GraphQL\Error\UserError - throws if the post-type is not a valid WooCommerce post-type.
 	 */
 	public function loadKeys( array $keys ) {
 		if ( empty( $keys ) ) {
@@ -146,6 +153,8 @@ class WC_CPT_Loader extends AbstractDataLoader {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @return \WPGraphQL\Model\Model|null
 	 */
 	protected function get_model( $entry, $key ) {
 		if ( ! $entry ) {
@@ -159,7 +168,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		$context = $this->context;
 
 		// Resolve post author for future capability checks.
-		switch ( $post_type ) {
+		switch ( $entry->post_type ) {
 			case 'shop_order':
 				$customer_id = get_post_meta( $key, '_customer_user', true );
 				if ( ! empty( $customer_id ) ) {
@@ -175,7 +184,6 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				break;
 		}
 
-		\codecept_debug( compact( 'entry' ) );
 		return self::resolve_model( $entry->post_type, $key, false );
 	}
 

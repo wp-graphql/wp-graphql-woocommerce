@@ -10,13 +10,9 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use Automattic\WooCommerce\StoreApi\Utilities\ProductQuery;
-use GraphQL\Error\InvariantViolation;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Model\Product;
-use WPGraphQL\WooCommerce\Model\Product_Variation;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 use WPGraphQL\Utils\Utils;
+use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class Product_Connection_Resolver
@@ -34,7 +30,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * The name of the post type, or array of post types the connection resolver is resolving for
 	 *
-	 * @var string
+	 * @var string[]
 	 */
 	protected $post_type;
 
@@ -111,7 +107,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args['posts_per_page'] = $this->one_to_one ? 1 : min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1;
 
-		// set the graphql cursor args
+		/**
+		 * Set the graphql cursor args.
+		 */
 		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
 		$query_args['graphql_after_cursor']   = $this->get_after_offset();
 		$query_args['graphql_before_cursor']  = $this->get_before_offset();
@@ -157,7 +155,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args['order']                = isset( $last ) ? 'ASC' : 'DESC';
 		}
 
-		$post_type_obj = get_post_type_object( 'product' );		
+		/**
+		 * Product post-type object.
+		 *
+		 * @var \WP_Post_Type
+		 */
+		$post_type_obj = get_post_type_object( 'product' );
+		    
 		if ( empty( $this->args['where']['visibility'] ) && ! current_user_can( $post_type_obj->cap->read_private_posts ) ) {
 			if ( empty( $query_args['tax_query'] ) ) {
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
@@ -224,14 +228,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @return \WC_Product_Query
+	 * @return \WP_Query
 	 */
 	public function get_query() {
 		\codecept_debug( $this->query_args );
 		// Run query and remove hook.
-		$query = new \WP_Query( $this->query_args );
-
-		return $query;
+		return new \WP_Query( $this->query_args );
 	}
 
 	/**
@@ -280,12 +282,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args = Utils::map_input(
 			$this->sanitize_common_inputs( $where_args ),
 			[
-				'slugIn'          => 'post_name__in',
-				'minPrice'        => 'min_price',
-				'maxPrice'        => 'max_price',
-				'stockStatus'     => 'stock_status',
-				'status'          => 'post_status',
-				'search'          => 's',
+				'slugIn'      => 'post_name__in',
+				'minPrice'    => 'min_price',
+				'maxPrice'    => 'max_price',
+				'stockStatus' => 'stock_status',
+				'status'      => 'post_status',
+				'search'      => 's',
 			]
 		);
 
@@ -327,15 +329,17 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				// Set tax query config.
 				switch ( $field ) {
 					case 'type':
+						// If the type is variation, we only need to set the post_type arg.
 						if ( 'variation' === $where_args[ $field ] ) {
-							$query_args['post_type'] = ['product_variation'];
+							$query_args['post_type'] = [ 'product_variation' ];
 							break;
 						}
+						// Otherwise continue to create a tax query.
 					case 'typeIn':
 						if ( is_array( $where_args[ $field ] ) && in_array( 'variation', $where_args[ $field ], true ) ) {
-							$query_args['post_type'] = array_merge( $this->post_type, ['product_variation'] );
+							$query_args['post_type'] = array_merge( $this->post_type, [ 'product_variation' ] );
 						}
-						$tax_query[] = [
+						$tax_query[] = [ // phpcs:ignore SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed.DisallowedPartiallyKeyed
 							'relation' => 'OR',
 							[
 								'taxonomy' => 'product_type',
@@ -536,7 +540,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $where_args['minPrice'] ) || ! empty( $where_args['maxPrice'] ) ) {
 			$price_meta_args = [
 				'min_price' => isset( $where_args['minPrice'] ) ? floatval( $where_args['minPrice'] ) : 0,
-				'max_price' => isset( $where_args['maxPrice'] ) ? floatval( $where_args['maxPrice'] ) : PHP_INT_MAX
+				'max_price' => isset( $where_args['maxPrice'] ) ? floatval( $where_args['maxPrice'] ) : PHP_INT_MAX,
 			];
 
 			$meta_query[] = wc_get_min_max_price_meta_query( $price_meta_args );
@@ -605,22 +609,39 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		return (bool) wc_get_product( $offset );
 	}
 
-
+	/**
+	 * Adds meta query to the query args.
+	 * 
+	 * @param array $value Meta query.
+	 * 
+	 * @return \WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver
+	 */
 	public function add_meta_query( $value ) {
 		if ( ! empty( $this->query_args['meta_query'] ) ) {
-			$this->query_args['meta_query'] = $value;
+			$this->query_args['meta_query'] = $value; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		} else {
-			$this->query_args['meta_query'][] = $value;
+			$this->query_args['meta_query'][]           = $value;
 			$this->query_args['meta_query']['relation'] = 'AND';
 		}
+
+		return $this;
 	}
 
+	/**
+	 * Adds tax query to the query args.
+	 *
+	 * @param array $value Tax query.
+	 *
+	 * @return \WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver
+	 */
 	public function add_tax_query( $value ) {
 		if ( ! empty( $this->query_args['tax_query'] ) ) {
-			$this->query_args['tax_query'] = $value;
+			$this->query_args['tax_query'] = $value; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		} else {
-			$this->query_args['tax_query'][] = $value;
+			$this->query_args['tax_query'][]           = $value;
 			$this->query_args['tax_query']['relation'] = 'AND';
 		}
+
+		return $this;
 	}
 }
