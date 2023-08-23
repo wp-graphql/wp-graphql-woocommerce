@@ -160,7 +160,12 @@ class Root_Query {
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
-						$customer_id = 0;
+						$current_user_id = get_current_user_id();
+
+						// Default the customer to the current user.
+						$customer_id = $current_user_id;
+
+						// If a customer ID has been provided, resolve to that ID instead.
 						if ( ! empty( $args['id'] ) ) {
 							$id_components = Relay::fromGlobalId( $args['id'] );
 							if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
@@ -172,17 +177,20 @@ class Root_Query {
 							$customer_id = absint( $args['customerId'] );
 						}
 
-						$authorized = ! empty( $customer_id )
+						// If a user does not have the ability to list users, they can only view their own customer object.
+						$unauthorized = ! empty( $customer_id )
 							&& ! current_user_can( 'list_users' )
-							&& get_current_user_id() !== $customer_id;
-						if ( $authorized ) {
+							&& $current_user_id !== $customer_id;
+						if ( $unauthorized ) {
 							throw new UserError( __( 'Not authorized to access this customer', 'wp-graphql-woocommerce' ) );
 						}
 
+						// If we have a customer ID, resolve to that customer.
 						if ( $customer_id ) {
 							return Factory::resolve_customer( $customer_id, $context );
 						}
 
+						// Resolve to the session customer.
 						return Factory::resolve_session_customer();
 					},
 				],
