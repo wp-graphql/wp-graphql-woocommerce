@@ -231,7 +231,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WP_Query
 	 */
 	public function get_query() {
-		\codecept_debug( $this->query_args );
 		// Run query and remove hook.
 		return new \WP_Query( $this->query_args );
 	}
