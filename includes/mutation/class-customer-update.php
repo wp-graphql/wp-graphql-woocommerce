@@ -93,12 +93,16 @@ class Customer_Update {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
-			$session_only = empty( $input['id'] );
+			$session_only = empty( $input['id'] ) && ! is_user_logged_in();
 			$payload      = null;
 
 			if ( ! $session_only ) {
 				// Get closure from "UserRegister::mutate_and_get_payload".
 				$update_user = UserUpdate::mutate_and_get_payload();
+
+				if ( ! isset( $input['id'] ) ) {
+					$input['id'] = get_current_user_id();
+				}
 
 				// Update customer with core UserUpdate closure.
 				$payload = $update_user( $input, $context, $info );
