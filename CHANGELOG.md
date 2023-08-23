@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.16.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.16.0) (2023-08-23)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.15.0...v0.16.0)
+
+**Breaking changes:**
+
+- fix: ProductVariation type made to inherit the Product interface. [\#788](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/788) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: WP User core field support fixed in `updateCustomer` mutation [\#789](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/789) ([kidunot89](https://github.com/kidunot89))
+- fix: default the resolved `customer` to the current user [\#787](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/787) ([justlevine](https://github.com/justlevine))
+- fix: PHP-JWT versioned to maintain support for composer and WP Bedrock [\#778](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/778) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- docs: More docs drafted. [\#774](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/774) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.15.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.15.0) (2023-07-20)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.14.1...v0.15.0)
