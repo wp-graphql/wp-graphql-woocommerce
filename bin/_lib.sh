@@ -64,7 +64,6 @@ install_local_test_library() {
 	composer install
 	composer require --dev \
 		lucatume/wp-browser:^3.1 \
-		codeception/codeception:^4.2 \
 		symfony/finder:* \
 		codeception/lib-asserts:^1.0 \
 		codeception/module-asserts:^1.3.1 \
@@ -97,7 +96,6 @@ remove_local_test_library() {
 	# Remove testing library dependencies.
 	composer remove --dev wp-graphql/wp-graphql-testcase \
 		codeception/module-asserts \
-		codeception/codeception \
 		codeception/lib-asserts \
 		symfony/finder \
 		codeception/module-rest \
