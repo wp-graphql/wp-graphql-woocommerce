@@ -6,31 +6,36 @@
  * @since 0.0.1
  */
 
-if ( ! function_exists( 'wc_graphql_starts_with' ) ) {
+if ( ! function_exists( 'str_starts_with' ) ) {
 	/**
-	 * Checks if source string starts with the target string
+	 * Polyfill for PHP 8 str_starts_with function.
+	 * Checks if a string starts with a given substring.
 	 *
+	 * https://www.php.net/manual/en/function.str-starts-with.php
 	 * @param string $haystack - Source string.
 	 * @param string $needle - Target string.
 	 *
-	 * @return bool
+	 * @return bool - True if $haystack starts with $needle, false otherwise.
 	 */
-	function wc_graphql_starts_with( $haystack, $needle ) {
+	function str_starts_with( $haystack, $needle ) {
 		$length = strlen( $needle );
 		return ( substr( $haystack, 0, $length ) === $needle );
 	}
 }
 
-if ( ! function_exists( 'wc_graphql_ends_with' ) ) {
+if ( ! function_exists( 'str_ends_with' ) ) {
 	/**
-	 * Checks if source string ends with the target string
+	 * Polyfill for PHP 8 str_ends_with function.
+	 * Checks if a string ends with a given substring.
+	 *
+	 * https://www.php.net/manual/en/function.str-ends-with.php
 	 *
 	 * @param string $haystack - Source string.
 	 * @param string $needle - Target string.
 	 *
-	 * @return bool
+	 * @return bool - True if $haystack ends with $needle, false otherwise.
 	 */
-	function wc_graphql_ends_with( $haystack, $needle ) {
+	function str_ends_with( $haystack, $needle ) {
 		$length = strlen( $needle );
 		if ( 0 === $length ) {
 			return true;

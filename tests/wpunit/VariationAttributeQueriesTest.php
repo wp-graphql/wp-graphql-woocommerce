@@ -86,7 +86,7 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
             query fromVariationQuery( $id: ID! ) {
                 productVariation( id: $id ) {
                     id
-                    variationAttributes {
+                    attributes {
                         nodes {
                             id
                             attributeId
@@ -107,7 +107,7 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedField( 'productVariation.id', $this->toRelayId( 'product_variation', $variation_id ) ),
-			$this->expectedObject( 'productVariation.variationAttributes', $this->expectedAttributes( $variation_id ) ),
+			$this->expectedObject( 'productVariation.attributes', $this->expectedAttributes( $variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );

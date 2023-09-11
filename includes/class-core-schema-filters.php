@@ -93,13 +93,6 @@ class Core_Schema_Filters {
 		);
 
 		add_filter(
-			'graphql_map_input_fields_to_wp_query',
-			[ '\WPGraphQL\WooCommerce\Connection\Products', 'map_input_fields_to_wp_query' ],
-			10,
-			7
-		);
-
-		add_filter(
 			'graphql_map_input_fields_to_wp_user_query',
 			[ '\WPGraphQL\WooCommerce\Connection\Customers', 'map_input_fields_to_wp_query' ],
 			10,
