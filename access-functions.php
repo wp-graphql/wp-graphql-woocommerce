@@ -11,7 +11,8 @@ if ( ! function_exists( 'str_starts_with' ) ) {
 	 * Polyfill for PHP 8 str_starts_with function.
 	 * Checks if a string starts with a given substring.
 	 *
-	 * https://www.php.net/manual/en/function.str-starts-with.php
+	 * @see https://www.php.net/manual/en/function.str-starts-with.php
+	 *
 	 * @param string $haystack - Source string.
 	 * @param string $needle - Target string.
 	 *
@@ -28,7 +29,7 @@ if ( ! function_exists( 'str_ends_with' ) ) {
 	 * Polyfill for PHP 8 str_ends_with function.
 	 * Checks if a string ends with a given substring.
 	 *
-	 * https://www.php.net/manual/en/function.str-ends-with.php
+	 * @see https://www.php.net/manual/en/function.str-ends-with.php
 	 *
 	 * @param string $haystack - Source string.
 	 * @param string $needle - Target string.
@@ -43,7 +44,7 @@ if ( ! function_exists( 'str_ends_with' ) ) {
 
 		return ( substr( $haystack, -$length ) === $needle );
 	}
-}
+}//end if
 
 if ( ! function_exists( 'wc_graphql_map_tax_statements' ) ) {
 	/**
