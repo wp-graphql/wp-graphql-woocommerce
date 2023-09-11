@@ -76,7 +76,7 @@ class Cart_Mutation {
 	 *
 	 * @throws \GraphQL\Error\UserError  Invalid cart attribute provided.
 	 */
-	private static function prepare_attributes( $product_id, array $variation_data = [] ) {
+	public static function prepare_attributes( $product_id, array $variation_data = [] ) {
 		$product = wc_get_product( $product_id );
 
 		// Bail if bad product ID.
