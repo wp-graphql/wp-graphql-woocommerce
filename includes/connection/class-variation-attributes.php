@@ -54,7 +54,7 @@ class Variation_Attributes {
 			[
 				'fromType'       => 'ProductVariation',
 				'toType'         => 'VariationAttribute',
-				'fromFieldName'  => 'variationAttributes',
+				'fromFieldName'  => 'attributes',
 				'connectionArgs' => [],
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Variation_Attribute_Connection_Resolver();

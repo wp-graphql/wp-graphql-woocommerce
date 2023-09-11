@@ -317,7 +317,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			if ( ! empty( $where_args[ $field ] ) ) {
 				// Set tax query operator.
 				switch ( true ) {
-					case \wc_graphql_ends_with( $field, 'NotIn' ):
+					case str_ends_with( $field, 'NotIn' ):
 						$operator = 'NOT IN';
 						break;
 					default:
@@ -565,6 +565,20 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$on_sale_ids                = empty( $on_sale_ids ) ? [ 0 ] : $on_sale_ids;
 			$query_args[ $on_sale_key ] = $on_sale_ids;
 		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		$query_args = apply_filters(
+			'graphql_map_input_fields_to_wp_query',
+			$query_args,
+			$where_args,
+			$this->source,
+			$this->args,
+			$this->context,
+			$this->info,
+			$this->post_type
+		);
 
 		/**
 		 * Filter the input fields

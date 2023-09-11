@@ -385,7 +385,7 @@ class Checkout_Mutation {
 					continue;
 				}
 
-				if ( \wc_graphql_ends_with( $key, 'postcode' ) ) {
+				if ( \str_ends_with( $key, 'postcode' ) ) {
 					$country      = isset( $data[ $fieldset_key . '_country' ] ) ? $data[ $fieldset_key . '_country' ] : WC()->customer->{"get_{$fieldset_key}_country"}();
 					$data[ $key ] = \wc_format_postcode( $data[ $key ], $country );
 
@@ -404,14 +404,14 @@ class Checkout_Mutation {
 					}
 				}
 
-				if ( \wc_graphql_ends_with( $key, 'phone' ) ) {
+				if ( \str_ends_with( $key, 'phone' ) ) {
 					if ( $validate_fieldset && '' !== $data[ $key ] && ! \WC_Validation::is_phone( $data[ $key ] ) ) {
 						/* translators: %s: phone number */
 						throw new UserError( sprintf( __( '%s is not a valid phone number.', 'wp-graphql-woocommerce' ), $field_label ) );
 					}
 				}
 
-				if ( \wc_graphql_ends_with( $key, 'email' ) && '' !== $data[ $key ] ) {
+				if ( \str_ends_with( $key, 'email' ) && '' !== $data[ $key ] ) {
 					$email_is_valid = is_email( $data[ $key ] );
 					$data[ $key ]   = sanitize_email( $data[ $key ] );
 
@@ -421,7 +421,7 @@ class Checkout_Mutation {
 					}
 				}
 
-				if ( \wc_graphql_ends_with( $key, 'state' ) && '' !== $data[ $key ] ) {
+				if ( \str_ends_with( $key, 'state' ) && '' !== $data[ $key ] ) {
 					$country      = isset( $data[ $fieldset_key . '_country' ] ) ? $data[ $fieldset_key . '_country' ] : WC()->customer->{"get_{$fieldset_key}_country"}();
 					$valid_states = WC()->countries->get_states( $country );
 

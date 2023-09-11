@@ -74,13 +74,21 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			return apply_filters(
 				'graphql_woocommerce_product_types',
 				[
-					'simple'    => 'SimpleProduct',
-					'variable'  => 'VariableProduct',
-					'external'  => 'ExternalProduct',
-					'grouped'   => 'GroupProduct',
-					'variation' => 'ProductVariation',
+					'simple'   => 'SimpleProduct',
+					'variable' => 'VariableProduct',
+					'external' => 'ExternalProduct',
+					'grouped'  => 'GroupProduct',
 				]
 			);
+		}
+
+		/**
+		 * Returns WooCommerce product variation types to be exposed to the GraphQL schema.
+		 *
+		 * @return array
+		 */
+		public static function get_enabled_product_variation_types() {
+			return apply_filters( 'graphql_woocommerce_product_variation_types', [ 'variation' => 'ProductVariation' ] );
 		}
 
 		/**
@@ -235,6 +243,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/interface/class-product-attribute.php';
 			require $include_directory_path . 'type/interface/class-product.php';
 			require $include_directory_path . 'type/interface/class-payment-token.php';
+			require $include_directory_path . 'type/interface/class-product-union.php';
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';

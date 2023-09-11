@@ -44,6 +44,7 @@ class Product_Types {
 		return [
 			'Node',
 			'Product',
+			'ProductUnion',
 			'NodeWithComments',
 			'NodeWithContentEditor',
 			'NodeWithFeaturedImage',

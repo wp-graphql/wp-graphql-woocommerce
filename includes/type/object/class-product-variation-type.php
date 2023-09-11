@@ -31,7 +31,7 @@ class Product_Variation_Type {
 					'NodeWithFeaturedImage',
 					'ContentNode',
 					'UniformResourceIdentifiable',
-					'Product',
+					'ProductUnion',
 				],
 				'fields'      => [
 					'id'                => [
