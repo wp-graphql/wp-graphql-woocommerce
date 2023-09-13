@@ -70,6 +70,7 @@ class Type_Registry {
 		Type\WPInterface\Cart_Error::register_interface();
 		Type\WPInterface\Payment_Token::register_interface();
 		Type\WPInterface\Product_Union::register_interface();
+		Type\WPInterface\Cart_Item::register_interface();
 
 		/**
 		 * Objects.
