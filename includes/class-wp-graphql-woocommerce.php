@@ -244,6 +244,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/interface/class-product.php';
 			require $include_directory_path . 'type/interface/class-payment-token.php';
 			require $include_directory_path . 'type/interface/class-product-union.php';
+			require $include_directory_path . 'type/interface/class-cart-item.php';
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';
