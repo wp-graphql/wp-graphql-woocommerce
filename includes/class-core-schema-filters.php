@@ -110,11 +110,6 @@ class Core_Schema_Filters {
 			'graphql_wp_connection_type_config',
 			[ '\WPGraphQL\WooCommerce\Connection\Products', 'set_connection_config' ]
 		);
-
-		add_filter(
-			'woographql_cart_connection_definitions',
-			[ self::class, 'skip_cart_item_connection' ]
-		);
 	}
 
 	/**
@@ -388,33 +383,5 @@ class Core_Schema_Filters {
 		}//end switch
 
 		return $type;
-	}
-
-	/**
-	 * Return true if WooGraphQL Pro is handling cart item connections.
-	 *
-	 * @return boolean
-	 */
-	private static function should_skip_cart_item_connection() {
-		if ( ! class_exists( 'WPGraphQL\WooCommerce\Pro\WooGraphQL_Pro' ) ) {
-			return false;
-		}
-
-		return Pro\WooGraphQL_Pro::is_composite_products_enabled()
-			&& Pro\WooGraphQL_Pro::is_composite_products_active();
-	}
-
-	/**
-	 * Skip core cart item connection definitions if WooGraphQL Pro is handling it.
-	 *
-	 * @param array $connections  Cart connection defintions.
-	 * @return array
-	 */
-	public static function skip_cart_item_connection( $connections ) {
-		if ( self::should_skip_cart_item_connection() ) {
-			unset( $connections['contents'] );
-		}
-
-		return $connections;
 	}
 }
