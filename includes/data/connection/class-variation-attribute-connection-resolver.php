@@ -101,7 +101,7 @@ class Variation_Attribute_Connection_Resolver {
 					'id'          => $id,
 					'attributeId' => $term->term_id,
 					'name'        => $term->taxonomy,
-					'value'       => $term->name,
+					'value'       => $term->slug,
 				];
 			}
 		}//end foreach
