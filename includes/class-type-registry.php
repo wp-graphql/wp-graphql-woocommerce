@@ -71,6 +71,11 @@ class Type_Registry {
 		Type\WPInterface\Payment_Token::register_interface();
 		Type\WPInterface\Product_Union::register_interface();
 		Type\WPInterface\Cart_Item::register_interface();
+		Type\WPInterface\Downloadable_Products::register_interface();
+		Type\WPInterface\Inventoried_Products::register_interface();
+		Type\WPInterface\Products_With_Dimensions::register_interface();
+		Type\WPInterface\Products_With_Pricing::register_interface();
+		Type\WPInterface\Products_With_Variations::register_interface();
 
 		/**
 		 * Objects.

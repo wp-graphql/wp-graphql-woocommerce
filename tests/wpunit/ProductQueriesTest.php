@@ -1357,4 +1357,104 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			]
 		);
 	}
+
+	// tests
+	public function testProductQueryWithInterfaces() {
+		$product_id = $this->factory->product->createSimple();
+		$product    = wc_get_product( $product_id );
+
+		$query = '
+			query ( $id: ID!, $format: PostObjectFieldFormatEnum ) {
+				product(id: $id) {
+					id
+					databaseId
+					name
+					slug
+					date
+					modified
+					status
+					featured
+					catalogVisibility
+					description(format: $format)
+					shortDescription(format: $format)
+					sku
+					dateOnSaleFrom
+					dateOnSaleTo
+					totalSales
+					averageRating
+					reviewCount
+					onSale
+					purchasable
+					link
+					reviewsAllowed
+					purchaseNote
+					menuOrder
+					... on ProductsWithPricing {
+						price
+						regularPrice
+						salePrice
+						taxStatus
+						taxClass
+					}
+					... on InventoriedProducts {
+						manageStock
+						stockQuantity
+						backorders
+						soldIndividually
+						backordersAllowed
+						stockStatus
+					}
+					... on ProductsWithDimensions {
+						weight
+						length
+						width
+						height
+						shippingClassId
+						shippingRequired
+						shippingTaxable
+					}
+					... on DownloadableProducts {
+						virtual
+						downloadExpiry
+						downloadable
+						downloadLimit
+					}
+				}
+			}
+		';
+
+		/**
+		 * Assertion One
+		 *
+		 * Test querying product.
+		 */
+		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = $this->getExpectedProductData( $product_id );
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Clear cache
+		$this->clearLoaderCache( 'wc_post' );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Test querying product with unformatted content (edit-product cap required).
+		 */
+		$this->loginAsShopManager();
+		$variables = [
+			'id'     => $this->toRelayId( 'product', $product_id ),
+			'format' => 'RAW',
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'product.description', $product->get_description() ),
+			$this->expectedField( 'product.shortDescription', $product->get_short_description() ),
+			$this->expectedField( 'product.totalSales', $product->get_total_sales() ),
+			$this->expectedField( 'product.catalogVisibility', strtoupper( $product->get_catalog_visibility() ) ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
