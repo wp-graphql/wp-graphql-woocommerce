@@ -146,26 +146,6 @@ class Products {
 			)
 		);
 
-		// From VariableProduct to ProductVariation.
-		register_graphql_connection(
-			self::get_connection_config(
-				[
-					'fromType'      => 'VariableProduct',
-					'toType'        => 'ProductVariation',
-					'fromFieldName' => 'variations',
-					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
-
-						$resolver->set_query_arg( 'post_parent', $source->ID );
-						$resolver->set_query_arg( 'post_type', 'product_variation' );
-						$resolver->set_query_arg( 'post__in', $source->variation_ids );
-
-						return $resolver->get_connection();
-					},
-				]
-			)
-		);
-
 		register_graphql_connection(
 			[
 				'fromType'      => 'ProductVariation',

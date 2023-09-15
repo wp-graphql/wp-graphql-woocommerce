@@ -245,6 +245,11 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/interface/class-payment-token.php';
 			require $include_directory_path . 'type/interface/class-product-union.php';
 			require $include_directory_path . 'type/interface/class-cart-item.php';
+			require $include_directory_path . 'type/interface/class-downloadable-products.php';
+			require $include_directory_path . 'type/interface/class-inventoried-products.php';
+			require $include_directory_path . 'type/interface/class-products-with-dimensions.php';
+			require $include_directory_path . 'type/interface/class-products-with-pricing.php';
+			require $include_directory_path . 'type/interface/class-products-with-variations.php';
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';
