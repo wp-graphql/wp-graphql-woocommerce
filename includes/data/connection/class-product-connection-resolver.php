@@ -87,11 +87,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['ignore_sticky_posts'] = true;
 
 		/**
-		 * Don't calculate the total rows, it's not needed and can be expensive
-		 */
-		$query_args['no_found_rows'] = true;
-
-		/**
 		 * Set post_type
 		 */
 		$query_args['post_type'] = $this->post_type;
@@ -117,9 +112,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * If the cursor offsets not empty,
 		 * ignore sticky posts on the query
+		 * and don't count the total number of posts
 		 */
-		if ( ! empty( $this->get_after_offset() ) || ! empty( $this->get_after_offset() ) ) {
+		if ( ! empty( $this->get_after_offset() ) || ! empty( $this->get_before_offset() ) ) {
 			$query_args['ignore_sticky_posts'] = true;
+			$query_args['no_found_rows']       = true;
 		}
 
 		/**
@@ -656,5 +653,15 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_page_info() {
+		$page_info          = parent::get_page_info();
+		$page_info['found'] = $this->query->found_posts;
+
+		return $page_info;
 	}
 }

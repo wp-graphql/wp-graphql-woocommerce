@@ -396,6 +396,9 @@ class Product extends WC_Post {
 					'soldIndividually'  => function () {
 						return $this->wc_data->is_sold_individually();
 					},
+					'lowStockAmount'    => function () {
+						return ! empty( $this->wc_data->get_low_stock_amount() ) ? $this->wc_data->get_low_stock_amount() : null;
+					},
 					'weight'            => function () {
 						return ! empty( $this->wc_data->get_weight() ) ? $this->wc_data->get_weight() : null;
 					},

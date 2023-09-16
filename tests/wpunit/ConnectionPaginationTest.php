@@ -149,6 +149,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		$query = '
 			query ($first: Int, $last: Int, $after: String, $before: String) {
 				products(first: $first, last: $last, after: $after, before: $before) {
+					found
 					nodes {
 						databaseId
                     }
@@ -170,6 +171,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		$variables = [ 'first' => 2 ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
+			$this->expectedField( 'products.found', 5 ),
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', false ),
 			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
 			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[0] ) ),
@@ -191,6 +193,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
+			$this->expectedField( 'products.found', self::IS_NULL ),
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
 			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
 			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[2] ) ),
@@ -210,6 +213,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		$variables = [ 'last' => 2 ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
+			$this->expectedField( 'products.found', 5 ),
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
 			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
 			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[3] ) ),
@@ -231,6 +235,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
+			$this->expectedField( 'products.found', self::IS_NULL ),
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
 			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
 			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),
