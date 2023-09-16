@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines the fields for manage product inventories.
+ * Defines the "InventoriedProduct" interface.
  * 
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   TBD
@@ -11,20 +11,20 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 
 /**
- * Class Inventoried_Products
+ * Class Inventoried_Product
  */
-class Inventoried_Products {
+class Inventoried_Product {
 	/**
-	 * Registers the "InventoriedProducts" type
+	 * Registers the "InventoriedProduct" type
 	 *
 	 * @return void
 	 * @throws \Exception
 	 */
 	public static function register_interface(): void {
 		register_graphql_interface_type(
-			'InventoriedProducts',
+			'InventoriedProduct',
 			[
-				'description' => __( 'Products with stock information.', 'wp-graphql-woocommerce' ),
+				'description' => __( 'A product with stock information.', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
@@ -33,7 +33,7 @@ class Inventoried_Products {
 	}
 
 	/**
-	 * Defines "InventoriedProducts" fields.
+	 * Defines fields of "InventoriedProduct".
 	 *
 	 * @return array
 	 */
@@ -48,7 +48,7 @@ class Inventoried_Products {
 				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
 			],
 			'manageStock'       => [
-				'type'        => 'Boolean',
+				'type'        => 'ManageStockEnum',
 				'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
 			],
 			'stockQuantity'     => [

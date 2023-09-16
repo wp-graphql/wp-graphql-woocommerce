@@ -65,17 +65,19 @@ class Type_Registry {
 		 * Interfaces.
 		 */
 		Type\WPInterface\Product::register_interface();
+		Type\WPInterface\Product_Variation::register_interface();
 		Type\WPInterface\Attribute::register_interface();
 		Type\WPInterface\Product_Attribute::register_interface();
 		Type\WPInterface\Cart_Error::register_interface();
 		Type\WPInterface\Payment_Token::register_interface();
 		Type\WPInterface\Product_Union::register_interface();
 		Type\WPInterface\Cart_Item::register_interface();
-		Type\WPInterface\Downloadable_Products::register_interface();
-		Type\WPInterface\Inventoried_Products::register_interface();
-		Type\WPInterface\Products_With_Dimensions::register_interface();
-		Type\WPInterface\Products_With_Pricing::register_interface();
-		Type\WPInterface\Products_With_Variations::register_interface();
+		Type\WPInterface\Downloadable_Product::register_interface();
+		Type\WPInterface\Inventoried_Product::register_interface();
+		Type\WPInterface\Product_With_Dimensions::register_interface();
+		Type\WPInterface\Product_With_Pricing::register_interface();
+		Type\WPInterface\Product_With_Variations::register_interface();
+		Type\WPInterface\Product_With_Attributes::register_interface();
 
 		/**
 		 * Objects.
@@ -85,7 +87,6 @@ class Type_Registry {
 		Type\WPObject\Coupon_Type::register();
 		Type\WPObject\Product_Types::register();
 		Type\WPObject\Product_Attribute_Types::register();
-		Type\WPObject\Product_Variation_Type::register();
 		Type\WPObject\Order_Item_Type::register();
 		Type\WPObject\Order_Type::register();
 		Type\WPObject\Refund_Type::register();
@@ -132,7 +133,6 @@ class Type_Registry {
 		Connection\Products::register_connections();
 		Connection\Orders::register_connections();
 		Connection\Product_Attributes::register_connections();
-		Connection\Variation_Attributes::register_connections();
 		Connection\Customers::register_connections();
 		Connection\Tax_Rates::register_connections();
 		Connection\Shipping_Methods::register_connections();

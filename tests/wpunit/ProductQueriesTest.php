@@ -75,7 +75,12 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.taxClass',
 				$this->maybe( $product->get_tax_class(), 'STANDARD' )
 			),
-			$this->expectedField( 'product.manageStock', $product->get_manage_stock() ),
+			$this->expectedField(
+				'product.manageStock',
+				! empty( $product->get_manage_stock() )
+					? \WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_manage_stock() )
+					: self::IS_NULL
+			),
 			$this->expectedField(
 				'product.stockQuantity',
 				$this->maybe( $product->get_stock_quantity(), self::IS_NULL )
@@ -1389,14 +1394,14 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					reviewsAllowed
 					purchaseNote
 					menuOrder
-					... on ProductsWithPricing {
+					... on ProductWithPricing {
 						price
 						regularPrice
 						salePrice
 						taxStatus
 						taxClass
 					}
-					... on InventoriedProducts {
+					... on InventoriedProduct {
 						manageStock
 						stockQuantity
 						backorders
@@ -1404,7 +1409,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						backordersAllowed
 						stockStatus
 					}
-					... on ProductsWithDimensions {
+					... on ProductWithDimensions {
 						weight
 						length
 						width
@@ -1413,7 +1418,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						shippingRequired
 						shippingTaxable
 					}
-					... on DownloadableProducts {
+					... on DownloadableProduct {
 						virtual
 						downloadExpiry
 						downloadable

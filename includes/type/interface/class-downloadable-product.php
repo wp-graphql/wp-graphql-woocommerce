@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines the fields for downloadable products.
+ * Defines the "DownloadableProduct" interface.
  * 
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   TBD
@@ -11,20 +11,20 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 
 /**
- * Class Downloadable_Products
+ * Class Downloadable_Product
  */
-class Downloadable_Products {
+class Downloadable_Product {
 	/**
-	 * Registers the "DownloadableProducts" type
+	 * Registers the "DownloadableProduct" type
 	 *
 	 * @return void
 	 * @throws \Exception
 	 */
 	public static function register_interface(): void {
 		register_graphql_interface_type(
-			'DownloadableProducts',
+			'DownloadableProduct',
 			[
-				'description' => __( 'Downloadable products.', 'wp-graphql-woocommerce' ),
+				'description' => __( 'A downloadable product.', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
@@ -33,7 +33,7 @@ class Downloadable_Products {
 	}
 
 	/**
-	 * Defines "DownloadableProducts" fields.
+	 * Defines fields of "DownloadableProduct".
 	 *
 	 * @return array
 	 */

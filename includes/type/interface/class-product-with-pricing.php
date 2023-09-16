@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines the fields for products with pricing.
+ * Defines the "ProductWithPricing" interface.
  * 
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   TBD
@@ -11,18 +11,18 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 
 /**
- * Class Products_With_Pricing
+ * Class Product_With_Pricing
  */
-class Products_With_Pricing {
+class Product_With_Pricing {
 	/**
-	 * Registers the "ProductsWithPricing" type
+	 * Registers the "ProductWithPricing" type
 	 *
 	 * @return void
 	 * @throws \Exception
 	 */
 	public static function register_interface(): void {
 		register_graphql_interface_type(
-			'ProductsWithPricing',
+			'ProductWithPricing',
 			[
 				'description' => __( 'Products with pricing.', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
@@ -33,7 +33,7 @@ class Products_With_Pricing {
 	}
 
 	/**
-	 * Defines "ProductsWithPricing" fields.
+	 * Defines fields of "ProductWithPricing".
 	 *
 	 * @return array
 	 */

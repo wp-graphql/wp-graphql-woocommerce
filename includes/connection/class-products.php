@@ -258,11 +258,12 @@ class Products {
 	public static function get_connection_config( $args = [] ): array {
 		return array_merge(
 			[
-				'fromType'       => 'RootQuery',
-				'toType'         => 'ProductUnion',
-				'fromFieldName'  => 'products',
-				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'fromType'         => 'RootQuery',
+				'toType'           => 'ProductUnion',
+				'fromFieldName'    => 'products',
+				'connectionArgs'   => self::get_connection_args(),
+				'connectionFields' => self::get_connection_fields(),
+				'resolve'          => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
 					return $resolver->get_connection();
@@ -270,6 +271,20 @@ class Products {
 			],
 			$args
 		);
+	}
+
+	/**
+	 * Returns array of edge fields.
+	 *
+	 * @return array
+	 */
+	public static function get_connection_fields(): array {
+		return [
+			'found' => [
+				'type'        => 'Number',
+				'description' => __( 'Total products founds', 'wp-graphql-woocommerce' ),
+			],
+		];
 	}
 
 	/**

@@ -88,7 +88,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return array
 		 */
 		public static function get_enabled_product_variation_types() {
-			return apply_filters( 'graphql_woocommerce_product_variation_types', [ 'variation' => 'ProductVariation' ] );
+			return apply_filters( 'graphql_woocommerce_product_variation_types', [ 'variation' => 'SimpleProductVariation' ] );
 		}
 
 		/**
@@ -242,14 +242,16 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/interface/class-cart-error.php';
 			require $include_directory_path . 'type/interface/class-product-attribute.php';
 			require $include_directory_path . 'type/interface/class-product.php';
+			require $include_directory_path . 'type/interface/class-product-variation.php';
 			require $include_directory_path . 'type/interface/class-payment-token.php';
 			require $include_directory_path . 'type/interface/class-product-union.php';
 			require $include_directory_path . 'type/interface/class-cart-item.php';
-			require $include_directory_path . 'type/interface/class-downloadable-products.php';
-			require $include_directory_path . 'type/interface/class-inventoried-products.php';
-			require $include_directory_path . 'type/interface/class-products-with-dimensions.php';
-			require $include_directory_path . 'type/interface/class-products-with-pricing.php';
-			require $include_directory_path . 'type/interface/class-products-with-variations.php';
+			require $include_directory_path . 'type/interface/class-downloadable-product.php';
+			require $include_directory_path . 'type/interface/class-inventoried-product.php';
+			require $include_directory_path . 'type/interface/class-product-with-dimensions.php';
+			require $include_directory_path . 'type/interface/class-product-with-pricing.php';
+			require $include_directory_path . 'type/interface/class-product-with-variations.php';
+			require $include_directory_path . 'type/interface/class-product-with-attributes.php';
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';
@@ -266,7 +268,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-product-category-type.php';
 			require $include_directory_path . 'type/object/class-product-download-type.php';
 			require $include_directory_path . 'type/object/class-product-types.php';
-			require $include_directory_path . 'type/object/class-product-variation-type.php';
 			require $include_directory_path . 'type/object/class-refund-type.php';
 			require $include_directory_path . 'type/object/class-root-query.php';
 			require $include_directory_path . 'type/object/class-shipping-method-type.php';
@@ -334,7 +335,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'connection/class-products.php';
 			require $include_directory_path . 'connection/class-shipping-methods.php';
 			require $include_directory_path . 'connection/class-tax-rates.php';
-			require $include_directory_path . 'connection/class-variation-attributes.php';
 			require $include_directory_path . 'connection/class-wc-terms.php';
 
 			// Include admin files.

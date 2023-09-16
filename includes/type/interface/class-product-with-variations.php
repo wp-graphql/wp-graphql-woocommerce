@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines the fields for products with variations.
+ * Defines the "ProductWithVariations" type.
  * 
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   TBD
@@ -15,20 +15,20 @@ use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 
 /**
- * Class Products_With_Variations
+ * Class Product_With_Variations
  */
-class Products_With_Variations {
+class Product_With_Variations {
 	/**
-	 * Registers the "ProductsWithVariations" type
+	 * Registers the "ProductWithVariations" type
 	 *
 	 * @return void
 	 * @throws \Exception
 	 */
 	public static function register_interface(): void {
 		register_graphql_interface_type(
-			'ProductsWithVariations',
+			'ProductWithVariations',
 			[
-				'description' => __( 'Products with variations.', 'wp-graphql-woocommerce' ),
+				'description' => __( 'A product with variations.', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),

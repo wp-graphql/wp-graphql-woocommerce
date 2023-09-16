@@ -37,19 +37,25 @@ class Product_Types {
 	/**
 	 * Returns the GraphQL interfaces for product types.
 	 *
+	 * @param array $other_interfaces Other interfaces to merge with the product interfaces.
+	 * 
 	 * @return array
 	 */
-	public static function get_product_interfaces() {
-		return [
-			'Node',
-			'Product',
-			'ProductUnion',
-			'NodeWithComments',
-			'NodeWithContentEditor',
-			'NodeWithFeaturedImage',
-			'ContentNode',
-			'UniformResourceIdentifiable',
-		];
+	public static function get_product_interfaces( $other_interfaces = [] ) {
+		return array_merge(
+			[
+				'Node',
+				'Product',
+				'ProductUnion',
+				'ProductWithAttributes',
+				'NodeWithComments',
+				'NodeWithContentEditor',
+				'NodeWithFeaturedImage',
+				'ContentNode',
+				'UniformResourceIdentifiable',
+			],
+			$other_interfaces
+		);
 	}
 
 	/**
@@ -63,13 +69,12 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A simple product object', 'wp-graphql-woocommerce' ),
-				'interfaces'      => array_merge(
-					self::get_product_interfaces(),
+				'interfaces'      => self::get_product_interfaces(
 					[
-						'ProductsWithPricing',
-						'InventoriedProducts',
-						'ProductsWithDimensions',
-						'DownloadableProducts',
+						'DownloadableProduct',
+						'InventoriedProduct',
+						'ProductWithDimensions',
+						'ProductWithPricing',
 					]
 				),
 				'fields'          => [],
@@ -88,13 +93,12 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A variable product object', 'wp-graphql-woocommerce' ),
-				'interfaces'      => array_merge(
-					self::get_product_interfaces(),
+				'interfaces'      => self::get_product_interfaces(
 					[
-						'ProductsWithPricing',
-						'InventoriedProducts',
-						'ProductsWithDimensions',
-						'ProductsWithVariations',
+						'InventoriedProduct',
+						'ProductWithDimensions',
+						'ProductWithPricing',
+						'ProductWithVariations',
 					]
 				),
 				'fields'          => [],
@@ -113,10 +117,7 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A external product object', 'wp-graphql-woocommerce' ),
-				'interfaces'      => array_merge(
-					self::get_product_interfaces(),
-					[ 'ProductsWithPricing' ]
-				),
+				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => array_merge(
 					[
 						'externalUrl' => [
@@ -144,10 +145,7 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A group product object', 'wp-graphql-woocommerce' ),
-				'interfaces'      => array_merge(
-					self::get_product_interfaces(),
-					[ 'ProductsWithPricing' ]
-				),
+				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => [
 					'addToCartText'        => [
 						'type'        => 'String',
@@ -211,13 +209,12 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' ),
-				'interfaces'      => array_merge(
-					self::get_product_interfaces(),
+				'interfaces'      => self::get_product_interfaces(
 					[
-						'ProductsWithPricing',
-						'InventoriedProducts',
-						'ProductsWithDimensions',
-						'DownloadableProducts',
+						'DownloadableProduct',
+						'InventoriedProduct',
+						'ProductWithDimensions',
+						'ProductWithPricing',
 					]
 				),
 				'fields'          => [
