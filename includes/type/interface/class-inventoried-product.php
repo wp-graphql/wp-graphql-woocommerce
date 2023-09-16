@@ -51,6 +51,10 @@ class Inventoried_Product {
 				'type'        => 'ManageStockEnum',
 				'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
 			],
+			'lowStockAmount'    => [
+				'type'        => 'Int',
+				'description' => __( 'Low stock amount', 'wp-graphql-woocommerce' ),
+			],
 			'stockQuantity'     => [
 				'type'        => 'Int',
 				'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),

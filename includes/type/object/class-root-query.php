@@ -29,7 +29,7 @@ class Root_Query {
 		register_graphql_fields(
 			'RootQuery',
 			[
-				'cart'                 => [
+				'cart'             => [
 					'type'        => 'Cart',
 					'args'        => [
 						'recalculateTotals' => [
@@ -52,7 +52,7 @@ class Root_Query {
 						return $cart;
 					},
 				],
-				'cartItem'             => [
+				'cartItem'         => [
 					'type'        => 'CartItem',
 					'args'        => [
 						'key' => [
@@ -69,7 +69,7 @@ class Root_Query {
 						return $item;
 					},
 				],
-				'cartFee'              => [
+				'cartFee'          => [
 					'type'        => 'CartFee',
 					'args'        => [
 						'id' => [
@@ -88,7 +88,7 @@ class Root_Query {
 						return $fees[ $fee_id ];
 					},
 				],
-				'coupon'               => [
+				'coupon'           => [
 					'type'        => 'Coupon',
 					'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -146,7 +146,7 @@ class Root_Query {
 						return Factory::resolve_crud_object( $coupon_id, $context );
 					},
 				],
-				'customer'             => [
+				'customer'         => [
 					'type'        => 'Customer',
 					'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -194,7 +194,7 @@ class Root_Query {
 						return Factory::resolve_session_customer();
 					},
 				],
-				'order'                => [
+				'order'            => [
 					'type'        => 'Order',
 					'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -272,7 +272,7 @@ class Root_Query {
 						return Factory::resolve_crud_object( $order_id, $context );
 					},
 				],
-				'productVariation'     => [
+				'productVariation' => [
 					'type'        => 'ProductVariation',
 					'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -318,7 +318,7 @@ class Root_Query {
 						return Factory::resolve_crud_object( $variation_id, $context );
 					},
 				],
-				'refund'               => [
+				'refund'           => [
 					'type'        => 'Refund',
 					'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -399,7 +399,7 @@ class Root_Query {
 						return Factory::resolve_crud_object( $refund_id, $context );
 					},
 				],
-				'shippingMethod'       => [
+				'shippingMethod'   => [
 					'type'        => 'ShippingMethod',
 					'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -434,7 +434,7 @@ class Root_Query {
 						return Factory::resolve_shipping_method( $method_id );
 					},
 				],
-				'taxRate'              => [
+				'taxRate'          => [
 					'type'        => 'TaxRate',
 					'description' => __( 'A tax rate object', 'wp-graphql-woocommerce' ),
 					'args'        => [
@@ -469,7 +469,17 @@ class Root_Query {
 						return Factory::resolve_tax_rate( $rate_id, $context );
 					},
 				],
-				'allowedCountries'     => [
+				'countries'        => [
+					'type'        => [ 'list_of' => 'CountriesEnum' ],
+					'description' => __( 'Countries', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function () {
+						$wc_countries = new \WC_Countries();
+						$countries    = $wc_countries->get_countries();
+
+						return array_keys( $countries );
+					},
+				],
+				'allowedCountries' => [
 					'type'        => [ 'list_of' => 'CountriesEnum' ],
 					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function () {
@@ -479,7 +489,7 @@ class Root_Query {
 						return array_keys( $countries );
 					},
 				],
-				'allowedCountryStates' => [
+				'countryStates'    => [
 					'type'        => [ 'list_of' => 'CountryState' ],
 					'args'        => [
 						'country' => [
@@ -535,10 +545,11 @@ class Root_Query {
 				'RootQuery',
 				$field_name,
 				[
-					'type'        => $type_name,
+					'type'              => $type_name,
 					/* translators: Product type slug */
-					'description' => sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key ),
-					'args'        => [
+					'description'       => sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key ),
+					'deprecationReason' => 'Use "product" instead.',
+					'args'              => [
 						'id'     => [
 							'type'        => 'ID',
 							'description' => sprintf(
@@ -552,7 +563,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key, $unsupported_type_enabled ) {
+					'resolve'           => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key, $unsupported_type_enabled ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 

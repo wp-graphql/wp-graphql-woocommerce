@@ -281,8 +281,11 @@ class Products {
 	public static function get_connection_fields(): array {
 		return [
 			'found' => [
-				'type'        => 'Number',
+				'type'        => 'Integer',
 				'description' => __( 'Total products founds', 'wp-graphql-woocommerce' ),
+				'resolve'     => static function ( $source ) {
+					return ! empty( $source['pageInfo']['found'] ) ? $source['pageInfo']['found'] : null;
+				},
 			],
 		];
 	}
