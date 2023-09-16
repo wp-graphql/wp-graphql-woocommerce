@@ -382,7 +382,7 @@ class Product extends WC_Post {
 			) {
 				$fields += [
 					'manageStock'       => function () {
-						return $this->wc_data->get_manage_stock();
+						return ! empty( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
 					},
 					'stockQuantity'     => function () {
 						return ! empty( $this->wc_data->get_stock_quantity() ) ? $this->wc_data->get_stock_quantity() : null;

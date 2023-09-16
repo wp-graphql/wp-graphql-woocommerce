@@ -401,7 +401,7 @@ class Core_Schema_Filters {
 		if ( isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
 		} elseif ( str_ends_with( $product_type, 'variation' ) ) {
-			return $type_registry->get_type( 'ProductVariation' );
+			return self::resolve_product_variation_type( $value );
 		} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 			$unsupported_type = WooGraphQL::get_supported_product_type();
 			return $type_registry->get_type( $unsupported_type );
@@ -411,6 +411,32 @@ class Core_Schema_Filters {
 			sprintf(
 			/* translators: %s: Product type */
 				__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+				$value->type
+			)
+		);
+	}
+
+	/**
+	 * Resolves GraphQL type for provided product variation model.
+	 *
+	 * @param \WPGraphQL\WooCommerce\Model\Product $value  Product model.
+	 * 
+	 * @throws \GraphQL\Error\UserError Invalid product type requested.
+	 *
+	 * @return mixed
+	 */
+	public static function resolve_product_variation_type( $value ) {
+		$type_registry  = \WPGraphQL::get_type_registry();
+		$possible_types = WooGraphQL::get_enabled_product_variation_types();
+		$product_type   = $value->get_type();
+		if ( isset( $possible_types[ $product_type ] ) ) {
+			return $type_registry->get_type( $possible_types[ $product_type ] );
+		}
+
+		throw new UserError(
+			sprintf(
+			/* translators: %s: Product type */
+				__( 'The "%s" product variation type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
 				$value->type
 			)
 		);

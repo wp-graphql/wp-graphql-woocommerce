@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines the fields for physical products.
+ * Defines the "ProductWithDimensions".
  * 
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   TBD
@@ -11,20 +11,20 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 
 /**
- * Class Products_With_Dimensions
+ * Class Product_With_Dimension
  */
-class Products_With_Dimensions {
+class Product_With_Dimensions {
 	/**
-	 * Registers the "ProductsWithDimensions" type
+	 * Registers the "ProductWithDimensions" type
 	 *
 	 * @return void
 	 * @throws \Exception
 	 */
 	public static function register_interface(): void {
 		register_graphql_interface_type(
-			'ProductsWithDimensions',
+			'ProductWithDimensions',
 			[
-				'description' => __( 'Physical products.', 'wp-graphql-woocommerce' ),
+				'description' => __( 'A physical product.', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
@@ -33,7 +33,7 @@ class Products_With_Dimensions {
 	}
 
 	/**
-	 * Defines "ProductsWithDimensions" fields.
+	 * Defines fields of "ProductWithDimensions".
 	 *
 	 * @return array
 	 */
