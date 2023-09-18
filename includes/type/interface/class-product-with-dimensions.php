@@ -3,7 +3,7 @@
  * Defines the "ProductWithDimensions".
  * 
  * @package WPGraphQL\WooCommerce\Type\WPInterface
- * @since   TBD
+ * @since   0.17.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;

@@ -1,5 +1,26 @@
 # Changelog
 
+## [v0.17.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.17.0) (2023-09-18)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.16.0...v0.17.0)
+
+**Breaking changes:**
+
+- feat: "found" field added to the Products Connection types [\#804](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/804) ([kidunot89](https://github.com/kidunot89))
+- feat: ProductWithAttributes and ProductVariation interfaces added [\#803](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/803) ([kidunot89](https://github.com/kidunot89))
+- feat: CartItem converted to WPInterface type [\#798](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/798) ([kidunot89](https://github.com/kidunot89))
+- fix: ProductUnion interface added [\#797](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/797) ([kidunot89](https://github.com/kidunot89))
+
+**New Features:**
+
+- feat: Several product interfaces added. [\#801](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/801) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: VariationAttribute now sourcing value as Term slug for global attributes [\#800](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/800) ([kidunot89](https://github.com/kidunot89))
+- fix: Old trouble code removed. [\#799](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/799) ([kidunot89](https://github.com/kidunot89))
+- fix: Cart\_Mutation:prepare\_attributes made public [\#796](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/796) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.16.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.16.0) (2023-08-23)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.15.0...v0.16.0)
@@ -10,6 +31,7 @@
 
 **Fixed:**
 
+- chore: Fatal debug code removed [\#791](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/791) ([kidunot89](https://github.com/kidunot89))
 - fix: WP User core field support fixed in `updateCustomer` mutation [\#789](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/789) ([kidunot89](https://github.com/kidunot89))
 - fix: default the resolved `customer` to the current user [\#787](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/787) ([justlevine](https://github.com/justlevine))
 - fix: PHP-JWT versioned to maintain support for composer and WP Bedrock [\#778](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/778) ([kidunot89](https://github.com/kidunot89))
