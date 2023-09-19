@@ -350,12 +350,14 @@ class Customer_Type {
 							}
 
 							// Build nonced url as an unauthenticated user.
-							$nonce_name = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
-							$url        = add_query_arg(
-								[
-									'session_id' => $customer_id,
-									$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
-								],
+							$nonce_name   = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
+							$query_params = [
+								'session_id' => $customer_id,
+								$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
+							];
+							$query_params = apply_filters( 'graphql_cart_url_query_params', $query_params, $customer_id, $source );
+							$url          = add_query_arg(
+								$query_params,
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
 
@@ -400,12 +402,14 @@ class Customer_Type {
 							}
 
 							// Build nonced url as an unauthenticated user.
-							$nonce_name = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
-							$url        = add_query_arg(
-								[
-									'session_id' => $customer_id,
-									$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
-								],
+							$nonce_name   = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
+							$query_params = [
+								'session_id' => $customer_id,
+								$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
+							];
+							$query_params = apply_filters( 'graphql_checkout_url_query_params', $query_params, $customer_id, $source );
+							$url          = add_query_arg(
+								$query_params,
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
 
@@ -454,12 +458,14 @@ class Customer_Type {
 							}
 
 							// Build nonced url as an unauthenticated user.
-							$nonce_name = woographql_setting( 'account_url_nonce_param', '_wc_account' );
-							$url        = add_query_arg(
-								[
-									'session_id' => $customer_id,
-									$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
-								],
+							$nonce_name   = woographql_setting( 'account_url_nonce_param', '_wc_account' );
+							$query_params = [
+								'session_id' => $customer_id,
+								$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
+							];
+							$query_params = apply_filters( 'graphql_account_url_query_params', $query_params, $customer_id, $source );
+							$url          = add_query_arg(
+								$query_params,
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
 
