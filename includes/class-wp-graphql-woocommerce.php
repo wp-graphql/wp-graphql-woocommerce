@@ -295,6 +295,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-shipping-line-input.php';
 			require $include_directory_path . 'type/input/class-tax-rate-connection-orderby-input.php';
 			require $include_directory_path . 'type/input/class-collection-stats-query-input.php';
+			require $include_directory_path . 'type/input/class-collection-stats-where-args.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';

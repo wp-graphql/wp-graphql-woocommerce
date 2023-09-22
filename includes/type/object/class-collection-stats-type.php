@@ -21,59 +21,76 @@ class Collection_Stats_Type {
 	 */
 	public static function register() {
 		register_graphql_object_type(
-			'PriceRangeStats',
+			'PriceRange',
 			[
 				'eagerlyLoadType' => true,
-				'description' => __( 'Price range stats', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Price range', 'wp-graphql-woocommerce' ),
 				'fields'      => [
 					'minPrice' => [
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Minimum price', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return ! empty( $source['min_price'] ) ? $source['min_price'] : null;
+							return ! empty( $source['min_price'] ) ? wc_graphql_price( $source['min_price'] ) : null;
 						}
 					],
 					'maxPrice' => [
-						'type'        => 'Float',
+						'type'        => 'String',
 						'description' => __( 'Maximum price', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							return ! empty( $source['max_price'] ) ? $source['max_price'] : null;
+							return ! empty( $source['max_price'] ) ? wc_graphql_price( $source['max_price'] ) : null;
 						}
 					],
 				],
 			]
 		);
 
-		register_graphql_object_type (
+		register_graphql_object_type(
 			'AttributeCount',
 			[
 				'eagerlyLoadType' => true,
-				'description' => __( 'Attribute count', 'wp-graphql-woocommerce' ),
-				'fields'      => [
+				'description'     => __( 'Product attribute terms count', 'wp-graphql-woocommerce' ),
+				'fields'          => [
+					'name'  => [
+						'type'        => [ 'non_null' => 'String' ],
+						'description' => __( 'Attribute name', 'wp-graphql-woocommerce' ),
+					],
+					'terms' => [
+						'type'        => [ 'list_of' => 'SingleAttributeCount' ],
+						'description' => __( 'Attribute terms', 'wp-graphql-woocommerce' ),
+					],
+				],
+			]
+		);
+
+		register_graphql_object_type(
+			'SingleAttributeCount',
+			[
+				'eagerlyLoadType' => true,
+				'description'     => __( 'Single attribute term count', 'wp-graphql-woocommerce' ),
+				'fields'          => [
 					'termId' => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Term ID', 'wp-graphql-woocommerce' ),
 					],
-					'count' => [
+					'count'  => [
 						'type'        => 'Int',
-						'description' => __( 'Filtered Term Count', 'wp-graphql-woocommerce' ),
+						'description' => __( 'Number of products.', 'wp-graphql-woocommerce' ),
+					],
+					'node'   => [
+						'type'        => 'TermNode',
+						'description' => __( 'Term object.', 'wp-graphql-woocommerce' ),
+						'resolve'     => function( $source ) {
+							if ( empty( $source->termId ) ) {
+								return null;
+							}
+							$term = get_term( $source->termId );
+							if ( is_wp_error( $term ) ) {
+								return null;
+							}
+							return new \WPGraphQL\Model\Term( $term );
+						}
 					],
 				],
-				'connections' => [
-					'term'     => [
-						'toType'         => 'TermNode',
-						'oneToOne'       => true,
-						'resolve'        => static function ( $source, $args, $context, $info ) {
-							$term_id  = ! empty ( $source->termId ) ? $source->termId : 0;
-							$taxonomy = ! empty ( $source->taxonomy ) ? $source->taxonomy : null;
-							$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $taxonomy );
-
-							return $resolver->one_to_one()
-								->set_query_arg( 'include', [ $term_id ] )
-								->get_connection();
-						},
-					],
-				]
 			]
 		);
 
@@ -81,15 +98,33 @@ class Collection_Stats_Type {
 			'RatingCount',
 			[
 				'eagerlyLoadType' => true,
-				'description' => __( 'Rating count', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Single rating count', 'wp-graphql-woocommerce' ),
 				'fields'      => [
 					'rating' => [
 						'type'        => [ 'non_null' => 'Int' ],
-						'description' => __( 'Rating', 'wp-graphql-woocommerce' ),
+						'description' => __( 'Average rating', 'wp-graphql-woocommerce' ),
 					],
 					'count' => [
 						'type'        => 'Int',
-						'description' => __( 'Filtered Rating Count', 'wp-graphql-woocommerce' ),
+						'description' => __( 'Number of products', 'wp-graphql-woocommerce' ),
+					],
+				],
+			]
+		);
+
+		register_graphql_object_type(
+			'StockStatusCount',
+			[
+				'eagerlyLoadType' => true,
+				'description' => __( 'Single stock status count', 'wp-graphql-woocommerce' ),
+				'fields'      => [
+					'status' => [
+						'type'        => [ 'non_null' => 'StockStatusEnum' ],
+						'description' => __( 'Status', 'wp-graphql-woocommerce' ),
+					],
+					'count' => [
+						'type'        => 'Int',
+						'description' => __( 'Number of products.', 'wp-graphql-woocommerce' ),
 					],
 				],
 			]
@@ -101,8 +136,8 @@ class Collection_Stats_Type {
 				'description' => __( '', 'wp-graphql-woocommerce' ),
 				'fields'      => [
 					'priceRange' => [
-						'type'        => 'PriceRangeStats',
-						'description' => __( 'Price range', 'wp-graphql-woocommerce' ),
+						'type'        => 'PriceRange',
+						'description' => __( 'Min and max prices found in collection of products, provided using the smallest unit of the currency', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
 							$min_price = ! empty( $source['min_price'] ) ? $source['min_price'] : null;
 							$max_price = ! empty( $source['max_price'] ) ? $source['max_price'] : null;
@@ -114,17 +149,17 @@ class Collection_Stats_Type {
 						'args'        => [
 							'page' => [
 								'type'        => 'Int',
-								'description' => __( 'Page of results to return.', 'wp-graphql-woocommerce' ),
+								'description' => __( 'Page of results to return', 'wp-graphql-woocommerce' ),
 							],
 							'perPage' => [
 								'type'        => 'Int',
-								'description' => __( 'Number of results to return per page.', 'wp-graphql-woocommerce' ),
+								'description' => __( 'Number of results to return per page', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'description' => __( 'Attribute counts', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source, $args ) {
-							$page = ! empty( $args['page'] ) ? $args['page'] : 1;
-							$per_page = ! empty( $args['perPage'] ) ? $args['perPage'] : 0;
+						'description' => __( 'Returns number of products within attribute terms', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source, $args ) {
+							$page             = ! empty( $args['page'] ) ? $args['page'] : 1;
+							$per_page         = ! empty( $args['perPage'] ) ? $args['perPage'] : 0;
 							$attribute_counts = ! empty( $source['attribute_counts'] ) ? $source['attribute_counts'] : [];
 							$attribute_counts = array_slice(
 								$attribute_counts,
@@ -132,7 +167,13 @@ class Collection_Stats_Type {
 								0 < $per_page ? $per_page : null
 							);
 				
-							return $attribute_counts;
+							return array_map(
+								static function( $name, $terms ) {
+									return (object) compact( 'name', 'terms' );
+								},
+								array_keys( $attribute_counts ),
+								array_values( $attribute_counts )
+							);
 						}
 					],
 					'ratingCounts' => [
@@ -140,17 +181,17 @@ class Collection_Stats_Type {
 						'args'        => [
 							'page' => [
 								'type'        => 'Int',
-								'description' => __( 'Page of results to return.', 'wp-graphql-woocommerce' ),
+								'description' => __( 'Page of results to return', 'wp-graphql-woocommerce' ),
 							],
 							'perPage' => [
 								'type'        => 'Int',
-								'description' => __( 'Number of results to return per page.', 'wp-graphql-woocommerce' ),
+								'description' => __( 'Number of results to return per page', 'wp-graphql-woocommerce' ),
 							],
 						],
-						'description' => __( 'Rating counts', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source, $args ) {
-							$page = ! empty( $args['page'] ) ? $args['page'] : 1;
-							$per_page = ! empty( $args['perPage'] ) ? $args['perPage'] : 0;
+						'description' => __( 'Returns number of products with each average rating', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source, $args ) {
+							$page          = ! empty( $args['page'] ) ? $args['page'] : 1;
+							$per_page      = ! empty( $args['perPage'] ) ? $args['perPage'] : 0;
 							$rating_counts = ! empty( $source['rating_counts'] ) ? $source['rating_counts'] : [];
 							$rating_counts = array_slice(
 								$rating_counts,
@@ -161,8 +202,121 @@ class Collection_Stats_Type {
 							return $rating_counts;
 						}
 					],
+					'stockStatusCounts' => [
+						'type'        => [ 'list_of' => 'StockStatusCount' ],
+						'args'        => [
+							'page' => [
+								'type'        => 'Int',
+								'description' => __( 'Page of results to return', 'wp-graphql-woocommerce' ),
+							],
+							'perPage' => [
+								'type'        => 'Int',
+								'description' => __( 'Number of results to return per page', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'description' => __( 'Returns number of products with each stock status', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source, $args ) {
+							$page                = ! empty( $args['page'] ) ? $args['page'] : 1;
+							$per_page            = ! empty( $args['perPage'] ) ? $args['perPage'] : 0;
+							$stock_status_counts = ! empty( $source['stock_status_counts'] ) ? $source['stock_status_counts'] : [];
+							$stock_status_counts = array_slice(
+								$stock_status_counts,
+								( $page - 1 ) * $per_page,
+								0 < $per_page ? $per_page : null
+							);
+				
+							return $stock_status_counts;
+						}
+					],
 				],
 			]
 		);
+	}
+
+
+	/**
+	 * Prepare the WP_Rest_Request instance used for the resolution of a
+	 * statistics for a product connection.
+	 * 
+	 * @param array $where_args  Arguments used to filter the connection results.
+	 * 
+	 * @return \WP_REST_Request 
+	 */
+	public static function prepare_rest_request( array $where_args = [] ) {
+		$request = new \WP_REST_Request();
+		if ( empty( $where_args ) ) {
+			return $request;
+		}
+
+		$key_mapping = [
+			'slugIn'       => 'slug',
+			'typeIn'       => 'type',
+			'categoryIdIn' => 'category',
+			'tagIn'        => 'tag',
+			'onSale'       => 'on_sale',
+			'stockStatus'  => 'stock_status',
+			'visibility'   => 'catalog_visibility',
+			'minPrice'     => 'min_price',
+			'maxPrice'     => 'max_price',
+		];
+
+		$needs_formatting = [ 'attributes', 'categoryIn'];
+		foreach( $where_args as $key => $value ) {
+			if ( in_array( $key, $needs_formatting, true ) ) {
+				continue;
+			}
+
+			$request->set_param( $key_mapping[ $key ] ?? $key, $value );
+		}
+
+		if ( ! empty( $where_args['categoryIn'] ) ) {
+			$category_ids = array_map(
+				static function ( $category ) {
+					$term = get_term_by( 'slug', $category, 'product_cat' );
+					if ( is_object( $term ) ) {
+						return $term->term_id;
+					}
+					return 0;
+				},
+				$where_args['categoryIn']
+			);
+			$setCategory = $request->get_param( 'category' );
+			if ( ! empty( $setCategory ) ) {
+				$category_ids[] = $setCategory;
+				$request->set_param( 'category', $category_ids );
+			} else {
+				$request->set_param( 'category', $category_ids);
+			}
+			$request->set_param( 'category_operator', 'in' );
+		}
+		
+		if ( ! empty( $where_args['attributes'] ) ) {
+			$attributes = [];
+			foreach( $where_args['attributes'] as $filter ) {
+				if ( str_starts_with( $filter['taxonomy'], 'pa_' ) ) {
+					$attribute = [];
+					$attribute['attribute'] = $filter['taxonomy'];
+					if ( ! empty( $filter['terms'] ) ) {
+						$attribute['slug'] = $filter['terms'];
+					} elseif ( ! empty( $filter['ids'] ) ) {
+						$attribute['term_id'] = $filter['ids'];
+					}
+					$attribute['operator'] = ! empty( $filter['operator'] ) ? strtolower( $filter['operator'] ) : 'in';
+					$attributes[] = $attribute;
+				} else {
+					if ( ! empty( $filter['ids'] ) ) {
+						continue;
+					}
+					$taxonomy = $filter['taxonomy'];
+					$request->set_param( "_unstable_tax_{$taxonomy}", $filter['ids'] );
+					$request->set_param( "_unstable_tax_{$taxonomy}_operator", strtolower( $filter['operator'] ) );
+				}
+			}
+			if ( ! empty( $attributes ) ) { 
+				$request->set_param( 'attributes', $attributes );
+			}
+		}
+
+		return $request;
 	}
 }

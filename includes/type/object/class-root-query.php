@@ -519,18 +519,28 @@ class Root_Query {
 				'collectionStats'      => [
 					'type'        => 'CollectionStats',
 					'args'        => [
-						'calculatePriceRange'  => [
-							'type' => 'Boolean',
+						'calculatePriceRange'    => [
+							'type'        => 'Boolean',
+							'description' => __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' )
 						],
 						'calculateRatingCounts'  => [
-							'type' => 'Boolean',
+							'type'        => 'Boolean',
+							'description' => __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' ),
 						],
-						'taxonomies'  => [
+						'calculateStockStatusCounts' => [
+							'type'        => 'Boolean',
+							'description' => __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' )
+						],
+						'taxonomies'             => [
 							'type' => [ 'list_of' => 'CollectionStatsQueryInput' ],
+						],
+						'where'                  => [
+							'type' => 'CollectionStatsWhereArgs',
 						],
 					],
 					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
-					'resolve'     => function ( $_, $args ) {
+					'resolve'     => static function ( $_, $args ) {
+						$filters = new ProductQueryFilters();
 						$data    = [
 							'min_price'           => null,
 							'max_price'           => null,
@@ -538,14 +548,28 @@ class Root_Query {
 							'stock_status_counts' => null,
 							'rating_counts'       => null,
 						];
-						$filters = new ProductQueryFilters();
-						$request = new \WP_REST_Request();
-						$request->set_param( 'calculate_attribute_counts', ! empty( $args['taxonomies'] ) ? $args['taxonomies'] : null );
-						$request->set_param( 'calculate_price_range', ! empty( $args['calculatePriceRange'] ) );
-						$request->set_param( 'calculate_stock_status_counts', ! empty( $args['calculateStockStatusCounts'] ) );
-						$request->set_param( 'calculate_rating_counts', ! empty( $args['calculateRatingCounts'] ) );
+
+						// Process client-side filters.
+						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? [] );
+
+						// Format taxonomies.
+						if ( ! empty( $args['taxonomies'] ) ) {
+							$calculate_attribute_counts = [];
+							foreach ( $args['taxonomies'] as $attribute_to_count ) {
+								$calculate_attribute_counts[] = [
+									'taxonomy'   => $attribute_to_count['taxonomy'],
+									'query_type' => strtolower( $attribute_to_count['relation'] ),
+								];
+							}
+							$request->set_param( 'calculate_attribute_counts', $calculate_attribute_counts );
+						}
+ 
+						$request->set_param( 'calculate_price_range', $args['calculatePriceRange'] ?? false );
+						$request->set_param( 'calculate_stock_status_counts', $args['calculateStockStatusCounts'] ?? false );
+						$request->set_param( 'calculate_rating_counts', $args['calculateRatingCounts'] ?? false );
 
 
+						
 						if ( ! empty( $request['calculate_price_range'] ) ) {
 							$filter_request = clone $request;
 							$filter_request->set_param( 'min_price', null );
@@ -575,13 +599,15 @@ class Root_Query {
 								if ( ! isset( $attributes_to_count['taxonomy'] ) ) {
 									continue;
 								}
-				
-								$counts = $filters->get_attribute_counts( $request, $attributes_to_count['taxonomy'] );
-				
+
+								$taxonomy = $attributes_to_count['taxonomy'];
+								$counts   = $filters->get_attribute_counts( $request, $taxonomy );
+
+								$data['attribute_counts'][ $taxonomy ] = [];
 								foreach ( $counts as $key => $value ) {
-									$data['attribute_counts'][] = (object) [
-										'taxonomy' => $attributes_to_count['taxonomy'],
-										'termId'     => $key,
+									$data['attribute_counts'][ $taxonomy ][] = (object) [
+										'taxonomy' => $taxonomy,
+										'termId'   => $key,
 										'count'    => $value,
 									];
 								}
@@ -600,8 +626,6 @@ class Root_Query {
 								];
 							}
 						}
-
-						//wp_send_json( $data );
 
 						return $data;
 					},

@@ -466,6 +466,18 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}//end switch
 		}//end if
 
+		if ( ! empty( $where_args['rating'] ) ) {
+			$rating_terms = [];
+			foreach ( $rating as $value ) {
+				$rating_terms[] = 'rated-' . $value;
+			}
+			$tax_query[] = [
+				'taxonomy' => 'product_visibility',
+				'field'    => 'name',
+				'terms'    => $rating_terms,
+			];
+		}
+	
 		// Process "taxonomyFilter".
 		$tax_filter_query = [];
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
@@ -562,6 +574,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$on_sale_ids                = empty( $on_sale_ids ) ? [ 0 ] : $on_sale_ids;
 			$query_args[ $on_sale_key ] = $on_sale_ids;
 		}
+
+		
 
 		/**
 		 * {@inheritDoc}

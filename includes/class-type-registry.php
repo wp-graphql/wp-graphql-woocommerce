@@ -61,6 +61,7 @@ class Type_Registry {
 		Type\WPInputObject\Product_Taxonomy_Input::register();
 		Type\WPInputObject\Orderby_Inputs::register();
 		Type\WPInputObject\Collection_Stats_Query_Input::register();
+		Type\WPInputObject\Collection_Stats_Where_Args::register();
 
 		/**
 		 * Interfaces.
