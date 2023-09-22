@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
-
 /**
  * Class Collection_Stats_Type
  */
@@ -24,21 +22,21 @@ class Collection_Stats_Type {
 			'PriceRange',
 			[
 				'eagerlyLoadType' => true,
-				'description' => __( 'Price range', 'wp-graphql-woocommerce' ),
-				'fields'      => [
+				'description'     => __( 'Price range', 'wp-graphql-woocommerce' ),
+				'fields'          => [
 					'minPrice' => [
 						'type'        => 'String',
 						'description' => __( 'Minimum price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['min_price'] ) ? wc_graphql_price( $source['min_price'] ) : null;
-						}
+						},
 					],
 					'maxPrice' => [
 						'type'        => 'String',
 						'description' => __( 'Maximum price', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source['max_price'] ) ? wc_graphql_price( $source['max_price'] ) : null;
-						}
+						},
 					],
 				],
 			]
@@ -79,16 +77,22 @@ class Collection_Stats_Type {
 					'node'   => [
 						'type'        => 'TermNode',
 						'description' => __( 'Term object.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
-							if ( empty( $source->termId ) ) {
+						'resolve'     => static function ( $source ) {
+							if ( empty( $source->termId ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 								return null;
 							}
-							$term = get_term( $source->termId );
-							if ( is_wp_error( $term ) ) {
+
+							/**
+							 * Term object.
+							 *
+							 * @var \WP_Term $term
+							 */
+							$term = get_term( $source->termId ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							if ( ! $term instanceof \WP_Term ) {
 								return null;
 							}
 							return new \WPGraphQL\Model\Term( $term );
-						}
+						},
 					],
 				],
 			]
@@ -98,13 +102,13 @@ class Collection_Stats_Type {
 			'RatingCount',
 			[
 				'eagerlyLoadType' => true,
-				'description' => __( 'Single rating count', 'wp-graphql-woocommerce' ),
-				'fields'      => [
+				'description'     => __( 'Single rating count', 'wp-graphql-woocommerce' ),
+				'fields'          => [
 					'rating' => [
 						'type'        => [ 'non_null' => 'Int' ],
 						'description' => __( 'Average rating', 'wp-graphql-woocommerce' ),
 					],
-					'count' => [
+					'count'  => [
 						'type'        => 'Int',
 						'description' => __( 'Number of products', 'wp-graphql-woocommerce' ),
 					],
@@ -116,13 +120,13 @@ class Collection_Stats_Type {
 			'StockStatusCount',
 			[
 				'eagerlyLoadType' => true,
-				'description' => __( 'Single stock status count', 'wp-graphql-woocommerce' ),
-				'fields'      => [
+				'description'     => __( 'Single stock status count', 'wp-graphql-woocommerce' ),
+				'fields'          => [
 					'status' => [
 						'type'        => [ 'non_null' => 'StockStatusEnum' ],
 						'description' => __( 'Status', 'wp-graphql-woocommerce' ),
 					],
-					'count' => [
+					'count'  => [
 						'type'        => 'Int',
 						'description' => __( 'Number of products.', 'wp-graphql-woocommerce' ),
 					],
@@ -133,21 +137,21 @@ class Collection_Stats_Type {
 		register_graphql_object_type(
 			'CollectionStats',
 			[
-				'description' => __( '', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Data about a collection of products', 'wp-graphql-woocommerce' ),
 				'fields'      => [
-					'priceRange' => [
+					'priceRange'        => [
 						'type'        => 'PriceRange',
 						'description' => __( 'Min and max prices found in collection of products, provided using the smallest unit of the currency', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source ) {
+						'resolve'     => static function ( $source ) {
 							$min_price = ! empty( $source['min_price'] ) ? $source['min_price'] : null;
 							$max_price = ! empty( $source['max_price'] ) ? $source['max_price'] : null;
 							return compact( 'min_price', 'max_price' );
-						}
+						},
 					],
-					'attributeCounts' => [
+					'attributeCounts'   => [
 						'type'        => [ 'list_of' => 'AttributeCount' ],
 						'args'        => [
-							'page' => [
+							'page'    => [
 								'type'        => 'Int',
 								'description' => __( 'Page of results to return', 'wp-graphql-woocommerce' ),
 							],
@@ -168,18 +172,18 @@ class Collection_Stats_Type {
 							);
 				
 							return array_map(
-								static function( $name, $terms ) {
+								static function ( $name, $terms ) {
 									return (object) compact( 'name', 'terms' );
 								},
 								array_keys( $attribute_counts ),
 								array_values( $attribute_counts )
 							);
-						}
+						},
 					],
-					'ratingCounts' => [
+					'ratingCounts'      => [
 						'type'        => [ 'list_of' => 'RatingCount' ],
 						'args'        => [
-							'page' => [
+							'page'    => [
 								'type'        => 'Int',
 								'description' => __( 'Page of results to return', 'wp-graphql-woocommerce' ),
 							],
@@ -200,12 +204,12 @@ class Collection_Stats_Type {
 							);
 				
 							return $rating_counts;
-						}
+						},
 					],
 					'stockStatusCounts' => [
 						'type'        => [ 'list_of' => 'StockStatusCount' ],
 						'args'        => [
-							'page' => [
+							'page'    => [
 								'type'        => 'Int',
 								'description' => __( 'Page of results to return', 'wp-graphql-woocommerce' ),
 							],
@@ -226,13 +230,12 @@ class Collection_Stats_Type {
 							);
 				
 							return $stock_status_counts;
-						}
+						},
 					],
 				],
 			]
 		);
 	}
-
 
 	/**
 	 * Prepare the WP_Rest_Request instance used for the resolution of a
@@ -240,9 +243,9 @@ class Collection_Stats_Type {
 	 * 
 	 * @param array $where_args  Arguments used to filter the connection results.
 	 * 
-	 * @return \WP_REST_Request 
+	 * @return \WP_REST_Request
 	 */
-	public static function prepare_rest_request( array $where_args = [] ) {
+	public static function prepare_rest_request( array $where_args = [] ) { // @phpstan-ignore-line
 		$request = new \WP_REST_Request();
 		if ( empty( $where_args ) ) {
 			return $request;
@@ -260,8 +263,8 @@ class Collection_Stats_Type {
 			'maxPrice'     => 'max_price',
 		];
 
-		$needs_formatting = [ 'attributes', 'categoryIn'];
-		foreach( $where_args as $key => $value ) {
+		$needs_formatting = [ 'attributes', 'categoryIn' ];
+		foreach ( $where_args as $key => $value ) {
 			if ( in_array( $key, $needs_formatting, true ) ) {
 				continue;
 			}
@@ -280,21 +283,21 @@ class Collection_Stats_Type {
 				},
 				$where_args['categoryIn']
 			);
-			$setCategory = $request->get_param( 'category' );
-			if ( ! empty( $setCategory ) ) {
-				$category_ids[] = $setCategory;
+			$set_category = $request->get_param( 'category' );
+			if ( ! empty( $set_category ) ) {
+				$category_ids[] = $set_category;
 				$request->set_param( 'category', $category_ids );
 			} else {
-				$request->set_param( 'category', $category_ids);
+				$request->set_param( 'category', $category_ids );
 			}
 			$request->set_param( 'category_operator', 'in' );
 		}
 		
 		if ( ! empty( $where_args['attributes'] ) ) {
 			$attributes = [];
-			foreach( $where_args['attributes'] as $filter ) {
+			foreach ( $where_args['attributes'] as $filter ) {
 				if ( str_starts_with( $filter['taxonomy'], 'pa_' ) ) {
-					$attribute = [];
+					$attribute              = [];
 					$attribute['attribute'] = $filter['taxonomy'];
 					if ( ! empty( $filter['terms'] ) ) {
 						$attribute['slug'] = $filter['terms'];
@@ -302,7 +305,7 @@ class Collection_Stats_Type {
 						$attribute['term_id'] = $filter['ids'];
 					}
 					$attribute['operator'] = ! empty( $filter['operator'] ) ? strtolower( $filter['operator'] ) : 'in';
-					$attributes[] = $attribute;
+					$attributes[]          = $attribute;
 				} else {
 					if ( ! empty( $filter['ids'] ) ) {
 						continue;
@@ -315,7 +318,7 @@ class Collection_Stats_Type {
 			if ( ! empty( $attributes ) ) { 
 				$request->set_param( 'attributes', $attributes );
 			}
-		}
+		}//end if
 
 		return $request;
 	}

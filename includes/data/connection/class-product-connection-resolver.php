@@ -467,6 +467,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}//end if
 
 		if ( ! empty( $where_args['rating'] ) ) {
+			$rating       = $where_args['rating'];
 			$rating_terms = [];
 			foreach ( $rating as $value ) {
 				$rating_terms[] = 'rated-' . $value;

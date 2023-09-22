@@ -516,31 +516,31 @@ class Root_Query {
 						return [];
 					},
 				],
-				'collectionStats'      => [
+				'collectionStats'  => [
 					'type'        => 'CollectionStats',
 					'args'        => [
-						'calculatePriceRange'    => [
+						'calculatePriceRange'        => [
 							'type'        => 'Boolean',
-							'description' => __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' )
+							'description' => __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' ),
 						],
-						'calculateRatingCounts'  => [
+						'calculateRatingCounts'      => [
 							'type'        => 'Boolean',
 							'description' => __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' ),
 						],
 						'calculateStockStatusCounts' => [
 							'type'        => 'Boolean',
-							'description' => __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' )
+							'description' => __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' ),
 						],
-						'taxonomies'             => [
+						'taxonomies'                 => [
 							'type' => [ 'list_of' => 'CollectionStatsQueryInput' ],
 						],
-						'where'                  => [
+						'where'                      => [
 							'type' => 'CollectionStatsWhereArgs',
 						],
 					],
 					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
-						$filters = new ProductQueryFilters();
+						$filters = new ProductQueryFilters(); // @phpstan-ignore-line
 						$data    = [
 							'min_price'           => null,
 							'max_price'           => null,
@@ -575,14 +575,14 @@ class Root_Query {
 							$filter_request->set_param( 'min_price', null );
 							$filter_request->set_param( 'max_price', null );
 
-							$price_results     = $filters->get_filtered_price( $filter_request );
+							$price_results     = $filters->get_filtered_price( $filter_request ); // @phpstan-ignore-line
 							$data['min_price'] = $price_results->min_price;
 							$data['max_price'] = $price_results->max_price;
 						}
 
 						if ( ! empty( $request['calculate_stock_status_counts'] ) ) {
 							$filter_request = clone $request;
-							$counts = $filters->get_stock_status_counts( $filter_request );
+							$counts         = $filters->get_stock_status_counts( $filter_request ); // @phpstan-ignore-line
 				
 							$data['stock_status_counts'] = [];
 				
@@ -601,7 +601,7 @@ class Root_Query {
 								}
 
 								$taxonomy = $attributes_to_count['taxonomy'];
-								$counts   = $filters->get_attribute_counts( $request, $taxonomy );
+								$counts   = $filters->get_attribute_counts( $request, $taxonomy ); // @phpstan-ignore-line
 
 								$data['attribute_counts'][ $taxonomy ] = [];
 								foreach ( $counts as $key => $value ) {
@@ -616,7 +616,7 @@ class Root_Query {
 
 						if ( ! empty( $request['calculate_rating_counts'] ) ) {
 							$filter_request        = clone $request;
-							$counts                = $filters->get_rating_counts( $filter_request );
+							$counts                = $filters->get_rating_counts( $filter_request ); // @phpstan-ignore-line
 							$data['rating_counts'] = [];
 				
 							foreach ( $counts as $key => $value ) {
@@ -629,7 +629,7 @@ class Root_Query {
 
 						return $data;
 					},
-				]  
+				],  
 			]
 		);
 
