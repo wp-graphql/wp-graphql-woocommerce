@@ -792,11 +792,11 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'relation' => 'AND',
 				'filters'  => [
 					[
-						'taxonomy' => 'PRODUCTCATEGORY',
+						'taxonomy' => 'PRODUCT_CAT',
 						'terms'    => [ 'category-three' ],
 					],
 					[
-						'taxonomy' => 'PRODUCTCATEGORY',
+						'taxonomy' => 'PRODUCT_CAT',
 						'terms'    => [ 'category-four' ],
 						'operator' => 'NOT_IN',
 					],

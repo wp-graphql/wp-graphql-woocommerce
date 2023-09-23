@@ -27,7 +27,9 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
                     where: $where
                 ) {
                     attributeCounts {
-                        name 
+                        name
+                        slug
+                        label
                         terms {
                             node { slug }
                             termId
@@ -46,20 +48,15 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
             'where' => [
                 'attributes' => [
                     [
-                        'taxonomy' => 'PACOLOR',
+                        'taxonomy' => 'PA_COLOR',
                         'terms'    => 'red',
                         'operator' => 'IN',
                     ],
-                    [
-                        'taxonomy' => 'PASIZE',
-                        'terms'    => 'large',
-                        'operator' => 'IN',
-                    ]
                 ]
             ],
             'taxonomies' => [
                 [
-                    'taxonomy' => 'PACOLOR',
+                    'taxonomy' => 'PA_COLOR',
                     'relation' => 'AND',
                 ]
             ]
@@ -69,7 +66,9 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
             $this->expectedNode(
                 'collectionStats.attributeCounts', 
                 [
-                    $this->expectedField('name', 'pa_color' ),
+                    $this->expectedField('slug', 'PA_COLOR' ),
+                    $this->expectedField('label', 'Product color' ),
+                    $this->expectedField('name', 'color' ),
                     $this->expectedNode(
                         'terms',
                         [

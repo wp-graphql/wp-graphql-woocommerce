@@ -43,6 +43,8 @@ class Type_Registry {
 		Type\WPEnum\Orders_Orderby_Enum::register();
 		Type\WPEnum\Id_Type_Enums::register();
 		Type\WPEnum\Cart_Error_Type::register();
+		Type\WPEnum\Product_Attribute_Enum::register();
+		Type\WPEnum\Attribute_Operator_Enum::register();
 
 		/**
 		 * InputObjects.
@@ -62,6 +64,7 @@ class Type_Registry {
 		Type\WPInputObject\Orderby_Inputs::register();
 		Type\WPInputObject\Collection_Stats_Query_Input::register();
 		Type\WPInputObject\Collection_Stats_Where_Args::register();
+		Type\WPInputObject\Product_Attribute_Filter_Input::register();
 
 		/**
 		 * Interfaces.

@@ -26,16 +26,44 @@ class Collection_Stats_Type {
 				'fields'          => [
 					'minPrice' => [
 						'type'        => 'String',
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
 						'description' => __( 'Minimum price', 'wp-graphql-woocommerce' ),
-						'resolve'     => static function ( $source ) {
-							return ! empty( $source['min_price'] ) ? wc_graphql_price( $source['min_price'] ) : null;
+						'resolve'     => static function ( $source, array $args ) {
+							if ( empty( $source['min_price'] ) ) {
+								return null;
+							}
+
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $source['min_price'];
+							}
+							
+							return wc_graphql_price( $source['min_price'] );
 						},
 					],
 					'maxPrice' => [
 						'type'        => 'String',
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
 						'description' => __( 'Maximum price', 'wp-graphql-woocommerce' ),
-						'resolve'     => static function ( $source ) {
-							return ! empty( $source['max_price'] ) ? wc_graphql_price( $source['max_price'] ) : null;
+						'resolve'     => static function ( $source, array $args ) {
+							if ( empty( $source['max_price'] ) ) {
+								return null;
+							}
+
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $source['max_price'];
+							}
+							
+							return wc_graphql_price( $source['max_price'] );
 						},
 					],
 				],
@@ -48,9 +76,36 @@ class Collection_Stats_Type {
 				'eagerlyLoadType' => true,
 				'description'     => __( 'Product attribute terms count', 'wp-graphql-woocommerce' ),
 				'fields'          => [
+					'slug'  => [
+						'type'        => [ 'non_null' => 'ProductAttributeEnum' ],
+						'description' => __( 'Attribute name', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							return $source->name;
+						},
+					],
+					'label' => [
+						'type'        => [ 'non_null' => 'String' ],
+						'description' => __( 'Attribute taxonomy', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							$taxonomy = get_taxonomy( $source->name );
+
+							if ( ! $taxonomy instanceof \WP_Taxonomy ) {
+								return null;
+							}
+							return $taxonomy->label;
+						},
+					],
 					'name'  => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Attribute name', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							$taxonomy = get_taxonomy( $source->name );
+
+							if ( ! $taxonomy instanceof \WP_Taxonomy ) {
+								return null;
+							}
+							return $taxonomy->labels->singular_name;
+						},
 					],
 					'terms' => [
 						'type'        => [ 'list_of' => 'SingleAttributeCount' ],
@@ -245,7 +300,7 @@ class Collection_Stats_Type {
 	 * 
 	 * @return \WP_REST_Request
 	 */
-	public static function prepare_rest_request( array $where_args = [] ) { // @phpstan-ignore-line
+	public static function prepare_rest_request( array $where_args = [] ) /* @phpstan-ignore-line */ {  
 		$request = new \WP_REST_Request();
 		if ( empty( $where_args ) ) {
 			return $request;
@@ -290,7 +345,7 @@ class Collection_Stats_Type {
 			} else {
 				$request->set_param( 'category', $category_ids );
 			}
-			$request->set_param( 'category_operator', 'in' );
+			$request->set_param( 'category_operator', 'and' );
 		}
 		
 		if ( ! empty( $where_args['attributes'] ) ) {

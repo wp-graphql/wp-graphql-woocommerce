@@ -1,9 +1,9 @@
 <?php
 /**
- * WPEnum Type - ProductTaxonomyEnum
+ * WPEnum Type - ProductAttributeEnum
  *
  * @package WPGraphQL\WooCommerce\Type\WPEnum
- * @since   0.2.1
+ * @since   TBD
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;
@@ -11,20 +11,20 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 use WPGraphQL\Type\WPEnumType;
 
 /**
- * Class Product_Taxonomy
+ * Class Product_Attribute_Enum
  */
-class Product_Taxonomy {
+class Product_Attribute_Enum {
 	/**
 	 * Registers type
 	 *
 	 * @return void
 	 */
 	public static function register() {
-		// Get values from taxonomies connected to products.
-		$taxonomy_values    = [];
-		$allowed_taxonomies = \WPGraphQL::get_allowed_taxonomies();
+		// Get values from product attributes.
+		$taxonomy_values = [];
+		$taxonomies      = wc_get_attribute_taxonomy_names();
 
-		foreach ( $allowed_taxonomies as $taxonomy ) {
+		foreach ( $taxonomies as $taxonomy ) {
 			$tax_object = get_taxonomy( $taxonomy );
 
 			if ( false !== $tax_object && in_array( 'product', $tax_object->object_type, true ) ) {
@@ -33,9 +33,9 @@ class Product_Taxonomy {
 		}
 
 		register_graphql_enum_type(
-			'ProductTaxonomyEnum',
+			'ProductAttributeEnum',
 			[
-				'description' => __( 'Product taxonomies', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Product attribute taxonomies', 'wp-graphql-woocommerce' ),
 				'values'      => $taxonomy_values,
 			]
 		);
