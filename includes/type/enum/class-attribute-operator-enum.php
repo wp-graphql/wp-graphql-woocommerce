@@ -3,7 +3,7 @@
  * WPEnum Type - AttributeOperatorEnum
  *
  * @package WPGraphQL\WooCommerce\Type\WPEnum
- * @since   TBD
+ * @since   0.18.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;
