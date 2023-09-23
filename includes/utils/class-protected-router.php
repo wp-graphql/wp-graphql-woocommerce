@@ -363,6 +363,8 @@ class Protected_Router {
 			$this->redirect_to_home();
 		}
 
+		do_action( 'woographql_process_auth_request_nonce_verified' );
+
 		// If Session ID is a user ID authenticate as session user.
 		if ( 0 !== absint( $session_id ) ) {
 			$user_id = absint( $session_id );
