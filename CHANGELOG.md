@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.18.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.18.0) (2023-09-23)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.17.0...v0.18.0)
+
+**New Features:**
+
+- feat: Hooks added to Authorizing URL functionality [\#806](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/806) ([kidunot89](https://github.com/kidunot89))
+- feat: `collectionStats` query added [\#785](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/785) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.17.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.17.0) (2023-09-18)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.16.0...v0.17.0)

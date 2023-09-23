@@ -3,7 +3,7 @@
  * WPObject Type - Collection_Stats_Type
  *
  * @package WPGraphQL\WooCommerce\Type\WPObject
- * @since   TBD
+ * @since   0.18.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;

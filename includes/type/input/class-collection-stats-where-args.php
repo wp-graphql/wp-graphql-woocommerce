@@ -3,7 +3,7 @@
  * WPInputObjectType - CollectionStatsWhereArgs
  *
  * @package WPGraphQL\WooCommerce\Type\WPInputObject
- * @since   TBD
+ * @since   0.18.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInputObject;
