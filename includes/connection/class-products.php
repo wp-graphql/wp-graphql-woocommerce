@@ -427,6 +427,10 @@ class Products {
 				'type'        => 'Boolean',
 				'description' => __( 'Include variations in the result set.', 'wp-graphql-woocommerce' ),
 			],
+			'rating'             => [
+				'type'        => [ 'list_of' => 'Integer' ],
+				'description' => __( 'Limit result set to products with a specific average rating. Must be between 1 and 5', 'wp-graphql-woocommerce' ),
+			],
 		];
 
 		if ( wc_tax_enabled() ) {

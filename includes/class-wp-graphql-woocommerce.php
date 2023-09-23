@@ -236,6 +236,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/enum/class-tax-rate-connection-orderby-enum.php';
 			require $include_directory_path . 'type/enum/class-tax-status.php';
 			require $include_directory_path . 'type/enum/class-taxonomy-operator.php';
+			require $include_directory_path . 'type/enum/class-attribute-operator-enum.php';
+			require $include_directory_path . 'type/enum/class-product-attribute-enum.php';
 
 			// Include interface type class files.
 			require $include_directory_path . 'type/interface/class-attribute.php';
@@ -278,6 +280,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-variation-attribute-type.php';
 			require $include_directory_path . 'type/object/class-payment-token-types.php';
 			require $include_directory_path . 'type/object/class-country-state-type.php';
+			require $include_directory_path . 'type/object/class-collection-stats-type.php';
 
 			// Include input type class files.
 			require $include_directory_path . 'type/input/class-cart-item-input.php';
@@ -293,6 +296,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-product-taxonomy-input.php';
 			require $include_directory_path . 'type/input/class-shipping-line-input.php';
 			require $include_directory_path . 'type/input/class-tax-rate-connection-orderby-input.php';
+			require $include_directory_path . 'type/input/class-collection-stats-query-input.php';
+			require $include_directory_path . 'type/input/class-collection-stats-where-args.php';
+			require $include_directory_path . 'type/input/class-product-attribute-filter-input.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';

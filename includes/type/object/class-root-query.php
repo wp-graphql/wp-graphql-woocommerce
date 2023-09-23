@@ -8,6 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
+use Automattic\WooCommerce\StoreApi\Utilities\ProductQueryFilters;
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -515,6 +516,120 @@ class Root_Query {
 						return [];
 					},
 				],
+				'collectionStats'  => [
+					'type'        => 'CollectionStats',
+					'args'        => [
+						'calculatePriceRange'        => [
+							'type'        => 'Boolean',
+							'description' => __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' ),
+						],
+						'calculateRatingCounts'      => [
+							'type'        => 'Boolean',
+							'description' => __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' ),
+						],
+						'calculateStockStatusCounts' => [
+							'type'        => 'Boolean',
+							'description' => __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' ),
+						],
+						'taxonomies'                 => [
+							'type' => [ 'list_of' => 'CollectionStatsQueryInput' ],
+						],
+						'where'                      => [
+							'type' => 'CollectionStatsWhereArgs',
+						],
+					],
+					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $_, $args ) {
+						$filters = new ProductQueryFilters(); // @phpstan-ignore-line
+						$data    = [
+							'min_price'           => null,
+							'max_price'           => null,
+							'attribute_counts'    => null,
+							'stock_status_counts' => null,
+							'rating_counts'       => null,
+						];
+
+						// Process client-side filters.
+						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? [] );
+
+						// Format taxonomies.
+						if ( ! empty( $args['taxonomies'] ) ) {
+							$calculate_attribute_counts = [];
+							foreach ( $args['taxonomies'] as $attribute_to_count ) {
+								$calculate_attribute_counts[] = [
+									'taxonomy'   => $attribute_to_count['taxonomy'],
+									'query_type' => strtolower( $attribute_to_count['relation'] ),
+								];
+							}
+							$request->set_param( 'calculate_attribute_counts', $calculate_attribute_counts );
+						}
+ 
+						$request->set_param( 'calculate_price_range', $args['calculatePriceRange'] ?? false );
+						$request->set_param( 'calculate_stock_status_counts', $args['calculateStockStatusCounts'] ?? false );
+						$request->set_param( 'calculate_rating_counts', $args['calculateRatingCounts'] ?? false );
+
+
+						
+						if ( ! empty( $request['calculate_price_range'] ) ) {
+							$filter_request = clone $request;
+							$filter_request->set_param( 'min_price', null );
+							$filter_request->set_param( 'max_price', null );
+
+							$price_results     = $filters->get_filtered_price( $filter_request ); // @phpstan-ignore-line
+							$data['min_price'] = $price_results->min_price;
+							$data['max_price'] = $price_results->max_price;
+						}
+
+						if ( ! empty( $request['calculate_stock_status_counts'] ) ) {
+							$filter_request = clone $request;
+							$counts         = $filters->get_stock_status_counts( $filter_request ); // @phpstan-ignore-line
+				
+							$data['stock_status_counts'] = [];
+				
+							foreach ( $counts as $key => $value ) {
+								$data['stock_status_counts'][] = (object) [
+									'status' => $key,
+									'count'  => $value,
+								];
+							}
+						}
+
+						if ( ! empty( $request['calculate_attribute_counts'] ) ) {
+							foreach ( $request['calculate_attribute_counts'] as $attributes_to_count ) {
+								if ( ! isset( $attributes_to_count['taxonomy'] ) ) {
+									continue;
+								}
+
+								$taxonomy = $attributes_to_count['taxonomy'];
+								$counts   = $filters->get_attribute_counts( $request, $taxonomy ); // @phpstan-ignore-line
+
+								$data['attribute_counts'][ $taxonomy ] = [];
+								foreach ( $counts as $key => $value ) {
+									$data['attribute_counts'][ $taxonomy ][] = (object) [
+										'taxonomy' => $taxonomy,
+										'termId'   => $key,
+										'count'    => $value,
+									];
+								}
+							}
+						}
+
+						if ( ! empty( $request['calculate_rating_counts'] ) ) {
+							$filter_request        = clone $request;
+							$counts                = $filters->get_rating_counts( $filter_request ); // @phpstan-ignore-line
+							$data['rating_counts'] = [];
+				
+							foreach ( $counts as $key => $value ) {
+								$data['rating_counts'][] = (object) [
+									'rating' => $key,
+									'count'  => $value,
+								];
+							}
+						}
+
+						return $data;
+					},
+				],  
 			]
 		);
 

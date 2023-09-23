@@ -43,6 +43,8 @@ class Type_Registry {
 		Type\WPEnum\Orders_Orderby_Enum::register();
 		Type\WPEnum\Id_Type_Enums::register();
 		Type\WPEnum\Cart_Error_Type::register();
+		Type\WPEnum\Product_Attribute_Enum::register();
+		Type\WPEnum\Attribute_Operator_Enum::register();
 
 		/**
 		 * InputObjects.
@@ -60,6 +62,9 @@ class Type_Registry {
 		Type\WPInputObject\Product_Taxonomy_Filter_Input::register();
 		Type\WPInputObject\Product_Taxonomy_Input::register();
 		Type\WPInputObject\Orderby_Inputs::register();
+		Type\WPInputObject\Collection_Stats_Query_Input::register();
+		Type\WPInputObject\Collection_Stats_Where_Args::register();
+		Type\WPInputObject\Product_Attribute_Filter_Input::register();
 
 		/**
 		 * Interfaces.
@@ -104,6 +109,7 @@ class Type_Registry {
 		Type\WPObject\Cart_Error_Types::register();
 		Type\WPObject\Payment_Token_Types::register();
 		Type\WPObject\Country_State_Type::register();
+		Type\WPObject\Collection_Stats_Type::register();
 
 		/**
 		 * Object fields.
