@@ -67,7 +67,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
                 'collectionStats.attributeCounts', 
                 [
                     $this->expectedField('slug', 'PA_COLOR' ),
-                    $this->expectedField('label', 'color' ),
+                    $this->expectedField('label', 'pa_color' ),
                     $this->expectedField('name', 'color' ),
                     $this->expectedNode(
                         'terms',

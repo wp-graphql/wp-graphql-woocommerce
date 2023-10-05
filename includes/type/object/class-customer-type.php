@@ -228,6 +228,10 @@ class Customer_Type {
 							return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
 						}
 
+						if ( get_current_user_id() === 0 ) {
+							return [];
+						}
+
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
 					},
 				],
@@ -244,6 +248,10 @@ class Customer_Type {
 							);
 						}
 
+						if ( get_current_user_id() === 0 ) {
+							return [];
+						}
+
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
 					},
 				],
@@ -258,6 +266,10 @@ class Customer_Type {
 									return 'eCheck' === $token->get_type();
 								}
 							);
+						}
+
+						if ( get_current_user_id() === 0 ) {
+							return [];
 						}
 
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
