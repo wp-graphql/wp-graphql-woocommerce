@@ -35,6 +35,7 @@ install_wordpress() {
 	composer require --dev --no-interaction -W \
 		johnpbloch/wordpress:* \
         wp-graphql/wp-graphql-jwt-authentication \
+        axepress/wp-graphql-headless-login \
         wpackagist-plugin/woocommerce \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
@@ -50,6 +51,7 @@ remove_wordpress() {
 
 	# Remove WordPress dependencies
 	composer remove --dev wp-graphql/wp-graphql-jwt-authentication \
+        axepress/wp-graphql-headless-login \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \

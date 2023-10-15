@@ -17,13 +17,89 @@ use WPGraphQL\WooCommerce\Model\Customer;
  */
 class JWT_Auth_Schema_Filters {
 	/**
+	 * Adds filters.
+	 *
+	 * @return string|null
+	 */
+	public static function get_auth_class() {
+		if ( class_exists( '\WPGraphQL\JWT_Authentication\Auth' ) ) {
+			return '\WPGraphQL\JWT_Authentication\Auth';
+		} elseif ( class_exists( \WPGraphQL\Login\Main::class ) ) {
+			return \WPGraphQL\Login\Auth\TokenManager::class;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the auth token for a user.
+	 *
+	 * @param \WP_User $user The user object.
+	 * 
+	 * @throws \GraphQL\Error\UserError If the token cannot be retrieved.
+	 *
+	 * @return string|null
+	 */
+	public static function get_auth_token( \WP_User $user ) {
+		$auth_class = self::get_auth_class();
+
+		if ( ! $auth_class ) {
+			return null;
+		}
+
+		/**
+		 * This method is typed wrong upstream.
+		 *
+		 * @var \WP_Error|string|null $token
+		 */
+		$token = $auth_class::get_token( $user );
+
+		if ( is_wp_error( $token ) ) {
+			throw new UserError( $token->get_error_message() );
+		}
+
+		return $token;
+	}
+
+	/**
+	 * Get the refresh token for a user.
+	 *
+	 * @param \WP_User $user The user object.
+	 * 
+	 * @throws \GraphQL\Error\UserError If the token cannot be retrieved.
+	 *
+	 * @return string|null
+	 */
+	public static function get_refresh_token( \WP_User $user ) {
+		$auth_class = self::get_auth_class();
+
+		if ( ! $auth_class ) {
+			return null;
+		}
+
+		/**
+		 * This method is typed wrong upstream.
+		 *
+		 * @var \WP_Error|string|null $refresh_token
+		 */
+		$refresh_token = $auth_class::get_refresh_token( $user );
+
+		if ( is_wp_error( $refresh_token ) ) {
+			throw new UserError( $refresh_token->get_error_message() );
+		}
+
+		return $refresh_token;
+	}
+
+	/**
 	 * Register filters
 	 *
 	 * @return void
 	 */
 	public static function add_filters() {
 		// Confirm WPGraphQL JWT Authentication is installed.
-		if ( \class_exists( '\WPGraphQL\JWT_Authentication\Auth' ) ) {
+		$auth_class = self::get_auth_class();
+		if ( ! is_null( $auth_class ) ) {
 			add_filter( 'graphql_jwt_user_types', [ self::class, 'add_customer_to_jwt_user_types' ], 10 );
 			add_filter( 'graphql_registerCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
 			add_filter( 'graphql_updateCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
@@ -66,18 +142,7 @@ class JWT_Auth_Schema_Filters {
 							throw new UserError( __( 'User not found.', 'wp-graphql-woocommerce' ) );
 						}
 
-						/**
-						 * This method is typed wrong upstream.
-						 *
-						 * @var \WP_Error|string|null $token
-						 */
-						$token = \WPGraphQL\JWT_Authentication\Auth::get_token( $user );
-
-						if ( is_wp_error( $token ) ) {
-							throw new UserError( $token->get_error_message() );
-						}
-
-						return $token;
+						return self::get_auth_token( $user );
 					},
 				],
 				'refreshToken' => [
@@ -90,18 +155,7 @@ class JWT_Auth_Schema_Filters {
 							throw new UserError( __( 'User not found.', 'wp-graphql-woocommerce' ) );
 						}
 
-						/**
-						 * This method is typed wrong upstream.
-						 *
-						 * @var \WP_Error|string|null $refresh_token
-						 */
-						$refresh_token = \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user );
-
-						if ( is_wp_error( $refresh_token ) ) {
-							throw new UserError( $refresh_token->get_error_message() );
-						}
-
-						return $refresh_token;
+						return self::get_refresh_token( $user );
 					},
 				],
 			]
