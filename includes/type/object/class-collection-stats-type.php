@@ -331,7 +331,7 @@ class Collection_Stats_Type {
 			$category_ids = array_map(
 				static function ( $category ) {
 					$term = get_term_by( 'slug', $category, 'product_cat' );
-					if ( is_object( $term ) ) {
+					if ( $term && ! is_wp_error( $term ) ) {
 						return $term->term_id;
 					}
 					return 0;
