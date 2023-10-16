@@ -22,9 +22,9 @@ class JWT_Auth_Schema_Filters {
 	 * @return string|null
 	 */
 	public static function get_auth_class() {
-		if ( class_exists( '\WPGraphQL\JWT_Authentication\Auth' ) ) {
-			return '\WPGraphQL\JWT_Authentication\Auth';
-		} elseif ( class_exists( \WPGraphQL\Login\Main::class ) ) {
+		if ( class_exists( 'WPGraphQL\JWT_Authentication\Auth' ) ) {
+			return \WPGraphQL\JWT_Authentication\Auth::class;
+		} elseif ( class_exists( 'WPGraphQL\Login\Auth\TokenManager' ) ) {
 			return \WPGraphQL\Login\Auth\TokenManager::class;
 		} else {
 			return null;
@@ -46,13 +46,17 @@ class JWT_Auth_Schema_Filters {
 		if ( ! $auth_class ) {
 			return null;
 		}
-
 		/**
-		 * This method is typed wrong upstream.
-		 *
-		 * @var \WP_Error|string|null $token
-		 */
-		$token = $auth_class::get_token( $user );
+		* This method is typed wrong upstream.
+		*
+		* @var \WP_Error|string|null $token
+		*/
+		$token = null;
+		if ( 'WPGraphQL\JWT_Authentication\Auth' === $auth_class ) {
+			$token = $auth_class::get_token( $user );
+		} elseif ( 'WPGraphQL\Login\Auth\TokenManager' === $auth_class ) {
+			$token = $auth_class::get_auth_token( $user );
+		}
 
 		if ( is_wp_error( $token ) ) {
 			throw new UserError( $token->get_error_message() );
