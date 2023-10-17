@@ -3,7 +3,7 @@
  * Plugin Name: WPGraphQL WooCommerce (WooGraphQL)
  * Plugin URI: https://github.com/wp-graphql/wp-graphql-woocommerce
  * Description: Adds Woocommerce Functionality to WPGraphQL schema.
- * Version: 0.18.1
+ * Version: 0.18.2
  * Author: kidunot89
  * Author URI: https://axistaylor.com
  * Text Domain: wp-graphql-woocommerce
@@ -14,6 +14,7 @@
  * WC tested up to: 8.1.1
  * WPGraphQL requires at least: 1.16.0+
  * WPGraphQL-JWT-Authentication requires at least: 0.7.0+
+ * WPGraphQL-Headless-Login requires at least: 0.1.4+
  *
  * @package     WPGraphQL\WooCommerce
  * @author      kidunot89

@@ -4,65 +4,78 @@
 
 # WPGraphQL WooCommerce (WooGraphQL)
 
-<a href="https://woographql.com" target="_blank">Website</a> • <a href="https://woographql.com/docs" target="_blank">Docs</a> • <a href="https://www.axistaylor.com" target="_blank">AxisTaylor</a> • <a href="https://join.slack.com/t/wp-graphql/shared_invite/zt-3vloo60z-PpJV2PFIwEathWDOxCTTLA" target="_blank">Join Slack</a>
+<a href="https://woographql.com" target="_blank">Website</a> • <a href="https://woographql.com/docs" target="_blank">Docs</a> • <a href="https://woographql.com/schema" target="_blank">Schema</a> • <a href="https://woographql.com/playground" target="_blank">Playground</a> • <a href="https://woographql.com/about" target="_blank">About</a> • <a href="https://join.slack.com/t/wp-graphql/shared_invite/zt-3vloo60z-PpJV2PFIwEathWDOxCTTLA" target="_blank">Join Slack</a>
 
 [![Automated-Testing](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Automated-Testing/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Automated-Testing%22) [![Coding-Standards](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Coding-Standards/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Coding-Standards%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
 
 ## Install
 
-### Installing manually
+### Installing Manually
 
-1. Install and activate [WPGraphQL](https://wpgraphql.com/) and [WooCommerce](https://woocommerce.com/)
-2. Download wp-graphql-woocommerce.zip file under the Assets section for the most stable [release](https://github.com/wp-graphql/wp-graphql-woocommerce/releases) from the repository into your WordPress plugin directory & activate the plugin.
-3. Set your GraphQL client endpoint to the GraphQL endpoint of your site. Typically, this is your-store.domain/graphql.
+1. Install and activate [WPGraphQL](https://wpgraphql.com/) and [WooCommerce](https://woocommerce.com/).
+2. Download the `wp-graphql-woocommerce.zip` file from the Assets section of the most stable [release](https://github.com/wp-graphql/wp-graphql-woocommerce/releases) and activate the plugin in your WordPress directory.
+3. Set your GraphQL client endpoint to your site's GraphQL endpoint. Typically, this is `your-store.domain/graphql`.
 
-### Installing w/ Composer
+### Installing with Composer
 
-_This is the recommend way for users using unique installations like WP Bedrock or SpinupWP._
+**This method is recommended for users with unique installations like WP Bedrock or SpinupWP.**
 
 1. Install [WordPress](https://composer.rarst.net/) and [WooCommerce](https://wpackagist.org/search?q=woocommerce&type=plugin&search=).
-2. Install WPGraphQL and WooGraphQL by running `composer require wp-graphql/wp-graphql wp-graphql/wp-graphql-woocommerce`
-3. Set your GraphQL client endpoint to the GraphQL endpoint of your site. Typically, this is `your-store.domain/graphql`. _NOTE: for typically Bedrock or SpinupWP setups it'll be `your-store.domain/wp/graphql` by default.
+2. Install WPGraphQL and WooGraphQL by running `composer require wp-graphql/wp-graphql wp-graphql/wp-graphql-woocommerce`.
+3. Set your GraphQL client endpoint to your site's GraphQL endpoint. For typical Bedrock or SpinupWP setups, the default will be `your-store.domain/wp/graphql`.
 
-### Optional extras
+### Optional Extras
 
-- Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to add a `login` mutation that returns a JSON Web Token.
-- Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) to add an extra layer of security using HTTP CORS and some of WPGraphQL advanced functionality.
+- Install & activate [WPGraphQL-JWT-Authentication](https://github.com/wp-graphql/wp-graphql-jwt-authentication) to introduce a `login` mutation that returns a JSON Web Token.
+- Install & activate [WPGraphQL Headless Login](https://github.com/AxeWP/wp-graphql-headless-login) to introduce a `login` mutation with OAuth2 client support. **Shouldn't be used with WPGraphQL-JWT-Authentication**
+- Install & activate [WPGraphQL-CORS](https://github.com/funkhaus/wp-graphql-cors) for enhanced security via HTTP CORS and to utilize some advanced WPGraphQL features.
 
-## What can you do with this extension?
+## What Can You Do with This Extension?
 
-- Query your shops products and variations with complex filtering options.
-- Query customers, orders, coupons, and refunds (*).
-- Manage a customer's session with JWTs and cart/customer queries and mutations(*).
-- Create orders manually (*), automatically with the checkout mutation, or pass a customer's session to the WooCommerce checkout page in your theme for complete payment gateway support (#).
+- Query your shop's products and variations with detailed filtering options.
+- Query customers, orders, coupons, and refunds. Note: Operations have user restrictions.
+- Manage customer sessions using JWTs, and use cart/customer queries and mutations. Note: Operations have user restrictions.
+- Manually create orders, automate order creation with the checkout mutation, or delegate a customer's session to the WooCommerce checkout page in your theme for comprehensive payment gateway support.
 
-(*) These operations have user restrictions. Please read up on authenticating an user with [here](https://www.wpgraphql.com/docs/authentication-and-authorization/), then view [this React/Apollo example](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/88) with the added on usage of customer session Token.
+(*) These operations have user restrictions. Learn how to utilize them correctly at the resources listed below:
 
-(#) This is the recommended method on checkout. You can read it's usage in [this](https://jacobarriola.com/post/hosted-woocommerce-checkout-headless-application#load-the-session-in-woocommerce) excellent write-up by @jacobarriola
+- [Authentication and Authorization](https://www.wpgraphql.com/docs/authentication-and-authorization/)
+- [Configuring a GraphQL Client for WooCommerce User Session Management](https://woographql.com/docs/configuring-graphql-client-for-user-session)
+- [Handling User Authentication](https://woographql.com/docs/handling-user-authentication)
+- [Handling User Session and Using Cart Mutations](https://woographql.com/docs/handling-user-session-and-using-cart-mutations)
+- [Using Checkout Mutation and Order Mutations](https://woographql.com/docs/using-checkout-mutation-and-order-mutations)
+- [Using Order Data](https://woographql.com/docs/using-order-data)
 
-## Why don't the WooCommerce CPT GraphQL types support all the same features as most WordPress CPTs that WPGraphQL exposes?
+(#) The recommended method to checkout, taking full advantage of WooCommerce's payment gateways for payment process and other checkout-related extenstions, is to pass the session back to the WordPress installation and let WooCommerce take over from the tradition checkout page. Learn more about this approach below.
 
-The CPTs as well as most of the data objects that WooCommerce defines are wrapped in a object managers distributed by a data store system.
+- [Harmonizing with WordPress](https://woographql.com/docs/harmonizing-with-wordpress)
+- [Hosted WooCommerce Checkout for a Headless Application](https://jacobarriola.com/post/hosted-woocommerce-checkout-headless-application)
 
-This data store system allows for each individual data object to be defined however needed. What this means is, although by out of the box objects like **products**, **orders**, and **coupons** are defined as WordPress CPTs they don't have to be.
+Alternatively, you can create a custom checkout form and process payments externally. Here is some resources for that as well.
 
-This is what also enables WooCommerce to store most meta connected to these CPTs in separate tables. The object data doesn't even have to be in the same database if the object's data store designed to manage somewhere else, but we are getting out of the scope of this question.
+- [Headless WooCommerce Checkout with Gatsby and Stripe](https://jacobarriola.com/post/headless-woocommerce-stripe-checkout-graphql#step-5-load-the-checkoutform-component-in-your-checkout-page)
 
-What does all this :point_up: have to do with WooCommerce's CPTs' functionality? Well, the object managers distributed by the data store are WooGraphQL first point of contact for pretty much everything. Unlike the most common CPTs which use a **WP_Post** object as their data source and a **WPGraphQL\Model\Post** object as their model, WooGraphQL uses object managers as the data source for the CPTs and each individual has it's own model with it's own set of permissions and restrictions.
+## Why Don't WooCommerce CPT GraphQL Types Support All the Features WPGraphQL Exposes for Most WordPress CPTs?
 
-This has led to some friction is certain areas of the schema where WooGraphQL support is lacking. I'm sorry for the inconvience, myself and whole **WPGraphQL** org are working to reduce this friction and WooGraphQL properly integrated with all **WPGraphQL** + **WPGraphQL ACF** features.
+WooCommerce's Custom Post Types (CPTs) and most data objects are managed by a data store system. This system allows for flexible data object definitions. While objects like **products**, **orders**, and **coupons** are defined as WordPress CPTs by default, they don't have to be.
 
-Thank you for your patience
-@kidunot89
+This flexibility also lets WooCommerce store metadata for these CPTs in separate tables, and the data doesn't necessarily have to reside in the same database.
+
+The data store system and its object managers are WooGraphQL's primary contact points. Unlike standard CPTs, which use a **WP_Post** object for data sourcing and a **WPGraphQL\Model\Post** object for modeling, WooGraphQL engages object managers for its data source. Each object type has a unique model with distinct permissions and restrictions.
+
+Such a setup has resulted in some disparities between the schema where WooGraphQL support might be lacking. We apologize for any inconvenience. Both I and the entire **WPGraphQL** team are actively working to harmonize WooGraphQL with all **WPGraphQL** and **WPGraphQL ACF** features.
+
+Thank you for your patience :smile:
+[@kidunot89](https://github.com/kidunot89)
 
 ## Future Features
 
 - Product CRUD mutations.
-- And some other stuff I'm sure :thinking_face:
+- And some other stuff I'm sure :thinking:
 
 ## For WooCommerce Extensions Support
 
-WooGraphQL Pro is an advanced version of WooGraphQL that provides compatibility with a variety of popular WooCommerce extensions. This compatibility empowers you to leverage these extensions within the context of the GraphQL API, thereby enabling you to build more dynamic and powerful headless eCommerce applications.
+**[WooGraphQL Pro](https://woographql.com/pro)** is an extension of WPGraphQL WooCommerce that provides compatibility with a variety of popular WooCommerce extensions. This compatibility empowers you to leverage these extensions within the context of the GraphQL API, thereby enabling you to build more dynamic and powerful headless eCommerce applications.
 
 The following WooCommerce extensions are supported by WooGraphQL Pro:
 
@@ -82,7 +95,7 @@ If you wish to use any of the supported WooCommerce extensions with WooGraphQL P
 
 ### Installing and Activating WooGraphQL Pro
 
-To install and activate WooGraphQL Pro, follow these steps:
+To install and activate **WooGraphQL Pro**, follow these steps:
 
 1. Purchase WooGraphQL Pro from our official [website](https://woographql.com/pro).
 2. After purchase you should find yourself on your account dashboard. Go to the `Licenses` page and generate and new license and copy it for later.
@@ -102,15 +115,35 @@ Note: The 'Enable Unsupported Product Type' option can be found on the same sett
 
 With WooGraphQL Pro and your chosen extensions now installed, you're ready to build more sophisticated, feature-rich eCommerce solutions with WordPress and WooCommerce.
 
-## Playground
+## Development Tools
+
+### Playground
 
 Feel free to test out the extension using this [GraphiQL Playground](https://woographql.com/playground). The playground allows you to execute queries and mutations, as well as view the schema (*).
 
 (*) I have a tendency to forget to update the playground between releases :sweat_smile:, so if you believe this to be the case look me up somewhere on this page and lemme know :man_shrugging:
 
+### `create-woonext-app` CLI and `@woographql` packages
+
+Designed to both streamline development for individuals and teams looking to utilize WooCommerce + WooCommerce extensions in larger project and not waste too much to much time on the particulars of WooGraphQL like session management or checkout, the **[`create-woonext-app`](https://www.npmjs.com/package/create-woonext-app)** CLI generates a pre-created e-commerce application on [Next.js](https://nextjs.org) application tailored to the developer/team.
+
+```bash
+npx create-woonext-app <license> [options]
+```
+
+The generated application utilizes the **[`@woographql`](https://yeetsquad.net)** packages exclusive to the unlimited/annual subscribers of WooGraphQL Pro. So Go [Subscribe!](https://woographql.com/pro#pricing) :smile:. Below are more resources on the `create-woonext-app` CLI and `@woographql` packages.
+
+- [`create-woonext-app` Homepage](https://woographql.com/create-woonext-app)
+- [`create-woonext-app` on NPM](https://www.npmjs.com/package/create-woonext-app): The `create-woonext-app` README with more CLI usage instructions.
+- [`create-woonext-app` Live Demo](https://woonext.woographql.com/): fully decked out putting all current possible functionalities of the `create-woonext-app` on full display.
+- [`@woographql/next` README](https://yeetsquad.net/-/web/detail/@woographql/next): A Template generator CLI. Capable of generator a multitude of Next.js pages, Next.js Route Handlers, react components, react hooks, and utilities. It's also equipped to generate react component and hook stubs for speedy component create with no boilerplate.
+- [`@woographql/react-hooks` README](https://yeetsquad.net/-/web/detail/@woographql/react-hooks): React hook library acting as the backbone for UI connected to session, cart, and customer.
+- [`@woographql/session-utils` README](https://yeetsquad.net/-/web/detail/@woographql/session-utils): Provides utilities for managing the WPGraphQL + WooGraphQL session tokens like a `TokenManager`, also provides interfaces and types for easy customization of said `TokenManager` or the complete creation of a custom `TokenManager` with minimal effort. The bundled TokenManager implemented utilizes browser storage _(Local/Session storage)_, so if you'd prefer something like [Iron Session](https://github.com/vvo/iron-session) this might be the route for you.
+- [`@woographql/codegen` README](https://yeetsquad.net/-/web/detail/@woographql/codegen): A convenient wrapper for GraphQL Codegen providing a few configurations out of the box, with the ability to override the default configuration by creating a `codegen.ts` in the project root.
+
 ## Wanna help support WooGraphQL's future
 
-- Sponsor **@kidunot89** *(WooGraphQL Creator/Developer)* on **[Github](https://github.com/sponsors/kidunot89)**
+- Sponsor **@kidunot89** _(WooGraphQL Creator/Developer)_ on **[Github](https://github.com/sponsors/kidunot89)**
 - Sponsor **WooGraphQL** on **[OpenCollective](https://opencollective.com/woographql)**
 - Sponsor **WPGraphQL** on **[OpenCollective](http://opencollective.com/wp-graphql)**
 - Sponsor **GraphQL-PHP** on **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
@@ -121,11 +154,16 @@ Feel free to test out the extension using this [GraphiQL Playground](https://woo
 ## Demo/Examples
 
 - Examples with Next.js
+  - [WooGraphQL Demo](https://github.com/kidunot89/woographql-demo)
   - [Next.js WooCommerce Theme](https://github.com/imranhsayed/woo-next) [[source]](https://github.com/imranhsayed/woo-next) [[demo video]](https://youtu.be/EGjY3X868YQ)
 - Examples with Gatsby
   - [Gatsby WooCommerce Theme](https://gatsby-woocommerce-theme.netlify.app/) [[source]](https://github.com/imranhsayed/gatsby-woocommerce-themes) [[demo video]](https://youtu.be/ygaE8ZdPEX8)
 
 ## Who using WooGraphQL
+
+| <img src="https://www.rockymountainsewing.com/static/759d14c25bfb3243245711ce9be6600c/logo.svg" alt="Rocky Mountain Sewing & Vacuum" width="320"/> | <img src="https://russemerket.no/src/logos/Russemerket_black.svg" alt="Russemerket" width="320"/> | <img src="https://wohnparc.de/_next_public/wopa-icons/logo.svg" alt="wohnparc.de" width="320"/> |
+|:---------------------------------------:|:---------------------------------------:|:---------------------------------------:|
+| [Rocky Mountain Sewing & Vacuum](https://www.rockymountainsewing.com/)                     | [Russemerket](https://russemerket.no/)                     | [wohnparc.de](https://wohnparc.de/shop/)                     |
 
 ## Contributors
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.18.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.18.2) (2023-10-17)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.1...v0.18.2)
+
+**New Features:**
+
+- fix: JWT Auth hooks now support WPGraphQL Headless Login [\#812](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/812) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.18.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.18.1) (2023-10-05)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.0...v0.18.1)
