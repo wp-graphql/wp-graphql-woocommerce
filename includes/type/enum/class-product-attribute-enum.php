@@ -32,6 +32,10 @@ class Product_Attribute_Enum {
 			}
 		}
 
+		if ( empty( $taxonomy_values ) ) {
+			return;
+		}
+
 		register_graphql_enum_type(
 			'ProductAttributeEnum',
 			[
