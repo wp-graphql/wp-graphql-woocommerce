@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.18.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.18.3) (2023-11-01)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.2...v0.18.3)
+
+**Fixed:**
+
+- fix: ProductAttributeEnum given default value, if no product attributes exist [\#814](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/814) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.18.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.18.2) (2023-10-17)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.1...v0.18.2)
