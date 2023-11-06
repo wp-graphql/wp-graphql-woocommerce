@@ -143,28 +143,26 @@ class Protected_Router {
 		$is_auth_request = false;
 		if ( isset( $_GET[ self::$route ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$is_auth_request = true;
-		} else {
+		} elseif ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
 			// Check the server to determine if the auth endpoint is being requested.
-			if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
-				$host = wp_unslash( $_SERVER['HTTP_HOST'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$uri  = wp_unslash( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$host = wp_unslash( $_SERVER['HTTP_HOST'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$uri  = wp_unslash( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-				if ( ! is_string( $host ) ) {
-					return false;
-				}
+			if ( ! is_string( $host ) ) {
+				return false;
+			}
 
-				if ( ! is_string( $uri ) ) {
-					return false;
-				}
+			if ( ! is_string( $uri ) ) {
+				return false;
+			}
 
-				$parsed_site_url    = wp_parse_url( site_url( self::$route ), PHP_URL_PATH );
-				$auth_url           = ! empty( $parsed_site_url ) ? wp_unslash( $parsed_site_url ) : self::$route;
-				$parsed_request_url = wp_parse_url( $uri, PHP_URL_PATH );
-				$request_url        = ! empty( $parsed_request_url ) ? wp_unslash( $parsed_request_url ) : '';
+			$parsed_site_url    = wp_parse_url( site_url( self::$route ), PHP_URL_PATH );
+			$auth_url           = ! empty( $parsed_site_url ) ? wp_unslash( $parsed_site_url ) : self::$route;
+			$parsed_request_url = wp_parse_url( $uri, PHP_URL_PATH );
+			$request_url        = ! empty( $parsed_request_url ) ? wp_unslash( $parsed_request_url ) : '';
 
-				// Determine if the route is indeed a download request.
-				$is_auth_request = false !== strpos( $request_url, $auth_url );
-			}//end if
+			// Determine if the route is indeed a download request.
+			$is_auth_request = false !== strpos( $request_url, $auth_url );
 		}//end if
 
 		/**
