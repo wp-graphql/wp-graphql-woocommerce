@@ -194,7 +194,7 @@ class JWT_Auth_Schema_Filters {
 				[
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function ( $payload ) {
+					'resolve'     => static function () {
 						/**
 						 * Session Handler.
 						 *

@@ -59,7 +59,7 @@ class Update_Session {
 		return [
 			'session'  => [
 				'type'    => [ 'list_of' => 'MetaData' ],
-				'resolve' => static function ( $payload ) {
+				'resolve' => static function () {
 					/**
 					 * Session handler.
 					 *
