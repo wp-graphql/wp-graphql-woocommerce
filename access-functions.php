@@ -195,13 +195,13 @@ if ( ! function_exists( 'wc_graphql_underscore_to_camel_case' ) ) {
 	/**
 	 * Converts a camel case formatted string to a underscore formatted string.
 	 *
-	 * @param string  $string      String to be formatted.
+	 * @param string  $str         String to be formatted.
 	 * @param boolean $capitalize  Capitalize first letter of string.
 	 *
 	 * @return string
 	 */
-	function wc_graphql_underscore_to_camel_case( $string, $capitalize = false ) {
-		$str = str_replace( ' ', '', ucwords( str_replace( '-', ' ', $string ) ) );
+	function wc_graphql_underscore_to_camel_case( $str, $capitalize = false ) {
+		$str = str_replace( ' ', '', ucwords( str_replace( '-', ' ', $str ) ) );
 
 		if ( ! $capitalize ) {
 			$str[0] = strtolower( $str[0] );
@@ -215,14 +215,14 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 	/**
 	 * Converts a camel case formatted string to a underscore formatted string.
 	 *
-	 * @param string $string  String to be formatted.
+	 * @param string $str String to be formatted.
 	 *
 	 * @return string
 	 */
-	function wc_graphql_camel_case_to_underscore( $string ) {
+	function wc_graphql_camel_case_to_underscore( $str ) {
 		preg_match_all(
 			'!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!',
-			$string,
+			$str,
 			$matches
 		);
 
@@ -240,13 +240,13 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 	/**
 	 * Get an option value from WooGraphQL settings
 	 *
-	 * @param string $option_name  The key of the option to return.
-	 * @param mixed  $default      The default value the setting should return if no value is set.
-	 * @param string $section_name The settings section name.
+	 * @param string $option_name   The key of the option to return.
+	 * @param mixed  $default_value The default value the setting should return if no value is set.
+	 * @param string $section_name  The settings section name.
 	 *
 	 * @return mixed|string|int|boolean
 	 */
-	function woographql_setting( string $option_name, $default = '', $section_name = 'woographql_settings' ) {
+	function woographql_setting( string $option_name, $default_value = '', $section_name = 'woographql_settings' ) {
 		$section_fields = get_option( $section_name );
 
 		/**
@@ -256,27 +256,27 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 		 * @param string $section_name   The name of the section
 		 * @param mixed  $default        The default value for the option being retrieved
 		 */
-		$section_fields = apply_filters( 'woographql_settings_section_fields', $section_fields, $section_name, $default );
+		$section_fields = apply_filters( 'woographql_settings_section_fields', $section_fields, $section_name, $default_value );
 
 		/**
 		 * Get the value from the stored data, or return the default
 		 */
-		if ( is_array( $default ) ) {
-			$value = is_array( $section_fields ) && ! empty( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+		if ( is_array( $default_value ) ) {
+			$value = is_array( $section_fields ) && ! empty( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default_value;
 		} else {
-			$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default;
+			$value = isset( $section_fields[ $option_name ] ) ? $section_fields[ $option_name ] : $default_value;
 		}
 
 		/**
 		 * Filter the value before returning it
 		 *
 		 * @param mixed  $value          The value of the field
-		 * @param mixed  $default        The default value if there is no value set
+		 * @param mixed  $default_value  The default value if there is no value set
 		 * @param string $option_name    The name of the option
 		 * @param array  $section_fields The setting values within the section
 		 * @param string $section_name   The name of the section the setting belongs to
 		 */
-		return apply_filters( 'woographql_settings_section_field_value', $value, $default, $option_name, $section_fields, $section_name );
+		return apply_filters( 'woographql_settings_section_field_value', $value, $default_value, $option_name, $section_fields, $section_name );
 	}
 endif;
 
