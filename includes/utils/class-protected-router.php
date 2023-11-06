@@ -408,4 +408,3 @@ class Protected_Router {
 		exit;
 	}
 }
-

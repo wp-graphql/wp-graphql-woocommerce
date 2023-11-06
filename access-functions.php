@@ -379,14 +379,3 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 		return false;
 	}
 endif;
-
-
-
-
-
-
-
-
-
-
-
