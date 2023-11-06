@@ -386,7 +386,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 								return;
 							}
 
-							echo sprintf(
+							printf(
 								'<div class="notice notice-error">' .
 								'<p>%s</p>' .
 								'</div>',
