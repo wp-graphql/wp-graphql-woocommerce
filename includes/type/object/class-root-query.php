@@ -11,7 +11,6 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
 use Automattic\WooCommerce\StoreApi\Utilities\ProductQueryFilters;
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
@@ -61,7 +60,7 @@ class Root_Query {
 						],
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function ( $source, array $args, AppContext $context ) {
+					'resolve'     => static function ( $source, array $args ) {
 						$item = Factory::resolve_cart()->get_cart_item( $args['key'] );
 						if ( empty( $item ) || empty( $item['key'] ) ) {
 							throw new UserError( __( 'Failed to retrieve cart item.', 'wp-graphql-woocommerce' ) );
@@ -678,7 +677,7 @@ class Root_Query {
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'           => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $type_key, $unsupported_type_enabled ) {
+					'resolve'           => static function ( $source, array $args, AppContext $context ) use ( $type_key, $unsupported_type_enabled ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 

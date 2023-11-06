@@ -106,7 +106,7 @@ class Review_Delete_Restore {
 			'review'     => [
 				'type'        => 'Comment',
 				'description' => __( 'The affected product review', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function ( $payload, $args, AppContext $context, ResolveInfo $info ) use ( $restore ) {
+				'resolve'     => static function ( $payload, $args, AppContext $context ) use ( $restore ) {
 					if ( empty( $payload['commentObject'] ) ) {
 						return null;
 					}
