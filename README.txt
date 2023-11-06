@@ -1,11 +1,11 @@
 === WPGraphQL WooCommerce ===
 Contributors: kidunot89, ranaaterning, jasonbahl, saleebm
 Tags: GraphQL, WooCommerce, WPGraphQL
-Requires at least: 5.9
+Requires at least: 6.1
 Tested up to: 6.2
-Requires PHP: 7.2
+Requires PHP: 7.3
 Requires WooCommerce: 7.9.0
-Requires WPGraphQL: 1.14.0+
+Requires WPGraphQL: 1.16.0+
 Works with WPGraphQL-JWT-Authentication: 0.7.0+
 Stable tag: 0.18.3
 License: GPL-3
