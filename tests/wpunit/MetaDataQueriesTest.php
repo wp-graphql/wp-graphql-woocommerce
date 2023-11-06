@@ -1,9 +1,7 @@
 <?php
 
-use GraphQLRelay\Relay;
 
 class MetaDataQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	// tests
 	public function testCartMetaDataQueries() {
 		// Create Variation Product.

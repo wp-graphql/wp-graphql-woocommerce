@@ -3,9 +3,9 @@
  * Unit test for QL_Session_Handler
  */
 
+use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
-use WPGraphQL\WooCommerce\Utils\QL_Session_Handler;
 
 if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
 	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'graphql-woo-cart-session' );

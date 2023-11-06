@@ -10,12 +10,10 @@ $I->click( '#submit' );
 $I->logOut();
 
 // Make quick helper for managing the session token.
-$request_headers = function () use ( $I, &$last_request_headers ) {
-	$last_request_headers = [
+$request_headers = static function () use ( $I ) {
+	return [
 		'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
 	];
-
-	return $last_request_headers;
 };
 
 // Begin test.
@@ -83,7 +81,7 @@ $cart_url = $success['data']['updateSession']['customer']['cartUrl'];
 
 $I->wantTo( 'Go cart page and confirm empty and session not seen' );
 $I->amOnPage( '/cart' );
-$I->seeElement('.wc-empty-cart-message');
+$I->seeElement( '.wc-empty-cart-message' );
 
 $I->wantTo( 'Authenticate with cart url and confirm page redirect' );
 $I->stopFollowingRedirects();

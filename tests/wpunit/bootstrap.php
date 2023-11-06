@@ -4,7 +4,6 @@ use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableControlle
 use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
-use Automattic\WooCommerce\Utilities\OrderUtil;
 
 /**
  * Remove the "extensions" payload from GraphQL results
@@ -12,7 +11,7 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
  */
 add_filter(
 	'graphql_request_results',
-	function( $response ) {
+	static function ( $response ) {
 		unset( $response['extensions'] );
 
 		return $response;

@@ -4,7 +4,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	public function expectedTaxRateData( $rate_id ) {
 		$rate = $this->factory->tax_rate->get_object_by_id( $rate_id );
 
-		$expected = [
+		return [
 			$this->expectedField( 'taxRate.id', $this->toRelayId( 'tax_rate', $rate_id ) ),
 			$this->expectedField( 'taxRate.databaseId', absint( $rate->tax_rate_id ) ),
 			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : self::IS_NULL ),
@@ -24,8 +24,6 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					: 'STANDARD'
 			),
 		];
-
-		return $expected;
 	}
 
 	// tests
@@ -128,7 +126,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $id ) {
+			function ( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
 					[
@@ -149,7 +147,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$reduced_tax_rates = array_values(
 			array_filter(
 				$rates,
-				function( $id ) {
+				function ( $id ) {
 					$rate = $this->factory->tax_rate->get_object_by_id( $id );
 					return 'reduced-rate' === $rate->tax_rate_class;
 				}
@@ -158,7 +156,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$variables         = [ 'class' => 'REDUCED_RATE' ];
 		$response          = $this->graphql( compact( 'query', 'variables' ) );
 		$expected          = array_map(
-			function( $id ) {
+			function ( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
 					[

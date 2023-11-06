@@ -99,7 +99,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 				'image_id'      => null,
 				'regular_price' => 10,
 			]
-		);	
+		);  
 		$other_product_id_2 = $this->factory->product->createSimple();
 		$this->clearSchema();
 
@@ -150,16 +150,16 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$variables = [ 'size' => 'small' ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $id ) {
+			function ( $id ) {
 				return $this->expectedField( 'allPaSize.nodes.0.variations.nodes.#.id', $this->toRelayId( 'product_variation', $id ) );
 			},
 			array_filter(
 				$variation_ids,
-				function( $id ) {
+				static function ( $id ) {
 					$variation       = new \WC_Product_Variation( $id );
 					$small_attribute = array_filter(
 						$variation->get_attributes(),
-						function( $attribute ) {
+						static function ( $attribute ) {
 							return 'small' === $attribute;
 						}
 					);

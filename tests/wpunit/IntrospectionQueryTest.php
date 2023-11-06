@@ -1,7 +1,6 @@
 <?php
 
 class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();

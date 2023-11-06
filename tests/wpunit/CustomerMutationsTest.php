@@ -5,7 +5,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 	/**
 	 * Faker instance.
 	 *
-	 * @var Faker\Factory
+	 * @var \Faker\Factory
 	 */
 	private $faker;
 
@@ -36,7 +36,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$username   = $this->faker->userName();
 		$password   = $this->faker->password();
 		$email      = $this->faker->email();
-		$phone	    = $this->faker->phoneNumber();
+		$phone      = $this->faker->phoneNumber();
 		$address    = $this->faker->streetAddress();
 		$city       = $this->faker->city();
 		$state      = $this->faker->state();
@@ -84,7 +84,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'state'     => null,
 			'postcode'  => null,
 			'country'   => null,
-			'phone'		=> null,
+			'phone'     => null,
 		];
 	}
 
@@ -100,7 +100,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'postcode'  => null,
 			'country'   => null,
 			'email'     => null,
-			'phone'		=> null,
+			'phone'     => null,
 		];
 	}
 
@@ -151,9 +151,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		';
 
 		$variables = [ 'input' => $input ];
-		$response  = $this->graphql( compact( 'query', 'variables' ) );
-
-		return $response;
+		return $this->graphql( compact( 'query', 'variables' ) );
 	}
 
 	private function executeUpdateCustomerMutation( $input ) {
@@ -197,9 +195,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		';
 
 		$variables = [ 'input' => $input ];
-		$response  = $this->graphql( compact( 'query', 'variables' ) );
-
-		return $response;
+		return $this->graphql( compact( 'query', 'variables' ) );
 	}
 
 	public function testRegisterMutationWithoutCustomerInfo() {
@@ -418,7 +414,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		 */
 		$customer_input = $this->generateCustomerInput();
 		unset( $customer_input['username'] );
-		$response       = $this->executeUpdateCustomerMutation(
+		$response = $this->executeUpdateCustomerMutation(
 			array_merge(
 				$customer_input,
 				[
@@ -485,7 +481,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		\WC()->initialize_session();
 		$customer_input = $this->generateCustomerInput();
 		unset( $customer_input['username'] );
-		$response       = $this->executeUpdateCustomerMutation( $customer_input );
+		$response = $this->executeUpdateCustomerMutation( $customer_input );
 
 		$expected = [
 			$this->expectedObject(
@@ -661,7 +657,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		 *
 		 * Test "metaData" input field with "updateCustomer" mutation.
 		 */
-		$query     = '
+		$query = '
 			mutation( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					customer {
@@ -715,7 +711,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		 *
 		 * Test "metaData" input field with "updateCustomer" mutation on the session user.
 		 */
-		$query     = '
+		$query = '
 			mutation( $input: UpdateCustomerInput! ) {
 				updateCustomer( input: $input ) {
 					customer {

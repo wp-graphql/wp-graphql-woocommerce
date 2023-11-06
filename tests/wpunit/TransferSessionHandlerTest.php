@@ -1,12 +1,12 @@
 <?php
 
-use function WPGraphQL\WooCommerce\get_includes_directory;
 use WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler;
+use function WPGraphQL\WooCommerce\get_includes_directory;
 class TransferSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	/**
 	 * Session handler instance.
 	 *
-	 * @var Transfer_Session_Handler
+	 * @var \WPGraphQL\WooCommerce\Utils\Transfer_Session_Handler
 	 */
 	private $session;
 

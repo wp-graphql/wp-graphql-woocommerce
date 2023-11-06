@@ -50,10 +50,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -93,10 +90,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -130,10 +124,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -172,10 +163,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -213,10 +201,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -258,10 +243,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -289,10 +271,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -332,10 +311,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -373,10 +349,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -413,10 +386,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -595,10 +565,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -742,12 +709,12 @@ class GraphQLE2E extends \Codeception\Module {
 	/**
 	 * Initializes store options and actions
 	 *
-	 * @param AcceptanceTester $I
+	 * @param \Helper\AcceptanceTester $I
 	 * @return void
 	 */
 	public function _setupStore() {
 		$wpdb = $this->getModule( 'WPDb' );
-		$wpdb->useTheme('twentytwentyone');
+		$wpdb->useTheme( 'twentytwentyone' );
 		// Turn on tax calculations and store shipping countries. Important!
 		update_option( 'woocommerce_ship_to_countries', 'all' );
 		update_option( 'woocommerce_prices_include_tax', 'no' );
@@ -769,7 +736,7 @@ class GraphQLE2E extends \Codeception\Module {
 		// Additional cart fees.
 		add_action(
 			'woocommerce_cart_calculate_fees',
-			function() {
+			static function () {
 				$percentage = 0.01;
 				$surcharge  = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;
 				\WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
@@ -814,11 +781,11 @@ class GraphQLE2E extends \Codeception\Module {
 	/**
 	 * Adds Product in database
 	 *
-	 * @param AcceptanceTester $I
-	 * @param array            $args        Product args.
-	 * @param integer          $product_id  ID for product being created.
-	 * @param string           $term        Product type. Defaults to 'simple'.
-	 * @param integer          $term_id     Product type term ID.
+	 * @param \Helper\AcceptanceTester $I
+	 * @param array                    $args        Product args.
+	 * @param integer                  $product_id  ID for product being created.
+	 * @param string                   $term        Product type. Defaults to 'simple'.
+	 * @param integer                  $term_id     Product type term ID.
 	 * @return void
 	 */
 	public function haveAProductInTheDatabase( $args, &$product_id, $term = 'simple', &$term_id = 0 ) {
@@ -886,7 +853,6 @@ class GraphQLE2E extends \Codeception\Module {
 		);
 		$wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
 	}
-
 
 	public function setupStoreAndUsers() {
 		$this->_setupStore();

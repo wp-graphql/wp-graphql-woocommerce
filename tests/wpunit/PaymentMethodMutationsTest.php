@@ -1,7 +1,6 @@
 <?php
 
 class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	// Tests
 	public function testSetDefaultPaymentMethodMutation() {
 		// Create customer.

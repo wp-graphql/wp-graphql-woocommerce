@@ -1,7 +1,6 @@
 <?php
 
 class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function expectedAttributes( $id ) {
 		$product    = wc_get_product( $id );
 		$attributes = 'variable' === $product->get_type()
@@ -37,6 +36,7 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
 		return $expected;
 	}
+
 	public function expectedDefaultAttributes( $id ) {
 		$product    = wc_get_product( $id );
 		$attributes = $product->get_attributes();
@@ -164,7 +164,7 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 			],
 		];
 		$attributes     = array_map(
-			function( $data, $index ) {
+			static function ( $data, $index ) {
 				\codecept_debug( $data );
 				$attribute = new \WC_Product_Attribute();
 				$attribute->set_id( $data['attribute_id'] );
@@ -222,5 +222,4 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
-
 }

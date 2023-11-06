@@ -1,6 +1,5 @@
 <?php
 class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function getExpectedProductData( $product_id ) {
 		$product         = \wc_get_product( $product_id );
 		$is_shop_manager = false;
@@ -519,7 +518,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		';
 
 		$all_expected_product_nodes = array_map(
-			function( $product_id ) {
+			function ( $product_id ) {
 				return $this->expectedNode(
 					'products.nodes',
 					[ 'id' => $this->toRelayId( 'product', $product_id ) ]
@@ -546,7 +545,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids ) {
+			static function ( $node, $index ) use ( $product_ids ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return 'test-product-1' === $product->get_slug();
 			},
@@ -578,7 +577,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids ) {
+			static function ( $node, $index ) use ( $product_ids ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return 'simple' === $product->get_type();
 			},
@@ -609,7 +608,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids ) {
+			static function ( $node, $index ) use ( $product_ids ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return 'simple' !== $product->get_type();
 			},
@@ -628,7 +627,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids ) {
+			static function ( $node, $index ) use ( $product_ids ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return $product->get_featured();
 			},
@@ -647,7 +646,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids ) {
+			static function ( $node, $index ) use ( $product_ids ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return 10.00 >= floatval( $product->get_price() );
 			},
@@ -697,7 +696,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids, $category_3 ) {
+			static function ( $node, $index ) use ( $product_ids, $category_3 ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return in_array( $category_3, $product->get_category_ids(), true );
 			},
@@ -742,7 +741,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids, $category_4 ) {
+			static function ( $node, $index ) use ( $product_ids, $category_4 ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return ! in_array( $category_4, $product->get_category_ids(), true );
 			},
@@ -773,7 +772,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids, $category_4 ) {
+			static function ( $node, $index ) use ( $product_ids, $category_4 ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return in_array( $category_4, $product->get_category_ids(), true );
 			},
@@ -806,7 +805,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
-			function( $node, $index ) use ( $product_ids, $category_4, $category_3 ) {
+			static function ( $node, $index ) use ( $product_ids, $category_4, $category_3 ) {
 				$product = \wc_get_product( $product_ids[ $index ] );
 				return ! in_array( $category_4, $product->get_category_ids(), true )
 					&& in_array( $category_3, $product->get_category_ids(), true );

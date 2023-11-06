@@ -395,5 +395,4 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testQueryProductWithNodeByUri() {
 	}
-
 }

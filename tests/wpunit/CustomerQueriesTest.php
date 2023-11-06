@@ -1,7 +1,6 @@
 <?php
 
 class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function expectedCustomerData( $id ) {
 		$customer = new \WC_Customer( $id );
 		$customer->read_meta_data( true );
@@ -618,7 +617,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		// Reinitialize WC session with QL_Session_Handler set.
 		add_filter(
 			'woocommerce_session_handler',
-			function( $session_class ) {
+			static function ( $session_class ) {
 				return '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
 			}
 		);

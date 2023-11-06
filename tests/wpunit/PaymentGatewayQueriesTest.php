@@ -1,7 +1,6 @@
 <?php
 
 class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -156,5 +155,4 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
-
 }

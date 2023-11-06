@@ -1,6 +1,5 @@
 <?php
 
-use WPGraphQL\Type\WPEnumType;
 
 class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function setUp(): void {
@@ -63,7 +62,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		// Additional cart fees.
 		add_action(
 			'woocommerce_cart_calculate_fees',
-			function() {
+			static function () {
 				$percentage = 0.01;
 				$surcharge  = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;
 				WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );

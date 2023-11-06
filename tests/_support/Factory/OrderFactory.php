@@ -8,8 +8,6 @@
 
 namespace Tests\WPGraphQL\WooCommerce\Factory;
 
-use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
-
 /**
  * Order factory class for testing.
  */
@@ -135,7 +133,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 			// Save and return ID.
 			return $order->save();
-		} catch ( \Exception $e ) {
+		} catch ( \Throwable $e ) {
 			$order->delete( true );
 
 			throw new \Exception( $e->getMessage() );

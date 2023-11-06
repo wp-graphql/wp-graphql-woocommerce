@@ -3,11 +3,10 @@
 use WPGraphQL\Type\WPEnumType;
 
 class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function expectedOrderData( $order_id ) {
 		$order = \wc_get_order( $order_id );
 
-		$expected = [
+		return [
 			$this->expectedObject(
 				'order',
 				[
@@ -91,8 +90,6 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 				]
 			),
 		];
-
-		return $expected;
 	}
 
 	// tests
@@ -284,7 +281,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$orders   = [
 			$this->factory->order->createNew(
 				[
-					'billing_email' => 'test@example.com'
+					'billing_email' => 'test@example.com',
 				],
 				[
 					'line_items' => [

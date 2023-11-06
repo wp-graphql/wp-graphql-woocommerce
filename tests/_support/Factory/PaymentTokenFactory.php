@@ -8,13 +8,10 @@
 
 namespace Tests\WPGraphQL\WooCommerce\Factory;
 
-use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
-
 /**
  * Cart factory class for testing.
  */
 class PaymentTokenFactory {
-
 	/**
 	 * Create a new credit card payment token
 	 *
