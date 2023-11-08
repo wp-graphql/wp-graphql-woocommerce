@@ -4,10 +4,12 @@ $I = new AcceptanceTester( $scenario );
 $product_catalog = $I->getCatalog();
 
 // Make quick helper for managing the session token.
-$request_headers = static function () use ( $I ) {
-	return [
+$request_headers = function () use ( $I, &$last_request_headers ) {
+	$last_request_headers = [
 		'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
 	];
+
+	return $last_request_headers;
 };
 
 // Begin test.
