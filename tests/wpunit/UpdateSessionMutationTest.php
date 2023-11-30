@@ -1,7 +1,6 @@
 <?php
 
 class UpdateSessionMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function testUpdateSessionMutation() {
 		// Create registered customer.
 		$registered = $this->factory->customer->create();

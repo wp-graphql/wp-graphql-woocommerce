@@ -17,17 +17,17 @@ final class Dummy {
 	/**
 	 * Stores the instance of the Dummy class
 	 *
-	 * @var Dummy The one true dummy =P
+	 * @var \Tests\WPGraphQL\WooCommerce\Utils\Dummy The one true dummy =P
 	 */
 	private static $instance;
 
 	/**
 	 * Returns the dummy =P.
 	 *
-	 * @return Dummy
+	 * @return \Tests\WPGraphQL\WooCommerce\Utils\Dummy
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+		if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, self::class ) ) ) {
 			self::$instance = new self();
 		}
 

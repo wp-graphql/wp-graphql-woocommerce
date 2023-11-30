@@ -11,8 +11,6 @@
 namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
 
@@ -59,7 +57,7 @@ class Update_Session {
 		return [
 			'session'  => [
 				'type'    => [ 'list_of' => 'MetaData' ],
-				'resolve' => static function ( $payload ) {
+				'resolve' => static function () {
 					/**
 					 * Session handler.
 					 *
@@ -94,7 +92,7 @@ class Update_Session {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input ) {
 			Cart_Mutation::check_session_token();
 
 			// Guard against missing input.

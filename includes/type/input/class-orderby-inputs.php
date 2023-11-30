@@ -56,4 +56,3 @@ class Orderby_Inputs {
 		}
 	}
 }
-

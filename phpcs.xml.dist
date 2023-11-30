@@ -39,13 +39,13 @@
 		Tests for PHP version compatibility.
 		https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#Recomended-additional-rulesets
 	-->
-	<config name="testVersion" value="7.2-"/>
+	<config name="testVersion" value="7.3-"/>
 
 	<!--
 		Tests for WordPress version compatibility.
 		https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
 	-->
-	<config name="minimum_supported_wp_version" value="5.9"/>
+	<config name="minimum_wp_version" value="6.1"/>
 
 	<!-- Rules: WPGraphQL Coding Standards -->
 	<!-- https://github.com/AxeWP/WPGraphQL-Coding-Standards/WPGraphQL/ruleset.xml -->
@@ -55,10 +55,13 @@
 		<exclude name="WordPressVIPMinimum.Files.IncludingFile.UsingVariable" />
 
 		<!-- @todo add and remediate -->
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed" />
 		<exclude name="SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable" />
+		<exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped" />
 		<!-- @todo review and allowlist -->
-		<exclude name="WordPressVIPMinimum.Performance.WPQueryParams" />
+		<exclude name="WordPress.WP.Capabilities.Undetermined" />
 		<exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions.get_page_by_path_get_page_by_path" />
+		<exclude name="WordPressVIPMinimum.Performance.WPQueryParams" />
 		<exclude name="WordPressVIPMinimum.Variables.RestrictedVariables.user_meta__wpdb__users" />
 		<!-- @todo maybe add later-->
 		<exclude name="SlevomatCodingStandard.Functions.DisallowEmptyFunction.EmptyFunction" />
@@ -67,6 +70,7 @@
 
 	<!-- Individual rule configuration -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude-pattern>/tests/</exclude-pattern>
 		<properties>
 			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
 			<property name="prefixes" type="array" value="WPGraphQL\WooCommerce,woographql,WPGRAPHQL_WOOCOMMERCE,WP_GraphQL_WooCommerce,graphql_,wc_graphql_"/>
@@ -78,40 +82,63 @@
 			<property name="text_domain" type="array" value="wp-graphql-woocommerce"/>
 		</properties>
 	</rule>
-	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
+	<rule ref="WordPress.WP.Capabilities">
 		<properties>
-			<property name="blank_line_check" value="true"/>
+			<!-- Add 3rd-party and custom capabilities -->
+			<property name="custom_capabilities" type="array" value="manage_woocommerce,edit_shop_orders" />
 		</properties>
 	</rule>
 
-	<!-- Enforce Short array syntax `[]`  -->
-	<rule ref="WordPress">
-		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
-	</rule>
-	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
-
 	<!-- Rules to exclude for test files -->
-	<rule ref="WordPress.NamingConventions">
+	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
-	<rule ref="Squiz.Commenting">
-		<!-- Allow for inline @var typing -->
-		<exclude name="Generic.Commenting.DocComment.MissingShort" />
+	<rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.ClassComment.Missing">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment.MissingPackageTag">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FunctionComment.Missing">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FunctionComment.WrongStyle">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.InlineComment.InvalidEndChar">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.VariableComment.Missing">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.PHP.CommentedOutCode.Found">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
+	<rule ref="Squiz.PHP.DisallowMultipleAssignments">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
-	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
-		<exclude-pattern>/tests/</exclude-pattern>
-	</rule>
-	<rule ref="WordPress.PHP.DontExtract">
+	<rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+	<rule ref="WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__REMOTE_ADDR__">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 </ruleset>

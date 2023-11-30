@@ -1,8 +1,6 @@
 <?php
 
-use GraphQLRelay\Relay;
 class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function expectedRefundData( $refund_id ) {
 		$refund = \wc_get_order( $refund_id );
 
@@ -81,7 +79,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$this->loginAs( 1 );
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = $this->expectedRefundData( $refund_id );
-		//$expected[] = $this->expectedField( 'refund.refundedBy.databaseId', $refund->get_refunded_by() );
+		// $expected[] = $this->expectedField( 'refund.refundedBy.databaseId', $refund->get_refunded_by() );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

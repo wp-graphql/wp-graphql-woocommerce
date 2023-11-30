@@ -8,8 +8,6 @@
 
 namespace Tests\WPGraphQL\WooCommerce\Factory;
 
-use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
-
 /**
  * Product variation factory class for testing.
  */
@@ -43,12 +41,12 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		// if ( ! empty( $args['meta_data'] ) ) {
-		// 	$variation->set_meta_data( $args['meta_data'] );
-		// 	unset( $args['meta_data'] );
+		// $variation->set_meta_data( $args['meta_data'] );
+		// unset( $args['meta_data'] );
 		// }
 		// if ( ! empty( $args['attributes'] ) ) {
-		// 	$variation->set_attributes( $args['attributes'] );
-		// 	unset( $args['attributes'] );
+		// $variation->set_attributes( $args['attributes'] );
+		// unset( $args['attributes'] );
 		// }
 		// $variation->set_props( $args );
 

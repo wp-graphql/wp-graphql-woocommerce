@@ -76,7 +76,7 @@ class Review_Write {
 			'review' => [
 				'type'        => 'Comment',
 				'description' => __( 'The product review that was created', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function ( $payload, $args, AppContext $context ) {
+				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
 						return null;
 					}

@@ -1,7 +1,6 @@
 <?php
 
 class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -72,7 +71,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'customer.orders.nodes',
 					[
@@ -102,7 +101,6 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
-
 
 	public function testOrderToDownloadableItemsQueryArgs() {
 		$valid_product        = $this->factory->product->createSimple(
@@ -350,7 +348,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'customer.downloadableItems.nodes',
 					[

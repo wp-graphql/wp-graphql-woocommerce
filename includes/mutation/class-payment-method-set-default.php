@@ -11,9 +11,7 @@
 namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
 use WC_Payment_Tokens;
-use WPGraphQL\AppContext;
 
 /**
  * Class Payment_Method_Set_Default
@@ -79,7 +77,7 @@ class Payment_Method_Set_Default {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input ) {
 			global $wp;
 			if ( ! is_user_logged_in() ) {
 				throw new UserError( __( 'Must be authenticated to set a default payment method', 'wp-graphql-woocommerce' ) );

@@ -67,8 +67,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	public function get_object_by_id( $id ) {
 		if ( class_exists( '\WC_Shipping_Zones' ) ) {
-			$zone = \WC_Shipping_Zones::get_zone( $id );
-			return $zone;
+			return \WC_Shipping_Zones::get_zone( $id );
 		}
 
 		return false;
@@ -76,8 +75,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 
 	public function getAllZones() {
 		if ( class_exists( '\WC_Shipping_Zones' ) ) {
-			$all_zones = \WC_Shipping_Zones::get_zones();
-			return $all_zones;
+			return \WC_Shipping_Zones::get_zones();
 		}
 
 		return false;

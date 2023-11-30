@@ -1,7 +1,6 @@
 <?php
 
 class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function toCursor( $id ) {
 		if ( $id instanceof \WC_Product_Download ) {
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
@@ -24,7 +23,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 		usort(
 			$coupons,
-			function( $key_a, $key_b ) {
+			static function ( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
 		);
@@ -141,7 +140,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 		usort(
 			$products,
-			function( $key_a, $key_b ) {
+			static function ( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
 		);
@@ -268,7 +267,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 		usort(
 			$orders,
-			function( $key_a, $key_b ) {
+			static function ( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
 		);
@@ -382,7 +381,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 		usort(
 			$refunds,
-			function( $key_a, $key_b ) {
+			static function ( $key_a, $key_b ) {
 				return $key_a < $key_b;
 			}
 		);
@@ -615,7 +614,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 		];
 		$products = array_map(
-			function( $download ) {
+			function ( $download ) {
 				return $this->factory->product->createSimple(
 					[
 						'downloadable' => true,
@@ -633,7 +632,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 			],
 			[
 				'line_items' => array_map(
-					function( $product_id ) {
+					static function ( $product_id ) {
 						return [
 							'product' => $product_id,
 							'qty'     => 1,

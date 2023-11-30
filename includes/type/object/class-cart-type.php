@@ -643,7 +643,7 @@ class Cart_Type {
 					'description'    => [
 						'type'        => 'String',
 						'description' => __( 'Description of applied coupon', 'wp-graphql-woocommerce' ),
-						'resolve'     => static function ( $source, array $args ) {
+						'resolve'     => static function ( $source ) {
 							$coupon = new \WC_Coupon( $source );
 							return $coupon->get_description();
 						},

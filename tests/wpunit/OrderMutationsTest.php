@@ -3,7 +3,6 @@
 use WPGraphQL\Type\WPEnumType;
 
 class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -206,15 +205,13 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
             }
         ";
 
-		$actual = graphql(
+		return graphql(
 			[
 				'query'          => $mutation,
 				'operation_name' => $operation_name,
 				'variables'      => [ 'input' => $input ],
 			]
 		);
-
-		return $actual;
 	}
 
 	// tests
@@ -343,7 +340,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'couponLines'   => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										function ( $item ) {
 											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
@@ -362,7 +359,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'feeLines'      => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										static function ( $item ) {
 											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
@@ -383,7 +380,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'shippingLines' => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										static function ( $item ) {
 											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
@@ -406,7 +403,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'taxLines'      => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										static function ( $item ) {
 											return [
 												'rateCode' => $item->get_rate_code(),
 												'label'    => $item->get_label(),
@@ -423,7 +420,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'lineItems'     => [
 								'nodes' => array_values(
 									array_map(
-										function( $item ) {
+										function ( $item ) {
 											return [
 												'productId' => $item->get_product_id(),
 												'variationId' => ! empty( $item->get_variation_id() )
@@ -667,7 +664,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'couponLines'   => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										function ( $item ) {
 											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
@@ -686,7 +683,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'feeLines'      => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										static function ( $item ) {
 											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
@@ -707,7 +704,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'shippingLines' => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										static function ( $item ) {
 											return [
 												'databaseId' => $item->get_id(),
 												'orderId'  => $item->get_order_id(),
@@ -730,7 +727,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'taxLines'      => [
 								'nodes' => array_reverse(
 									array_map(
-										function( $item ) {
+										static function ( $item ) {
 											return [
 												'rateCode' => $item->get_rate_code(),
 												'label'    => $item->get_label(),
@@ -747,7 +744,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 							'lineItems'     => [
 								'nodes' => array_values(
 									array_map(
-										function( $item ) {
+										function ( $item ) {
 											return [
 												'productId' => $item->get_product_id(),
 												'variationId' => ! empty( $item->get_variation_id() )

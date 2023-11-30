@@ -136,7 +136,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 
 		// If cursor set, move index up one to ensure cursor not included in keys.
 		if ( $cursor ) {
-			$offset++;
+			++$offset;
 		}
 
 		$items = array_slice( $items, $offset, $this->query_amount + 1 );

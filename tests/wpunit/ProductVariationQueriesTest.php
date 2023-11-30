@@ -3,7 +3,6 @@
 use WPGraphQL\Type\WPEnumType;
 
 class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function expectedProductVariationData( $id ) {
 		$data = new WC_Product_Variation( $id );
 
@@ -93,7 +92,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$id           = $this->toRelayId( 'product_variation', $variation_id );
 
 		// Create query.
-		$query        = '
+		$query = '
             query ($id: ID, $idType: ProductVariationIdTypeEnum) {
                 productVariation(id: $id, idType: $idType) {
                     id
@@ -165,8 +164,8 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			'idType' => 'DATABASE_ID',
 
 		];
-		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = $this->expectedProductVariationData( $variation_id );
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = $this->expectedProductVariationData( $variation_id );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -234,7 +233,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 					. ' - '
 					. \wc_graphql_price( end( $prices['regular_price'] ) )
 			),
-			$this->expectedField( 'product.salePrice', self::IS_NULL )
+			$this->expectedField( 'product.salePrice', self::IS_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -336,7 +335,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 					$this->expectedField( 'fileExists', $downloads[0]->file_exists() ),
 					$this->expectedField( 'file', $downloads[0]->get_file() ),
 				]
-			)
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );

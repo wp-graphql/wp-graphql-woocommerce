@@ -10,6 +10,8 @@
  * Domain Path: /languages
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
+ * Requires at least: 6.1
+ * Requires PHP: 7.3
  * WC requires at least: 7.9.0
  * WC tested up to: 8.1.1
  * WPGraphQL requires at least: 1.16.0+

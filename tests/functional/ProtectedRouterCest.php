@@ -50,11 +50,9 @@ class ProtectedRouterCest {
 	}
 
 	public function _getLastRequestHeaders( $I ) {
-		$headers = [
+		return [
 			'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
 		];
-
-		return $headers;
 	}
 
 	public function tryToProceedToCheckoutPage( FunctionalTester $I ) {
@@ -84,7 +82,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
-		$I->seeElement('.wc-empty-cart-message');
+		$I->seeElement( '.wc-empty-cart-message' );
 
 		$I->wantTo( 'Authenticate with nonced url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();
@@ -101,7 +99,6 @@ class ProtectedRouterCest {
 		$I->see( 'Checkout' );
 		$I->see( 't-shirt' );
 	}
-
 
 	public function tryToProceedToCheckoutPageWithExpiredUrl( FunctionalTester $I ) {
 		$this->_startNewSession( $I );
@@ -171,7 +168,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
-		$I->seeElement('.wc-empty-cart-message');
+		$I->seeElement( '.wc-empty-cart-message' );
 
 		$I->wantTo( 'Attempt to authenticate with expired url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();
@@ -181,7 +178,6 @@ class ProtectedRouterCest {
 		$I->dontSeeInCurrentUrl( '/checkout/' );
 		$I->startFollowingRedirects();
 	}
-
 
 	public function tryToProceedToCheckoutPageWithInvalidNonce( FunctionalTester $I ) {
 		$session_data  = $this->_startNewSession( $I );
@@ -209,7 +205,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
-		$I->seeElement('.wc-empty-cart-message');
+		$I->seeElement( '.wc-empty-cart-message' );
 
 		$I->wantTo( 'Attempt to authenticate with nonced url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();

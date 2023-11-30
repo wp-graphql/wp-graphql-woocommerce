@@ -1,7 +1,6 @@
 <?php
 
 class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	// Tests
 	public function testCreateCoupon() {
 		$query = '

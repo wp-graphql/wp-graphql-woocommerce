@@ -1,10 +1,8 @@
 <?php
 
-use GraphQLRelay\Relay;
 use WPGraphQL\Type\WPEnumType;
 
 class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	// tests
 	public function testCouponLinesQuery() {
 		$order_id = $this->factory->order->createNew();
@@ -41,7 +39,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.couponLines.nodes',
 					[
@@ -95,7 +93,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.feeLines.nodes',
 					[
@@ -153,7 +151,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.shippingLines.nodes',
 					[
@@ -214,7 +212,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.taxLines.nodes',
 					[
@@ -284,7 +282,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.lineItems.nodes',
 					[

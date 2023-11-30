@@ -127,12 +127,12 @@ class JWT_Auth_Schema_Filters {
 	 * Adds all JWT related fields to the Customer mutation output.
 	 *
 	 * @param array                             $fields         Mutation output field definitions.
-	 * @param \WPGraphQL\Type\WPInputObjectType $object         The WPInputObjectType the fields are be added to.
+	 * @param \WPGraphQL\Type\WPInputObjectType $object_type    The WPInputObjectType the fields are be added to.
 	 * @param \WPGraphQL\Registry\TypeRegistry  $type_registry  TypeRegistry instance.
 	 *
 	 * @return array
 	 */
-	public static function add_jwt_output_fields( $fields, $object, $type_registry ): array {
+	public static function add_jwt_output_fields( $fields, $object_type, $type_registry ): array {
 		$fields = array_merge(
 			$fields,
 			[
@@ -194,7 +194,7 @@ class JWT_Auth_Schema_Filters {
 				[
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function ( $payload ) {
+					'resolve'     => static function () {
 						/**
 						 * Session Handler.
 						 *

@@ -81,7 +81,7 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$wc_shipping = WC_Shipping::instance();
 		$methods     = array_values(
 			array_map(
-				function( $method ) {
+				static function ( $method ) {
 					return [ 'id' => Relay::toGlobalId( 'shipping_method', $method->id ) ];
 				},
 				$wc_shipping->get_shipping_methods()

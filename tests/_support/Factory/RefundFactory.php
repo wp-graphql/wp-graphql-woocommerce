@@ -8,8 +8,6 @@
 
 namespace Tests\WPGraphQL\WooCommerce\Factory;
 
-use Tests\WPGraphQL\WooCommerce\Utils\Dummy;
-
 /**
  * Refund factory class for testing.
  */
@@ -79,6 +77,4 @@ class RefundFactory extends \WP_UnitTest_Factory_For_Thing {
 			)
 		);
 	}
-
-
 }

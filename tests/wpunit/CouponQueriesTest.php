@@ -1,8 +1,6 @@
 <?php
 
-use GraphQLRelay\Relay;
 class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function expectedCouponData( $coupon_id ) {
 		$coupon = new \WC_Coupon( $coupon_id );
 
