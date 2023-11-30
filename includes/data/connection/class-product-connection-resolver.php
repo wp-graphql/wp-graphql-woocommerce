@@ -660,7 +660,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver
 	 */
 	public function add_tax_query( $value ) {
-		if ( ! empty( $this->query_args['tax_query'] ) ) {
+		if ( empty( $this->query_args['tax_query'] ) ) {
 			$this->query_args['tax_query'] = $value; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		} else {
 			$this->query_args['tax_query'][]           = $value;
