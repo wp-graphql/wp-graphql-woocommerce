@@ -1,10 +1,5 @@
 <?php
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
-use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
-use Automattic\WooCommerce\Internal\Features\FeaturesController;
-
 /**
  * Remove the "extensions" payload from GraphQL results
  * so that tests can make assertions without worrying about what's in the extensions payload
@@ -23,10 +18,10 @@ add_filter(
  * Helper method to drop custom tables if present.
  */
 function delete_order_custom_tables() {
-	$features_controller = wc_get_container()->get( Featurescontroller::class );
+	$features_controller = wc_get_container()->get( \Automattic\WooCommerce\Internal\Features\FeaturesController::class );
 	$features_controller->change_feature_enable( 'custom_order_tables', true );
 	$synchronizer = wc_get_container()
-		->get( DataSynchronizer::class );
+		->get( \Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer::class );
 	if ( $synchronizer->check_orders_table_exists() ) {
 		$synchronizer->delete_database_tables();
 	}
@@ -39,24 +34,33 @@ function delete_order_custom_tables() {
  * @return void
  */
 function toggle_cot( bool $enabled ) {
-	$features_controller = wc_get_container()->get( Featurescontroller::class );
+	$features_controller = wc_get_container()->get( \Automattic\WooCommerce\Internal\Features\FeaturesController::class );
 	$features_controller->change_feature_enable( 'custom_order_tables', $enabled );
 
-	update_option( CustomOrdersTableController::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION, wc_bool_to_string( $enabled ) );
+	update_option(
+		\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION,
+		wc_bool_to_string( $enabled )
+	);
 
 	// Confirm things are really correct.
 	$wc_data_store = WC_Data_Store::load( 'order' );
-	assert( is_a( $wc_data_store->get_current_class_name(), OrdersTableDataStore::class, true ) === $enabled );
+	assert(
+		is_a(
+			$wc_data_store->get_current_class_name(),
+			\Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::class,
+			true
+		) === $enabled
+	);
 }
 
 /**
  * Helper method to create custom tables if not present.
  */
 function create_order_custom_table_if_not_exist() {
-	$features_controller = wc_get_container()->get( Featurescontroller::class );
+	$features_controller = wc_get_container()->get( \Automattic\WooCommerce\Internal\Features\FeaturesController::class );
 	$features_controller->change_feature_enable( 'custom_order_tables', true );
 
-	$synchronizer = wc_get_container()->get( DataSynchronizer::class );
+	$synchronizer = wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer::class );
 	if ( ! $synchronizer->check_orders_table_exists() ) {
 		$synchronizer->create_database_tables();
 	}
@@ -75,5 +79,5 @@ function initialize_hpos() {
 
 if ( defined( 'HPOS' ) ) {
 	\codecept_debug( 'HPOS activated!!!' );
-	initialize_hpos();
+	//add_action( 'woocommerce_init', 'initialize_hpos' );
 }
