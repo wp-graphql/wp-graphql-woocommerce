@@ -72,7 +72,6 @@ modules:
       domain: '%WORDPRESS_DOMAIN%'
       adminEmail: '%ADMIN_EMAIL%'
       title: 'WooGraphQL Tests'
-      theme: 'twentytwentyone'
       plugins:
         - woocommerce/woocommerce.php
         - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php

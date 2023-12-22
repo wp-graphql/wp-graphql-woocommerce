@@ -196,6 +196,7 @@ setup_plugin() {
 	cd $WP_CORE_DIR
 
 	# Activate the plugin, it's dependencies should be activated already.
+	wp plugin activate woocommerce wp-graphql
 	wp plugin activate wp-graphql-woocommerce
 
 	# Flush the permalinks
