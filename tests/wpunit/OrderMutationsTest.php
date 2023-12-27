@@ -297,6 +297,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 					'value' => 'test value',
 				],
 			],
+			'currency' 		     => 'VND',
 			'isPaid'             => true,
 		];
 

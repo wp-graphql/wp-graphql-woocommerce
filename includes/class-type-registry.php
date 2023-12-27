@@ -45,6 +45,7 @@ class Type_Registry {
 		Type\WPEnum\Cart_Error_Type::register();
 		Type\WPEnum\Product_Attribute_Enum::register();
 		Type\WPEnum\Attribute_Operator_Enum::register();
+		Type\WPEnum\Currency_Enum::register();
 
 		/**
 		 * InputObjects.

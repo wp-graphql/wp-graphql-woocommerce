@@ -249,11 +249,20 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Returns meta keys to be used for connection ordering.
 	 *
+	 * @param bool $is_numeric  Return numeric meta keys. Defaults to "true".
+	 * 
 	 * @return array
 	 */
-	public function ordering_meta() {
+	public function ordering_meta( $is_numeric = true ) {
+		if ( ! $is_numeric ) {
+			return apply_filters(
+				'woographql_product_connection_orderby_meta_keys',
+				[]
+			);
+		}
+
 		return apply_filters(
-			'graphql_woocommerce_products_add_sort_fields',
+			'woographql_product_connection_orderby_numeric_meta_keys',
 			[
 				'_price',
 				'_regular_price',

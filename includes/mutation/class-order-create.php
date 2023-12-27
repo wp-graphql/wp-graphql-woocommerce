@@ -49,7 +49,7 @@ class Order_Create {
 				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
 			],
 			'currency'           => [
-				'type'        => 'String',
+				'type'        => 'CurrencyEnum',
 				'description' => __( 'Currency the order was created with, in ISO format.', 'wp-graphql-woocommerce' ),
 			],
 			'customerId'         => [

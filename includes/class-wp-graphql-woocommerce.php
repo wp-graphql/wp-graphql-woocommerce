@@ -238,6 +238,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/enum/class-taxonomy-operator.php';
 			require $include_directory_path . 'type/enum/class-attribute-operator-enum.php';
 			require $include_directory_path . 'type/enum/class-product-attribute-enum.php';
+			require $include_directory_path . 'type/enum/class-currency-enum.php';
 
 			// Include interface type class files.
 			require $include_directory_path . 'type/interface/class-attribute.php';
