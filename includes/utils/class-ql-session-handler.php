@@ -107,7 +107,6 @@ class QL_Session_Handler extends WC_Session_Handler {
 		 */
 		add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
 		add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
-		add_action( 'graphql_after_resolve_field', [ $this, 'save_if_dirty' ], 10, 4 );
 		add_action( 'shutdown', [ $this, 'save_data' ] );
 		add_action( 'wp_logout', [ $this, 'destroy_session' ] );
 
@@ -413,19 +412,9 @@ class QL_Session_Handler extends WC_Session_Handler {
 	/**
 	 * Save any changes to database after a session mutations has been run.
 	 *
-	 * @param mixed                                $source   Operation root object.
-	 * @param array                                $args     Operation arguments.
-	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
-	 *
 	 * @return void
 	 */
-	public function save_if_dirty( $source, $args, $context, $info ) {
-		// Bail early, if not one of the session mutations.
-		if ( ! in_array( $info->fieldName, Session_Transaction_Manager::get_session_mutations(), true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			return;
-		}
-
+	public function save_if_dirty() {
 		// Update if user recently authenticated.
 		if ( is_user_logged_in() && get_current_user_id() !== $this->_customer_id ) {
 			$this->_customer_id = get_current_user_id();
