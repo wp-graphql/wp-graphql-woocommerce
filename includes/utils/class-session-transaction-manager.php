@@ -61,7 +61,7 @@ class Session_Transaction_Manager {
 
 		add_action( 'graphql_before_resolve_field', [ $this, 'update_transaction_queue' ], 10, 4 );
 		add_action( 'graphql_mutation_response', [ $this, 'pop_transaction_id' ], 20, 6 );
-		add_action( 'woo_session_transaction_complete', [ $this->session_handler, 'save_if_dirty' ], 10 );
+		add_action( 'woographql_session_transaction_complete', [ $this->session_handler, 'save_if_dirty' ], 10 );
 	}
 
 	/**
@@ -155,7 +155,6 @@ class Session_Transaction_Manager {
 	public function next_transaction() {
 		// Update transaction queue.
 		$transaction_queue = $this->get_transaction_queue();
-		header( 'CODECEPT_DEBUG: ' . json_encode( array_column( $transaction_queue, 'transaction_id' ) ) );
 
 		// If lead transaction object invalid pop transaction and loop.
 		if ( ! is_array( $transaction_queue[0] ) ) {
@@ -241,10 +240,10 @@ class Session_Transaction_Manager {
 			/**
 			 * Mark transaction completion
 			 * 
-			 * @param $transition_id     Removed transaction ID.
-			 * @param $transaction_queue Transaction Queue.
+			 * @param string|null $transition_id     Removed transaction ID.
+			 * @param array       $transaction_queue Transaction Queue.
 			 */
-			do_action( 'woo_session_transaction_complete', $this->transaction_id, $transaction_queue );
+			do_action( 'woographql_session_transaction_complete', $this->transaction_id, $transaction_queue );
 			
 			// Clear transaction ID.
 			$this->transaction_id = null;
