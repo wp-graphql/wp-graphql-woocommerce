@@ -1,5 +1,26 @@
 # Changelog
 
+## [v0.19.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.19.0) (2023-12-27)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.3...v0.19.0)
+
+**Breaking changes:**
+
+- chore: OrderIdTypeEnum value "ORDER\_NUMBER" renamed to "ORDER\_KEY" [\#831](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/831) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: Support for product variations added to CPT resolution [\#834](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/834) ([kidunot89](https://github.com/kidunot89))
+- fix: DownloadableItem "product" field type changed to ProductUnion [\#833](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/833) ([kidunot89](https://github.com/kidunot89))
+- fix: Session transaction queue fix [\#832](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/832) ([kidunot89](https://github.com/kidunot89))
+- fix: Adds slight shim to give support for multiple category or tags by slug [\#830](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/830) ([kidunot89](https://github.com/kidunot89))
+- fix: currency input field fixed for createOrder mutation [\#829](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/829) ([kidunot89](https://github.com/kidunot89))
+- fix: Bug fixed in Product\_Connection\_Resolver::add\_tax\_query [\#820](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/820) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- chore: bump deps to meet actual requirements and lint for WPCS 3.0 [\#816](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/816) ([justlevine](https://github.com/justlevine))
+
 ## [v0.18.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.18.3) (2023-11-01)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.2...v0.18.3)
