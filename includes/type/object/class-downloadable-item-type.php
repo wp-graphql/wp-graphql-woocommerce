@@ -76,7 +76,7 @@ class Downloadable_Item_Type {
 						},
 					],
 					'product'            => [
-						'type'        => 'Product',
+						'type'        => 'ProductUnion',
 						'description' => __( 'Product of downloadable item.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source['product_id'], $context );
