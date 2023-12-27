@@ -254,11 +254,11 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		/**
 		 * Assertion Three
 		 *
-		 * Tests "ORDER_NUMBER" ID type
+		 * Tests "ORDER_KEY" ID type
 		 */
 		$variables = [
 			'id'     => $this->factory->order->get_order_key( $order_id ),
-			'idType' => 'ORDER_NUMBER',
+			'idType' => 'ORDER_KEY',
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 

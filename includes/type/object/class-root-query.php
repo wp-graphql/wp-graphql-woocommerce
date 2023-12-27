@@ -213,7 +213,7 @@ class Root_Query {
 
 						$order_id = null;
 						switch ( $id_type ) {
-							case 'order_number':
+							case 'order_key':
 								$order_id = \wc_get_order_id_by_order_key( $id );
 								break;
 							case 'database_id':

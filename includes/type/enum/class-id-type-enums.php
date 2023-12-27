@@ -40,12 +40,12 @@ class Id_Type_Enums {
 			[
 				'description' => __( 'The Type of Identifier used to fetch a single Order. Default is ID.', 'wp-graphql-woocommerce' ),
 				'values'      => [
-					'id'           => self::get_value( 'id' ),
-					'database_id'  => self::get_value( 'database_id' ),
-					'order_number' => [
-						'name'        => 'ORDER_NUMBER',
-						'value'       => 'order_number',
-						'description' => __( 'Order number.', 'wp-graphql-woocommerce' ),
+					'id'          => self::get_value( 'id' ),
+					'database_id' => self::get_value( 'database_id' ),
+					'order_key'   => [
+						'name'        => 'ORDER_KEY',
+						'value'       => 'order_key',
+						'description' => __( 'Order key.', 'wp-graphql-woocommerce' ),
 					],
 				],
 			]
