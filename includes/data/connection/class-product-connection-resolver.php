@@ -369,7 +369,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						$term_taxonomy_ids = [];
 						foreach ( $terms as $term_slug ) {
 							$term = get_term_by( 'slug', $term_slug, $taxonomy );
-							if ( ! $term ) {
+							if ( ! $term || is_wp_error( $term ) ) {
 								continue;
 							}
 							$term_taxonomy_ids[] = $term->term_taxonomy_id;
