@@ -3,7 +3,7 @@
  * WPEnum Type - CurrencyEnum
  *
  * @package WPGraphQL\WooCommerce\Type\WPEnum
- * @since   TBD
+ * @since   0.19.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;
