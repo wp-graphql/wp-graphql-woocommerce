@@ -500,7 +500,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					typeNotIn: $typeNotIn,
 					featured: $featured,
 					maxPrice: $maxPrice,
-					orderby: $orderby
+					orderby: $orderby,
 					taxonomyFilter: $taxonomyFilter
 					include: $include
 					exclude: $exclude

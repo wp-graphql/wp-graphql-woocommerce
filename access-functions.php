@@ -195,19 +195,12 @@ if ( ! function_exists( 'wc_graphql_underscore_to_camel_case' ) ) {
 	/**
 	 * Converts a camel case formatted string to a underscore formatted string.
 	 *
-	 * @param string  $str         String to be formatted.
-	 * @param boolean $capitalize  Capitalize first letter of string.
+	 * @param string $str         String to be formatted.
 	 *
 	 * @return string
 	 */
-	function wc_graphql_underscore_to_camel_case( $str, $capitalize = false ) {
-		$str = str_replace( ' ', '', ucwords( str_replace( '-', ' ', $str ) ) );
-
-		if ( ! $capitalize ) {
-			$str[0] = strtolower( $str[0] );
-		}
-
-		return $str;
+	function wc_graphql_underscore_to_camel_case( $str ) {
+		return lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $str ) ) ) );
 	}
 }
 
@@ -220,19 +213,11 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 	 * @return string
 	 */
 	function wc_graphql_camel_case_to_underscore( $str ) {
-		preg_match_all(
-			'!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!',
-			$str,
-			$matches
-		);
-
-		$ret = $matches[0];
-
-		foreach ( $ret as &$match ) {
-			$match = strtoupper( $match ) === $match ? strtolower( $match ) : lcfirst( $match );
-		}
-
-		return implode( '_', $ret );
+		/**
+		 * @var string  Sort mutated string.
+		 */
+		$replace = preg_replace( '/(?<!^)[A-Z]/', '_$0', $str );
+		return strtolower( $replace );
 	}
 }//end if
 

@@ -87,11 +87,14 @@ trait WC_CPT_Loader_Common {
 				if ( in_array( $orderby_field, $post_fields, true ) ) {
 					$args['orderby'][ $orderby_field ] = $orderby_order;
 
-					// Handle meta fields.
+					// Handle non-numeric meta fields.
+				} elseif ( in_array( $orderby_field, $this->ordering_meta( false ), true ) ) {
+					$args['orderby']['meta_value'] = $orderby_order; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					$args['meta_key']              = $orderby_field;
+					// Handle numeric meta fields.
 				} elseif ( in_array( $orderby_field, $this->ordering_meta(), true ) ) {
-					$args['orderby']['meta_value_num'] = $orderby_order;
-					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					$args['meta_key'] = $orderby_field;
+					$args['orderby']['meta_value_num'] = $orderby_order; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$args['meta_key']                  = $orderby_field;
 				} else {
 					$args['orderby'][ $orderby_field ] = $orderby_order;
 				}

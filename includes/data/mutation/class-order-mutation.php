@@ -59,16 +59,24 @@ class Order_Mutation {
 	 * @throws \GraphQL\Error\UserError  Error creating order.
 	 */
 	public static function create_order( $input, $context, $info ) {
+		$order = new \WC_Order();
+
+		$order->set_currency( ! empty( $input['currency'] ) ? $input['currency'] : get_woocommerce_currency() );
+		$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
+		$order->set_customer_ip_address( \WC_Geolocation::get_ip_address() );
+		$order->set_customer_user_agent( wc_get_user_agent() );
+
+		$order_id = $order->save();
+
 		$order_keys = [
 			'status'       => 'status',
 			'customerId'   => 'customer_id',
 			'customerNote' => 'customer_note',
 			'parent'       => 'parent',
 			'createdVia'   => 'created_via',
-			'orderId'      => 'order_id',
 		];
 
-		$args = [];
+		$args = [ 'order_id' => $order_id ];
 		foreach ( $input as $key => $value ) {
 			if ( array_key_exists( $key, $order_keys ) ) {
 				$args[ $order_keys[ $key ] ] = $value;
@@ -366,13 +374,14 @@ class Order_Mutation {
 		/**
 		 * Action called before changes to order meta are saved.
 		 *
-		 * @param \WC_Order   $order   WC_Order instance.
-		 * @param array       $props   Order props array.
-		 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+		 * @param \WC_Order                            $order   WC_Order instance.
+		 * @param array                                $props   Order props array.
+		 * @param \WPGraphQL\AppContext                $context Request AppContext instance.
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 		 */
 		do_action( 'graphql_woocommerce_before_order_meta_save', $order, $input, $context, $info );
 
+		$order->save_meta_data();
 		$order->save();
 	}
 

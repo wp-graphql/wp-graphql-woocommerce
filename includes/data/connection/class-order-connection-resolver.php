@@ -227,17 +227,30 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Returns meta keys to be used for connection ordering.
 	 *
+	 * @param bool $is_numeric  Return numeric meta keys. Defaults to "true".
+	 *
 	 * @return array
 	 */
-	public function ordering_meta() {
-		return [
-			'_order_key',
-			'_cart_discount',
-			'_order_total',
-			'_order_tax',
-			'_date_paid',
-			'_date_completed',
-		];
+	public function ordering_meta( $is_numeric = true ) {
+		if ( ! $is_numeric ) {
+			return apply_filters(
+				'woographql_order_connection_orderby_meta_keys',
+				[
+					'_order_key',
+					'_date_paid',
+					'_date_completed',
+				]
+			);
+		}
+
+		return apply_filters(
+			'woographql_order_connection_orderby_numeric_meta_keys',
+			[
+				'_cart_discount',
+				'_order_total',
+				'_order_tax',
+			]
+		);
 	}
 
 	/**
