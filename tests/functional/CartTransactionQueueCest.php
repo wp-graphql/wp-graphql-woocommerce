@@ -268,11 +268,11 @@ class CartTransactionQueueCest {
 		$client   = new \GuzzleHttp\Client( compact( 'base_uri', 'headers', 'timeout' ) );
 
 		$iterator = static function ( $requests ) use ( $client ) {
-			$stagger = 1000;
+			$stagger = 800;
 			foreach ( $requests as $index => $payload ) {
 				yield static function () use ( $client, $stagger, $index, $payload ) {
 					$body      = json_encode( $payload );
-					$delay     = $stagger * $index + 1;
+					$delay     = $stagger * ($index + 1);
 					$connected = false;
 					$progress  = static function ( $downloadTotal, $downloadedBytes, $uploadTotal, $uploadedBytes ) use ( $index, &$connected ) {
 						if ( $uploadTotal === $uploadedBytes && 0 === $downloadTotal && ! $connected ) {
@@ -294,8 +294,10 @@ class CartTransactionQueueCest {
 					\codecept_debug( "Finished session mutation request $index @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
 
 					$expected = $expected_responses[ $index ];
+					$headers  = $response->getHeaders();
 					$body     = json_decode( $response->getBody(), true );
-
+					
+					\codecept_debug( $headers );
 					\codecept_debug( $body );
 					$I->assertEquals( $expected, $body['data'] );
 				},

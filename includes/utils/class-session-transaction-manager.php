@@ -60,7 +60,8 @@ class Session_Transaction_Manager {
 		$this->session_handler = $session_handler;
 
 		add_action( 'graphql_before_resolve_field', [ $this, 'update_transaction_queue' ], 10, 4 );
-		add_action( 'graphql_process_http_request_response', [ $this, 'pop_transaction_id' ], 20 );
+		add_action( 'graphql_mutation_response', [ $this, 'pop_transaction_id' ], 20, 6 );
+		add_action( 'woo_session_transaction_complete', [ $this->session_handler, 'save_if_dirty' ], 10 );
 	}
 
 	/**
@@ -154,6 +155,7 @@ class Session_Transaction_Manager {
 	public function next_transaction() {
 		// Update transaction queue.
 		$transaction_queue = $this->get_transaction_queue();
+		header( 'CODECEPT_DEBUG: ' . json_encode( array_column( $transaction_queue, 'transaction_id' ) ) );
 
 		// If lead transaction object invalid pop transaction and loop.
 		if ( ! is_array( $transaction_queue[0] ) ) {
@@ -202,13 +204,25 @@ class Session_Transaction_Manager {
 	/**
 	 * Pop transaction ID off the top of the queue, ending the transaction.
 	 *
+	 * @param array                                $payload          The Payload returned from the mutation.
+	 * @param array                                $input            The mutation input args, after being filtered by 'graphql_mutation_input'.
+	 * @param array                                $unfiltered_input The unfiltered input args of the mutation
+	 * @param \WPGraphQL\AppContext                $context          The AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info             The ResolveInfo object.
+	 * @param string                               $mutation         The name of the mutation field.
+	 *
 	 * @throws \GraphQL\Error\UserError If transaction ID is not on the top of the queue.
 	 *
 	 * @return void
 	 */
-	public function pop_transaction_id() {
+	public function pop_transaction_id( $payload, $input, $unfiltered_input, $context, $info, $mutation ) {
 		// Bail if transaction not started.
 		if ( is_null( $this->transaction_id ) ) {
+			return;
+		}
+
+		// Bail if not the expected mutation.
+		if ( str_starts_with( $this->transaction_id, "wooSession_{$mutation}_" ) ) {
 			return;
 		}
 
@@ -223,6 +237,16 @@ class Session_Transaction_Manager {
 			// Remove Transaction ID and update queue.
 			array_shift( $transaction_queue );
 			$this->save_transaction_queue( $transaction_queue );
+
+			/**
+			 * Mark transaction completion
+			 * 
+			 * @param $transition_id     Removed transaction ID.
+			 * @param $transaction_queue Transaction Queue.
+			 */
+			do_action( 'woo_session_transaction_complete', $this->transaction_id, $transaction_queue );
+			
+			// Clear transaction ID.
 			$this->transaction_id = null;
 		}
 	}
