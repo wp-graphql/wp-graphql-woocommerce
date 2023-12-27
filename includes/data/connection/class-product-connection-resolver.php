@@ -359,10 +359,25 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					case 'tag':
 					case 'tagIn':
 					case 'tagNotIn':
+						// Get terms.
+						$terms = $where_args[ $field ];
+						if ( ! is_array( $terms ) ) {
+							$terms = [ $terms ];
+						}
+
+						// Get term taxonomy IDs for complex tax queries.
+						$term_taxonomy_ids = [];
+						foreach ( $terms as $term_slug ) {
+							$term = get_term_by( 'slug', $term_slug, $taxonomy );
+							if ( ! $term ) {
+								continue;
+							}
+							$term_taxonomy_ids[] = $term->term_taxonomy_id;
+						}
 						$tax_query[] = [
 							'taxonomy' => $taxonomy,
-							'field'    => 'slug',
-							'terms'    => $where_args[ $field ],
+							'field'    => 'term_taxonomy_id',
+							'terms'    => $term_taxonomy_ids,
 							'operator' => $operator,
 						];
 						break;
