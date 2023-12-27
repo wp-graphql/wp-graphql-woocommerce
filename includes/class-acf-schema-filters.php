@@ -63,6 +63,9 @@ class ACF_Schema_Filters {
 				case 'product':
 					$source = new Model\Product( $post->ID );
 					break;
+				case 'product_variation':
+					$source = new Model\Product_Variation( $post->ID );
+					break;
 			}
 		}
 
