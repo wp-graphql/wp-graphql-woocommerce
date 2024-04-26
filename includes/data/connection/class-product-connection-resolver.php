@@ -18,8 +18,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 /**
  * Class Product_Connection_Resolver
  *
- * @deprecated v0.10.0
- *
  * @property \WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader $loader
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
@@ -154,7 +152,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
 
-
 		/**
 		 * If the query contains search default the results to
 		 */
@@ -191,7 +188,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @return \WP_Query
+	 * @return \WC_Query
 	 */
 	public function get_query() {
 		// Run query and add product query filters.
@@ -297,11 +294,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		return apply_filters(
 			'woographql_product_connection_orderby_numeric_meta_keys',
 			[
-				'_price',
-				'_regular_price',
-				'_sale_price',
-				'_wc_rating_count',
-				'_wc_average_rating',
 				'_sale_price_dates_from',
 				'_sale_price_dates_to',
 				'total_sales',
@@ -618,6 +610,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				'value'   => $where_args['sku'],
 				'compare' => 'LIKE',
 			];
+		}
+		if ( ! empty( $where_args['minPrice'] ) ) {
+			$query_args['min_price'] = floatval( $where_args['minPrice'] );
 		}
 
 		if ( ! empty( $where_args['minPrice'] ) ) {

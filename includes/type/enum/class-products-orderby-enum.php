@@ -51,7 +51,7 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 						'description' => __( 'Order by product popularity', 'wp-graphql-woocommerce' ),
 					],
 					'REVIEW_COUNT'  => [
-						'value'       => '_wc_rating_count',
+						'value'       => 'popularity',
 						'description' => __( 'Order by number of reviews on product', 'wp-graphql-woocommerce' ),
 					],
 					'RATING'        => [
