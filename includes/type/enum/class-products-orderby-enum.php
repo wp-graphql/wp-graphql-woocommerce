@@ -31,23 +31,31 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 				self::post_type_values(),
 				[
 					'PRICE'         => [
-						'value'       => '_price',
+						'value'       => 'price',
 						'description' => __( 'Order by product\'s current price', 'wp-graphql-woocommerce' ),
 					],
 					'REGULAR_PRICE' => [
-						'value'       => '_regular_price',
+						'value'       => 'regular_price',
 						'description' => __( 'Order by product\'s regular price', 'wp-graphql-woocommerce' ),
 					],
 					'SALE_PRICE'    => [
-						'value'       => '_sale_price',
+						'value'       => 'sale_price',
 						'description' => __( 'Order by product\'s sale price', 'wp-graphql-woocommerce' ),
+					],
+					'RELEVANCE'     => [
+						'value'       => 'relevance',
+						'description' => __( 'Order by relevance', 'wp-graphql-woocommerce' ),
+					],
+					'POPULARITY'    => [
+						'value'       => 'popularity',
+						'description' => __( 'Order by product popularity', 'wp-graphql-woocommerce' ),
 					],
 					'REVIEW_COUNT'  => [
 						'value'       => '_wc_rating_count',
 						'description' => __( 'Order by number of reviews on product', 'wp-graphql-woocommerce' ),
 					],
 					'RATING'        => [
-						'value'       => '_wc_average_rating',
+						'value'       => 'rating',
 						'description' => __( 'Order by product average rating', 'wp-graphql-woocommerce' ),
 					],
 					'ON_SALE_FROM'  => [

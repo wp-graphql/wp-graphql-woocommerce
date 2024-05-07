@@ -131,11 +131,11 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 
 	public function testProductsPagination() {
 		$products = [
-			$this->factory->product->createSimple(),
-			$this->factory->product->createSimple(),
-			$this->factory->product->createSimple(),
-			$this->factory->product->createSimple(),
-			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple( [ 'menu_order' => 0 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 1 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 2 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 3 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 4 ] ),
 		];
 
 		usort(

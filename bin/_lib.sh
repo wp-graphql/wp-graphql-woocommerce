@@ -64,14 +64,14 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev \
-		lucatume/wp-browser:^3.1 \
-		symfony/finder:* \
-		codeception/lib-asserts:^1.0 \
-		codeception/module-asserts:^1.3.1 \
+	composer require --dev -W \
+		lucatume/wp-browser:3.2.3 \
+		phpunit/phpunit:^9.6 \
+		codeception/lib-asserts:* \
+		codeception/module-asserts:* \
 		codeception/module-rest:* \
-		codeception/util-universalframework:^1.0  \
-		wp-graphql/wp-graphql-testcase:^2.3 \
+		codeception/util-universalframework:*  \
+		wp-graphql/wp-graphql-testcase \
 		stripe/stripe-php \
 		fakerphp/faker
 
@@ -99,7 +99,7 @@ remove_local_test_library() {
 	composer remove --dev wp-graphql/wp-graphql-testcase \
 		codeception/module-asserts \
 		codeception/lib-asserts \
-		symfony/finder \
+		phpunit/phpunit \
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \

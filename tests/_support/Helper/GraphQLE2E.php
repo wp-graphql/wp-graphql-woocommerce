@@ -684,7 +684,7 @@ class GraphQLE2E extends \Codeception\Module {
 				'post_status'  => 'publish',
 			]
 		);
-		update_option( 'woocommerce_cart_page_id', $cart_page_id );
+		$wpdb->haveOptionInDatabase( 'woocommerce_cart_page_id', $cart_page_id );
 		$checkout_page_id = $wpdb->havePostInDatabase(
 			[
 				'post_type'    => 'page',
@@ -695,7 +695,7 @@ class GraphQLE2E extends \Codeception\Module {
 				'post_status'  => 'publish',
 			]
 		);
-		update_option( 'woocommerce_checkout_page_id', $checkout_page_id );
+		$wpdb->haveOptionInDatabase( 'woocommerce_checkout_page_id', $checkout_page_id );
 
 		global $wp_rewrite;
 		// Set the permalink structure
@@ -716,13 +716,13 @@ class GraphQLE2E extends \Codeception\Module {
 		$wpdb = $this->getModule( 'WPDb' );
 		$wpdb->useTheme( 'twentytwentyone' );
 		// Turn on tax calculations and store shipping countries. Important!
-		update_option( 'woocommerce_ship_to_countries', 'all' );
-		update_option( 'woocommerce_prices_include_tax', 'no' );
-		update_option( 'woocommerce_calc_taxes', 'yes' );
-		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_ship_to_countries', 'all' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_prices_include_tax', 'no' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_calc_taxes', 'yes' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_tax_round_at_subtotal', 'no' );
 
 		// Enable payment gateway.
-		update_option(
+		$wpdb->haveOptionInDatabase(
 			'woocommerce_bacs_settings',
 			[
 				'enabled'      => 'yes',
@@ -734,14 +734,14 @@ class GraphQLE2E extends \Codeception\Module {
 		);
 
 		// Additional cart fees.
-		add_action(
-			'woocommerce_cart_calculate_fees',
-			static function () {
-				$percentage = 0.01;
-				$surcharge  = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;
-				\WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
-			}
-		);
+		// \add_action(
+		// 	'woocommerce_cart_calculate_fees',
+		// 	static function () {
+		// 		$percentage = 0.01;
+		// 		$surcharge  = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;
+		// 		\WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
+		// 	}
+		// );
 
 		// Create Shipping Zones.
 		$zone = new \WC_Shipping_Zone();

@@ -14,7 +14,6 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 
 /**
  * Class Review_Delete_Restore
@@ -113,7 +112,7 @@ class Review_Delete_Restore {
 
 					if ( $restore ) {
 						return ! empty( $payload['commentObject']->comment_ID )
-							? DataSource::resolve_comment( absint( $payload['commentObject']->comment_ID ), $context )
+							? $context->get_loader( 'comment' )->load_deferred( $payload['commentObject']->comment_ID )
 							: null;
 					}
 
