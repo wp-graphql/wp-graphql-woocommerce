@@ -14,7 +14,6 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 
 /**
  * Class Review_Delete_Restore

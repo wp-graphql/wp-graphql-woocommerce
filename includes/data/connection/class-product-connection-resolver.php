@@ -163,7 +163,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			 * Don't order search results by title (causes funky issues with cursors)
 			 */
 			$query_args['search_orderby_title'] = false;
-			$query_args = array_merge( $query_args, \WC()->query->get_catalog_ordering_args( 'relevance', isset( $last ) ? 'ASC' : 'DESC' ) );
+			$query_args                         = array_merge( $query_args, \WC()->query->get_catalog_ordering_args( 'relevance', isset( $last ) ? 'ASC' : 'DESC' ) );
 		}
 
 		if ( empty( $query_args['orderby'] ) ) {
