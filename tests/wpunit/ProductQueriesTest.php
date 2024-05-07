@@ -1501,4 +1501,200 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	public function testProductsQueryWithAttributesFilter() {
+		// Create product attributes.
+		$kind_attribute = $this->factory->product->createAttribute( 'kind', [ 'special', 'normal' ], 'Product type' );
+		$normal_term_id = get_term_by( 'slug', 'normal', 'pa_kind' )->term_id;
+		$special_term_id = get_term_by( 'slug', 'special', 'pa_kind' )->term_id;
+
+		// Create attribute objects.
+		$kind_attribute_normal_only = $this->factory->product->createAttributeObject(
+			$kind_attribute['attribute_id'],
+			$kind_attribute['attribute_taxonomy'],
+			[ $normal_term_id ]
+		);
+		
+		$kind_attribute_special_only = $this->factory->product->createAttributeObject(
+			$kind_attribute['attribute_id'],
+			$kind_attribute['attribute_taxonomy'],
+			[ $special_term_id ]
+		);
+
+		$kind_attribute_both = $this->factory->product->createAttributeObject(
+			$kind_attribute['attribute_id'],
+			$kind_attribute['attribute_taxonomy'],
+			[ $normal_term_id, $special_term_id ]
+		);
+
+		// Create products.
+		$normal_product_id  = $this->factory->product->createSimple(
+			[
+				'attributes'         => [ $kind_attribute_normal_only ],
+				'default_attributes' => [ 'pa_kind' => 'normal' ],
+			]
+		);
+		$special_product_id = $this->factory->product->createSimple(
+			[
+				'attributes'         => [ $kind_attribute_special_only ],
+				'default_attributes' => [ 'pa_kind' => 'special' ],
+			]
+		);
+		$both_product_id    = $this->factory->product->createSimple(
+			[
+				'attributes'         => [ $kind_attribute_both ],
+			]
+		);
+
+		// Create query.
+		$query = '
+			query( $where: RootQueryToProductUnionConnectionWhereArgs ) {
+				products( where: $where ) {
+					nodes {
+						... on SimpleProduct {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'where' => [
+				'attributes' => [
+					'queries' => [
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'normal' ],
+						],
+					],
+				],
+			],
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedNode(
+				'products.nodes',
+				[ 'id' => $this->toRelayId( 'product', $normal_product_id ) ]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = [
+			'where' => [
+				'attributes' => [
+					'queries' => [
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'special' ],
+						],
+					],
+				],
+			],
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[ 'id' => $this->toRelayId( 'product', $special_product_id ) ]
+			),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = [
+			'where' => [
+				'attributes' => [
+					'queries' => [
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'normal', 'special' ],
+						],
+					],
+				],
+			],
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[ 'id' => $this->toRelayId( 'product', $both_product_id ) ]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = [
+			'where' => [
+				'attributes' => [
+					'queries' => [
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'normal', 'special' ],
+							'operator' => 'NOT_IN',
+						],
+					],
+				],
+			],
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField(
+				'products.nodes',
+				self::IS_FALSY
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = [
+			'where' => [
+				'attributes' => [
+					'queries' => [
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'normal' ],
+							'operator' => 'NOT_IN',
+						],
+					]
+				],
+			],
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[ 'id' => $this->toRelayId( 'product', $special_product_id ) ]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = [
+			'where' => [
+				'attributes' => [
+					'queries' => [
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'normal' ],
+						],
+						[
+							'taxonomy' => 'PA_KIND',
+							'terms'    => [ 'special' ],
+						],
+					],
+					'relation'  => 'AND',
+				],
+			],
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[ 'id' => $this->toRelayId( 'product', $both_product_id ) ]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

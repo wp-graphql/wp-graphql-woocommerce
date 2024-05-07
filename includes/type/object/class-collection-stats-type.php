@@ -306,11 +306,14 @@ class Collection_Stats_Type {
 			return $request;
 		}
 
+		$request->set_param( 'paged', 0 );
+		$request->set_param( 'ignore_sticky_posts', true );
+
 		$key_mapping = [
 			'slugIn'       => 'slug',
 			'typeIn'       => 'type',
 			'categoryIdIn' => 'category',
-			'tagIn'        => 'tag',
+			'tagIdIn'      => 'tag',
 			'onSale'       => 'on_sale',
 			'stockStatus'  => 'stock_status',
 			'visibility'   => 'catalog_visibility',
@@ -318,7 +321,7 @@ class Collection_Stats_Type {
 			'maxPrice'     => 'max_price',
 		];
 
-		$needs_formatting = [ 'attributes', 'categoryIn' ];
+		$needs_formatting = [ 'attributes', 'categoryIn', 'tagIn' ];
 		foreach ( $where_args as $key => $value ) {
 			if ( in_array( $key, $needs_formatting, true ) ) {
 				continue;
@@ -345,33 +348,76 @@ class Collection_Stats_Type {
 			} else {
 				$request->set_param( 'category', $category_ids );
 			}
-			$request->set_param( 'category_operator', 'and' );
+		}
+
+		if ( ! empty( $where_args['tagIn'] ) ) {
+			$tag_ids = array_map(
+				static function ( $tag ) {
+					$term = get_term_by( 'slug', $tag, 'product_tag' );
+					if ( $term && ! is_wp_error( $term ) ) {
+						return $term->term_id;
+					}
+					return 0;
+				},
+				$where_args['tagIn']
+			);
+			$set_tag = $request->get_param( 'tag' );
+			if ( ! empty( $set_tag ) ) {
+				$tag_ids[] = $set_tag;
+				$request->set_param( 'tag', $tag_ids );
+			} else {
+				$request->set_param( 'tag', $tag_ids );
+			}
 		}
 		
-		if ( ! empty( $where_args['attributes'] ) ) {
-			$attributes = [];
-			foreach ( $where_args['attributes'] as $filter ) {
-				if ( str_starts_with( $filter['taxonomy'], 'pa_' ) ) {
-					$attribute              = [];
-					$attribute['attribute'] = $filter['taxonomy'];
-					if ( ! empty( $filter['terms'] ) ) {
-						$attribute['slug'] = $filter['terms'];
-					} elseif ( ! empty( $filter['ids'] ) ) {
-						$attribute['term_id'] = $filter['ids'];
+		if ( ! empty( $where_args['attributes'] ) && ! empty( $where_args['attributes']['queries'] ) ) {
+			$attributes       = $where_args['attributes']['queries'];
+			$att_queries      = [];
+			$operator_mapping = [
+				'IN'     => 'in',
+				'NOT IN' => 'not_in',
+				'AND'    => 'and',
+			];
+
+			foreach ( $attributes as $filter ) {
+				if ( empty( $filter['terms'] ) && empty( $filter['ids'] ) ) {
+					continue;
+				}
+
+				$operator = ! empty( $filter['operator'] ) ? $operator_mapping[ $filter['operator'] ] : 'in';
+				if ( ! empty( $filter['terms'] ) ) {
+					foreach( $filter['terms'] as $term ) {
+						$att_queries[] = [
+							'attribute' => $filter['taxonomy'],
+							'operator'  => $operator,
+							'slug'      => $term,
+						];
 					}
-					$attribute['operator'] = ! empty( $filter['operator'] ) ? strtolower( $filter['operator'] ) : 'in';
-					$attributes[]          = $attribute;
-				} else {
-					if ( ! empty( $filter['ids'] ) ) {
-						continue;
+				}
+
+
+				if ( ! empty( $filter['ids'] ) ) {
+					foreach( $filter['ids'] as $term_id ) {
+						$att_queries[] = [
+							'attribute' => $filter['taxonomy'],
+							'operator'  => $operator,
+							'term_id'   => $term_id,
+						];
 					}
-					$taxonomy = $filter['taxonomy'];
-					$request->set_param( "_unstable_tax_{$taxonomy}", $filter['ids'] );
-					$request->set_param( "_unstable_tax_{$taxonomy}_operator", strtolower( $filter['operator'] ) );
 				}
 			}
-			if ( ! empty( $attributes ) ) { 
-				$request->set_param( 'attributes', $attributes );
+
+			if ( ! empty( $att_queries ) ) { 
+				$request->set_param( 'attributes', $att_queries );
+			}
+
+			if ( ! empty ( $where_args['attributes']['relation'] ) ) {
+				$relation = $where_args['attributes']['relation'];
+				if ( $relation === 'NOT_IN' ) {
+					graphql_debug( __( 'NOT_IN relation is not supported for attributes queries top-level "relation" field. Use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
+					$relation = 'IN';
+				}
+				$request->set_param( 'attributes_relation', $where_args['attributes']['relation'] );
 			}
 		}//end if
 

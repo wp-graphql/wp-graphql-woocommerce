@@ -99,6 +99,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args['post_type'] = $this->post_type;
 
+
 		/**
 		 * Set the wc_query to product_query
 		 */
@@ -221,7 +222,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Custom query used to filter products by price.
 	 *
-	 * @param array     $args      SQL clauses                                         $args      Query args.
+	 * @param array     $args      SQL clauses.
 	 * @param \WP_Query $wp_query  WP_Query object.
 	 *
 	 * @return array
@@ -267,6 +268,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_ids_from_query() {
 		$ids = $this->query->get_posts();
+		remove_filter( 'posts_clauses', array( $this, 'product_query_post_clauses' ), 10, 2 );
 
 		// If we're going backwards, we need to reverse the array.
 		if ( ! empty( $this->args['last'] ) ) {
@@ -448,12 +450,70 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Filter by attribute and term.
 		if ( ! empty( $where_args['attribute'] ) && ! empty( $where_args['attributeTerm'] ) ) {
+			graphql_debug(
+				__( 'The "attribute" and "attributeTerm" arguments have been deprecated. Please use the "attributes" argument instead.', 'wp-graphql-woocommerce' ),
+			);
 			if ( in_array( $where_args['attribute'], \wc_get_attribute_taxonomy_names(), true ) ) {
 				$tax_query[] = [
 					'taxonomy' => $where_args['attribute'],
 					'field'    => 'slug',
 					'terms'    => $where_args['attributeTerm'],
 				];
+			}
+		}
+
+		// Filter by attributes.
+		if ( ! empty( $where_args['attributes'] ) && ! empty( $where_args['attributes']['queries'] ) ) {
+			$attributes  = $where_args['attributes']['queries'];
+			$att_queries = [];
+
+			foreach ( $attributes as $attribute ) {
+				if ( empty( $attribute['ids'] ) && empty( $attribute['terms'] ) ) {
+					continue;
+				}
+
+				if ( ! in_array( $attribute['taxonomy'], \wc_get_attribute_taxonomy_names(), true ) ) {
+					continue;
+				}
+
+				$operator = isset( $attribute['operator'] ) ? $attribute['operator'] : 'IN';
+				
+				if ( ! empty( $attribute['terms'] ) ) {
+					foreach( $attribute['terms'] as $term ) {
+						$att_queries[] = [
+							'taxonomy' => $attribute['taxonomy'],
+							'field'    => 'slug',
+							'terms'    => $term,
+							'operator' => $operator,
+						];
+					}
+				}
+
+				if ( ! empty( $attribute['ids'] ) ) {
+					foreach( $attribute['ids'] as $id ) {
+						$att_queries[] = [
+							'taxonomy' => $attribute['taxonomy'],
+							'field'    => 'term_id',
+							'terms'    => $id,
+							'operator' => $operator,
+						];
+					}
+				}
+			}
+
+			if ( 1 < count( $att_queries ) ) {
+				$relation    = ! empty( $where_args['attributes']['relation'] ) ? $where_args['attributes']['relation'] : 'AND';
+				if ( 'NOT_IN' === $relation ) {
+					graphql_debug( __( 'The "NOT_IN" relation is not supported for attributes. Please use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
+					$relation = 'IN';
+				}
+
+				$tax_query[] = [
+					'relation' => $relation,
+					...$att_queries,
+				];
+			} else {
+				$tax_query = array_merge( $tax_query, $att_queries );
 			}
 		}
 

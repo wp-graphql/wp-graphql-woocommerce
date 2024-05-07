@@ -379,13 +379,19 @@ class Products {
 				'type'        => 'Int',
 				'description' => __( 'Limit result set to products assigned a specific shipping class ID.', 'wp-graphql-woocommerce' ),
 			],
+			'attributes'   => [
+				'type'        => 'ProductAttributeQueryInput',
+				'description' => __( 'Limit result set to products with selected global attribute queries.', 'wp-graphql-woocommerce' ),
+			],
 			'attribute'          => [
-				'type'        => 'String',
-				'description' => __( 'Limit result set to products with a specific attribute. Use the taxonomy name/attribute slug.', 'wp-graphql-woocommerce' ),
+				'type'              => 'ProductAttributeEnum',
+				'description'       => __( 'Limit result set to products with a specific global product attribute', 'wp-graphql-woocommerce' ),
+				'deprecationReason' => 'Use attributes instead.',
 			],
 			'attributeTerm'      => [
-				'type'        => 'String',
-				'description' => __( 'Limit result set to products with a specific attribute term ID (required an assigned attribute).', 'wp-graphql-woocommerce' ),
+				'type'              => 'String',
+				'description'       => __( 'Limit result set to products with a specific global product attribute term ID (required an assigned attribute).', 'wp-graphql-woocommerce' ),
+				'deprecationReason' => 'Use attributes instead.',
 			],
 			'stockStatus'        => [
 				'type'        => [ 'list_of' => 'StockStatusEnum' ],

@@ -210,7 +210,7 @@ class ProductHelper extends WCG_Helper {
 		);
 	}
 
-	public function create_attribute( $raw_name = 'size', $terms = array( 'small' ) ) {
+	public function create_attribute( $raw_name = 'size', $terms = array( 'small' ), $label = '' ) {
 		global $wpdb, $wc_product_attributes;
 
 		// Make sure caches are clean.
@@ -248,7 +248,7 @@ class ProductHelper extends WCG_Helper {
 					'woocommerce_taxonomy_args_' . $taxonomy_name,
 					array(
 						'labels'       => array(
-							'name' => $raw_name,
+							'name' => ! empty( $label ) ? $label : $raw_name,
 						),
 						'hierarchical' => false,
 						'show_ui'      => false,

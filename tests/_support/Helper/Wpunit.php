@@ -30,8 +30,8 @@ class Wpunit extends \Codeception\Module {
 	 */
 	public function _beforeSuite( $settings = null ) {
 		$helper = $this->product();
-		$helper->create_attribute( 'size', [ 'small', 'medium', 'large' ] );
-		$helper->create_attribute( 'color', [ 'red', 'blue', 'green' ] );
+		$helper->create_attribute( 'size', [ 'small', 'medium', 'large' ], 'Product size' );
+		$helper->create_attribute( 'color', [ 'red', 'blue', 'green' ], 'Product color' );
 		codecept_debug( 'ATTRIBUTES_LOADED' );
 		add_action( 'init_graphql_request', [ self::class, 'shortcode_test_init' ] );
 		codecept_debug( 'SHORTCODE_INITIALIZED' );

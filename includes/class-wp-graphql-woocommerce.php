@@ -300,6 +300,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-collection-stats-query-input.php';
 			require $include_directory_path . 'type/input/class-collection-stats-where-args.php';
 			require $include_directory_path . 'type/input/class-product-attribute-filter-input.php';
+			require $include_directory_path . 'type/input/class-product-attribute-query-input.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';

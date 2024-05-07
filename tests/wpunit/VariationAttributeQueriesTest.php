@@ -165,7 +165,6 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		];
 		$attributes     = array_map(
 			static function ( $data, $index ) {
-				\codecept_debug( $data );
 				$attribute = new \WC_Product_Attribute();
 				$attribute->set_id( $data['attribute_id'] );
 				$attribute->set_name( $data['attribute_taxonomy'] );
