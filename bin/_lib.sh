@@ -66,12 +66,12 @@ install_local_test_library() {
 	composer install
 	composer require --dev \
 		lucatume/wp-browser:^3.1 \
-		symfony/finder:* \
-		codeception/lib-asserts:^1.0 \
-		codeception/module-asserts:^1.3.1 \
+		phpunit/phpunit:^9.6 \
+		codeception/lib-asserts:* \
+		codeception/module-asserts:* \
 		codeception/module-rest:* \
 		codeception/util-universalframework:^1.0  \
-		wp-graphql/wp-graphql-testcase:^2.3 \
+		wp-graphql/wp-graphql-testcase \
 		stripe/stripe-php \
 		fakerphp/faker
 

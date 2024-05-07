@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
+use Automattic\WooCommerce\Internal\ProductAttributesLookup\Filterer;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
@@ -35,6 +36,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	protected $post_type;
 
 	/**
+	 * The instance of the class that helps filtering with the product attributes lookup table.
+	 *
+	 * @var \Automattic\WooCommerce\Internal\ProductAttributesLookup\Filterer
+	 */
+	private $filterer; // @phpstan-ignore-line
+
+	/**
 	 * Refund_Connection_Resolver constructor.
 	 *
 	 * @param mixed                                $source    The object passed down from the previous level in the Resolve tree.
@@ -45,6 +53,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function __construct( $source, $args, $context, $info ) {
 		// @codingStandardsIgnoreLine.
 		$this->post_type = ['product'];
+
+		$this->filterer = wc_get_container()->get( Filterer::class ); // @phpstan-ignore-line
 
 		/**
 		 * Call the parent construct to setup class data
@@ -90,6 +100,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 * Set post_type
 		 */
 		$query_args['post_type'] = $this->post_type;
+
+		/**
+		 * Set the wc_query to product_query
+		 */
+		$query_args['wc_query'] = 'product_query';
 
 		/**
 		 * Set the post_status
@@ -148,60 +163,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			 * Don't order search results by title (causes funky issues with cursors)
 			 */
 			$query_args['search_orderby_title'] = false;
-			$query_args['orderby']              = 'date';
-			$query_args['order']                = isset( $last ) ? 'ASC' : 'DESC';
+			$query_args = array_merge( $query_args, \WC()->query->get_catalog_ordering_args( 'relevance', isset( $last ) ? 'ASC' : 'DESC' ) );
 		}
 
-		/**
-		 * Product post-type object.
-		 *
-		 * @var \WP_Post_Type
-		 */
-		$post_type_obj = get_post_type_object( 'product' );
-			
-		if ( empty( $this->args['where']['visibility'] ) && ! current_user_can( $post_type_obj->cap->read_private_posts ) ) {
-			if ( empty( $query_args['tax_query'] ) ) {
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-				$query_args['tax_query'] = [];
-			}
-
-			/**
-			 * Filters the default catalog visibility tax query for non-adminstrator requests.
-			 *
-			 * @param array       $default_visibility  Default catalog visibility tax query.
-			 * @param array       $query_args          The args that will be passed to the WP_Query.
-			 * @param mixed       $source              The source that's passed down the GraphQL queries.
-			 * @param array       $args                The inputArgs on the field.
-			 * @param \WPGraphQL\AppContext  $context             The AppContext passed down the GraphQL tree.
-			 * @param \GraphQL\Type\Definition\ResolveInfo $info                The ResolveInfo passed down the GraphQL tree.
-			 */
-			$catalog_visibility = apply_filters(
-				'graphql_product_connection_catalog_visibility',
-				[
-					'taxonomy' => 'product_visibility',
-					'field'    => 'slug',
-					'terms'    => [ 'exclude-from-catalog', 'exclude-from-search' ],
-					'operator' => 'NOT IN',
-				],
-				$query_args,
-				$this->source,
-				$this->args,
-				$this->context,
-				$this->info
-			);
-
-			if ( ! empty( $catalog_visibility ) ) {
-				$query_args['tax_query'][] = $catalog_visibility;
-			}
-
-			if ( 1 < count( $query_args['tax_query'] ) ) {
-				$query_args['tax_query']['relation'] = 'AND';
-			}
-		}//end if
-
 		if ( empty( $query_args['orderby'] ) ) {
-			$query_args['orderby'] = 'date';
-			$query_args['order']   = isset( $last ) ? 'ASC' : 'DESC';
+			$query_args = array_merge( $query_args, \WC()->query->get_catalog_ordering_args( 'menu_order', isset( $last ) ? 'ASC' : 'DESC' ) );
 		}
 
 		/**
@@ -228,8 +194,75 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WP_Query
 	 */
 	public function get_query() {
-		// Run query and remove hook.
-		return new \WP_Query( $this->query_args );
+		// Run query and add product query filters.
+		$wp_query             = new \WP_Query();
+		$wp_query->query_vars = wp_parse_args( $this->query_args );
+		add_filter( 'posts_clauses', [ $this, 'product_query_post_clauses' ], 10, 2 );
+
+		return $wp_query;
+	}
+
+	/**
+	 * Filter the product query and apply WC's custom clauses.
+	 *
+	 * @param array     $args      The query clauses.
+	 * @param \WP_Query $wp_query  The WP_Query object.
+	 *
+	 * @return array
+	 */
+	public function product_query_post_clauses( $args, $wp_query ) {
+		if ( 'product_query' !== $wp_query->get( 'wc_query' ) ) {
+			return $args;
+		}
+
+		$args = $this->price_filter_post_clauses( $args, $wp_query );
+		$args = $this->filterer->filter_by_attribute_post_clauses( $args, $wp_query, [] ); // @phpstan-ignore-line
+
+		return $args;
+	}
+
+	/**
+	 * Custom query used to filter products by price.
+	 *
+	 * @param array     $args      SQL clauses                                         $args      Query args.
+	 * @param \WP_Query $wp_query  WP_Query object.
+	 *
+	 * @return array
+	 */
+	public function price_filter_post_clauses( $args, $wp_query ) {
+		global $wpdb;
+
+		$min_price = $wp_query->get( 'min_price' );
+		$max_price = $wp_query->get( 'max_price' );
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$current_min_price = $min_price ?: 0;
+		$current_max_price = $max_price ?: PHP_INT_MAX;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		/**
+		 * Adjust if the store taxes are not displayed how they are stored.
+		 * Kicks in when prices excluding tax are displayed including tax.
+		 */
+		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
+			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			$tax_rates = \WC_Tax::get_rates( $tax_class );
+
+			if ( $tax_rates ) {
+				$current_min_price -= \WC_Tax::get_tax_total( \WC_Tax::calc_inclusive_tax( $current_min_price, $tax_rates ) );
+				$current_max_price -= \WC_Tax::get_tax_total( \WC_Tax::calc_inclusive_tax( $current_max_price, $tax_rates ) );
+			}
+		}
+
+		$args['join']  .= ! strstr( $args['join'], 'wc_product_meta_lookup' )
+			? " LEFT JOIN {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup ON $wpdb->posts.ID = wc_product_meta_lookup.product_id "
+			: '';
+		$args['where'] .= $wpdb->prepare(
+			' AND NOT (%f<wc_product_meta_lookup.min_price OR %f>wc_product_meta_lookup.max_price ) ',
+			$current_max_price,
+			$current_min_price
+		);
+		return $args;
 	}
 
 	/**
@@ -288,16 +321,30 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function sanitize_input_fields( array $where_args ) {
 		$query_args = Utils::map_input(
-			$this->sanitize_common_inputs( $where_args ),
+			$where_args,
 			[
 				'slugIn'      => 'post_name__in',
 				'minPrice'    => 'min_price',
 				'maxPrice'    => 'max_price',
 				'stockStatus' => 'stock_status',
 				'status'      => 'post_status',
-				'search'      => 's',
+				'include'     => 'post__in',
+				'exclude'     => 'post__not_in',
+				'parent'      => 'post_parent',
+				'parentIn'    => 'post_parent__in',
+				'parentNotIn' => 'post_parent__not_in',
+				'search'      => 'search',
 			]
 		);
+
+		if ( ! empty( $where_args['orderby'] ) ) {
+			$default_order = isset( $this->args['last'] ) ? 'ASC' : 'DESC';
+			$orderby_input = current( $where_args['orderby'] );
+
+			$orderby    = $orderby_input['field'];
+			$order      = ! empty( $orderby_input['order'] ) ? $orderby_input['order'] : $default_order;
+			$query_args = array_merge( $query_args, \WC()->query->get_catalog_ordering_args( $orderby, $order ) );
+		}
 
 		if ( isset( $where_args['includeVariations'] ) && $where_args['includeVariations'] ) {
 			$query_args['post_type'] = [ 'product', 'product_variation' ];
@@ -573,13 +620,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			];
 		}
 
-		if ( ! empty( $where_args['minPrice'] ) || ! empty( $where_args['maxPrice'] ) ) {
-			$price_meta_args = [
-				'min_price' => isset( $where_args['minPrice'] ) ? floatval( $where_args['minPrice'] ) : 0,
-				'max_price' => isset( $where_args['maxPrice'] ) ? floatval( $where_args['maxPrice'] ) : PHP_INT_MAX,
-			];
+		if ( ! empty( $where_args['minPrice'] ) ) {
+			$query_args['min_price'] = floatval( $where_args['minPrice'] );
+		}
 
-			$meta_query[] = wc_get_min_max_price_meta_query( $price_meta_args );
+		if ( ! empty( $where_args['maxPrice'] ) ) {
+			$query_args['max_price'] = floatval( $where_args['maxPrice'] );
 		}
 
 		if ( isset( $where_args['stockStatus'] ) ) {

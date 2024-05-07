@@ -70,13 +70,13 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 						'jwtAuthToken',
 						! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user ) )
 							? \WPGraphQL\JWT_Authentication\Auth::get_token( $wp_user )
-							: null
+							: self::IS_NULL
 					),
 					$this->expectedField(
 						'jwtRefreshToken',
 						! is_wp_error( \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user ) )
 							? \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user )
-							: null
+							: self::IS_NULL
 					),
 				]
 			),

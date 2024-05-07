@@ -201,7 +201,7 @@ class Customers {
 	 * @return array
 	 */
 	public static function upgrade_models( $connection, $resolver ) {
-		if ( 'customers' === $resolver->getInfo()->fieldName ) {
+		if ( 'customers' === $resolver->get_info()->fieldName ) {
 			$nodes = [];
 			$edges = [];
 			foreach ( $connection['nodes'] as $node ) {

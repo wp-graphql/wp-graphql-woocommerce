@@ -42,7 +42,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Confirm valid response
-		$this->assertIsValidQueryResponse( $response );
+		$this->assertResponseIsValid( $response );
 
 		// Get/validate cart item key.
 		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );
@@ -115,7 +115,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Confirm valid response
-		$this->assertIsValidQueryResponse( $response );
+		$this->assertResponseIsValid( $response );
 
 		// Get/validate cart item key.
 		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );

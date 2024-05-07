@@ -464,6 +464,16 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				]
 			),
 			$this->factory->product->createExternal(),
+			$this->factory->product->createSimple(
+				[
+					'price'             => 200,
+					'regular_price'     => 300,
+					'sale_price'        => 200,
+					'date_on_sale_from' => ( new \DateTime( 'yesterday' ) )->format( 'Y-m-d H:i:s' ),
+					'date_on_sale_to'   => ( new \DateTime( 'tomorrow' ) )->format( 'Y-m-d H:i:s' ),
+					'stock_status'      => 'outofstock',
+				]
+			),
 		];
 
 		$query = '
@@ -485,6 +495,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				$taxonomyFilter: ProductTaxonomyInput
 				$include: [Int]
 				$exclude: [Int]
+				$stockStatus: [StockStatusEnum]
 			) {
 				products( where: {
 					slugIn: $slugIn,
@@ -504,13 +515,16 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					taxonomyFilter: $taxonomyFilter
 					include: $include
 					exclude: $exclude
+					stockStatus: $stockStatus
 				} ) {
 					nodes {
-						... on SimpleProduct {
-							id
+						id
+						... on ProductWithPricing {
+							databaseId
+							price
 						}
-						... on ExternalProduct {
-							id
+						... on InventoriedProduct {
+							stockStatus
 						}
 					}
 				}
@@ -521,7 +535,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			function ( $product_id ) {
 				return $this->expectedNode(
 					'products.nodes',
-					[ 'id' => $this->toRelayId( 'product', $product_id ) ]
+					[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_id ) ) ]
 				);
 			},
 			$product_ids
@@ -674,13 +688,13 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_ids[0] ) ],
+				[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_ids[0] ) ) ],
 				0
 			),
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_ids[1] ) ],
-				3
+				[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_ids[1] ) ) ],
+				4
 			),
 		];
 
@@ -827,7 +841,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected  = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_ids[0] ) ]
+				[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_ids[0] ) ) ]
 			),
 		];
 		$this->assertQuerySuccessful( $response, $expected );
@@ -839,7 +853,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected  = [
 			$this->expectedField(
 				'products.nodes',
-				[]
+				self::IS_FALSY
 			),
 		];
 		$this->assertQuerySuccessful( $response, $expected );
@@ -856,7 +870,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected  = [
 			$this->not()->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_ids[0] ) ]
+				[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_ids[0] ) ) ]
 			),
 		];
 		$this->assertQuerySuccessful( $response, $expected );
@@ -866,7 +880,33 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected  = [
 			$this->expectedField(
 				'products.nodes',
-				[]
+				self::IS_FALSY
+			),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion 21-22
+		 *
+		 * Tests "stockStatus" where argument
+		 */
+		$variables = [ 'stockStatus' => 'IN_STOCK' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->not()->expectedNode(
+				'products.nodes',
+				[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_ids[4] ) ) ]
+			),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$variables = [ 'stockStatus' => 'OUT_OF_STOCK' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedNode(
+				'products.nodes',
+				[ $this->expectedField( 'id', $this->toRelayId( 'product', $product_ids[4] ) ) ],
+				0
 			),
 		];
 		$this->assertQuerySuccessful( $response, $expected );
