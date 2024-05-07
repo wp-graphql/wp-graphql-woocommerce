@@ -99,7 +99,7 @@ remove_local_test_library() {
 	composer remove --dev wp-graphql/wp-graphql-testcase \
 		codeception/module-asserts \
 		codeception/lib-asserts \
-		symfony/finder \
+		phpunit/phpunit \
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
