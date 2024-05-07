@@ -41,7 +41,7 @@ class Collection_Stats_Type {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $source['min_price'];
 							}
-							
+
 							return wc_graphql_price( $source['min_price'] );
 						},
 					],
@@ -62,7 +62,7 @@ class Collection_Stats_Type {
 							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 								return $source['max_price'];
 							}
-							
+
 							return wc_graphql_price( $source['max_price'] );
 						},
 					],
@@ -225,7 +225,7 @@ class Collection_Stats_Type {
 								( $page - 1 ) * $per_page,
 								0 < $per_page ? $per_page : null
 							);
-				
+
 							return array_map(
 								static function ( $name, $terms ) {
 									return (object) compact( 'name', 'terms' );
@@ -257,7 +257,7 @@ class Collection_Stats_Type {
 								( $page - 1 ) * $per_page,
 								0 < $per_page ? $per_page : null
 							);
-				
+
 							return $rating_counts;
 						},
 					],
@@ -283,7 +283,7 @@ class Collection_Stats_Type {
 								( $page - 1 ) * $per_page,
 								0 < $per_page ? $per_page : null
 							);
-				
+
 							return $stock_status_counts;
 						},
 					],
@@ -295,12 +295,12 @@ class Collection_Stats_Type {
 	/**
 	 * Prepare the WP_Rest_Request instance used for the resolution of a
 	 * statistics for a product connection.
-	 * 
+	 *
 	 * @param array $where_args  Arguments used to filter the connection results.
-	 * 
+	 *
 	 * @return \WP_REST_Request
 	 */
-	public static function prepare_rest_request( array $where_args = [] ) /* @phpstan-ignore-line */ {  
+	public static function prepare_rest_request( array $where_args = [] ) {
 		$request = new \WP_REST_Request();
 		if ( empty( $where_args ) ) {
 			return $request;
@@ -369,7 +369,7 @@ class Collection_Stats_Type {
 				$request->set_param( 'tag', $tag_ids );
 			}
 		}
-		
+
 		if ( ! empty( $where_args['attributes'] ) && ! empty( $where_args['attributes']['queries'] ) ) {
 			$attributes       = $where_args['attributes']['queries'];
 			$att_queries      = [];
@@ -386,7 +386,7 @@ class Collection_Stats_Type {
 
 				$operator = ! empty( $filter['operator'] ) ? $operator_mapping[ $filter['operator'] ] : 'in';
 				if ( ! empty( $filter['terms'] ) ) {
-					foreach( $filter['terms'] as $term ) {
+					foreach ( $filter['terms'] as $term ) {
 						$att_queries[] = [
 							'attribute' => $filter['taxonomy'],
 							'operator'  => $operator,
@@ -395,9 +395,8 @@ class Collection_Stats_Type {
 					}
 				}
 
-
 				if ( ! empty( $filter['ids'] ) ) {
-					foreach( $filter['ids'] as $term_id ) {
+					foreach ( $filter['ids'] as $term_id ) {
 						$att_queries[] = [
 							'attribute' => $filter['taxonomy'],
 							'operator'  => $operator,
@@ -407,13 +406,13 @@ class Collection_Stats_Type {
 				}
 			}
 
-			if ( ! empty( $att_queries ) ) { 
+			if ( ! empty( $att_queries ) ) {
 				$request->set_param( 'attributes', $att_queries );
 			}
 
-			if ( ! empty ( $where_args['attributes']['relation'] ) ) {
+			if ( ! empty( $where_args['attributes']['relation'] ) ) {
 				$relation = $where_args['attributes']['relation'];
-				if ( $relation === 'NOT_IN' ) {
+				if ( 'NOT_IN' === $relation ) {
 					graphql_debug( __( 'NOT_IN relation is not supported for attributes queries top-level "relation" field. Use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
 					$relation = 'IN';
 				}

@@ -239,12 +239,12 @@ class Session_Transaction_Manager {
 
 			/**
 			 * Mark transaction completion
-			 * 
+			 *
 			 * @param string|null $transition_id     Removed transaction ID.
 			 * @param array       $transaction_queue Transaction Queue.
 			 */
 			do_action( 'woographql_session_transaction_complete', $this->transaction_id, $transaction_queue );
-			
+
 			// Clear transaction ID.
 			$this->transaction_id = null;
 		}

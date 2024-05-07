@@ -35,7 +35,7 @@ class JWT_Auth_Schema_Filters {
 	 * Get the auth token for a user.
 	 *
 	 * @param \WP_User $user The user object.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If the token cannot be retrieved.
 	 *
 	 * @return string|null
@@ -69,7 +69,7 @@ class JWT_Auth_Schema_Filters {
 	 * Get the refresh token for a user.
 	 *
 	 * @param \WP_User $user The user object.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If the token cannot be retrieved.
 	 *
 	 * @return string|null

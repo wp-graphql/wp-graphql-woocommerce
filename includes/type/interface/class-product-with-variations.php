@@ -1,7 +1,7 @@
 <?php
 /**
  * Defines the "ProductWithVariations" type.
- * 
+ *
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.17.0
  */

@@ -547,7 +547,6 @@ class Root_Query {
 							'rating_counts'       => null,
 						];
 						$filters = new ProductQueryFilters(); // @phpstan-ignore-line
-						
 
 						// Process client-side filters.
 						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? [] );
@@ -569,35 +568,37 @@ class Root_Query {
 							// Set the attribute counts to calculate.
 							$request->set_param( 'calculate_attribute_counts', $calculate_attribute_counts );
 						}
- 
+
 						$request->set_param( 'calculate_price_range', $args['calculatePriceRange'] ?? false );
 						$request->set_param( 'calculate_stock_status_counts', $args['calculateStockStatusCounts'] ?? false );
 						$request->set_param( 'calculate_rating_counts', $args['calculateRatingCounts'] ?? false );
 
-
-						
 						if ( ! empty( $request['calculate_price_range'] ) ) {
 							/**
-							 * @var $filter_request \WP_REST_Request
+							 * A Rest request object for external filtering
+							 * 
+							 * @var \WP_REST_Request $filter_request 
 							 */
 							$filter_request = clone $request;
 							$filter_request->set_param( 'min_price', null );
 							$filter_request->set_param( 'max_price', null );
 
-							$price_results     = $filters->get_filtered_price( $filter_request );
+							$price_results     = $filters->get_filtered_price( $filter_request ); // @phpstan-ignore-line
 							$data['min_price'] = $price_results->min_price;
 							$data['max_price'] = $price_results->max_price;
 						}
 
 						if ( ! empty( $request['calculate_stock_status_counts'] ) ) {
 							/**
-							 * @var $filter_request \WP_REST_Request
+							 * A Rest request object for external filtering
+							 * 
+							 * @var \WP_REST_Request $filter_request 
 							 */
 							$filter_request = clone $request;
-							$counts         = $filters->get_stock_status_counts( $filter_request );
-				
+							$counts         = $filters->get_stock_status_counts( $filter_request ); // @phpstan-ignore-line
+
 							$data['stock_status_counts'] = [];
-				
+
 							foreach ( $counts as $key => $value ) {
 								$data['stock_status_counts'][] = (object) [
 									'status' => $key,
@@ -625,7 +626,9 @@ class Root_Query {
 							if ( ! empty( $taxonomy__or_queries ) ) {
 								foreach ( $taxonomy__or_queries as $taxonomy ) {
 									/**
-									 * @var $filter_request \WP_REST_Request
+									 * A Rest request object for external filtering
+									 * 
+									 * @var \WP_REST_Request $filter_request 
 									 */
 									$filter_request    = clone $request;
 									$filter_attributes = $filter_request->get_param( 'attributes' );
@@ -633,14 +636,14 @@ class Root_Query {
 									if ( ! empty( $filter_attributes ) ) {
 										$filter_attributes = array_filter(
 											$filter_attributes,
-											function ( $query ) use ( $taxonomy ) {
+											static function ( $query ) use ( $taxonomy ) {
 												return $query['attribute'] !== $taxonomy;
 											}
 										);
 									}
 
 									$filter_request->set_param( 'attributes', $filter_attributes );
-									$counts = $filters->get_attribute_counts( $filter_request, [ $taxonomy ] );
+									$counts = $filters->get_attribute_counts( $filter_request, [ $taxonomy ] ); // @phpstan-ignore-line
 
 									$data['attribute_counts'][ $taxonomy ] = [];
 									foreach ( $counts as $key => $value ) {
@@ -654,7 +657,7 @@ class Root_Query {
 							}
 
 							if ( ! empty( $taxonomy__and_queries ) ) {
-								$counts         = $filters->get_attribute_counts( $request, $taxonomy__and_queries );
+								$counts = $filters->get_attribute_counts( $request, $taxonomy__and_queries ); // @phpstan-ignore-line
 
 								foreach ( $taxonomy__and_queries as $taxonomy ) {
 									$data['attribute_counts'][ $taxonomy ] = [];
@@ -671,12 +674,14 @@ class Root_Query {
 
 						if ( ! empty( $request['calculate_rating_counts'] ) ) {
 							/**
-							 * @var $filter_request \WP_REST_Request
+							 * A Rest request object for external filtering
+							 *
+							 * @var \WP_REST_Request $filter_request 
 							 */
 							$filter_request        = clone $request;
-							$counts                = $filters->get_rating_counts( $filter_request );
+							$counts                = $filters->get_rating_counts( $filter_request ); // @phpstan-ignore-line
 							$data['rating_counts'] = [];
-				
+
 							foreach ( $counts as $key => $value ) {
 								$data['rating_counts'][] = (object) [
 									'rating' => $key,
@@ -687,7 +692,7 @@ class Root_Query {
 
 						return $data;
 					},
-				],  
+				],
 			]
 		);
 

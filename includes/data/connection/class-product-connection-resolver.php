@@ -99,7 +99,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args['post_type'] = $this->post_type;
 
-
 		/**
 		 * Set the wc_query to product_query
 		 */
@@ -188,8 +187,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return \WC_Query
 	 */
 	public function get_query() {
 		// Run query and add product query filters.
@@ -268,7 +265,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_ids_from_query() {
 		$ids = $this->query->get_posts();
-		remove_filter( 'posts_clauses', array( $this, 'product_query_post_clauses' ), 10, 2 );
+		remove_filter( 'posts_clauses', [ $this, 'product_query_post_clauses' ], 10 );
 
 		// If we're going backwards, we need to reverse the array.
 		if ( ! empty( $this->args['last'] ) ) {
@@ -282,7 +279,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * Returns meta keys to be used for connection ordering.
 	 *
 	 * @param bool $is_numeric  Return numeric meta keys. Defaults to "true".
-	 * 
+	 *
 	 * @return array
 	 */
 	public function ordering_meta( $is_numeric = true ) {
@@ -477,9 +474,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				}
 
 				$operator = isset( $attribute['operator'] ) ? $attribute['operator'] : 'IN';
-				
+
 				if ( ! empty( $attribute['terms'] ) ) {
-					foreach( $attribute['terms'] as $term ) {
+					foreach ( $attribute['terms'] as $term ) {
 						$att_queries[] = [
 							'taxonomy' => $attribute['taxonomy'],
 							'field'    => 'slug',
@@ -490,7 +487,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				}
 
 				if ( ! empty( $attribute['ids'] ) ) {
-					foreach( $attribute['ids'] as $id ) {
+					foreach ( $attribute['ids'] as $id ) {
 						$att_queries[] = [
 							'taxonomy' => $attribute['taxonomy'],
 							'field'    => 'term_id',
@@ -502,16 +499,16 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			}
 
 			if ( 1 < count( $att_queries ) ) {
-				$relation    = ! empty( $where_args['attributes']['relation'] ) ? $where_args['attributes']['relation'] : 'AND';
+				$relation = ! empty( $where_args['attributes']['relation'] ) ? $where_args['attributes']['relation'] : 'AND';
 				if ( 'NOT_IN' === $relation ) {
 					graphql_debug( __( 'The "NOT_IN" relation is not supported for attributes. Please use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
 					$relation = 'IN';
 				}
 
-				$tax_query[] = [
-					'relation' => $relation,
-					...$att_queries,
-				];
+				$tax_query[] = array_merge(
+					[ 'relation' => $relation ],
+					$att_queries
+				);
 			} else {
 				$tax_query = array_merge( $tax_query, $att_queries );
 			}
@@ -604,7 +601,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				'terms'    => $rating_terms,
 			];
 		}
-	
+
 		// Process "taxonomyFilter".
 		$tax_filter_query = [];
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
@@ -704,8 +701,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args[ $on_sale_key ] = $on_sale_ids;
 		}
 
-		
-
 		/**
 		 * {@inheritDoc}
 		 */
@@ -764,9 +759,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * Adds meta query to the query args.
-	 * 
+	 *
 	 * @param array $value Meta query.
-	 * 
+	 *
 	 * @return \WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver
 	 */
 	public function add_meta_query( $value ) {

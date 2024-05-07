@@ -292,7 +292,7 @@ class Products {
 
 	/**
 	 * Returns array of where args.
-	 * 
+	 *
 	 * @param array $extra_args  Extra connection args.
 	 *
 	 * @return array
@@ -379,7 +379,7 @@ class Products {
 				'type'        => 'Int',
 				'description' => __( 'Limit result set to products assigned a specific shipping class ID.', 'wp-graphql-woocommerce' ),
 			],
-			'attributes'   => [
+			'attributes'         => [
 				'type'        => 'ProductAttributeQueryInput',
 				'description' => __( 'Limit result set to products with selected global attribute queries.', 'wp-graphql-woocommerce' ),
 			],

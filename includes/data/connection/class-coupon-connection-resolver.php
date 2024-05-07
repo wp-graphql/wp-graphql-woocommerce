@@ -198,7 +198,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * Returns meta keys to be used for connection ordering.
-	 * 
+	 *
 	 * @param bool $is_numeric  Return numeric meta keys. Defaults to "true".
 	 *
 	 * @return array

@@ -1,7 +1,7 @@
 <?php
 /**
  * Defines the union between product types and product variation types.
- * 
+ *
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.17.0
  */

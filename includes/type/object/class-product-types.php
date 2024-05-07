@@ -38,7 +38,7 @@ class Product_Types {
 	 * Returns the GraphQL interfaces for product types.
 	 *
 	 * @param array $other_interfaces Other interfaces to merge with the product interfaces.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function get_product_interfaces( $other_interfaces = [] ) {
