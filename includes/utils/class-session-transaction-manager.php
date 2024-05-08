@@ -221,7 +221,7 @@ class Session_Transaction_Manager {
 		}
 
 		// Bail if not the expected mutation.
-		if ( str_starts_with( $this->transaction_id, "wooSession_{$mutation}_" ) ) {
+		if ( ! str_starts_with( $this->transaction_id, "wooSession_{$mutation}_" ) ) {
 			return;
 		}
 
@@ -230,6 +230,8 @@ class Session_Transaction_Manager {
 
 		// Throw if transaction ID not on top.
 		if ( $this->transaction_id !== $transaction_queue[0]['transaction_id'] ) {
+			$this->save_transaction_queue( null );
+        	$this->transaction_id = null;
 			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
 		} else {
 
