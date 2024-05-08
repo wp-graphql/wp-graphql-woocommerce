@@ -29,6 +29,9 @@ class Product_Attribute_Input {
 					'attributeValue' => [
 						'type' => 'String',
 					],
+					'id'             => [
+						'type' => 'Int',
+					],
 				],
 			]
 		);
