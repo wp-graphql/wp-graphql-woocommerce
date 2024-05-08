@@ -230,8 +230,8 @@ class Session_Transaction_Manager {
 
 		// Throw if transaction ID not on top.
 		if ( $this->transaction_id !== $transaction_queue[0]['transaction_id'] ) {
-			$this->save_transaction_queue( null );
-        	$this->transaction_id = null;
+			$this->save_transaction_queue( [] );
+			$this->transaction_id = null;
 			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
 		} else {
 
