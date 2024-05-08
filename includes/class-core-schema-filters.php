@@ -129,6 +129,7 @@ class Core_Schema_Filters {
 			$args['graphql_interfaces']               = [ 'ContentNode' ];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
+			$args['graphql_exclude_mutations']        = [ 'create', 'delete', 'update' ];
 			$args['graphql_resolve_type']             = static function ( $value ) {
 				$type_registry  = \WPGraphQL::get_type_registry();
 				$possible_types = WooGraphQL::get_enabled_product_types();

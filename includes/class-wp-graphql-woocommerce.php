@@ -205,6 +205,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/mutation/class-coupon-mutation.php';
 			require $include_directory_path . 'data/mutation/class-customer-mutation.php';
 			require $include_directory_path . 'data/mutation/class-order-mutation.php';
+			require $include_directory_path . 'data/mutation/class-product-mutation.php';
 
 			// Include factory class file.
 			require $include_directory_path . 'data/class-factory.php';
@@ -282,6 +283,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-payment-token-types.php';
 			require $include_directory_path . 'type/object/class-country-state-type.php';
 			require $include_directory_path . 'type/object/class-collection-stats-type.php';
+			require $include_directory_path . 'type/object/class-product-attribute-object-type.php';
+			require $include_directory_path . 'type/object/class-product-attribute-term-object-type.php';
 
 			// Include input type class files.
 			require $include_directory_path . 'type/input/class-cart-item-input.php';
@@ -300,6 +303,10 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-collection-stats-query-input.php';
 			require $include_directory_path . 'type/input/class-collection-stats-where-args.php';
 			require $include_directory_path . 'type/input/class-product-attribute-filter-input.php';
+			require $include_directory_path . 'type/input/class-product-attributes-input.php';
+			require $include_directory_path . 'type/input/class-product-dimensions-input.php';
+			require $include_directory_path . 'type/input/class-product-download-input.php';
+			require $include_directory_path . 'type/input/class-product-image-input.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';
@@ -323,11 +330,23 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-order-delete-items.php';
 			require $include_directory_path . 'mutation/class-order-delete.php';
 			require $include_directory_path . 'mutation/class-order-update.php';
+			require $include_directory_path . 'mutation/class-payment-method-delete.php';
+			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
+			require $include_directory_path . 'mutation/class-product-attribute-create.php';
+			require $include_directory_path . 'mutation/class-product-attribute-delete.php';
+			require $include_directory_path . 'mutation/class-product-attribute-term-create.php';
+			require $include_directory_path . 'mutation/class-product-attribute-term-delete.php';
+			require $include_directory_path . 'mutation/class-product-attribute-term-update.php';
+			require $include_directory_path . 'mutation/class-product-attribute-update.php';
+			require $include_directory_path . 'mutation/class-product-create.php';
+			require $include_directory_path . 'mutation/class-product-delete.php';
+			require $include_directory_path . 'mutation/class-product-update.php';
+			require $include_directory_path . 'mutation/class-product-variation-create.php';
+			require $include_directory_path . 'mutation/class-product-variation-delete.php';
+			require $include_directory_path . 'mutation/class-product-variation-update.php';
 			require $include_directory_path . 'mutation/class-review-write.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';
 			require $include_directory_path . 'mutation/class-review-update.php';
-			require $include_directory_path . 'mutation/class-payment-method-delete.php';
-			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
 			require $include_directory_path . 'mutation/class-update-session.php';
 
 			// Include connection class/function files.
