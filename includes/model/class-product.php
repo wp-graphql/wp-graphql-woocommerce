@@ -92,6 +92,7 @@ use GraphQLRelay\Relay;
  *
  * @property int[]         $variation_ids
  *
+ * @mixin \WC_Product
  * @package WPGraphQL\WooCommerce\Model
  */
 class Product extends WC_Post {

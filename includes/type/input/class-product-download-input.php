@@ -23,18 +23,18 @@ class Product_Download_Input {
 			[
 				'description' => __( 'Product download', 'wp-graphql-woocommerce' ),
 				'fields'      => [
-					'id'          => [
-                        'type'        => 'Int',
-                        'description' => __( 'File ID', 'wp-graphql-woocommerce' ),
-                    ],
-                    'name'        => [
-                        'type'        => [ 'non_null' => 'String' ],
-                        'description' => __( 'File name', 'wp-graphql-woocommerce' ),
-                    ],
-                    'file'        => [
-                        'type'        => [ 'non_null' => 'String' ],
-                        'description' => __( 'File URL', 'wp-graphql-woocommerce' ),
-                    ],
+					'id'   => [
+						'type'        => 'Int',
+						'description' => __( 'File ID', 'wp-graphql-woocommerce' ),
+					],
+					'name' => [
+						'type'        => [ 'non_null' => 'String' ],
+						'description' => __( 'File name', 'wp-graphql-woocommerce' ),
+					],
+					'file' => [
+						'type'        => [ 'non_null' => 'String' ],
+						'description' => __( 'File URL', 'wp-graphql-woocommerce' ),
+					],
 				],
 			]
 		);

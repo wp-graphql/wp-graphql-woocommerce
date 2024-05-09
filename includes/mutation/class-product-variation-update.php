@@ -10,10 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Mutation\Product_Mutation;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
 
 /**
@@ -36,7 +32,7 @@ class Product_Variation_Update {
 		);
 	}
 
-    /**
+	/**
 	 * Defines the mutation input field configuration
 	 *
 	 * @return array
@@ -51,16 +47,16 @@ class Product_Variation_Update {
 			],
 			Product_Variation_Create::get_input_fields()
 		);
-    }
+	}
 
-    /**
+	/**
 	 * Defines the mutation output field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_output_fields() {
 		return [
-			'variation'   => [
+			'variation' => [
 				'type'    => 'ProductVariation',
 				'resolve' => static function ( $payload ) {
 					return new Product_Variation( $payload['id'] );

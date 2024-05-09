@@ -24,17 +24,17 @@ class Product_Dimensions_Input {
 				'description' => __( 'Product dimensions', 'wp-graphql-woocommerce' ),
 				'fields'      => [
 					'length' => [
-                        'type'        => 'String',
-                        'description' => __( 'Length of the product', 'wp-graphql-woocommerce' ),
-                    ],
-                    'width'  => [
-                        'type'        => 'String',
-                        'description' => __( 'Width of the product', 'wp-graphql-woocommerce' ),
-                    ],
-                    'height' => [
-                        'type'        => 'String',
-                        'description' => __( 'Height of the product', 'wp-graphql-woocommerce' ),
-                    ],
+						'type'        => 'String',
+						'description' => __( 'Length of the product', 'wp-graphql-woocommerce' ),
+					],
+					'width'  => [
+						'type'        => 'String',
+						'description' => __( 'Width of the product', 'wp-graphql-woocommerce' ),
+					],
+					'height' => [
+						'type'        => 'String',
+						'description' => __( 'Height of the product', 'wp-graphql-woocommerce' ),
+					],
 				],
 			]
 		);

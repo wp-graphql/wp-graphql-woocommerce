@@ -25,6 +25,19 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'hasArchives' => false,
             ],
         ];
+
+        // Assert mutation fails as unauthenticated user.
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+
+        // Assert mutation fails as authenticated user without proper capabilities.
+        $this->loginAsCustomer();
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Assert mutation succeeds as authenticated user with proper capabilities.
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
@@ -66,6 +79,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'hasArchives' => false,
             ],
         ];
+
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
@@ -105,6 +120,20 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'hasArchives' => true,
             ],
         ];
+
+        // Assert mutation fails as unauthenticated user.
+        $this->loginAs( 0 );
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+
+        // Assert mutation fails as authenticated user without proper capabilities.
+        $this->loginAsCustomer();
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Assert mutation succeeds as authenticated user with proper capabilities.
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
@@ -142,6 +171,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'hasArchives' => false,
             ],
         ];
+
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $this->assertQuerySuccessful( $response );
 
@@ -163,6 +194,20 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'id' => $attribute_id,
             ],
         ];
+
+        // Assert mutation fails as unauthenticated user.
+        $this->loginAs( 0 );
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+
+        // Assert mutation fails as authenticated user without proper capabilities.
+        $this->loginAsCustomer();
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Assert mutation succeeds as authenticated user with proper capabilities.
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(

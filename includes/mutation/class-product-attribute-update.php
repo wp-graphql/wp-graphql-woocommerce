@@ -14,7 +14,6 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Product_Mutation;
-use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class Product_Attribute_Update
@@ -36,7 +35,7 @@ class Product_Attribute_Update {
 		);
 	}
 
-    /**
+	/**
 	 * Defines the mutation input field configuration
 	 *
 	 * @return array
@@ -51,16 +50,16 @@ class Product_Attribute_Update {
 			],
 			Product_Attribute_Create::get_input_fields()
 		);
-    }
+	}
 
-    /**
+	/**
 	 * Defines the mutation output field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_output_fields() {
 		return [
-			'attribute'   => [
+			'attribute' => [
 				'type'    => 'ProductAttributeObject',
 				'resolve' => static function ( $payload ) {
 					return $payload['attribute'];
@@ -69,7 +68,7 @@ class Product_Attribute_Update {
 		];
 	}
 
-    /**
+	/**
 	 * Defines the mutation data modification closure.
 	 *
 	 * @return callable
@@ -77,6 +76,10 @@ class Product_Attribute_Update {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			global $wpdb;
+
+			if ( ! wc_rest_check_manager_permissions( 'attributes', 'edit' ) ) {
+				throw new UserError( __( 'Sorry, you are not allowed to edit attributes.', 'wp-graphql-woocommerce' ) );
+			}
 
 			$id     = (int) $input['id'];
 			$edited = \wc_update_attribute(
@@ -91,27 +94,22 @@ class Product_Attribute_Update {
 			);
 
 			// Checks for errors.
-			if ( is_wp_error( $id ) ) {
-				throw new UserError( $id->get_error_message() );
+			if ( is_wp_error( $edited ) ) {
+				throw new UserError( $edited->get_error_message() );
 			}
 
 			$attribute = Product_Mutation::get_attribute( $id );
 
-			if ( is_wp_error( $attribute ) ) {
-				return [ 'attribute' => $attribute ];
-			}
-
 			/**
 			 * Fires after a single product attribute is created or updated via the REST API.
 			 *
-			 * @param stdObject $attribute Inserted attribute object.
-			 * @param array     $input     Request object.
-			 * @param boolean   $creating  True when creating attribute, false when updating.
+			 * @param object{'attribute_id': int} $attribute Inserted attribute object.
+			 * @param array                       $input     Request object.
+			 * @param boolean                     $creating  True when creating attribute, false when updating.
 			 */
 			do_action( 'graphql_woocommerce_insert_product_attribute', $attribute, $input, false );
 
-
-            return [ 'attribute' => $attribute ];
-        };
-    }
+			return [ 'attribute' => $attribute ];
+		};
+	}
 }

@@ -2,7 +2,7 @@
 
 class ProductAttributeTermMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
     public function testCreateProductAttributeTerm() {
-        $kind_attribute = $this->factory()->product->createAttribute( 'kind', [ 'normal', 'special' ] );
+        $kind_attribute = $this->factory->product->createAttribute( 'kind', [ 'normal', 'special' ] );
         
         $query = '
             mutation ($input: CreateProductAttributeTermInput!) {
@@ -29,6 +29,18 @@ class ProductAttributeTermMutationsTest extends \Tests\WPGraphQL\WooCommerce\Tes
             ],
         ];
 
+        // Assert mutation fails as unauthenticated user.
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+
+        // Assert mutation fails as authenticated user without proper capabilities.
+        $this->loginAsCustomer();
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Assert mutation succeeds as authenticated user with proper capabilities.
+        $this->loginAsShopManager();
         $response  = $this->graphql( compact( 'query', 'variables' ) );
         $expected  = [
             $this->expectedObject(
@@ -48,7 +60,7 @@ class ProductAttributeTermMutationsTest extends \Tests\WPGraphQL\WooCommerce\Tes
     }
 
     public function testUpdateProductAttributeTerm() {
-        $kind_attribute = $this->factory()->product->createAttribute( 'kind', [ 'normal', 'special', 'hated' ] );
+        $kind_attribute = $this->factory->product->createAttribute( 'kind', [ 'normal', 'special', 'hated' ] );
         $hated_term_id  = get_term_by( 'slug', 'hated', 'pa_kind' )->term_id;
 
         $query = '
@@ -77,6 +89,18 @@ class ProductAttributeTermMutationsTest extends \Tests\WPGraphQL\WooCommerce\Tes
             ],
         ];
 
+        // Assert mutation fails as unauthenticated user.
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+
+        // Assert mutation fails as authenticated user without proper capabilities.
+        $this->loginAsCustomer();
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Assert mutation succeeds as authenticated user with proper capabilities.
+        $this->loginAsShopManager();
         $response  = $this->graphql( compact( 'query', 'variables' ) );
         $expected  = [
             $this->expectedObject(
@@ -96,7 +120,7 @@ class ProductAttributeTermMutationsTest extends \Tests\WPGraphQL\WooCommerce\Tes
     }
 
     public function testDeleteProductAttributeTerm() {
-        $kind_attribute = $this->factory()->product->createAttribute( 'kind', [ 'normal', 'special', 'hated' ] );
+        $kind_attribute = $this->factory->product->createAttribute( 'kind', [ 'normal', 'special', 'hated' ] );
         $hated_term_id  = get_term_by( 'slug', 'hated', 'pa_kind' )->term_id;
 
         $query = '
@@ -117,6 +141,18 @@ class ProductAttributeTermMutationsTest extends \Tests\WPGraphQL\WooCommerce\Tes
             ],
         ];
 
+        // Assert mutation fails as unauthenticated user.
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+
+        // Assert mutation fails as authenticated user without proper capabilities.
+        $this->loginAsCustomer();
+        $response  = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Assert mutation succeeds as authenticated user with proper capabilities.
+        $this->loginAsShopManager();
         $response  = $this->graphql( compact( 'query', 'variables' ) );
         $expected  = [
             $this->expectedObject(

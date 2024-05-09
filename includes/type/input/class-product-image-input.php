@@ -23,22 +23,22 @@ class Product_Image_Input {
 			[
 				'description' => __( 'Product image', 'wp-graphql-woocommerce' ),
 				'fields'      => [
-					'id'          => [
-                        'type'        => 'Int',
-                        'description' => __( 'Image ID', 'wp-graphql-woocommerce' ),
-                    ],
-                    'src'         => [
-                        'type'        => 'String',
-                        'description' => __( 'Image URL', 'wp-graphql-woocommerce' ),
-                    ],
-                    'name'        => [
-                        'type'        => 'String',
-                        'description' => __( 'Image name', 'wp-graphql-woocommerce' ),
-                    ],
-                    'altText'         => [
-                        'type'        => 'String',
-                        'description' => __( 'Image alternative text', 'wp-graphql-woocommerce' ),
-                    ],
+					'id'      => [
+						'type'        => 'Int',
+						'description' => __( 'Image ID', 'wp-graphql-woocommerce' ),
+					],
+					'src'     => [
+						'type'        => 'String',
+						'description' => __( 'Image URL', 'wp-graphql-woocommerce' ),
+					],
+					'name'    => [
+						'type'        => 'String',
+						'description' => __( 'Image name', 'wp-graphql-woocommerce' ),
+					],
+					'altText' => [
+						'type'        => 'String',
+						'description' => __( 'Image alternative text', 'wp-graphql-woocommerce' ),
+					],
 				],
 			]
 		);
