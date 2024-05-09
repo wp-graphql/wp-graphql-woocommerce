@@ -91,6 +91,15 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		return $this->create( $args, $generation_definitions );
 	}
 
+	public function createManySimple( $count = 5, $args = []) {
+		$products = [];
+		for ( $i = 0; $i < $count; $i++ ) {
+			$products[] = $this->createSimple( $args );
+		}
+
+		return $products;
+	}
+
 	public function createExternal( $args = [] ) {
 		$name  = Dummy::instance()->product();
 		$price = Dummy::instance()->price( 15, 200 );

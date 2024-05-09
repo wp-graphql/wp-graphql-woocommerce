@@ -13,8 +13,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Mutation\Product_Mutation;
-use WPGraphQL\WooCommerce\Model\Product;
 
 /**
  * Class Product_Attribute_Term_Create
@@ -36,44 +34,44 @@ class Product_Attribute_Term_Create {
 		);
 	}
 
-    /**
+	/**
 	 * Defines the mutation input field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_input_fields() {
 		return [
-            'attributeId' => [
+			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the attribute to which the term belongs.', 'wp-graphql' ),
+				'description' => __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' ),
 			],
 			'name'        => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'The name of the term.', 'wp-graphql' ),
+				'description' => __( 'The name of the term.', 'wp-graphql-woocommerce' ),
 			],
 			'slug'        => [
 				'type'        => 'String',
-				'description' => __( 'The slug of the term.', 'wp-graphql' ),
+				'description' => __( 'The slug of the term.', 'wp-graphql-woocommerce' ),
 			],
 			'description' => [
 				'type'        => 'String',
-				'description' => __( 'The description of the term.', 'wp-graphql' ),
+				'description' => __( 'The description of the term.', 'wp-graphql-woocommerce' ),
 			],
 			'menuOrder'   => [
 				'type'        => 'Int',
-				'description' => __( 'The order of the term in the menu.', 'wp-graphql' ),
+				'description' => __( 'The order of the term in the menu.', 'wp-graphql-woocommerce' ),
 			],
-        ];
-    }
+		];
+	}
 
-    /**
+	/**
 	 * Defines the mutation output field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_output_fields() {
 		return [
-			'term'   => [
+			'term' => [
 				'type'    => 'ProductAttributeTermObject',
 				'resolve' => static function ( $payload ) {
 					return (object) $payload['term'];
@@ -82,19 +80,35 @@ class Product_Attribute_Term_Create {
 		];
 	}
 
-    /**
+	/**
 	 * Defines the mutation data modification closure.
 	 *
-	 * @return callable
+	 * @param array                                $input    Mutation input.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance. Can be
+	 * use to get info about the current node in the GraphQL tree.
+	 *
+	 * @throws \GraphQL\Error\UserError Invalid ID provided | Lack of capabilities.
+	 *
+	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		if ( ! $input['attributeId'] ) {
-			throw new UserError( __( 'An attributeId is required to create a new product attribute term.', 'wp-graphql' ) );
+			throw new UserError( __( 'An attributeId is required to create a new product attribute term.', 'wp-graphql-woocommerce' ) );
 		}
 
-		$taxonomy = \wc_attribute_taxonomy_name_by_id( $input['attributeId'] );
-		$id       = isset( $input['id'] ) ? $input['id'] : null;
-		$args     = [];
+		$context  = 'createProductAttributeTerm' === $info->fieldName ? 'create' : 'edit';
+		$taxonomy = wc_attribute_taxonomy_name_by_id( $input['attributeId'] );
+		if ( empty( $taxonomy ) ) {
+			throw new UserError( __( 'Invalid attributeId.', 'wp-graphql-woocommerce' ) );
+		}
+
+		if ( ! wc_rest_check_product_term_permissions( $taxonomy, $context ) ) {
+			throw new UserError( __( 'Sorry, you are not allowed to create product attribute terms.', 'wp-graphql-woocommerce' ) );
+		}
+
+		$id   = isset( $input['id'] ) ? $input['id'] : null;
+		$args = [];
 
 		if ( ! empty( $input['description'] ) ) {
 			$args['description'] = $input['description'];
@@ -108,10 +122,19 @@ class Product_Attribute_Term_Create {
 			$args['name'] = $input['name'];
 		}
 
-		if ( $id && ! empty( $args ) ) {
-			$term = wp_update_term( $id, $taxonomy, $args );
-		} elseif ( $id && isset( $input['menuOrder'] ) ) {
+		$term = null;
+		if ( $id ) {
 			$term = get_term( $id, $taxonomy );
+		}
+
+		if ( is_wp_error( $term ) ) {
+			throw new UserError( $term->get_error_message() );
+		} elseif ( $term && ! wc_rest_check_product_term_permissions( $taxonomy, $context, $term->term_id ) ) {
+			throw new UserError( __( 'Sorry, you are not allowed to update this product attribute term.', 'wp-graphql-woocommerce' ) );
+		}
+
+		if ( $id ) {
+			$term = wp_update_term( $id, $taxonomy, $args );
 		} elseif ( ! empty( $input['name'] ) ) {
 			$name = $input['name'];
 			$term = wp_insert_term( $name, $taxonomy, $args );
@@ -119,8 +142,8 @@ class Product_Attribute_Term_Create {
 			$updating = 'updateProductAttributeTerm' === $info->fieldName;
 			throw new UserError( 
 				$updating
-					? __( 'A name is required to create a new product attribute term.', 'wp-graphql' )
-					: __( 'A valid term "id" and changeable parameter are required to update a product attribute term.', 'wp-graphql' )
+					? __( 'A name is required to create a new product attribute term.', 'wp-graphql-woocommerce' )
+					: __( 'A valid term "id" and changeable parameter are required to update a product attribute term.', 'wp-graphql-woocommerce' )
 			);
 		}
 
@@ -128,14 +151,27 @@ class Product_Attribute_Term_Create {
 			throw new UserError( $term->get_error_message() );
 		}
 
+		/**
+		 * Newly created product attribute term.
+		 * 
+		 * @var \WP_Term|\WP_Error|null $term
+		 */
 		$term = get_term( $term['term_id'], $taxonomy );
+		if ( ! $term ) {
+			throw new UserError( __( 'Failed to retrieve term for modification. Please check input.', 'wp-graphql-woocommerce' ) );
+		} elseif ( is_wp_error( $term ) ) {
+			throw new UserError( $term->get_error_message() );
+		}
 
 		if ( isset( $input['menuOrder'] ) ) {
-			update_term_meta( $term->term_id, 'order_' .$taxonomy, $input['menuOrder'] );
+			$success = update_term_meta( $term->term_id, 'order_' . $taxonomy, $input['menuOrder'] );
+			if ( is_wp_error( $success ) ) {
+				throw new UserError( $success->get_error_message() );
+			}
 		}
 
 		$menu_order = get_term_meta( $term->term_id, 'order_' . $taxonomy, true );
-		$data = [
+		$data       = [
 			'id'          => $term->term_id,
 			'name'        => $term->name,
 			'slug'        => $term->slug,
@@ -145,5 +181,5 @@ class Product_Attribute_Term_Create {
 		];
 
 		return [ 'term' => $data ];
-    }
+	}
 }

@@ -13,7 +13,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Mutation\Product_Mutation;
 use WPGraphQL\WooCommerce\Model\Product;
 
 /**
@@ -36,32 +35,32 @@ class Product_Delete {
 		);
 	}
 
-    /**
+	/**
 	 * Defines the mutation input field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_input_fields() {
 		return [
-            'id'    => [
-                'type'        => [ 'non_null' => 'ID' ],
-                'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
-            ],
+			'id'    => [
+				'type'        => [ 'non_null' => 'ID' ],
+				'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
+			],
 			'force' => [
 				'type'        => 'Boolean',
 				'description' => __( 'Whether to bypass trash and force deletion.', 'wp-graphql-woocommerce' ),
 			],
-        ];
-    }
+		];
+	}
 
-    /**
+	/**
 	 * Defines the mutation output field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_output_fields() {
 		return [
-			'product'   => [
+			'product' => [
 				'type'    => 'Product',
 				'resolve' => static function ( $payload ) {
 					return $payload['product'];
@@ -70,7 +69,7 @@ class Product_Delete {
 		];
 	}
 
-    /**
+	/**
 	 * Defines the mutation data modification closure.
 	 *
 	 * @return callable
@@ -82,7 +81,7 @@ class Product_Delete {
 			$object     = new Product( $product_id );
 			$result     = false;
 
-			if ( ! $object || 0 === $object->get_id() ) {
+			if ( 0 === $object->ID ) {
 				throw new UserError( __( 'Invalid product ID.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -97,16 +96,21 @@ class Product_Delete {
 			 *
 			 * Return false to disable trash support for the object.
 			 *
-			 * @param boolean $supports_trash Whether the object type support trashing.
-			 * @param \WC_Product $object         The object being considered for trashing support.
+			 * @param boolean                              $supports_trash Whether the object type support trashing.
+			 * @param \WPGraphQL\WooCommerce\Model\Product $object         The object being considered for trashing support.
 			 */
-			$supports_trash = apply_filters( "graphql_woocommerce_product_object_trashable", $supports_trash, $object );
+			$supports_trash = apply_filters( 'graphql_woocommerce_product_object_trashable', $supports_trash, $object );
 
-			if ( ! wc_rest_check_post_permissions( 'product', 'delete', $object->get_id() ) ) {
+			if ( ! wc_rest_check_post_permissions( 'product', 'delete', $object->ID ) ) {
 				throw new UserError( __( 'Sorry, you are not allowed to delete products', 'wp-graphql-woocommerce' ) );
 			}
 
-			$product_to_be_deleted = \wc_get_product( $object->get_id() );
+			/**
+			 * Get the product to be deleted.
+			 * 
+			 * @var \WC_Product $product_to_be_deleted
+			 */
+			$product_to_be_deleted = \wc_get_product( $object->ID );
 			
 			if ( $force ) {
 				if ( $product_to_be_deleted->is_type( 'variable' ) ) {
@@ -135,13 +139,18 @@ class Product_Delete {
 					throw new UserError( __( 'This product does not support trashing.', 'wp-graphql-woocommerce' ) );
 				}
 
-				if ( is_callable( array( $product_to_be_deleted, 'get_status' ) ) ) {
+				if ( is_callable( [ $product_to_be_deleted, 'get_status' ] ) ) {
 					if ( 'trash' === $product_to_be_deleted->get_status() ) {
 						throw new UserError( __( 'Product is already in the trash.', 'wp-graphql-woocommerce' ) );
 					}
 	
 					$product_to_be_deleted->delete();
-					$result = 'trash' === $product_to_be_deleted->get_status();
+
+					/**
+					 * @var string $status
+					 */
+					$status = $product_to_be_deleted->get_status();
+					$result = 'trash' === $status;
 				}
 			}
 
@@ -156,12 +165,12 @@ class Product_Delete {
 			/**
 			 * Fires after a single object is deleted or trashed via the REST API.
 			 *
-			 * @param Product $object  The deleted or trashed object.
+			 * @param \WPGraphQL\WooCommerce\Model\Product $object  The deleted or trashed object.
 			 * @param array   $input   The mutation input.
 			 */
-			do_action( "graphql_woocommerce_delete_product_object", $object, $input );
+			do_action( 'graphql_woocommerce_delete_product_object', $object, $input );
 
-            return [ 'product' => $object ];
-        };
-    }
+			return [ 'product' => $object ];
+		};
+	}
 }

@@ -10,11 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Mutation\Product_Mutation;
-
 /**
  * Class Product_Attribute_Term_Update
  */
@@ -35,7 +30,7 @@ class Product_Attribute_Term_Update {
 		);
 	}
 
-    /**
+	/**
 	 * Defines the mutation input field configuration
 	 *
 	 * @return array
@@ -46,24 +41,24 @@ class Product_Attribute_Term_Update {
 			[
 				'id'   => [
 					'type'        => [ 'non_null' => 'Int' ],
-					'description' => __( 'The ID of the term to update.', 'wp-graphql' ),
+					'description' => __( 'The ID of the term to update.', 'wp-graphql-woocommerce' ),
 				],
 				'name' => [
 					'type'        => 'String',
-					'description' => __( 'The name of the term.', 'wp-graphql' ),
+					'description' => __( 'The name of the term.', 'wp-graphql-woocommerce' ),
 				],
 			]
 		);
-    }
+	}
 
-    /**
+	/**
 	 * Defines the mutation output field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_output_fields() {
 		return [
-			'term'   => [
+			'term' => [
 				'type'    => 'ProductAttributeTermObject',
 				'resolve' => static function ( $payload ) {
 					return (object) $payload['term'];

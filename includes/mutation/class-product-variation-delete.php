@@ -13,7 +13,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Mutation\Product_Mutation;
 use WPGraphQL\WooCommerce\Model\Product_Variation;
 
 /**
@@ -36,32 +35,32 @@ class Product_Variation_Delete {
 		);
 	}
 
-    /**
+	/**
 	 * Defines the mutation input field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_input_fields() {
 		return [
-            'id'    => [
-                'type'        => [ 'non_null' => 'ID' ],
-                'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
-            ],
+			'id'    => [
+				'type'        => [ 'non_null' => 'ID' ],
+				'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
+			],
 			'force' => [
 				'type'        => 'Boolean',
 				'description' => __( 'Whether to bypass trash and force deletion.', 'wp-graphql-woocommerce' ),
 			],
-        ];
-    }
+		];
+	}
 
-    /**
+	/**
 	 * Defines the mutation output field configuration
 	 *
 	 * @return array
 	 */
 	public static function get_output_fields() {
 		return [
-			'variation'   => [
+			'variation' => [
 				'type'    => 'ProductVariation',
 				'resolve' => static function ( $payload ) {
 					return $payload['variation'];
@@ -70,19 +69,19 @@ class Product_Variation_Delete {
 		];
 	}
 
-    /**
+	/**
 	 * Defines the mutation data modification closure.
 	 *
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
-            $variation_id = $input['id'];
+			$variation_id = $input['id'];
 			$force        = isset( $input['force'] ) ? $input['force'] : false;
 			$object       = new Product_Variation( $variation_id );
 			$result       = false;
 
-			if ( ! $object || 0 === $object->get_id() ) {
+			if ( 0 === $object->ID ) {
 				throw new UserError( __( 'Invalid product variation ID.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -93,16 +92,21 @@ class Product_Variation_Delete {
 			 *
 			 * Return false to disable trash support for the object.
 			 *
-			 * @param boolean     $supports_trash  Whether the object type support trashing.
-			 * @param \WC_Product $object          The object being considered for trashing support.
+			 * @param boolean                                        $supports_trash  Whether the object type support trashing.
+			 * @param \WPGraphQL\WooCommerce\Model\Product_Variation $object          The object being considered for trashing support.
 			 */
-			$supports_trash = apply_filters( "graphql_woocommerce_product_variation_object_trashable", $supports_trash, $object );
+			$supports_trash = apply_filters( 'graphql_woocommerce_product_variation_object_trashable', $supports_trash, $object );
 
-			if ( ! wc_rest_check_post_permissions( 'product_variation', 'delete', $object->get_id() ) ) {
+			if ( ! wc_rest_check_post_permissions( 'product_variation', 'delete', $object->ID ) ) {
 				throw new UserError( __( 'Sorry, you are not allowed to delete product variations', 'wp-graphql-woocommerce' ) );
 			}
 
-			$variation_to_be_deleted = \wc_get_product( $object->get_id() );
+			/**
+			 * Get the variation to be deleted.
+			 * 
+			 * @var \WC_Product_Variation $variation_to_be_deleted
+			 */
+			$variation_to_be_deleted = \wc_get_product( $object->ID );
 
 			if ( $force ) {
 				$variation_to_be_deleted->delete( true );
@@ -113,13 +117,18 @@ class Product_Variation_Delete {
 					throw new UserError( __( 'This product variation does not support trashing.', 'wp-graphql-woocommerce' ) );
 				}
 
-				if ( is_callable( array( $variation_to_be_deleted, 'get_status' ) ) ) {
+				if ( is_callable( [ $variation_to_be_deleted, 'get_status' ] ) ) {
 					if ( 'trash' === $variation_to_be_deleted->get_status() ) {
 						throw new UserError( __( 'Product variation is already in the trash.', 'wp-graphql-woocommerce' ) );
 					}
 	
 					$variation_to_be_deleted->delete();
-					$result = 'trash' === $variation_to_be_deleted->get_status();
+
+					/**
+					 * @var string $status
+					 */
+					$status = $variation_to_be_deleted->get_status();
+					$result = 'trash' === $status;
 				}
 			}
 
@@ -134,12 +143,12 @@ class Product_Variation_Delete {
 			/**
 			 * Fires after a single object is deleted or trashed via the REST API.
 			 *
-			 * @param Product_Variation $object  The deleted or trashed object.
+			 * @param \WPGraphQL\WooCommerce\Model\Product_Variation $object  The deleted or trashed object.
 			 * @param array             $input   The mutation input.
 			 */
-			do_action( "graphql_woocommerce_delete_product_variation_object", $object, $input );
+			do_action( 'graphql_woocommerce_delete_product_variation_object', $object, $input );
 
-            return [ 'variation' => $object ];
-        };
-    }
+			return [ 'variation' => $object ];
+		};
+	}
 }
