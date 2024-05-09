@@ -11,3 +11,4 @@ define( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_FILE', 'wp-graphql-woocommerce.php' );
 define( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR', '' );
 define( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_URL', '' );
 define( 'WC_SESSION_CACHE_GROUP', '' );
+define( 'WC_DELIMITER', '|' );

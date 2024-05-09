@@ -91,6 +91,15 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		return $this->create( $args, $generation_definitions );
 	}
 
+	public function createManySimple( $count = 5, $args = []) {
+		$products = [];
+		for ( $i = 0; $i < $count; $i++ ) {
+			$products[] = $this->createSimple( $args );
+		}
+
+		return $products;
+	}
+
 	public function createExternal( $args = [] ) {
 		$name  = Dummy::instance()->product();
 		$price = Dummy::instance()->price( 15, 200 );
@@ -174,6 +183,8 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		if ( ! $attribute_id ) {
 			$taxonomy_name = wc_attribute_taxonomy_name( $attribute_name );
 
+			unregister_taxonomy( $taxonomy_name );
+
 			$attribute_id = wc_create_attribute(
 				[
 					'name'         => $raw_name,
@@ -183,6 +194,11 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 					'has_archives' => 0,
 				]
 			);
+
+			if ( is_wp_error( $attribute_id ) ) {
+				codecept_debug( json_encode( $attribute_id, JSON_PRETTY_PRINT ) );
+				throw new \Exception( 'Failed to create attribute.' );
+			}
 
 			// Register as taxonomy.
 			register_taxonomy(
@@ -230,6 +246,19 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		return $return;
+	}
+
+	public function createAttributeObject( string $id, string $taxonomy, array $options, int $position = 0, bool $visible = true, bool $variation = false ) {
+		$attribute = new \WC_Product_Attribute();
+
+		$attribute->set_id( $id );
+		$attribute->set_name( $taxonomy );
+		$attribute->set_options( $options );
+		$attribute->set_position( $position );
+		$attribute->set_visible( $visible );
+		$attribute->set_variation( $variation );
+
+		return $attribute;
 	}
 
 	private function setVariationAttributes( \WC_Product_Variable $product, array $attribute_data = [] ) {
@@ -373,5 +402,13 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		return $text;
+	}
+
+	public function deleteAttributes() {
+		global $wpdb;
+
+		$wpdb->query(
+			"DELETE FROM {$wpdb->prefix}woocommerce_attribute_taxonomies"
+		);
 	}
 }
