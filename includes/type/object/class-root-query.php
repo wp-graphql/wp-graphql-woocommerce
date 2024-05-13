@@ -576,8 +576,8 @@ class Root_Query {
 						if ( ! empty( $request['calculate_price_range'] ) ) {
 							/**
 							 * A Rest request object for external filtering
-							 * 
-							 * @var \WP_REST_Request $filter_request 
+							 *
+							 * @var \WP_REST_Request $filter_request
 							 */
 							$filter_request = clone $request;
 							$filter_request->set_param( 'min_price', null );
@@ -591,8 +591,8 @@ class Root_Query {
 						if ( ! empty( $request['calculate_stock_status_counts'] ) ) {
 							/**
 							 * A Rest request object for external filtering
-							 * 
-							 * @var \WP_REST_Request $filter_request 
+							 *
+							 * @var \WP_REST_Request $filter_request
 							 */
 							$filter_request = clone $request;
 							$counts         = $filters->get_stock_status_counts( $filter_request ); // @phpstan-ignore-line
@@ -627,8 +627,8 @@ class Root_Query {
 								foreach ( $taxonomy__or_queries as $taxonomy ) {
 									/**
 									 * A Rest request object for external filtering
-									 * 
-									 * @var \WP_REST_Request $filter_request 
+									 *
+									 * @var \WP_REST_Request $filter_request
 									 */
 									$filter_request    = clone $request;
 									$filter_attributes = $filter_request->get_param( 'attributes' );
@@ -676,7 +676,7 @@ class Root_Query {
 							/**
 							 * A Rest request object for external filtering
 							 *
-							 * @var \WP_REST_Request $filter_request 
+							 * @var \WP_REST_Request $filter_request
 							 */
 							$filter_request        = clone $request;
 							$counts                = $filters->get_rating_counts( $filter_request ); // @phpstan-ignore-line
