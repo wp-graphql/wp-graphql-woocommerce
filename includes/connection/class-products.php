@@ -384,7 +384,7 @@ class Products {
 				'description' => __( 'Limit result set to products with selected global attribute queries.', 'wp-graphql-woocommerce' ),
 			],
 			'attribute'          => [
-				'type'              => 'ProductAttributeEnum',
+				'type'              => 'String',
 				'description'       => __( 'Limit result set to products with a specific global product attribute', 'wp-graphql-woocommerce' ),
 				'deprecationReason' => 'Use attributes instead.',
 			],
