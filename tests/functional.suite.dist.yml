@@ -10,7 +10,35 @@ modules:
   enabled:
     - Asserts
     - REST
-    - WPBrowser
-    - WPDb
-    - WPLoader
+    - \lucatume\WPBrowser\Module\WPCLI
+    - \lucatume\WPBrowser\Module\WPBrowser
+    - \lucatume\WPBrowser\Module\WPDb
+    - \lucatume\WPBrowser\Module\WPLoader
+    - \Tests\WPGraphQL\Codeception\Module\QueryAsserts
+    - \Tests\WPGraphQL\Codeception\Module\WPGraphQL
     - \Helper\GraphQLE2E
+  config:
+    \lucatume\WPBrowser\Module\WPLoader:
+      loadOnly: true
+      wpRootFolder: '%WP_ROOT_FOLDER%'
+      dbName: '%DB_NAME%'
+      dbHost: '%DB_HOST%'
+      dbUser: '%DB_USER%'
+      dbPassword: '%DB_PASSWORD%'
+      tablePrefix: '%WP_TABLE_PREFIX%'
+      domain: '%WORDPRESS_DOMAIN%'
+      adminEmail: '%ADMIN_EMAIL%'
+      title: 'WooGraphQL Tests'
+      plugins:
+        - woocommerce/woocommerce.php
+        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+        - wp-graphql/wp-graphql.php
+        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      activatePlugins:
+        - woocommerce/woocommerce.php
+        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+        - wp-graphql/wp-graphql.php
+        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+bootstrap: _bootstrap.php

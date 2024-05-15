@@ -221,7 +221,7 @@ class Session_Transaction_Manager {
 		}
 
 		// Bail if not the expected mutation.
-		if ( ! str_starts_with( $this->transaction_id, "wooSession_{$mutation}_" ) ) {
+		if ( str_starts_with( $this->transaction_id, "wooSession_{$mutation}_" ) ) {
 			return;
 		}
 

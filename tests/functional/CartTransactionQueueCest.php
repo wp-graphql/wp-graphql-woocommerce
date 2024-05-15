@@ -1,5 +1,7 @@
 <?php
 
+use Tests\WPGraphQL\Logger\CodeceptLogger as Signal;
+
 class CartTransactionQueueCest {
 	private $product_catalog;
 
@@ -79,7 +81,7 @@ class CartTransactionQueueCest {
 
 	// tests
 	public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'The test is unstable, and will be skipped until success is guaranteed on each run.' );
+		//$scenario->skip( 'The test is unstable, and will be skipped until success is guaranteed on each run.' );
 		$I->wantTo( 'Add Item to cart' );
 		extract( $this->_startAuthenticatedSession( $I ) );
 
@@ -146,7 +148,7 @@ class CartTransactionQueueCest {
 			}
 		';
 
-		$requests           = [
+		$operations                      = [
 			[
 				'query'     => $update_item_quantities_mutation,
 				'variables' => [
@@ -194,118 +196,97 @@ class CartTransactionQueueCest {
 				],
 			],
 		];
-		$expected_responses = [
-			[
-				'updateItemQuantities' => [
-					'clientMutationId' => 'some_id',
-					'updated'          => [
-						[
-							'key'      => $key,
-							'quantity' => 3,
-						],
-					],
-					'removed'          => [],
-					'items'            => [
-						[
-							'key'      => $key,
-							'quantity' => 3,
-						],
-					],
-				],
-			],
-			[
-				'updateItemQuantities' => [
-					'clientMutationId' => 'some_id',
-					'updated'          => [
-						[
-							'key'      => $key,
-							'quantity' => 4,
-						],
-					],
-					'removed'          => [],
-					'items'            => [
-						[
-							'key'      => $key,
-							'quantity' => 4,
-						],
-					],
-				],
-			],
-			[
-				'removeItemsFromCart' => [
-					'clientMutationId' => 'some_id',
-					'cart'             => [
-						'contents' => [
-							'nodes' => [],
-						],
-					],
-				],
-			],
-			[
-				'restoreCartItems' => [
-					'clientMutationId' => 'some_id',
-					'cart'             => [
-						'contents' => [
-							'nodes' => [
-								[
-									'key'      => $key,
-									'quantity' => 4,
-								],
-							],
-						],
-					],
-				],
-			],
-		];
 
-		$base_uri = getenv( 'WORDPRESS_URL' ) ? getenv( 'WORDPRESS_URL' ) : 'http://localhost';
 		$headers  = [
 			'Content-Type'        => 'application/json',
 			'Authorization'       => "Bearer ${auth_token}",
 			'woocommerce-session' => "Session {$session_token}",
 		];
-		$timeout  = 300;
-		$client   = new \GuzzleHttp\Client( compact( 'base_uri', 'headers', 'timeout' ) );
+		$responses = $I->concurrentRequests( $operations, $headers, 800 );
 
-		$iterator = static function ( $requests ) use ( $client ) {
-			$stagger = 800;
-			foreach ( $requests as $index => $payload ) {
-				yield static function () use ( $client, $stagger, $index, $payload ) {
-					$body      = json_encode( $payload );
-					$delay     = $stagger * ($index + 1);
-					$connected = false;
-					$progress  = static function ( $downloadTotal, $downloadedBytes, $uploadTotal, $uploadedBytes ) use ( $index, &$connected ) {
-						if ( $uploadTotal === $uploadedBytes && 0 === $downloadTotal && ! $connected ) {
-							\codecept_debug( "Session mutation request $index connected @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
-							$connected = true;
-						}
-					};
-					return $client->postAsync( '/graphql', compact( 'body', 'delay', 'progress' ) );
-				};
-			}
-		};
-
-		$pool = new \GuzzleHttp\Pool(
-			$client,
-			$iterator( $requests ),
+		$I->assertQuerySuccessful(
+			$responses[0],
 			[
-				'concurrency' => 5,
-				'fulfilled'   => static function ( $response, $index ) use ( $I, $expected_responses ) {
-					\codecept_debug( "Finished session mutation request $index @ " . ( new \Carbon\Carbon() )->format( 'Y-m-d H:i:s' ) );
-
-					$expected = $expected_responses[ $index ];
-					$headers  = $response->getHeaders();
-					$body     = json_decode( $response->getBody(), true );
-					
-					\codecept_debug( $headers );
-					\codecept_debug( $body );
-					$I->assertEquals( $expected, $body['data'] );
-				},
+				$I->expectObject(
+					'updateItemQuantities',
+					[
+						$I->expectObject(
+							'updated.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 3 )
+							]
+						),
+						$I->expectField( 'removed', Signal::IS_FALSY ),
+						$I->expectObject(
+							'items.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 3 )
+							]
+						)
+					]
+				)
 			]
 		);
 
-		$promise = $pool->promise();
+		$I->assertQuerySuccessful(
+			$responses[1],
+			[
+				$I->expectObject(
+					'updateItemQuantities',
+					[
+						$I->expectObject(
+							'updated.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 4 )
+							]
+						),
+						$I->expectField( 'removed', Signal::IS_FALSY ),
+						$I->expectObject(
+							'items.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 4 )
+							]
+						)
+					]
+				)
+			]
+		);
 
-		$promise->wait();
+		$I->assertQuerySuccessful(
+			$responses[2],
+			[
+				$I->expectObject(
+					'removeItemsFromCart',
+					[
+						$I->expectField(
+							'cart.contents.nodes',
+							Signal::IS_FALSY
+						)
+					]
+				)
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$responses[3],
+			[
+				$I->expectObject(
+					'restoreCartItems',
+					[
+						$I->expectObject(
+							'cart.contents.nodes.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 4 )
+							]
+						)
+					]
+				)
+			]
+		);
 	}
 }

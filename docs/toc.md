@@ -25,12 +25,18 @@
 - [Using Product Bundle Data + Mutations](using-product-bundle-data-and-mutations.md)
 - [Using Product Add-ons Data + Mutations](using-product-addons-data-and-mutations.md)
 
+## Extending WooGraphQL
+
+- [Registering New Product Types](registering-new-product-types.md)
+- [Extending Mutations](extending-mutations.md)
+
 ## Contributing
 
 - [Testing Quick-Start Guide](testing-quick-start.md)
 - [Local CLI Testing](local-testing.md)
 - [Development with Docker](development-w-docker.md)
 - [CLI Testing with Docker](testing-w-docker.md)
+
 ## Glossary
 
 - [Schema Docs](https://woographql.com/schema)

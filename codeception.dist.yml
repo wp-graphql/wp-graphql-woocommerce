@@ -6,7 +6,6 @@ paths:
   envs: tests/_envs
 params:
   - env
-  - .env
   - .env.docker
 actor_suffix: Tester
 settings:
@@ -26,43 +25,50 @@ extensions:
   enabled:
     - Codeception\Extension\RunFailed
   commands:
-    - Codeception\Command\GenerateWPUnit
-    - Codeception\Command\GenerateWPRestApi
-    - Codeception\Command\GenerateWPRestController
-    - Codeception\Command\GenerateWPRestPostTypeController
-    - Codeception\Command\GenerateWPAjax
-    - Codeception\Command\GenerateWPCanonical
-    - Codeception\Command\GenerateWPXMLRPC
+    - "lucatume\\WPBrowser\\Command\\GenerateWPUnit"
+    - "lucatume\\WPBrowser\\Command\\GenerateWPRestApi"
+    - "lucatume\\WPBrowser\\Command\\GenerateWPRestController"
+    - "lucatume\\WPBrowser\\Command\\GenerateWPRestPostTypeController"
+    - "lucatume\\WPBrowser\\Command\\GenerateWPAjax"
+    - "lucatume\\WPBrowser\\Command\\GenerateWPCanonical"
+    - "lucatume\\WPBrowser\\Command\\GenerateWPXMLRPC"
 modules:
   config:
-    WPDb:
+    \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
+      endpoint: '%WORDPRESS_URL%/graphql'
+      auth_header: 'Basic %TEST_SITE_ADMIN_APP_PASSWORD%'
+    \lucatume\WPBrowser\Module\WPCLI:
+      path: '%WP_ROOT_FOLDER%'
+      throw: true
+    \lucatume\WPBrowser\Module\WPDb:
       dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
       user: '%DB_USER%'
       password: '%DB_PASSWORD%'
       dump: 'local/db/app_db.sql'
-      populate: false
-      cleanup: false
+      populate: true
+      cleanup: true
       waitlock: 10
       url: '%WORDPRESS_URL%'
       urlReplacement: true
       tablePrefix: '%WP_TABLE_PREFIX%'
-    WPBrowser:
+    \lucatume\WPBrowser\Module\WPBrowser:
       url: '%WORDPRESS_URL%'
       wpRootFolder: '%WP_CORE_DIR%'
       adminUsername: '%ADMIN_USERNAME%'
       adminPassword: '%ADMIN_PASSWORD%'
       adminPath: '/wp-admin'
-    REST:
+    \lucatume\WPBrowser\Module\REST:
       depends: WPBrowser
       url: '%WORDPRESS_URL%'
       cookies: false
-    WPFilesystem:
+    \lucatume\WPBrowser\Module\WPFilesystem:
       wpRootFolder: '%WP_CORE_DIR%'
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       themes: '/wp-content/themes'
       uploads: '/wp-content/uploads'
-    WPLoader:
+    \lucatume\WPBrowser\Module\WPLoader:
+      skipInstall: true
       wpRootFolder: '%WP_CORE_DIR%'
       dbName: '%DB_NAME%'
       dbHost: '%DB_HOST%'

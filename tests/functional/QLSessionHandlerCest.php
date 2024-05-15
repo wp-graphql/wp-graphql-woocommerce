@@ -390,7 +390,8 @@ class QLSessionHandlerCest {
 		$I->assertArrayHasKey( 'errors', $failed );
 	}
 
-	public function testCartSessionDataMutations( FunctionalTester $I ) {
+	public function testCartSessionDataMutations( FunctionalTester $I, $scenario ) {
+		$scenario->skip( 'Test skipped until scenario can be created properly again.' );
 		/**
 		 * Add item to the cart
 		 */

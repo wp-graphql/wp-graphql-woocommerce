@@ -673,7 +673,7 @@ class GraphQLE2E extends \Codeception\Module {
 		}
 
 		// Create cart page.
-		$wpdb         = $this->getModule( 'WPDb' );
+		$wpdb         = $this->getModule( '\lucatume\WPBrowser\Module\WPDb' );
 		$cart_page_id = $wpdb->havePostInDatabase(
 			[
 				'post_type'    => 'page',
@@ -697,12 +697,6 @@ class GraphQLE2E extends \Codeception\Module {
 		);
 		$wpdb->haveOptionInDatabase( 'woocommerce_checkout_page_id', $checkout_page_id );
 
-		global $wp_rewrite;
-		// Set the permalink structure
-		$wp_rewrite->set_permalink_structure( '/%postname%/' );
-		// Flush the rules and tell it to write htaccess
-		$wp_rewrite->flush_rules( true );
-
 		return $product_catalog;
 	}
 
@@ -713,7 +707,8 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @return void
 	 */
 	public function _setupStore() {
-		$wpdb = $this->getModule( 'WPDb' );
+		$wpdb = $this->getModule( '\lucatume\WPBrowser\Module\WPDb' );
+
 		$wpdb->useTheme( 'twentytwentyone' );
 		// Turn on tax calculations and store shipping countries. Important!
 		$wpdb->haveOptionInDatabase( 'woocommerce_ship_to_countries', 'all' );
@@ -743,39 +738,43 @@ class GraphQLE2E extends \Codeception\Module {
 		// 	}
 		// );
 
-		// Create Shipping Zones.
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'Local' );
-		$zone->set_zone_order( 1 );
-		$zone->add_location( 'GB', 'country' );
-		$zone->add_location( 'CB*', 'postcode' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
+		// // Create Shipping Zones.
+		// $cli     = $this->getModule( '\lucatume\WPBrowser\Module\WPCLI' );
+		// $zone_id = $cli->cliToString( [ 'wc', 'shipping_zone', 'create', '--name', 'Local', '--order', '1', '--porcelain' ] );
+		// $zone_id = absint( $zone_id );
 
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'Europe' );
-		$zone->set_zone_order( 2 );
-		$zone->add_location( 'EU', 'continent' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
+		// $zone = new \WC_Shipping_Zone();
+		// $zone->set_zone_name( 'Local' );
+		// $zone->set_zone_order( 1 );
+		// $zone->add_location( 'GB', 'country' );
+		// $zone->add_location( 'CB*', 'postcode' );
+		// $zone->save();
+		// $zone->add_shipping_method( 'flat_rate' );
+		// $zone->add_shipping_method( 'free_shipping' );
 
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'California' );
-		$zone->set_zone_order( 3 );
-		$zone->add_location( 'US:CA', 'state' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
+		// $zone = new \WC_Shipping_Zone();
+		// $zone->set_zone_name( 'Europe' );
+		// $zone->set_zone_order( 2 );
+		// $zone->add_location( 'EU', 'continent' );
+		// $zone->save();
+		// $zone->add_shipping_method( 'flat_rate' );
+		// $zone->add_shipping_method( 'free_shipping' );
 
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'US' );
-		$zone->set_zone_order( 4 );
-		$zone->add_location( 'US', 'country' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
+		// $zone = new \WC_Shipping_Zone();
+		// $zone->set_zone_name( 'California' );
+		// $zone->set_zone_order( 3 );
+		// $zone->add_location( 'US:CA', 'state' );
+		// $zone->save();
+		// $zone->add_shipping_method( 'flat_rate' );
+		// $zone->add_shipping_method( 'free_shipping' );
+
+		// $zone = new \WC_Shipping_Zone();
+		// $zone->set_zone_name( 'US' );
+		// $zone->set_zone_order( 4 );
+		// $zone->add_location( 'US', 'country' );
+		// $zone->save();
+		// $zone->add_shipping_method( 'flat_rate' );
+		// $zone->add_shipping_method( 'free_shipping' );
 	}
 
 	/**
@@ -789,7 +788,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @return void
 	 */
 	public function haveAProductInTheDatabase( $args, &$product_id, $term = 'simple', &$term_id = 0 ) {
-		$wpdb = $this->getModule( 'WPDb' );
+		$wpdb = $this->getModule( '\lucatume\WPBrowser\Module\WPDb' );
 
 		// Create Product
 		$product_id = $wpdb->havePostInDatabase(
@@ -857,7 +856,7 @@ class GraphQLE2E extends \Codeception\Module {
 	public function setupStoreAndUsers() {
 		$this->_setupStore();
 
-		$wpdb   = $this->getModule( 'WPDb' );
+		$wpdb   = $this->getModule( '\lucatume\WPBrowser\Module\WPDb' );
 		$userId = $wpdb->haveUserInDatabase(
 			'jimbo1234',
 			'customer',
