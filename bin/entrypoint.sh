@@ -96,6 +96,10 @@ fi
 echo "Setting pretty permalinks..."
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --allow-root
 
+zone_id=$(wp wc shipping_zone create --name="Local" --order=1 --user=admin --porcelain --allow-root)
+wp wc shipping_zone_method create "$zone_id" --method_id=flat_rate --order=1 --enabled=true --settings='{"cost":"10"}' --user=admin --allow-root
+wp wc shipping_zone_method create "$zone_id" --method_id=free_shipping --order=2 --enabled=true --settings='{"requires":"min_amount","min_amount":"50"}' --user=admin --allow-root
+
 echo "Prepare for app database dump..."
 if [ ! -d "${PROJECT_DIR}/local/db" ]; then
 	mkdir "${PROJECT_DIR}/local/db"
