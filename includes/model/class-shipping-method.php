@@ -81,4 +81,32 @@ class Shipping_Method extends Model {
 			];
 		}
 	}
+
+	/**
+	 * Forwards function calls to WC_Data sub-class instance.
+	 *
+	 * @param string $method - function name.
+	 * @param array  $args  - function call arguments.
+	 *
+	 * @return mixed
+	 *
+	 * @throws \BadMethodCallException Method not found on WC data object.
+	 */
+	public function __call( $method, $args ) {
+		if ( \is_callable( [ $this->data, $method ] ) ) {
+			return $this->data->$method( ...$args );
+		}
+
+		$class = self::class;
+		throw new \BadMethodCallException( "Call to undefined method {$method} on the {$class}" );
+	}
+
+	/**
+	 * Returns the source WC_Data instance
+	 *
+	 * @return \WC_Data
+	 */
+	public function as_WC_Data() {
+		return $this->data;
+	}
 }

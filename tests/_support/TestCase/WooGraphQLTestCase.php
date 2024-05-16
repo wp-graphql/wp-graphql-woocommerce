@@ -42,6 +42,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			'Coupon',
 			'Customer',
 			'ShippingZone',
+			'TaxClass',
 			'TaxRate',
 			'Order',
 			'Refund',

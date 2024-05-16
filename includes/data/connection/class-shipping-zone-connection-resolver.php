@@ -1,11 +1,11 @@
 <?php
 /**
- * ConnectionResolver - Shipping_Method_Connection_Resolver
+ * ConnectionResolver - Shipping_Zone_Connection_Resolver
  *
- * Resolves connections to ShippingMethod
+ * Resolves connections to ShippingZone
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
- * @since 0.0.2
+ * @since TBD
  */
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
@@ -14,16 +14,16 @@ use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Shipping_Zone;
 
 /**
- * Class Shipping_Method_Connection_Resolver
+ * Class Shipping_Zone_Connection_Resolver
  */
-class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
+class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
 	 * @return string
 	 */
 	public function get_loader_name() {
-		return 'shipping_method';
+		return 'shipping_zone';
 	}
 
 	/**
@@ -36,12 +36,11 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
-	 * Creates filters for shipping methods.
+	 * Creates filters for shipping zones.
 	 *
 	 * @return array|void
 	 */
 	public function get_query_args() {
-		// TODO: Implement get_query_args() method.
 		return [];
 	}
 
@@ -51,17 +50,18 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|mixed|string[]
 	 */
 	public function get_query() {
-		if ( $this->source instanceof Shipping_Zone ) {
-			$methods = $this->source->methods;
-		} else {
-			$wc_shipping = \WC_Shipping::instance();
-			$methods     = $wc_shipping->get_shipping_methods();
+		$rest_of_the_world = \WC_Shipping_Zones::get_zone_by( 'zone_id', 0 );
+
+        $zones = \WC_Shipping_Zones::get_zones();
+        array_unshift( $zones, $rest_of_the_world->get_data() );
+
+        if ( ! empty( $this->query_args['filters'] ) && is_array( $this->query_args['filters'] ) ) {
+			foreach ( $this->query_args['filters'] as $filter ) {
+				$zones = array_filter( $zones, $filter );
+			}
 		}
 
-		// Get shipping method IDs.
-		$methods = wp_list_pluck( array_values( $methods ), 'id' );
-
-		return $methods;
+        return wp_list_pluck( $zones, 'id' );
 	}
 
 	/**
@@ -82,5 +82,16 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function is_valid_offset( $offset ) {
 		return is_string( $offset );
+	}
+
+    /**
+	 * Validates shipping zone model.
+	 *
+	 * @param array $model  Shipping zone model.
+	 *
+	 * @return bool
+	 */
+	protected function is_valid_model( $model ) {
+		return ! empty( $model ) && $model instanceof Shipping_Zone && 0 !== $model->ID;
 	}
 }

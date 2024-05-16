@@ -434,6 +434,41 @@ class Root_Query {
 						return Factory::resolve_shipping_method( $method_id );
 					},
 				],
+				'shippingZone'     => [
+					'type'        => 'ShippingZone',
+					'description' => __( 'A shipping zone object', 'wp-graphql-woocommerce' ),
+					'args'        => [
+						'id'     => [
+							'type'        => 'ID',
+							'description' => __( 'The ID for identifying the shipping zone', 'wp-graphql-woocommerce' ),
+						],
+						'idType' => [
+							'type'        => 'ShippingZoneIdTypeEnum',
+							'description' => __( 'Type of ID being used identify shipping zone', 'wp-graphql-woocommerce' ),
+						],
+					],
+					'resolve'     => static function ( $source, array $args, AppContext $context  ) {
+						$id      = isset( $args['id'] ) ? $args['id'] : null;
+						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
+
+						$zone_id = null;
+						switch ( $id_type ) {
+							case 'database_id':
+								$zone_id = $id;
+								break;
+							case 'global_id':
+							default:
+								$id_components = Relay::fromGlobalId( $id );
+								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
+									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+								}
+								$zone_id = $id_components['id'];
+								break;
+						}
+
+						return $context->get_loader( 'shipping_zone' )->load( $zone_id );
+					},
+				],
 				'taxRate'          => [
 					'type'        => 'TaxRate',
 					'description' => __( 'A tax rate object', 'wp-graphql-woocommerce' ),
