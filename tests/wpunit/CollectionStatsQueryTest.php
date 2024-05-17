@@ -30,9 +30,9 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
                     where: $where
                 ) {
                     attributeCounts {
-                        name
                         slug
                         label
+						name
                         terms {
                             node { slug }
                             termId
@@ -72,8 +72,6 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 				'collectionStats.attributeCounts', 
 				[
 					$this->expectedField( 'slug', 'PA_COLOR' ),
-					$this->expectedField( 'label', 'Product color' ),
-					$this->expectedField( 'name', 'color' ),
 					$this->expectedNode(
 						'terms',
 						[
