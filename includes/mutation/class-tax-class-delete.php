@@ -77,10 +77,26 @@ class Tax_Class_Delete {
 				throw new UserError( __( 'Invalid tax class slug.', 'wp-graphql-woocommerce' ) );
 			}
 
+			/**
+			 * Action hook before deleting tax class.
+			 *
+			 * @param object $tax_class  The tax class object.
+			 * @param array  $input   Request input.
+			 */
+			do_action( 'graphql_woocommerce_before_tax_class_delete', $tax_class, $input );
+
 			$deleted = \WC_Tax::delete_tax_class_by( 'slug', $slug );
 			if ( ! $deleted ) {
 				throw new UserError( __( 'Failed to delete tax class.', 'wp-graphql-woocommerce' ) );
 			}
+
+			/**
+			 * Filter tax class object before responding.
+			 *
+			 * @param object $tax_class  The shipping method object.
+			 * @param array  $input   Request input.
+			 */
+			$tax_class = apply_filters( 'graphql_woocommerce_tax_class_delete', $tax_class, $input );
 
 			return [ 'taxClass' => $tax_class ];
 		};

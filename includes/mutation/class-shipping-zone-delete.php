@@ -78,6 +78,7 @@ class Shipping_Zone_Delete {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
 				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
+	
 			$zone_id = $input['id'];
 			/** @var \WC_Shipping_Zone|false $zone */
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
@@ -86,7 +87,24 @@ class Shipping_Zone_Delete {
 				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
 			}
 
+			/**
+			 * Filter zone object returned from the GraphQL API.
+			 *
+			 * @param \WC_Shipping_Zone  $zone   The response object.
+			 * @param array              $input  Request input.
+			 */
+			$zone = apply_filters( 'graphql_woocommerce_delete_shipping_zone', $zone, $input );
+
 			$object = $context->get_loader( 'shipping_zone' )->load( $zone_id );
+
+			/**
+			 * Filter zone model returned from the GraphQL API before deletion.
+			 *
+			 * @param \Shipping_Zone     $object  The response object.
+			 * @param \WC_Shipping_Zone  $zone    The zone object.
+			 * @param array              $input   Request input.
+			 */
+			$object = apply_filters( 'graphql_woocommerce_delete_shipping_zone_object', $object, $zone, $input );
 
 			$zone->delete();
 

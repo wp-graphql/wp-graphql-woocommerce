@@ -178,6 +178,16 @@ class Tax_Rate_Create {
 			}
 		}
 
+		$action = ! $id ? 'create' : 'update';
+
+		/**
+		 * Filter tax rate data before creating/updating.
+		 *
+		 * @param array $data  The tax rate data.
+		 * @param array $input Request input.
+		 */
+		$data = apply_filters( "graphql_woocommerce_before_tax_rate_{$action}_data", $data, $input );
+
 		if ( ! $id ) {
 			$id = \WC_Tax::_insert_tax_rate( $data );
 		} else {
@@ -192,8 +202,15 @@ class Tax_Rate_Create {
 			\WC_Tax::_update_tax_rate_postcodes( $id, join( ';', $input['postcodes'] ) );
 		}
 
-		return [
-			'tax_rate_id' => $id,
-		];
+		
+		/**
+		 * Filter tax rate object before responding.
+		 *
+		 * @param object $tax_rate_id  The shipping method object.
+		 * @param array  $input        Request input.
+		 */
+		do_action( "graphql_woocommerce_tax_rate_{$action}", $id, $input );
+
+		return [ 'tax_rate_id' => $id ];
 	}
 }

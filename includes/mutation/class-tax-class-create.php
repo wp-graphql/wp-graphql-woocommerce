@@ -84,6 +84,14 @@ class Tax_Class_Create {
 				throw new UserError( $tax_class->get_error_message() );
 			}
 
+			/**
+			 * Filter tax class object before responding.
+			 *
+			 * @param object $tax_class  The shipping method object.
+			 * @param array  $input   Request input.
+			 */
+			$tax_class = apply_filters( 'graphql_woocommerce_tax_class_create', $tax_class, $input );
+
 			return [ 'taxClass' => $tax_class ];
 		};
 	}

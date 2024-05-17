@@ -95,7 +95,7 @@ class Shipping_Zone_Locations_Update {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
 				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
-			
+
 			$zone_id = $input['zoneId'];
 			/** @var \WC_Shipping_Zone|false $zone */
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
@@ -118,6 +118,15 @@ class Shipping_Zone_Locations_Update {
 					'code' => $location['code'],
 				];
 			}
+
+			/**
+			 * Filter zone object before add the locations.
+			 *
+			 * @param \WC_Shipping_Zone  $zone       The response object.
+			 * @param array              $locations  Locations to be saved.
+			 * @param array              $input      Request input.
+			 */
+			$zone = apply_filters( 'graphql_woocommerce_shipping_zone_locations_update', $zone, $locations, $input );
 
 			$zone->set_locations( $locations );
 			$zone->save();

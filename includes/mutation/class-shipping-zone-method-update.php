@@ -148,6 +148,15 @@ class Shipping_Zone_Method_Update {
 				$method = Shipping_Mutation::set_shipping_zone_method_enabled( $zone_id, $instance_id, $method, $input['enabled'] );
 			}
 
+			/**
+			 * Filter shipping method object before responding.
+			 *
+			 * @param \WC_Shipping_Method $method  The shipping method object.
+			 * @param \WC_Shipping_Zone   $zone    The shipping zone object.
+			 * @param array               $input   Request input.
+			 */
+			$method = apply_filters( 'graphql_woocommerce_shipping_zone_method_update', $method, $zone, $input );
+
 			return [
 				'zone_id' => $zone_id,
 				'zone'    => $zone,

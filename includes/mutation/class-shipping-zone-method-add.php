@@ -106,7 +106,7 @@ class Shipping_Zone_Method_Add {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
 				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
-			
+
 			$method_id = $input['methodId'];
 			$zone_id   = $input['zoneId'];
 			/** @var \WC_Shipping_Zone|false $zone */
@@ -148,6 +148,15 @@ class Shipping_Zone_Method_Add {
 			if ( isset( $input['enabled'] ) ) {
 				$method = Shipping_Mutation::set_shipping_zone_method_enabled( $zone_id, $instance_id, $method, $input['enabled'] );
 			}
+
+			/**
+			 * Filter shipping method object before responding.
+			 *
+			 * @param \WC_Shipping_Method $method  The shipping method object.
+			 * @param \WC_Shipping_Zone   $zone    The response object.
+			 * @param array               $input   Request input.
+			 */
+			$method = apply_filters( 'graphql_woocommerce_shipping_zone_method_add', $method, $zone, $input );
 
 			return [
 				'zone_id' => $zone_id,

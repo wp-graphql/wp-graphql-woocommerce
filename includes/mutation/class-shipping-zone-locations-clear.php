@@ -121,6 +121,15 @@ class Shipping_Zone_Locations_Clear {
 				}
 			);
 
+			/**
+			 * Filter zone object before removing the locations.
+			 *
+			 * @param \WC_Shipping_Zone  $zone       The response object.
+			 * @param array              $locations  Locations to be removed.
+			 * @param array              $input      Request input.
+			 */
+			$zone = apply_filters( 'graphql_woocommerce_shipping_zone_locations_clear', $zone, $locations, $input );
+
 			$zone->clear_locations( $types );
 			$zone->save();
 

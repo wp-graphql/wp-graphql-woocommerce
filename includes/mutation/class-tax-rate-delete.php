@@ -79,10 +79,26 @@ class Tax_Rate_Delete {
 				throw new UserError( __( 'Invalid tax rate ID.', 'wp-graphql-woocommerce' ) );
 			}
 
+			/**
+			 * Action before deleting tax rate.
+			 *
+			 * @param object $tax_rate  The tax rate object.
+			 * @param array  $input     Request input.
+			 */
+			do_action( 'graphql_woocommerce_before_tax_rate_delete', $tax, $input );
+
 			\WC_Tax::_delete_tax_rate( $id );
 			if ( 0 === $wpdb->rows_affected ) {
 				throw new UserError( __( 'Failed to delete tax rate.', 'wp-graphql-woocommerce' ) );
 			}
+
+			/**
+			 * Filter tax rate object before responding.
+			 *
+			 * @param object $tax_rate  The shipping method object.
+			 * @param array  $input     Request input.
+			 */
+			$tax = apply_filters( "graphql_woocommerce_tax_rate_delete", $tax_rate, $input );
 
 			return [
 				'taxRate' => $tax,

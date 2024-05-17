@@ -121,6 +121,15 @@ class Shipping_Zone_Method_Remove {
 				throw new UserError( __( 'Invalid shipping method instance ID.', 'wp-graphql-woocommerce' ) );
 			}
 
+			/**
+			 * Filter shipping method object before it's removed from the shipping zone.
+			 *
+			 * @param \WC_Shipping_Method $method  The shipping method to be deleted.
+			 * @param \WC_Shipping_Zone   $zone    The shipping zone object.
+			 * @param array               $input   Request input.
+			 */
+			$method = apply_filters( 'graphql_woocommerce_shipping_zone_method_add', $method, $zone, $input );
+
 			$zone->delete_shipping_method( $instance_id );
 
 			return [

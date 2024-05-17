@@ -86,7 +86,7 @@ class Shipping_Zone_Update {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
 				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
-			
+
 			$zone_id = $input['id'];
 			/** @var \WC_Shipping_Zone|false $zone */
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
@@ -112,6 +112,13 @@ class Shipping_Zone_Update {
 			}
 
 			if ( $zone_changed ) {
+				/**
+				 * Filter zone object before saving changes.
+				 *
+				 * @param \WC_Shipping_Zone  $zone       The response object.
+				 * @param array              $input      Request input.
+				 */
+				$zone = apply_filters( 'graphql_woocommerce_shipping_zone_update', $zone, $input );
 				$zone->save();
 			}
 
