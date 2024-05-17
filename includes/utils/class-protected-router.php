@@ -47,6 +47,16 @@ class Protected_Router {
 	 */
 	private function __construct() {
 		self::$route = woographql_setting( 'authorizing_url_endpoint', apply_filters( 'woographql_authorizing_url_endpoint', self::$default_route ) );
+
+		$this->init();
+	}
+
+	/**
+	 * Initialize the Protected_Router class
+	 *
+	 * @return void
+	 */
+	private function init() {
 		/**
 		 * Create the rewrite rule for the route
 		 */
@@ -181,6 +191,11 @@ class Protected_Router {
 	 * @return void
 	 */
 	public function resolve_request() {
+		/**
+		 * Remove the resolve_request function from the pre_get_posts action
+		 * to prevent an infinite loop
+		 */
+		remove_action( 'pre_get_posts', [ $this, 'resolve_request' ], 1 );
 
 		/**
 		 * Access the $wp_query object
@@ -188,7 +203,7 @@ class Protected_Router {
 		global $wp_query;
 
 		/**
-		 * Ensure we're on the registered route for graphql route
+		 * Ensure we're on the registered route for the transfer
 		 */
 		if ( ! $this->is_auth_request() ) {
 			return;
