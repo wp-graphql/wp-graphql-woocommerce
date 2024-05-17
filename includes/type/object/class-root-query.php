@@ -495,6 +495,9 @@ class Root_Query {
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
+						if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+							throw new UserError( __( 'Sorry, you cannot view tax rates.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+						}
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 

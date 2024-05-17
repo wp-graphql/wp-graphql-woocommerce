@@ -80,7 +80,7 @@ class Shipping_Zone_Create {
 			}
 
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to create shipping zones.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
 
 			$zone = new \WC_Shipping_Zone( null );
@@ -89,6 +89,14 @@ class Shipping_Zone_Create {
 			if ( ! empty( $input['order'] ) ) {
 				$zone->set_zone_order( $input['order'] );
 			}
+
+			/**
+			 * Filter zone object before saving.
+			 *
+			 * @param \WC_Shipping_Zone  $zone       The response object.
+			 * @param array              $input      Request input.
+			 */
+			$zone = apply_filters( 'graphql_woocommerce_shipping_zone_create', $zone, $input );
 
 			$zone_id = $zone->save();
 

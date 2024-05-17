@@ -116,7 +116,13 @@ class Tax_Rate_Create {
 	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
-		$id      = ! empty( $input['id'] ) ? $input['id'] : null;
+		$id         = ! empty( $input['id'] ) ? $input['id'] : null;
+		$action     = ! $id ? 'create' : 'update';
+		$permission = ! $id ? 'create' : 'edit';
+		if ( ! \wc_rest_check_manager_permissions( 'settings', $permission ) ) {
+			throw new UserError( __( "Sorry, you are not allowed to {$permission} tax rates.", 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+		}
+		
 		$current = null;
 		if ( ! empty( $id ) ) {
 			/** 
@@ -177,8 +183,6 @@ class Tax_Rate_Create {
 					break;
 			}
 		}
-
-		$action = ! $id ? 'create' : 'update';
 
 		/**
 		 * Filter tax rate data before creating/updating.

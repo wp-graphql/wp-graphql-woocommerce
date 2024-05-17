@@ -75,6 +75,9 @@ class Tax_Class_Create {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			if ( ! \wc_rest_check_manager_permissions( 'settings', 'create' ) ) {
+				throw new UserError( __( "Sorry, you are not allowed to create tax classes.", 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+			}
 			$name = $input['name'];
 			$slug = ! empty( $input['slug'] ) ? $input['slug'] : '';
 

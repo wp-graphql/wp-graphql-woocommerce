@@ -50,6 +50,14 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			}
 		';
 
+		// Execute the request expecting failure due to missing permissions.
+        $variables = [ 'id' => $this->toRelayId( 'tax_rate', $rate ) ];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
+
 		/**
 		 * Assertion One
 		 *
@@ -118,6 +126,13 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			}
 		';
+
+		// Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query' ) );
+        $this->assertQuerySuccessful( $response, [ $this->expectedField( 'taxRates.nodes', self::IS_FALSY ) ] );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
 
 		/**
 		 * Assertion One

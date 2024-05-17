@@ -84,7 +84,7 @@ class Shipping_Zone_Update {
 			}
 
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to edit shipping zones', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
 
 			$zone_id = $input['id'];

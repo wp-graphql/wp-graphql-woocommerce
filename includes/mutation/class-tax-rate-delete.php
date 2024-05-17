@@ -71,6 +71,9 @@ class Tax_Rate_Delete {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
+				throw new UserError( __( 'Sorry, you are not allowed to delete tax rates.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+			}
 			global $wpdb;
 			$id = $input['id'];
 
@@ -98,7 +101,7 @@ class Tax_Rate_Delete {
 			 * @param object $tax_rate  The shipping method object.
 			 * @param array  $input     Request input.
 			 */
-			$tax = apply_filters( "graphql_woocommerce_tax_rate_delete", $tax_rate, $input );
+			$tax = apply_filters( "graphql_woocommerce_tax_rate_delete", $tax, $input );
 
 			return [
 				'taxRate' => $tax,

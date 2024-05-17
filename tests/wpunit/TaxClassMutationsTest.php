@@ -20,6 +20,13 @@ class TaxClassMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
             ]
         ];
 
+        // Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
+
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
@@ -56,6 +63,13 @@ class TaxClassMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
                 'slug' => $tax_class['slug']
             ]
         ];
+
+        // Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );

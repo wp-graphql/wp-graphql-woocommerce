@@ -31,6 +31,12 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+			graphql_debug(
+				__( 'User does not have permission to view tax classes.', 'wp-graphql-woocommerce' )
+			);
+			return false;
+		}
 		return true;
 	}
 

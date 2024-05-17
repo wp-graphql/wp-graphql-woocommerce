@@ -44,6 +44,13 @@ class TaxRateMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
             ]
         ];
 
+        // Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
+
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
@@ -117,6 +124,13 @@ class TaxRateMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
             ]
         ];
 
+        // Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
+
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
@@ -174,6 +188,13 @@ class TaxRateMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                 'id' => absint( $tax_rate->tax_rate_id ),
             ]
         ];
+
+        // Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
