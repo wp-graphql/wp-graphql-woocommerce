@@ -14,6 +14,7 @@ use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Model\Shipping_Zone;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
@@ -64,6 +65,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 			case 'DOWNLOADABLE_ITEM':
 				$loader = [ $this, 'load_downloadable_item_from_id' ];
 				break;
+			case 'TAX_CLASS':
+				$loader = [ $this, 'load_tax_class_from_slug' ];
+				break;
 			case 'TAX_RATE':
 				$loader = [ $this, 'load_tax_rate_from_id' ];
 				break;
@@ -72,6 +76,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 				break;
 			case 'SHIPPING_METHOD':
 				$loader = [ $this, 'load_shipping_method_from_id' ];
+				break;
+			case 'SHIPPING_ZONE':
+				$loader = [ $this, 'load_shipping_zone_from_id' ];
 				break;
 			default:
 				/**
@@ -127,6 +134,25 @@ class WC_Db_Loader extends AbstractDataLoader {
 	}
 
 	/**
+	 * Returns the tax class connected the provided IDs.
+	 *
+	 * @param int $slug - Tax class slug.
+	 *
+	 * @return array|null
+	 */
+	public function load_tax_class_from_slug( $slug ) {
+		if ( 'standard' === $slug ) {
+			return [
+				'slug' => 'standard',
+				'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
+			];
+		} else {
+			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
+			return is_array( $tax_class ) && ! empty( $tax_class ) ? $tax_class : null;
+		}
+	}
+
+	/**
 	 * Returns the tax rate connected the provided IDs.
 	 *
 	 * @param int $id - Tax rate IDs.
@@ -139,7 +165,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		/**
 		 * Get tax rate from WooCommerce.
 		 *
-		 * @var object{
+		 * @var \stdClass&object{
 		 *  tax_rate_id: int,
 		 *  tax_rate_class: string,
 		 *  tax_rate_country: string,
@@ -151,27 +177,51 @@ class WC_Db_Loader extends AbstractDataLoader {
 		 *  tax_rate_shipping: bool,
 		 *  tax_rate_order: int,
 		 *  tax_rate_city: string,
-		 *  tax_rate_postcode: string
+		 *  tax_rate_postcode: string,
+		 *  tax_rate_postcodes: string,
+		 *  tax_rate_cities: string
 		 *  } $rate
 		 */
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
 		if ( ! empty( $rate ) && is_object( $rate ) ) {
+			$rate->tax_rate_city      = '';
+			$rate->tax_rate_postcode  = '';
+			$rate->tax_rate_postcodes = '';
+			$rate->tax_rate_cities    = '';
+
 			// Get locales from a tax rate.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$locales = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT location_code, location_type
+					"
+					SELECT location_code, location_type
 					FROM {$wpdb->prefix}woocommerce_tax_rate_locations
-					WHERE tax_rate_id = %d",
+					WHERE tax_rate_id = %d
+					",
 					$rate->tax_rate_id
 				)
 			);
 
+			$cities    = [];
+			$postcodes = [];
 			foreach ( $locales as $locale ) {
-				if ( empty( $rate->{'tax_rate_' . $locale->location_type} ) ) {
-					$rate->{'tax_rate_' . $locale->location_type} = [];
+				if ( 'city' === $locale->location_type ) {
+					$cities[] = $locale->location_code;
+				} elseif ( 'postcode' === $locale->location_type ) {
+					$postcodes[] = $locale->location_code;
+				} else {
+					$rate->{'tax_rate_' . $locale->location_type} = $locale->location_code;
 				}
-				$rate->{'tax_rate_' . $locale->location_type}[] = $locale->location_code;
+			}
+
+			if ( ! empty( $cities ) ) {
+				$rate->tax_rate_cities = implode( ';', $cities );
+				$rate->tax_rate_city   = end( $cities );
+			}
+
+			if ( ! empty( $postcodes ) ) {
+				$rate->tax_rate_postcodes = implode( ';', $postcodes );
+				$rate->tax_rate_postcode  = end( $postcodes );
 			}
 			return new Tax_Rate( $rate );
 		} else {
@@ -185,7 +235,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 * @param int $id - Shipping method ID.
 	 *
 	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Method
-	 * @access public
+	 *
 	 * @throws \GraphQL\Error\UserError Invalid object.
 	 */
 	public function load_shipping_method_from_id( $id ) {
@@ -201,6 +251,26 @@ class WC_Db_Loader extends AbstractDataLoader {
 		$method = $methods[ $id ];
 
 		return new Shipping_Method( $method );
+	}
+
+	/**
+	 * Returns the shipping zone connected the provided IDs.
+	 *
+	 * @param int $id - Shipping zone IDs.
+	 *
+	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Zone|null
+	 */
+	public function load_shipping_zone_from_id( $id ) {
+		/** @var \WC_Shipping_Zone|false $zone */
+		$zone = \WC_Shipping_Zones::get_zone( $id );
+
+		if ( false === $zone ) {
+			return null;
+		}
+
+		$zone = new Shipping_Zone( $zone );
+
+		return $zone;
 	}
 
 	/**

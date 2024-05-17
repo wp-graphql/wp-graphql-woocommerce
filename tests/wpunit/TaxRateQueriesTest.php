@@ -9,8 +9,8 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'taxRate.databaseId', absint( $rate->tax_rate_id ) ),
 			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : self::IS_NULL ),
 			$this->expectedField( 'taxRate.state', ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : self::IS_NULL ),
-			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : [ '*' ] ),
-			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : [ '*' ] ),
+			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : '*' ),
+			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : '*' ),
 			$this->expectedField( 'taxRate.rate', ! empty( $rate->tax_rate ) ? $rate->tax_rate : self::IS_NULL ),
 			$this->expectedField( 'taxRate.name', ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : self::IS_NULL ),
 			$this->expectedField( 'taxRate.priority', absint( $rate->tax_rate_priority ) ),
@@ -49,6 +49,14 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			}
 		';
+
+		// Execute the request expecting failure due to missing permissions.
+        $variables = [ 'id' => $this->toRelayId( 'tax_rate', $rate ) ];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
 
 		/**
 		 * Assertion One
@@ -118,6 +126,13 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			}
 		';
+
+		// Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query' ) );
+        $this->assertQuerySuccessful( $response, [ $this->expectedField( 'taxRates.nodes', self::IS_FALSY ) ] );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
 
 		/**
 		 * Assertion One

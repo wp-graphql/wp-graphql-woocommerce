@@ -46,6 +46,8 @@ class Type_Registry {
 		Type\WPEnum\Product_Attribute_Enum::register();
 		Type\WPEnum\Attribute_Operator_Enum::register();
 		Type\WPEnum\Currency_Enum::register();
+		Type\WPEnum\Shipping_Location_Type_Enum::register();
+		Type\WPEnum\WC_Setting_Type_Enum::register();
 
 		/**
 		 * InputObjects.
@@ -67,6 +69,8 @@ class Type_Registry {
 		Type\WPInputObject\Collection_Stats_Where_Args::register();
 		Type\WPInputObject\Product_Attribute_Filter_Input::register();
 		Type\WPInputObject\Product_Attribute_Query_Input::register();
+		Type\WPInputObject\Shipping_Location_Input::register();
+		Type\WPInputObject\WC_Setting_Input::register();
 
 		/**
 		 * Interfaces.
@@ -112,6 +116,10 @@ class Type_Registry {
 		Type\WPObject\Payment_Token_Types::register();
 		Type\WPObject\Country_State_Type::register();
 		Type\WPObject\Collection_Stats_Type::register();
+		Type\WPObject\Shipping_Zone_Type::register();
+		Type\WPObject\Shipping_Location_Type::register();
+		Type\WPObject\Tax_Class_Type::register();
+		Type\WPObject\WC_Setting_Type::register();
 
 		/**
 		 * Object fields.
@@ -145,6 +153,8 @@ class Type_Registry {
 		Connection\Tax_Rates::register_connections();
 		Connection\Shipping_Methods::register_connections();
 		Connection\Payment_Gateways::register_connections();
+		Connection\Shipping_Zones::register_connections();
+		Connection\Tax_Classes::register_connections();
 
 		/**
 		 * Mutations.
@@ -175,6 +185,19 @@ class Type_Registry {
 		Mutation\Coupon_Delete::register_mutation();
 		Mutation\Payment_Method_Delete::register_mutation();
 		Mutation\Payment_Method_Set_Default::register_mutation();
+		Mutation\Shipping_Zone_Create::register_mutation();
+		Mutation\Shipping_Zone_Delete::register_mutation();
+		Mutation\Shipping_Zone_Locations_Clear::register_mutation();
+		Mutation\Shipping_Zone_Locations_Update::register_mutation();
+		Mutation\Shipping_Zone_Method_Add::register_mutation();
+		Mutation\Shipping_Zone_Method_Remove::register_mutation();
+		Mutation\Shipping_Zone_Method_Update::register_mutation();
+		Mutation\Shipping_Zone_Update::register_mutation();
+		Mutation\Tax_Class_Create::register_mutation();
+		Mutation\Tax_Class_Delete::register_mutation();
+		Mutation\Tax_Rate_Create::register_mutation();
+		Mutation\Tax_Rate_Delete::register_mutation();
+		Mutation\Tax_Rate_Update::register_mutation();
 		Mutation\Update_Session::register_mutation();
 	}
 }

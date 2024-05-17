@@ -1,11 +1,11 @@
 <?php
 /**
- * Model - Shipping_Method
+ * Model - Shipping_Zone
  *
- * Resolves shipping method object model
+ * This model represents a Shipping Zone.
  *
  * @package WPGraphQL\WooCommerce\Model
- * @since 0.0.2
+ * @since TBD
  */
 
 namespace WPGraphQL\WooCommerce\Model;
@@ -14,26 +14,28 @@ use GraphQLRelay\Relay;
 use WPGraphQL\Model\Model;
 
 /**
- * Class Shipping_Method
+ * Class Shipping_Zone
  *
- * @property \WC_Shipping_Method $data
+ * @property \WC_Shipping_Zone $data
  *
  * @property int    $ID
  * @property string $id
  * @property int    $databaseId
- * @property string $title
- * @property string $description
+ * @property string $name
+ * @property string $order
+ * @property object{code: string, type: string}[] $locations
+ * @property \WC_Shipping_Method[] $methods
  *
  * @package WPGraphQL\WooCommerce\Model
  */
-class Shipping_Method extends Model {
+class Shipping_Zone extends Model {
 	/**
-	 * Shipping_Method constructor
+	 * Shipping_Zone constructor
 	 *
-	 * @param \WC_Shipping_Method $method - Shipping method object.
+	 * @param \WC_Shipping_Zone $zone Shipping zone object.
 	 */
-	public function __construct( $method ) {
-		$this->data                = $method;
+	public function __construct( $zone ) {
+		$this->data                = $zone;
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
@@ -43,7 +45,7 @@ class Shipping_Method extends Model {
 		];
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		$restricted_cap = apply_filters( 'shipping_method_restricted_cap', '' );
+		$restricted_cap = apply_filters( 'shipping_zone_restricted_cap', '' );
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
 	}
@@ -63,20 +65,26 @@ class Shipping_Method extends Model {
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = [
-				'ID'          => function () {
-					return $this->data->id;
+				'ID'         => function () {
+					return $this->data->get_id();
 				},
-				'id'          => function () {
-					return ! empty( $this->data->id ) ? Relay::toGlobalId( 'shipping_method', $this->data->id ) : null;
+				'id'         => function () {
+					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shipping_zone', (string) $this->data->get_id() ) : null;
 				},
-				'databaseId'  => function () {
+				'databaseId' => function () {
 					return ! empty( $this->ID ) ? $this->ID : null;
 				},
-				'title'       => function () {
-					return ! empty( $this->data->method_title ) ? $this->data->method_title : null;
+				'name'       => function () {
+					return ! empty( $this->data->get_zone_name() ) ? $this->data->get_zone_name() : null;
 				},
-				'description' => function () {
-					return ! empty( $this->data->method_description ) ? $this->data->method_description : null;
+				'order'      => function () {
+					return $this->data->get_zone_order();
+				},
+				'locations'  => function () {
+					return $this->data->get_zone_locations();
+				},
+				'methods'    => function () {
+					return $this->data->get_shipping_methods();
 				},
 			];
 		}
@@ -104,7 +112,7 @@ class Shipping_Method extends Model {
 	/**
 	 * Returns the source WC_Data instance
 	 *
-	 * @return \WC_Shipping_Method
+	 * @return \WC_Shipping_Zone
 	 */
 	public function as_WC_Data() {
 		return $this->data;

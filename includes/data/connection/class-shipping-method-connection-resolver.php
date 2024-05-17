@@ -11,6 +11,8 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Model\Shipping_Zone;
 
 /**
  * Class Shipping_Method_Connection_Resolver
@@ -31,6 +33,10 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		if ( ! wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
+			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+			return false;
+		}
 		return true;
 	}
 
@@ -47,20 +53,22 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return array|mixed|string[]
+	 * @return int[]
 	 */
 	public function get_query() {
-		// TODO: Implement get_query() method.
-		$wc_shipping = \WC_Shipping::instance();
-		$methods     = $wc_shipping->get_shipping_methods();
+		if ( $this->source instanceof Shipping_Zone ) {
+			$methods = $this->source->methods;
+		} else {
+			$wc_shipping = \WC_Shipping::instance();
+			$methods     = $wc_shipping->get_shipping_methods();
+		}
+
+		foreach ( $methods as $method ) {
+			$this->loader->prime( $method->id, new Shipping_Method( $method ) );
+		}
 
 		// Get shipping method IDs.
-		$methods = array_map(
-			static function ( $item ) {
-				return $item->id;
-			},
-			array_values( $methods )
-		);
+		$methods = wp_list_pluck( array_values( $methods ), 'id' );
 
 		return $methods;
 	}
@@ -68,9 +76,9 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Return an array of items from the query
 	 *
-	 * @return array|mixed
+	 * @return array
 	 */
-	public function get_ids() {
+	public function get_ids_from_query() {
 		return ! empty( $this->query ) ? $this->query : [];
 	}
 

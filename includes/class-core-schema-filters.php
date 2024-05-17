@@ -271,12 +271,16 @@ class Core_Schema_Filters {
 		$loaders['cart_item']         = &$cart_item_loader;
 		$downloadable_item_loader     = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
 		$loaders['downloadable_item'] = &$downloadable_item_loader;
+		$tax_class_loader             = new WC_Db_Loader( $context, 'TAX_CLASS' );
+		$loaders['tax_class']         = &$tax_class_loader;
 		$tax_rate_loader              = new WC_Db_Loader( $context, 'TAX_RATE' );
 		$loaders['tax_rate']          = &$tax_rate_loader;
 		$order_item_loader            = new WC_Db_Loader( $context, 'ORDER_ITEM' );
 		$loaders['order_item']        = &$order_item_loader;
 		$shipping_item_loader         = new WC_Db_Loader( $context, 'SHIPPING_METHOD' );
 		$loaders['shipping_method']   = &$shipping_item_loader;
+		$shipping_zone_loader         = new WC_Db_Loader( $context, 'SHIPPING_ZONE' );
+		$loaders['shipping_zone']     = &$shipping_zone_loader;
 		return $loaders;
 	}
 

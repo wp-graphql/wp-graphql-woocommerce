@@ -28,23 +28,27 @@ use WPGraphQL\Model\Model;
  *  tax_rate_shipping: bool,
  *  tax_rate_order: int,
  *  tax_rate_city: string,
- *  tax_rate_postcode: string
+ *  tax_rate_postcode: string,
+ *  tax_rate_postcodes: string,
+ *  tax_rate_cities: string
  *  } $data
  *
- * @property int    $ID
- * @property string $id
- * @property string $databaseId
- * @property string $country
- * @property string $state
- * @property string $city
- * @property string $postcode
- * @property string $rate
- * @property string $name
- * @property string $priority
- * @property bool   $compound
- * @property bool   $shipping
- * @property int    $order
- * @property string $class
+ * @property int      $ID
+ * @property string   $id
+ * @property string   $databaseId
+ * @property string   $country
+ * @property string   $state
+ * @property string   $city
+ * @property string   $postcode
+ * @property string[] $postcodes
+ * @property string[] $cities
+ * @property string   $rate
+ * @property string   $name
+ * @property string   $priority
+ * @property bool     $compound
+ * @property bool     $shipping
+ * @property int      $order
+ * @property string   $class
  *
  * @package WPGraphQL\WooCommerce\Model
  */
@@ -52,7 +56,7 @@ class Tax_Rate extends Model {
 	/**
 	 * Tax_Rate constructor
 	 *
-	 * @param object{ tax_rate_id: int, tax_rate_class: string, tax_rate_country: string, tax_rate_state: string, tax_rate: string, tax_rate_name: string, tax_rate_priority: int, tax_rate_compound: bool, tax_rate_shipping: bool, tax_rate_order: int, tax_rate_city: string, tax_rate_postcode: string } $rate Tax rate object.
+	 * @param object{ tax_rate_id: int, tax_rate_class: string, tax_rate_country: string, tax_rate_state: string, tax_rate: string, tax_rate_name: string, tax_rate_priority: int, tax_rate_compound: bool, tax_rate_shipping: bool, tax_rate_order: int, tax_rate_city: string, tax_rate_postcode: string, tax_rate_postcodes: string, tax_rate_cities: string } $rate Tax rate object.
 	 */
 	public function __construct( $rate ) {
 		$this->data                = $rate;
@@ -101,10 +105,16 @@ class Tax_Rate extends Model {
 					return ! empty( $this->data->tax_rate_state ) ? $this->data->tax_rate_state : null;
 				},
 				'city'       => function () {
-					return ! empty( $this->data->tax_rate_city ) ? $this->data->tax_rate_city : [ '*' ];
+					return ! empty( $this->data->tax_rate_city ) ? $this->data->tax_rate_city : '*';
 				},
 				'postcode'   => function () {
-					return ! empty( $this->data->tax_rate_postcode ) ? $this->data->tax_rate_postcode : [ '*' ];
+					return ! empty( $this->data->tax_rate_postcode ) ? $this->data->tax_rate_postcode : '*';
+				},
+				'postcodes'  => function () {
+					return ! empty( $this->data->tax_rate_postcodes ) ? explode( ';', $this->data->tax_rate_postcodes ) : [ '*' ];
+				},
+				'cities'     => function () {
+					return ! empty( $this->data->tax_rate_cities ) ? explode( ';', $this->data->tax_rate_cities ) : [ '*' ];
 				},
 				'rate'       => function () {
 					return ! empty( $this->data->tax_rate ) ? $this->data->tax_rate : null;
@@ -116,10 +126,10 @@ class Tax_Rate extends Model {
 					return ! empty( $this->data->tax_rate_priority ) ? $this->data->tax_rate_priority : null;
 				},
 				'compound'   => function () {
-					return ! empty( $this->data->tax_rate_compound ) ? $this->data->tax_rate_compound : null;
+					return isset( $this->data->tax_rate_compound ) ? $this->data->tax_rate_compound : null;
 				},
 				'shipping'   => function () {
-					return ! empty( $this->data->tax_rate_shipping ) ? $this->data->tax_rate_shipping : null;
+					return isset( $this->data->tax_rate_shipping ) ? $this->data->tax_rate_shipping : null;
 				},
 				'order'      => function () {
 					return ! is_null( $this->data->tax_rate_order ) ? absint( $this->data->tax_rate_order ) : null;

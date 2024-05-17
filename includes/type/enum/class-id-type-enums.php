@@ -102,6 +102,17 @@ class Id_Type_Enums {
 		);
 
 		register_graphql_enum_type(
+			'ShippingZoneIdTypeEnum',
+			[
+				'description' => __( 'The Type of Identifier used to fetch a single Shipping Zone. Default is ID.', 'wp-graphql-woocommerce' ),
+				'values'      => [
+					'id'          => self::get_value( 'id' ),
+					'database_id' => self::get_value( 'database_id' ),
+				],
+			]
+		);
+
+		register_graphql_enum_type(
 			'TaxRateIdTypeEnum',
 			[
 				'description' => __( 'The Type of Identifier used to fetch a single Tax rate. Default is ID.', 'wp-graphql-woocommerce' ),

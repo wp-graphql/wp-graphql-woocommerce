@@ -174,6 +174,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'model/class-order.php';
 			require $include_directory_path . 'model/class-order-item.php';
 			require $include_directory_path . 'model/class-shipping-method.php';
+			require $include_directory_path . 'model/class-shipping-zone.php';
 			require $include_directory_path . 'model/class-tax-rate.php';
 
 			// Include data loaders class files.
@@ -190,13 +191,15 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/connection/class-order-item-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-payment-gateway-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-product-attribute-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-product-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-shipping-method-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-shipping-zone-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-tax-class-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-tax-rate-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-variation-attribute-connection-resolver.php';
 
 			// Include deprecated resolver trait/class files.
 			require $include_directory_path . 'data/connection/class-coupon-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-product-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-customer-connection-resolver.php';
 
 			// Include mutation processor class files.
@@ -205,6 +208,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/mutation/class-coupon-mutation.php';
 			require $include_directory_path . 'data/mutation/class-customer-mutation.php';
 			require $include_directory_path . 'data/mutation/class-order-mutation.php';
+			require $include_directory_path . 'data/mutation/class-shipping-mutation.php';
+			require $include_directory_path . 'data/mutation/class-settings-mutation.php';
 
 			// Include factory class file.
 			require $include_directory_path . 'data/class-factory.php';
@@ -239,6 +244,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/enum/class-attribute-operator-enum.php';
 			require $include_directory_path . 'type/enum/class-product-attribute-enum.php';
 			require $include_directory_path . 'type/enum/class-currency-enum.php';
+			require $include_directory_path . 'type/enum/class-shipping-location-type-enum.php';
+			require $include_directory_path . 'type/enum/class-wc-setting-type-enum.php';
 
 			// Include interface type class files.
 			require $include_directory_path . 'type/interface/class-attribute.php';
@@ -282,6 +289,10 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-payment-token-types.php';
 			require $include_directory_path . 'type/object/class-country-state-type.php';
 			require $include_directory_path . 'type/object/class-collection-stats-type.php';
+			require $include_directory_path . 'type/object/class-shipping-location-type.php';
+			require $include_directory_path . 'type/object/class-shipping-zone-type.php';
+			require $include_directory_path . 'type/object/class-tax-class-type.php';
+			require $include_directory_path . 'type/object/class-wc-setting-type.php';
 
 			// Include input type class files.
 			require $include_directory_path . 'type/input/class-cart-item-input.php';
@@ -301,6 +312,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-collection-stats-where-args.php';
 			require $include_directory_path . 'type/input/class-product-attribute-filter-input.php';
 			require $include_directory_path . 'type/input/class-product-attribute-query-input.php';
+			require $include_directory_path . 'type/input/class-shipping-location-input.php';
+			require $include_directory_path . 'type/input/class-wc-setting-input.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';
@@ -329,6 +342,19 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-review-update.php';
 			require $include_directory_path . 'mutation/class-payment-method-delete.php';
 			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-create.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-delete.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-locations-clear.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-locations-update.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-method-add.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-method-remove.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-method-update.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-update.php';
+			require $include_directory_path . 'mutation/class-tax-class-create.php';
+			require $include_directory_path . 'mutation/class-tax-class-delete.php';
+			require $include_directory_path . 'mutation/class-tax-rate-create.php';
+			require $include_directory_path . 'mutation/class-tax-rate-delete.php';
+			require $include_directory_path . 'mutation/class-tax-rate-update.php';
 			require $include_directory_path . 'mutation/class-update-session.php';
 
 			// Include connection class/function files.
@@ -342,6 +368,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'connection/class-product-attributes.php';
 			require $include_directory_path . 'connection/class-products.php';
 			require $include_directory_path . 'connection/class-shipping-methods.php';
+			require $include_directory_path . 'connection/class-shipping-zones.php';
+			require $include_directory_path . 'connection/class-tax-classes.php';
 			require $include_directory_path . 'connection/class-tax-rates.php';
 			require $include_directory_path . 'connection/class-wc-terms.php';
 

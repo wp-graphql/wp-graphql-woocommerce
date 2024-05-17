@@ -17,10 +17,12 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = [
-			'zone_name' => '',
-		];
 		$this->dummy                          = Dummy::instance();
+		$this->default_generation_definitions = [
+			'zone_name'  => 'Test Shipping Zone ' . $this->dummy->number(),
+			'zone_order' => 0,
+		];
+		
 	}
 
 	public function create_object( $args ) {
@@ -60,9 +62,37 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function update_object( $object, $fields ) {
-		if ( ! $object instanceof \WC_Customer && 0 !== absint( $object ) ) {
+		if ( ! $object instanceof \WC_Shipping_Zone && 0 !== absint( $object ) ) {
 			$object = $this->get_object_by_id( $object );
 		}
+
+		if ( ! empty( $fields['countries'] ) ) {
+			foreach ( $fields['countries'] as $country ) {
+				$object->add_location( $country, 'country' );
+			}
+		}
+		if ( ! empty( $fields['states'] ) ) {
+			foreach ( $fields['states'] as $state ) {
+				$object->add_location( $state, 'state' );
+			}
+		}
+		if ( ! empty( $fields['postcode'] ) ) {
+			foreach ( $fields['postcode'] as $postcode ) {
+				$object->add_location( $postcode, 'postcode' );
+			}
+		}
+
+		if ( ! empty( $fields['shipping_method'] ) ) {
+			$object->add_shipping_method( $fields['shipping_method'] );
+		}
+
+		foreach ( $fields as $key => $value ) {
+			if ( is_callable( [ $object, "set_{$key}" ] ) ) {
+				$object->{"set_{$key}"}( $value );
+			}
+		}
+
+		return $object->save();
 	}
 
 	public function get_object_by_id( $id ) {
@@ -81,6 +111,11 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		return false;
 	}
 
+	public function reloadShippingMethods() {
+		\WC_Cache_Helper::get_transient_version( 'shipping', true );
+		WC()->shipping()->load_shipping_methods();
+	}
+
 	public function createLegacyFlatRate( $args = [] ) {
 		$flat_rate_settings = array_merge(
 			[
@@ -95,8 +130,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		);
 		update_option( 'woocommerce_flat_rate_settings', $flat_rate_settings );
 		update_option( 'woocommerce_flat_rate', [] );
-		\WC_Cache_Helper::get_transient_version( 'shipping', true );
-		\WC()->shipping()->load_shipping_methods();
+		$this->reloadShippingMethods();
 
 		return 'legacy_flat_rate';
 	}
@@ -113,8 +147,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		);
 		update_option( 'woocommerce_free_shipping_settings', $free_shipping_settings );
 		update_option( 'woocommerce_free_shipping', [] );
-		\WC_Cache_Helper::get_transient_version( 'shipping', true );
-		WC()->shipping()->load_shipping_methods();
+		$this->reloadShippingMethods();
 
 		return 'legacy_free_shipping';
 	}
