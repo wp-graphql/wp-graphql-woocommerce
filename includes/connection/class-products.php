@@ -235,7 +235,9 @@ class Products {
 				$tax_query = [
 					[
 						'taxonomy' => $source->taxonomyName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						'operator' => 'EXISTS',
+						'field'    => 'term_id',
+						'terms'    => $source->term_id, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						'operator' => 'IN',
 					],
 				];
 
