@@ -5,12 +5,12 @@
 actor: WpunitTester
 modules:
   enabled:
-    - WPLoader
+    - \lucatume\WPBrowser\Module\WPLoader
     - \Helper\Wpunit
   disabled:
-    - WPDb
-    - WPBrowser
-    - WPFilesystem
+    - \lucatume\WPBrowser\Module\WPDb
+    - \lucatume\WPBrowser\Module\WPBrowser
+    - \lucatume\WPBrowser\Module\WPFilesystem
   config:
     \lucatume\WPBrowser\Module\WPLoader:
       skipInstall: true
