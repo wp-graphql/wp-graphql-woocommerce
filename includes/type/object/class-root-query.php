@@ -539,7 +539,6 @@ class Root_Query {
 					],
 					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
-						$filters = new ProductQueryFilters(); // @phpstan-ignore-line
 						$data    = [
 							'min_price'           => null,
 							'max_price'           => null,
@@ -547,6 +546,7 @@ class Root_Query {
 							'stock_status_counts' => null,
 							'rating_counts'       => null,
 						];
+						$filters = new ProductQueryFilters(); // @phpstan-ignore-line
 
 						// Process client-side filters.
 						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? [] );
@@ -555,21 +555,30 @@ class Root_Query {
 						if ( ! empty( $args['taxonomies'] ) ) {
 							$calculate_attribute_counts = [];
 							foreach ( $args['taxonomies'] as $attribute_to_count ) {
-								$calculate_attribute_counts[] = [
-									'taxonomy'   => $attribute_to_count['taxonomy'],
-									'query_type' => strtolower( $attribute_to_count['relation'] ),
-								];
+								$attribute = [ 'taxonomy' => $attribute_to_count['taxonomy'] ];
+								// Set the query type.
+								if ( ! empty( $attribute_to_count['relation'] ) ) {
+									$attribute['query_type'] = strtolower( $attribute_to_count['relation'] );
+								}
+
+								// Add the attribute to the list of attributes to count.
+								$calculate_attribute_counts[] = $attribute;
 							}
+
+							// Set the attribute counts to calculate.
 							$request->set_param( 'calculate_attribute_counts', $calculate_attribute_counts );
 						}
- 
+
 						$request->set_param( 'calculate_price_range', $args['calculatePriceRange'] ?? false );
 						$request->set_param( 'calculate_stock_status_counts', $args['calculateStockStatusCounts'] ?? false );
 						$request->set_param( 'calculate_rating_counts', $args['calculateRatingCounts'] ?? false );
 
-
-						
 						if ( ! empty( $request['calculate_price_range'] ) ) {
+							/**
+							 * A Rest request object for external filtering
+							 *
+							 * @var \WP_REST_Request $filter_request
+							 */
 							$filter_request = clone $request;
 							$filter_request->set_param( 'min_price', null );
 							$filter_request->set_param( 'max_price', null );
@@ -580,11 +589,16 @@ class Root_Query {
 						}
 
 						if ( ! empty( $request['calculate_stock_status_counts'] ) ) {
+							/**
+							 * A Rest request object for external filtering
+							 *
+							 * @var \WP_REST_Request $filter_request
+							 */
 							$filter_request = clone $request;
 							$counts         = $filters->get_stock_status_counts( $filter_request ); // @phpstan-ignore-line
-				
+
 							$data['stock_status_counts'] = [];
-				
+
 							foreach ( $counts as $key => $value ) {
 								$data['stock_status_counts'][] = (object) [
 									'status' => $key,
@@ -594,30 +608,80 @@ class Root_Query {
 						}
 
 						if ( ! empty( $request['calculate_attribute_counts'] ) ) {
+							$taxonomy__or_queries  = [];
+							$taxonomy__and_queries = [];
 							foreach ( $request['calculate_attribute_counts'] as $attributes_to_count ) {
 								if ( ! isset( $attributes_to_count['taxonomy'] ) ) {
 									continue;
 								}
 
-								$taxonomy = $attributes_to_count['taxonomy'];
-								$counts   = $filters->get_attribute_counts( $request, $taxonomy ); // @phpstan-ignore-line
+								if ( empty( $attributes_to_count['query_type'] ) || 'or' === $attributes_to_count['query_type'] ) {
+									$taxonomy__or_queries[] = $attributes_to_count['taxonomy'];
+								} else {
+									$taxonomy__and_queries[] = $attributes_to_count['taxonomy'];
+								}
+							}
 
-								$data['attribute_counts'][ $taxonomy ] = [];
-								foreach ( $counts as $key => $value ) {
-									$data['attribute_counts'][ $taxonomy ][] = (object) [
-										'taxonomy' => $taxonomy,
-										'termId'   => $key,
-										'count'    => $value,
-									];
+							$data['attribute_counts'] = [];
+							if ( ! empty( $taxonomy__or_queries ) ) {
+								foreach ( $taxonomy__or_queries as $taxonomy ) {
+									/**
+									 * A Rest request object for external filtering
+									 *
+									 * @var \WP_REST_Request $filter_request
+									 */
+									$filter_request    = clone $request;
+									$filter_attributes = $filter_request->get_param( 'attributes' );
+
+									if ( ! empty( $filter_attributes ) ) {
+										$filter_attributes = array_filter(
+											$filter_attributes,
+											static function ( $query ) use ( $taxonomy ) {
+												return $query['attribute'] !== $taxonomy;
+											}
+										);
+									}
+
+									$filter_request->set_param( 'attributes', $filter_attributes );
+									$counts = $filters->get_attribute_counts( $filter_request, [ $taxonomy ] ); // @phpstan-ignore-line
+
+									$data['attribute_counts'][ $taxonomy ] = [];
+									foreach ( $counts as $key => $value ) {
+										$data['attribute_counts'][ $taxonomy ][] = (object) [
+											'taxonomy' => $taxonomy,
+											'termId'   => $key,
+											'count'    => $value,
+										];
+									}
+								}
+							}
+
+							if ( ! empty( $taxonomy__and_queries ) ) {
+								$counts = $filters->get_attribute_counts( $request, $taxonomy__and_queries ); // @phpstan-ignore-line
+
+								foreach ( $taxonomy__and_queries as $taxonomy ) {
+									$data['attribute_counts'][ $taxonomy ] = [];
+									foreach ( $counts as $key => $value ) {
+										$data['attribute_counts'][ $taxonomy ][] = (object) [
+											'taxonomy' => $taxonomy,
+											'termId'   => $key,
+											'count'    => $value,
+										];
+									}
 								}
 							}
 						}
 
 						if ( ! empty( $request['calculate_rating_counts'] ) ) {
+							/**
+							 * A Rest request object for external filtering
+							 *
+							 * @var \WP_REST_Request $filter_request
+							 */
 							$filter_request        = clone $request;
 							$counts                = $filters->get_rating_counts( $filter_request ); // @phpstan-ignore-line
 							$data['rating_counts'] = [];
-				
+
 							foreach ( $counts as $key => $value ) {
 								$data['rating_counts'][] = (object) [
 									'rating' => $key,
@@ -628,7 +692,7 @@ class Root_Query {
 
 						return $data;
 					},
-				],  
+				],
 			]
 		);
 

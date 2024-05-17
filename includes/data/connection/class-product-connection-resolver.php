@@ -18,8 +18,6 @@ use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 /**
  * Class Product_Connection_Resolver
  *
- * @deprecated v0.10.0
- *
  * @property \WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader $loader
  */
 class Product_Connection_Resolver extends AbstractConnectionResolver {
@@ -154,7 +152,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args = array_merge( $query_args, $input_fields );
 		}
 
-
 		/**
 		 * If the query contains search default the results to
 		 */
@@ -190,8 +187,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return \WP_Query
 	 */
 	public function get_query() {
 		// Run query and add product query filters.
@@ -224,7 +219,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Custom query used to filter products by price.
 	 *
-	 * @param array     $args      SQL clauses                                         $args      Query args.
+	 * @param array     $args      SQL clauses.
 	 * @param \WP_Query $wp_query  WP_Query object.
 	 *
 	 * @return array
@@ -270,6 +265,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function get_ids_from_query() {
 		$ids = $this->query->get_posts();
+		remove_filter( 'posts_clauses', [ $this, 'product_query_post_clauses' ], 10 );
 
 		// If we're going backwards, we need to reverse the array.
 		if ( ! empty( $this->args['last'] ) ) {
@@ -283,7 +279,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * Returns meta keys to be used for connection ordering.
 	 *
 	 * @param bool $is_numeric  Return numeric meta keys. Defaults to "true".
-	 * 
+	 *
 	 * @return array
 	 */
 	public function ordering_meta( $is_numeric = true ) {
@@ -297,11 +293,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		return apply_filters(
 			'woographql_product_connection_orderby_numeric_meta_keys',
 			[
-				'_price',
-				'_regular_price',
-				'_sale_price',
-				'_wc_rating_count',
-				'_wc_average_rating',
 				'_sale_price_dates_from',
 				'_sale_price_dates_to',
 				'total_sales',
@@ -456,12 +447,70 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Filter by attribute and term.
 		if ( ! empty( $where_args['attribute'] ) && ! empty( $where_args['attributeTerm'] ) ) {
+			graphql_debug(
+				__( 'The "attribute" and "attributeTerm" arguments have been deprecated. Please use the "attributes" argument instead.', 'wp-graphql-woocommerce' ),
+			);
 			if ( in_array( $where_args['attribute'], \wc_get_attribute_taxonomy_names(), true ) ) {
 				$tax_query[] = [
 					'taxonomy' => $where_args['attribute'],
 					'field'    => 'slug',
 					'terms'    => $where_args['attributeTerm'],
 				];
+			}
+		}
+
+		// Filter by attributes.
+		if ( ! empty( $where_args['attributes'] ) && ! empty( $where_args['attributes']['queries'] ) ) {
+			$attributes  = $where_args['attributes']['queries'];
+			$att_queries = [];
+
+			foreach ( $attributes as $attribute ) {
+				if ( empty( $attribute['ids'] ) && empty( $attribute['terms'] ) ) {
+					continue;
+				}
+
+				if ( ! in_array( $attribute['taxonomy'], \wc_get_attribute_taxonomy_names(), true ) ) {
+					continue;
+				}
+
+				$operator = isset( $attribute['operator'] ) ? $attribute['operator'] : 'IN';
+
+				if ( ! empty( $attribute['terms'] ) ) {
+					foreach ( $attribute['terms'] as $term ) {
+						$att_queries[] = [
+							'taxonomy' => $attribute['taxonomy'],
+							'field'    => 'slug',
+							'terms'    => $term,
+							'operator' => $operator,
+						];
+					}
+				}
+
+				if ( ! empty( $attribute['ids'] ) ) {
+					foreach ( $attribute['ids'] as $id ) {
+						$att_queries[] = [
+							'taxonomy' => $attribute['taxonomy'],
+							'field'    => 'term_id',
+							'terms'    => $id,
+							'operator' => $operator,
+						];
+					}
+				}
+			}
+
+			if ( 1 < count( $att_queries ) ) {
+				$relation = ! empty( $where_args['attributes']['relation'] ) ? $where_args['attributes']['relation'] : 'AND';
+				if ( 'NOT_IN' === $relation ) {
+					graphql_debug( __( 'The "NOT_IN" relation is not supported for attributes. Please use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
+					$relation = 'IN';
+				}
+
+				$tax_query[] = array_merge(
+					[ 'relation' => $relation ],
+					$att_queries
+				);
+			} else {
+				$tax_query = array_merge( $tax_query, $att_queries );
 			}
 		}
 
@@ -552,7 +601,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				'terms'    => $rating_terms,
 			];
 		}
-	
+
 		// Process "taxonomyFilter".
 		$tax_filter_query = [];
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
@@ -619,6 +668,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				'compare' => 'LIKE',
 			];
 		}
+		if ( ! empty( $where_args['minPrice'] ) ) {
+			$query_args['min_price'] = floatval( $where_args['minPrice'] );
+		}
 
 		if ( ! empty( $where_args['minPrice'] ) ) {
 			$query_args['min_price'] = floatval( $where_args['minPrice'] );
@@ -648,8 +700,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$on_sale_ids                = empty( $on_sale_ids ) ? [ 0 ] : $on_sale_ids;
 			$query_args[ $on_sale_key ] = $on_sale_ids;
 		}
-
-		
 
 		/**
 		 * {@inheritDoc}
@@ -709,9 +759,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 	/**
 	 * Adds meta query to the query args.
-	 * 
+	 *
 	 * @param array $value Meta query.
-	 * 
+	 *
 	 * @return \WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver
 	 */
 	public function add_meta_query( $value ) {

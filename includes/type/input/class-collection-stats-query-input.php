@@ -28,7 +28,7 @@ class Collection_Stats_Query_Input {
 						'description' => __( 'Product Taxonomy', 'wp-graphql-woocommerce' ),
 					],
 					'relation' => [
-						'type'        => [ 'non_null' => 'RelationEnum' ],
+						'type'        => 'RelationEnum',
 						'description' => __( 'Taxonomy relation to query', 'wp-graphql-woocommerce' ),
 					],
 				],

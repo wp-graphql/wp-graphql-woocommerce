@@ -202,6 +202,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
                         } ) {
                             nodes {
                                 id
+								price
                             }
                         }
                     }

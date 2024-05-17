@@ -389,7 +389,7 @@ class Core_Schema_Filters {
 	 * Resolves GraphQL type for provided product model.
 	 *
 	 * @param \WPGraphQL\WooCommerce\Model\Product $value  Product model.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError Invalid product type requested.
 	 *
 	 * @return mixed
@@ -420,7 +420,7 @@ class Core_Schema_Filters {
 	 * Resolves GraphQL type for provided product variation model.
 	 *
 	 * @param \WPGraphQL\WooCommerce\Model\Product $value  Product model.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError Invalid product type requested.
 	 *
 	 * @return mixed

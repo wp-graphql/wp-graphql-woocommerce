@@ -66,6 +66,7 @@ class Type_Registry {
 		Type\WPInputObject\Collection_Stats_Query_Input::register();
 		Type\WPInputObject\Collection_Stats_Where_Args::register();
 		Type\WPInputObject\Product_Attribute_Filter_Input::register();
+		Type\WPInputObject\Product_Attribute_Query_Input::register();
 
 		/**
 		 * Interfaces.

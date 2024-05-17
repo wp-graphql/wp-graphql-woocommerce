@@ -196,7 +196,7 @@ class Customers {
 	 * has been added to the UserConnectionResolver
 	 *
 	 * @param array                                                 $connection  Resolved connection.
-	 * @param \WPGraphQL\Data\Connection\AbstractConnectionResolver $resolver  Resolver class.
+	 * @param \WPGraphQL\Data\Connection\AbstractConnectionResolver $resolver    Resolver class.
 	 *
 	 * @return array
 	 */

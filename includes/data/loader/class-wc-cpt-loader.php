@@ -31,7 +31,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @param boolean $fatal      Throw if no model found.
 	 *
 	 * @throws \GraphQL\Error\UserError - throws if no corresponding Model is registered to the post-type.
-	 * 
+	 *
 	 * @return \WPGraphQL\Model\Model|null
 	 */
 	public static function resolve_model( $post_type, $id, $fatal = true ) {
@@ -52,7 +52,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 					/**
 					 * If a model is registered to the post-type, we can return an instance of that model
 					 * with the post ID passed in.
-					 * 
+					 *
 					 * @var \WPGraphQL\Model\Model
 					 */
 					return new $model( $id );
@@ -153,7 +153,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @return \WPGraphQL\Model\Model|null
 	 */
 	protected function get_model( $entry, $key ) {

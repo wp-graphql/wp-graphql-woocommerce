@@ -69,6 +69,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 	public function tearDown(): void {
 		\WC()->cart->empty_cart( true );
+		$this->factory->product->deleteAttributes();
 
 		// then
 		parent::tearDown();

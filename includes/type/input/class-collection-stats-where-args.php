@@ -76,8 +76,8 @@ class Collection_Stats_Where_Args {
 						'description' => __( 'Limit result set to products assigned to a specific group of tag IDs.', 'wp-graphql-woocommerce' ),
 					],
 					'attributes'   => [
-						'type'        => [ 'list_of' => 'ProductAttributeFilterInput' ],
-						'description' => __( 'Limit result set to products with a specific attribute. Use the taxonomy name/attribute slug.', 'wp-graphql-woocommerce' ),
+						'type'        => 'ProductAttributeQueryInput',
+						'description' => __( 'Limit result set to products with selected global attribute queries.', 'wp-graphql-woocommerce' ),
 					],
 					'stockStatus'  => [
 						'type'        => [ 'list_of' => 'StockStatusEnum' ],

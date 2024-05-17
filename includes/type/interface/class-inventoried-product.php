@@ -1,7 +1,7 @@
 <?php
 /**
  * Defines the "InventoriedProduct" interface.
- * 
+ *
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.17.0
  */
