@@ -74,7 +74,8 @@ class Tax_Class_Delete {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
 				throw new UserError( __( 'Sorry, you are not allowed to delete tax classes.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
-			$slug      = $input['slug'];
+			$slug = $input['slug'];
+
 			/** @var array|false $tax_class */
 			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
 			if ( ! $tax_class ) {
