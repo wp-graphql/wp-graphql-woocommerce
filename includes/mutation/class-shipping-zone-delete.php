@@ -78,7 +78,7 @@ class Shipping_Zone_Delete {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
 				throw new UserError( __( 'Sorry, you are not allowed to delete shipping zones', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
-	
+
 			$zone_id = $input['id'];
 			/** @var \WC_Shipping_Zone|false $zone */
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );

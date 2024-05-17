@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
+use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 
@@ -120,12 +121,19 @@ class Tax_Rate_Create {
 		$action     = ! $id ? 'create' : 'update';
 		$permission = ! $id ? 'create' : 'edit';
 		if ( ! \wc_rest_check_manager_permissions( 'settings', $permission ) ) {
-			throw new UserError( __( "Sorry, you are not allowed to {$permission} tax rates.", 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+			throw new UserError(
+				sprintf(
+					/* translators: %s: permission */
+					__( 'Sorry, you are not allowed to %s tax rates.', 'wp-graphql-woocommerce' ),
+					$permission
+				),
+				\rest_authorization_required_code()
+			);
 		}
-		
+
 		$current = null;
 		if ( ! empty( $id ) ) {
-			/** 
+			/**
 			 * @var object{
 			 *  tax_rate_id: int,
 			 *  tax_rate_class: string,
@@ -206,7 +214,6 @@ class Tax_Rate_Create {
 			\WC_Tax::_update_tax_rate_postcodes( $id, join( ';', $input['postcodes'] ) );
 		}
 
-		
 		/**
 		 * Filter tax rate object before responding.
 		 *

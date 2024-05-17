@@ -62,7 +62,6 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 		/** @var \WC_Shipping_Zone $rest_of_the_world */
 		$rest_of_the_world = \WC_Shipping_Zones::get_zone_by( 'zone_id', 0 );
 
-
 		$zones = \WC_Shipping_Zones::get_zones();
 		array_unshift( $zones, $rest_of_the_world->get_data() );
 

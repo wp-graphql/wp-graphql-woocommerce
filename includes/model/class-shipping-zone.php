@@ -1,9 +1,9 @@
 <?php
 /**
  * Model - Shipping_Zone
- * 
+ *
  * This model represents a Shipping Zone.
- * 
+ *
  * @package WPGraphQL\WooCommerce\Model
  * @since TBD
  */

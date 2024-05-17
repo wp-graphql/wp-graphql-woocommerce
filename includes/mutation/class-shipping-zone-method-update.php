@@ -84,7 +84,7 @@ class Shipping_Zone_Method_Update {
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
 					return [
 						// Call the Shipping_Method constructor directly because "$payload['method']" is a non-scalar value.
-						'node'   => new Shipping_Method( $payload['method'] ), 
+						'node'   => new Shipping_Method( $payload['method'] ),
 						'source' => $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] ),
 					];
 				},

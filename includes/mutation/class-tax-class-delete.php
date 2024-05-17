@@ -72,9 +72,10 @@ class Tax_Class_Delete {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
-				throw new UserError( __( "Sorry, you are not allowed to delete tax classes.", 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to delete tax classes.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
 			$slug      = $input['slug'];
+			/** @var array|false $tax_class */
 			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
 			if ( ! $tax_class ) {
 				throw new UserError( __( 'Invalid tax class slug.', 'wp-graphql-woocommerce' ) );
@@ -83,8 +84,8 @@ class Tax_Class_Delete {
 			/**
 			 * Action hook before deleting tax class.
 			 *
-			 * @param object $tax_class  The tax class object.
-			 * @param array  $input   Request input.
+			 * @param array $tax_class  The tax class object.
+			 * @param array $input   Request input.
 			 */
 			do_action( 'graphql_woocommerce_before_tax_class_delete', $tax_class, $input );
 
@@ -96,8 +97,8 @@ class Tax_Class_Delete {
 			/**
 			 * Filter tax class object before responding.
 			 *
-			 * @param object $tax_class  The shipping method object.
-			 * @param array  $input   Request input.
+			 * @param array $tax_class  The shipping method object.
+			 * @param array $input   Request input.
 			 */
 			$tax_class = apply_filters( 'graphql_woocommerce_tax_class_delete', $tax_class, $input );
 

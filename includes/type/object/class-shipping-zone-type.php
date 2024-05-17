@@ -115,7 +115,7 @@ class Shipping_Zone_Type {
 											$default_value = ! empty( $field['default'] ) ? $field['default'] : null;
 											$value         = ! empty( $instance_settings[ $key ] ) ? $instance_settings[ $key ] : $default_value;
 											$settings[]    = array_merge(
-												$field, 
+												$field,
 												[
 													'id' => $key,
 													'value' => $value,

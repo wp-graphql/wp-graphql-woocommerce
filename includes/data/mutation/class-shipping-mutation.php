@@ -16,7 +16,7 @@ class Shipping_Mutation {
 	 * Maps the settings input for insertion.
 	 *
 	 * @param array<array<string, string>> $settings_input  Settings input.
-	 * 
+	 *
 	 * @return array<string, string>
 	 */
 	private static function flatten_settings_input( $settings_input ) {
@@ -33,7 +33,7 @@ class Shipping_Mutation {
 	 * @param int                 $instance_id     Instance ID.
 	 * @param \WC_Shipping_Method $method          Shipping method data.
 	 * @param array               $settings_input  Settings input.
-	 * 
+	 *
 	 * @return \WC_Shipping_Method
 	 */
 	public static function set_shipping_zone_method_settings( $instance_id, $method, $settings_input ) {
@@ -71,7 +71,7 @@ class Shipping_Mutation {
 	 * @param int                 $instance_id  Instance ID.
 	 * @param \WC_Shipping_Method $method       Shipping method data.
 	 * @param int                 $order        Order.
-	 * 
+	 *
 	 * @return \WC_Shipping_Method
 	 */
 	public static function set_shipping_zone_method_order( $instance_id, $method, $order ) {
@@ -80,7 +80,7 @@ class Shipping_Mutation {
 		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			"{$wpdb->prefix}woocommerce_shipping_zone_methods",
 			[ 'method_order' => $order ],
-			[ 'instance_id' => $instance_id ] 
+			[ 'instance_id' => $instance_id ]
 		);
 		$method->method_order = $order;
 
@@ -94,7 +94,7 @@ class Shipping_Mutation {
 	 * @param int                 $instance_id  Instance ID.
 	 * @param \WC_Shipping_Method $method       Shipping method data.
 	 * @param bool                $enabled      Enabled status.
-	 * 
+	 *
 	 * @return \WC_Shipping_Method
 	 */
 	public static function set_shipping_zone_method_enabled( $zone_id, $instance_id, $method, $enabled ) {

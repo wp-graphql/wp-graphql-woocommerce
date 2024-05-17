@@ -416,7 +416,7 @@ class Root_Query {
 						if ( ! \wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
 							throw new UserError( __( 'Sorry, you cannot view shipping methods.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 						}
-				
+
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -455,7 +455,7 @@ class Root_Query {
 						if ( ! \wc_shipping_enabled() ) {
 							throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
 						}
-			
+
 						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
 							throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 						}

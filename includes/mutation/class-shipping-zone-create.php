@@ -85,7 +85,7 @@ class Shipping_Zone_Create {
 
 			$zone = new \WC_Shipping_Zone( null );
 			$zone->set_zone_name( $input['name'] );
-			
+
 			if ( ! empty( $input['order'] ) ) {
 				$zone->set_zone_order( $input['order'] );
 			}

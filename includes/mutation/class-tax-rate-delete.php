@@ -101,7 +101,7 @@ class Tax_Rate_Delete {
 			 * @param object $tax_rate  The shipping method object.
 			 * @param array  $input     Request input.
 			 */
-			$tax = apply_filters( "graphql_woocommerce_tax_rate_delete", $tax, $input );
+			$tax = apply_filters( 'graphql_woocommerce_tax_rate_delete', $tax, $input );
 
 			return [
 				'taxRate' => $tax,

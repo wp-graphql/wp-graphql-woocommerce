@@ -31,9 +31,9 @@ class Settings_Mutation {
 	 *
 	 * @param string $value Value.
 	 * @param array  $setting Setting.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If an invalid setting value was passed.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function validate_setting_select_field( $value, $setting ) {
@@ -49,9 +49,9 @@ class Settings_Mutation {
 	 *
 	 * @param array $values Values.
 	 * @param array $setting Setting.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If an invalid setting value was passed.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function validate_setting_multiselect_field( $values, $setting ) {
@@ -78,9 +78,9 @@ class Settings_Mutation {
 	 *
 	 * @param array $values Values.
 	 * @param array $setting Setting.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If an invalid setting value was passed.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function validate_setting_image_width_field( $values, $setting ) {
@@ -106,9 +106,9 @@ class Settings_Mutation {
 	 *
 	 * @param string $value Value.
 	 * @param array  $setting Setting.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If an invalid setting value was passed.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function validate_setting_radio_field( $value, $setting ) {
@@ -120,9 +120,9 @@ class Settings_Mutation {
 	 *
 	 * @param string $value Value.
 	 * @param array  $setting Setting.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If an invalid setting value was passed.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function validate_setting_checkbox_field( $value, $setting ) {
@@ -141,7 +141,7 @@ class Settings_Mutation {
 	 *
 	 * @param string $value Value.
 	 * @param array  $setting Setting.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function validate_setting_textarea_field( $value, $setting ) {
