@@ -71,15 +71,19 @@ class Shipping_Zone_Delete {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			if ( ! \wc_shipping_enabled() ) {
+				throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+			}
+
+			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
+				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+			}
 			$zone_id = $input['id'];
-			$zone    = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
+			/** @var \WC_Shipping_Zone|false $zone */
+			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
 
 			if ( false === $zone ) {
 				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
-			}
-
-			if ( is_wp_error( $zone ) ) {
-				throw new UserError( $zone->get_error_message() );
 			}
 
 			$object = $context->get_loader( 'shipping_zone' )->load( $zone_id );

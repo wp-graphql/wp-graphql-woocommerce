@@ -208,6 +208,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/mutation/class-coupon-mutation.php';
 			require $include_directory_path . 'data/mutation/class-customer-mutation.php';
 			require $include_directory_path . 'data/mutation/class-order-mutation.php';
+			require $include_directory_path . 'data/mutation/class-shipping-mutation.php';
+			require $include_directory_path . 'data/mutation/class-settings-mutation.php';
 
 			// Include factory class file.
 			require $include_directory_path . 'data/class-factory.php';
@@ -311,6 +313,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-product-attribute-filter-input.php';
 			require $include_directory_path . 'type/input/class-product-attribute-query-input.php';
 			require $include_directory_path . 'type/input/class-shipping-location-input.php';
+			require $include_directory_path . 'type/input/class-wc-setting-input.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';

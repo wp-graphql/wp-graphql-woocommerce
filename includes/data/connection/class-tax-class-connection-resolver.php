@@ -49,29 +49,29 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|mixed|string[]
 	 */
 	public function get_query() {
-		$tax_classes = array();
+		$tax_classes = [];
 
 		// Add standard class.
-		$tax_classes[] = array(
+		$tax_classes[] = [
 			'slug' => 'standard',
-			'name' => __( 'Standard rate', 'woocommerce' ),
-		);
+			'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
+		];
 
 		$classes = \WC_Tax::get_tax_classes();
 
 		foreach ( $classes as $class ) {
-			$tax_classes[] = array(
+			$tax_classes[] = [
 				'slug' => sanitize_title( $class ),
 				'name' => $class,
-			);
+			];
 		}
 
-        // Cache cart items for later.
+		// Cache cart items for later.
 		foreach ( $tax_classes as $tax_class ) {
 			$this->loader->prime( $tax_class['slug'], $tax_class );
 		}
 
-        return wp_list_pluck( $tax_classes, 'slug' );
+		return wp_list_pluck( $tax_classes, 'slug' );
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 		return is_string( $offset );
 	}
 
-    /**
+	/**
 	 * Validates tax class model.
 	 *
 	 * @param array $model  Tax class model.

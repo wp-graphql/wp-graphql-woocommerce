@@ -41,7 +41,7 @@ class Shipping_Zone_Create {
 	 */
 	public static function get_input_fields() {
 		return [
-			'name' => [
+			'name'  => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' ),
 			],
@@ -75,6 +75,14 @@ class Shipping_Zone_Create {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			if ( ! \wc_shipping_enabled() ) {
+				throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+			}
+
+			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
+				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+			}
+
 			$zone = new \WC_Shipping_Zone( null );
 			$zone->set_zone_name( $input['name'] );
 			

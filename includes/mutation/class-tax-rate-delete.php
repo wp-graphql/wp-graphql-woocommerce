@@ -13,7 +13,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class - Tax_Rate_Delete

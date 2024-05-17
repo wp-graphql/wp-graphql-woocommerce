@@ -24,13 +24,13 @@ class Shipping_Location_Input {
 				'description' => __( 'Shipping lines data.', 'wp-graphql-woocommerce' ),
 				'fields'      => [
 					'code' => [
-                        'type'        => 'String',
-                        'description' => __( 'Shipping location code.', 'wp-graphql-woocommerce' ),
-                    ],
-                    'type' => [
-                        'type'        => 'ShippingLocationTypeEnum',
-                        'description' => __( 'Shipping location type.', 'wp-graphql-woocommerce' ),
-                    ],
+						'type'        => 'String',
+						'description' => __( 'Shipping location code.', 'wp-graphql-woocommerce' ),
+					],
+					'type' => [
+						'type'        => 'ShippingLocationTypeEnum',
+						'description' => __( 'Shipping location type.', 'wp-graphql-woocommerce' ),
+					],
 				],
 			]
 		);

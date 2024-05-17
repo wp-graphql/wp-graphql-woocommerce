@@ -23,11 +23,11 @@ class Shipping_Location_Type_Enum {
 			[
 				'description' => __( 'A Shipping zone location type.', 'wp-graphql-woocommerce' ),
 				'values'      => [
-                    'COUNTRY'      => [ 'value' => 'country' ],
-                    'CONTINENT'    => [ 'value' => 'continent' ],
-                    'STATE'        => [ 'value' => 'state' ],
-                    'POSTCODE'     => [ 'value' => 'postcode' ],
-                ],
+					'COUNTRY'   => [ 'value' => 'country' ],
+					'CONTINENT' => [ 'value' => 'continent' ],
+					'STATE'     => [ 'value' => 'state' ],
+					'POSTCODE'  => [ 'value' => 'postcode' ],
+				],
 			]
 		);
 	}

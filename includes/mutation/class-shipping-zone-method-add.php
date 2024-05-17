@@ -13,6 +13,8 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\WooCommerce\Data\Mutation\Shipping_Mutation;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
 
 /**
  * Class - Shipping_Zone_Method_Add
@@ -41,7 +43,7 @@ class Shipping_Zone_Method_Add {
 	 */
 	public static function get_input_fields() {
 		return [
-			'zoneId' => [
+			'zoneId'   => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
 			],
@@ -49,16 +51,16 @@ class Shipping_Zone_Method_Add {
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'The ID of the shipping method to add.', 'wp-graphql-woocommerce' ),
 			],
-			'enabled' => [
-				'type'    => 'Boolean',
+			'enabled'  => [
+				'type'        => 'Boolean',
 				'description' => __( 'Whether the shipping method is enabled or not.', 'wp-graphql-woocommerce' ),
 			],
-			'order' => [
-				'type'    => 'Int',
+			'order'    => [
+				'type'        => 'Int',
 				'description' => __( 'The order of the shipping method.', 'wp-graphql-woocommerce' ),
 			],
 			'settings' => [
-				'type'    => [ 'list_of' => 'WCSettingInput' ],
+				'type'        => [ 'list_of' => 'WCSettingInput' ],
 				'description' => __( 'The settings for the shipping method.', 'wp-graphql-woocommerce' ),
 			],
 		];
@@ -73,16 +75,20 @@ class Shipping_Zone_Method_Add {
 		return [
 			'shippingZone' => [
 				'type'    => 'ShippingZone',
-				'resolve' => static function ( $payload ) {
-					
+				'resolve' => static function ( $payload, array $args, AppContext $context ) {
+					return $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] );
 				},
 			],
-            'method' => [
-                'type'    => 'ShippingMethod',
-                'resolve' => static function ( $payload ) {
-                    
-                },
-            ],
+			'method'       => [
+				'type'    => 'ShippingZoneToShippingMethodConnectionEdge',
+				'resolve' => static function ( $payload, array $args, AppContext $context ) {
+					return [
+						// Call the Shipping_Method constructor directly because "$payload['method']" is a non-scalar value.
+						'node'   => new Shipping_Method( $payload['method'] ), 
+						'source' => $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] ),
+					];
+				},
+			],
 		];
 	}
 
@@ -93,16 +99,21 @@ class Shipping_Zone_Method_Add {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			if ( ! \wc_shipping_enabled() ) {
+				throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+			}
+
+			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
+				throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+			}
+			
 			$method_id = $input['methodId'];
 			$zone_id   = $input['zoneId'];
-			$zone      = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
+			/** @var \WC_Shipping_Zone|false $zone */
+			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
 
 			if ( false === $zone ) {
 				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
-			}
-
-			if ( is_wp_error( $zone ) ) {
-				throw new UserError( $zone->get_error_message() );
 			}
 
 			if ( 0 === $zone->get_id() ) {
@@ -111,7 +122,7 @@ class Shipping_Zone_Method_Add {
 
 			$instance_id = $zone->add_shipping_method( $method_id );
 			$methods     = $zone->get_shipping_methods();
-			$method	     = false;
+			$method      = false;
 			foreach ( $methods as $method_obj ) {
 				if ( $method_obj->instance_id === $instance_id ) {
 					$method = $method_obj;
@@ -123,58 +134,26 @@ class Shipping_Zone_Method_Add {
 				throw new UserError( __( 'Failed to add shipping method to shipping zone.', 'wp-graphql-woocommerce' ) );
 			}
 
-			self::update_fields( $instance_id, $method, $input );
+			// Update settings.
+			if ( ! empty( $input['settings'] ) ) {
+				$method = Shipping_Mutation::set_shipping_zone_method_settings( $instance_id, $method, $input['settings'] );
+			}
+
+			// Update order.
+			if ( isset( $input['order'] ) ) {
+				$method = Shipping_Mutation::set_shipping_zone_method_order( $instance_id, $method, $input['order'] );
+			}
+
+			// Update if this method is enabled or not.
+			if ( isset( $input['enabled'] ) ) {
+				$method = Shipping_Mutation::set_shipping_zone_method_enabled( $zone_id, $instance_id, $method, $input['enabled'] );
+			}
+
+			return [
+				'zone_id' => $zone_id,
+				'zone'    => $zone,
+				'method'  => $method,
+			];
 		};
-	}
-
-	/**
-	 * Updates settings, order, and enabled status on create. 
-	 *
-	 * @param [type] $instance_id  Instance ID of the shipping method.
-	 * @param [type] $method       Shipping method object.
-	 * @param [type] $input        Input data.
-	 *
-	 * @return void
-	 */
-	public static function update_fields( $instance_id, $method, $input) {
-		global $wpdb;
-
-		if ( ! empty( $input['settings'] ) ) {
-			$method->init_instance_settings();
-			$instance_settings = $method->instance_settings;
-			$errors_found      = false;
-			foreach ( $method->get_instance_form_fields() as $key => $field ) {
-				if ( isset( $input['settings'][ $key ] ) ) {
-					if ( is_callable( array( self::class, 'validate_setting_' . $field['type'] . '_field' ) ) ) {
-						$value = self::class::{'validate_setting_' . $field['type'] . '_field'}( $input['settings'][ $key ], $field );
-					} else {
-						$value = self::class::validate_setting_text_field( $input['settings'][ $key ], $field );
-					}
-					if ( is_wp_error( $value ) ) {
-						throw new UserError( $value->get_error_message() );
-					}
-					$instance_settings[ $key ] = $value;
-				}
-			}
-
-			update_option( $method->get_instance_option_key(), apply_filters( 'woocommerce_shipping_' . $method->id . '_instance_settings_values', $instance_settings, $method ) );
-		}
-
-		// Update order.
-		if ( isset( $input['order'] ) ) {
-			$wpdb->update( "{$wpdb->prefix}woocommerce_shipping_zone_methods", [ 'method_order' => $input['order'] ], [ 'instance_id' => $instance_id ] );
-			$method->method_order = absint( $input['order'] );
-		}
-
-		// Update if this method is enabled or not.
-		if ( isset( $input['enabled'] ) ) {
-			if ( $wpdb->update( "{$wpdb->prefix}woocommerce_shipping_zone_methods", [ 'is_enabled' => $input['enabled'] ], [ 'instance_id' => $instance_id ] ) ) {
-				do_action( 'woocommerce_shipping_zone_method_status_toggled', $instance_id, $method->id, $input['zoneId'], $request['enabled'] );
-				$method->enabled = ( true === $input['enabled'] ? 'yes' : 'no' );
-			}
-		}
-
-		return $method;
-
 	}
 }

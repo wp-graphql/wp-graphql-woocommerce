@@ -32,6 +32,15 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		if ( ! \wc_shipping_enabled() ) {
+			graphql_debug( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ) );
+			return false;
+		}
+
+		if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+			return false;
+		}
 		return true;
 	}
 
@@ -50,18 +59,20 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|mixed|string[]
 	 */
 	public function get_query() {
+		/** @var \WC_Shipping_Zone $rest_of_the_world */
 		$rest_of_the_world = \WC_Shipping_Zones::get_zone_by( 'zone_id', 0 );
 
-        $zones = \WC_Shipping_Zones::get_zones();
-        array_unshift( $zones, $rest_of_the_world->get_data() );
 
-        if ( ! empty( $this->query_args['filters'] ) && is_array( $this->query_args['filters'] ) ) {
+		$zones = \WC_Shipping_Zones::get_zones();
+		array_unshift( $zones, $rest_of_the_world->get_data() );
+
+		if ( ! empty( $this->query_args['filters'] ) && is_array( $this->query_args['filters'] ) ) {
 			foreach ( $this->query_args['filters'] as $filter ) {
 				$zones = array_filter( $zones, $filter );
 			}
 		}
 
-        return wp_list_pluck( $zones, 'id' );
+		return wp_list_pluck( $zones, 'id' );
 	}
 
 	/**
@@ -84,7 +95,7 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 		return is_string( $offset );
 	}
 
-    /**
+	/**
 	 * Validates shipping zone model.
 	 *
 	 * @param array $model  Shipping zone model.

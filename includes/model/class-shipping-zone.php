@@ -24,35 +24,17 @@ use WPGraphQL\Model\Model;
  * @property string $name
  * @property string $order
  * @property object{code: string, type: string}[] $locations
- * @property object{
- *   instance_id: int,
- *   title: string,
- *   order: int,
- *   enabled: bool,
- *   method_id: string,
- *   method_title: string,
- *   method_description: string,
- *   settings: object{
- *     id: string,
- *     label: string,
- *     description: string,
- *     type: string,
- *     value: string
- *     default: string
- *     tip: string
- *     placeholder: string
- *   }[]
- * }[] $methods
+ * @property \WC_Shipping_Method[] $methods
  *
  * @package WPGraphQL\WooCommerce\Model
  */
 class Shipping_Zone extends Model {
-    /**
-     * Shipping_Zone constructor
-     *
-     * @param \WC_Shipping_Zone $zone Shipping zone object.
-     */
-    public function __construct( $zone ) {
+	/**
+	 * Shipping_Zone constructor
+	 *
+	 * @param \WC_Shipping_Zone $zone Shipping zone object.
+	 */
+	public function __construct( $zone ) {
 		$this->data                = $zone;
 		$allowed_restricted_fields = [
 			'isRestricted',
@@ -68,7 +50,7 @@ class Shipping_Zone extends Model {
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, null );
 	}
 
-    /**
+	/**
 	 * Determines if the order item should be considered private.
 	 *
 	 * @return bool
@@ -77,33 +59,33 @@ class Shipping_Zone extends Model {
 		return false;
 	}
 
-    /**
+	/**
 	 * Initializes the Order field resolvers.
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = [
-				'ID'          => function () {
+				'ID'         => function () {
 					return $this->data->get_id();
 				},
-				'id'          => function () {
-					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shipping_zone', $this->data->get_id() ) : null;
+				'id'         => function () {
+					return ! empty( $this->data->get_id() ) ? Relay::toGlobalId( 'shipping_zone', (string) $this->data->get_id() ) : null;
 				},
-				'databaseId'  => function () {
+				'databaseId' => function () {
 					return ! empty( $this->ID ) ? $this->ID : null;
 				},
-                'name'        => function () {
-                    return ! empty( $this->data->get_zone_name() ) ? $this->data->get_zone_name() : null;
-                },
-                'order'       => function () {
-                    return $this->data->get_zone_order();
-                },
-                'locations'   => function () {
-                    return $this->data->get_zone_locations();
-                },
-                'methods'     => function () {
-                    return $this->data->get_shipping_methods();
-                },
+				'name'       => function () {
+					return ! empty( $this->data->get_zone_name() ) ? $this->data->get_zone_name() : null;
+				},
+				'order'      => function () {
+					return $this->data->get_zone_order();
+				},
+				'locations'  => function () {
+					return $this->data->get_zone_locations();
+				},
+				'methods'    => function () {
+					return $this->data->get_shipping_methods();
+				},
 			];
 		}
 	}
@@ -130,7 +112,7 @@ class Shipping_Zone extends Model {
 	/**
 	 * Returns the source WC_Data instance
 	 *
-	 * @return \WC_Data
+	 * @return \WC_Shipping_Zone
 	 */
 	public function as_WC_Data() {
 		return $this->data;

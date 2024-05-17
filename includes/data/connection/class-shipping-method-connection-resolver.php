@@ -11,6 +11,7 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
 use WPGraphQL\WooCommerce\Model\Shipping_Zone;
 
 /**
@@ -32,6 +33,10 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		if ( ! wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
+			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+			return false;
+		}
 		return true;
 	}
 
@@ -48,7 +53,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return array|mixed|string[]
+	 * @return int[]
 	 */
 	public function get_query() {
 		if ( $this->source instanceof Shipping_Zone ) {
@@ -56,6 +61,10 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 		} else {
 			$wc_shipping = \WC_Shipping::instance();
 			$methods     = $wc_shipping->get_shipping_methods();
+		}
+
+		foreach ( $methods as $method ) {
+			$this->loader->prime( $method->id, new Shipping_Method( $method ) );
 		}
 
 		// Get shipping method IDs.

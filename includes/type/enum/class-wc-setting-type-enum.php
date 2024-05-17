@@ -23,18 +23,18 @@ class WC_Setting_Type_Enum {
 			[
 				'description' => __( 'Type of WC setting.', 'wp-graphql-woocommerce' ),
 				'values'      => [
-                    'TEXT'         => [ 'value' => 'text' ],
-                    'EMAIL'        => [ 'value' => 'email' ],
-                    'NUMBER'       => [ 'value' => 'number' ],
-                    'COLOR'        => [ 'value' => 'color' ],
-                    'PASSWORD'     => [ 'value' => 'password' ],
-                    'TEXTAREA'     => [ 'value' => 'textarea' ],
-                    'SELECT'       => [ 'value' => 'select' ],
-                    'MULTI_SELECT' => [ 'value' => 'multi_select' ],
-                    'RADIO'        => [ 'value' => 'radio' ],
-                    'IMAGE_WIDTH'  => [ 'value' => 'image_width' ],
-                    'CHECKBOX'     => [ 'value' => 'checkbox' ],
-                ],
+					'TEXT'         => [ 'value' => 'text' ],
+					'EMAIL'        => [ 'value' => 'email' ],
+					'NUMBER'       => [ 'value' => 'number' ],
+					'COLOR'        => [ 'value' => 'color' ],
+					'PASSWORD'     => [ 'value' => 'password' ],
+					'TEXTAREA'     => [ 'value' => 'textarea' ],
+					'SELECT'       => [ 'value' => 'select' ],
+					'MULTI_SELECT' => [ 'value' => 'multi_select' ],
+					'RADIO'        => [ 'value' => 'radio' ],
+					'IMAGE_WIDTH'  => [ 'value' => 'image_width' ],
+					'CHECKBOX'     => [ 'value' => 'checkbox' ],
+				],
 			]
 		);
 	}

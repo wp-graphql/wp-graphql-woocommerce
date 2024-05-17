@@ -71,13 +71,13 @@ class Tax_Class_Delete {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
-			$slug = $input['slug'];
+			$slug      = $input['slug'];
 			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
 			if ( ! $tax_class ) {
 				throw new UserError( __( 'Invalid tax class slug.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$deleted   = \WC_Tax::delete_tax_class_by( 'slug', $slug );
+			$deleted = \WC_Tax::delete_tax_class_by( 'slug', $slug );
 			if ( ! $deleted ) {
 				throw new UserError( __( 'Failed to delete tax class.', 'wp-graphql-woocommerce' ) );
 			}

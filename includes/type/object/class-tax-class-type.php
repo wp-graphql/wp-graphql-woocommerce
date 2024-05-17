@@ -10,8 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\WooCommerce\Data\Connection\Shipping_Method_Connection_Resolver;
-
 /**
  * Class Tax_Class_Type
  */
@@ -25,23 +23,31 @@ class Tax_Class_Type {
 		register_graphql_object_type(
 			'TaxClass',
 			[
-                'eagerlyLoadType' => true,
+				'eagerlyLoadType' => true,
 				'description'     => __( 'A Tax class object', 'wp-graphql-woocommerce' ),
+				'interfaces'      => [ 'Node' ],
 				'fields'          => [
+					'id'   => [
+						'type'        => [ 'non_null' => 'ID' ],
+						'description' => __( 'The globally unique identifier for the tax class.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source, array $args, $context, $info ) {
+							return ! empty( $source['slug'] ) ? \GraphQLRelay\Relay::toGlobalId( 'tax_class', $source['slug'] ) : null;
+						},
+					],
 					'slug' => [
-                        'type'        => 'String',
-                        'description' => __( 'The globally unique identifier for the tax class.', 'wp-graphql-woocommerce' ),
-                        'resolve'     => static function( $source, array $args, $context, $info ) {
-                            return ! empty( $source['slug'] ) ? $source['slug'] : null;
-                        },
-                    ],
-                    'name' => [
-                        'type'        => 'String',
-                        'description' => __( 'Tax class name.', 'wp-graphql-woocommerce' ),
-                        'resolve'     => static function( $source, array $args, $context, $info ) {
-                            return ! empty( $source['name'] ) ? $source['name'] : null;
-                        },
-                    ],
+						'type'        => 'String',
+						'description' => __( 'The globally unique identifier for the tax class.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source, array $args, $context, $info ) {
+							return ! empty( $source['slug'] ) ? $source['slug'] : null;
+						},
+					],
+					'name' => [
+						'type'        => 'String',
+						'description' => __( 'Tax class name.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source, array $args, $context, $info ) {
+							return ! empty( $source['name'] ) ? $source['name'] : null;
+						},
+					],
 				],
 			]
 		);

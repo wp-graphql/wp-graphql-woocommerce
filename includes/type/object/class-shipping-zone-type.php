@@ -39,60 +39,85 @@ class Shipping_Zone_Type {
 						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
 					],
 					'name'       => [
-                        'type'        => 'String',
-                        'description' => __( 'Shipping zone name.', 'wp-graphql-woocommerce' ),
-                    ],
-                    'order'      => [
-                        'type'        => 'Int',
-                        'description' => __( 'Shipping zone order.', 'wp-graphql-woocommerce' ),
-                    ],
-                    'locations'  => [
-                        'type'        => [ 'list_of' => 'ShippingLocation' ],
-                        'description' => __( 'Shipping zone locations.', 'wp-graphql-woocommerce' ),
-                    ],
+						'type'        => 'String',
+						'description' => __( 'Shipping zone name.', 'wp-graphql-woocommerce' ),
+					],
+					'order'      => [
+						'type'        => 'Int',
+						'description' => __( 'Shipping zone order.', 'wp-graphql-woocommerce' ),
+					],
+					'locations'  => [
+						'type'        => [ 'list_of' => 'ShippingLocation' ],
+						'description' => __( 'Shipping zone locations.', 'wp-graphql-woocommerce' ),
+					],
 				],
-                'connections' => [
-                    'methods' => [
-                        'toType'           => 'ShippingMethod',
-						'edgeFields'         => [
-							'order' => [
+				'connections' => [
+					'methods' => [
+						'toType'     => 'ShippingMethod',
+						'edgeFields' => [
+							'id'         => [
+								'type'        => [ 'non_null' => 'ID' ],
+								'description' => __( 'The globally unique identifier for the shipping method.', 'wp-graphql-woocommerce' ),
+								'resolve'     => static function ( $edge ) {
+									if ( isset( $edge['node'] ) ) {
+										$shipping_method = $edge['node']->as_WC_Data();
+										$instance_id     = $shipping_method->instance_id;
+
+										return ! empty( $instance_id ) ? \GraphQLRelay\Relay::toGlobalId( 'shipping_zone_method', $instance_id ) : null;
+									}
+									return null;
+								},
+							],
+							'instanceId' => [
+								'type'        => 'Int',
+								'description' => __( 'Shipping method instance ID.', 'wp-graphql-woocommerce' ),
+								'resolve'     => static function ( $edge ) {
+									if ( isset( $edge['node'] ) ) {
+										$shipping_method = $edge['node']->as_WC_Data();
+										return $shipping_method->instance_id ?? null;
+									}
+									return null;
+								},
+							],
+							'order'      => [
 								'type'        => 'Int',
 								'description' => __( 'The order of the shipping method.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
 										$shipping_method = $edge['node']->as_WC_Data();
-										\codecept_debug($shipping_method);
 										return $shipping_method->method_order ?? null;
 									}
 									return null;
 								},
 							],
-							'enabled' => [
+							'enabled'    => [
 								'type'        => 'Boolean',
 								'description' => __( 'Whether the shipping method is enabled.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
+										/** @var \WC_Shipping_Method $shipping_method */
 										$shipping_method = $edge['node']->as_WC_Data();
-										return isset( $shipping_method->enabled ) ? $shipping_method->enabled : false;
+										return $shipping_method->is_enabled();
 									}
 									return false;
 								},
 							],
-							'settings' => [
+							'settings'   => [
 								'type'        => [ 'list_of' => 'WCSetting' ],
 								'description' => __( 'Shipping method settings.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
 									$settings = [];
 									if ( isset( $edge['node'] ) ) {
-										$shipping_method = $edge['node']->as_WC_Data();
-										$fields   = $shipping_method->instance_form_fields;
+										$shipping_method   = $edge['node']->as_WC_Data();
+										$instance_settings = $shipping_method->instance_settings;
+										$fields            = $shipping_method->instance_form_fields;
 										foreach ( $fields as $key => $field ) {
-											$default_value     = ! empty( $field['default'] ) ? $field['default'] : null;
-											$value             = $shipping_method->{$key} ?? $default_value;
-											$settings[] = array_merge(
+											$default_value = ! empty( $field['default'] ) ? $field['default'] : null;
+											$value         = ! empty( $instance_settings[ $key ] ) ? $instance_settings[ $key ] : $default_value;
+											$settings[]    = array_merge(
 												$field, 
 												[
-													'id'    => $key,
+													'id' => $key,
 													'value' => $value,
 												]
 											);
@@ -102,13 +127,13 @@ class Shipping_Zone_Type {
 								},
 							],
 						],
-                        'resolve'          => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-                            $resolver = new Shipping_Method_Connection_Resolver( $source, $args, $context, $info );
+						'resolve'    => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+							$resolver = new Shipping_Method_Connection_Resolver( $source, $args, $context, $info );
 
-                            return $resolver->get_connection();
-                        },
-                    ],
-                ]
+							return $resolver->get_connection();
+						},
+					],
+				],
 			]
 		);
 	}

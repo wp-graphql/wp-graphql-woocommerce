@@ -104,7 +104,7 @@ class Shipping_Method extends Model {
 	/**
 	 * Returns the source WC_Data instance
 	 *
-	 * @return \WC_Data
+	 * @return \WC_Shipping_Method
 	 */
 	public function as_WC_Data() {
 		return $this->data;

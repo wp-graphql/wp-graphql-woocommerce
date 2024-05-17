@@ -70,6 +70,7 @@ class Type_Registry {
 		Type\WPInputObject\Product_Attribute_Filter_Input::register();
 		Type\WPInputObject\Product_Attribute_Query_Input::register();
 		Type\WPInputObject\Shipping_Location_Input::register();
+		Type\WPInputObject\WC_Setting_Input::register();
 
 		/**
 		 * Interfaces.

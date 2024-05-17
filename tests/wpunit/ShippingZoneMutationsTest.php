@@ -23,6 +23,13 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
                 'createShippingZone.shippingZone',
@@ -70,6 +77,13 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
                 'updateShippingZone.shippingZone',
@@ -110,6 +124,13 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
         ];
 
         // Execute the request.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
@@ -173,6 +194,13 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
         ];
 
         // Execute the request.
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
         $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
@@ -274,6 +302,13 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
                 'clearShippingZoneLocations.shippingZone',
@@ -306,6 +341,8 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                     id
                     methods {
                         edges {
+                            id
+                            instanceId
                             order
                             enabled
                             settings {
@@ -320,6 +357,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                             }
                             node {
                                 id
+                                databaseId
                                 title
                                 description
                             }
@@ -328,8 +366,25 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 }
                 method {
                     id
-                    title
-                    description
+                    instanceId
+                    order
+                    enabled
+                    settings {
+                        id
+                        label
+                        description
+                        type
+                        value
+                        default
+                        tip
+                        placeholder
+                    }
+                    node {
+                        id
+                        databaseId
+                        title
+                        description
+                    }
                 }
             }
         }';
@@ -343,10 +398,6 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 'enabled'  => true,
                 'settings' => [
                     [
-                        'id'    => 'title',
-                        'value' => 'Flat Rate'
-                    ],
-                    [
                         'id'    => 'cost',
                         'value' => '10'
                     ]
@@ -356,25 +407,27 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
                 'addMethodToShippingZone.shippingZone',
                 [
-                    $this->expectedField( 'id', $shipping_zone_id ),
+                    $this->expectedField( 'id', $this->toRelayId( 'shipping_zone', $shipping_zone_id ) ),
                     $this->expectedNode(
                         'methods.edges',
                         [
-                            $this->expectedField( 'order', '0' ),
+                            $this->expectedField( 'id', self::NOT_NULL ),
+                            $this->expectedField( 'instanceId', self::NOT_NULL ),
+                            $this->expectedField( 'order', 0 ),
                             $this->expectedField( 'enabled', true ),
-                            $this->expectedObject(
-                                'settings.0',
-                                [
-                                    $this->expectedField( 'id', 'title' ),
-                                    $this->expectedField( 'value', 'Flat Rate' )
-                                ]
-                            ),
-                            $this->expectedObject(
-                                'settings.1',
+                            $this->expectedNode(
+                                'settings',
                                 [
                                     $this->expectedField( 'id', 'cost' ),
                                     $this->expectedField( 'value', '10' )
@@ -383,21 +436,38 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                             $this->expectedObject(
                                 'node',
                                 [
-                                    $this->expectedField( 'id', 'flat_rate' ),
-                                    $this->expectedField( 'title', 'Flat Rate' ),
-                                    $this->expectedField( 'description', self::IS_FALSY )
+                                    $this->expectedField( 'id', $this->toRelayId( 'shipping_method', 'flat_rate' ) ),
+                                    $this->expectedField( 'databaseId', self::NOT_NULL ),
+                                    $this->expectedField( 'title', self::NOT_NULL ),
                                 ]
                             )
-                        ]
-                    )
+                        ],
+                        0
+                    ),
                 ]
             ),
             $this->expectedObject(
                 'addMethodToShippingZone.method',
                 [
-                    $this->expectedField( 'id', 'flat_rate' ),
-                    $this->expectedField( 'title', 'Flat Rate' ),
-                    $this->expectedField( 'description', self::IS_FALSY )
+                    $this->expectedField( 'id', self::NOT_NULL ),
+                    $this->expectedField( 'instanceId', self::NOT_NULL ),
+                    $this->expectedField( 'order', 0 ),
+                    $this->expectedField( 'enabled', true ),
+                    $this->expectedNode(
+                        'settings',
+                        [
+                            $this->expectedField( 'id', 'cost' ),
+                            $this->expectedField( 'value', '10' )
+                        ]
+                    ),
+                    $this->expectedObject(
+                        'node',
+                        [
+                            $this->expectedField( 'id', $this->toRelayId( 'shipping_method', 'flat_rate' ) ),
+                            $this->expectedField( 'databaseId', self::NOT_NULL ),
+                            $this->expectedField( 'title', self::NOT_NULL ),
+                        ]
+                    )
                 ]
             )
         ];
@@ -410,8 +480,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
         // Create a shipping zone.
         $shipping_zone   = $this->factory->shipping_zone->create_and_get();
         $instance_id     = $shipping_zone->add_shipping_method( 'flat_rate' );
-        $shipping_method = new \WC_Shipping_Flat_Rate( $instance_id );
-
+        
         // Prepare the request.
         $query = 'mutation ($input: UpdateMethodOnShippingZoneInput!) {
             updateMethodOnShippingZone(input: $input) {
@@ -419,6 +488,8 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                     id
                     methods {
                         edges {
+                            id
+                            instanceId
                             order
                             enabled
                             settings {
@@ -441,8 +512,24 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 }
                 method {
                     id
-                    title
-                    description
+                    instanceId
+                    order
+                    enabled
+                    settings {
+                        id
+                        label
+                        description
+                        type
+                        value
+                        default
+                        tip
+                        placeholder
+                    }
+                    node {
+                        id
+                        title
+                        description
+                    }
                 }
             }
         }';
@@ -454,10 +541,6 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 'instanceId' => $instance_id,
                 'settings'   => [
                     [
-                        'id'    => 'title',
-                        'value' => 'Flat Rate'
-                    ],
-                    [
                         'id'    => 'cost',
                         'value' => '10'
                     ]
@@ -467,48 +550,54 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+
         $expected = [
             $this->expectedObject(
                 'updateMethodOnShippingZone.shippingZone',
                 [
-                    $this->expectedField( 'id', $shipping_zone->get_id() ),
+                    $this->expectedField( 'id', $this->toRelayId( 'shipping_zone', $shipping_zone->get_id() ) ),
                     $this->expectedNode(
                         'methods.edges',
                         [
-                            $this->expectedField( 'order', '0' ),
+                            $this->expectedField( 'id', $this->toRelayId( 'shipping_zone_method', $instance_id ) ),
+                            $this->expectedField( 'instanceId', $instance_id ),
+                            $this->expectedField( 'order', self::NOT_NULL ),
                             $this->expectedField( 'enabled', true ),
-                            $this->expectedObject(
-                                'settings.0',
-                                [
-                                    $this->expectedField( 'id', 'title' ),
-                                    $this->expectedField( 'value', 'Flat Rate' )
-                                ]
-                            ),
-                            $this->expectedObject(
-                                'settings.1',
+                            $this->expectedNode(
+                                'settings',
                                 [
                                     $this->expectedField( 'id', 'cost' ),
                                     $this->expectedField( 'value', '10' )
                                 ]
                             ),
-                            $this->expectedObject(
-                                'node',
-                                [
-                                    $this->expectedField( 'id', 'flat_rate' ),
-                                    $this->expectedField( 'title', 'Flat Rate' ),
-                                    $this->expectedField( 'description', self::IS_FALSY )
-                                ]
-                            ),
-                        ]
+                            $this->expectedField( 'node.id', $this->toRelayId( 'shipping_method', 'flat_rate' ) ),
+                        ],
+                        0
                     ),
                 ]
             ),
             $this->expectedObject(
                 'updateMethodOnShippingZone.method',
                 [
-                    $this->expectedField( 'id', 'flat_rate' ),
-                    $this->expectedField( 'title', 'Flat Rate' ),
-                    $this->expectedField( 'description', self::IS_FALSY )
+                    $this->expectedField( 'id', $this->toRelayId( 'shipping_zone_method', $instance_id ) ),
+                    $this->expectedField( 'instanceId', $instance_id ),
+                    $this->expectedField( 'order', self::NOT_NULL ),
+                    $this->expectedField( 'enabled', true ),
+                    $this->expectedNode(
+                        'settings',
+                        [
+                            $this->expectedField( 'id', 'cost' ),
+                            $this->expectedField( 'value', '10' )
+                        ]
+                    ),
+                    $this->expectedField( 'node.id', $this->toRelayId( 'shipping_method', 'flat_rate' ) ),
                 ]
             )
         ];
@@ -529,15 +618,17 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 shippingZone {
                     id
                     methods {
-                        nodes {
-                            instanceId
+                        edges {
+                            order
+                            enabled
+                            node { id }
                         }
                     }
                 }
                 removedMethod {
-                    id
-                    title
-                    description
+                    order
+                    enabled
+                    node { id }
                 }
             }
         }';
@@ -552,22 +643,31 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
         // Execute the request.
         $response = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Confirm permissions error.
+        $this->assertQueryError( $response );
+
+        // Login as admin and re-execute expecting success.
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
         $expected = [
             $this->expectedObject(
                 'removeMethodFromShippingZone.shippingZone',
                 [
-                    $this->expectedField( 'id', $shipping_zone->get_id() ),
-                    $this->expectedField( 'methods.nodes', self::IS_FALSY )
+                    $this->expectedField( 'id', $this->toRelayId( 'shipping_zone', $shipping_zone->get_id() ) ),
+                    $this->expectedField( 'methods.edges', self::IS_FALSY ),
                 ]
             ),
-            $this->expectedField( 'removeMethodFromShippingZone.removedMethod',
+            $this->expectedObject(
+                'removeMethodFromShippingZone.removedMethod',
                 [
-                    $this->expectedField( 'instanceId', $shipping_method->get_instance_id() ),
-                    $this->expectedField( 'title', $shipping_method->title ),
-                    $this->expectedField( 'order', 0 ),
-                    $this->expectedField( 'enabled', true )
+                    $this->expectedField( 'enabled', $shipping_method->is_enabled() ),
+                    $this->expectedNode(
+                        'node',
+                        [ $this->expectedField( 'id', $this->toRelayId( 'shipping_method', $shipping_method->id ) ) ]
+                    )
                 ]
-            )
+            ),
         ];
 
         // Validate the response.

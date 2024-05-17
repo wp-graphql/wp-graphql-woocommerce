@@ -136,7 +136,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	/**
 	 * Returns the tax class connected the provided IDs.
 	 *
-	 * @param int $id - Tax class IDs.
+	 * @param int $slug - Tax class slug.
 	 *
 	 * @return array|null
 	 */
@@ -144,10 +144,11 @@ class WC_Db_Loader extends AbstractDataLoader {
 		if ( 'standard' === $slug ) {
 			return [
 				'slug' => 'standard',
-				'name' => __( 'Standard rate', 'woocommerce' ),
+				'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
 			];
 		} else {
-			return \WC_Tax::get_tax_class_by( 'slug', $slug );
+			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
+			return is_array( $tax_class ) && ! empty( $tax_class ) ? $tax_class : null;
 		}
 	}
 
@@ -164,7 +165,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		/**
 		 * Get tax rate from WooCommerce.
 		 *
-		 * @var object{
+		 * @var \stdClass&object{
 		 *  tax_rate_id: int,
 		 *  tax_rate_class: string,
 		 *  tax_rate_country: string,
@@ -176,8 +177,8 @@ class WC_Db_Loader extends AbstractDataLoader {
 		 *  tax_rate_shipping: bool,
 		 *  tax_rate_order: int,
 		 *  tax_rate_city: string,
-		 *  tax_rate_postcode: string
-		 *  tax_rate_postcodes: string
+		 *  tax_rate_postcode: string,
+		 *  tax_rate_postcodes: string,
 		 *  tax_rate_cities: string
 		 *  } $rate
 		 */
@@ -260,6 +261,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Zone|null
 	 */
 	public function load_shipping_zone_from_id( $id ) {
+		/** @var \WC_Shipping_Zone|false $zone */
 		$zone = \WC_Shipping_Zones::get_zone( $id );
 
 		if ( false === $zone ) {

@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
-use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 
@@ -107,16 +106,41 @@ class Tax_Rate_Create {
 	/**
 	 * Defines the mutation data modification closure.
 	 *
-	 * @return callable
+	 * @param array                                $input    Mutation input.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance. Can be
+	 * use to get info about the current node in the GraphQL tree.
+	 *
+	 * @throws \GraphQL\Error\UserError Invalid ID provided | Lack of capabilities.
+	 *
+	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		$id      = ! empty( $input['id'] ) ? $input['id'] : null;
 		$current = null;
 		if ( ! empty( $id ) ) {
+			/** 
+			 * @var object{
+			 *  tax_rate_id: int,
+			 *  tax_rate_class: string,
+			 *  tax_rate_country: string,
+			 *  tax_rate_state: string,
+			 *  tax_rate: string,
+			 *  tax_rate_name: string,
+			 *  tax_rate_priority: int,
+			 *  tax_rate_compound: bool,
+			 *  tax_rate_shipping: bool,
+			 *  tax_rate_order: int,
+			 *  tax_rate_city: string,
+			 *  tax_rate_postcode: string,
+			 *  tax_rate_postcodes: string,
+			 *  tax_rate_cities: string
+			 *  } $current
+			 */
 			$current = \WC_Tax::_get_tax_rate( $id, OBJECT );
 		}
 
-		$data = [];
+		$data   = [];
 		$fields = [
 			'country'  => 'tax_rate_country',
 			'state'    => 'tax_rate_state',
@@ -138,7 +162,7 @@ class Tax_Rate_Create {
 				continue;
 			}
 
-			switch( $field ) {
+			switch ( $field ) {
 				case 'tax_rate_priority':
 				case 'tax_rate_compound':
 				case 'tax_rate_shipping':

@@ -2,24 +2,10 @@
 
 use GraphQLRelay\Relay;
 
-class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
-	private $shop_manager;
-	private $customer;
-	private $method;
-	private $helper;
+class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 
-	public function setUp(): void {
-		parent::setUp();
-
-		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
-		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
-		$this->helper       = $this->getModule( '\Helper\Wpunit' )->shipping_method();
-		$this->method       = 'flat_rate';
-	}
-
-	// tests
 	public function testShippingMethodQueryAndArgs() {
-		$id = Relay::toGlobalId( 'shipping_method', $this->method );
+		$id = Relay::toGlobalId( 'shipping_method', 'flat_rate' );
 
 		$query = '
 			query( $id: ID!, $idType: ShippingMethodIdTypeEnum ) {
@@ -35,61 +21,46 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 *
-		 * Test "ID" ID type.
+		 * Confirm permission check is working
 		 */
-		$variables = [
-			'id'     => $id,
-			'idType' => 'ID',
-		];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
-		$expected  = [ 'data' => [ 'shippingMethod' => $this->helper->print_query( $this->method ) ] ];
+		$variables = [ 'id' => $id ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
+		$this->assertQueryError( $response );
 
-		$this->assertEquals( $expected, $actual );
+		// Login as shop manager.
+		$this->loginAsShopManager();
 
 		/**
 		 * Assertion Two
 		 *
+		 * Test "ID" ID type.
+		 */
+		$variables = [ 'id' => $id ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [ 
+			$this->expectedField( 'shippingMethod.id', $id ),
+			$this->expectedField( 'shippingMethod.databaseId', 'flat_rate' ),
+			$this->expectedField( 'shippingMethod.title', self::NOT_NULL ),
+			$this->expectedField( 'shippingMethod.description', self::NOT_NULL ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Three
+		 *
 		 * Test "DATABASE_ID" ID type.
 		 */
-		$variables = [
-			'id'     => $this->method,
-			'idType' => 'DATABASE_ID',
-		];
-		$actual    = graphql(
-			[
-				'query'     => $query,
-				'variables' => $variables,
-			]
-		);
-		$expected  = [ 'data' => [ 'shippingMethod' => $this->helper->print_query( $this->method ) ] ];
+		$variables = [ 'id' => 'flat_rate', 'idType' => 'DATABASE_ID' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testShippingMethodsQuery() {
-		$wc_shipping = WC_Shipping::instance();
-		$methods     = array_values(
-			array_map(
-				static function ( $method ) {
-					return [ 'id' => Relay::toGlobalId( 'shipping_method', $method->id ) ];
-				},
-				$wc_shipping->get_shipping_methods()
-			)
-		);
-
 		$query = '
-			query shippingMethodsQuery {
+			query {
 				shippingMethods {
 					nodes {
 						id
@@ -101,14 +72,28 @@ class ShippingMethodQueriesTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Assertion One
 		 *
+		 * Confirm permission check is working
+		 */
+		$response  = $this->graphql( compact( 'query' ) );
+		$this->assertQuerySuccessful( $response, [ $this->expectedField( 'shippingMethods.nodes', self::IS_FALSY ) ] );
+
+		// Login as shop manager.
+		$this->loginAsShopManager();
+
+		/**
+		 * Assertion One
+		 *
 		 * Tests query
 		 */
-		$actual   = do_graphql_request( $query, 'shippingMethodQuery' );
-		$expected = [ 'data' => [ 'shippingMethods' => [ 'nodes' => $methods ] ] ];
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = array_map(
+			function( $method ) {
+				return $this->expectedField( 'shippingMethods.nodes.#.id', $this->toRelayId( 'shipping_method', $method->id ) );
+			},
+			array_values( WC_Shipping::instance()->get_shipping_methods() )
+		);
+		
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
-
-		$this->assertEquals( $expected, $actual );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
