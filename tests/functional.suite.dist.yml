@@ -24,7 +24,7 @@ modules:
       user: '%DB_USER%'
       password: '%DB_PASSWORD%'
       dump: 'local/db/app_db.sql'
-      populate: true
+      populate: false
       cleanup: true
       waitlock: 10
       url: '%WORDPRESS_URL%'

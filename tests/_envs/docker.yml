@@ -1,6 +1,6 @@
 modules:
   config:
-    WPDb:
+    \lucatume\WPBrowser\Module\WPDb:
       dsn: 'mysql:host=testing_db;dbname=wordpress'
       user: wordpress
       password: password
@@ -12,7 +12,7 @@ modules:
       url: '%WORDPRESS_URL%'
       urlReplacement: true
       tablePrefix: 'wp_'
-    WPBrowser:
+    \lucatume\WPBrowser\Module\WPBrowser:
       url: '%WORDPRESS_URL%'
       wpRootFolder: /var/www/html
       adminUsername: admin
@@ -21,13 +21,13 @@ modules:
     REST:
       depends: WPBrowser
       url: '%WORDPRESS_URL%'
-    WPFilesystem:
+    \lucatume\WPBrowser\Module\WPFilesystem:
       wpRootFolder: '/var/www/html'
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       themes: '/wp-content/themes'
       uploads: '/wp-content/uploads'
-    WPLoader:
+    \lucatume\WPBrowser\Module\WPLoader:
       wpRootFolder: '/var/www/html'
       dbName: wordpress
       dbHost: testing_db
