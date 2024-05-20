@@ -11,7 +11,7 @@ fi
 cd $PROJECT_DIR
 
 echo "Running 'codecept $@' in Docker..."
-~/.composer/vendor/bin/codecept $@ --env docker --no-redirect $no_exit
+~/.composer/vendor/bin/codecept $@ --no-redirect $no_exit
 
 if [ 'run' = "$1" ]; then
 	declare test_output="tests/_output";
