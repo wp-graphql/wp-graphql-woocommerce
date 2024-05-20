@@ -22,9 +22,6 @@ modules:
   config:
     \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
       endpoint: '%WORDPRESS_URL%/graphql'
-    \lucatume\WPBrowser\Module\WPCLI:
-      path: '%WP_ROOT_FOLDER%'
-      throw: true
     \lucatume\WPBrowser\Module\WPDb:
       dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
       user: '%DB_USER%'
@@ -38,7 +35,7 @@ modules:
       tablePrefix: '%WP_TABLE_PREFIX%'
     \lucatume\WPBrowser\Module\WPBrowser:
       url: '%WORDPRESS_URL%'
-      wpRootFolder: '%WP_CORE_DIR%'
+      wpRootFolder: '%WP_ROOT_FOLDER%'
       adminUsername: '%ADMIN_USERNAME%'
       adminPassword: '%ADMIN_PASSWORD%'
       adminPath: '/wp-admin'
@@ -47,14 +44,14 @@ modules:
       url: '%WORDPRESS_URL%'
       cookies: false
     \lucatume\WPBrowser\Module\WPFilesystem:
-      wpRootFolder: '%WP_CORE_DIR%'
+      wpRootFolder: '%WP_ROOT_FOLDER%'
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       themes: '/wp-content/themes'
       uploads: '/wp-content/uploads'
     \lucatume\WPBrowser\Module\WPLoader:
       loadOnly: true
-      wpRootFolder: '%WP_CORE_DIR%'
+      wpRootFolder: '%WP_ROOT_FOLDER%'
       dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
       domain: '%WORDPRESS_DOMAIN%'
       # plugins:

@@ -63,7 +63,6 @@ RUN service apache2 restart
 
 # Set project environmental variables
 ENV WP_ROOT_FOLDER="/var/www/html"
-ENV WP_CORE_DIR=${WP_ROOT_FOLDER}
 ENV WORDPRESS_DB_HOST=${DB_HOST}
 ENV WORDPRESS_DB_PORT=${DB_PORT}
 ENV WORDPRESS_DB_USER=${DB_USER}

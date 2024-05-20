@@ -25,6 +25,7 @@ export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
 echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" > "$PROJECT_DIR/.env.docker"
 echo "WORDPRESS_URL=$WORDPRESS_URL" >> "$PROJECT_DIR/.env.docker"
+echo "WP_CORE_DIR=$WP_ROOT_FOLDER" >> "$PROJECT_DIR/.env.docker"
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
