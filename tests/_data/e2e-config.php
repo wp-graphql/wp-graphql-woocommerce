@@ -1,7 +1,10 @@
 <?php
 
+// forcing has_block_template to be false
+add_filter( 'woocommerce_has_block_template', '__return_false', 10, 2 );
+
 //Additional cart fees.
-\add_action(
+add_action(
     'woocommerce_cart_calculate_fees',
     static function () {
         $percentage = 0.01;
@@ -11,7 +14,7 @@
 );
 
 // Create Shipping Zones.
-$zone = new \WC_Shipping_Zone();
+$zone = new WC_Shipping_Zone();
 $zone->set_zone_name( 'Local' );
 $zone->set_zone_order( 1 );
 $zone->add_location( 'GB', 'country' );
@@ -20,7 +23,7 @@ $zone->save();
 $zone->add_shipping_method( 'flat_rate' );
 $zone->add_shipping_method( 'free_shipping' );
 
-$zone = new \WC_Shipping_Zone();
+$zone = new WC_Shipping_Zone();
 $zone->set_zone_name( 'Europe' );
 $zone->set_zone_order( 2 );
 $zone->add_location( 'EU', 'continent' );
@@ -28,7 +31,7 @@ $zone->save();
 $zone->add_shipping_method( 'flat_rate' );
 $zone->add_shipping_method( 'free_shipping' );
 
-$zone = new \WC_Shipping_Zone();
+$zone = new WC_Shipping_Zone();
 $zone->set_zone_name( 'California' );
 $zone->set_zone_order( 3 );
 $zone->add_location( 'US:CA', 'state' );
@@ -36,7 +39,7 @@ $zone->save();
 $zone->add_shipping_method( 'flat_rate' );
 $zone->add_shipping_method( 'free_shipping' );
 
-$zone = new \WC_Shipping_Zone();
+$zone = new WC_Shipping_Zone();
 $zone->set_zone_name( 'US' );
 $zone->set_zone_order( 4 );
 $zone->add_location( 'US', 'country' );
