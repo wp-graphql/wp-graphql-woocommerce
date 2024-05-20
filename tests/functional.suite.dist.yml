@@ -52,25 +52,20 @@ modules:
       uploads: '/wp-content/uploads'
     \lucatume\WPBrowser\Module\WPLoader:
       loadOnly: true
-      wpRootFolder: '%WP_ROOT_FOLDER%'
-      dbName: '%DB_NAME%'
-      dbHost: '%DB_HOST%'
-      dbUser: '%DB_USER%'
-      dbPassword: '%DB_PASSWORD%'
-      tablePrefix: '%WP_TABLE_PREFIX%'
+      wpRootFolder: '%WP_CORE_DIR%'
+      dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
       domain: '%WORDPRESS_DOMAIN%'
-      adminEmail: '%ADMIN_EMAIL%'
-      title: 'WooGraphQL Tests'
-      plugins:
-        - woocommerce/woocommerce.php
-        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-        - wp-graphql/wp-graphql.php
-        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
-      activatePlugins:
-        - woocommerce/woocommerce.php
-        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-        - wp-graphql/wp-graphql.php
-        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      configFile: 'tests/_data/e2e-config.php'
+      # plugins:
+      #   - woocommerce/woocommerce.php
+      #   - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+      #   - wp-graphql/wp-graphql.php
+      #   - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+      #   - wp-graphql-woocommerce/wp-graphql-woocommerce.php
+      # activatePlugins:
+      #   - woocommerce/woocommerce.php
+      #   - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
+      #   - wp-graphql/wp-graphql.php
+      #   - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
+      #   - wp-graphql-woocommerce/wp-graphql-woocommerce.php
 bootstrap: _bootstrap.php

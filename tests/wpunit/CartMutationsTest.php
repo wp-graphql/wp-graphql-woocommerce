@@ -1068,7 +1068,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 					'addCartItems.cartErrors',
 					[
 						'type'        => 'INVALID_CART_ITEM',
-						'reasons'     => [ 'color and test are required fields' ],
+						'reasons'     => [ 'Color and test are required fields' ],
 						'productId'   => $variation_ids['product'],
 						'quantity'    => 5,
 						'variationId' => $variation_ids['variations'][0],

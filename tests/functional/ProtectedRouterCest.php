@@ -20,8 +20,7 @@ class ProtectedRouterCest {
 		}
 	}
 
-	public function _startNewSession( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'Test skipped until working' );
+	public function _startNewSession( FunctionalTester $I ) {
 		$I->wantTo( 'Start new session by adding an item to the cart' );
 		/**
 		 * Add t-shirt to the cart
@@ -57,7 +56,6 @@ class ProtectedRouterCest {
 	}
 
 	public function tryToProceedToCheckoutPage( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'Test skipped until working' );
 		$session_data  = $this->_startNewSession( $I );
 		$session_token = $session_data['session_token'];
 		// Retrieve and decode token for session_id.
@@ -104,7 +102,6 @@ class ProtectedRouterCest {
 	}
 
 	public function tryToProceedToCheckoutPageWithExpiredUrl( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'Test skipped until working' );
 		$this->_startNewSession( $I );
 
 		$I->wantTo( 'Get the session checkout URL' );
@@ -184,7 +181,6 @@ class ProtectedRouterCest {
 	}
 
 	public function tryToProceedToCheckoutPageWithInvalidNonce( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'Test skipped until working' );
 		$session_data  = $this->_startNewSession( $I );
 		$session_token = $session_data['session_token'];
 		// Retrieve and decode token for session_id.

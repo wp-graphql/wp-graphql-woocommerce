@@ -14,27 +14,58 @@ class CartTransactionQueueCest {
 		/**
 		 * Add t-shirt to the cart
 		 */
-		$success = $I->addToCart(
+		$add_to_cart_query = 'mutation ( $input: AddToCartInput! ) {
+			addToCart( input: $input ) {
+				clientMutationId
+				cartItem {
+					key
+					product {
+						node {
+							id
+						}
+					}
+					variation {
+						node {
+							id
+						}
+					}
+					quantity
+					subtotal
+					subtotalTax
+					total
+					tax
+				}
+			}
+		}';
+		$success = $I->postRawRequest(
+			$add_to_cart_query,
 			[
-				'clientMutationId' => 'someId',
-				'productId'        => $this->product_catalog['t-shirt'],
-				'quantity'         => 5,
+				'input' => [
+					'clientMutationId' => 'someId',
+					'productId'        => $this->product_catalog['t-shirt'],
+					'quantity'         => 5,
+				]
 			],
-			$headers
+			[ 'headers' => $headers ]
 		);
 
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'addToCart', $success['data'] );
-		$I->assertArrayHasKey( 'cartItem', $success['data']['addToCart'] );
-		$I->assertArrayHasKey( 'key', $success['data']['addToCart']['cartItem'] );
-		$key = $success['data']['addToCart']['cartItem']['key'];
+
+		$response_body = json_decode( $success->getBody(), true );
+		$I->assertQuerySuccessful(
+			$response_body,
+			[
+				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
+			]
+		);
+
+		$key = $I->lodashGet( $response_body, 'data.addToCart.cartItem.key' );
 
 		/**
 		 * Assert existence and validity of "woocommerce-session" HTTP header.
 		 */
-		$I->seeHttpHeaderOnce( 'woocommerce-session' );
-		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+		$session_header = $success->getHeader('woocommerce-session');
+		$I->assertNotEmpty( $session_header );
+		$session_token = $session_header[0];
 
 		return compact( 'key', 'session_token' );
 	}
@@ -46,44 +77,52 @@ class CartTransactionQueueCest {
 		$I->wantTo( 'login' );
 		$login_input = [
 			'clientMutationId' => 'someId',
-			'username'         => 'jimbo1234',
+			'username'         => 'jimbo1234@example.com',
 			'password'         => 'password',
 		];
 
 		$success = $I->login( $login_input );
 
 		// Validate response.
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'login', $success['data'] );
-		$I->assertArrayHasKey( 'customer', $success['data']['login'] );
-		$I->assertArrayHasKey( 'authToken', $success['data']['login'] );
-		$I->assertArrayHasKey( 'refreshToken', $success['data']['login'] );
-		$I->assertArrayHasKey( 'sessionToken', $success['data']['login'] );
+		$I->assertQuerySuccessful(
+			$success,
+			[
+				$I->expectField( 'login.customer.databaseId', Signal::NOT_NULL ),
+				$I->expectField( 'login.authToken', Signal::NOT_NULL ),
+				$I->expectField( 'login.refreshToken', Signal::NOT_NULL ),
+				$I->expectField( 'login.sessionToken', Signal::NOT_NULL ),
+			]
+		);
 
 		// Retrieve JWT Authorization Token for later use.
-		$auth_token = $success['data']['login']['authToken'];
+		$auth_token = $I->lodashGet( $success, 'login.authToken' );
 
 		// Retrieve session token. Add as "Session %s" in the woocommerce-session HTTP header to future requests
 		// so WooCommerce can identify the user session associated with actions made in the GraphQL requests.
 		// You can also retrieve the token from the "woocommerce-session" HTTP response header.
-		$initial_session_token = $success['data']['login']['sessionToken'];
+		$initial_session_token = $I->lodashGet( $success, 'login.sessionToken' );
 
 		$headers = [
 			'Authorization'       => "Bearer {$auth_token}",
 			'woocommerce-session' => "Session {$initial_session_token}",
 		];
 
-		extract( $this->_addTshirtToCart( $I, $headers ) );
+		$tokens = $this->_addTshirtToCart( $I, $headers );
 
-		return compact( 'auth_token', 'key', 'session_token' );
+		return array_merge(
+			$tokens,
+			[ 'auth_token' => $auth_token ]
+		);
 	}
 
 	// tests
 	public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I, $scenario ) {
 		//$scenario->skip( 'The test is unstable, and will be skipped until success is guaranteed on each run.' );
-		$I->wantTo( 'Add Item to cart' );
-		extract( $this->_startAuthenticatedSession( $I ) );
+		$tokens = $this->_startAuthenticatedSession( $I );
+
+		$key           = $tokens['key'];
+		$auth_token    = $tokens['auth_token'];
+		$session_token = $tokens['session_token'];
 
 		$I->wantTo( 'Running a bunch of cart mutations one after the another wait for all the response at once' );
 		$update_item_quantities_mutation = '
@@ -197,12 +236,14 @@ class CartTransactionQueueCest {
 			],
 		];
 
-		$headers  = [
-			'Content-Type'        => 'application/json',
-			'Authorization'       => "Bearer ${auth_token}",
-			'woocommerce-session' => "Session {$session_token}",
+		$selected_options  = [
+			'headers' => [
+				'Content-Type'        => 'application/json',
+				'Authorization'       => "Bearer {$auth_token}",
+				'woocommerce-session' => "Session {$session_token}",
+			],
 		];
-		$responses = $I->concurrentRequests( $operations, $headers, 800 );
+		$responses = $I->concurrentRequests( $operations, $selected_options, 800 );
 
 		$I->assertQuerySuccessful(
 			$responses[0],

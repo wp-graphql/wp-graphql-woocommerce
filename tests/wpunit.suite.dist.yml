@@ -13,12 +13,8 @@ modules:
     - \lucatume\WPBrowser\Module\WPFilesystem
   config:
     \lucatume\WPBrowser\Module\WPLoader:
-      skipInstall: true
       wpRootFolder: '%WP_CORE_DIR%'
-      dbName: '%DB_NAME%'
-      dbHost: '%DB_HOST%'
-      dbUser: '%DB_USER%'
-      dbPassword: '%DB_PASSWORD%'
+      dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
       tablePrefix: '%WP_TABLE_PREFIX%'
       domain: '%WORDPRESS_DOMAIN%'
       adminEmail: '%ADMIN_EMAIL%'
