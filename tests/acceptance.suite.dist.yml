@@ -12,7 +12,6 @@ modules:
   enabled:
     - Asserts
     - REST
-    - \lucatume\WPBrowser\Module\WPCLI
     - \lucatume\WPBrowser\Module\WPBrowser
     - \lucatume\WPBrowser\Module\WPDb
     - \lucatume\WPBrowser\Module\WPLoader
