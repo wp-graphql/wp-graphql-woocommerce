@@ -36,7 +36,7 @@ modules:
       adminUsername: '%ADMIN_USERNAME%'
       adminPassword: '%ADMIN_PASSWORD%'
       adminPath: '/wp-admin'
-    \lucatume\WPBrowser\Module\REST:
+    REST:
       depends: WPBrowser
       url: '%WORDPRESS_URL%'
       cookies: false
