@@ -38,7 +38,7 @@ ENV PATH "$PATH:~/.composer/vendor/bin"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle:* \
-    lucatume/wp-browser:^4 \
+    lucatume/wp-browser:^3.5 \
 	phpunit/phpunit:^9.6 \
     codeception/module-asserts:* \
     codeception/module-cli:*  \

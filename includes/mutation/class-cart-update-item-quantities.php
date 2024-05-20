@@ -127,17 +127,6 @@ class Cart_Update_Item_Quantities {
 						continue;
 					}
 
-					$cart_item = \WC()->cart->get_cart_item( $key );
-					if ( ! $cart_item ) {
-						throw new UserError(
-							sprintf(
-								/* translators: %s: cart item key */
-								__( 'Sorry, cart item matching key %s cannot be found', 'wp-graphql-woocommerce' ),
-								$key,
-							)
-						);
-					}
-
 					do_action( 'graphql_woocommerce_before_set_item_quantity', \WC()->cart->get_cart_item( $key ), $input, $context, $info );
 					$updated[ $key ] = \WC()->cart->set_quantity( $key, $quantity, true );
 					do_action( 'graphql_woocommerce_after_set_item_quantity', \WC()->cart->get_cart_item( $key ), $input, $context, $info );

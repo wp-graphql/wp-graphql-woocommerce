@@ -65,7 +65,7 @@ install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
 	composer require --dev -W \
-		lucatume/wp-browser:^4 \
+		lucatume/wp-browser:^3.5 \
 		phpunit/phpunit:^9.6 \
 		codeception/lib-asserts:* \
 		codeception/module-asserts:* \

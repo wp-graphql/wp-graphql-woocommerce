@@ -713,7 +713,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			$response,
 			[
 				$this->expectedField( 'removeCoupons.clientMutationId', 'someId' ),
-				$this->expectedField( 'removeCoupons.cart.appliedCoupons', self::IS_NULL ),
+				$this->expectedField( 'removeCoupons.cart.appliedCoupons', static::IS_NULL ),
 				$this->expectedNode(
 					'removeCoupons.cart.contents.nodes',
 					[
@@ -1067,25 +1067,25 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedNode(
 					'addCartItems.cartErrors',
 					[
-						'type'        => 'INVALID_CART_ITEM',
-						'reasons'     => [ 'Color and test are required fields' ],
-						'productId'   => $variation_ids['product'],
-						'quantity'    => 5,
-						'variationId' => $variation_ids['variations'][0],
-						'variation'   => null,
-						'extraData'   => null,
+						$this->expectedField( 'type', 'INVALID_CART_ITEM' ),
+						$this->expectedField( 'reasons.0', static::NOT_NULL ),
+						$this->expectedField( 'productId', $variation_ids['product'] ),
+						$this->expectedField( 'quantity', 5 ),
+						$this->expectedField( 'variationId', $variation_ids['variations'][0] ),
+						$this->expectedField( 'variation', static::IS_NULL ),
+						$this->expectedField( 'extraData', static::IS_NULL ),
 					]
 				),
 				$this->expectedNode(
 					'addCartItems.cartErrors',
 					[
-						'type'        => 'INVALID_CART_ITEM',
-						'reasons'     => [ 'No product found matching the ID provided' ],
-						'productId'   => $invalid_product,
-						'quantity'    => 4,
-						'variationId' => null,
-						'variation'   => null,
-						'extraData'   => null,
+						$this->expectedField( 'type', 'INVALID_CART_ITEM' ),
+						$this->expectedField( 'reasons.0', 'No product found matching the ID provided' ),
+						$this->expectedField( 'productId', $invalid_product ),
+						$this->expectedField( 'quantity', 4 ),
+						$this->expectedField( 'variationId', static::IS_NULL ),
+						$this->expectedField( 'variation', static::IS_NULL ),
+						$this->expectedField( 'extraData', static::IS_NULL ),
 					]
 				),
 			]
