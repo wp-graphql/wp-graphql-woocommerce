@@ -1,12 +1,14 @@
 modules:
   config:
+    \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
+      endpoint: '%WORDPRESS_URL%/graphql'
     WPDb:
       dsn: 'mysql:host=testing_db;dbname=wordpress'
       user: wordpress
       password: password
       populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
-      dump: 'wp-content/plugins/wp-graphql-woocommerce/local/db/app_db.sql'
-      populate: false
+      dump: 'tests/_data/app_db.sql'
+      populate: true
       cleanup: false
       waitlock: 10
       url: '%WORDPRESS_URL%'

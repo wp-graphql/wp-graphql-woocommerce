@@ -6,32 +6,30 @@ if [ "$USING_XDEBUG" == "1"  ]; then
 fi
 
 # Run WordPress docker entrypoint.
+# shellcheck disable=SC1091
 . docker-entrypoint.sh 'apache2'
 
 set +u
 
 # Ensure mysql is loaded
-wait-for-it -s -t 300 ${DB_HOST}:${DB_PORT} -- echo "Application database is operationally..."
+wait-for-it -s -t 300 "${DB_HOST}:${DB_PORT}" -- echo "Application database is operationally..."
 
 # Setup tester scripts.
-if [ ! -f $WP_ROOT_FOLDER/setup-database.sh ]; then
-	ln -s $PROJECT_DIR/bin/setup-database.sh $WP_ROOT_FOLDER/setup-database.sh
-	chmod +x $WP_ROOT_FOLDER/setup-database.sh
+if [ ! -f "$WP_ROOT_FOLDER/setup-database.sh" ]; then
+	ln -s "$PROJECT_DIR/bin/setup-database.sh" "$WP_ROOT_FOLDER/setup-database.sh"
+	chmod +x "$WP_ROOT_FOLDER/setup-database.sh"
 fi
 
 # Update our domain to just be the docker container's IP address
 export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
-if [ -f $PROJECT_DIR/.env.docker ]; then
-	rm $PROJECT_DIR/.env.docker
-fi
-echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" >> $PROJECT_DIR/.env.docker
-echo "WORDPRESS_URL=$WORDPRESS_URL" >> $PROJECT_DIR/.env.docker
+echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" > "$PROJECT_DIR/.env.docker"
+echo "WORDPRESS_URL=$WORDPRESS_URL" >> "$PROJECT_DIR/.env.docker"
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
 	echo "Deleting old wp-config.php"
-	rm ${WP_ROOT_FOLDER}/wp-config.php
+	rm -f "${WP_ROOT_FOLDER}/wp-config.php"
 fi
 
 echo "Creating wp-config.php..."
@@ -83,7 +81,7 @@ if wp config has GRAPHQL_DEBUG --allow-root; then
     wp config delete GRAPHQL_DEBUG --allow-root
 fi
 if [[ -n "$GRAPHQL_DEBUG" ]]; then
-	wp config set GRAPHQL_DEBUG $GRAPHQL_DEBUG --allow-root
+	wp config set GRAPHQL_DEBUG "$GRAPHQL_DEBUG" --allow-root
 fi
 
 if [[ -n "$IMPORT_WC_PRODUCTS" ]]; then
@@ -91,7 +89,7 @@ if [[ -n "$IMPORT_WC_PRODUCTS" ]]; then
 	wp plugin install wordpress-importer --activate --allow-root
 	echo "Importing store products..."
 	wp import \
-		${PLUGINS_DIR}/woocommerce/sample-data/sample_products.xml \
+		"${PLUGINS_DIR}/woocommerce/sample-data/sample_products.xml" \
 		--authors=skip --allow-root
 fi
 
@@ -99,15 +97,12 @@ echo "Setting pretty permalinks..."
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --allow-root
 
 echo "Prepare for app database dump..."
-if [ ! -d "${PROJECT_DIR}/local/db" ]; then
-	mkdir ${PROJECT_DIR}/local/db
-fi
-if [ -f "${PROJECT_DIR}/local/db/app_db.sql" ]; then
-	rm ${PROJECT_DIR}/local/db/app_db.sql
+if [ -f "${PROJECT_DIR}/tests/_data/app_db.sql" ]; then
+	rm -f "${PROJECT_DIR}/tests/_data/app_db.sql"
 fi
 
 echo "Dumping app database..."
-wp db export "${PROJECT_DIR}/local/db/app_db.sql" \
+wp db export "${PROJECT_DIR}/tests/_data/app_db.sql" \
 	--dbuser="root" \
 	--dbpass="${ROOT_PASSWORD}" \
 	--skip-plugins \

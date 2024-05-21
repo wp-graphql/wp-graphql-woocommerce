@@ -10,9 +10,12 @@ coverage:
   enabled: false
 modules:
   enabled:
-    - Asserts
-    - REST
-    - WPBrowser
     - WPDb
+    - WPBrowser
+    - REST
+    - WPFilesystem
     - WPLoader
+    - Asserts
+    - \Tests\WPGraphQL\Codeception\Module\WPGraphQL
+    - \Tests\WPGraphQL\Codeception\Module\QueryAsserts
     - \Helper\GraphQLE2E

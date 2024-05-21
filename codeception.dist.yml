@@ -6,7 +6,6 @@ paths:
   envs: tests/_envs
 params:
   - env
-  - .env
   - .env.docker
 actor_suffix: Tester
 settings:
@@ -35,12 +34,15 @@ extensions:
     - Codeception\Command\GenerateWPXMLRPC
 modules:
   config:
+    \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
+      endpoint: '%WORDPRESS_URL%/graphql'
     WPDb:
       dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
       user: '%DB_USER%'
       password: '%DB_PASSWORD%'
+      populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
       dump: 'local/db/app_db.sql'
-      populate: false
+      populate: true
       cleanup: false
       waitlock: 10
       url: '%WORDPRESS_URL%'
@@ -64,10 +66,7 @@ modules:
       uploads: '/wp-content/uploads'
     WPLoader:
       wpRootFolder: '%WP_CORE_DIR%'
-      dbName: '%DB_NAME%'
-      dbHost: '%DB_HOST%'
-      dbUser: '%DB_USER%'
-      dbPassword: '%DB_PASSWORD%'
+      dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
       tablePrefix: '%WP_TABLE_PREFIX%'
       domain: '%WORDPRESS_DOMAIN%'
       adminEmail: '%ADMIN_EMAIL%'
@@ -85,3 +84,5 @@ modules:
         - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
         - wp-graphql-woocommerce/wp-graphql-woocommerce.php
       configFile: 'tests/_data/config.php'
+    
+    

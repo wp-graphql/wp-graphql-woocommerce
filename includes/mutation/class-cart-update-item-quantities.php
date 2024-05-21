@@ -126,6 +126,7 @@ class Cart_Update_Item_Quantities {
 						do_action( 'graphql_woocommerce_after_remove_item', $removed_item, 'update_quantity', $input, $context, $info );
 						continue;
 					}
+
 					do_action( 'graphql_woocommerce_before_set_item_quantity', \WC()->cart->get_cart_item( $key ), $input, $context, $info );
 					$updated[ $key ] = \WC()->cart->set_quantity( $key, $quantity, true );
 					do_action( 'graphql_woocommerce_after_set_item_quantity', \WC()->cart->get_cart_item( $key ), $input, $context, $info );

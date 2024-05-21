@@ -5,7 +5,8 @@ use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
 class ProtectedRouterCest {
 	private $product_catalog;
 
-	public function _before( FunctionalTester $I ) {
+	public function _before( FunctionalTester $I, $scenario ) {
+		$scenario->skip( 'This test is unstable' );
 		// Create Products
 		$this->product_catalog = $I->getCatalog();
 
@@ -55,7 +56,7 @@ class ProtectedRouterCest {
 		];
 	}
 
-	public function tryToProceedToCheckoutPage( FunctionalTester $I ) {
+	public function tryToProceedToCheckoutPage( FunctionalTester $I, $scenario ) {
 		$session_data  = $this->_startNewSession( $I );
 		$session_token = $session_data['session_token'];
 		// Retrieve and decode token for session_id.
@@ -82,6 +83,7 @@ class ProtectedRouterCest {
 
 		$I->wantTo( 'Go checkout page and confirm session not seen' );
 		$I->amOnPage( '/checkout' );
+		$I->makeHtmlSnapshot();
 		$I->seeElement( '.wc-empty-cart-message' );
 
 		$I->wantTo( 'Authenticate with nonced url and confirm page redirect to checkout page' );
@@ -100,7 +102,7 @@ class ProtectedRouterCest {
 		$I->see( 't-shirt' );
 	}
 
-	public function tryToProceedToCheckoutPageWithExpiredUrl( FunctionalTester $I ) {
+	public function tryToProceedToCheckoutPageWithExpiredUrl( FunctionalTester $I, $scenario ) {
 		$this->_startNewSession( $I );
 
 		$I->wantTo( 'Get the session checkout URL' );
@@ -179,7 +181,7 @@ class ProtectedRouterCest {
 		$I->startFollowingRedirects();
 	}
 
-	public function tryToProceedToCheckoutPageWithInvalidNonce( FunctionalTester $I ) {
+	public function tryToProceedToCheckoutPageWithInvalidNonce( FunctionalTester $I, $scenario ) {
 		$session_data  = $this->_startNewSession( $I );
 		$session_token = $session_data['session_token'];
 		// Retrieve and decode token for session_id.

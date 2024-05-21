@@ -389,7 +389,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'functions.php';
 
 			/**
-			 * WPGRAPHQL_AUTOLOAD can be set to "false" to prevent the autoloader from running.
+			 * WPGRAPHQL_WOOCOMMERCE_AUTOLOAD can be set to "false" to prevent the autoloader from running.
 			 * In most cases, this is not something that should be disabled, but some environments
 			 * may bootstrap their dependencies in a global autoloader that will autoload files
 			 * before we get to this point, and requiring the autoloader again can trigger fatal errors.

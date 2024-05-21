@@ -1,9 +1,10 @@
 parameters:
 		level: 8
 		inferPrivatePropertyTypeFromConstructor: true
-		checkMissingIterableValueType: false
 		treatPhpDocTypesAsCertain: false
-		checkGenericClassInNonGenericObjectType: false
+		ignoreErrors:
+			- identifier: missingType.iterableValue
+			- identifier: missingType.generics
 		stubFiles:
 			# Simulate added properties. This is neccesary due to a config issue in WPGraphQL core.
 			- phpstan/class-wp-post-type.php

@@ -38,7 +38,7 @@ ENV PATH "$PATH:~/.composer/vendor/bin"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle:* \
-    lucatume/wp-browser:3.2.3 \
+    "lucatume/wp-browser:>3.1 <3.5" \
 	phpunit/phpunit:^9.6 \
     codeception/module-asserts:* \
     codeception/module-cli:*  \
@@ -48,10 +48,11 @@ RUN composer global require --optimize-autoloader \
     codeception/module-rest:*  \
     codeception/module-webdriver:*  \
     codeception/util-universalframework:*  \
+	guzzlehttp/guzzle \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
-	wp-graphql/wp-graphql-testcase
+	wp-graphql/wp-graphql-testcase:^3.2
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
@@ -74,8 +75,8 @@ ENV PROJECT_DIR="${PLUGINS_DIR}/wp-graphql-woocommerce"
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
-
 WORKDIR /var/www/html
+
 # Set codecept wrapper
 COPY bin/codecept /usr/local/bin/codecept
 RUN chmod 755 /usr/local/bin/codecept
