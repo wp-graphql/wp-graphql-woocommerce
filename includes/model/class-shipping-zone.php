@@ -5,7 +5,7 @@
  * This model represents a Shipping Zone.
  *
  * @package WPGraphQL\WooCommerce\Model
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Model;

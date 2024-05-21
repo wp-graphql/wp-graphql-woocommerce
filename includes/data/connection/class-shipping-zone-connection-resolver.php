@@ -5,7 +5,7 @@
  * Resolves connections to ShippingZone
  *
  * @package WPGraphQL\WooCommerce\Data\Connection
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Data\Connection;

@@ -5,7 +5,7 @@
  * Registers TaxClass WPObject type
  *
  * @package WPGraphQL\WooCommerce\Type\WPObject
- * @since   TBD
+ * @since   0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;

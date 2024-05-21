@@ -3,7 +3,7 @@
  * WPInputObjectType - WCSettingInput
  *
  * @package WPGraphQL\WooCommerce\Type\WPInputObject
- * @since   TBD
+ * @since   0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInputObject;

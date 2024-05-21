@@ -5,7 +5,7 @@
  * Registers connections to ShippingZone
  *
  * @package WPGraphQL\WooCommerce\Connection
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Connection;
