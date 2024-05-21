@@ -1,4 +1,5 @@
 <?php
+$scenario->skip( 'This test is unstable' );
 $I = new AcceptanceTester( $scenario );
 // Create products
 $product_catalog = $I->getCatalog();

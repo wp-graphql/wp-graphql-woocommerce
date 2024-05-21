@@ -25,7 +25,6 @@ export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
 echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" > "$PROJECT_DIR/.env.docker"
 echo "WORDPRESS_URL=$WORDPRESS_URL" >> "$PROJECT_DIR/.env.docker"
-echo "WP_CORE_DIR=$WP_ROOT_FOLDER" >> "$PROJECT_DIR/.env.docker"
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
@@ -98,15 +97,12 @@ echo "Setting pretty permalinks..."
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --allow-root
 
 echo "Prepare for app database dump..."
-if [ ! -d "${PROJECT_DIR}/local/db" ]; then
-	mkdir "${PROJECT_DIR}/local/db"
-fi
-if [ -f "${PROJECT_DIR}/local/db/app_db.sql" ]; then
-	rm -f "${PROJECT_DIR}/local/db/app_db.sql"
+if [ -f "${PROJECT_DIR}/tests/_data/app_db.sql" ]; then
+	rm -f "${PROJECT_DIR}/tests/_data/app_db.sql"
 fi
 
 echo "Dumping app database..."
-wp db export "${PROJECT_DIR}/local/db/app_db.sql" \
+wp db export "${PROJECT_DIR}/tests/_data/app_db.sql" \
 	--dbuser="root" \
 	--dbpass="${ROOT_PASSWORD}" \
 	--skip-plugins \

@@ -38,7 +38,7 @@ ENV PATH "$PATH:~/.composer/vendor/bin"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle:* \
-    lucatume/wp-browser:^3.5 \
+    "lucatume/wp-browser:>3.1 <3.5" \
 	phpunit/phpunit:^9.6 \
     codeception/module-asserts:* \
     codeception/module-cli:*  \
@@ -52,7 +52,7 @@ RUN composer global require --optimize-autoloader \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
-	wp-graphql/wp-graphql-testcase:^3
+	wp-graphql/wp-graphql-testcase:^3.2
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh

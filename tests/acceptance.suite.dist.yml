@@ -10,59 +10,12 @@ coverage:
   enabled: false
 modules:
   enabled:
-    - Asserts
+    - WPDb
+    - WPBrowser
     - REST
-    - \lucatume\WPBrowser\Module\WPBrowser
-    - \lucatume\WPBrowser\Module\WPDb
-    - \lucatume\WPBrowser\Module\WPLoader
-    - \Tests\WPGraphQL\Codeception\Module\QueryAsserts
+    - WPFilesystem
+    - WPLoader
+    - Asserts
     - \Tests\WPGraphQL\Codeception\Module\WPGraphQL
+    - \Tests\WPGraphQL\Codeception\Module\QueryAsserts
     - \Helper\GraphQLE2E
-  config:
-    \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
-      endpoint: '%WORDPRESS_URL%/graphql'
-    \lucatume\WPBrowser\Module\WPDb:
-      dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
-      user: '%DB_USER%'
-      password: '%DB_PASSWORD%'
-      dump: 'local/db/app_db.sql'
-      populate: false
-      cleanup: true
-      waitlock: 10
-      url: '%WORDPRESS_URL%'
-      urlReplacement: true
-      tablePrefix: '%WP_TABLE_PREFIX%'
-    \lucatume\WPBrowser\Module\WPBrowser:
-      url: '%WORDPRESS_URL%'
-      wpRootFolder: '%WP_ROOT_FOLDER%'
-      adminUsername: '%ADMIN_USERNAME%'
-      adminPassword: '%ADMIN_PASSWORD%'
-      adminPath: '/wp-admin'
-    REST:
-      depends: WPBrowser
-      url: '%WORDPRESS_URL%'
-      cookies: false
-    \lucatume\WPBrowser\Module\WPFilesystem:
-      wpRootFolder: '%WP_ROOT_FOLDER%'
-      plugins: '/wp-content/plugins'
-      mu-plugins: '/wp-content/mu-plugins'
-      themes: '/wp-content/themes'
-      uploads: '/wp-content/uploads'
-    \lucatume\WPBrowser\Module\WPLoader:
-      loadOnly: true
-      wpRootFolder: '%WP_ROOT_FOLDER%'
-      dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
-      domain: '%WORDPRESS_DOMAIN%'
-      configFile: 'tests/_data/e2e-config.php'
-      # plugins:
-      #   - woocommerce/woocommerce.php
-      #   - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-      #   - wp-graphql/wp-graphql.php
-      #   - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-      #   - wp-graphql-woocommerce/wp-graphql-woocommerce.php
-      # activatePlugins:
-      #   - woocommerce/woocommerce.php
-      #   - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-      #   - wp-graphql/wp-graphql.php
-      #   - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-      #   - wp-graphql-woocommerce/wp-graphql-woocommerce.php

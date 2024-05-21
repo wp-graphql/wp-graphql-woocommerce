@@ -5,31 +5,6 @@
 actor: WpunitTester
 modules:
   enabled:
-    - \lucatume\WPBrowser\Module\WPLoader
+    - WPLoader
     - \Helper\Wpunit
-  disabled:
-    - \lucatume\WPBrowser\Module\WPDb
-    - \lucatume\WPBrowser\Module\WPBrowser
-    - \lucatume\WPBrowser\Module\WPFilesystem
-  config:
-    \lucatume\WPBrowser\Module\WPLoader:
-      wpRootFolder: '%WP_CORE_DIR%'
-      dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
-      tablePrefix: '%WP_TABLE_PREFIX%'
-      domain: '%WORDPRESS_DOMAIN%'
-      adminEmail: '%ADMIN_EMAIL%'
-      title: 'WooGraphQL Tests'
-      plugins:
-        - woocommerce/woocommerce.php
-        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-        - wp-graphql/wp-graphql.php
-        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
-      activatePlugins:
-        - woocommerce/woocommerce.php
-        - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php
-        - wp-graphql/wp-graphql.php
-        - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
-        - wp-graphql-woocommerce/wp-graphql-woocommerce.php
-      configFile: 'tests/_data/config.php'
 bootstrap: bootstrap.php

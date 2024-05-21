@@ -1,18 +1,20 @@
 modules:
   config:
-    \lucatume\WPBrowser\Module\WPDb:
+    \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
+      endpoint: '%WORDPRESS_URL%/graphql'
+    WPDb:
       dsn: 'mysql:host=testing_db;dbname=wordpress'
       user: wordpress
       password: password
       populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
-      dump: 'wp-content/plugins/wp-graphql-woocommerce/local/db/app_db.sql'
-      populate: false
+      dump: 'tests/_data/app_db.sql'
+      populate: true
       cleanup: false
       waitlock: 10
       url: '%WORDPRESS_URL%'
       urlReplacement: true
       tablePrefix: 'wp_'
-    \lucatume\WPBrowser\Module\WPBrowser:
+    WPBrowser:
       url: '%WORDPRESS_URL%'
       wpRootFolder: /var/www/html
       adminUsername: admin
@@ -21,13 +23,13 @@ modules:
     REST:
       depends: WPBrowser
       url: '%WORDPRESS_URL%'
-    \lucatume\WPBrowser\Module\WPFilesystem:
+    WPFilesystem:
       wpRootFolder: '/var/www/html'
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       themes: '/wp-content/themes'
       uploads: '/wp-content/uploads'
-    \lucatume\WPBrowser\Module\WPLoader:
+    WPLoader:
       wpRootFolder: '/var/www/html'
       dbName: wordpress
       dbHost: testing_db
