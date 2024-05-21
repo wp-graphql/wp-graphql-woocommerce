@@ -3,7 +3,7 @@
  * WPEnum Type - WCSettingTypeEnum
  *
  * @package WPGraphQL\WooCommerce\Type\WPEnum
- * @since   TBD
+ * @since   0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;

@@ -2,7 +2,7 @@
 /**
  * Factory class for the WooCommerce's tax class data objects.
  *
- * @since TBD
+ * @since 0.20.0
  * @package Tests\WPGraphQL\WooCommerce\Factory
  */
 

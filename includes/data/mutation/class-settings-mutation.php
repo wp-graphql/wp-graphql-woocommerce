@@ -3,7 +3,7 @@
  * Defines helper functions for executing mutations related to the WC Settings API.
  *
  * @package WPGraphQL\WooCommerce\Data\Mutation
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Data\Mutation;

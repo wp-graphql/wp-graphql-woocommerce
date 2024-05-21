@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.20.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.20.0) (2024-05-21)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.19.0...v0.20.0)
+
+**Breaking changes:**
+
+- feat: Queries and mutations for shipping zones, tax classes, and tax rates. [\#856](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/856) ([kidunot89](https://github.com/kidunot89))
+- `collectionStats` query fully implemented [\#849](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/849) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: TaxonomyToProduct connections fixed and tested [\#857](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/857) ([kidunot89](https://github.com/kidunot89))
+- fix: Potential Infinite loop caused by nested `pre_get_posts` hooks patched [\#853](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/853) ([kidunot89](https://github.com/kidunot89))
+- fix: Bug in Session\_Transaction\_Manager::pop\_transaction\_id\(\) fixed [\#852](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/852) ([kidunot89](https://github.com/kidunot89))
+- Fix: WPGraphQL v1.24.x support implemented [\#850](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/850) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.19.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.19.0) (2023-12-27)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.18.3...v0.19.0)

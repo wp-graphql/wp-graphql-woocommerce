@@ -5,7 +5,7 @@
  * Registers mutation for removing a shipping method from a shipping zone.
  *
  * @package WPGraphQL\WooCommerce\Mutation
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Mutation;

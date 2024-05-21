@@ -5,7 +5,7 @@
  * Registers mutation for update the registered shipping locations on a shipping zone.
  *
  * @package WPGraphQL\WooCommerce\Mutation
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Mutation;

@@ -3,7 +3,7 @@
  * Defines helper functions for executing mutations related to shipping.
  *
  * @package WPGraphQL\WooCommerce\Data\Mutation
- * @since TBD
+ * @since 0.20.0
  */
 
 namespace WPGraphQL\WooCommerce\Data\Mutation;
