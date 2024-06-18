@@ -17,7 +17,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 					$this->expectedField(
 						'label',
 						$attribute->is_taxonomy()
-							? ucwords( get_taxonomy( $attribute->get_name() )->labels->singular_name )
+							? get_taxonomy( $attribute->get_name() )->labels->singular_name
 							: ucwords( preg_replace( '/(-|_)/', ' ', $attribute->get_name() ) )
 					),
 					$this->expectedField( 'options', $attribute->get_slugs() ),
