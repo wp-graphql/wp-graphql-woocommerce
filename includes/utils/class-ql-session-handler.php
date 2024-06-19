@@ -9,9 +9,9 @@
 namespace WPGraphQL\WooCommerce\Utils;
 
 use WC_Session_Handler;
+use WPGraphQL\Router;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
-use WPGraphQL\Router as Router;
 
 /**
  * Class - QL_Session_Handler
@@ -54,6 +54,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	public function __construct() {
 		parent::__construct();
+
 		$this->_token = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
 	}
 
@@ -101,6 +102,11 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->init_session_token();
 		Session_Transaction_Manager::get( $this );
 
+		/**
+		 * Necessary since Session_Transaction_Manager applies to the reference.
+		 *
+		 * @var self $this
+		 */
 		if ( Router::is_graphql_http_request() ) {
 			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
 			add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
@@ -161,7 +167,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( $token->exp < $this->_session_expiration ) {
 				$this->update_session_timestamp( (string) $this->_customer_id, $this->_session_expiration );
 			}
-		} else if ( is_wp_error( $token ) ) {
+		} elseif ( is_wp_error( $token ) ) {
 			add_filter(
 				'graphql_woocommerce_session_token_errors',
 				static function ( $errors ) use ( $token ) {
@@ -184,9 +190,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 			$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
 			$this->_data        = $this->get_session_data();
 			$this->set_customer_session_token( true );
-			
 		} else {
-			return $this->init_session_cookie();
+			$this->init_session_cookie();
 		}
 	}
 
@@ -389,7 +394,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @return bool
 	 */
 	public function has_session() {
-		
+
 		// @codingStandardsIgnoreLine.
 		return $this->_issuing_new_token || $this->_has_token || parent::has_session();
 	}
@@ -400,9 +405,17 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @return void
 	 */
 	public function set_session_expiration() {
-		$this->_session_issued     = time();
-		$this->_session_expiring   = apply_filters( 'wc_session_expiring', $this->_session_issued + ( 60 * 60 * 47 ) ); // 47 Hours.
-		$this->_session_expiration = apply_filters( 'wc_session_expiration', $this->_session_issued + ( 60 * 60 * 48 ) ); // 48 Hours.
+		$this->_session_issued = time();
+		// 47 hours.
+		$this->_session_expiring = apply_filters( 'wc_session_expiring', $this->_session_issued + ( 60 * 60 * 47 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		// 48 hours.
+		$this->_session_expiration = apply_filters( 'wc_session_expiration', $this->_session_issued + ( 60 * 60 * 48 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$this->_session_expiration = apply_filters_deprecated(
+			'graphql_woocommerce_cart_session_expire',
+			[ $this->_session_expiration ],
+			'TBD',
+			'wc_session_expiration'
+		);
 	}
 
 	/**
