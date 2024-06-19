@@ -82,8 +82,13 @@ class WooCommerce_Filters {
 		return woographql_setting( "{$field}_nonce_param", null );
 	}
 
+	/**
+	 * Returns true if the session handler should be loaded.
+	 *
+	 * @return boolean
+	 */
 	public static function should_load_session_handler() {
-		switch( true ) {
+		switch ( true ) {
 			case \WPGraphQL\Router::is_graphql_http_request():
 			//phpcs:disable
 			case 'on' === woographql_setting( 'enable_ql_session_handler_on_ajax', 'off' )
@@ -92,7 +97,7 @@ class WooCommerce_Filters {
 			case 'on' === woographql_setting( 'enable_ql_session_handler_on_rest', 'off' )
 				&& ( defined( 'REST_REQUEST' ) && REST_REQUEST ):
 				return true;
-			default: 
+			default:
 				return false;
 		}
 	}
