@@ -66,6 +66,10 @@ modules:
       uploads: '/wp-content/uploads'
     WPLoader:
       wpRootFolder: '%WP_CORE_DIR%'
+      dbHost: '%DB_HOST%'
+      dbName: '%DB_NAME%'
+      dbUser: '%DB_USER%'
+      dbPassword: '%DB_PASSWORD%'
       dbUrl: 'mysql://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME%'
       dbName: '%DB_NAME%'
       dbHost: '%DB_HOST%'

@@ -82,6 +82,21 @@ class WooCommerce_Filters {
 		return woographql_setting( "{$field}_nonce_param", null );
 	}
 
+	public static function should_load_session_handler() {
+		switch( true ) {
+			case \WPGraphQL\Router::is_graphql_http_request():
+			//phpcs:disable
+			case 'on' === woographql_setting( 'enable_ql_session_handler_on_ajax', 'off' )
+				&& ( ! empty( $_GET['wc-ajax'] ) || defined( 'WC_DOING_AJAX' ) ):
+			//phpcs:enable
+			case 'on' === woographql_setting( 'enable_ql_session_handler_on_rest', 'off' )
+				&& ( defined( 'REST_REQUEST' ) && REST_REQUEST ):
+				return true;
+			default: 
+				return false;
+		}
+	}
+
 	/**
 	 * WooCommerce Session Handler callback
 	 *
@@ -89,7 +104,7 @@ class WooCommerce_Filters {
 	 * @return string
 	 */
 	public static function woocommerce_session_handler( $session_class ) {
-		if ( \WPGraphQL\Router::is_graphql_http_request() ) {
+		if ( self::should_load_session_handler() ) {
 			$session_class = '\WPGraphQL\WooCommerce\Utils\QL_Session_Handler';
 		} elseif ( WooGraphQL::auth_router_is_enabled() ) {
 			require_once get_includes_directory() . 'utils/class-protected-router.php';
