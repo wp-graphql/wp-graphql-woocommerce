@@ -50,6 +50,13 @@ class QL_Session_Handler extends WC_Session_Handler {
 	protected $_issuing_new_token = false; // @codingStandardsIgnoreLine
 
 	/**
+	 * True when a new session cookie has been issued.
+	 *
+	 * @var bool $_issuing_new_cookie
+	 */
+	protected $_issuing_new_cookie = false; // @codingStandardsIgnoreLine
+
+	/**
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
@@ -281,8 +288,17 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 *
 	 * @return bool
 	 */
-	private function sending_token() {
+	public function sending_token() {
 		return $this->_has_token || $this->_issuing_new_token;
+	}
+
+	/**
+	 * Determine if a HTTP cookie is being sent in the page response.
+	 *
+	 * @return bool
+	 */
+	public function sending_cookie() {
+		return $this->_has_cookie || $this->_issuing_new_cookie;
 	}
 
 	/**
@@ -385,6 +401,16 @@ class QL_Session_Handler extends WC_Session_Handler {
 			);
 
 			$this->_issuing_new_token = true;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set_customer_session_cookie( $set ) {
+		parent::set_customer_session_cookie( $set );
+		if ( $set ) {
+			$this->_issuing_new_cookie = true;
 		}
 	}
 

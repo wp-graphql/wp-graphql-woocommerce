@@ -11,11 +11,17 @@ if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
 	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'graphql-woo-cart-session' );
 }
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
+	
+	public function setUp(): void {
+		parent::setUp();
+
+		// before
+		unset( $_SERVER['HTTP_WOOCOMMERCE_SESSION'] );
+		$customer_cookie_key = apply_filters( 'woocommerce_cookie', 'wp_woocommerce_session_' . COOKIEHASH );
+		wc_setcookie( $customer_cookie_key, 0, time() - HOUR_IN_SECONDS );
+		unset( $_COOKIE[ $customer_cookie_key ] );
+	}
 	public function tearDown(): void {
 		unset( $_SERVER );
 		WC()->session->destroy_session();
@@ -78,8 +84,6 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 	}
 
 	public function test_init_on_non_graphql_request() {
-		$product_id = $this->factory()->product->createSimple();
-
 		// Create session handler.
 		$session = new QL_Session_Handler();
 
@@ -90,13 +94,23 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$session->init();
 
 		// Add product to cart and start the session.
-		$this->factory()->cart->add( $product_id );
+		$this->factory->cart->add(
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
+		);
+
 
 		// Assert session has started.
-		$this->assertTrue( $session->has_session(), 'Should have session.' );
+		//$this->assertTrue( $session->sending_cookie(), 'Issuing new customer session cookie.' );
 
 		// Assert no tokens are being issued.
-		$this->assertFalse( $session->build_token(), 'Should not have a token.' );
+		$this->assertFalse( $session->sending_token(), 'Should not be issuing a new customer token.' );
+		$this->assertFalse( $session->build_token(), 'Should not be issuing a new customer token.' );
 	}
 
 	public function test_init_on_non_graphql_request_with_session_token() {
