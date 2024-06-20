@@ -270,6 +270,8 @@ class Cart_Fill {
 			// Recalculate totals.
 			\WC()->cart->calculate_totals();
 
+			do_action( 'woographql_update_session', true );
+
 			// Return payload.
 			return compact(
 				'added',

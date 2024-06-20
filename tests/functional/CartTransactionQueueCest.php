@@ -96,12 +96,12 @@ class CartTransactionQueueCest {
 		);
 
 		// Retrieve JWT Authorization Token for later use.
-		$auth_token = $I->lodashGet( $success, 'login.authToken' );
+		$auth_token = $I->lodashGet( $success, 'data.login.authToken' );
 
 		// Retrieve session token. Add as "Session %s" in the woocommerce-session HTTP header to future requests
 		// so WooCommerce can identify the user session associated with actions made in the GraphQL requests.
 		// You can also retrieve the token from the "woocommerce-session" HTTP response header.
-		$initial_session_token = $I->lodashGet( $success, 'login.sessionToken' );
+		$initial_session_token = $I->lodashGet( $success, 'data.login.sessionToken' );
 
 		$headers = [
 			'Authorization'       => "Bearer {$auth_token}",

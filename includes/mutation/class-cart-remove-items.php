@@ -96,6 +96,8 @@ class Cart_Remove_Items {
 				}
 			}
 
+			do_action( 'woographql_update_session', true );
+
 			// Return payload.
 			return [ 'items' => $cart_items ];
 		};
