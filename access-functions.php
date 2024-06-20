@@ -37,8 +37,8 @@ if ( ! function_exists( 'str_ends_with' ) ) {
 	 */
 	function str_ends_with( $haystack, $needle ) {
 		$length = strlen( $needle );
-		return $length === 0
-			|| $length - 1 === strpos( $haystack, $needle, - $length );
+		return 0 === $length
+			|| strpos( $haystack, $needle, - $length ) === $length - 1;
 	}
 }//end if
 
