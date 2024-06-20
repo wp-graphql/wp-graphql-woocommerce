@@ -78,6 +78,8 @@ class Cart_Update_Shipping_Method {
 			// Recalculate totals.
 			\WC()->cart->calculate_totals();
 
+			do_action( 'woographql_update_session', true );
+
 			return [];
 		};
 	}

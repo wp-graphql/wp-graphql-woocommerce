@@ -82,6 +82,8 @@ class Cart_Restore_Items {
 
 			$cart_items = Cart_Mutation::retrieve_cart_items( $input, $context, $info, 'restore' );
 
+			do_action( 'woographql_update_session', true );
+
 			// Return payload.
 			return [ 'items' => $cart_items ];
 		};

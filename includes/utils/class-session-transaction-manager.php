@@ -61,7 +61,14 @@ class Session_Transaction_Manager {
 
 		add_action( 'graphql_before_resolve_field', [ $this, 'update_transaction_queue' ], 10, 4 );
 		add_action( 'graphql_mutation_response', [ $this, 'pop_transaction_id' ], 20, 6 );
+
 		add_action( 'woographql_session_transaction_complete', [ $this->session_handler, 'save_if_dirty' ], 10 );
+
+		add_action( 'woocommerce_add_to_cart', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_item_removed', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_item_restored', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_item_set_quantity', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_emptied', [ $this->session_handler, 'mark_dirty' ] );
 	}
 
 	/**

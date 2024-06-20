@@ -76,6 +76,8 @@ class Cart_Apply_Coupon {
 			$reason = '';
 			// If validate and successful applied to cart, return payload.
 			if ( Cart_Mutation::validate_coupon( $input['code'], $reason ) && \WC()->cart->apply_coupon( $input['code'] ) ) {
+				do_action( 'woographql_update_session', true );
+
 				return [ 'code' => $input['code'] ];
 			}
 

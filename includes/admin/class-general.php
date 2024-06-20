@@ -78,6 +78,24 @@ class General extends Section {
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
+				'name'     => 'enable_ql_session_handler_on_ajax',
+				'label'    => __( 'Enable QL Session Handler on WC AJAX requests.', 'wp-graphql-woocommerce' ),
+				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WC AJAX requests.', 'wp-graphql-woocommerce' )
+					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'type'     => 'checkbox',
+				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'off' : woographql_setting( 'enable_ql_session_handler_on_ajax', 'off' ),
+				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
+			],
+			[
+				'name'     => 'enable_ql_session_handler_on_rest',
+				'label'    => __( 'Enable QL Session Handler on WP REST requests.', 'wp-graphql-woocommerce' ),
+				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WP REST requests.', 'wp-graphql-woocommerce' )
+					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'type'     => 'checkbox',
+				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'off' : woographql_setting( 'enable_ql_session_handler_on_rest', 'off' ),
+				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
+			],
+			[
 				'name'    => 'enable_unsupported_product_type',
 				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
 				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),
