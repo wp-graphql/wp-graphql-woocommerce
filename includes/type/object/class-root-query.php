@@ -44,7 +44,7 @@ class Root_Query {
 							throw new UserError( $token_invalid );
 						}
 
-						$cart = Factory::resolve_cart();
+						$cart = new \WC_Cart();
 						if ( ! empty( $args['recalculateTotals'] ) ) {
 							$cart->calculate_totals();
 						}

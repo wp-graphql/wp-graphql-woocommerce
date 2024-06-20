@@ -86,6 +86,8 @@ class Cart_Remove_Coupons {
 				}
 			}
 
+			do_action( 'woographql_update_session', true );
+
 			// Return payload.
 			return [ 'cart' => \WC()->cart ];
 		};

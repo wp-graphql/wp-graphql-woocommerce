@@ -19,8 +19,7 @@ if ( ! function_exists( 'str_starts_with' ) ) {
 	 * @return bool - True if $haystack starts with $needle, false otherwise.
 	 */
 	function str_starts_with( $haystack, $needle ) {
-		$length = strlen( $needle );
-		return ( substr( $haystack, 0, $length ) === $needle );
+		return 0 === strpos( $haystack, $needle ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.str_starts_with
 	}
 }
 
@@ -38,11 +37,8 @@ if ( ! function_exists( 'str_ends_with' ) ) {
 	 */
 	function str_ends_with( $haystack, $needle ) {
 		$length = strlen( $needle );
-		if ( 0 === $length ) {
-			return true;
-		}
-
-		return ( substr( $haystack, -$length ) === $needle );
+		return $length === 0
+			|| $length - 1 === strpos( $haystack, $needle, - $length );
 	}
 }//end if
 

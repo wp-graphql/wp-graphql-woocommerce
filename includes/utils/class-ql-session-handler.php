@@ -129,6 +129,17 @@ class QL_Session_Handler extends WC_Session_Handler {
 	}
 
 	/**
+	 * Mark the session as dirty.
+	 * 
+	 * To trigger a save of the session data.
+	 *
+	 * @return void
+	 */
+	public function mark_dirty() {
+		$this->_dirty = true;
+	}
+
+	/**
 	 * Setup token and customer ID.
 	 *
 	 * @throws \GraphQL\Error\UserError Invalid token.
