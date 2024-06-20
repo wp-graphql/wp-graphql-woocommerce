@@ -130,7 +130,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * Mark the session as dirty.
-	 * 
+	 *
 	 * To trigger a save of the session data.
 	 *
 	 * @return void
@@ -417,12 +417,12 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_customer_session_cookie( $set ) {
 		parent::set_customer_session_cookie( $set );
-	
+
 		if ( $set ) {
 			$this->_issuing_new_cookie = true;
 		}

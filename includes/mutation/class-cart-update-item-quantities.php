@@ -165,7 +165,6 @@ class Cart_Update_Item_Quantities {
 				$info
 			);
 
-
 			do_action( 'woographql_update_session', true );
 
 			return [
