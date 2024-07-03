@@ -10,7 +10,7 @@ class CustomerHelper extends WCG_Helper {
 	}
 
 	public function to_relay_id( $id ) {
-		return Relay::toGlobalId( 'customer', $id );
+		return Relay::toGlobalId( 'user', $id );
 	}
 
 	public function create( $args = array() ) {

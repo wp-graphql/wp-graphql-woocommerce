@@ -123,6 +123,7 @@ class Core_Schema_Filters {
 	public static function register_post_types( $args, $post_type ) {
 		if ( 'product' === $post_type ) {
 			$args['show_in_graphql']                  = true;
+			$args['model']                            = WPGraphQL\WooCommerce\Model\Product::class;
 			$args['graphql_single_name']              = 'Product';
 			$args['graphql_plural_name']              = 'Products';
 			$args['graphql_kind']                     = 'interface';
@@ -358,6 +359,10 @@ class Core_Schema_Filters {
 	 * @return \WPGraphQL\Type\WPObjectType|null
 	 */
 	public static function inject_type_resolver( $type, $value ) {
+
+
+
+
 		$type_registry = \WPGraphQL::get_type_registry();
 		switch ( $type ) {
 			case 'Coupon':
@@ -366,6 +371,9 @@ class Core_Schema_Filters {
 				if ( $new_type ) {
 					$type = $type_registry->get_type( $new_type );
 				}
+				break;
+			case 'ProductVariation':
+				$type = self::resolve_product_variation_type( $value );
 				break;
 			case 'Product':
 				$supported_types = WooGraphQL::get_enabled_product_types();
@@ -430,9 +438,11 @@ class Core_Schema_Filters {
 	 * @return mixed
 	 */
 	public static function resolve_product_variation_type( $value ) {
+
 		$type_registry  = \WPGraphQL::get_type_registry();
 		$possible_types = WooGraphQL::get_enabled_product_variation_types();
 		$product_type   = $value->get_type();
+
 		if ( isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
 		}

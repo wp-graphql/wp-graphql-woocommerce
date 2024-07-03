@@ -196,7 +196,7 @@ class Product extends WC_Post {
 					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
 				},
 				'id'                  => function () {
-					return ! empty( $this->ID ) ? Relay::toGlobalId( 'product', "{$this->ID}" ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'post', "{$this->ID}" ) : null;
 				},
 				'type'                => function () {
 					return ! empty( $this->wc_data->get_type() ) ? $this->wc_data->get_type() : null;
