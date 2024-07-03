@@ -119,7 +119,7 @@ class CartHelper extends WCG_Helper {
 			'key'         => $item['key'],
 			'product'     => array(
 				'node' => array(
-					'id'         => Relay::toGlobalId( 'product', $item['product_id'] ),
+					'id'         => Relay::toGlobalId( 'post', $item['product_id'] ),
 					'databaseId' => $item['product_id'],
 				),
 			),
@@ -127,7 +127,7 @@ class CartHelper extends WCG_Helper {
 				? array(
 					'attributes' => $attributes,
 					'node'       => array(
-						'id'         => Relay::toGlobalId( 'product_variation', $item['variation_id'] ),
+						'id'         => Relay::toGlobalId( 'post', $item['variation_id'] ),
 						'databaseId' => $item['variation_id'],
 					),
 				)

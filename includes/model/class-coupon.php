@@ -69,7 +69,7 @@ class Coupon extends WC_Post {
 					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
 				},
 				'id'                            => function () {
-					return ! empty( $this->ID ) ? Relay::toGlobalId( 'shop_coupon', "{$this->ID}" ) : null;
+					return ! empty( $this->ID ) ? Relay::toGlobalId( 'post', "{$this->ID}" ) : null;
 				},
 				'code'                          => function () {
 					return ! empty( $this->wc_data->get_code() ) ? $this->wc_data->get_code() : null;

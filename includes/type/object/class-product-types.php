@@ -68,6 +68,7 @@ class Product_Types {
 			'SimpleProduct',
 			[
 				'eagerlyLoadType' => true,
+				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A simple product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces(
 					[
@@ -92,6 +93,7 @@ class Product_Types {
 			'VariableProduct',
 			[
 				'eagerlyLoadType' => true,
+				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A variable product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces(
 					[
@@ -116,6 +118,7 @@ class Product_Types {
 			'ExternalProduct',
 			[
 				'eagerlyLoadType' => true,
+				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A external product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => array_merge(
@@ -144,6 +147,7 @@ class Product_Types {
 			'GroupProduct',
 			[
 				'eagerlyLoadType' => true,
+				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A group product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => [
@@ -208,6 +212,7 @@ class Product_Types {
 			WooGraphQL::get_supported_product_type(),
 			[
 				'eagerlyLoadType' => true,
+				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces(
 					[
