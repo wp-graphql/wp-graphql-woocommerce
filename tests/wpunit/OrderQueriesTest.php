@@ -35,7 +35,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 						$this->maybe(
 							[
 								$order->get_customer_id(),
-								[ 'id' => $this->toRelayId( 'customer', $order->get_customer_id() ) ],
+								[ 'id' => $this->toRelayId( 'user', $order->get_customer_id() ) ],
 							],
 							self::IS_NULL
 						)

@@ -58,7 +58,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			[
 				$this->expectedField( 'addToCart.clientMutationId', 'someId' ),
 				$this->expectedField( 'addToCart.cartItem.key', $cart_item_key ),
-				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'product', $product_id ) ),
+				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'post', $product_id ) ),
 				$this->expectedField( 'addToCart.cartItem.quantity', 2 ),
 				$this->expectedField( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
 				$this->expectedField( 'addToCart.cartItem.subtotalTax', wc_graphql_price( $cart_item['line_subtotal_tax'] ) ),
@@ -131,8 +131,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			[
 				$this->expectedField( 'addToCart.clientMutationId', 'someId' ),
 				$this->expectedField( 'addToCart.cartItem.key', $cart_item_key ),
-				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'product', $ids['product'] ) ),
-				$this->expectedField( 'addToCart.cartItem.variation.node.id', $this->toRelayId( 'product_variation', $ids['variations'][0] ) ),
+				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'post', $ids['product'] ) ),
+				$this->expectedField( 'addToCart.cartItem.variation.node.id', $this->toRelayId( 'post', $ids['variations'][0] ) ),
 				$this->expectedField( 'addToCart.cartItem.quantity', 3 ),
 				$this->expectedField( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
 				$this->expectedField( 'addToCart.cartItem.subtotalTax', wc_graphql_price( $cart_item['line_subtotal_tax'] ) ),
@@ -444,7 +444,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'key'         => $cart_item['key'],
 						'product'     => [
 							'node' => [
-								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
+								'id' => $this->toRelayId( 'post', $cart_item['product_id'] ),
 							],
 						],
 						'variation'   => null,
@@ -541,7 +541,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'key'         => $cart_item['key'],
 						'product'     => [
 							'node' => [
-								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
+								'id' => $this->toRelayId( 'post', $cart_item['product_id'] ),
 							],
 						],
 						'quantity'    => $cart_item['quantity'],
@@ -720,7 +720,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'key'         => $cart_item['key'],
 						'product'     => [
 							'node' => [
-								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
+								'id' => $this->toRelayId( 'post', $cart_item['product_id'] ),
 							],
 						],
 						'quantity'    => $cart_item['quantity'],

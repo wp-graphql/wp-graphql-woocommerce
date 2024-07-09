@@ -47,12 +47,12 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 				$path,
 				[
 					$this->expectedField( 'key', $item['key'] ),
-					$this->expectedField( 'product.node.id', $this->toRelayId( 'product', $item['product_id'] ) ),
+					$this->expectedField( 'product.node.id', $this->toRelayId( 'post', $item['product_id'] ) ),
 					$this->expectedField( 'product.node.databaseId', $item['product_id'] ),
 					$this->expectedField(
 						'variation.node.id',
 						! empty( $item['variation_id'] )
-							? $this->toRelayId( 'product_variation', $item['variation_id'] )
+							? $this->toRelayId( 'post', $item['variation_id'] )
 							: 'NULL'
 					),
 					$this->expectedField(

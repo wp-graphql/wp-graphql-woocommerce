@@ -452,7 +452,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			),
 			$this->expectedField(
 				'checkout.customer.id',
-				$this->toRelayId( 'customer', $this->customer )
+				$this->toRelayId( 'user', $this->customer )
 			),
 			$this->expectedField( 'checkout.result', 'success' ),
 			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
