@@ -123,7 +123,7 @@ class Core_Schema_Filters {
 	public static function register_post_types( $args, $post_type ) {
 		if ( 'product' === $post_type ) {
 			$args['show_in_graphql']                  = true;
-			$args['model']                            = WPGraphQL\WooCommerce\Model\Product::class;
+			$args['model']                            = \WPGraphQL\WooCommerce\Model\Product::class;
 			$args['graphql_single_name']              = 'Product';
 			$args['graphql_plural_name']              = 'Products';
 			$args['graphql_kind']                     = 'interface';
@@ -359,9 +359,6 @@ class Core_Schema_Filters {
 	 * @return \WPGraphQL\Type\WPObjectType|null
 	 */
 	public static function inject_type_resolver( $type, $value ) {
-
-
-
 
 		$type_registry = \WPGraphQL::get_type_registry();
 		switch ( $type ) {
