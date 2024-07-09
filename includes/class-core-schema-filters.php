@@ -435,7 +435,6 @@ class Core_Schema_Filters {
 	 * @return mixed
 	 */
 	public static function resolve_product_variation_type( $value ) {
-
 		$type_registry  = \WPGraphQL::get_type_registry();
 		$possible_types = WooGraphQL::get_enabled_product_variation_types();
 		$product_type   = $value->get_type();
