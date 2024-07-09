@@ -405,7 +405,7 @@ class MetaDataQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAs( $customer_id );
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
-			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedObject(
 				'customer.metaData.#',
 				[
@@ -541,10 +541,10 @@ class MetaDataQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assertion One
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedObject(
 				'product.metaData.#',
 				[
@@ -596,10 +596,10 @@ class MetaDataQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assertion One
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product_variation', $variation_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $variation_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'productVariation.id', $this->toRelayId( 'product_variation', $variation_id ) ),
+			$this->expectedField( 'productVariation.id', $this->toRelayId( 'post', $variation_id ) ),
 			$this->expectedObject(
 				'productVariation.metaData.#',
 				[

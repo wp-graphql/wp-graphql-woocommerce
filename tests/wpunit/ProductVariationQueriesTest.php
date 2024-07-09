@@ -7,7 +7,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$data = new WC_Product_Variation( $id );
 
 		return [
-			$this->expectedField( 'productVariation.id', $this->toRelayId( 'product_variation', $id ) ),
+			$this->expectedField( 'productVariation.id', $this->toRelayId( 'post', $id ) ),
 			$this->expectedField( 'productVariation.databaseId', $data->get_id() ),
 			$this->expectedField( 'productVariation.name', $data->get_name() ),
 			$this->expectedField( 'productVariation.date', $data->get_date_created()->__toString() ),
@@ -78,7 +78,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			),
 			$this->expectedField( 'productVariation.hasAttributes', ! empty( $data->has_attributes() ) ? $data->has_attributes() : self::IS_NULL ),
 			$this->expectedField( 'productVariation.type', WPEnumType::get_safe_name( $data->get_type() ) ),
-			$this->expectedField( 'productVariation.parent.node.id', $this->toRelayId( 'product', $data->get_parent_id() ) ),
+			$this->expectedField( 'productVariation.parent.node.id', $this->toRelayId( 'post', $data->get_parent_id() ) ),
 		];
 	}
 
@@ -89,7 +89,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			$this->factory->product->createVariable()
 		);
 		$variation_id = $products['variations'][0];
-		$id           = $this->toRelayId( 'product_variation', $variation_id );
+		$id           = $this->toRelayId( 'post', $variation_id );
 
 		// Create query.
 		$query = '
@@ -176,7 +176,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			$this->factory->product->createVariable()
 		);
 		$variation_id = $products['variations'][1];
-		$id           = $this->toRelayId( 'product_variation', $variation_id );
+		$id           = $this->toRelayId( 'post', $variation_id );
 		$product      = wc_get_product( $variation_id );
 
 		// Create query.
@@ -207,7 +207,7 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			$this->factory->product->createVariable()
 		);
 		$variation_id = $products['variations'][0];
-		$id           = $this->toRelayId( 'product_variation', $variation_id );
+		$id           = $this->toRelayId( 'post', $variation_id );
 		$product      = wc_get_product( $variation_id );
 		$downloads    = (array) array_values( $product->get_downloads() );
 
@@ -297,9 +297,9 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
-			$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
-			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $variation_id ) ),
-			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $other_variation_id ) ),
+			$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'post', $product_id ) ),
+			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
+			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -310,9 +310,9 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$variables = [ 'type' => 'VARIATION' ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product', $product_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $variation_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $other_variation_id ) ),
+			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $product_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -323,9 +323,9 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$variables = [ 'includeVariations' => true ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product', $product_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $variation_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'product_variation', $other_variation_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $product_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
+			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );

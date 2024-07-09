@@ -301,11 +301,11 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
 						$this->expectedField( 'itemDownloads', null ),
 						$this->expectedField( 'taxStatus', strtoupper( $item->get_tax_status() ) ),
-						$this->expectedField( 'product.node.id', $this->toRelayId( 'product', $item->get_product_id() ) ),
+						$this->expectedField( 'product.node.id', $this->toRelayId( 'post', $item->get_product_id() ) ),
 						$this->expectedField(
 							'variation.node.id',
 							! empty( $item->get_variation_id() )
-								? $this->toRelayId( 'product_variation', $item->get_variation_id() )
+								? $this->toRelayId( 'post', $item->get_variation_id() )
 								: self::IS_NULL
 						),
 					]

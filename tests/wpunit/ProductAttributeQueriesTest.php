@@ -58,10 +58,10 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
             }
         ';
 
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_merge(
-			[ $this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ) ],
+			[ $this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ) ],
 			$this->expectedProductAttributeData( $product_id, 'product.attributes.nodes' )
 		);
 
@@ -123,7 +123,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$variables = [ 'pattern' => 'polka-dot' ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'allPaPattern.nodes.0.products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'allPaPattern.nodes.0.products.nodes.0.id', $this->toRelayId( 'post', $product_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -151,7 +151,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
 			function ( $id ) {
-				return $this->expectedField( 'allPaSize.nodes.0.variations.nodes.#.id', $this->toRelayId( 'product_variation', $id ) );
+				return $this->expectedField( 'allPaSize.nodes.0.variations.nodes.#.id', $this->toRelayId( 'post', $id ) );
 			},
 			array_filter(
 				$variation_ids,

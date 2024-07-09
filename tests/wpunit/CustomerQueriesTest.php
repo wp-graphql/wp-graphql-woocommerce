@@ -18,7 +18,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedObject(
 				'customer',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'customer', $id ) ),
+					$this->expectedField( 'id', $this->toRelayId( 'user', $id ) ),
 					$this->expectedField( 'databaseId', $id ),
 					$this->expectedField( 'isVatExempt', $customer->get_is_vat_exempt() ),
 					$this->expectedField( 'hasCalculatedShipping', $customer->has_calculated_shipping() ),
@@ -142,7 +142,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Query should return null value due to lack of permissions.
 		 */
 		$this->loginAsCustomer();
-		$variables = [ 'id' => $this->toRelayId( 'customer', $new_customer_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'user', $new_customer_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedErrorPath( 'customer' ),
@@ -159,7 +159,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Query should return requested data because user queried themselves.
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'customer', $this->customer ) ];
+		$variables = [ 'id' => $this->toRelayId( 'user', $this->customer ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = $this->expectedCustomerData( $this->customer );
 
@@ -175,7 +175,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * but should not have access to JWT fields.
 		 */
 		$this->loginAsShopManager();
-		$variables = [ 'id' => $this->toRelayId( 'customer', $new_customer_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'user', $new_customer_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_merge(
 			[
@@ -528,7 +528,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assert tokens are inaccessible as guest or admin
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'customer', $customer_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'user', $customer_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [ $this->expectedField( 'customer', self::IS_NULL ) ];
 
@@ -538,7 +538,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedField( 'customer.availablePaymentMethods', self::IS_NULL ),
 		];
 
@@ -550,7 +550,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAs( $customer_id );
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
-			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedNode(
 				'customer.availablePaymentMethods',
 				[
@@ -645,10 +645,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Assert NULL values when querying as admin
 		 */
 		$this->loginAsShopManager();
-		$variables = [ 'id' => $this->toRelayId( 'customer', $customer_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'user', $customer_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedField( 'customer.cartUrl', self::IS_NULL ),
 			$this->expectedField( 'customer.cartNonce', self::IS_NULL ),
 			$this->expectedField( 'customer.checkoutUrl', self::IS_NULL ),
@@ -664,7 +664,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAs( $customer_id );
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
-			$this->expectedField( 'customer.id', $this->toRelayId( 'customer', $customer_id ) ),
+			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedField( 'customer.cartUrl', self::NOT_NULL ),
 			$this->expectedField( 'customer.cartNonce', self::NOT_NULL ),
 			$this->expectedField( 'customer.checkoutUrl', self::NOT_NULL ),

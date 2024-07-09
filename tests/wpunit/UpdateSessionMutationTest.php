@@ -50,7 +50,7 @@ class UpdateSessionMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 					$this->expectedField( 'value', 'test-value' ),
 				]
 			),
-			$this->expectedField( 'updateSession.customer.id', $this->toRelayId( 'customer', $registered ) ),
+			$this->expectedField( 'updateSession.customer.id', $this->toRelayId( 'user', $registered ) ),
 			$this->expectedObject(
 				'updateSession.customer.session.#',
 				[
