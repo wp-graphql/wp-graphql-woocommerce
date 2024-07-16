@@ -48,6 +48,7 @@ class Type_Registry {
 		Type\WPEnum\Currency_Enum::register();
 		Type\WPEnum\Shipping_Location_Type_Enum::register();
 		Type\WPEnum\WC_Setting_Type_Enum::register();
+		Type\WPEnum\Product_Attributes_Connection_Orderby_Enum::register();
 
 		/**
 		 * InputObjects.
