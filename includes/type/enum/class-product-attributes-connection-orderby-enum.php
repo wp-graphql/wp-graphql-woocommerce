@@ -19,7 +19,7 @@ class Product_Attributes_Connection_Orderby_Enum {
 		register_graphql_enum_type(
 			'ProductAttributesConnectionOrderbyEnum',
 			[
-				'description' => __( 'Taxonomy query operators', 'wp-graphql-woocommerce' ),
+				'description' => __( 'Product attributes connection orderby enum', 'wp-graphql-woocommerce' ),
 				'values'      => [
 					'NAME'        => [
 						'value'       => 'name',
