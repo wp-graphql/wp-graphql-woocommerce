@@ -58,7 +58,7 @@ class TaxRateMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                 'createTaxRate.taxRate',
                 [
                     $this->expectedField( 'id', self::NOT_NULL ),
-                    $this->expectedField( 'rate', self::NOT_FALSY ),
+                    $this->expectedField( 'rate', static::NOT_FALSY ),
                     $this->expectedField( 'country', 'US' ),
                     $this->expectedField( 'state', 'CA' ),
                     $this->expectedField( 'postcode', '67890' ),
@@ -138,7 +138,7 @@ class TaxRateMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                 'updateTaxRate.taxRate',
                 [
                     $this->expectedField( 'id', $this->toRelayId( 'tax_rate', $tax_rate_id ) ),
-                    $this->expectedField( 'rate', self::NOT_FALSY ),
+                    $this->expectedField( 'rate', static::NOT_FALSY ),
                     $this->expectedField( 'country', 'US' ),
                     $this->expectedField( 'state', 'NY' ),
                     $this->expectedField( 'postcodes.0', '54321' ),
@@ -203,7 +203,7 @@ class TaxRateMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                 'deleteTaxRate.taxRate',
                 [
                     $this->expectedField( 'id', $this->toRelayId( 'tax_rate', $tax_rate->tax_rate_id ) ),
-                    $this->expectedField( 'rate', self::NOT_FALSY ),
+                    $this->expectedField( 'rate', static::NOT_FALSY ),
                     $this->expectedField( 'country', 'US' ),
                     $this->expectedField( 'state', 'TX' ),
                     $this->expectedField( 'class', 'ZERO_RATE' ),

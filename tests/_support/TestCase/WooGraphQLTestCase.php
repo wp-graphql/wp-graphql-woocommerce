@@ -115,7 +115,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 *
 	 * @return mixed
 	 */
-	protected function maybe( $possible, $default = self::IS_NULL ) {
+	protected function maybe( $possible, $default = static::IS_NULL ) {
 		if ( is_array( $possible ) && 2 === count( $possible ) ) {
 			list( $possible, $decorated ) = $possible;
 		} else {

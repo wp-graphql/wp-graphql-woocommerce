@@ -1204,7 +1204,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 										[
 											$this->expectedField( 'product.node.databaseId', $product_one ),
 											$this->expectedField( 'quantity', 3 ),
-											$this->expectedField( 'variation', self::IS_NULL ),
+											$this->expectedField( 'variation', static::IS_NULL ),
 										]
 									),
 									$this->expectedNode(
@@ -1212,7 +1212,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 										[
 											$this->expectedField( 'product.node.databaseId', $product_two ),
 											$this->expectedField( 'quantity', 2 ),
-											$this->expectedField( 'variation', self::IS_NULL ),
+											$this->expectedField( 'variation', static::IS_NULL ),
 										]
 									),
 								]

@@ -15,32 +15,32 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 				'productVariation.modified',
 				! empty( $data->get_date_created() )
 					? $data->get_date_created()->__toString()
-					: self::IS_NULL
+					: static::IS_NULL
 			),
-			$this->expectedField( 'productVariation.description', ! empty( $data->get_description() ) ? $data->get_description() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.description', ! empty( $data->get_description() ) ? $data->get_description() : static::IS_NULL ),
 			$this->expectedField( 'productVariation.sku', $data->get_sku() ),
-			$this->expectedField( 'productVariation.price', ! empty( $data->get_price() ) ? \wc_graphql_price( $data->get_price() ) : self::IS_NULL ),
-			$this->expectedField( 'productVariation.regularPrice', ! empty( $data->get_regular_price() ) ? \wc_graphql_price( $data->get_regular_price() ) : self::IS_NULL ),
-			$this->expectedField( 'productVariation.salePrice', ! empty( $data->get_sale_price() ) ? \wc_graphql_price( $data->get_sale_price() ) : self::IS_NULL ),
+			$this->expectedField( 'productVariation.price', ! empty( $data->get_price() ) ? \wc_graphql_price( $data->get_price() ) : static::IS_NULL ),
+			$this->expectedField( 'productVariation.regularPrice', ! empty( $data->get_regular_price() ) ? \wc_graphql_price( $data->get_regular_price() ) : static::IS_NULL ),
+			$this->expectedField( 'productVariation.salePrice', ! empty( $data->get_sale_price() ) ? \wc_graphql_price( $data->get_sale_price() ) : static::IS_NULL ),
 			$this->expectedField(
 				'productVariation.dateOnSaleFrom',
 				! empty( $data->get_date_on_sale_from() )
 					? $data->get_date_on_sale_from()
-					: self::IS_NULL
+					: static::IS_NULL
 			),
 			$this->expectedField(
 				'productVariation.dateOnSaleTo',
 				! empty( $data->get_date_on_sale_to() )
 					? $data->get_date_on_sale_to()
-					: self::IS_NULL
+					: static::IS_NULL
 			),
 			$this->expectedField( 'productVariation.onSale', $data->is_on_sale() ),
 			$this->expectedField( 'productVariation.status', $data->get_status() ),
-			$this->expectedField( 'productVariation.purchasable', ! empty( $data->is_purchasable() ) ? $data->is_purchasable() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.purchasable', ! empty( $data->is_purchasable() ) ? $data->is_purchasable() : static::IS_NULL ),
 			$this->expectedField( 'productVariation.virtual', $data->is_virtual() ),
 			$this->expectedField( 'productVariation.downloadable', $data->is_downloadable() ),
-			$this->expectedField( 'productVariation.downloadLimit', ! empty( $data->get_download_limit() ) ? $data->get_download_limit() : self::IS_NULL ),
-			$this->expectedField( 'productVariation.downloadExpiry', ! empty( $data->get_download_expiry() ) ? $data->get_download_expiry() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.downloadLimit', ! empty( $data->get_download_limit() ) ? $data->get_download_limit() : static::IS_NULL ),
+			$this->expectedField( 'productVariation.downloadExpiry', ! empty( $data->get_download_expiry() ) ? $data->get_download_expiry() : static::IS_NULL ),
 			$this->expectedField( 'productVariation.taxStatus', strtoupper( $data->get_tax_status() ) ),
 			$this->expectedField(
 				'productVariation.taxClass',
@@ -52,31 +52,31 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 				'productVariation.manageStock',
 				! empty( $data->get_manage_stock() )
 					? WPEnumType::get_safe_name( $data->get_manage_stock() )
-					: self::IS_NULL
+					: static::IS_NULL
 			),
-			$this->expectedField( 'productVariation.stockQuantity', ! empty( $data->get_stock_quantity() ) ? $data->get_stock_quantity() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.stockQuantity', ! empty( $data->get_stock_quantity() ) ? $data->get_stock_quantity() : static::IS_NULL ),
 			$this->expectedField( 'productVariation.stockStatus', ProductHelper::get_stock_status_enum( $data->get_stock_status() ) ),
 			$this->expectedField(
 				'productVariation.backorders',
 				! empty( $data->get_backorders() )
 					? WPEnumType::get_safe_name( $data->get_backorders() )
-					: self::IS_NULL
+					: static::IS_NULL
 			),
 			$this->expectedField( 'productVariation.backordersAllowed', $data->backorders_allowed() ),
-			$this->expectedField( 'productVariation.weight', ! empty( $data->get_weight() ) ? $data->get_weight() : self::IS_NULL ),
-			$this->expectedField( 'productVariation.length', ! empty( $data->get_length() ) ? $data->get_length() : self::IS_NULL ),
-			$this->expectedField( 'productVariation.width', ! empty( $data->get_width() ) ? $data->get_width() : self::IS_NULL ),
-			$this->expectedField( 'productVariation.height', ! empty( $data->get_height() ) ? $data->get_height() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.weight', ! empty( $data->get_weight() ) ? $data->get_weight() : static::IS_NULL ),
+			$this->expectedField( 'productVariation.length', ! empty( $data->get_length() ) ? $data->get_length() : static::IS_NULL ),
+			$this->expectedField( 'productVariation.width', ! empty( $data->get_width() ) ? $data->get_width() : static::IS_NULL ),
+			$this->expectedField( 'productVariation.height', ! empty( $data->get_height() ) ? $data->get_height() : static::IS_NULL ),
 			$this->expectedField( 'productVariation.menuOrder', $data->get_menu_order() ),
-			$this->expectedField( 'productVariation.purchaseNote', ! empty( $data->get_purchase_note() ) ? $data->get_purchase_note() : self::IS_NULL ),
-			$this->expectedField( 'productVariation.shippingClass', ! empty( $data->get_shipping_class() ) ? $data->get_shipping_class() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.purchaseNote', ! empty( $data->get_purchase_note() ) ? $data->get_purchase_note() : static::IS_NULL ),
+			$this->expectedField( 'productVariation.shippingClass', ! empty( $data->get_shipping_class() ) ? $data->get_shipping_class() : static::IS_NULL ),
 			$this->expectedField(
 				'productVariation.catalogVisibility',
 				! empty( $data->get_catalog_visibility() )
 					? WPEnumType::get_safe_name( $data->get_catalog_visibility() )
-					: self::IS_NULL
+					: static::IS_NULL
 			),
-			$this->expectedField( 'productVariation.hasAttributes', ! empty( $data->has_attributes() ) ? $data->has_attributes() : self::IS_NULL ),
+			$this->expectedField( 'productVariation.hasAttributes', ! empty( $data->has_attributes() ) ? $data->has_attributes() : static::IS_NULL ),
 			$this->expectedField( 'productVariation.type', WPEnumType::get_safe_name( $data->get_type() ) ),
 			$this->expectedField( 'productVariation.parent.node.id', $this->toRelayId( 'post', $data->get_parent_id() ) ),
 		];

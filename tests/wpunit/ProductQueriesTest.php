@@ -20,7 +20,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.description',
 				$this->maybe(
 					[ $product->get_description(), apply_filters( 'the_content', $product->get_description() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
@@ -33,7 +33,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 							apply_filters( 'the_excerpt', $product->get_short_description() )
 						),
 					],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField( 'product.sku', $product->get_sku() ),
@@ -41,34 +41,34 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.price',
 				$this->maybe(
 					[ $product->get_price(), \wc_graphql_price( $product->get_price() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.regularPrice',
 				$this->maybe(
 					[ $product->get_regular_price(), \wc_graphql_price( $product->get_regular_price() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.salePrice',
 				$this->maybe(
 					[ $product->get_sale_price(), \wc_graphql_price( $product->get_sale_price() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.dateOnSaleFrom',
-				$this->maybe( $product->get_date_on_sale_from(), self::IS_NULL )
+				$this->maybe( $product->get_date_on_sale_from(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.dateOnSaleTo',
-				$this->maybe( $product->get_date_on_sale_to(), self::IS_NULL )
+				$this->maybe( $product->get_date_on_sale_to(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.taxStatus',
-				$this->maybe( strtoupper( $product->get_tax_status() ), self::IS_NULL )
+				$this->maybe( strtoupper( $product->get_tax_status() ), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.taxClass',
@@ -78,67 +78,67 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.manageStock',
 				! empty( $product->get_manage_stock() )
 					? \WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_manage_stock() )
-					: self::IS_NULL
+					: static::IS_NULL
 			),
 			$this->expectedField(
 				'product.stockQuantity',
-				$this->maybe( $product->get_stock_quantity(), self::IS_NULL )
+				$this->maybe( $product->get_stock_quantity(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.stockStatus',
 				$this->maybe(
 					$this->factory->product->getStockStatusEnum( $product->get_stock_status() ),
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.backorders',
 				$this->maybe(
 					\WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_backorders() ),
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField( 'product.soldIndividually', $product->get_sold_individually() ),
 			$this->expectedField(
 				'product.weight',
-				$this->maybe( $product->get_weight(), self::IS_NULL )
+				$this->maybe( $product->get_weight(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.length',
-				$this->maybe( $product->get_length(), self::IS_NULL )
+				$this->maybe( $product->get_length(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.width',
-				$this->maybe( $product->get_width(), self::IS_NULL )
+				$this->maybe( $product->get_width(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.height',
-				$this->maybe( $product->get_height(), self::IS_NULL )
+				$this->maybe( $product->get_height(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.reviewsAllowed',
-				$this->maybe( $product->get_reviews_allowed(), self::IS_NULL )
+				$this->maybe( $product->get_reviews_allowed(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.purchaseNote',
-				$this->maybe( $product->get_purchase_note(), self::IS_NULL )
+				$this->maybe( $product->get_purchase_note(), static::IS_NULL )
 			),
 			$this->expectedField( 'product.menuOrder', $product->get_menu_order() ),
 			$this->expectedField( 'product.virtual', $product->get_virtual() ),
-			$this->expectedField( 'product.downloadable', $product->get_downloadable(), self::IS_NULL ),
+			$this->expectedField( 'product.downloadable', $product->get_downloadable(), static::IS_NULL ),
 			$this->expectedField(
 				'product.downloadLimit',
-				$this->maybe( $product->get_download_limit(), self::IS_NULL )
+				$this->maybe( $product->get_download_limit(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.downloadExpiry',
-				$this->maybe( $product->get_download_expiry(), self::IS_NULL )
+				$this->maybe( $product->get_download_expiry(), static::IS_NULL )
 			),
 			$this->expectedField( 'product.averageRating', (float) $product->get_average_rating() ),
 			$this->expectedField( 'product.reviewCount', (int) $product->get_review_count() ),
 			$this->expectedField(
 				'product.backordersAllowed',
-				$this->maybe( $product->backorders_allowed(), self::IS_FALSY )
+				$this->maybe( $product->backorders_allowed(), static::IS_FALSY )
 			),
 			$this->expectedField( 'product.onSale', $product->is_on_sale() ),
 			$this->expectedField( 'product.purchasable', $product->is_purchasable() ),
@@ -146,7 +146,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'product.shippingTaxable', $product->is_shipping_taxable() ),
 			$this->expectedField(
 				'product.link',
-				$this->maybe( get_post_permalink( $product_id ), self::IS_NULL )
+				$this->maybe( get_post_permalink( $product_id ), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.totalSales',
@@ -155,7 +155,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						$is_shop_manager && $product->get_total_sales(),
 						$product->get_total_sales(),
 					],
-					self::IS_FALSY
+					static::IS_FALSY
 				)
 			),
 			$this->expectedField(
@@ -165,7 +165,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						$is_shop_manager && ! empty( $product->get_catalog_visibility() ),
 						strtoupper( $product->get_catalog_visibility() ),
 					],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 		];
@@ -438,7 +438,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful( $response, $expected );
 	}
-	
+
 	public function testProductToTermConnection() {
 		$test_category = $this->factory->product->createProductCategory( 'test-product-category-1' );
 		$test_tag      = $this->factory->product->createProductTag( 'test-product-tag-1' );
@@ -1168,7 +1168,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedField(
 				'products.nodes',
-				self::IS_FALSY
+				static::IS_FALSY
 			),
 		];
 

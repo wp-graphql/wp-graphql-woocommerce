@@ -17,7 +17,7 @@ class TaxClassQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
         
         // Execute the request expecting failure due to missing permissions.
         $response = $this->graphql( compact( 'query' ) );
-        $this->assertQuerySuccessful( $response, [ $this->expectedField( 'taxClasses.nodes', self::IS_FALSY ) ] );
+        $this->assertQuerySuccessful( $response, [ $this->expectedField( 'taxClasses.nodes', static::IS_FALSY ) ] );
 
         // Login as shop manager.
         $this->loginAsShopManager();

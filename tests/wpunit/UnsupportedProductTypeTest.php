@@ -18,7 +18,7 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'post', self::IS_NULL ),
+			$this->expectedField( 'post', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );

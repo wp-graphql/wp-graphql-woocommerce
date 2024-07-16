@@ -34,7 +34,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
             $this->expectedObject(
                 'createShippingZone.shippingZone',
                 [
-                    $this->expectedField( 'id', self::NOT_NULL ),
+                    $this->expectedField( 'id', static::NOT_NULL ),
                     $this->expectedField( 'name', 'Test Shipping Zone' ),
                     $this->expectedField( 'order', 0 ),
                 ]
@@ -314,7 +314,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 'clearShippingZoneLocations.shippingZone',
                 [
                     $this->expectedField( 'id', $this->toRelayId( 'shipping_zone', $shipping_zone->get_id() ) ),
-                    $this->expectedField( 'locations', self::IS_FALSY )
+                    $this->expectedField( 'locations', static::IS_FALSY )
                 ]
             ),
             $this->expectedObject(
@@ -422,8 +422,8 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                     $this->expectedNode(
                         'methods.edges',
                         [
-                            $this->expectedField( 'id', self::NOT_NULL ),
-                            $this->expectedField( 'instanceId', self::NOT_NULL ),
+                            $this->expectedField( 'id', static::NOT_NULL ),
+                            $this->expectedField( 'instanceId', static::NOT_NULL ),
                             $this->expectedField( 'order', 0 ),
                             $this->expectedField( 'enabled', true ),
                             $this->expectedNode(
@@ -437,8 +437,8 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                                 'node',
                                 [
                                     $this->expectedField( 'id', $this->toRelayId( 'shipping_method', 'flat_rate' ) ),
-                                    $this->expectedField( 'databaseId', self::NOT_NULL ),
-                                    $this->expectedField( 'title', self::NOT_NULL ),
+                                    $this->expectedField( 'databaseId', static::NOT_NULL ),
+                                    $this->expectedField( 'title', static::NOT_NULL ),
                                 ]
                             )
                         ],
@@ -449,8 +449,8 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
             $this->expectedObject(
                 'addMethodToShippingZone.method',
                 [
-                    $this->expectedField( 'id', self::NOT_NULL ),
-                    $this->expectedField( 'instanceId', self::NOT_NULL ),
+                    $this->expectedField( 'id', static::NOT_NULL ),
+                    $this->expectedField( 'instanceId', static::NOT_NULL ),
                     $this->expectedField( 'order', 0 ),
                     $this->expectedField( 'enabled', true ),
                     $this->expectedNode(
@@ -464,8 +464,8 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                         'node',
                         [
                             $this->expectedField( 'id', $this->toRelayId( 'shipping_method', 'flat_rate' ) ),
-                            $this->expectedField( 'databaseId', self::NOT_NULL ),
-                            $this->expectedField( 'title', self::NOT_NULL ),
+                            $this->expectedField( 'databaseId', static::NOT_NULL ),
+                            $this->expectedField( 'title', static::NOT_NULL ),
                         ]
                     )
                 ]
@@ -568,7 +568,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                         [
                             $this->expectedField( 'id', $this->toRelayId( 'shipping_zone_method', $instance_id ) ),
                             $this->expectedField( 'instanceId', $instance_id ),
-                            $this->expectedField( 'order', self::NOT_NULL ),
+                            $this->expectedField( 'order', static::NOT_NULL ),
                             $this->expectedField( 'enabled', true ),
                             $this->expectedNode(
                                 'settings',
@@ -588,7 +588,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 [
                     $this->expectedField( 'id', $this->toRelayId( 'shipping_zone_method', $instance_id ) ),
                     $this->expectedField( 'instanceId', $instance_id ),
-                    $this->expectedField( 'order', self::NOT_NULL ),
+                    $this->expectedField( 'order', static::NOT_NULL ),
                     $this->expectedField( 'enabled', true ),
                     $this->expectedNode(
                         'settings',
@@ -655,7 +655,7 @@ class ShippingZoneMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
                 'removeMethodFromShippingZone.shippingZone',
                 [
                     $this->expectedField( 'id', $this->toRelayId( 'shipping_zone', $shipping_zone->get_id() ) ),
-                    $this->expectedField( 'methods.edges', self::IS_FALSY ),
+                    $this->expectedField( 'methods.edges', static::IS_FALSY ),
                 ]
             ),
             $this->expectedObject(

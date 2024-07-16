@@ -41,8 +41,8 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		$expected  = [ 
 			$this->expectedField( 'shippingMethod.id', $id ),
 			$this->expectedField( 'shippingMethod.databaseId', 'flat_rate' ),
-			$this->expectedField( 'shippingMethod.title', self::NOT_NULL ),
-			$this->expectedField( 'shippingMethod.description', self::NOT_NULL ),
+			$this->expectedField( 'shippingMethod.title', static::NOT_NULL ),
+			$this->expectedField( 'shippingMethod.description', static::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -75,7 +75,7 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 * Confirm permission check is working
 		 */
 		$response  = $this->graphql( compact( 'query' ) );
-		$this->assertQuerySuccessful( $response, [ $this->expectedField( 'shippingMethods.nodes', self::IS_FALSY ) ] );
+		$this->assertQuerySuccessful( $response, [ $this->expectedField( 'shippingMethods.nodes', static::IS_FALSY ) ] );
 
 		// Login as shop manager.
 		$this->loginAsShopManager();

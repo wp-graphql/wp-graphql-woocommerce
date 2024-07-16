@@ -192,7 +192,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'products.found', self::IS_NULL ),
+			$this->expectedField( 'products.found', static::IS_NULL ),
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
 			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
 			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[2] ) ),
@@ -234,7 +234,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'products.found', self::IS_NULL ),
+			$this->expectedField( 'products.found', static::IS_NULL ),
 			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
 			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
 			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),

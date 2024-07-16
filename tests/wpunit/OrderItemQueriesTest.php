@@ -46,8 +46,8 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'databaseId', $item->get_id() ),
 						$this->expectedField( 'orderId', $item->get_order_id() ),
 						$this->expectedField( 'code', $item->get_code() ),
-						$this->expectedField( 'discount', $this->maybe( $item->get_discount(), self::IS_NULL ) ),
-						$this->expectedField( 'discountTax', $this->maybe( $item->get_discount_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'discount', $this->maybe( $item->get_discount(), static::IS_NULL ) ),
+						$this->expectedField( 'discountTax', $this->maybe( $item->get_discount_tax(), static::IS_NULL ) ),
 						$this->expectedField( 'coupon.id', $this->toRelayId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) ) ),
 					]
 				);
@@ -103,7 +103,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'name', $item->get_name() ),
 						$this->expectedField( 'taxStatus', strtoupper( $item->get_tax_status() ) ),
 						$this->expectedField( 'total', $item->get_total() ),
-						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), static::IS_NULL ) ),
 						$this->expectedField(
 							'taxClass',
 							! empty( $item->get_tax_class() )
@@ -159,7 +159,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'orderId', $item->get_order_id() ),
 						$this->expectedField( 'methodTitle', $item->get_method_title() ),
 						$this->expectedField( 'total', $item->get_total() ),
-						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), static::IS_NULL ) ),
 						$this->expectedField(
 							'taxClass',
 							! empty( $item->get_tax_class() )
@@ -287,7 +287,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 					'order.lineItems.nodes',
 					[
 						$this->expectedField( 'productId', $item->get_product_id() ),
-						$this->expectedField( 'variationId', $this->maybe( $item->get_variation_id(), self::IS_NULL ) ),
+						$this->expectedField( 'variationId', $this->maybe( $item->get_variation_id(), static::IS_NULL ) ),
 						$this->expectedField( 'quantity', $item->get_quantity() ),
 						$this->expectedField(
 							'taxClass',
@@ -295,10 +295,10 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 								? strtoupper( $item->get_tax_class() )
 								: 'STANDARD'
 						),
-						$this->expectedField( 'subtotal', $this->maybe( $item->get_subtotal(), self::IS_NULL ) ),
-						$this->expectedField( 'subtotalTax', $this->maybe( $item->get_subtotal_tax(), self::IS_NULL ) ),
-						$this->expectedField( 'total', $this->maybe( $item->get_total(), self::IS_NULL ) ),
-						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'subtotal', $this->maybe( $item->get_subtotal(), static::IS_NULL ) ),
+						$this->expectedField( 'subtotalTax', $this->maybe( $item->get_subtotal_tax(), static::IS_NULL ) ),
+						$this->expectedField( 'total', $this->maybe( $item->get_total(), static::IS_NULL ) ),
+						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), static::IS_NULL ) ),
 						$this->expectedField( 'itemDownloads', null ),
 						$this->expectedField( 'taxStatus', strtoupper( $item->get_tax_status() ) ),
 						$this->expectedField( 'product.node.id', $this->toRelayId( 'post', $item->get_product_id() ) ),
@@ -306,7 +306,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 							'variation.node.id',
 							! empty( $item->get_variation_id() )
 								? $this->toRelayId( 'post', $item->get_variation_id() )
-								: self::IS_NULL
+								: static::IS_NULL
 						),
 					]
 				);
