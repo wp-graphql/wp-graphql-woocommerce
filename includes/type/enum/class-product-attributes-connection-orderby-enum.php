@@ -6,6 +6,8 @@
  * @since   0.2.2
  */
 
+ namespace WPGraphQL\WooCommerce\Type\WPEnum;
+
 /**
  * Class Product_Attributes_Connection_Orderby_Enum
  */
