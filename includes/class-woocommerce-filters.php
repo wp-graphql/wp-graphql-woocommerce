@@ -38,6 +38,9 @@ class WooCommerce_Filters {
 
 		// Add better support for Stripe payment gateway.
 		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
+		
+		// Add pre_wp_mail filter
+		add_filter('pre_wp_mail', [ self::class, 'pre_wp_mail_handler' ], 10, 2);
 	}
 
 	/**
@@ -144,5 +147,42 @@ class WooCommerce_Filters {
 		}
 
 		return $gateway_args;
+	}
+
+	/**
+	 * Custom handler for pre_wp_mail filter
+	 *
+	 * @param bool $return Short-circuits the wp_mail function if true.
+	 * @param array $atts {
+	 *     Array of the wp_mail() arguments.
+	 *
+	 *     @type string|array $to          Array or comma-separated list of email addresses to send message.
+	 *     @type string       $subject     Email subject.
+	 *     @type string       $message     Message contents.
+	 *     @type string|array $headers     Additional headers.
+	 *     @type string|array $attachments Paths to files to attach.
+	 * }
+	 * @return bool
+	 */
+	public static function pre_wp_mail_handler($return, $atts) {
+		$subject = $atts['subject'];
+		$message = $atts['message'];
+
+		// Check if email is about Password Reset get Woocommerce Email instead
+		if (strpos($subject, 'Password Reset') !== false) {
+			if (preg_match('/[?&]key=([^&]+)&login=([^&>]+)>?/', $message, $matches)) {
+				$reset_key = $matches[1] ?? null;
+				$user_login = $matches[2] ?? null;
+
+				if ($reset_key && $user_login) {
+					$wc_emails = \WC()->mailer()->get_emails();
+					if (isset($wc_emails['WC_Email_Customer_Reset_Password'])) {
+						$wc_emails['WC_Email_Customer_Reset_Password']->trigger($user_login, $reset_key);
+						return true;
+					}
+				}
+			}
+		}
+		return $return;
 	}
 }
