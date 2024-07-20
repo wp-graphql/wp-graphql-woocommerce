@@ -169,17 +169,16 @@ class WooCommerce_Filters {
 		$message = $atts['message'];
 
 		// Check if email is about Password Reset get Woocommerce Email instead
-		if (strpos($subject, 'Password Reset') !== false) {
-			if (preg_match('/[?&]key=([^&]+)&login=([^&>]+)>?/', $message, $matches)) {
+		if ( strpos($subject, 'Password Reset') !== false ) {
+			if ( preg_match('/[?&]key=([^&]+)&login=([^&>]+)>?/', $message, $matches) ) {
 				$reset_key = $matches[1] ?? null;
 				$user_login = $matches[2] ?? null;
 
-				if ($reset_key && $user_login) {
-					$wc_emails = \WC()->mailer()->get_emails();
-					if (isset($wc_emails['WC_Email_Customer_Reset_Password'])) {
-						$wc_emails['WC_Email_Customer_Reset_Password']->trigger($user_login, $reset_key);
-						return true;
-					}
+				$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
+
+				if ( $reset_key && $user_login && $wc_reset_email->is_enabled() ) {
+					$wc_reset_email->trigger($user_login, $reset_key);
+					return true;
 				}
 			}
 		}
