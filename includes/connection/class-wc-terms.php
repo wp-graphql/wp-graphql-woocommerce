@@ -120,7 +120,7 @@ class WC_Terms extends TermObjects {
 				'fromFieldName'  => 'terms',
 				'connectionArgs' => self::get_connection_args(
 					[
-						'orderby'             => [
+						'orderby' => [
 							'type'        => 'ProductAttributesConnectionOrderbyEnum',
 							'description' => __( 'Field(s) to order terms by. Defaults to \'name\'.', 'wp-graphql-woocommerce' ),
 						],

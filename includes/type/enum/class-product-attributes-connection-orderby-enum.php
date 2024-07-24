@@ -6,13 +6,13 @@
  * @since   0.2.2
  */
 
- namespace WPGraphQL\WooCommerce\Type\WPEnum;
+namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
 /**
  * Class Product_Attributes_Connection_Orderby_Enum
  */
 class Product_Attributes_Connection_Orderby_Enum {
-	 /**
+	/**
 	 * Registers type
 	 *
 	 * @return void
@@ -43,7 +43,7 @@ class Product_Attributes_Connection_Orderby_Enum {
 						'value'       => 'term_order',
 						'description' => __( 'Order the connection by term order.', 'wp-graphql-woocommerce' ),
 					],
-                    'MENU_ORDER'  => [
+					'MENU_ORDER'  => [
 						'value'       => 'menu_order',
 						'description' => __( 'Order the connection by woocommerce menu order.', 'wp-graphql-woocommerce' ),
 					],
