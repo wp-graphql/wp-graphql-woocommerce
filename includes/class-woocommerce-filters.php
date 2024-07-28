@@ -40,7 +40,8 @@ class WooCommerce_Filters {
 		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
 
 		// WPGraphQL Reset password -> Use woocommerce email password template when requested
-		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 4 );
+		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 3 );
+		add_filter( 'retrieve_password_title', [ self::class, 'get_reset_password_title' ] );
 	}
 
 	/**
@@ -150,7 +151,7 @@ class WooCommerce_Filters {
 	}
 
 	/**
-	 * Customizes the password reset message for WooCommerce.
+	 * Customizes the password reset message for ResetPassword Mutation.
 	 *
 	 * This function modifies the password reset message to use WooCommerce's email template
 	 * if the `WC_Email_Customer_Reset_Password` email is enabled. It sets the email subject
@@ -159,12 +160,11 @@ class WooCommerce_Filters {
 	 * @param string $message      The original password reset message.
 	 * @param string $key          The password reset key.
 	 * @param string $user_login   The username or email of the user requesting the password reset.
-	 * @param object $user_data    The user data object containing user details.
 	 *
 	 * @return string              The customized password reset message. Returns the original message if
 	 *                             the `WC_Email_Customer_Reset_Password` email is not enabled.
 	 */
-	public static function get_reset_password_message( $message, $key, $user_login, $user_data ) {
+	public static function get_reset_password_message( $message, $key, $user_login ) {
 		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
 		if ( $wc_reset_email->is_enabled() ) {
 			add_filter( 'retrieve_password_title', [ $wc_reset_email, 'get_subject' ] );
@@ -177,5 +177,11 @@ class WooCommerce_Filters {
 		} else {
 			return $message;
 		}
+	}
+
+	// Customizes the password reset title for ResetPassword Mutation
+	public static function get_reset_password_title( $title ) {
+		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
+		return $wc_reset_email->is_enabled() ? $wc_reset_email->get_subject() : $title;
 	}
 }
