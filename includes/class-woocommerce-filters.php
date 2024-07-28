@@ -38,9 +38,9 @@ class WooCommerce_Filters {
 
 		// Add better support for Stripe payment gateway.
 		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
-		
-		// Add pre_wp_mail filter
-		add_filter('pre_wp_mail', [ self::class, 'pre_wp_mail_handler' ], 10, 2);
+
+		// Use woocommerce email password template when requested
+		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 4 );
 	}
 
 	/**
@@ -150,38 +150,43 @@ class WooCommerce_Filters {
 	}
 
 	/**
-	 * Custom handler for pre_wp_mail filter
+	 * Customizes the password reset message for WooCommerce.
 	 *
-	 * @param bool $return Short-circuits the wp_mail function if true.
-	 * @param array $atts {
-	 *     Array of the wp_mail() arguments.
+	 * This function modifies the password reset message to use WooCommerce's email template
+	 * if the `WC_Email_Customer_Reset_Password` email is enabled. It sets the email subject
+	 * and content type based on WooCommerce settings and returns the styled email content.
 	 *
-	 *     @type string|array $to          Array or comma-separated list of email addresses to send message.
-	 *     @type string       $subject     Email subject.
-	 *     @type string       $message     Message contents.
-	 *     @type string|array $headers     Additional headers.
-	 *     @type string|array $attachments Paths to files to attach.
-	 * }
-	 * @return bool
+	 * @param string $message      The original password reset message.
+	 * @param string $key          The password reset key.
+	 * @param string $user_login   The username or email of the user requesting the password reset.
+	 * @param object $user_data    The user data object containing user details.
+	 *
+	 * @return string              The customized password reset message. Returns the original message if
+	 *                             the `WC_Email_Customer_Reset_Password` email is not enabled.
 	 */
-	public static function pre_wp_mail_handler($return, $atts) {
-		$subject = $atts['subject'];
-		$message = $atts['message'];
-
-		// Check if email is about Password Reset get Woocommerce Email instead
-		if ( strpos($subject, 'Password Reset') !== false ) {
-			if ( preg_match('/[?&]key=([^&]+)&login=([^&>]+)>?/', $message, $matches) ) {
-				$reset_key = $matches[1] ?? null;
-				$user_login = $matches[2] ?? null;
-
-				$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
-
-				if ( $reset_key && $user_login && $wc_reset_email->is_enabled() ) {
-					$wc_reset_email->trigger($user_login, $reset_key);
-					return true;
+	public static function get_reset_password_message( $message, $key, $user_login, $user_data ) {
+		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
+		if ( $wc_reset_email->is_enabled() ) {
+			add_filter(
+				'retrieve_password_title',
+				static function () use ( $wc_reset_email ) {
+					return $wc_reset_email->get_subject();
 				}
-			}
+			);
+
+			add_filter(
+				'wp_mail_content_type',
+				static function () use ( $wc_reset_email ) {
+					return $wc_reset_email->get_content_type();
+				}
+			);
+
+			$wc_reset_email->user_login = $user_login;
+			$wc_reset_email->reset_key  = $key;
+			$message                    = $wc_reset_email->style_inline( $wc_reset_email->get_content() );
+			return $message;
+		} else {
+			return $message;
 		}
-		return $return;
 	}
 }
