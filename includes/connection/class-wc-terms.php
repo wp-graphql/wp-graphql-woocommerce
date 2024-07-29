@@ -118,7 +118,14 @@ class WC_Terms extends TermObjects {
 				'toType'         => 'TermNode',
 				'queryClass'     => 'WP_Term_Query',
 				'fromFieldName'  => 'terms',
-				'connectionArgs' => self::get_connection_args(),
+				'connectionArgs' => self::get_connection_args(
+					[
+						'orderby' => [
+							'type'        => 'ProductAttributesConnectionOrderbyEnum',
+							'description' => __( 'Field(s) to order terms by. Defaults to \'name\'.', 'wp-graphql-woocommerce' ),
+						],
+					]
+				),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					if ( ! $source->is_taxonomy() ) {
 						throw new UserError( __( 'Invalid product attribute', 'wp-graphql-woocommerce' ) );
