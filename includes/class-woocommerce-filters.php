@@ -167,7 +167,6 @@ class WooCommerce_Filters {
 	public static function get_reset_password_message( $message, $key, $user_login ) {
 		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
 		if ( $wc_reset_email->is_enabled() ) {
-			add_filter( 'retrieve_password_title', [ $wc_reset_email, 'get_subject' ] );
 			add_filter( 'wp_mail_content_type', [ $wc_reset_email, 'get_content_type' ] );
 
 			$wc_reset_email->user_login = $user_login;
