@@ -60,3 +60,4 @@ class Product_Attributes_Connection_Orderby_Enum {
 		);
 	}
 }
+
