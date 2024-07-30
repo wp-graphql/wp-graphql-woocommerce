@@ -165,7 +165,7 @@ class WooCommerce_Filters {
 	 *                             the `WC_Email_Customer_Reset_Password` email is not enabled.
 	 */
 	public static function get_reset_password_message( $message, $key, $user_login ) {
-		/** @var \WC_Email_Customer_Reset_Password|null $wc_reset_email */
+		/** @var \WC_Email_Customer_Reset_Password $wc_reset_email */
 		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
 
 		if ( $wc_reset_email && $wc_reset_email->is_enabled() ) {
@@ -192,9 +192,13 @@ class WooCommerce_Filters {
 	 *                      the `WC_Email_Customer_Reset_Password` email is not enabled.
 	 */
 	public static function get_reset_password_title( $title ) {
-		/** @var \WC_Email_Customer_Reset_Password|null $wc_reset_email */
+		/** @var \WC_Email_Customer_Reset_Password $wc_reset_email */
 		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
 
-		return $wc_reset_email->is_enabled() ? $wc_reset_email->get_subject() : $title;
+		if ( $wc_reset_email && $wc_reset_email->is_enabled() ) {
+			return $wc_reset_email->get_subject();
+		}
+
+		return $title;
 	}
 }
