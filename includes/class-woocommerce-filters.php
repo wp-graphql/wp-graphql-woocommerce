@@ -175,9 +175,9 @@ class WooCommerce_Filters {
 			$wc_reset_email->reset_key  = $key;
 			$message                    = $wc_reset_email->style_inline( $wc_reset_email->get_content() );
 			return $message;
-		} else {
-			return $message;
 		}
+
+		return $message;
 	}
 
 	/**
