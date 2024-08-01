@@ -35,23 +35,21 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 						'description' => __( 'Order by product\'s current price', 'wp-graphql-woocommerce' ),
 					],
 					'REGULAR_PRICE' => [
-						'value'       => 'regular_price',
+						'value'       => 'price',
 						'description' => __( 'Order by product\'s regular price', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version. Use "PRICE" instead.', 'wp-graphql-woocommerce' ),
 					],
 					'SALE_PRICE'    => [
-						'value'       => 'sale_price',
+						'value'       => 'price',
 						'description' => __( 'Order by product\'s sale price', 'wp-graphql-woocommerce' ),
-					],
-					'RELEVANCE'     => [
-						'value'       => 'relevance',
-						'description' => __( 'Order by relevance', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version. Use "PRICE" instead.', 'wp-graphql-woocommerce' ),
 					],
 					'POPULARITY'    => [
 						'value'       => 'popularity',
 						'description' => __( 'Order by product popularity', 'wp-graphql-woocommerce' ),
 					],
 					'REVIEW_COUNT'  => [
-						'value'       => 'popularity',
+						'value'       => 'comment_count',
 						'description' => __( 'Order by number of reviews on product', 'wp-graphql-woocommerce' ),
 					],
 					'RATING'        => [
@@ -59,16 +57,19 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 						'description' => __( 'Order by product average rating', 'wp-graphql-woocommerce' ),
 					],
 					'ON_SALE_FROM'  => [
-						'value'       => '_sale_price_dates_from',
+						'value'       => 'date',
 						'description' => __( 'Order by date product sale starts', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version.', 'wp-graphql-woocommerce' ),
 					],
 					'ON_SALE_TO'    => [
-						'value'       => '_sale_price_dates_to',
+						'value'       => 'date',
 						'description' => __( 'Order by date product sale ends', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version.', 'wp-graphql-woocommerce' ),
 					],
 					'TOTAL_SALES'   => [
-						'value'       => 'total_sales',
-						'description' => __( 'Order by total sales of products sold', 'wp-graphql-woocommerce' ),
+						'value'             => 'popularity',
+						'description'       => __( 'Order by total sales of products sold', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version. Use "POPULARITY" instead', 'wp-graphql-woocommerce' ),
 					],
 				]
 			)
