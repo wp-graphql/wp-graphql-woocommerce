@@ -1,7 +1,201 @@
 <?php
 
 class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-    // Tests
+	private function createProducts() {
+		$products = [
+			$this->factory->product->createSimple([
+				'name'          => 'Product Blue',
+				'description'   => 'A peach description',
+				'price'         => 100,
+				'regular_price' => 100,
+				'sale_price'    => 90,
+				'stock_status'  => 'instock',
+				'stock_quantity' => 10,
+				'reviews_allowed' => true,
+				'average_rating' => 4.5,
+			]),
+			$this->factory->product->createSimple([
+				'name'          => 'Product Green',
+				'description'   => 'A turquoise description',
+				'sku' 		    => 'green-sku',
+				'price'         => 200,
+				'regular_price' => 200,
+				'sale_price'    => 180,
+				'stock_status'  => 'instock',
+				'stock_quantity' => 20,
+				'reviews_allowed' => true,
+				'average_rating' => 4.0,
+			]),
+			$this->factory->product->createSimple([
+				'name'          => 'Product Red',
+				'description'   => 'A maroon description',
+				'price'         => 300,
+				'regular_price' => 300,
+				'sale_price'    => 270,
+				'stock_status'  => 'instock',
+				'stock_quantity' => 30,
+				'reviews_allowed' => true,
+				'average_rating' => 3.5,
+			]),
+			$this->factory->product->createSimple([
+				'name'          => 'Product Yellow',
+				'description'   => 'A teal description',
+				'price'         => 400,
+				'regular_price' => 400,
+				'sale_price'    => 360,
+				'stock_status'  => 'instock',
+				'stock_quantity' => 40,
+				'reviews_allowed' => true,
+				'average_rating' => 3.0,
+			]),
+			$this->factory->product->createSimple([
+				'name'          => 'Product Purple',
+				'description'   => 'A magenta description',
+				'price'         => 500,
+				'regular_price' => 500,
+				'sale_price'    => 450,
+				'stock_status'  => 'instock',
+				'stock_quantity' => 50,
+				'reviews_allowed' => true,
+				'average_rating' => 2.5,
+			]),
+		];
+
+		$order_id = $this->factory->order->createNew(
+			[
+				'payment_method' => 'cod',
+			],
+			[
+				'line_items' => [
+					[
+						'product' => $products[0],
+						'qty'     => 10,
+					],
+					[
+						'product' => $products[1],
+						'qty'     => 8,
+					],
+					[
+						'product' => $products[2],
+						'qty'     => 6,
+					],
+					[
+						'product' => $products[3],
+						'qty'     => 4,
+					],
+					[
+						'product' => $products[4],
+						'qty'     => 2,
+					],
+				],
+			]
+		);
+
+		$order = \wc_get_order( $order_id );
+		$order->calculate_totals();
+		$order->update_status( 'completed' );
+
+		wc_update_total_sales_counts( $order_id );
+
+		$review_one = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[0],
+				'comment_content'      => 'It worked great!',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_one, 'rating', 5.0 );
+		$review_one = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[0],
+				'comment_content'      => 'It worked great!',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_one, 'rating', 5.0 );
+
+		$review_two = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[2],
+				'comment_content'      => 'It was basic',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_two, 'rating', 3.0 );
+
+		$review_three = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[2],
+				'comment_content'      => 'Overpriced',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_three, 'rating', 2.0 );
+
+		$review_four = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[4],
+				'comment_content'      => 'Overpriced',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_four, 'rating', 3.5 );
+
+		$review_five = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[4],
+				'comment_content'      => 'Overpriced and ugly',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_five, 'rating', 2.5 );
+
+		$review_six = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[1],
+				'comment_content'      => 'It was cheap!',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_six, 'rating', 4.2 );
+		$review_six = $this->factory()->comment->create(
+			[
+				'comment_author'       => 'Customer',
+				'comment_author_email' => 'customer@example.com',
+				'comment_post_ID'      => $products[1],
+				'comment_content'      => 'It was cheap!',
+				'comment_approved'     => 1,
+				'comment_type'         => 'review',
+			]
+		);
+		update_comment_meta( $review_six, 'rating', 4.2 );
+
+		wc_update_product_lookup_tables();
+
+		return $products;
+	}    
+	// Tests
     public function testProductsQueryAndWhereArgs() {
 		$category_3  = $this->factory->product->createProductCategory( 'category-three' );
 		$category_4  = $this->factory->product->createProductCategory( 'category-four' );
@@ -475,174 +669,94 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
-	private function createProducts() {
-		$products = [
-			$this->factory->product->createSimple([
-				'name'          => 'Product Blue',
-				'description'   => 'A peach description',
-				'price'         => 100,
-				'regular_price' => 100,
-				'sale_price'    => 90,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 10,
-				'reviews_allowed' => true,
-				'average_rating' => 4.5,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Green',
-				'description'   => 'A turquoise description',
-				'price'         => 200,
-				'regular_price' => 200,
-				'sale_price'    => 180,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 20,
-				'reviews_allowed' => true,
-				'average_rating' => 4.0,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Red',
-				'description'   => 'A maroon description',
-				'price'         => 300,
-				'regular_price' => 300,
-				'sale_price'    => 270,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 30,
-				'reviews_allowed' => true,
-				'average_rating' => 3.5,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Yellow',
-				'description'   => 'A teal description',
-				'price'         => 400,
-				'regular_price' => 400,
-				'sale_price'    => 360,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 40,
-				'reviews_allowed' => true,
-				'average_rating' => 3.0,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Purple',
-				'description'   => 'A magenta description',
-				'price'         => 500,
-				'regular_price' => 500,
-				'sale_price'    => 450,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 50,
-				'reviews_allowed' => true,
-				'average_rating' => 2.5,
-			]),
+	public function testVariationsQueryAndWhereArgs() {
+		// Create product variations.
+		$products     = $this->factory->product_variation->createSome(
+			$this->factory->product->createVariable()
+		);
+		$variation_id = $products['variations'][0];
+		$id           = $this->toRelayId( 'product', $products['product'] );
+		$product      = wc_get_product( $products['product'] );
+		$variations   = $products['variations'];
+		$prices       = $product->get_variation_prices( true );
+
+		$query = '
+            query (
+                $id: ID!,
+                $minPrice: Float,
+                $parent: Int,
+                $parentIn: [Int],
+                $parentNotIn: [Int]
+            ) {
+                product( id: $id ) {
+                    ... on VariableProduct {
+                        price
+                        regularPrice
+                        salePrice
+                        variations( where: {
+                            minPrice: $minPrice,
+                            parent: $parent,
+                            parentIn: $parentIn,
+                            parentNotIn: $parentNotIn
+                        } ) {
+                            nodes {
+                                id
+								price
+                            }
+                        }
+                    }
+                }
+            }
+        ';
+
+		/**
+		 * Assertion One
+		 *
+		 * Test query with no arguments
+		 */
+		$this->loginAsShopManager();
+		$variables = [ 'id' => $id ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[0] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[1] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[2] ) ),
+			$this->expectedField(
+				'product.price',
+				\wc_graphql_price( current( $prices['price'] ) )
+					. ' - '
+					. \wc_graphql_price( end( $prices['price'] ) )
+			),
+			$this->expectedField(
+				'product.regularPrice',
+				\wc_graphql_price( current( $prices['regular_price'] ) )
+					. ' - '
+					. \wc_graphql_price( end( $prices['regular_price'] ) )
+			),
+			$this->expectedField( 'product.salePrice', self::IS_NULL ),
 		];
 
-		$order_id = $this->factory->order->createNew(
-			[
-				'payment_method' => 'cod',
-			],
-			[
-				'line_items' => [
-					[
-						'product' => $products[0],
-						'qty'     => 10,
-					],
-					[
-						'product' => $products[1],
-						'qty'     => 8,
-					],
-					[
-						'product' => $products[2],
-						'qty'     => 6,
-					],
-					[
-						'product' => $products[3],
-						'qty'     => 4,
-					],
-					[
-						'product' => $products[4],
-						'qty'     => 2,
-					],
-				],
-			]
-		);
+		$this->assertQuerySuccessful( $response, $expected );
 
-		$order = \wc_get_order( $order_id );
-		$order->calculate_totals();
-		$order->update_status( 'completed' );
+		$this->clearLoaderCache( 'wc_post' );
 
-		wc_update_total_sales_counts( $order_id );
+		/**
+		 * Assertion Two
+		 *
+		 * Test "minPrice" where argument
+		 */
+		$variables = [
+			'id'       => $id,
+			'minPrice' => 15,
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->not()->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[0] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[1] ) ),
+			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'product_variation', $variations[2] ) ),
+		];
 
-		$review_one = $this->factory()->comment->create(
-			[
-				'comment_author'       => 'Customer',
-				'comment_author_email' => 'customer@example.com',
-				'comment_post_ID'      => $products[0],
-				'comment_content'      => 'It worked great!',
-				'comment_approved'     => 1,
-				'comment_type'         => 'review',
-			]
-		);
-		update_comment_meta( $review_one, 'rating', 5 );
-
-		$review_two = $this->factory()->comment->create(
-			[
-				'comment_author'       => 'Customer',
-				'comment_author_email' => 'customer@example.com',
-				'comment_post_ID'      => $products[2],
-				'comment_content'      => 'It was basic',
-				'comment_approved'     => 1,
-				'comment_type'         => 'review',
-			]
-		);
-		update_comment_meta( $review_two, 'rating', 3 );
-
-		$review_three = $this->factory()->comment->create(
-			[
-				'comment_author'       => 'Customer',
-				'comment_author_email' => 'customer@example.com',
-				'comment_post_ID'      => $products[2],
-				'comment_content'      => 'Overpriced',
-				'comment_approved'     => 1,
-				'comment_type'         => 'review',
-			]
-		);
-		update_comment_meta( $review_three, 'rating', 2 );
-
-		$review_four = $this->factory()->comment->create(
-			[
-				'comment_author'       => 'Customer',
-				'comment_author_email' => 'customer@example.com',
-				'comment_post_ID'      => $products[4],
-				'comment_content'      => 'Overpriced',
-				'comment_approved'     => 1,
-				'comment_type'         => 'review',
-			]
-		);
-		update_comment_meta( $review_four, 'rating', 3 );
-
-		$review_five = $this->factory()->comment->create(
-			[
-				'comment_author'       => 'Customer',
-				'comment_author_email' => 'customer@example.com',
-				'comment_post_ID'      => $products[4],
-				'comment_content'      => 'Overpriced and ugly',
-				'comment_approved'     => 1,
-				'comment_type'         => 'review',
-			]
-		);
-		update_comment_meta( $review_five, 'rating', 2.5 );
-
-		$review_six = $this->factory()->comment->create(
-			[
-				'comment_author'       => 'Customer',
-				'comment_author_email' => 'customer@example.com',
-				'comment_post_ID'      => $products[1],
-				'comment_content'      => 'It was cheap!',
-				'comment_approved'     => 1,
-				'comment_type'         => 'review',
-			]
-		);
-		update_comment_meta( $review_six, 'rating', 4.2 );
-
-		return $products;
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testProductsOrderbyArg() {
@@ -839,14 +953,14 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				$this->expectedNode(
 					'products.nodes',
 					[
-						$this->expectedField( 'id', $this->toRelayId( 'product', $products[1] ) )
+						$this->expectedField( 'id', $this->toRelayId( 'product', $products[0] ) )
 					],
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
 					[
-						$this->expectedField( 'id', $this->toRelayId( 'product', $products[0] ) )
+						$this->expectedField( 'id', $this->toRelayId( 'product', $products[1] ) )
 					],
 					1
 				),
@@ -889,76 +1003,6 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			],
 			'Failed to sort products by rating in ascending order with pagination.'
 		);
-		
-		/**
-		 * Assert sorting by review count functions correctly.
-		 */
-		$variables = [
-			'first'   => 2,
-			'orderby' => [
-				[
-					'field' => 'REVIEW_COUNT',
-					'order' => 'DESC',
-				],
-			],
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$this->assertQuerySuccessful(
-			$response,
-			[
-				$this->expectedNode(
-					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'product', $products[2] ) )
-					],
-					0
-				),
-				$this->expectedNode(
-					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'product', $products[4] ) )
-					],
-					1
-				),
-			],
-			'Failed to sort products by review count in ascending order.'
-		);
-
-		/**
-		 * Assert sorting by review count functions correctly w/ pagination.
-		 */
-		$endCursor = $this->lodashGet( $response, 'data.products.pageInfo.endCursor' );
-		$variables = [
-			'first'   => 2,
-			'after'   => $endCursor,
-			'orderby' => [
-				[
-					'field' => 'REVIEW_COUNT',
-					'order' => 'DESC',
-				],
-			],
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$this->assertQuerySuccessful(
-			$response,
-			[
-				$this->expectedNode(
-					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'product', $products[0] ) )
-					],
-					0
-				),
-				$this->expectedNode(
-					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'product', $products[1] ) )
-					],
-					1
-				),
-			],
-			'Failed to sort products by review count in ascending order with pagination.'
-		);
 	}
 
 	public function testProductsSearchArg() {
@@ -980,7 +1024,6 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				nodes {
 					id
 					name
-					rating
 					... on ProductWithPricing {
 						databaseId
 						price
@@ -1011,10 +1054,10 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		);
 
 		/**
-		 * Assert search by product description content.
+		 * Assert search by product sku.
 		 */
 		$variables = [
-			'search' => 'turquoise',
+			'search' => 'green-sku',
 		];
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(

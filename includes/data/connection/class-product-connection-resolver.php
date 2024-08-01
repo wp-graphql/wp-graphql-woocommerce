@@ -184,20 +184,34 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				? $offset_product->get_variation_price()
 				: $offset_product->get_price();
 			if ( 'ASC' === $query_args['order'] ) {
+				if ( is_array( $price ) ) {
+					$price = reset( $price );
+				}
 				$query_args['graphql_cursor_compare_by_price_key']   = 'wc_product_meta_lookup.min_price';
-				$query_args['graphql_cursor_compare_by_price_value'] = is_array( $price ) ? reset( $price ) : $price;
+				$query_args['graphql_cursor_compare_by_price_value'] = $price;
 			} else {
+				if ( is_array( $price ) ) {
+					$price = end( $price );
+				}
 				$query_args['graphql_cursor_compare_by_price_key']   = 'wc_product_meta_lookup.max_price';
-				$query_args['graphql_cursor_compare_by_price_value'] = is_array( $price ) ? end( $price ) : $price;
+				$query_args['graphql_cursor_compare_by_price_value'] = $price;
 			}
 		}
 
 		if ( $offset_product && 'popularity' === $query_args['orderby'] ) {
+
 			$query_args['graphql_cursor_compare_by_popularity_value'] = $offset_product->get_total_sales();
 			$query_args['graphql_cursor_compare_by_popularity_key']   = 'wc_product_meta_lookup.total_sales';
 		}
 
 		if ( $offset_product && 'rating' === $query_args['orderby'] ) {
+			$query_args['graphql_cursor_compare_by_rating_value'] = $offset_product->get_average_rating();
+			$query_args['graphql_cursor_compare_by_rating_key']   = 'wc_product_meta_lookup.average_rating';
+		}
+
+		if ( $offset_product && 'comment_count' === $query_args['orderby'] ) {
+			$query_args['graphql_cursor_compare_by_comment_count_value'] = $offset_product->get_rating_count();
+			$query_args['graphql_cursor_compare_by_comment_count_key']   = 'wc_product_meta_lookup.rating_count';
 			$query_args['graphql_cursor_compare_by_rating_value'] = $offset_product->get_average_rating();
 			$query_args['graphql_cursor_compare_by_rating_key']   = 'wc_product_meta_lookup.average_rating';
 		}
