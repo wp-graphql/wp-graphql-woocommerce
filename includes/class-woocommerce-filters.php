@@ -39,7 +39,7 @@ class WooCommerce_Filters {
 		// Add better support for Stripe payment gateway.
 		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
 
-		// WPGraphQL Reset password -> Use woocommerce email password template when requested
+		// WPGraphQL Reset password -> Use woocommerce email password template when requested.
 		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 3 );
 		add_filter( 'retrieve_password_title', [ self::class, 'get_reset_password_title' ] );
 	}
