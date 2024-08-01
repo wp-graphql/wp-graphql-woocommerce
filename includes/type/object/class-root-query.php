@@ -589,6 +589,7 @@ class Root_Query {
 					],
 					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
+						/** @var array<string, mixed> $data */
 						$data    = [
 							'min_price'           => null,
 							'max_price'           => null,
@@ -596,7 +597,7 @@ class Root_Query {
 							'stock_status_counts' => null,
 							'rating_counts'       => null,
 						];
-						$filters = new ProductQueryFilters(); // @phpstan-ignore-line
+						$filters = new ProductQueryFilters();
 
 						// Process client-side filters.
 						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? [] );
@@ -633,7 +634,8 @@ class Root_Query {
 							$filter_request->set_param( 'min_price', null );
 							$filter_request->set_param( 'max_price', null );
 
-							$price_results     = $filters->get_filtered_price( $filter_request ); // @phpstan-ignore-line
+							/** @var object{min_price: float, max_price: float} */
+							$price_results     = $filters->get_filtered_price( $filter_request );
 							$data['min_price'] = $price_results->min_price;
 							$data['max_price'] = $price_results->max_price;
 						}
@@ -645,7 +647,7 @@ class Root_Query {
 							 * @var \WP_REST_Request $filter_request
 							 */
 							$filter_request = clone $request;
-							$counts         = $filters->get_stock_status_counts( $filter_request ); // @phpstan-ignore-line
+							$counts         = $filters->get_stock_status_counts( $filter_request );
 
 							$data['stock_status_counts'] = [];
 
@@ -693,7 +695,7 @@ class Root_Query {
 									}
 
 									$filter_request->set_param( 'attributes', $filter_attributes );
-									$counts = $filters->get_attribute_counts( $filter_request, [ $taxonomy ] ); // @phpstan-ignore-line
+									$counts = $filters->get_attribute_counts( $filter_request, [ $taxonomy ] );
 
 									$data['attribute_counts'][ $taxonomy ] = [];
 									foreach ( $counts as $key => $value ) {
@@ -707,7 +709,7 @@ class Root_Query {
 							}
 
 							if ( ! empty( $taxonomy__and_queries ) ) {
-								$counts = $filters->get_attribute_counts( $request, $taxonomy__and_queries ); // @phpstan-ignore-line
+								$counts = $filters->get_attribute_counts( $request, $taxonomy__and_queries );
 
 								foreach ( $taxonomy__and_queries as $taxonomy ) {
 									$data['attribute_counts'][ $taxonomy ] = [];
@@ -729,7 +731,7 @@ class Root_Query {
 							 * @var \WP_REST_Request $filter_request
 							 */
 							$filter_request        = clone $request;
-							$counts                = $filters->get_rating_counts( $filter_request ); // @phpstan-ignore-line
+							$counts                = $filters->get_rating_counts( $filter_request );
 							$data['rating_counts'] = [];
 
 							foreach ( $counts as $key => $value ) {

@@ -11,7 +11,6 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use Automattic\WooCommerce\StoreApi\Utilities\ProductQuery;
-use Automattic\WooCommerce\Internal\ProductAttributesLookup\Filterer;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
@@ -39,7 +38,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @var \Automattic\WooCommerce\StoreApi\Utilities\ProductQuery
 	 */
-	private $products_query; // @phpstan-ignore-line
+	private $products_query;
 
 	/**
 	 * Refund_Connection_Resolver constructor.
@@ -168,37 +167,39 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args = array_merge( $query_args, \WC()->query->get_catalog_ordering_args( 'menu_order', isset( $last ) ? 'ASC' : 'DESC' ) );
 		}
 
-		$has_offset   = isset( $last ) ? $this->get_before_offset() : $this->get_after_offset();
-		/**
-		 * @var \WPGraphQL\WooCommerce\Model\Product|null $offset_model
-		 */
-		$offset_model = null;
+		$has_offset = isset( $last ) ? $this->get_before_offset() : $this->get_after_offset();
+
+		$offset_product = null;
 		if ( $has_offset ) {
+			/** @var \WPGraphQL\WooCommerce\Model\Product|null $offset_model */
 			$offset_model = $this->get_loader()->load( $has_offset );
+
+			/** @var \WC_Product|\WC_Product_Variable|null $offset_product */
+			$offset_product = $offset_model ? $offset_model->as_WC_Data() : null;
 		}
 
-		if ( $offset_model && $query_args['orderby'] === 'price' ) {
-			$price = $offset_model->type === 'variable'
-				? $offset_model->get_variation_price()
-				: $offset_model->get_price();
-			if ( $query_args['order'] === 'ASC' ) {
-				$query_args['graphql_cursor_compare_by_price_key']   = 'wc_product_meta_lookup' . '.min_price';
-				$query_args['graphql_cursor_compare_by_price_value'] = $offset_model->type === 'variable' ? reset( $price ) : $price;
-					
+		if ( $offset_product && 'price' === $query_args['orderby'] ) {
+			/** @var array<float>|float|null $price */
+			$price = is_a( $offset_product, 'WC_Product_Variable' )
+				? $offset_product->get_variation_price()
+				: $offset_product->get_price();
+			if ( 'ASC' === $query_args['order'] ) {
+				$query_args['graphql_cursor_compare_by_price_key']   = 'wc_product_meta_lookup.min_price';
+				$query_args['graphql_cursor_compare_by_price_value'] = is_array( $price ) ? reset( $price ) : $price;
 			} else {
-				$query_args['graphql_cursor_compare_by_price_key']   = 'wc_product_meta_lookup' . '.max_price';
-				$query_args['graphql_cursor_compare_by_price_value'] = $offset_model->type === 'variable' ? end( $price ) : $price;
+				$query_args['graphql_cursor_compare_by_price_key']   = 'wc_product_meta_lookup.max_price';
+				$query_args['graphql_cursor_compare_by_price_value'] = is_array( $price ) ? end( $price ) : $price;
 			}
 		}
 
-		if ( $offset_model && $query_args['orderby'] === 'popularity' ) {
-			$query_args['graphql_cursor_compare_by_popularity_value'] =  $offset_model->get_total_sales();
-			$query_args['graphql_cursor_compare_by_popularity_key'] = 'wc_product_meta_lookup' . '.total_sales';
+		if ( $offset_product && 'popularity' === $query_args['orderby'] ) {
+			$query_args['graphql_cursor_compare_by_popularity_value'] = $offset_product->get_total_sales();
+			$query_args['graphql_cursor_compare_by_popularity_key']   = 'wc_product_meta_lookup.total_sales';
 		}
 
-		if ( $offset_model && $query_args['orderby'] === 'rating' ) {
-			$query_args['graphql_cursor_compare_by_rating_value'] =  $offset_model->get_average_rating();
-			$query_args['graphql_cursor_compare_by_rating_key'] = 'wc_product_meta_lookup' . '.average_rating';
+		if ( $offset_product && 'rating' === $query_args['orderby'] ) {
+			$query_args['graphql_cursor_compare_by_rating_value'] = $offset_product->get_average_rating();
+			$query_args['graphql_cursor_compare_by_rating_key']   = 'wc_product_meta_lookup.average_rating';
 		}
 
 		/**
@@ -212,7 +213,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 *
 		 * @param array                                $query_args The args that will be passed to the WP_Query
 		 * @param mixed                                $source     The source that's passed down the GraphQL queries
-		 * @param array                                $args       The inputArgs on the field
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field
 		 * @param \WPGraphQL\AppContext                $context The AppContext passed down the GraphQL tree
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info The ResolveInfo passed down the GraphQL tree
 		 */
@@ -302,8 +303,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$default_order = isset( $this->args['last'] ) ? 'ASC' : 'DESC';
 			$orderby_input = current( $where_args['orderby'] );
 
-			$orderby    = $orderby_input['field'];
-			$order      = ! empty( $orderby_input['order'] ) ? $orderby_input['order'] : $default_order;
+			$orderby = $orderby_input['field'];
+			$order   = ! empty( $orderby_input['order'] ) ? $orderby_input['order'] : $default_order;
 			// Set the order to DESC if orderby is popularity.
 			if ( 'popularity' === $orderby || 'rating' === $orderby ) {
 				$order = 'DESC';

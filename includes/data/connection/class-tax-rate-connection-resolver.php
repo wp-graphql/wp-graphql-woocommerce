@@ -95,10 +95,10 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Filter the $query args to allow folks to customize queries programmatically
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree
+		 * @param array                                $query_args The args that will be passed to the WP_Query
+		 * @param mixed                                $source     The source that's passed down the GraphQL queries
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field
+		 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_tax_rate_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
@@ -114,8 +114,11 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_query() {
 		global $wpdb;
 
-		if ( ! empty( $this->query_args['where'] ) ) {
-			$sql_where = $this->query_args['where'];
+		/** @var array<string, mixed> $query_args */
+		$query_args = $this->query_args;
+
+		if ( ! empty( $query_args['where'] ) ) {
+			$sql_where = $query_args['where'];
 
 			$results = $wpdb->get_results( // @codingStandardsIgnoreStart
 				$wpdb->prepare(
@@ -126,8 +129,8 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 					WHERE {$sql_where}
 					GROUP BY rates.tax_rate_id
 					ORDER BY %s %s",
-					$this->query_args['orderby'],
-					$this->query_args['order']
+					$query_args['orderby'],
+					$query_args['order']
 				)
 			); // @codingStandardsIgnoreEnd
 		} else {
@@ -136,8 +139,8 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 					"SELECT tax_rate_id
 					FROM {$wpdb->prefix}woocommerce_tax_rates
 					ORDER BY %s %s",
-					$this->query_args['orderby'],
-					$this->query_args['order']
+					$query_args['orderby'],
+					$query_args['order']
 				)
 			); // @codingStandardsIgnoreEnd
 		}//end if

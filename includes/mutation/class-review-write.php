@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Mutation;
 
-use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Model\Comment;
@@ -105,9 +104,6 @@ class Review_Write {
 			$resolver = CommentCreate::mutate_and_get_payload();
 
 			$payload = $resolver( $input, $context, $info );
-			if ( is_a( $payload, UserError::class ) ) {
-				throw $payload;
-			}
 
 			// Set product rating upon successful creation of the review.
 			if ( $payload['success'] ) {

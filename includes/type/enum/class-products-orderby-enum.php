@@ -35,13 +35,13 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 						'description' => __( 'Order by product\'s current price', 'wp-graphql-woocommerce' ),
 					],
 					'REGULAR_PRICE' => [
-						'value'       => 'price',
-						'description' => __( 'Order by product\'s regular price', 'wp-graphql-woocommerce' ),
+						'value'             => 'price',
+						'description'       => __( 'Order by product\'s regular price', 'wp-graphql-woocommerce' ),
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version. Use "PRICE" instead.', 'wp-graphql-woocommerce' ),
 					],
 					'SALE_PRICE'    => [
-						'value'       => 'price',
-						'description' => __( 'Order by product\'s sale price', 'wp-graphql-woocommerce' ),
+						'value'             => 'price',
+						'description'       => __( 'Order by product\'s sale price', 'wp-graphql-woocommerce' ),
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version. Use "PRICE" instead.', 'wp-graphql-woocommerce' ),
 					],
 					'POPULARITY'    => [
@@ -57,13 +57,13 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 						'description' => __( 'Order by product average rating', 'wp-graphql-woocommerce' ),
 					],
 					'ON_SALE_FROM'  => [
-						'value'       => 'date',
-						'description' => __( 'Order by date product sale starts', 'wp-graphql-woocommerce' ),
+						'value'             => 'date',
+						'description'       => __( 'Order by date product sale starts', 'wp-graphql-woocommerce' ),
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version.', 'wp-graphql-woocommerce' ),
 					],
 					'ON_SALE_TO'    => [
-						'value'       => 'date',
-						'description' => __( 'Order by date product sale ends', 'wp-graphql-woocommerce' ),
+						'value'             => 'date',
+						'description'       => __( 'Order by date product sale ends', 'wp-graphql-woocommerce' ),
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version.', 'wp-graphql-woocommerce' ),
 					],
 					'TOTAL_SALES'   => [

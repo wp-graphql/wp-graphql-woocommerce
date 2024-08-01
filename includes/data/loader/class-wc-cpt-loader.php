@@ -74,6 +74,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 	 * @throws \GraphQL\Error\UserError - throws if the post-type is not a valid WooCommerce post-type.
 	 */
 	public function loadKeys( array $keys ) {
+		/** @var array<int> $keys */
 		if ( empty( $keys ) ) {
 			return $keys;
 		}
@@ -177,7 +178,6 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				break;
 			case 'product_variation':
 			case 'shop_refund':
-				$parent_id = $entry->post_parent;
 				if ( ! empty( $entry->post_parent ) ) {
 					$context->get_loader( 'wc_post' )->load_deferred( $entry->post_parent );
 				}

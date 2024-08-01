@@ -61,7 +61,7 @@ class Product_With_Pricing {
                         // @codingStandardsIgnoreLine.
                         return $source->priceRaw;
 					} else {
-						graphql_debug($source->price);
+						graphql_debug( $source->price );
 						// @codingStandardsIgnoreLine.
 						return $source->price;
 					}

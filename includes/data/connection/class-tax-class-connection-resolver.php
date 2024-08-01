@@ -74,7 +74,7 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 
 		// Cache cart items for later.
 		foreach ( $tax_classes as $tax_class ) {
-			$this->loader->prime( $tax_class['slug'], $tax_class );
+			$this->get_loader()->prime( $tax_class['slug'], $tax_class );
 		}
 
 		return wp_list_pluck( $tax_classes, 'slug' );
