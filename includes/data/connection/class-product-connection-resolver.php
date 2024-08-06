@@ -199,7 +199,6 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( $offset_product && 'popularity' === $query_args['orderby'] ) {
-
 			$query_args['graphql_cursor_compare_by_popularity_value'] = $offset_product->get_total_sales();
 			$query_args['graphql_cursor_compare_by_popularity_key']   = 'wc_product_meta_lookup.total_sales';
 		}
@@ -212,8 +211,8 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		if ( $offset_product && 'comment_count' === $query_args['orderby'] ) {
 			$query_args['graphql_cursor_compare_by_comment_count_value'] = $offset_product->get_rating_count();
 			$query_args['graphql_cursor_compare_by_comment_count_key']   = 'wc_product_meta_lookup.rating_count';
-			$query_args['graphql_cursor_compare_by_rating_value'] = $offset_product->get_average_rating();
-			$query_args['graphql_cursor_compare_by_rating_key']   = 'wc_product_meta_lookup.average_rating';
+			$query_args['graphql_cursor_compare_by_rating_value']        = $offset_product->get_average_rating();
+			$query_args['graphql_cursor_compare_by_rating_key']          = 'wc_product_meta_lookup.average_rating';
 		}
 
 		/**
@@ -658,15 +657,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			];
 		}
 		if ( ! empty( $where_args['minPrice'] ) ) {
-			$query_args['min_price'] = floatval( $where_args['minPrice'] );
-		}
-
-		if ( ! empty( $where_args['minPrice'] ) ) {
-			$query_args['min_price'] = floatval( $where_args['minPrice'] );
+			$query_args['min_price'] = str_replace( '.', '', number_format( $where_args['minPrice'], 2 ) );
 		}
 
 		if ( ! empty( $where_args['maxPrice'] ) ) {
-			$query_args['max_price'] = floatval( $where_args['maxPrice'] );
+			$query_args['max_price'] = str_replace( '.', '', number_format( $where_args['maxPrice'], 2 ) );
 		}
 
 		if ( isset( $where_args['stockStatus'] ) ) {
