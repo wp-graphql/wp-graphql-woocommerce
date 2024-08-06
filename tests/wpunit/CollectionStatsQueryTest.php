@@ -77,7 +77,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'red' ),
 							$this->expectedField( 'count', 2 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 					$this->expectedNode(
@@ -85,7 +85,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'blue' ),
 							$this->expectedField( 'count', 2 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 					$this->expectedNode(
@@ -93,7 +93,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'green' ),
 							$this->expectedField( 'count', 2 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 				],
@@ -228,7 +228,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'normal' ),
 							$this->expectedField( 'count', 20 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 					$this->expectedNode(
@@ -236,7 +236,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'special' ),
 							$this->expectedField( 'count', 10 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 				],
@@ -290,7 +290,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'special' ),
 							$this->expectedField( 'count', 5 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 				],
@@ -350,7 +350,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'normal' ),
 							$this->expectedField( 'count', 20 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						] 
 					),
 					$this
@@ -489,7 +489,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'normal' ),
 							$this->expectedField( 'count', 5 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						0
 					),
@@ -498,7 +498,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'special' ),
 							$this->expectedField( 'count', 15 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						1
 					),
@@ -513,7 +513,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'polka-dot' ),
 							$this->expectedField( 'count', 6 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						0
 					),
@@ -522,7 +522,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'striped' ),
 							$this->expectedField( 'count', 14 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						1
 					),
@@ -667,7 +667,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'normal' ),
 							$this->expectedField( 'count', 3 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						0
 					),
@@ -676,7 +676,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'special' ),
 							$this->expectedField( 'count', 8 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						1
 					),
@@ -691,7 +691,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'polka-dot' ),
 							$this->expectedField( 'count', 4 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						0
 					),
@@ -700,7 +700,7 @@ class CollectionStatsQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 						[
 							$this->expectedField( 'node.slug', 'striped' ),
 							$this->expectedField( 'count', 8 ),
-							$this->expectedField( 'termId', self::NOT_FALSY ),
+							$this->expectedField( 'termId', static::NOT_FALSY ),
 						],
 						1
 					),

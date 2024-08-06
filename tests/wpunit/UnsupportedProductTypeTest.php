@@ -15,10 +15,10 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
             }
         ';
 
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'product', self::IS_NULL ),
+			$this->expectedField( 'post', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );
@@ -43,10 +43,10 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
             }
         ';
 
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedField( 'product.type', 'UNSUPPORTED' ),
 		];
 
@@ -63,7 +63,7 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'unsupportedProduct.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'unsupportedProduct.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedField( 'unsupportedProduct.type', 'UNSUPPORTED' ),
 		];
 

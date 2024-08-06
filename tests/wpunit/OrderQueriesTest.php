@@ -29,15 +29,15 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 					$this->expectedField( 'orderKey', $order->get_order_key() ),
 					$this->expectedField( 'createdVia', $this->maybe( $order->get_created_via() ) ),
 					$this->expectedField( 'pricesIncludeTax', $order->get_prices_include_tax() ),
-					$this->expectedField( 'parent', self::IS_NULL ),
+					$this->expectedField( 'parent', static::IS_NULL ),
 					$this->expectedField(
 						'customer',
 						$this->maybe(
 							[
 								$order->get_customer_id(),
-								[ 'id' => $this->toRelayId( 'customer', $order->get_customer_id() ) ],
+								[ 'id' => $this->toRelayId( 'user', $order->get_customer_id() ) ],
 							],
-							self::IS_NULL
+							static::IS_NULL
 						)
 					),
 					$this->expectedField( 'customerIpAddress', $this->maybe( $order->get_customer_ip_address() ) ),
@@ -193,7 +193,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$this->loginAsCustomer();
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [ $this->expectedField( 'order', self::IS_NULL ) ];
+		$expected  = [ $this->expectedField( 'order', static::IS_NULL ) ];
 
 		$this->assertQueryError( $response, $expected );
 

@@ -34,7 +34,7 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
 			$this->expectedErrorPath( 'createCoupon' ),
-			$this->expectedField( 'createCoupon', self::IS_NULL ),
+			$this->expectedField( 'createCoupon', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );
@@ -59,8 +59,8 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedObject(
 				'createCoupon.coupon',
 				[
-					$this->expectedField( 'id', self::NOT_FALSY ),
-					$this->expectedField( 'databaseId', self::NOT_FALSY ),
+					$this->expectedField( 'id', static::NOT_FALSY ),
+					$this->expectedField( 'databaseId', static::NOT_FALSY ),
 					$this->expectedField( 'code', 'testcode' ),
 					$this->expectedField( 'amount', 0.25 ),
 					$this->expectedField( 'discountType', 'PERCENT' ),
@@ -106,7 +106,7 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
 			$this->expectedErrorPath( 'updateCoupon' ),
-			$this->expectedField( 'updateCoupon', self::IS_NULL ),
+			$this->expectedField( 'updateCoupon', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );
@@ -172,7 +172,7 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
 			$this->expectedErrorPath( 'deleteCoupon' ),
-			$this->expectedField( 'deleteCoupon', self::IS_NULL ),
+			$this->expectedField( 'deleteCoupon', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );

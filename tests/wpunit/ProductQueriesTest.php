@@ -9,7 +9,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		}
 
 		return [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedField( 'product.databaseId', $product->get_id() ),
 			$this->expectedField( 'product.name', $product->get_name() ),
 			$this->expectedField( 'product.slug', $product->get_slug() ),
@@ -20,7 +20,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.description',
 				$this->maybe(
 					[ $product->get_description(), apply_filters( 'the_content', $product->get_description() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
@@ -33,7 +33,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 							apply_filters( 'the_excerpt', $product->get_short_description() )
 						),
 					],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField( 'product.sku', $product->get_sku() ),
@@ -41,34 +41,34 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.price',
 				$this->maybe(
 					[ $product->get_price(), \wc_graphql_price( $product->get_price() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.regularPrice',
 				$this->maybe(
 					[ $product->get_regular_price(), \wc_graphql_price( $product->get_regular_price() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.salePrice',
 				$this->maybe(
 					[ $product->get_sale_price(), \wc_graphql_price( $product->get_sale_price() ) ],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.dateOnSaleFrom',
-				$this->maybe( $product->get_date_on_sale_from(), self::IS_NULL )
+				$this->maybe( $product->get_date_on_sale_from(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.dateOnSaleTo',
-				$this->maybe( $product->get_date_on_sale_to(), self::IS_NULL )
+				$this->maybe( $product->get_date_on_sale_to(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.taxStatus',
-				$this->maybe( strtoupper( $product->get_tax_status() ), self::IS_NULL )
+				$this->maybe( strtoupper( $product->get_tax_status() ), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.taxClass',
@@ -78,67 +78,67 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'product.manageStock',
 				! empty( $product->get_manage_stock() )
 					? \WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_manage_stock() )
-					: self::IS_NULL
+					: static::IS_NULL
 			),
 			$this->expectedField(
 				'product.stockQuantity',
-				$this->maybe( $product->get_stock_quantity(), self::IS_NULL )
+				$this->maybe( $product->get_stock_quantity(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.stockStatus',
 				$this->maybe(
 					$this->factory->product->getStockStatusEnum( $product->get_stock_status() ),
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField(
 				'product.backorders',
 				$this->maybe(
 					\WPGraphQL\Type\WPEnumType::get_safe_name( $product->get_backorders() ),
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 			$this->expectedField( 'product.soldIndividually', $product->get_sold_individually() ),
 			$this->expectedField(
 				'product.weight',
-				$this->maybe( $product->get_weight(), self::IS_NULL )
+				$this->maybe( $product->get_weight(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.length',
-				$this->maybe( $product->get_length(), self::IS_NULL )
+				$this->maybe( $product->get_length(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.width',
-				$this->maybe( $product->get_width(), self::IS_NULL )
+				$this->maybe( $product->get_width(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.height',
-				$this->maybe( $product->get_height(), self::IS_NULL )
+				$this->maybe( $product->get_height(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.reviewsAllowed',
-				$this->maybe( $product->get_reviews_allowed(), self::IS_NULL )
+				$this->maybe( $product->get_reviews_allowed(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.purchaseNote',
-				$this->maybe( $product->get_purchase_note(), self::IS_NULL )
+				$this->maybe( $product->get_purchase_note(), static::IS_NULL )
 			),
 			$this->expectedField( 'product.menuOrder', $product->get_menu_order() ),
 			$this->expectedField( 'product.virtual', $product->get_virtual() ),
-			$this->expectedField( 'product.downloadable', $product->get_downloadable(), self::IS_NULL ),
+			$this->expectedField( 'product.downloadable', $product->get_downloadable(), static::IS_NULL ),
 			$this->expectedField(
 				'product.downloadLimit',
-				$this->maybe( $product->get_download_limit(), self::IS_NULL )
+				$this->maybe( $product->get_download_limit(), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.downloadExpiry',
-				$this->maybe( $product->get_download_expiry(), self::IS_NULL )
+				$this->maybe( $product->get_download_expiry(), static::IS_NULL )
 			),
 			$this->expectedField( 'product.averageRating', (float) $product->get_average_rating() ),
 			$this->expectedField( 'product.reviewCount', (int) $product->get_review_count() ),
 			$this->expectedField(
 				'product.backordersAllowed',
-				$this->maybe( $product->backorders_allowed(), self::IS_FALSY )
+				$this->maybe( $product->backorders_allowed(), static::IS_FALSY )
 			),
 			$this->expectedField( 'product.onSale', $product->is_on_sale() ),
 			$this->expectedField( 'product.purchasable', $product->is_purchasable() ),
@@ -146,7 +146,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'product.shippingTaxable', $product->is_shipping_taxable() ),
 			$this->expectedField(
 				'product.link',
-				$this->maybe( get_post_permalink( $product_id ), self::IS_NULL )
+				$this->maybe( get_post_permalink( $product_id ), static::IS_NULL )
 			),
 			$this->expectedField(
 				'product.totalSales',
@@ -155,7 +155,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						$is_shop_manager && $product->get_total_sales(),
 						$product->get_total_sales(),
 					],
-					self::IS_FALSY
+					static::IS_FALSY
 				)
 			),
 			$this->expectedField(
@@ -165,7 +165,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						$is_shop_manager && ! empty( $product->get_catalog_visibility() ),
 						strtoupper( $product->get_catalog_visibility() ),
 					],
-					self::IS_NULL
+					static::IS_NULL
 				)
 			),
 		];
@@ -258,7 +258,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 *
 		 * Test querying product.
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = $this->getExpectedProductData( $product_id );
 
@@ -274,7 +274,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 */
 		$this->loginAsShopManager();
 		$variables = [
-			'id'     => $this->toRelayId( 'product', $product_id ),
+			'id'     => $this->toRelayId( 'post', $product_id ),
 			'format' => 'RAW',
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
@@ -351,7 +351,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedField( 'product.image.id', $this->toRelayId( 'post', $attachment_id ) ),
 			$this->expectedNode(
 				'product.productCategories.nodes',
@@ -387,7 +387,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		// Define expected data for coming assertions.
 		$expected = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 		];
 
 		/**
@@ -408,7 +408,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * Test querying product with "ID" set as the "idType".
 		 */
 		$variables = [
-			'id'     => $this->toRelayId( 'product', $product_id ),
+			'id'     => $this->toRelayId( 'post', $product_id ),
 			'idType' => 'ID',
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
@@ -448,7 +448,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'category_ids' => [ $test_category ],
 			]
 		);
-		$relay_id      = $this->toRelayId( 'product', $product_id );
+		$relay_id      = $this->toRelayId( 'post', $product_id );
 
 		$query = '
 			query ($id: ID!) {
@@ -573,8 +573,8 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'productTags.nodes',
 				[
 					$this->expectedField( 'name', 'test-product-tag-2' ),
-					$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'product', $product_id ) ),
-					$this->expectedField( 'products.nodes.1.id', $this->toRelayId( 'product', $expensive_product_id ) ),
+					$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'post', $product_id ) ),
+					$this->expectedField( 'products.nodes.1.id', $this->toRelayId( 'post', $expensive_product_id ) ),
 				],
 				0
 			),
@@ -583,8 +583,8 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				[
 					$this->expectedField( 'name', 'test-product-category-2' ),
 					$this->expectedField( 'image.id', $this->toRelayId( 'post', $image_id ) ),
-					$this->expectedField( 'products.nodes.1.id', $this->toRelayId( 'product', $product_id ) ),
-					$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'product', $expensive_product_id ) ),
+					$this->expectedField( 'products.nodes.1.id', $this->toRelayId( 'post', $product_id ) ),
+					$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'post', $expensive_product_id ) ),
 				],
 				0
 			),
@@ -609,7 +609,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			]
 		);
 
-		$product_relay_id = $this->toRelayId( 'product', $product_id );
+		$product_relay_id = $this->toRelayId( 'post', $product_id );
 		$image_relay_id   = $this->toRelayId( 'post', $image_id );
 
 		$query = '
@@ -649,7 +649,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			]
 		);
 
-		$relay_id = $this->toRelayId( 'product', $product_id );
+		$relay_id = $this->toRelayId( 'post', $product_id );
 
 		$query = '
 			query ( $id: ID! ) {
@@ -688,7 +688,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'button_text' => 'Buy a external product',
 			]
 		);
-		$relay_id   = $this->toRelayId( 'product', $product_id );
+		$relay_id   = $this->toRelayId( 'post', $product_id );
 
 		$query = '
 			query ( $id: ID! ) {
@@ -732,7 +732,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			[ 'children' => $grouped_product_ids ]
 		);
 
-		$relay_id = $this->toRelayId( 'product', $product_id );
+		$relay_id = $this->toRelayId( 'post', $product_id );
 
 		$query = '
 			query ( $id: ID! ) {
@@ -764,7 +764,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		foreach ( $product->get_children() as $grouped_product_id ) {
 			$expected[] = $this->expectedNode(
 				'product.products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $grouped_product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $grouped_product_id ) ]
 			);
 		}
 
@@ -819,25 +819,25 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			}
 		';
 
-		$variables = [ 'id' => $this->toRelayId( 'product', $products['product'] ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $products['product'] ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [];
 		foreach ( $products['related'] + $products['cross_sell'] + $products['upsell'] as $product_id ) {
 			$expected[] = $this->expectedNode(
 				'product.related.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $product_id ) ]
 			);
 		}
 		foreach ( $products['cross_sell'] as $product_id ) {
 			$expected[] = $this->expectedNode(
 				'product.crossSell.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $product_id ) ]
 			);
 		}
 		foreach ( $products['upsell'] as $product_id ) {
 			$expected[] = $this->expectedNode(
 				'product.upsell.nodes',
-				[ 'id' => $this->toRelayId( 'product', $product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $product_id ) ]
 			);
 		}
 
@@ -853,7 +853,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->factory->product->createReview( $product_id ),
 			$this->factory->product->createReview( $product_id ),
 		];
-		$relay_id   = $this->toRelayId( 'product', $product_id );
+		$relay_id   = $this->toRelayId( 'post', $product_id );
 		$product    = \wc_get_product( $product_id );
 
 		$query = '
@@ -916,7 +916,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			}
 		';
 
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
@@ -999,7 +999,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 *
 		 * Test querying product.
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = $this->getExpectedProductData( $product_id );
 
@@ -1015,7 +1015,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 */
 		$this->loginAsShopManager();
 		$variables = [
-			'id'     => $this->toRelayId( 'product', $product_id ),
+			'id'     => $this->toRelayId( 'post', $product_id ),
 			'format' => 'RAW',
 		];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
@@ -1102,7 +1102,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected  = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $normal_product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $normal_product_id ) ]
 			),
 		];
 
@@ -1124,7 +1124,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $special_product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $special_product_id ) ]
 			),
 		];
 		$this->assertQuerySuccessful( $response, $expected );
@@ -1145,7 +1145,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $both_product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $both_product_id ) ]
 			),
 		];
 
@@ -1168,7 +1168,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedField(
 				'products.nodes',
-				self::IS_FALSY
+				static::IS_FALSY
 			),
 		];
 
@@ -1191,7 +1191,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $special_product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $special_product_id ) ]
 			),
 		];
 
@@ -1218,7 +1218,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedNode(
 				'products.nodes',
-				[ 'id' => $this->toRelayId( 'product', $both_product_id ) ]
+				[ 'id' => $this->toRelayId( 'post', $both_product_id ) ]
 			),
 		];
 

@@ -49,7 +49,7 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$variables = [ 'id' => $relay_id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'refund', self::IS_NULL ),
+			$this->expectedField( 'refund', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );

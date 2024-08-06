@@ -97,11 +97,11 @@ class ShippingZoneQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooG
                                 [
                                     $this->expectedField( 'id', 'cost' ),
                                     $this->expectedField( 'label', 'Cost' ),
-                                    $this->expectedField( 'description', self::NOT_FALSY ),
+                                    $this->expectedField( 'description', static::NOT_FALSY ),
                                     $this->expectedField( 'type', 'TEXT' ),
                                     $this->expectedField( 'value', '10' ),
-                                    $this->expectedField( 'default', self::IS_NULL ),
-                                    $this->expectedField( 'placeholder', self::IS_NULL ),
+                                    $this->expectedField( 'default', static::IS_NULL ),
+                                    $this->expectedField( 'placeholder', static::IS_NULL ),
                                 ],
                             )
                         ],
@@ -134,7 +134,7 @@ class ShippingZoneQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooG
 		 * Confirm permission check is working
 		 */
 		$response  = $this->graphql( compact( 'query' ) );
-		$this->assertQuerySuccessful( $response, [ $this->expectedField( 'shippingZones.nodes', self::IS_FALSY ) ] );
+		$this->assertQuerySuccessful( $response, [ $this->expectedField( 'shippingZones.nodes', static::IS_FALSY ) ] );
 
 		// Login as shop manager.
 		$this->loginAsShopManager();

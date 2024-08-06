@@ -103,10 +103,10 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		 *
 		 * Test query and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product_variation', $variation_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $variation_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'productVariation.id', $this->toRelayId( 'product_variation', $variation_id ) ),
+			$this->expectedField( 'productVariation.id', $this->toRelayId( 'post', $variation_id ) ),
 			$this->expectedObject( 'productVariation.attributes', $this->expectedAttributes( $variation_id ) ),
 		];
 
@@ -142,10 +142,10 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		 *
 		 * Test query and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedObject( 'product.defaultAttributes', $this->expectedAttributes( $product_id ) ),
 		];
 
@@ -212,10 +212,10 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		 *
 		 * Test query and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'product', $product_id ) ];
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'product.id', $this->toRelayId( 'product', $product_id ) ),
+			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedObject( 'product.defaultAttributes', $this->expectedDefaultAttributes( $product_id ) ),
 		];
 

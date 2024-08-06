@@ -50,6 +50,7 @@ class Product_Variation {
 			'SimpleProductVariation',
 			[
 				'eagerlyLoadType' => true,
+				'model'           => \WPGraphQL\WooCommerce\Model\Product_Variation::class,
 				'description'     => __( 'A product variation', 'wp-graphql-woocommerce' ),
 				'interfaces'      => [ 'Node', 'ProductVariation' ],
 				'fields'          => [],
