@@ -172,6 +172,7 @@ class Product extends WC_Post {
 		}
 
 		sort( $prices, SORT_NUMERIC );
+		graphql_debug( implode( ', ', $prices ) );
 
 		if ( $raw ) {
 			return implode( ', ', $prices );

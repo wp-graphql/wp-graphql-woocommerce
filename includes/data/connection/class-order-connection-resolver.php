@@ -182,10 +182,10 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Filter the $query args to allow folks to customize queries programmatically
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param \WPGraphQL\AppContext  $context    The AppContext passed down the GraphQL tree
+		 * @param array                                $query_args The args that will be passed to the WP_Query
+		 * @param mixed                                $source     The source that's passed down the GraphQL queries
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field
+		 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_order_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
@@ -201,7 +201,9 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return \WC_Order_Query
 	 */
 	public function get_query() {
-		$query = new \WC_Order_Query( $this->query_args );
+		/** @var array<string, mixed> $query_args */
+		$query_args = $this->query_args;
+		$query      = new \WC_Order_Query( $query_args );
 
 		if ( true === $query->get( 'suppress_filters', false ) ) {
 			throw new InvariantViolation( __( 'WC_Order_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql-woocommerce' ) );
@@ -335,13 +337,13 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 		 * from a GraphQL Query to the WP_Query
 		 *
-		 * @param array       $args       The mapped query arguments
-		 * @param array       $where_args Query "where" args
-		 * @param mixed       $source     The query results for a query calling this
-		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param \WPGraphQL\AppContext  $context    The AppContext object
+		 * @param array                                $args       The mapped query arguments
+		 * @param array                                $where_args Query "where" args
+		 * @param mixed                                $source     The query results for a query calling this
+		 * @param array<string, mixed>|null            $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param \WPGraphQL\AppContext                $context    The AppContext object
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
-		 * @param mixed|string|array      $post_type  The post type for the query
+		 * @param mixed|string|array                   $post_type  The post type for the query
 		 */
 		$args = apply_filters(
 			'graphql_map_input_fields_to_order_query',

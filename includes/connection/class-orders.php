@@ -99,7 +99,7 @@ class Orders {
 	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
 	 * @param \WC_Customer                                                     $customer  Customer object of querying user.
 	 *
-	 * @return array
+	 * @return array|\GraphQL\Deferred
 	 */
 	private static function get_customer_order_connection( $resolver, $customer ) {
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
@@ -129,7 +129,7 @@ class Orders {
 	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
 	 * @param \WC_Customer                                                     $customer  Customer object of querying user.
 	 *
-	 * @return array
+	 * @return array|\GraphQL\Deferred
 	 */
 	private static function get_customer_refund_connection( $resolver, $customer ) {
 		$empty_results = [

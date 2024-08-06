@@ -64,7 +64,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		foreach ( $methods as $method ) {
-			$this->loader->prime( $method->id, new Shipping_Method( $method ) );
+			$this->get_loader()->prime( $method->id, new Shipping_Method( $method ) );
 		}
 
 		// Get shipping method IDs.

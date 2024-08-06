@@ -427,7 +427,7 @@ class Order_Type {
 	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
 	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance.
 	 *
-	 * @return array
+	 * @return \GraphQL\Deferred
 	 */
 	public static function resolve_item_connection( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		$resolver = new Order_Item_Connection_Resolver( $source, $args, $context, $info );
