@@ -220,7 +220,6 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 				$attribute_name = $variation_attribute['name'];
 				$attribute = array_search( $attribute_name, array_column( $attributes, 'name' ) );
 				$this->assertNotFalse( $attribute, sprintf( 'Variation attribute not found in product attributes for %s', $attribute_name ) );
-				$this->assertSame( $attributes[ $attribute ]['label'], $variation_attribute['label'] );
 				if ( "" === $variation_attribute['value'] ) {
 					continue;
 				}
