@@ -1,6 +1,6 @@
 <?php
 
-class UpdateSessionMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
+class SessionMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function testUpdateSessionMutation() {
 		// Create registered customer.
 		$registered = $this->factory->customer->create();
@@ -61,5 +61,72 @@ class UpdateSessionMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	public function testForgetSessionMutation() {
+		// Create registered customer.
+		$registered = $this->factory->customer->create();
+		$this->loginAs( $registered );
+
+		// Add products to cart.
+		$this->factory->cart->add(
+			[
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 2,
+			],
+			[
+				'product_id' => $this->factory->product->createSimple(),
+				'quantity'   => 1,
+			]
+		);
+
+		// Save session.
+		\WC()->session->save_data();
+
+		// Reinitialize session.
+		\WC()->session->init();
+
+		// Confirm cart has items.
+		$cart_query = '
+			query {
+				cart {
+					contents {
+						nodes {
+							key
+						}
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( [ 'query' => $cart_query ] );
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'cart.contents.nodes', static::NOT_FALSY ) ]
+		);
+
+		// Forget session.
+		$query = 'mutation {
+			forgetSession(input: {}) {
+				session {
+					id
+					key
+					value
+				}
+			}
+		}';
+
+		$response = $this->graphql( compact( 'query' ) );
+		$this->assertQuerySuccessful( $response );
+
+		// Reinitialize session.
+		\WC()->session->init();
+
+		// Confirm cart is empty.
+		$response = $this->graphql( [ 'query' => $cart_query ] );
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'cart.contents.nodes', static::IS_FALSY ) ]
+		);
 	}
 }

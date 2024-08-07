@@ -94,6 +94,8 @@ class Cart_Empty {
 			 */
 			do_action( 'graphql_woocommerce_after_empty_cart', $cloned_cart, $input, $context, $info );
 
+			do_action( 'woographql_update_session', true );
+
 			return [ 'cart' => $cloned_cart ];
 		};
 	}

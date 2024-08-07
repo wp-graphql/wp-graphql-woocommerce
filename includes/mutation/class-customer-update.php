@@ -153,6 +153,10 @@ class Customer_Update {
 			// Save customer and get customer ID.
 			$customer->save();
 
+			if ( $session_only ) {
+				do_action( 'woographql_update_session', true );
+			}
+
 			// Return payload.
 			return ! empty( $payload ) ? $payload : [ 'id' => 'session' ];
 		};

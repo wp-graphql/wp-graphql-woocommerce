@@ -106,6 +106,8 @@ class Cart_Add_Fee {
 			// Add cart fee.
 			\WC()->cart->add_fee( ...$cart_fee_args );
 
+			do_action( 'woographql_update_session', true );
+
 			// Return payload.
 			return [ 'id' => \sanitize_title( $input['name'] ) ];
 		};

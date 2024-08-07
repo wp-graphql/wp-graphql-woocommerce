@@ -9,6 +9,7 @@
 namespace WPGraphQL\WooCommerce\Utils;
 
 use WC_Session_Handler;
+use WPGraphQL\Router;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
 
@@ -49,11 +50,19 @@ class QL_Session_Handler extends WC_Session_Handler {
 	protected $_issuing_new_token = false; // @codingStandardsIgnoreLine
 
 	/**
+	 * True when a new session cookie has been issued.
+	 *
+	 * @var bool $_issuing_new_cookie
+	 */
+	protected $_issuing_new_cookie = false; // @codingStandardsIgnoreLine
+
+	/**
 	 * Constructor for the session class.
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		$this->_token = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
-		$this->_table = $GLOBALS['wpdb']->prefix . 'woocommerce_sessions';
 	}
 
 	/**
@@ -101,18 +110,33 @@ class QL_Session_Handler extends WC_Session_Handler {
 		Session_Transaction_Manager::get( $this );
 
 		/**
-		 *  Necessary since Session_Transaction_Manager applies to the reference.
+		 * Necessary since Session_Transaction_Manager applies to the reference.
 		 *
 		 * @var self $this
 		 */
-		add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
-		add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
-		add_action( 'shutdown', [ $this, 'save_data' ] );
-		add_action( 'wp_logout', [ $this, 'destroy_session' ] );
-
-		if ( ! is_user_logged_in() ) {
-			add_filter( 'nonce_user_logged_out', [ $this, 'maybe_update_nonce_user_logged_out' ], 10, 2 );
+		if ( Router::is_graphql_http_request() ) {
+			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
+			add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
+			add_action( 'shutdown', [ $this, 'save_data' ] );
+		} else {
+			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_cookie' ], 10 );
+			add_action( 'shutdown', [ $this, 'save_data' ], 20 );
+			add_action( 'wp_logout', [ $this, 'destroy_session' ] );
+			if ( ! is_user_logged_in() ) {
+				add_filter( 'nonce_user_logged_out', [ $this, 'maybe_update_nonce_user_logged_out' ], 10, 2 );
+			}
 		}
+	}
+
+	/**
+	 * Mark the session as dirty.
+	 *
+	 * To trigger a save of the session data.
+	 *
+	 * @return void
+	 */
+	public function mark_dirty() {
+		$this->_dirty = true;
 	}
 
 	/**
@@ -123,6 +147,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * @return void
 	 */
 	public function init_session_token() {
+
+		/**
+		 * @var object{ iat: int, exp: int, data: object{ customer_id: string } }|false|\WP_Error $token
+		 */
 		$token = $this->get_session_token();
 
 		// Process existing session if not expired or invalid.
@@ -147,7 +175,9 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 				// @phpstan-ignore-next-line
 				$this->save_data( $guest_session_id );
-				$this->set_customer_session_token( true );
+				Router::is_graphql_http_request()
+					? $this->set_customer_session_token( true )
+					: $this->set_customer_session_cookie( true );
 			}
 
 			// Update session expiration on each action.
@@ -155,19 +185,23 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( $token->exp < $this->_session_expiration ) {
 				$this->update_session_timestamp( (string) $this->_customer_id, $this->_session_expiration );
 			}
-		} else {
+		} elseif ( is_wp_error( $token ) ) {
+			add_filter(
+				'graphql_woocommerce_session_token_errors',
+				static function ( $errors ) use ( $token ) {
+					$errors = $token->get_error_message();
+					return $errors;
+				}
+			);
+		}
 
-			// If token invalid throw warning.
-			if ( is_wp_error( $token ) ) {
-				add_filter(
-					'graphql_woocommerce_session_token_errors',
-					static function ( $errors ) use ( $token ) {
-						$errors = $token->get_error_message();
-						return $errors;
-					}
-				);
-			}
+		$start_new_session = ! $token || is_wp_error( $token );
+		if ( ! $start_new_session ) {
+			return;
+		}
 
+		// Distribute new session token on GraphQL requests, otherwise distribute a new session cookie.
+		if ( Router::is_graphql_http_request() ) {
 			// Start new session.
 			$this->set_session_expiration();
 
@@ -175,7 +209,9 @@ class QL_Session_Handler extends WC_Session_Handler {
 			$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
 			$this->_data        = $this->get_session_data();
 			$this->set_customer_session_token( true );
-		}//end if
+		} else {
+			$this->init_session_cookie();
+		}
 	}
 
 	/**
@@ -260,12 +296,30 @@ class QL_Session_Handler extends WC_Session_Handler {
 	}
 
 	/**
+	 * Determine if a JWT is being sent in the page response.
+	 *
+	 * @return bool
+	 */
+	public function sending_token() {
+		return $this->_has_token || $this->_issuing_new_token;
+	}
+
+	/**
+	 * Determine if a HTTP cookie is being sent in the page response.
+	 *
+	 * @return bool
+	 */
+	public function sending_cookie() {
+		return $this->_has_cookie || $this->_issuing_new_cookie;
+	}
+
+	/**
 	 * Creates JSON Web Token for customer session.
 	 *
 	 * @return false|string
 	 */
 	public function build_token() {
-		if ( empty( $this->_session_issued ) ) {
+		if ( empty( $this->_session_issued ) || ! $this->sending_token() ) {
 			return false;
 		}
 
@@ -363,13 +417,27 @@ class QL_Session_Handler extends WC_Session_Handler {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
+	 * @return void
+	 */
+	public function set_customer_session_cookie( $set ) {
+		parent::set_customer_session_cookie( $set );
+
+		if ( $set ) {
+			$this->_issuing_new_cookie = true;
+		}
+	}
+
+	/**
 	 * Return true if the current user has an active session, i.e. a cookie to retrieve values.
 	 *
 	 * @return bool
 	 */
 	public function has_session() {
+
 		// @codingStandardsIgnoreLine.
-		return $this->_issuing_new_token || $this->_has_token || is_user_logged_in();
+		return $this->_issuing_new_token || $this->_has_token || parent::has_session();
 	}
 
 	/**
@@ -379,34 +447,16 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	public function set_session_expiration() {
 		$this->_session_issued = time();
-		// 14 Days.
-		$this->_session_expiration = apply_filters(
+		// 47 hours.
+		$this->_session_expiring = apply_filters( 'wc_session_expiring', $this->_session_issued + ( 60 * 60 * 47 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		// 48 hours.
+		$this->_session_expiration = apply_filters( 'wc_session_expiration', $this->_session_issued + ( 60 * 60 * 48 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$this->_session_expiration = apply_filters_deprecated(
 			'graphql_woocommerce_cart_session_expire',
-			// Seconds * Minutes * Hours * Days.
-			$this->_session_issued + ( 60 * 60 * 24 * 14 )
+			[ $this->_session_expiration ],
+			'TBD',
+			'wc_session_expiration'
 		);
-		// 13 Days.
-		$this->_session_expiring = $this->_session_expiration - ( 60 * 60 * 24 );
-	}
-
-	/**
-	 * Forget all session data without destroying it.
-	 *
-	 * @return void
-	 */
-	public function forget_session() {
-		if ( isset( $this->_token_to_be_sent ) ) {
-			unset( $this->_token_to_be_sent );
-		}
-		wc_empty_cart();
-		$this->_data  = [];
-		$this->_dirty = false;
-
-		// Start new session.
-		$this->set_session_expiration();
-
-		// Get Customer ID.
-		$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
 	}
 
 	/**
@@ -443,17 +493,6 @@ class QL_Session_Handler extends WC_Session_Handler {
 			$this->_data = $data;
 		}
 	}
-
-	/**
-	 * Noop for \WC_Session_Handler method.
-	 *
-	 * Prevents potential crticial errors when calling this method.
-	 *
-	 * @param bool $set Should the session cookie be set.
-	 *
-	 * @return void
-	 */
-	public function set_customer_session_cookie( $set ) {}
 
 	/**
 	 * Returns "client_session_id". "client_session_id_expiration" is used

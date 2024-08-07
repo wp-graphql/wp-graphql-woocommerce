@@ -15,9 +15,9 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
- * Class - Update_Session
+ * Class - Session_Update
  */
-class Update_Session {
+class Session_Update {
 	/**
 	 * Registers mutation
 	 *
