@@ -454,7 +454,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->_session_expiration = apply_filters_deprecated(
 			'graphql_woocommerce_cart_session_expire',
 			[ $this->_session_expiration ],
-			'TBD',
+			'0.21.0',
 			'wc_session_expiration'
 		);
 	}

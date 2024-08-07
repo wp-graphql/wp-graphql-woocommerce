@@ -25,12 +25,3 @@ Any relevant logs, error output, GraphiQL screenshots, etc?
 Any other comments?
 -------------------
 …
-
-
-Where has this been tested?
----------------------------
-
-- **WooGraphQL Version:** …
-- **WPGraphQL Version:** …
-- **WordPress Version:**
-- **WooCommerce Version:**
