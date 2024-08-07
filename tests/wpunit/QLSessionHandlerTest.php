@@ -104,10 +104,6 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			$this->factory->product->createSimple(),
 		);
 
-
-		// Assert session has started.
-		//$this->assertTrue( $session->sending_cookie(), 'Issuing new customer session cookie.' );
-
 		// Assert no tokens are being issued.
 		$this->assertFalse( $session->sending_token(), 'Should not be issuing a new customer token.' );
 		$this->assertFalse( $session->build_token(), 'Should not be issuing a new customer token.' );
