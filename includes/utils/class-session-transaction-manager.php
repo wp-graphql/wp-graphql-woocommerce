@@ -107,6 +107,7 @@ class Session_Transaction_Manager {
 				'updateShippingMethod',
 				'updateCustomer',
 				'updateSession',
+				'forgetSession',
 			]
 		);
 	}
