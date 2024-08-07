@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.21.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.0) (2024-08-07)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.20.0...v0.21.0)
+
+**Breaking changes:**
+
+- fix: product connection resolution refactored to better work with the ProductQuery class [\#880](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/880) ([kidunot89](https://github.com/kidunot89))
+- fix: add model classes to type configs to better support query analyzer ID tracking [\#874](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/874) ([jasonbahl](https://github.com/jasonbahl))
+- fix: wrong taxonomy label case in product attributes [\#869](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/869) ([creative-andrew](https://github.com/creative-andrew))
+
+**New Features:**
+
+- feat: Use Woocommerce Reset Password email for ResetPassword Mutation [\#878](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/878) ([alexookah](https://github.com/alexookah))
+- feat: QL Session Handler refactored to handle non-GraphQL requests [\#870](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/870) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- feat: Add Product\_Attributes\_Connection\_Orderby\_Enum with MENU\_ORDER [\#876](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/876) ([alexookah](https://github.com/alexookah))
+
 ## [v0.20.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.20.0) (2024-05-21)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.19.0...v0.20.0)
@@ -15,6 +34,10 @@
 - fix: Potential Infinite loop caused by nested `pre_get_posts` hooks patched [\#853](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/853) ([kidunot89](https://github.com/kidunot89))
 - fix: Bug in Session\_Transaction\_Manager::pop\_transaction\_id\(\) fixed [\#852](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/852) ([kidunot89](https://github.com/kidunot89))
 - Fix: WPGraphQL v1.24.x support implemented [\#850](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/850) ([kidunot89](https://github.com/kidunot89))
+
+**Other Changes:**
+
+- devops: release script updated [\#859](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/859) ([kidunot89](https://github.com/kidunot89))
 
 ## [v0.19.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.19.0) (2023-12-27)
 
