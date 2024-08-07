@@ -18,7 +18,7 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 						'label',
 						$attribute->is_taxonomy()
 							? get_taxonomy( $attribute->get_name() )->labels->singular_name
-							: ucwords( preg_replace( '/(-|_)/', ' ', $attribute->get_name() ) )
+							: $attribute->get_name()
 					),
 					$this->expectedField( 'options', $attribute->get_slugs() ),
 					$this->expectedField( 'position', $attribute->get_position() ),
@@ -169,5 +169,69 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		);
 
 		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	public function testProductAttributeMatchesVariationAttributeCounterpart() {
+		$product_id    = $this->factory->product->createVariable();
+		$variation_ids = $this->factory->product_variation->createSome( $product_id )['variations'];
+
+		$query = '
+            query attributeQuery( $id: ID! ) {
+                product( id: $id ) {
+					id
+					attributes {
+						nodes {
+							name
+							label
+							options
+						}
+					}
+					... on ProductWithVariations {
+						variations {
+							nodes {
+								id
+								attributes {
+									nodes {
+										name
+										label
+										value
+									}
+								}
+							}
+						}
+					}
+                }
+            }
+        ';
+
+		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		/**
+		 * Assert that the product attributes match the variation attributes
+		 * without modification to confirm variations can be identified by product attribute.
+		 */
+		$attributes = $this->lodashGet( $response, 'data.product.attributes.nodes', [] );
+		$variations = $this->lodashGet( $response, 'data.product.variations.nodes', [] );
+
+		foreach( $variations as $variation ) {
+			$variation_attributes = $this->lodashGet( $variation, 'attributes.nodes', [] );
+			foreach( $variation_attributes as $variation_attribute ) {
+				$attribute_name = $variation_attribute['name'];
+				$attribute = array_search( $attribute_name, array_column( $attributes, 'name' ) );
+				$this->assertNotFalse( $attribute, sprintf( 'Variation attribute not found in product attributes for %s', $attribute_name ) );
+				$this->assertSame( $attributes[ $attribute ]['label'], $variation_attribute['label'] );
+				if ( "" === $variation_attribute['value'] ) {
+					continue;
+				}
+
+				$this->assertContains( $variation_attribute['value'], $attributes[ $attribute ]['options'] );
+			}
+		}
+		
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ) ]
+		);
 	}
 }
