@@ -15,9 +15,9 @@ class CartFactory {
 	/**
 	 * Add products to the cart.
 	 *
-	 * @param array ...$products Product to be added to the cart.
+	 * @param array<array<string, mixed>> ...$products Product to be added to the cart.
 	 *
-	 * @return array
+	 * @return array<string>
 	 */
 	public function add( ...$products ) {
 		$keys = [];

@@ -200,6 +200,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			return;
 		}
 
+		// Distribute new session token on GraphQL requests, otherwise distribute a new session cookie.
 		if ( Router::is_graphql_http_request() ) {
 			// Start new session.
 			$this->set_session_expiration();

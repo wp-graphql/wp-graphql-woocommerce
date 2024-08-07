@@ -199,6 +199,7 @@ class Type_Registry {
 		Mutation\Tax_Rate_Create::register_mutation();
 		Mutation\Tax_Rate_Delete::register_mutation();
 		Mutation\Tax_Rate_Update::register_mutation();
-		Mutation\Update_Session::register_mutation();
+		Mutation\Session_Delete::register_mutation();
+		Mutation\Session_Update::register_mutation();
 	}
 }
