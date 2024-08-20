@@ -657,11 +657,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			];
 		}
 		if ( ! empty( $where_args['minPrice'] ) ) {
-			$query_args['min_price'] = str_replace( '.', '', number_format( $where_args['minPrice'], 2 ) );
+			$query_args['min_price'] = $where_args['minPrice'].'00';
 		}
 
 		if ( ! empty( $where_args['maxPrice'] ) ) {
-			$query_args['max_price'] = str_replace( '.', '', number_format( $where_args['maxPrice'], 2 ) );
+			$query_args['max_price'] = $where_args['maxPrice'].'00';
 		}
 
 		if ( isset( $where_args['stockStatus'] ) ) {
