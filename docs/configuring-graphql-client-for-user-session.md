@@ -107,7 +107,8 @@ And that's our callback for applying the our session token to each request made 
 import { ApolloLink } from '@apollo/client';
 
 const consoleLink = new ApolloLink((operation, forward) => {
-  return operation.setContext(/* our callback */);
+  operation.setContext(/* our callback */);
+  return forward(operation);
 });
 ```
 
@@ -294,7 +295,7 @@ Next, define the `createUpdateLink` function as follows:
 ```javascript
 import { setContext } from '@apollo/client/link/context';
 
-function createUpdateLink(operation, forward) => {
+function createUpdateLink(operation, forward) {
   return forward(operation).map((response) => {
     /**
      * Check for session header and update session in local storage accordingly. 
@@ -303,10 +304,8 @@ function createUpdateLink(operation, forward) => {
     const { response: { headers } } = context;
     const oldSessionToken = localStorage.getItem(process.env.SESSION_TOKEN_LS_KEY as string);
     const sessionToken = headers.get('woocommerce-session');
-    if (sessionToken) {
-      if ( oldSessionToken !== session ) {
-        localStorage.setItem(process.env.SESSION_TOKEN_LS_KEY as string, sessionToken);
-      }
+    if (sessionToken && sessionToken !== oldSessionToken) {
+      localStorage.setItem(import.meta.env.PUBLIC_SESSION_TOKEN_LS_KEY as string, sessionToken);
     }
 
     return response;
