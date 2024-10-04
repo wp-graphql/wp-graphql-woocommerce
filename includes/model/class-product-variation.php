@@ -231,6 +231,19 @@ class Product_Variation extends WC_Post {
 				'shipping_class_id' => function () {
 					return ! empty( $this->wc_data->get_shipping_class_id() ) ? $this->wc_data->get_shipping_class_id() : null;
 				},
+				'shippingClassId' => function () {
+					return ! empty( $this->wc_data->get_shipping_class_id() ) ? $this->wc_data->get_shipping_class_id() : null;
+				},
+				'shippingClass'   => function () {
+					$shipping_class_id   = $this->wc_data->get_shipping_class_id();
+					$shipping_class_term = get_term( $shipping_class_id, 'product_shipping_class' );
+
+					if ( ! is_wp_error( $shipping_class_term ) && is_a( $shipping_class_term, 'WP_Term' ) ) {
+						$shipping_class = $shipping_class_term;
+					}
+
+					return $shipping_class ?? null;
+				},
 				'image_id'          => function () {
 					return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_image_id() : null;
 				},

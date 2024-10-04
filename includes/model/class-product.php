@@ -413,7 +413,7 @@ class Product extends WC_Post {
 						return ! empty( $this->wc_data->get_height() ) ? $this->wc_data->get_height() : null;
 					},
 					'shippingClassId'   => function () {
-						return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_shipping_class_id() : null;
+						return ! empty( $this->wc_data->get_shipping_class_id() ) ? $this->wc_data->get_shipping_class_id() : null;
 					},
 					'shippingRequired'  => function () {
 						return $this->wc_data->needs_shipping();

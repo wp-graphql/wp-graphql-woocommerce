@@ -242,7 +242,7 @@ class Product_Variation {
 				'description' => __( 'Product variation purchase_note', 'wp-graphql-woocommerce' ),
 			],
 			'shippingClass'     => [
-				'type'        => 'String',
+				'type'        => 'ShippingClass',
 				'description' => __( 'Product variation shipping class', 'wp-graphql-woocommerce' ),
 			],
 			'catalogVisibility' => [
