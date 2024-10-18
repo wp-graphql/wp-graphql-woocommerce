@@ -238,7 +238,7 @@ class Product_Variation extends WC_Post {
 					$shipping_class_id   = $this->wc_data->get_shipping_class_id();
 					$shipping_class_term = get_term( $shipping_class_id, 'product_shipping_class' );
 
-					if ( ! is_wp_error( $shipping_class_term ) && is_a( $shipping_class_term, 'WP_Term' ) ) {
+					if ( ! is_wp_error( $shipping_class_term ) && $shipping_class_term instanceof \WP_Term ) {
 						$shipping_class = $shipping_class_term;
 					}
 
