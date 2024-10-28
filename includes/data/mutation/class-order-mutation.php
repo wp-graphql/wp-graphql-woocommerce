@@ -10,6 +10,7 @@ namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
 
+
 /**
  * Class - Order_Mutation
  */
@@ -86,8 +87,8 @@ class Order_Mutation {
 		/**
 		 * Action called before order is created.
 		 *
-		 * @param array       $input   Input data describing order.
-		 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+		 * @param array                                $input   Input data describing order.
+		 * @param \WPGraphQL\AppContext                $context Request AppContext instance.
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 		 */
 		do_action( 'graphql_woocommerce_before_order_create', $input, $context, $info );
@@ -118,77 +119,185 @@ class Order_Mutation {
 	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
 	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
 	 *
+	 * @throws \Exception  Failed to retrieve order.
+	 *
 	 * @return void
 	 */
 	public static function add_items( $input, $order_id, $context, $info ) {
+		/** @var \WC_Order|false $order */
+		$order = \WC_Order_Factory::get_order( $order_id );
+		if ( false === $order ) {
+			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+		}
+
 		$item_group_keys = [
 			'lineItems'     => 'line_item',
 			'shippingLines' => 'shipping',
 			'feeLines'      => 'fee',
 		];
 
-		$item_groups = [];
-		foreach ( $input as $key => $items ) {
+		$order_items = [];
+		foreach ( $input as $key => $group_items ) {
 			if ( array_key_exists( $key, $item_group_keys ) ) {
-				$type = $item_group_keys[ $key ];
+				$type                 = $item_group_keys[ $key ];
+				$order_items[ $type ] = [];
 
 				/**
 				 * Action called before an item group is added to an order.
 				 *
-				 * @param array       $items     Item data being added.
-				 * @param integer     $order_id  ID of target order.
-				 * @param \WPGraphQL\AppContext  $context   Request AppContext instance.
-				 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
+				 * @param array                                $group_items  Items data being added.
+				 * @param \WC_Order                            $order        Order object.
+				 * @param \WPGraphQL\AppContext                $context      Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info         Request ResolveInfo instance.
 				 */
-				do_action( "graphql_woocommerce_before_{$type}s_added_to_order", $items, $order_id, $context, $info );
+				do_action( "graphql_woocommerce_before_{$type}s_added_to_order", $group_items, $order, $context, $info );
 
-				foreach ( $items as $item_data ) {
-					// Create Order item.
-					$item_id = ( ! empty( $item_data['id'] ) && \WC_Order_Factory::get_order_item( $item_data['id'] ) )
-						? $item_data['id']
-						: \wc_add_order_item( $order_id, [ 'order_item_type' => $type ] );
+				foreach ( $group_items as $item_data ) {
+					$item = self::set_item(
+						$item_data,
+						$type,
+						$order,
+						$context,
+						$info
+					);
 
-					// Continue if order item creation failed.
-					if ( ! $item_id ) {
-						continue;
+					/**
+					 * Action called before an item group is added to an order.
+					 *
+					 * @param \WC_Order_Item                       $item      Order item object.
+					 * @param array                                $item_data Item data being added.
+					 * @param \WC_Order                            $order     Order object.
+					 * @param \WPGraphQL\AppContext                $context   Request AppContext instance.
+					 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
+					 */
+					do_action( "graphql_woocommerce_before_{$type}_added_to_order", $item, $item_data, $order, $context, $info );
+
+					if ( 0 === $item->get_id() ) {
+						$order->add_item( $item );
+						$order_items[ $type ][] = $item;
+					} else {
+						$item->save();
+						$order_items[ $type ][] = $item;
 					}
-
-					// Add input item data to order item.
-					$item_keys = self::get_order_item_keys( $type );
-					self::map_input_to_item( $item_id, $item_data, $item_keys, $context, $info );
 				}
 
 				/**
-				 * Action called after an item group is added to an order.
+				 * Action called after an item group is added to an order, and before the order has been saved with the new items.
 				 *
-				 * @param array       $items     Item data being added.
-				 * @param integer     $order_id  ID of target order.
-				 * @param \WPGraphQL\AppContext  $context   Request AppContext instance.
-				 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
+				 * @param array                                $group_items  Item data being added.
+				 * @param \WC_Order                            $order        Order object.
+				 * @param \WPGraphQL\AppContext                $context      Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info         Request ResolveInfo instance.
 				 */
-				do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $items, $order_id, $context, $info );
+				do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $group_items, $order, $context, $info );
 			}//end if
 		}//end foreach
+
+		/**
+		 * Action called after all items have been added and right before the new items have been saved.
+		 *
+		 * @param array<string, array<\WC_Order_Item>> $order_items Order items.
+		 * @param \WC_Order                            $order       WC_Order instance.
+		 * @param array                                $input       Input data describing order.
+		 * @param \WPGraphQL\AppContext                $context     Request AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info        Request ResolveInfo instance.
+		 */
+		do_action( 'graphql_woocommerce_before_new_order_items_save', $order_items, $order, $input, $context, $info );
+
+		$order->save();
+	}
+
+	/**
+	 *
+	 * @param array<string, mixed>                 $item_data  Item data.
+	 * @param string                               $type       Item type.
+	 * @param \WC_Order                            $order      Order object.
+	 * @param \WPGraphQL\AppContext                $context    AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
+	 *
+	 * @return \WC_Order_Item
+	 */
+	public static function set_item( $item_data, $type, $order, $context, $info ) {
+		$item_id    = ! empty( $item_data['id'] ) ? $item_data['id'] : 0;
+		$item_class = self::get_order_item_classname( $type, $item_id );
+
+		/** @var \WC_Order_Item $item */
+		$item = new $item_class( $item_id );
+
+		/**
+		 * Filter the order item object before it is created.
+		 *
+		 * @param \WC_Order_Item                       $item       Order item object.
+		 * @param array                                $item_data  Item data.
+		 * @param \WC_Order                            $order      Order object.
+		 * @param \WPGraphQL\AppContext                $context    AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
+		 */
+		$item = apply_filters( "graphql_create_order_{$type}_object", $item, $item_data, $order, $context, $info );
+
+		self::map_input_to_item( $item, $item_data, $type );
+
+		/**
+		 * Action called after an order item is created.
+		 *
+		 * @param \WC_Order_Item                       $item       Order item object.
+		 * @param array                                $item_data  Item data.
+		 * @param \WC_Order                            $order      Order object.
+		 * @param \WPGraphQL\AppContext                $context    AppContext instance.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
+		 */
+		do_action( "graphql_create_order_{$type}", $item, $item_data, $order, $context, $info );
+
+		return $item;
+	}
+
+	/**
+	 * Get order item class name.
+	 *
+	 * @param string $type Order item type.
+	 * @param int    $id  Order item ID.
+	 *
+	 * @return string
+	 */
+	public static function get_order_item_classname( $type, $id = 0 ) {
+		$classname = false;
+		switch ( $type ) {
+			case 'line_item':
+			case 'product':
+				$classname = 'WC_Order_Item_Product';
+				break;
+			case 'coupon':
+				$classname = 'WC_Order_Item_Coupon';
+				break;
+			case 'fee':
+				$classname = 'WC_Order_Item_Fee';
+				break;
+			case 'shipping':
+				$classname = 'WC_Order_Item_Shipping';
+				break;
+			case 'tax':
+				$classname = 'WC_Order_Item_Tax';
+				break;
+		}
+
+		$classname = apply_filters( 'woocommerce_get_order_item_classname', $classname, $type, $id ); // phpcs:ignore WordPress.NamingConventions
+
+		return $classname;
 	}
 
 	/**
 	 * Return array of item mapped with the provided $item_keys and extracts $meta_data
 	 *
-	 * @param integer                              $item_id    Order item ID.
-	 * @param array                                $input      Item input data.
-	 * @param array                                $item_keys  Item key map.
-	 * @param \WPGraphQL\AppContext                $context    AppContext instance.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
+	 * @param \WC_Order_Item &$item      Order item.
+	 * @param array          $input      Item input data.
+	 * @param string         $type       Item type.
 	 *
-	 * @throws \Exception  Failed to retrieve order item | Failed to retrieve connected product.
+	 * @throws \Exception Failed to retrieve connected product.
 	 *
-	 * @return int
+	 * @return void
 	 */
-	protected static function map_input_to_item( $item_id, $input, $item_keys, $context, $info ) {
-		$order_item = \WC_Order_Factory::get_order_item( $item_id );
-		if ( ! is_object( $order_item ) ) {
-			throw new \Exception( __( 'Failed to retrieve order item.', 'wp-graphql-woocommerce' ) );
-		}
+	protected static function map_input_to_item( &$item, $input, $type ) {
+		$item_keys = self::get_order_item_keys( $type );
 
 		$args      = [];
 		$meta_data = null;
@@ -203,10 +312,9 @@ class Order_Mutation {
 		}
 
 		// Calculate to subtotal/total for line items.
-
 		if ( isset( $args['quantity'] ) ) {
-			$product = ( ! empty( $order_item['product_id'] ) )
-				? wc_get_product( $order_item['product_id'] )
+			$product = ( ! empty( $item['product_id'] ) )
+				? wc_get_product( $item['product_id'] )
 				: wc_get_product( self::get_product_id( $args ) );
 			if ( ! is_object( $product ) ) {
 				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'wp-graphql-woocommerce' ) );
@@ -219,18 +327,24 @@ class Order_Mutation {
 
 		// Set item props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $order_item, "set_{$key}" ] ) ) {
-				$order_item->{"set_{$key}"}( $value );
+			if ( is_callable( [ $item, "set_{$key}" ] ) ) {
+				$item->{"set_{$key}"}( $value );
 			}
 		}
 
 		// Update item meta data if any is found.
-		if ( 0 !== $item_id && ! empty( $meta_data ) ) {
-			// Update item meta data.
-			self::update_item_meta_data( $item_id, $meta_data, $context, $info );
+		if ( empty( $meta_data ) ) {
+			return;
 		}
 
-		return $order_item->save();
+		foreach ( $meta_data as $entry ) {
+			$exists = $item->get_meta( $entry['key'], true, 'edit' );
+			if ( '' !== $exists && $exists !== $entry['value'] ) {
+				$item->update_meta_data( $entry['key'], $entry['value'] );
+			} else {
+				$item->add_meta_data( $entry['key'], $entry['value'] );
+			}
+		}
 	}
 
 	/**
@@ -285,10 +399,10 @@ class Order_Mutation {
 	protected static function get_product_id( $data ) {
 		if ( ! empty( $data['sku'] ) ) {
 			$product_id = (int) wc_get_product_id_by_sku( $data['sku'] );
-		} elseif ( ! empty( $data['product_id'] ) && empty( $data['variation_id'] ) ) {
-			$product_id = (int) $data['product_id'];
 		} elseif ( ! empty( $data['variation_id'] ) ) {
 			$product_id = (int) $data['variation_id'];
+		} elseif ( ! empty( $data['product_id'] ) ) {
+			$product_id = (int) $data['product_id'];
 		} else {
 			throw new UserError( __( 'Product ID or SKU is required.', 'wp-graphql-woocommerce' ) );
 		}

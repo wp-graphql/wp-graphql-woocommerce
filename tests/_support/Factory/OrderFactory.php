@@ -143,10 +143,14 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function add_line_item( $order, $args = [], $save = true ) {
 		$order = $save ? \wc_get_order( $order ) : $order;
 
-		if ( empty( $args['product'] ) ) {
-			$product = \wc_get_product( $this->factory->product->createSimple() );
-		} else {
+		if ( ! empty( $args['variation_id'] ) ) {
+			$product = \wc_get_product( $args['variation_id'] );
+		} elseif ( ! empty( $args['product_id'] ) ) {
+			$product = \wc_get_product( $args['product_id'] );
+		} elseif ( ! empty( $args['product'] ) ) {
 			$product = \wc_get_product( $args['product'] );
+		} else {
+			$product = \wc_get_product( $this->factory->product->createSimple() );
 		}
 
 		if ( empty( $args['qty'] ) ) {
