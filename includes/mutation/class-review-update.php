@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Mutation\CommentUpdate;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class Review_Update
@@ -80,11 +81,9 @@ class Review_Update {
 			];
 
 			$payload       = [];
-			$id_parts      = ! empty( $input['id'] ) ? Relay::fromGlobalId( $input['id'] ) : null;
-			$payload['id'] = isset( $id_parts['id'] ) && absint( $id_parts['id'] ) ? absint( $id_parts['id'] ) : null;
-
-			if ( empty( $payload['id'] ) ) {
-				throw new UserError( __( 'The Review could not be updated', 'wp-graphql-woocommerce' ) );
+			$id = Utils::get_database_id_from_id( $input['id'] );
+			if ( ! $id ) {
+				throw new UserError( __( 'Provided review ID missing or invalid ', 'wp-graphql-woocommerce' ) );
 			}
 
 			if ( array_intersect_key( $input, $skip ) !== $input ) {

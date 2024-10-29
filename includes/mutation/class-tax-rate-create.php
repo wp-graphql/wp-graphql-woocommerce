@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class - Tax_Rate_Create
@@ -117,7 +118,10 @@ class Tax_Rate_Create {
 	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
-		$id         = ! empty( $input['id'] ) ? $input['id'] : null;
+		$id         = ! empty( $input['id'] ) ? Utils::get_database_id_from_id( $input['id'] ) : null;
+		if ( false === $id ) {
+			throw new UserError( __( 'Invalid ID provided.', 'wp-graphql-woocommerce' ) );
+		}
 		$action     = ! $id ? 'create' : 'update';
 		$permission = ! $id ? 'create' : 'edit';
 		if ( ! \wc_rest_check_manager_permissions( 'settings', $permission ) ) {

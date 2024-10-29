@@ -625,7 +625,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * User without necessary capabilities cannot update order an order.
 		 */
-		wp_set_current_user( $this->customer );
+		wp_set_current_user( $this->factory->user->create( [ 'role' => 'customer' ] ) );
 		$actual = $this->orderMutation(
 			$updated_input,
 			'updateOrder',
@@ -902,7 +902,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * User without necessary capabilities cannot delete order an order.
 		 */
-		wp_set_current_user( $this->customer );
+		wp_set_current_user( $this->factory->user->create( [ 'role' => 'customer' ] ) );
 		$actual = $this->orderMutation(
 			$deleted_input,
 			'deleteOrder',
@@ -1056,7 +1056,7 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		 *
 		 * User without necessary capabilities cannot delete order an order.
 		 */
-		wp_set_current_user( $this->customer );
+		wp_set_current_user( $this->factory->user->create( [ 'role' => 'customer' ] ) );
 		$actual = $this->orderMutation(
 			$deleted_items_input,
 			'deleteOrderItems',

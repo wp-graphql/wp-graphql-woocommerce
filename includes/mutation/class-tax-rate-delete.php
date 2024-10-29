@@ -13,6 +13,7 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class - Tax_Rate_Delete
@@ -75,11 +76,14 @@ class Tax_Rate_Delete {
 				throw new UserError( __( 'Sorry, you are not allowed to delete tax rates.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
 			}
 			global $wpdb;
-			$id = $input['id'];
+			$id = Utils::get_database_id_from_id( $input['id'] );
+			if ( ! $id ) {
+				throw new UserError( __( 'Invalid tax rate ID.', 'wp-graphql-woocommerce' ) );
+			}
 
 			$tax = $context->get_loader( 'tax_rate' )->load( $id );
 			if ( ! $tax ) {
-				throw new UserError( __( 'Invalid tax rate ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to locate tax rate', 'wp-graphql-woocommerce' ) );
 			}
 
 			/**

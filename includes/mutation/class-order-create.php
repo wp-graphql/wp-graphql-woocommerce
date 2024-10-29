@@ -167,7 +167,7 @@ class Order_Create {
 				WC()->payment_gateways();
 
 				// Validate customer ID, if set.
-				if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input ) ) {
+				if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input['customerId'] ) ) {
 					throw new UserError( __( 'Customer ID is invalid.', 'wp-graphql-woocommerce' ) );
 				}
 

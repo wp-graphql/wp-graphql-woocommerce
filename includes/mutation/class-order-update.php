@@ -12,11 +12,11 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WC_Order_Factory;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class Order_Update
@@ -49,15 +49,16 @@ class Order_Update {
 			[
 				'id'         => [
 					'type'        => 'ID',
-					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
+					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
 				],
-				'orderId'    => [
-					'type'        => 'Int',
-					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+				'orderId'     => [
+					'type'              => 'Int',
+					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
 				],
 				'customerId' => [
-					'type'        => 'Int',
-					'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
+					'type'        => 'ID',
+					'description' => __( 'Database ID or global ID of the customer for the order', 'wp-graphql-woocommerce' ),
 				],
 			]
 		);
@@ -89,17 +90,13 @@ class Order_Update {
 			// Retrieve order ID.
 			$order_id = null;
 			if ( ! empty( $input['id'] ) ) {
-				$id_components = Relay::fromGlobalId( $input['id'] );
-				if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-					throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
-				}
-				$order_id = absint( $id_components['id'] );
+				$order_id = Utils::get_database_id_from_id( $input['id'] );
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 			}
-
+			
 			// Check if authorized to update this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'update', $order_id ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to update an order.', 'wp-graphql-woocommerce' ) );
@@ -133,7 +130,7 @@ class Order_Update {
 			\WC()->payment_gateways();
 
 			// Validate customer ID.
-			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input ) ) {
+			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input['customerId'] ) ) {
 				throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -147,7 +144,7 @@ class Order_Update {
 			}
 
 			// Actions for after the order is saved.
-			if ( true === $input['isPaid'] ) {
+			if ( isset( $input['isPaid'] ) && true === $input['isPaid'] ) {
 				$order->payment_complete(
 					! empty( $input['transactionId'] )
 						? $input['transactionId']
