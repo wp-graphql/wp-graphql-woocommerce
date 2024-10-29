@@ -25,7 +25,7 @@ class Downloadable_Product {
 			'DownloadableProduct',
 			[
 				'description' => __( 'A downloadable product.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => [ 'Node', 'Product' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
 			]
@@ -46,10 +46,6 @@ class Downloadable_Product {
 			'databaseId'     => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
-			],
-			'virtual'        => [
-				'type'        => 'Boolean',
-				'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
 			],
 			'downloadExpiry' => [
 				'type'        => 'Int',

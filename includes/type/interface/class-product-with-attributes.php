@@ -28,7 +28,7 @@ class Product_With_Attributes {
 			'ProductWithAttributes',
 			[
 				'description' => __( 'Products with default attributes.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => [ 'Node', 'Product' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
