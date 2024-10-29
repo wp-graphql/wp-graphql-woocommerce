@@ -40,7 +40,8 @@
         "allow-plugins": {
             "johnpbloch/wordpress-core-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "composer/installers": true
         }
     },
     "autoload": {

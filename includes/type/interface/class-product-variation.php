@@ -11,8 +11,10 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 use WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type;
+
 
 /**
  * Class Product_Variation
@@ -283,6 +285,22 @@ class Product_Variation {
 					$resolver = new Variation_Attribute_Connection_Resolver();
 
 					return $resolver->resolve( $source, $args, $context, $info );
+				},
+			],
+			'parent'     => [
+				'toType'      => 'Product',
+				'description' => __( 'The parent of the variation', 'wp-graphql-woocommerce' ),
+				'oneToOne'    => true,
+				'queryClass'  => '\WC_Product_Query',
+				'resolve'     => static function ( $source, $args, AppContext $context, ResolveInfo $info ) {
+					if ( empty( $source->parent_id ) ) {
+						return null;
+					}
+
+					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+					$resolver->set_query_arg( 'p', $source->parent_id );
+
+					return $resolver->one_to_one()->get_connection();
 				},
 			],
 		];
