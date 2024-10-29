@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: WPGraphQL WooCommerce (WooGraphQL)
+ * Plugin Name: WPGraphQL for WooCommerce (WooGraphQL)
  * Plugin URI: https://github.com/wp-graphql/wp-graphql-woocommerce
- * Description: Adds Woocommerce Functionality to WPGraphQL schema.
+ * Description: Adds Woocommerce functionality to WPGraphQL schema.
  * Version: 0.21.0
  * Author: kidunot89
  * Author URI: https://axistaylor.com
@@ -29,7 +29,7 @@ namespace WPGraphQL\WooCommerce;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Setups WPGraphQL WooCommerce constants
+ * Setups WPGraphQL for WooCommerce constants
  *
  * @return void
  */
@@ -95,7 +95,7 @@ function plugin_file_url( $filepath ) {
 }
 
 /**
- * Checks if WPGraphQL WooCommerce required plugins are installed and activated
+ * Checks if WPGraphQL for WooCommerce required plugins are installed and activated
  *
  * @param array $deps  Unloaded dependencies list.
  *
@@ -113,7 +113,7 @@ function dependencies_not_ready( &$deps = [] ) {
 }
 
 /**
- * Initializes WPGraphQL WooCommerce
+ * Initializes WPGraphQL for WooCommerce
  *
  * @return void
  */
@@ -137,7 +137,7 @@ function init() {
 						<?php
 							printf(
 								/* translators: dependency not ready error message */
-								esc_html__( '%1$s must be active for "WPGraphQL WooCommerce (WooGraphQL)" to work', 'wp-graphql-woocommerce' ),
+								esc_html__( '%1$s must be active for "WPGraphQL for WooCommerce (WooGraphQL)" to work', 'wp-graphql-woocommerce' ),
 								esc_html( $dep )
 							);
 						?>

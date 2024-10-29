@@ -1,6 +1,6 @@
 <?php
 /**
- * Registers WooGraphQL types to the schema.
+ * Registers WPGraphQL for WooCommerce types to the schema.
  *
  * @package \WPGraphQL\WooCommerce
  * @since   0.0.1
@@ -13,7 +13,7 @@ namespace WPGraphQL\WooCommerce;
  */
 class Type_Registry {
 	/**
-	 * Registers WooGraphQL types, connections, unions, and mutations to GraphQL schema
+	 * Registers WPGraphQL for WooCommerce types, connections, unions, and mutations to GraphQL schema
 	 *
 	 * @return void
 	 */

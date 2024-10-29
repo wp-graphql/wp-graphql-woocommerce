@@ -219,7 +219,7 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 
 if ( ! function_exists( 'woographql_setting' ) ) :
 	/**
-	 * Get an option value from WooGraphQL settings
+	 * Get an option value from WPGraphQL for WooCommerce settings
 	 *
 	 * @param string $option_name   The key of the option to return.
 	 * @param mixed  $default_value The default value the setting should return if no value is set.
@@ -297,7 +297,7 @@ endif;
 
 if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	/**
-	 * Creates WooGraphQL session transfer nonces.
+	 * Creates WPGraphQL for WooCommerce session transfer nonces.
 	 *
 	 * @param string|int $action  Nonce name.
 	 *
@@ -314,7 +314,7 @@ endif;
 
 if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	/**
-	 * Validate WooGraphQL session transfer nonces.
+	 * Validate WPGraphQL for WooCommerce session transfer nonces.
 	 *
 	 * @param string         $nonce   Nonce to validated.
 	 * @param integer|string $action  Nonce name.

@@ -130,7 +130,7 @@ For more information on WordPress Application Passwords, refer to the [official 
 
 ## Conclusion
 
-Well done! You've successfully navigated through the process of using order data in a WooGraphQL context. We've explored how to build a basic order status page in React.js, which takes an email address and returns a list of all the orders associated with that email. We've also discussed the recommended method of retrieving and utilizing order data, which involves using a serverless function like a Next API route.
+Well done! You've successfully navigated through the process of using order data in a WPGraphQL for WooCommerce context. We've explored how to build a basic order status page in React.js, which takes an email address and returns a list of all the orders associated with that email. We've also discussed the recommended method of retrieving and utilizing order data, which involves using a serverless function like a Next API route.
 
 Remember, while the method we initially demonstrated works, it's not the most secure or efficient way to handle order data. We recommend using a serverless function with admin access, provided by a WordPress Application Password, to query for the orders. This method is more secure and efficient, and it allows for greater flexibility and control over the data.
 

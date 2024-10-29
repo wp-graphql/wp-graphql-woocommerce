@@ -172,7 +172,7 @@ class Factory {
 	}
 
 	/**
-	 * Resolves Relay node for some WooGraphQL types.
+	 * Resolves Relay node for some WPGraphQL for WooCommerce types.
 	 *
 	 * @param mixed                 $node     Node object.
 	 * @param int                   $id       Object unique ID.
@@ -205,7 +205,7 @@ class Factory {
 	}
 
 	/**
-	 * Resolves Relay node type for some WooGraphQL types.
+	 * Resolves Relay node type for some WPGraphQL for WooCommerce types.
 	 *
 	 * @param string|null $type  Node type.
 	 * @param mixed       $node  Node object.

@@ -13,7 +13,7 @@ Our checkout button's `href` attribute will be a nonced URL that directs the use
 
 ## Enabling Dedicated Router and Nonce Generation
 
-Before starting with the checkout button creation, we need to activate the dedicated router and nonce generation feature introduced in WooGraphQL v0.13.0. To do this, enable the "User Session transferring URLs" option in your WooGraphQL settings. Also, make sure to check the "Checkout URL" checkbox under this option.
+Before starting with the checkout button creation, we need to activate the dedicated router and nonce generation feature introduced in WPGraphQL for WooCommerce v0.13.0. To do this, enable the "User Session transferring URLs" option in your WPGraphQL for WooCommerce settings. Also, make sure to check the "Checkout URL" checkbox under this option.
 
 ![Enable User Session Transferring URLs Setting Screenshot](images/enable-user-session-transferring-urls-setting-screenshot.png)
 
@@ -37,9 +37,9 @@ Although our checkout button is now functional, it's important to note that the 
 
 ### Improving Security with Client Session ID
 
-The first step is to create a "Client Session ID" in our app and pass it to the WooCommerce session using the `updateSession` mutation. This mutation allows us to set session metadata directly in the WooCommerce session data object. The `client_session_id` meta is used by WooGraphQL to create the nonce.
+The first step is to create a "Client Session ID" in our app and pass it to the WooCommerce session using the `updateSession` mutation. This mutation allows us to set session metadata directly in the WooCommerce session data object. The `client_session_id` meta is used by WPGraphQL for WooCommerce to create the nonce.
 
-If WooGraphQL cannot find this meta, it generates one on the server, making the URL potentially usable on any machine. This is why it's important to avoid an arbitrary string as the session ID. Instead, we should use a value tied to the user's machine, like their IP or User Agent. Afterward, this value should be one-way hashed for increased security.
+If WPGraphQL for WooCommerce cannot find this meta, it generates one on the server, making the URL potentially usable on any machine. This is why it's important to avoid an arbitrary string as the session ID. Instead, we should use a value tied to the user's machine, like their IP or User Agent. Afterward, this value should be one-way hashed for increased security.
 
 Furthermore, we also need to set the `client_session_id_expiration` as a string value representing the expiration time in seconds. For example, to set an expiration time of one hour from now, we could use: `Math.floor(new Date().getTime() / 1000) + 3600`.
 
@@ -72,11 +72,11 @@ const input = {
 }
 ```
 
-When the `client_session_id` or `client_session_id_expiration` values become invalid or expired, WooGraphQL generates new values with an expiration time of one hour. To avoid this, we recommend that you periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
+When the `client_session_id` or `client_session_id_expiration` values become invalid or expired, WPGraphQL for WooCommerce generates new values with an expiration time of one hour. To avoid this, we recommend that you periodically update these values from the client side and retrieve a new `checkoutUrl` each time.
 
 ## Reinventing Security: The Client-Side Nonce
 
-Next we're going to explore an advanced approach to enhance the security of our checkout procedure by generating a nonce on the client side. By doing this, and not pulling the Nonces or Auth URLs from WooGraphQL we remove any risk of leakage thru GraphQL request and further protect the end-user's data and the WordPress backend. This process will involve recreating some PHP and WordPress core functions in JavaScript.
+Next we're going to explore an advanced approach to enhance the security of our checkout procedure by generating a nonce on the client side. By doing this, and not pulling the Nonces or Auth URLs from WPGraphQL for WooCommerce we remove any risk of leakage thru GraphQL request and further protect the end-user's data and the WordPress backend. This process will involve recreating some PHP and WordPress core functions in JavaScript.
 
 1. **PHP `time` Function in JavaScript**
 
@@ -120,7 +120,7 @@ Next we're going to explore an advanced approach to enhance the security of our 
     }
     ```
 
-With these functions ready, we can essentially recreate the `woographql_create_nonce` PHP function employed by WooGraphQL to create the nonce. Below is the JavaScript version:
+With these functions ready, we can essentially recreate the `woographql_create_nonce` PHP function employed by WPGraphQL for WooCommerce to create the nonce. Below is the JavaScript version:
 
 ```js
 export function createNonce(action, uId, token) {
@@ -212,9 +212,9 @@ To get our checkout URL, you would run:
 const checkoutUrl = generateUrl(sessionToken, clientSessionId, 'checkout');
 ```
 
-Also, `transfer-session` is the default name of the authorization endpoint. This can be altered in the WooGraphQL settings on the WP Dashboard.
+Also, `transfer-session` is the default name of the authorization endpoint. This can be altered in the WPGraphQL for WooCommerce settings on the WP Dashboard.
 
-To confirm the validity of your URL, compare it with the Auth URLs generated by WooGraphQL with the same `client_session_id` and ensure they are identical.
+To confirm the validity of your URL, compare it with the Auth URLs generated by WPGraphQL for WooCommerce with the same `client_session_id` and ensure they are identical.
 
 ## Conclusion
 

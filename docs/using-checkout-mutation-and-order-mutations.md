@@ -15,7 +15,7 @@ On the other hand, the `createOrder` mutation allows us to bypass WooCommerce's 
 
 In this section, we will provide detailed examples and code snippets to demonstrate how these mutations can be used in a real-world application. We will also discuss potential use cases and best practices for using these mutations.
 
-Before proceeding, it is recommended that you have a good understanding of the basics of WooGraphQL and have gone through the previous sections of this documentation. This will ensure that you have the necessary background knowledge to fully understand the concepts and examples presented in this section.
+Before proceeding, it is recommended that you have a good understanding of the basics of WPGraphQL for WooCommerce and have gone through the previous sections of this documentation. This will ensure that you have the necessary background knowledge to fully understand the concepts and examples presented in this section.
 
 Let's get started!
 

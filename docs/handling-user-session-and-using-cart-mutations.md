@@ -1,6 +1,6 @@
 ---
 title: "Handling User Session and Using Cart Mutations with WooGraphQL"
-description: "Discover how to manage user sessions and perform cart mutations using WooGraphQL and WPGraphQL in your headless WooCommerce application for a smooth shopping experience."
+description: "Discover how to manage user sessions and perform cart mutations using WPGraphQL for WooCommerce and WPGraphQL in your headless WooCommerce application for a smooth shopping experience."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, user session, cart mutations, headless, shopping experience"
 author: "Geoff Taylor"
 ---
@@ -13,7 +13,7 @@ In this section, we will demonstrate how to implement cart controls on the singl
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
-- A WPGraphQL/WooGraphQL backend.
+- A WPGraphQL/WPGraphQL for WooCommerce backend.
 - Read previous sections on [Routing By URI](routing-by-uri.md) and [Using Product Data](using-product.data.md)
 
 ## Step 0: Create our `graphql.js` file

@@ -23,7 +23,7 @@ class Admin {
 	}
 
 	/**
-	 * Registers the WooGraphQL Settings tab.
+	 * Registers the WPGraphQL for WooCommerce Settings tab.
 	 *
 	 * @param \WPGraphQL\Admin\Settings\Settings $manager  Settings Manager.
 	 * @return void
@@ -31,7 +31,7 @@ class Admin {
 	public function register_settings( Settings $manager ) {
 		$manager->settings_api->register_section(
 			'woographql_settings',
-			[ 'title' => __( 'WooGraphQL', 'wp-graphql-woocommerce' ) ]
+			[ 'title' => __( 'WooCommerce', 'wp-graphql-woocommerce' ) ]
 		);
 
 		$manager->settings_api->register_fields(
