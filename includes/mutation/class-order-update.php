@@ -14,9 +14,9 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WC_Order_Factory;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\Utils\Utils;
 
 /**
  * Class Order_Update
@@ -51,7 +51,7 @@ class Order_Update {
 					'type'        => 'ID',
 					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
 				],
-				'orderId'     => [
+				'orderId'    => [
 					'type'              => 'Int',
 					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
@@ -96,7 +96,11 @@ class Order_Update {
 			} else {
 				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 			}
-			
+
+			if ( ! $order_id ) {
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+			}
+
 			// Check if authorized to update this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'update', $order_id ) ) {
 				throw new UserError( __( 'User does not have the capabilities necessary to update an order.', 'wp-graphql-woocommerce' ) );

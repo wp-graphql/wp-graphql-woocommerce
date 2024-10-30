@@ -118,7 +118,7 @@ class Tax_Rate_Create {
 	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
-		$id         = ! empty( $input['id'] ) ? Utils::get_database_id_from_id( $input['id'] ) : null;
+		$id = ! empty( $input['id'] ) ? Utils::get_database_id_from_id( $input['id'] ) : null;
 		if ( false === $id ) {
 			throw new UserError( __( 'Invalid ID provided.', 'wp-graphql-woocommerce' ) );
 		}
@@ -221,7 +221,7 @@ class Tax_Rate_Create {
 		/**
 		 * Filter tax rate object before responding.
 		 *
-		 * @param object $tax_rate_id  The shipping method object.
+		 * @param int    $tax_rate_id  The shipping method object.
 		 * @param array  $input        Request input.
 		 */
 		do_action( "graphql_woocommerce_tax_rate_{$action}", $id, $input );

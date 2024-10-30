@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\Mutation\CommentUpdate;
 use WPGraphQL\Utils\Utils;
@@ -80,8 +79,8 @@ class Review_Update {
 				'clientMutationId' => 1,
 			];
 
-			$payload       = [];
-			$id = Utils::get_database_id_from_id( $input['id'] );
+			$payload = [];
+			$id      = Utils::get_database_id_from_id( $input['id'] );
 			if ( ! $id ) {
 				throw new UserError( __( 'Provided review ID missing or invalid ', 'wp-graphql-woocommerce' ) );
 			}

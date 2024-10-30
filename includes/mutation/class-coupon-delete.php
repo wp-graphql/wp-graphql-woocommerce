@@ -13,8 +13,8 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Model\Coupon;
 use WPGraphQL\Utils\Utils;
+use WPGraphQL\WooCommerce\Model\Coupon;
 
 /**
  * Class Coupon_Delete

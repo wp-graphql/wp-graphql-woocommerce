@@ -13,9 +13,9 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Coupon_Mutation;
 use WPGraphQL\WooCommerce\Model\Coupon;
-use WPGraphQL\Utils\Utils;
 
 /**
  * Class Coupon_Create
@@ -163,7 +163,7 @@ class Coupon_Create {
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		// Retrieve order ID.
-		if ( ! empty ( $input['id'] ) ) {
+		if ( ! empty( $input['id'] ) ) {
 			$coupon_id = Utils::get_database_id_from_id( $input['id'] );
 		} else {
 			$coupon_id = 0;

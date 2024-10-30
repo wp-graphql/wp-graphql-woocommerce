@@ -13,9 +13,9 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WPGraphQL\Utils\Utils;
 
 /**
  * Class Order_Delete_Items
@@ -45,11 +45,11 @@ class Order_Delete_Items {
 	public static function get_input_fields() {
 		return array_merge(
 			[
-				'id'          => [
+				'id'      => [
 					'type'        => 'ID',
 					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
 				],
-				'orderId'     => [
+				'orderId' => [
 					'type'              => 'Int',
 					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
@@ -93,6 +93,10 @@ class Order_Delete_Items {
 				$order_id = absint( $input['orderId'] );
 			} else {
 				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+			}
+
+			if ( ! $order_id ) {
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Check if authorized to delete items on this order.
