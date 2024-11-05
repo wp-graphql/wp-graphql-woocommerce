@@ -29,7 +29,7 @@ class Product_With_Variations {
 			'ProductWithVariations',
 			[
 				'description' => __( 'A product with variations.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node', 'Product' ],
+				'interfaces'  => [ 'Node', 'Product', 'ProductWithAttributes' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
