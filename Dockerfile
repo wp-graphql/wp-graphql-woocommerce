@@ -1,24 +1,29 @@
 ARG PHP_VERSION
 FROM wordpress:php${PHP_VERSION}-apache
 
-RUN apt-get update; \
-	apt-get install -y --no-install-recommends \
+RUN <<EOF bash
+	apt-get update; 
+	apt-get install -y --no-install-recommends 
 	# WP-CLI dependencies.
-	bash less default-mysql-client git \
+	bash less default-mysql-client git 
 	# MailHog dependencies.
-	msmtp \
+	msmtp 
 	# Dockerize dependencies.
 	wget;
+EOF
 
 # Setup xdebug. The latest version supported by PHP 5.6 is 2.5.5.
-RUN	pecl install xdebug; \
-	docker-php-ext-enable xdebug; \
-	echo "xdebug.default_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_autostart = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_connect_back = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_port = 9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+RUN	<<EOF bash
+	pecl install xdebug; 
+	docker-php-ext-enable xdebug; 
+	echo "xdebug.default_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+	echo "xdebug.remote_autostart = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+	echo "xdebug.remote_connect_back = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+	echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+	echo "xdebug.remote_port = 9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 	echo "xdebug.remote_log = /var/www/html/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+	echo "xdebug.mode = debug,trace" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+EOF
 
 # Install PDO MySQL driver.
 RUN docker-php-ext-install pdo_mysql
