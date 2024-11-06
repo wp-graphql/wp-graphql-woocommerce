@@ -11,6 +11,7 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 
 /**
@@ -28,7 +29,7 @@ class Product_With_Attributes {
 			'ProductWithAttributes',
 			[
 				'description' => __( 'Products with default attributes.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => [ 'Node', 'Product' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
@@ -66,6 +67,21 @@ class Product_With_Attributes {
 				'fromFieldName' => 'defaultAttributes',
 				'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Variation_Attribute_Connection_Resolver();
+
+					return $resolver->resolve( $source, $args, $context, $info );
+				},
+			],
+			'attributes'        => [
+				'toType'         => 'ProductAttribute',
+				'fromFieldName'  => 'attributes',
+				'connectionArgs' => [
+					'type' => [
+						'type'        => 'ProductAttributeTypesEnum',
+						'description' => __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' ),
+					],
+				],
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new Product_Attribute_Connection_Resolver();
 
 					return $resolver->resolve( $source, $args, $context, $info );
 				},

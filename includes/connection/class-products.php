@@ -148,8 +148,8 @@ class Products {
 
 		register_graphql_connection(
 			[
-				'fromType'      => 'ProductVariation',
-				'toType'        => 'VariableProduct',
+				'fromType'      => 'Product',
+				'toType'        => 'Product',
 				'fromFieldName' => 'parent',
 				'description'   => __( 'The parent of the node. The parent object can be of various types', 'wp-graphql-woocommerce' ),
 				'oneToOne'      => true,

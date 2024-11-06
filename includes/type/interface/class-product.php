@@ -201,6 +201,10 @@ class Product {
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
 			],
+			'virtual'           => [
+				'type'        => 'Boolean',
+				'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
+			],
 			'metaData'          => \WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::get_metadata_field_definition(),
 		];
 	}
