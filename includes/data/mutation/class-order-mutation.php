@@ -9,6 +9,7 @@
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
 use GraphQL\Error\UserError;
+use WPGraphQL\Utils\Utils;
 
 
 /**
@@ -22,8 +23,9 @@ class Order_Mutation {
 	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
 	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
 	 * @param string                               $mutation  Mutation being executed.
-	 * @param integer|null                         $order_id  Order ID.
-	 *
+	 * @param integer|null|false                   $order_id  Order ID.
+	 * @throws \GraphQL\Error\UserError  Error locating order.
+	 * 
 	 * @return boolean
 	 */
 	public static function authorized( $input, $context, $info, $mutation = 'create', $order_id = null ) {
@@ -34,18 +36,38 @@ class Order_Mutation {
 		 */
 		$post_type_object = get_post_type_object( 'shop_order' );
 
-		return apply_filters(
-			"graphql_woocommerce_authorized_to_{$mutation}_orders",
-			current_user_can(
-				'delete' === $mutation
-					? $post_type_object->cap->delete_posts
-					: $post_type_object->cap->edit_posts
-			),
-			$order_id,
-			$input,
-			$context,
-			$info
-		);
+		if ( ! $order_id ) {
+			return apply_filters(
+				"graphql_woocommerce_authorized_to_{$mutation}_orders",
+				current_user_can( $post_type_object->cap->edit_posts ),
+				$order_id,
+				$input,
+				$context,
+				$info
+			);
+		}
+
+		/** @var false|\WC_Order $order */
+		$order     = \wc_get_order( $order_id );
+		if ( false === $order ) {
+			throw new UserError(
+				sprintf(
+					/* translators: %d: Order ID */
+					__( 'Failed to find order with ID of %d.', 'wp-graphql-woocommerce' ),
+					$order_id
+				)
+			);
+		}
+		
+		$post_type = get_post_type( $order_id );
+		if ( false === $post_type ) {
+			throw new UserError( __( 'Failed to identify the post type of the order.', 'wp-graphql-woocommerce' ) );
+		}
+
+		// Return true if user is owner or admin.
+		$is_owner = 0 !== get_current_user_id() && $order->get_customer_id() === get_current_user_id();
+		$is_admin = \wc_rest_check_post_permissions( $post_type, 'edit', $order_id );
+		return $is_owner || $is_admin;
 	}
 
 	/**
@@ -565,25 +587,26 @@ class Order_Mutation {
 	/**
 	 * Validates order customer
 	 *
-	 * @param array $input  Input data describing order.
+	 * @param string $customer_id  ID of customer for order.
 	 *
 	 * @return bool
 	 */
-	public static function validate_customer( $input ) {
-		if ( ! empty( $input['customerId'] ) ) {
-			// Make sure customer exists.
-			if ( false === get_user_by( 'id', $input['customerId'] ) ) {
-				return false;
-			}
-			// Make sure customer is part of blog.
-			if ( is_multisite() && ! is_user_member_of_blog( $input['customerId'] ) ) {
-				add_user_to_blog( get_current_blog_id(), $input['customerId'], 'customer' );
-			}
-
-			return true;
+	public static function validate_customer( $customer_id ) {
+		$id = Utils::get_database_id_from_id( $customer_id );
+		if ( ! $id ) {
+			return false;
 		}
 
-		return false;
+		if ( false === get_user_by( 'id', $id ) ) {
+			return false;
+		}
+
+		// Make sure customer is part of blog.
+		if ( is_multisite() && ! is_user_member_of_blog( $id ) ) {
+			add_user_to_blog( get_current_blog_id(), $id, 'customer' );
+		}
+
+		return true;
 	}
 
 	/**

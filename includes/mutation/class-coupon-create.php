@@ -12,8 +12,8 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Coupon_Mutation;
 use WPGraphQL\WooCommerce\Model\Coupon;
 
@@ -163,16 +163,14 @@ class Coupon_Create {
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		// Retrieve order ID.
-		$coupon_id = 0;
-		if ( ! empty( $input['id'] ) && is_numeric( $input['id'] ) ) {
-			$coupon_id = absint( $input['id'] );
-		} elseif ( ! empty( $input['id'] ) ) {
-			$id_components = Relay::fromGlobalId( $input['id'] );
-			if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-				throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
-			}
+		if ( ! empty( $input['id'] ) ) {
+			$coupon_id = Utils::get_database_id_from_id( $input['id'] );
+		} else {
+			$coupon_id = 0;
+		}
 
-			$coupon_id = absint( $id_components['id'] );
+		if ( false === $coupon_id ) {
+			throw new UserError( __( 'Coupon ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 		}
 
 		$coupon = new \WC_Coupon( $coupon_id );
