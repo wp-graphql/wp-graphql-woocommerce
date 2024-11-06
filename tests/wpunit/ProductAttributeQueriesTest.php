@@ -235,4 +235,8 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			[ $this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ) ]
 		);
 	}
+
+	public function testProductAttributesQuery() {
+		
+	}
 }
