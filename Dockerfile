@@ -5,9 +5,9 @@ RUN <<EOF bash
 	apt-get update; 
 	apt-get install -y --no-install-recommends 
 	# WP-CLI dependencies.
-	bash less default-mysql-client git 
+	bash less default-mysql-client git \
 	# MailHog dependencies.
-	msmtp 
+	msmtp \
 	# Dockerize dependencies.
 	wget;
 EOF
