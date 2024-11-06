@@ -27,6 +27,7 @@
     "require-dev": {
         "axepress/wp-graphql-cs": "^2.0.0-beta",
         "axepress/wp-graphql-stubs": "^1.27.1",
+        "brainmaestro/composer-git-hooks": "^3.0",
         "php-stubs/woocommerce-stubs": "9.1.0",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpdoc-parser": "^1.22.0",
@@ -40,8 +41,7 @@
         "allow-plugins": {
             "johnpbloch/wordpress-core-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "phpstan/extension-installer": true,
-            "composer/installers": true
+            "phpstan/extension-installer": true
         }
     },
     "autoload": {
@@ -81,11 +81,14 @@
             "@php bin/strauss.phar",
             "composer dump-autoload --optimize"
         ],
+        "cghooks": "vendor/bin/cghooks",
         "post-install-cmd": [
-            "@strauss"
+            "@strauss",
+            "@cghooks add -i"
         ],
         "post-update-cmd": [
-            "@strauss"
+            "@strauss",
+            "@cghooks update"
         ]
     },
     "support": {
@@ -128,6 +131,14 @@
             "exclude_from_prefix": {
                 "file_patterns": []
             }
+        },
+        "hooks": {
+            "pre-commit": [
+                "composer runPreCommitCleanup"
+            ],
+            "post-merge": [
+                "composer install"
+            ]
         }
     }
 }
