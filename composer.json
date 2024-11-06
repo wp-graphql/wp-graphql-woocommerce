@@ -26,13 +26,30 @@
     },
     "require-dev": {
         "axepress/wp-graphql-cs": "^2.0.0-beta",
+        "axepress/wp-graphql-headless-login": "^0.3.1",
         "axepress/wp-graphql-stubs": "^1.27.1",
         "brainmaestro/composer-git-hooks": "^2.8.5",
+        "codeception/lib-asserts": "*",
+        "codeception/module-asserts": "*",
+        "codeception/module-rest": "*",
+        "codeception/util-universalframework": "*",
+        "fakerphp/faker": "^1.23",
+        "johnpbloch/wordpress": "*",
+        "lucatume/wp-browser": ">3.1 <3.5",
         "php-stubs/woocommerce-stubs": "9.1.0",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpdoc-parser": "^1.22.0",
         "phpstan/phpstan": "^1.10",
-        "szepeviktor/phpstan-wordpress": "^1.3"
+        "phpunit/phpunit": "^9.6",
+        "stripe/stripe-php": "^16.2",
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "wp-cli/wp-cli-bundle": "*",
+        "wp-graphql/wp-graphql-jwt-authentication": "^0.7.0",
+        "wp-graphql/wp-graphql-testcase": "^3.2",
+        "wpackagist-plugin/woocommerce": "^9.3",
+        "wpackagist-plugin/woocommerce-gateway-stripe": "^8.8",
+        "wpackagist-plugin/wp-graphql": "^1.29",
+        "wpackagist-theme/twentytwentyone": "^2.3"
     },
     "config": {
         "optimize-autoloader": true,
@@ -41,7 +58,8 @@
         "allow-plugins": {
             "johnpbloch/wordpress-core-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "composer/installers": true
         }
     },
     "autoload": {
@@ -139,6 +157,18 @@
             "post-merge": [
                 "composer install"
             ]
+        },
+        "wordpress-install-dir": "local/public",
+        "installer-paths": {
+            "local/public/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+            "local/public/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+            "local/public/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+        }
+    },
+    "repositories": {
+        "wpackagist": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
         }
     }
 }

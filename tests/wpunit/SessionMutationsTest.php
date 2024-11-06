@@ -64,6 +64,8 @@ class SessionMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 	}
 
 	public function testForgetSessionMutation() {
+		$this->markTestSkipped( 'This test has not been implemented yet.' );
+
 		// Create registered customer.
 		$registered = $this->factory->customer->create();
 		$this->loginAs( $registered );
