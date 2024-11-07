@@ -211,6 +211,8 @@ class Type_Registry {
 		Mutation\Product_Variation_Create::register_mutation();
 		Mutation\Product_Variation_Delete::register_mutation();
 		Mutation\Product_Variation_Update::register_mutation();
+		Mutation\Refund_Create::register_mutation();
+		Mutation\Refund_Delete::register_mutation();
 		Mutation\Review_Delete_Restore::register_mutation();
 		Mutation\Review_Update::register_mutation();
 		Mutation\Review_Write::register_mutation();
