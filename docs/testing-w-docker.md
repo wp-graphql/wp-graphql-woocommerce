@@ -1,7 +1,7 @@
 ---
 title: "Testing w/ Docker"
 author: "Geoff Taylor"
-description: "An extensive guide on testing w/ WooGraphQL + Docker."
+description: "An extensive guide on testing w/ WPGraphQL for WooCommerce + Docker."
 keywords: ""
 ---
 

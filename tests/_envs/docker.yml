@@ -38,7 +38,7 @@ modules:
       tablePrefix: wp_
       domain: '%WORDPRESS_DOMAIN%'
       adminEmail: 'admin@example.com'
-      title: 'WooGraphQL Tests'
+      title: 'WPGraphQL for WooCommerce Tests'
       plugins:
         - woocommerce/woocommerce.php
         - woocommerce-gateway-stripe/woocommerce-gateway-stripe.php

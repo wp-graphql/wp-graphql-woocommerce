@@ -1,6 +1,6 @@
 ---
 title: "Using Cart Data with WooGraphQL"
-description: "Learn how to retrieve and utilize cart data in your headless WooCommerce application with WooGraphQL and WPGraphQL, enabling seamless shopping experiences for your customers."
+description: "Learn how to retrieve and utilize cart data in your headless WooCommerce application with WPGraphQL for WooCommerce and WPGraphQL, enabling seamless shopping experiences for your customers."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, cart data, headless, shopping experience"
 author: "Geoff Taylor"
 ---
@@ -13,7 +13,7 @@ In this section, we will create a "/cart" page that displays a table of the item
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
-- A setup WPGraphQL/WooGraphQL backend.
+- A setup WPGraphQL/WPGraphQL for WooCommerce backend.
 - Read previous sections on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
 
 ## Step 0: Create `graphql.js` file

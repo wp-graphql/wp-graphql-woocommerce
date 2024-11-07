@@ -1,6 +1,6 @@
-## Contribute to WPGraphQL WooCommerce
+## Contribute to WPGraphQL for WooCommerce
 
-WPGraphQL WooCommerce (WooGraphQL) welcomes community contributions, bug reports and other constructive feedback.
+WPGraphQL for WooCommerce (WooGraphQL) welcomes community contributions, bug reports and other constructive feedback.
 
 When contributing please ensure you follow the guidelines below so that we can keep on top of things.
 

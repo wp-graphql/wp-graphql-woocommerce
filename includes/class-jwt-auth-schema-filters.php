@@ -1,6 +1,6 @@
 <?php
 /**
- * Adds filters that modify the WooGraphQL schema to include WPGraphQL JWT Authentication
+ * Adds filters that modify the WPGraphQL for WooCommerce schema to include WPGraphQL JWT Authentication
  * fields in Customer type and mutations.
  *
  * @package \WPGraphQL\WooCommerce

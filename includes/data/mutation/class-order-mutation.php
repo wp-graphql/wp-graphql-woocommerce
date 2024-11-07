@@ -25,7 +25,7 @@ class Order_Mutation {
 	 * @param string                               $mutation  Mutation being executed.
 	 * @param integer|null|false                   $order_id  Order ID.
 	 * @throws \GraphQL\Error\UserError  Error locating order.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public static function authorized( $input, $context, $info, $mutation = 'create', $order_id = null ) {
@@ -48,7 +48,7 @@ class Order_Mutation {
 		}
 
 		/** @var false|\WC_Order $order */
-		$order     = \wc_get_order( $order_id );
+		$order = \wc_get_order( $order_id );
 		if ( false === $order ) {
 			throw new UserError(
 				sprintf(
@@ -58,7 +58,7 @@ class Order_Mutation {
 				)
 			);
 		}
-		
+
 		$post_type = get_post_type( $order_id );
 		if ( false === $post_type ) {
 			throw new UserError( __( 'Failed to identify the post type of the order.', 'wp-graphql-woocommerce' ) );

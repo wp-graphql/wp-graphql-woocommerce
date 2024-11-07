@@ -1,6 +1,6 @@
 ---
 title: "Handling User Authentication with WooGraphQL"
-description: "Learn how to handle user authentication in your headless WooCommerce application using WooGraphQL and WPGraphQL for secure and seamless user experiences."
+description: "Learn how to handle user authentication in your headless WooCommerce application using WPGraphQL for WooCommerce and WPGraphQL for secure and seamless user experiences."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, user authentication, login, register, secure, headless"
 author: "Geoff Taylor"
 ---
@@ -58,7 +58,7 @@ const RefreshAuthTokenDocument = gql`
 `;
 ```
 
-To help you understand the differences, let's briefly discuss how the session token and auth token handle renewal. As stated in the previous section session tokens are self-managed and renewed automatically by WooGraphQL when sent within the 14 day limit, and an updated session token is generated on every request. All you have to do is retrieve it. Auth tokens, on the other hand, require you to use the mutation above and the refresh token that's distributed with the auth token to get a new auth token before the auth token expires, which is approximately 15 minutes after creation 😅.
+To help you understand the differences, let's briefly discuss how the session token and auth token handle renewal. As stated in the previous section session tokens are self-managed and renewed automatically by WPGraphQL for WooCommerce when sent within the 14 day limit, and an updated session token is generated on every request. All you have to do is retrieve it. Auth tokens, on the other hand, require you to use the mutation above and the refresh token that's distributed with the auth token to get a new auth token before the auth token expires, which is approximately 15 minutes after creation 😅.
 
 
 
@@ -251,4 +251,4 @@ Just like with `fetchSessionToken()`, it is highly recommended that you obscure 
 
 In summary, we demonstrated how to configure a GraphQL client to work with WooGraphQL, manage WooCommerce sessions, and handle WordPress authentication. With this setup, you should be able to create a robust and secure client that manages user authentication efficiently and seamlessly.
 
-The next section will begin teaching how you best utilize the data received from WooGraphQL to create showstopping components.
+The next section will begin teaching how you best utilize the data received from WPGraphQL for WooCommerce to create showstopping components.

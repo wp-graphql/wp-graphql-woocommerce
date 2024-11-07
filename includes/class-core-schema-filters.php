@@ -144,7 +144,7 @@ class Core_Schema_Filters {
 				throw new UserError(
 					sprintf(
 					/* translators: %s: Product type */
-						__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+						__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
 						$value->type
 					)
 				);
@@ -384,7 +384,7 @@ class Core_Schema_Filters {
 					throw new UserError(
 						sprintf(
 						/* translators: %s: Product type */
-							__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+							__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
 							$value->type
 						)
 					);
@@ -419,7 +419,7 @@ class Core_Schema_Filters {
 		throw new UserError(
 			sprintf(
 			/* translators: %s: Product type */
-				__( 'The "%s" product type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+				__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
 				$value->type
 			)
 		);
@@ -446,7 +446,7 @@ class Core_Schema_Filters {
 		throw new UserError(
 			sprintf(
 			/* translators: %s: Product type */
-				__( 'The "%s" product variation type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+				__( 'The "%s" product variation type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
 				$value->type
 			)
 		);
