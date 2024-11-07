@@ -338,6 +338,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-order-delete-items.php';
 			require $include_directory_path . 'mutation/class-order-delete.php';
 			require $include_directory_path . 'mutation/class-order-update.php';
+			require $include_directory_path . 'mutation/class-refund-create.php';
+			require $include_directory_path . 'mutation/class-refund-delete.php';
 			require $include_directory_path . 'mutation/class-review-write.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';
 			require $include_directory_path . 'mutation/class-review-update.php';
