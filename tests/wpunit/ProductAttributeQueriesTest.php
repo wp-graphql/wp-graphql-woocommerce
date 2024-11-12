@@ -237,6 +237,57 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 	}
 
 	public function testProductAttributesQuery() {
-		
+		$this->factory->product->createAttribute( 'texture', [ 'smooth', 'rough', 'tiled' ] );
+		$this->factory->product->createAttribute( 'tile-size', [ 'small', 'medium', 'large' ] );
+
+		$query = '
+			query {
+				productAttributes {
+					nodes {
+						id
+						attributeId
+						name
+						label
+						options
+						position
+						visible
+						variation
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedNode(
+				'productAttributes.nodes',
+				[
+					$this->expectedField( 'id', base64_encode( 'pattern' ) ),
+					$this->expectedField( 'name', 'pattern' ),
+					$this->expectedField( 'label', 'Pattern' ),
+					$this->expectedField( 'options', [ 'polka-dot', 'stripe', 'flames' ] ),
+				]
+			),
+			$this->expectedNode(
+				'productAttributes.nodes',
+				[
+					$this->expectedField( 'id', base64_encode( 'texture' ) ),
+					$this->expectedField( 'name', 'texture' ),
+					$this->expectedField( 'label', 'Texture' ),
+					$this->expectedField( 'options', [ 'smooth', 'rough', 'tiled' ] ),
+				]
+			),
+			$this->expectedNode(
+				'productAttributes.nodes',
+				[
+					$this->expectedField( 'id', base64_encode( 'tile-size' ) ),
+					$this->expectedField( 'name', 'tile-size' ),
+					$this->expectedField( 'label', 'Tile Size' ),
+					$this->expectedField( 'options', [ 'small', 'medium', 'large' ] ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
