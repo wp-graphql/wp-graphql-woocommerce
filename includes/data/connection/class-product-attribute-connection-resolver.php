@@ -61,7 +61,7 @@ class Product_Attribute_Connection_Resolver {
 	 * Product_Attribute_Connection_Resolver constructor.
 	 *
 	 * @param \WPGraphQL\WooCommerce\Model\Product|null $source   Source node.
-	 * @param array                                     $args     Connection arguments.
+	 * @param ?array                                     $args     Connection arguments.
 	 * @param \WPGraphQL\AppContext                     $context  AppContext object.
 	 * @param \GraphQL\Type\Definition\ResolveInfo      $info     ResolveInfo object.
 	 * @param string                                    $type     Attribute type.

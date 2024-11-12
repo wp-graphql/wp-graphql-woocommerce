@@ -81,9 +81,8 @@ class Product_With_Attributes {
 					],
 				],
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$resolver = new Product_Attribute_Connection_Resolver();
-
-					return $resolver->resolve( $source, $args, $context, $info );
+					$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info );
+					return $resolver->get_connection();
 				},
 			],
 		];
