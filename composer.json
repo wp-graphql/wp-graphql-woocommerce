@@ -81,14 +81,17 @@
             "@php bin/strauss.phar",
             "composer dump-autoload --optimize"
         ],
-        "cghooks": "vendor/bin/cghooks",
+        "cghooks": [
+            "echo 'Installing git hooks'",
+            "vendor/bin/cghooks"
+        ],
         "post-install-cmd": [
             "@strauss",
-            "@cghooks add -i"
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || composer cghooks add -i"
         ],
         "post-update-cmd": [
             "@strauss",
-            "@cghooks update"
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || composer cghooks update"
         ]
     },
     "support": {
