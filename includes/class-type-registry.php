@@ -177,6 +177,8 @@ class Type_Registry {
 		Mutation\Order_Update::register_mutation();
 		Mutation\Order_Delete::register_mutation();
 		Mutation\Order_Delete_Items::register_mutation();
+		Mutation\Refund_Create::register_mutation();
+		Mutation\Refund_Delete::register_mutation();
 		Mutation\Checkout::register_mutation();
 		Mutation\Review_Write::register_mutation();
 		Mutation\Review_Update::register_mutation();
