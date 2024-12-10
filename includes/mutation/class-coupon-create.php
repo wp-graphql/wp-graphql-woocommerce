@@ -208,6 +208,13 @@ class Coupon_Create {
 				case 'description':
 					$coupon->set_description( wp_filter_post_kses( $value ) );
 					break;
+				case 'amount':
+					if ( $coupon_args['discount_type'] ) {
+						$coupon->set_discount_type( $coupon_args['discount_type'] );
+					}
+
+					$coupon->set_amount( $value );
+					break;
 				default:
 					if ( is_callable( [ $coupon, "set_{$key}" ] ) ) {
 						$coupon->{"set_{$key}"}( $value );
