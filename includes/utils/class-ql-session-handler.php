@@ -202,13 +202,20 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 		// Distribute new session token on GraphQL requests, otherwise distribute a new session cookie.
 		if ( Router::is_graphql_http_request() ) {
-			// Start new session.
-			$this->set_session_expiration();
+			$condition = apply_filters(
+				'graphql_generate_woocommerce_session_token_condition',
+				true
+			);
 
-			// Get Customer ID.
-			$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
-			$this->_data        = $this->get_session_data();
-			$this->set_customer_session_token( true );
+			if ( $condition ) {
+				// Start new session.
+				$this->set_session_expiration();
+
+				// Get Customer ID.
+				$this->_customer_id = is_user_logged_in() ? get_current_user_id() : $this->generate_customer_id();
+				$this->_data        = $this->get_session_data();
+				$this->set_customer_session_token( true );
+			}
 		} else {
 			$this->init_session_cookie();
 		}
