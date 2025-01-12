@@ -1,6 +1,6 @@
 <?php
 
-class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
+class IntrospectionQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -17,17 +17,19 @@ class IntrospectionQueryTest extends \Codeception\TestCase\WPTestCase {
 	// Validate schema.
 	public function testSchema() {
 		try {
-			$request = new \WPGraphQL\Request();
-			$request->schema->assertValid();
+			new \WPGraphQL\Request();
+
+			$schema = WPGraphQL::get_schema();
+			$schema->assertValid();
 
 			// Assert true upon success.
-			$this->assertTrue( true );
+			$this->assertTrue( true, 'Schema is valid.' );
 		} catch ( \GraphQL\Error\InvariantViolation $e ) {
 			// use --debug flag to view.
-			codecept_debug( $e->getMessage() );
+			$this->logData( $e->getMessage() );
 
 			// Fail upon throwing
-			$this->assertTrue( false );
+			$this->assertTrue( false, $e->getMessage() );
 		}
 	}
 

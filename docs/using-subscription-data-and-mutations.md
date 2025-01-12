@@ -9,7 +9,7 @@ author: "Geoff Taylor"
 
 This section of the documentation will focus on how to use the Subscription functionality provided by WooGraphQL Pro. We will build upon the code written in `Using Product Data` and `Routing by URI` by rewriting the `ProductListing` and `SingleProduct` components to support `SubscriptionProduct` types.
 
-Before we start, ensure that the `changeSubPaymentMethodUrl`, `renewSubPaymentMethodUrl`, and `Enable Subscriptions` options from the WooGraphQL settings page are checked and enabled. These settings will allow us to handle subscription renewals, payment method changes, and enable subscription functionality respectively.
+Before we start, ensure that the `changeSubPaymentMethodUrl`, `renewSubPaymentMethodUrl`, and `Enable Subscriptions` options from the WPGraphQL for WooCommerce settings page are checked and enabled. These settings will allow us to handle subscription renewals, payment method changes, and enable subscription functionality respectively.
 
 ## Understanding SubscriptionProduct Type
 
@@ -125,7 +125,7 @@ function SubscriptionsPage({ customer }) {
 
 In the `SubscriptionsPage` component, we have added `renew`, `change payment method`, `reactivate`, and `cancel` buttons. The `renew` and `change payment method` buttons use the `changeSubPaymentMethodUrl` and `renewSubPaymentMethodUrl` fields respectively. The `reactivate` and `cancel` buttons use the `reactivateSubscription` and `cancelSubscription` mutations respectively. The visibility of these buttons is controlled based on the status of the subscription.
 
-To learn more about the `changeSubPaymentMethodUrl` and `renewSubPaymentMethodUrl` URLs, please refer to the [Harmonizing with WordPress](https://woographql.com/docs/harmonizing-with-wordpress#harmonizing-with-wordpress) section of the WooGraphQL documentation.
+To learn more about the `changeSubPaymentMethodUrl` and `renewSubPaymentMethodUrl` URLs, please refer to the [Harmonizing with WordPress](https://woographql.com/docs/harmonizing-with-wordpress#harmonizing-with-wordpress) section of the WPGraphQL for WooCommerce documentation.
 
 ## Conclusion
 

@@ -1,6 +1,6 @@
 ---
 title: "Using Product Data with WooGraphQL"
-description: "Learn how to efficiently fetch and use product data in your headless WooCommerce application using WooGraphQL and WPGraphQL for a seamless shopping experience."
+description: "Learn how to efficiently fetch and use product data in your headless WooCommerce application using WPGraphQL for WooCommerce and WPGraphQL for a seamless shopping experience."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, product data, headless, shopping experience"
 author: "Geoff Taylor"
 ---
@@ -13,7 +13,7 @@ In this section, we will implement the Single Product page using the provided Gr
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
-- A setup WPGraphQL/WooGraphQL backend.
+- A setup WPGraphQL/WPGraphQL for WooCommerce backend.
 - Read previous sections on [Routing By URI](routing-by-uri.md)
 
 ## Step 0: Create our `graphql.js` file.

@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Connection;
 
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Attribute_Connection_Resolver;
@@ -24,15 +25,11 @@ class Product_Attributes {
 	 * @return void
 	 */
 	public static function register_connections() {
-		// From Product to ProductAttribute.
-		register_graphql_connection(
-			self::get_connection_config()
-		);
-
 		// From Product to LocalProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
 				[
+					'fromType'       => 'Product',
 					'toType'         => 'LocalProductAttribute',
 					'fromFieldName'  => 'localAttributes',
 					'connectionArgs' => [],
@@ -44,6 +41,7 @@ class Product_Attributes {
 		register_graphql_connection(
 			self::get_connection_config(
 				[
+					'fromType'       => 'Product',
 					'toType'         => 'GlobalProductAttribute',
 					'fromFieldName'  => 'globalAttributes',
 					'connectionArgs' => [],
@@ -57,15 +55,23 @@ class Product_Attributes {
 	 * with the defaults.
 	 *
 	 * @param array $args - Connection configuration.
+	 * @throws \GraphQL\Error\Error If the "fromType" or "toType" is not provided.
+	 *
 	 * @return array
 	 */
 	public static function get_connection_config( $args = [] ): array {
+		if ( ! isset( $args['fromType'] ) ) {
+			throw new Error( __( 'The "fromType" is required for the ProductAttributes connection.', 'wp-graphql-woocommerce' ) );
+		}
+
+		if ( ! isset( $args['toType'] ) ) {
+			throw new Error( __( 'The "toType" is required for the ProductAttributes connection.', 'wp-graphql-woocommerce' ) );
+		}
+
 		return array_merge(
 			[
-				'fromType'       => 'Product',
-				'toType'         => 'ProductAttribute',
 				'fromFieldName'  => 'attributes',
-				'connectionArgs' => self::get_connection_args(),
+				'connectionArgs' => [],
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Product_Attribute_Connection_Resolver();
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -81,19 +87,5 @@ class Product_Attributes {
 			],
 			$args
 		);
-	}
-
-	/**
-	 * Returns array of where args.
-	 *
-	 * @return array
-	 */
-	public static function get_connection_args(): array {
-		return [
-			'type' => [
-				'type'        => 'ProductAttributeTypesEnum',
-				'description' => __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' ),
-			],
-		];
 	}
 }

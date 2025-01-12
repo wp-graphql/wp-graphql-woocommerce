@@ -157,7 +157,14 @@ class WooCommerce_Filters {
 	 * @return array
 	 */
 	public static function woographql_stripe_gateway_args( $gateway_args, $payment_method ) {
-		if ( 'stripe' === $payment_method ) {
+		/** @var false|\WC_Order|\WC_Order_Refund $order */
+		$order = wc_get_order( $gateway_args[0] );
+		if ( false === $order ) {
+			return $gateway_args;
+		}
+
+		$stripe_source_id = $order->get_meta( '_stripe_source_id' );
+		if ( 'stripe' === $payment_method && ! empty( $stripe_source_id ) ) {
 			$gateway_args = [
 				$gateway_args[0],
 				true,

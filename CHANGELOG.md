@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.21.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.1) (2024-11-12)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.21.0...v0.21.1)
+
+**Fixed:**
+
+- fix: Products query "where.search" param patched [\#903](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/903) ([kidunot89](https://github.com/kidunot89))
+- fix: ID resolution made consistent across all edit and delete node mu… [\#902](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/902) ([kidunot89](https://github.com/kidunot89))
+- fix: "Product" interfaces shared fields fix [\#901](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/901) ([kidunot89](https://github.com/kidunot89))
+- chore: General "createOrder" cleanup [\#899](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/899) ([kidunot89](https://github.com/kidunot89))
+- Fix: Correct number formatting by removing unnecessary price separators [\#888](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/888) ([ZZiane](https://github.com/ZZiane))
+
+**Other Changes:**
+
+- devops: composer-git-hooks added. CONTRIBUTING.md updated. [\#904](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/904) ([kidunot89](https://github.com/kidunot89))
+- devops: Name officially changed to "WPGraphQL for WooCommerce" [\#900](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/900) ([kidunot89](https://github.com/kidunot89))
+- chore: Minor documentation issues resolved [\#884](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/884) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.21.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.0) (2024-08-07)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.20.0...v0.21.0)

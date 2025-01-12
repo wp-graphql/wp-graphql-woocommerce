@@ -423,7 +423,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 								'<p>%s</p>' .
 								'</div>',
 								esc_html__(
-									'WooGraphQL appears to have been installed without it\'s dependencies. It will not work properly until dependencies are installed. This likely means you have cloned WPGraphQL from Github and need to run the command `composer install`.',
+									'WPGraphQL for WooCommerce appears to have been installed without it\'s dependencies. It will not work properly until dependencies are installed. This likely means you have cloned WPGraphQL from Github and need to run the command `composer install`.',
 									'wp-graphql-woocommerce'
 								)
 							);
@@ -463,15 +463,15 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
-		 * Sets up WooGraphQL schema.
+		 * Sets up WPGraphQL for WooCommerce schema.
 		 *
 		 * @return void
 		 */
 		private function setup() {
-			// Initialize WooGraphQL Settings.
+			// Initialize WPGraphQL for WooCommerce Settings.
 			new Admin();
 
-			// Initialize WooGraphQL DB hooks.
+			// Initialize WPGraphQL for WooCommerce DB hooks.
 			new Data\DB_Hooks();
 
 			// Setup minor integrations.
@@ -489,7 +489,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			// Register WPGraphQL JWT Authentication filters.
 			JWT_Auth_Schema_Filters::add_filters();
 
-			// Initialize WooGraphQL TypeRegistry.
+			// Initialize WPGraphQL for WooCommerce TypeRegistry.
 			$registry = new Type_Registry();
 			add_action( 'graphql_register_types', [ $registry, 'init' ] );
 		}

@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="./logo.svg" width="200px" alt="WPGraphQL WooCommerce (WooGraphQL) Logo" />
+  <img src="./logo.svg" width="200px" alt="WPGraphQL for WooCommerce (WooGraphQL) Logo" />
 </p>
 
-# WPGraphQL WooCommerce (WooGraphQL)
+# WPGraphQL for WooCommerce
 
 <a href="https://woographql.com" target="_blank">Website</a> • <a href="https://woographql.com/docs" target="_blank">Docs</a> • <a href="https://woographql.com/schema" target="_blank">Schema</a> • <a href="https://woographql.com/playground" target="_blank">Playground</a> • <a href="https://woographql.com/about" target="_blank">About</a> • <a href="https://join.slack.com/t/wp-graphql/shared_invite/zt-3vloo60z-PpJV2PFIwEathWDOxCTTLA" target="_blank">Join Slack</a>
 
-[![Automated-Testing](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Automated-Testing/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Automated-Testing%22) [![Coding-Standards](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Coding-Standards/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Coding-Standards%22) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
+[![Automated-Testing](https://github.com/wp-graphql/wp-graphql-woocommerce/workflows/Automated-Testing/badge.svg?branch=develop)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions?query=workflow%3A%22Automated-Testing%22) [![Coding Standards](https://github.com/wp-graphql/wp-graphql-woocommerce/actions/workflows/lint-code.yml/badge.svg)](https://github.com/wp-graphql/wp-graphql-woocommerce/actions/workflows/lint-code.yml) [![Coverage Status](https://coveralls.io/repos/github/wp-graphql/wp-graphql-woocommerce/badge.svg?branch=develop)](https://coveralls.io/github/wp-graphql/wp-graphql-woocommerce?branch=develop) [![Financial Contributors on Open Collective](https://opencollective.com/woographql/all/badge.svg?label=financial+contributors)](https://opencollective.com/woographql)
 
 ## Install
 
@@ -21,7 +21,7 @@
 **This method is recommended for users with unique installations like WP Bedrock or SpinupWP.**
 
 1. Install [WordPress](https://composer.rarst.net/) and [WooCommerce](https://wpackagist.org/search?q=woocommerce&type=plugin&search=).
-2. Install WPGraphQL and WooGraphQL by running `composer require wp-graphql/wp-graphql wp-graphql/wp-graphql-woocommerce`.
+2. Install WPGraphQL and WPGraphQL for WooCommerce by running `composer require wp-graphql/wp-graphql wp-graphql/wp-graphql-woocommerce`.
 3. Set your GraphQL client endpoint to your site's GraphQL endpoint. For typical Bedrock or SpinupWP setups, the default will be `your-store.domain/wp/graphql`.
 
 ### Optional Extras
@@ -61,9 +61,9 @@ WooCommerce's Custom Post Types (CPTs) and most data objects are managed by a da
 
 This flexibility also lets WooCommerce store metadata for these CPTs in separate tables, and the data doesn't necessarily have to reside in the same database.
 
-The data store system and its object managers are WooGraphQL's primary contact points. Unlike standard CPTs, which use a **WP_Post** object for data sourcing and a **WPGraphQL\Model\Post** object for modeling, WooGraphQL engages object managers for its data source. Each object type has a unique model with distinct permissions and restrictions.
+The data store system and its object managers are WooGraphQL's primary contact points. Unlike standard CPTs, which use a **WP_Post** object for data sourcing and a **WPGraphQL\Model\Post** object for modeling, WPGraphQL for WooCommerce engages object managers for its data source. Each object type has a unique model with distinct permissions and restrictions.
 
-Such a setup has resulted in some disparities between the schema where WooGraphQL support might be lacking. We apologize for any inconvenience. Both I and the entire **WPGraphQL** team are actively working to harmonize WooGraphQL with all **WPGraphQL** and **WPGraphQL ACF** features.
+Such a setup has resulted in some disparities between the schema where WPGraphQL for WooCommerce support might be lacking. We apologize for any inconvenience. Both I and the entire **WPGraphQL** team are actively working to harmonize WPGraphQL for WooCommerce with all **WPGraphQL** and **WPGraphQL ACF** features.
 
 Thank you for your patience :smile:
 [@kidunot89](https://github.com/kidunot89)
@@ -75,7 +75,7 @@ Thank you for your patience :smile:
 
 ## For WooCommerce Extensions Support
 
-**[WooGraphQL Pro](https://woographql.com/pro)** is an extension of WPGraphQL WooCommerce that provides compatibility with a variety of popular WooCommerce extensions. This compatibility empowers you to leverage these extensions within the context of the GraphQL API, thereby enabling you to build more dynamic and powerful headless eCommerce applications.
+**[WooGraphQL Pro](https://woographql.com/pro)** is an extension of WPGraphQL for WooCommerce that provides compatibility with a variety of popular WooCommerce extensions. This compatibility empowers you to leverage these extensions within the context of the GraphQL API, thereby enabling you to build more dynamic and powerful headless eCommerce applications.
 
 The following WooCommerce extensions are supported by WooGraphQL Pro:
 
@@ -109,7 +109,7 @@ To enable schema support for your installed extensions, follow these steps:
 
 1. Navigate to the WPGraphQL settings page on your WordPress Admin Dashboard.
 2. Click on the 'WooGraphQL' tab.
-3. Here, you'll find a list of WooGraphQL configuration options. Go below to the **WooGraphQL Pro** section and paste in license and check the boxes next to your installed extensions to enable schema support for them.
+3. Here, you'll find a list of WPGraphQL for WooCommerce configuration options. Go below to the **WooGraphQL Pro** section and paste in license and check the boxes next to your installed extensions to enable schema support for them.
 
 Note: The 'Enable Unsupported Product Type' option can be found on the same settings tab. If you enable this option, any product type without a proper GraphQL type will default to the `UnsupportedProduct` type, which is identical to the `SimpleProduct` type. With this type, the client can use the `metaData` field to get a `string` representation of the meta data on the type. This could potentially be all that's needed for simpler product types.
 
@@ -125,7 +125,7 @@ Feel free to test out the extension using this [GraphiQL Playground](https://woo
 
 ### `create-woonext-app` CLI and `@woographql` packages
 
-Designed to both streamline development for individuals and teams looking to utilize WooCommerce + WooCommerce extensions in larger project and not waste too much to much time on the particulars of WooGraphQL like session management or checkout, the **[`create-woonext-app`](https://www.npmjs.com/package/create-woonext-app)** CLI generates a pre-created e-commerce application on [Next.js](https://nextjs.org) application tailored to the developer/team.
+Designed to both streamline development for individuals and teams looking to utilize WooCommerce + WooCommerce extensions in larger project and not waste too much to much time on the particulars of WPGraphQL for WooCommerce like session management or checkout, the **[`create-woonext-app`](https://www.npmjs.com/package/create-woonext-app)** CLI generates a pre-created e-commerce application on [Next.js](https://nextjs.org) application tailored to the developer/team.
 
 ```bash
 npx create-woonext-app <license> [options]
@@ -138,12 +138,12 @@ The generated application utilizes the **[`@woographql`](https://yeetsquad.net)*
 - [`create-woonext-app` Live Demo](https://woonext.woographql.com/): fully decked out putting all current possible functionalities of the `create-woonext-app` on full display.
 - [`@woographql/next` README](https://yeetsquad.net/-/web/detail/@woographql/next): A Template generator CLI. Capable of generator a multitude of Next.js pages, Next.js Route Handlers, react components, react hooks, and utilities. It's also equipped to generate react component and hook stubs for speedy component create with no boilerplate.
 - [`@woographql/react-hooks` README](https://yeetsquad.net/-/web/detail/@woographql/react-hooks): React hook library acting as the backbone for UI connected to session, cart, and customer.
-- [`@woographql/session-utils` README](https://yeetsquad.net/-/web/detail/@woographql/session-utils): Provides utilities for managing the WPGraphQL + WooGraphQL session tokens like a `TokenManager`, also provides interfaces and types for easy customization of said `TokenManager` or the complete creation of a custom `TokenManager` with minimal effort. The bundled TokenManager implemented utilizes browser storage _(Local/Session storage)_, so if you'd prefer something like [Iron Session](https://github.com/vvo/iron-session) this might be the route for you.
+- [`@woographql/session-utils` README](https://yeetsquad.net/-/web/detail/@woographql/session-utils): Provides utilities for managing the WPGraphQL + WPGraphQL for WooCommerce session tokens like a `TokenManager`, also provides interfaces and types for easy customization of said `TokenManager` or the complete creation of a custom `TokenManager` with minimal effort. The bundled TokenManager implemented utilizes browser storage _(Local/Session storage)_, so if you'd prefer something like [Iron Session](https://github.com/vvo/iron-session) this might be the route for you.
 - [`@woographql/codegen` README](https://yeetsquad.net/-/web/detail/@woographql/codegen): A convenient wrapper for GraphQL Codegen providing a few configurations out of the box, with the ability to override the default configuration by creating a `codegen.ts` in the project root.
 
 ## Wanna help support WooGraphQL's future
 
-- Sponsor **@kidunot89** _(WooGraphQL Creator/Developer)_ on **[Github](https://github.com/sponsors/kidunot89)**
+- Sponsor **@kidunot89** _(WPGraphQL for WooCommerce Creator/Developer)_ on **[Github](https://github.com/sponsors/kidunot89)**
 - Sponsor **WooGraphQL** on **[OpenCollective](https://opencollective.com/woographql)**
 - Sponsor **WPGraphQL** on **[OpenCollective](http://opencollective.com/wp-graphql)**
 - Sponsor **GraphQL-PHP** on **[OpenCollective](https://opencollective.com/webonyx-graphql-php)**
@@ -154,12 +154,15 @@ The generated application utilizes the **[`@woographql`](https://yeetsquad.net)*
 ## Demo/Examples
 
 - Examples with Next.js
-  - [WooGraphQL Demo](https://github.com/kidunot89/woographql-demo)
+  - [WPGraphQL for WooCommerce Demo](https://github.com/kidunot89/woographql-demo)
   - [Next.js WooCommerce Theme](https://github.com/imranhsayed/woo-next) [[source]](https://github.com/imranhsayed/woo-next) [[demo video]](https://youtu.be/EGjY3X868YQ)
 - Examples with Gatsby
   - [Gatsby WooCommerce Theme](https://gatsby-woocommerce-theme.netlify.app/) [[source]](https://github.com/imranhsayed/gatsby-woocommerce-themes) [[demo video]](https://youtu.be/ygaE8ZdPEX8)
+- Examples with WooGraphQL Pro [[homepage]](https://woographql.com/pro)
+  - [`create-woonext-app` CLI Demo](https://woonext.woographql.com) [[homepage]](https://woographql.com/create-woonext-app) [[docs]](https://www.npmjs.com/package/create-woonext-app)
+  - [WPGraphQL for WooCommerce homepage](https://woographql.com)
 
-## Who using WooGraphQL
+## Who using it?
 
 | <img src="https://www.rockymountainsewing.com/static/759d14c25bfb3243245711ce9be6600c/logo.svg" alt="Rocky Mountain Sewing & Vacuum" width="320"/> | <img src="https://russemerket.no/src/logos/Russemerket_black.svg" alt="Russemerket" width="320"/> | <img src="https://wohnparc.de/_next_public/wopa-icons/logo.svg" alt="wohnparc.de" width="320"/> |
 |:---------------------------------------:|:---------------------------------------:|:---------------------------------------:|
@@ -194,3 +197,5 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/woographql/organization/7/website"><img src="https://opencollective.com/woographql/organization/7/avatar.svg"></a>
 <a href="https://opencollective.com/woographql/organization/8/website"><img src="https://opencollective.com/woographql/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/woographql/organization/9/website"><img src="https://opencollective.com/woographql/organization/9/avatar.svg"></a>
+
+**Disclaimer:** *WPGraphQL for WooCommerce* is an open-source WordPress plugin and WooCommerce extension developed and maintained by [Geoff Taylor](https://woographql.com/about), licensed under GPLv3. It is not owned, maintained, or affiliated with [Automattic](https://automattic.com) or [WooCommerce](https://woocommerce.com).

@@ -1,6 +1,6 @@
 ---
 title: "Routing by URI with WooGraphQL"
-description: "Discover how to implement routing by URI in your headless WooCommerce application using WooGraphQL and WPGraphQL for efficient and user-friendly navigation."
+description: "Discover how to implement routing by URI in your headless WooCommerce application using WPGraphQL for WooCommerce and WPGraphQL for efficient and user-friendly navigation."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, routing, URI, headless, navigation"
 author: "Geoff Taylor"
 ---
@@ -13,7 +13,7 @@ In this section, we will create a simple app that demonstrates routing with WPGr
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
-- A setup WPGraphQL/WooGraphQL backend.
+- A setup WPGraphQL/WPGraphQL for WooCommerce backend.
 
 ## Getting Started
 

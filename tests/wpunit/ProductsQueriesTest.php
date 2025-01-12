@@ -5,6 +5,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$products = [
 			$this->factory->product->createSimple([
 				'name'          => 'Product Blue',
+				'slug'          => 'product-blue',
 				'description'   => 'A peach description',
 				'price'         => 100,
 				'regular_price' => 100,
@@ -16,6 +17,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			]),
 			$this->factory->product->createSimple([
 				'name'          => 'Product Green',
+				'slug'          => 'product-green',
 				'description'   => 'A turquoise description',
 				'sku' 		    => 'green-sku',
 				'price'         => 200,
@@ -28,6 +30,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			]),
 			$this->factory->product->createSimple([
 				'name'          => 'Product Red',
+				'slug'          => 'product-red',
 				'description'   => 'A maroon description',
 				'price'         => 300,
 				'regular_price' => 300,
@@ -39,6 +42,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			]),
 			$this->factory->product->createSimple([
 				'name'          => 'Product Yellow',
+				'slug'          => 'product-yellow',
 				'description'   => 'A teal description',
 				'price'         => 400,
 				'regular_price' => 400,
@@ -50,6 +54,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			]),
 			$this->factory->product->createSimple([
 				'name'          => 'Product Purple',
+				'slug'          => 'product-purple',
 				'description'   => 'A magenta description',
 				'price'         => 500,
 				'regular_price' => 500,
@@ -1024,6 +1029,8 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				nodes {
 					id
 					name
+					description
+					sku
 					... on ProductWithPricing {
 						databaseId
 						price
@@ -1056,9 +1063,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assert search by product sku.
 		 */
-		$variables = [
-			'search' => 'green-sku',
-		];
+		$variables = [ 'search' => 'green-sku' ];
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
@@ -1071,7 +1076,41 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 					0
 				),
 			],
+			'Failed to search products by product sku.'
+		);
+
+		// Search by product description.
+		$variables = [ 'search' => 'magenta' ];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedNode(
+					'products.nodes',
+					[
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[4] ) )
+					],
+					0
+				),
+			],
 			'Failed to search products by product description content.'
+		);
+
+		// Search by slug.
+		$variables = [ 'search' => 'product-red' ];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedNode(
+					'products.nodes',
+					[
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) )
+					],
+					0
+				),
+			],
+			'Failed to search products by product slug.'
 		);
 	}
 }

@@ -497,7 +497,7 @@ class Order extends Model {
 				return ! empty( $this->data->get_date_paid() ) ? $this->data->get_date_paid() : null;
 			},
 			'subtotal'              => function () {
-				return ! empty( $this->data->get_subtotal() )
+				return ! is_null( $this->data->get_subtotal() )
 					? wc_graphql_price( $this->data->get_subtotal(), [ 'currency' => $this->data->get_currency() ] )
 					: null;
 			},

@@ -1,6 +1,6 @@
-## Contribute to WPGraphQL WooCommerce
+## Contribute to WPGraphQL for WooCommerce
 
-WPGraphQL WooCommerce (WooGraphQL) welcomes community contributions, bug reports and other constructive feedback.
+WPGraphQL for WooCommerce (WooGraphQL) welcomes community contributions, bug reports and other constructive feedback.
 
 When contributing please ensure you follow the guidelines below so that we can keep on top of things.
 
@@ -22,6 +22,37 @@ When contributing please ensure you follow the guidelines below so that we can k
 * When committing, reference your issue (if present) and include a note about the fix
 * If possible, and if applicable, please also add/update unit tests for your changes
 * Push the changes to your fork and submit a pull request to the 'develop' branch of this repository
+
+### Setting up an environment to run the WPUnit tests
+
+1. Create a `.env` file from the provided `.env.testing` and update the following section.
+
+    ```env
+    # WordPress database configurations
+    DB_NAME=wordpress
+    DB_HOST=app_db
+    DB_PORT=3306
+    DB_USER=wordpress
+    DB_PASSWORD=password
+    ROOT_PASSWORD=password
+    WP_TABLE_PREFIX=wp_
+    SKIP_DB_CREATE=true
+    SKIP_WP_SETUP=true
+
+    ```
+
+    The variable should be point to a local instance of MySQL and `SKIP_DB_CREATE` and `SKIP_WP_SETUP` should be set to `false`.
+2. Run `composer installTestEnv` from the terminal in the plugin root directory. This will run the setup script and install all the required dependencies.
+3. Run the tests by running `vendor/bin/codecept run wpunit` from the root directory. To learn about the libraries used to write the tests see [Codeception](https://codeception.com/), [WPBrowser](https://wpbrowser.wptestkit.dev/modules/WPBrowser/), and [WPGraphQL TestCase](https://github.com/wp-graphql/wp-graphql-testcase)
+
+### Setting up a Docker environment to run the E2E tests
+
+1. Run `composer installTestEnv` from the terminal in the plugin root directory to install all the required dependencies.
+2. Next run `composer dRunApp`. This will build and start the docker network at http://localhost:8080 based off the configuration found in the `docker-compose.yml` in the project root.
+3. Last run the test by running `composer dRunTest`. This runs the test suite by utilizing the `docker exec` command to run `vendor/bin/codecept run` from the project root within the docker container for wordpress site. You can pass further parameter to this comment by using the `FILTER` environment variable like so `FILTER="acceptance NewCustomerCheckingOutCept --debug" composer dRunTest`.
+
+> **NOTE:** If you have no interest in the generated docker environment outside of automated test you can simply the process by just running the `dRunTestStandalone` command after the `installTestEnv` command combining steps 2 & 3, `composer dRunTestStandalone`. The command also reads the `FILTER` variables as well to so filter is possible `FILTER="acceptance NewCustomerCheckingOutCept --debug" composer dRunTestStandalone`.
+
 
 ## Code Documentation
 

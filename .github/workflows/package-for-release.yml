@@ -25,7 +25,7 @@ jobs:
           mkdir plugin-build
           composer archive -vvv --format=zip --file="plugin-build/wp-graphql-woocommerce"
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: wp-graphql-woocommerce
           path: plugin-build/wp-graphql-woocommerce.zip

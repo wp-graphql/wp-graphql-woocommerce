@@ -12,9 +12,9 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WC_Order_Factory;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
 
@@ -48,11 +48,12 @@ class Order_Delete {
 			[
 				'id'          => [
 					'type'        => 'ID',
-					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
+					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
 				],
 				'orderId'     => [
-					'type'        => 'Int',
-					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'type'              => 'Int',
+					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
 				],
 				'forceDelete' => [
 					'type'        => 'Boolean',
@@ -86,17 +87,17 @@ class Order_Delete {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve order ID.
-			$order_id = null;
+			$order_id = false;
 			if ( ! empty( $input['id'] ) ) {
-				$id_components = Relay::fromGlobalId( $input['id'] );
-				if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-					throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
-				}
-				$order_id = absint( $id_components['id'] );
+				$order_id = Utils::get_database_id_from_id( $input['id'] );
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+			}
+
+			if ( ! $order_id ) {
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Check if authorized to delete this order.

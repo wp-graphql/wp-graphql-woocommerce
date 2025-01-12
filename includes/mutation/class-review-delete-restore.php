@@ -14,6 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class Review_Delete_Restore
@@ -130,12 +131,12 @@ class Review_Delete_Restore {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve the product review rating for the payload.
-			$id_parts = Relay::fromGlobalId( $input['id'] );
-			if ( empty( $id_parts['id'] ) ) {
+			$id = Utils::get_database_id_from_id( $input['id'] );
+			if ( ! $id ) {
 				throw new UserError( __( 'Invalid Product Review ID provided', 'wp-graphql-woocommerce' ) );
 			}
 
-			$rating = get_comment_meta( absint( $id_parts['id'] ), 'rating' );
+			$rating = get_comment_meta( absint( $id ), 'rating' );
 
 			// @codingStandardsIgnoreLine
 			switch ( $info->fieldName ) {

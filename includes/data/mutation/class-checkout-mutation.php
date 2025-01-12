@@ -493,6 +493,7 @@ class Checkout_Mutation {
 		if ( WC()->cart->needs_payment() ) {
 			$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
+			\codecept_debug( $available_gateways );
 			if ( ! isset( $available_gateways[ $data['payment_method'] ] ) ) {
 				throw new UserError( __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
 			} else {

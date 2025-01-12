@@ -239,6 +239,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_query() {
 		add_filter( 'posts_clauses', [ $this->products_query, 'add_query_clauses' ], 10, 2 );
 
+		// Temporary fix for the search query.
+		if ( ! empty( $this->query_args['search'] ) ) {
+			$this->query_args['fulltext_search'] = $this->query_args['search'];
+			unset( $this->query_args['search'] );
+			add_filter( 'posts_clauses', [ $this, 'add_search_query_clause' ], 10, 2 );
+		}
+
 		return new \WP_Query();
 	}
 
@@ -248,6 +255,10 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_ids_from_query() {
 		// Run query and get IDs.
 		$ids = $this->query->query( $this->query_args );
+
+		if ( ! empty( $this->query_args['fulltext_search'] ) ) {
+			remove_filter( 'posts_clauses', [ $this, 'add_search_query_clause' ], 10 );
+		}
 
 		remove_filter( 'posts_clauses', [ $this->products_query, 'add_query_clauses' ], 10 );
 
@@ -285,6 +296,30 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * This function replaces the default product query search query clause with a clause searching the product's description, short description and slug.
+	 *
+	 * @param array     $args      The query arguments.
+	 * @param \WP_Query $wp_query  The WP_Query object.
+	 * @return array
+	 */
+	public function add_search_query_clause( $args, $wp_query ) {
+		global $wpdb;
+		if ( empty( $wp_query->get( 'fulltext_search' ) ) ) {
+			return $args;
+		}
+
+		$search         = '%' . $wpdb->esc_like( $wp_query->get( 'fulltext_search' ) ) . '%';
+		$search_query   = $wpdb->prepare( " AND ( $wpdb->posts.post_title LIKE %s OR $wpdb->posts.post_name LIKE %s OR wc_product_meta_lookup.sku LIKE %s OR $wpdb->posts.post_content LIKE %s OR $wpdb->posts.post_excerpt LIKE %s ) ", $search, $search, $search, $search, $search );
+		$args['where'] .= $search_query;
+
+		if ( ! strstr( $args['join'], 'wc_product_meta_lookup' ) ) {
+			$args['join'] .= " LEFT JOIN {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup ON $wpdb->posts.ID = wc_product_meta_lookup.product_id ";
+		}
+
+		return $args;
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -309,6 +344,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				'parentIn'    => 'post_parent__in',
 				'parentNotIn' => 'post_parent__not_in',
 				'search'      => 'search',
+
 			]
 		);
 

@@ -146,10 +146,11 @@ class Orders {
 		$customer_id   = $customer->get_id();
 		$billing_email = $customer->get_billing_email();
 		if ( ! empty( $customer_id ) ) {
-			$args                     = [
+			$args = [
 				'customer_id' => $customer_id,
 				'return'      => 'ids',
 			];
+			/** @var array<int> $order_ids_by_customer_id */
 			$order_ids_by_customer_id = wc_get_orders( $args );
 
 			if ( is_array( $order_ids_by_customer_id ) ) {
@@ -158,10 +159,11 @@ class Orders {
 		}
 
 		if ( ! empty( $billing_email ) ) {
-			$args               = [
+			$args = [
 				'billing_email' => $billing_email,
 				'return'        => 'ids',
 			];
+			/** @var array<int> $order_ids_by_email */
 			$order_ids_by_email = wc_get_orders( $args );
 			// Merge the arrays of order IDs.
 			if ( is_array( $order_ids_by_email ) ) {
@@ -182,6 +184,7 @@ class Orders {
 			( 0 !== $customer_id && \WC()->customer->get_id() === $customer_id )
 				|| \WC()->customer->get_billing_email() === $billing_email
 		);
+
 		$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $order_ids ) );
 
 		// Execute and return connection.

@@ -130,7 +130,7 @@ cleanup_local_files() {
 	echo "Rebuilding lock file..."
 	rm -rf $PROJECT_ROOT_DIR/vendor
 
-	composer install --no-dev
+	composer install
 }
 
 install_db() {

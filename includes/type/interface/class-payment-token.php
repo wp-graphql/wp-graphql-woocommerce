@@ -39,7 +39,7 @@ class Payment_Token {
 							throw new UserError(
 								sprintf(
 									/* translators: %s: Payment token type */
-									__( 'The "%s" token type is not supported by the core WPGraphQL WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+									__( 'The "%s" token type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
 									$type
 								)
 							);

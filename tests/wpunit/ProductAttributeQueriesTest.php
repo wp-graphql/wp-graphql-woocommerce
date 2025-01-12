@@ -179,11 +179,13 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
             query attributeQuery( $id: ID! ) {
                 product( id: $id ) {
 					id
-					attributes {
-						nodes {
-							name
-							label
-							options
+					... on ProductWithAttributes {
+						attributes {
+							nodes {
+								name
+								label
+								options
+							}
 						}
 					}
 					... on ProductWithVariations {
