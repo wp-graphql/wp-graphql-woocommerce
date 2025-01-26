@@ -127,7 +127,9 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
                     height
                     menuOrder
                     purchaseNote
-                    shippingClass
+                    shippingClass {
+						id
+					}
                     catalogVisibility
                     hasAttributes
                     type
