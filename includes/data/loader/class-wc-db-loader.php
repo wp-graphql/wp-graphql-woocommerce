@@ -22,7 +22,7 @@ use WPGraphQL\WooCommerce\Model\Tax_Rate;
  */
 class WC_Db_Loader extends AbstractDataLoader {
 	/**
-	 * Stores loaded CPTs.
+	 * Stores loaded data objects.
 	 *
 	 * @var array
 	 */
