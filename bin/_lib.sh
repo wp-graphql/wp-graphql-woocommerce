@@ -35,7 +35,6 @@ install_wordpress() {
 	composer require --dev --no-interaction -W \
 		johnpbloch/wordpress:* \
         wp-graphql/wp-graphql-jwt-authentication \
-        axepress/wp-graphql-headless-login \
         wpackagist-plugin/woocommerce \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
