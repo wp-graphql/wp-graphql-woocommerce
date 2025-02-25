@@ -10,7 +10,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
 use WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type;
@@ -24,27 +23,39 @@ class Product_Variation {
 	 * Registers the "ProductVariation" interface
 	 *
 	 * @return void
-	 * @throws \Exception
 	 */
 	public static function register_interface(): void {
-		register_graphql_interface_type(
-			'ProductVariation',
+		register_graphql_fields( 'ProductVariation', self::get_fields() );
+		register_graphql_connection(
 			[
-				'description' => __( 'A product variation.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [
-					'Node',
-					'NodeWithFeaturedImage',
-					'ContentNode',
-					'UniformResourceIdentifiable',
-					'ProductUnion',
-					'ProductWithPricing',
-					'ProductWithDimensions',
-					'InventoriedProduct',
-					'DownloadableProduct',
-				],
-				'fields'      => self::get_fields(),
-				'connections' => self::get_connections(),
-				'resolveType' => [ Core::class, 'resolve_product_variation_type' ],
+				'fromType'      => 'ProductVariation',
+				'toType'        => 'VariationAttribute',
+				'fromFieldName' => 'attributes',
+				'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new Variation_Attribute_Connection_Resolver();
+
+					return $resolver->resolve( $source, $args, $context, $info );
+				},
+			]
+		);
+		register_graphql_connection(
+			[
+				'fromType'      => 'ProductVariation',
+				'toType'        => 'Product',
+				'fromFieldName' => 'parent',
+				'description'   => __( 'The parent of the variation', 'wp-graphql-woocommerce' ),
+				'oneToOne'      => true,
+				'queryClass'    => '\WC_Product_Query',
+				'resolve'       => static function ( $source, $args, AppContext $context, ResolveInfo $info ) {
+					if ( empty( $source->parent_id ) ) {
+						return null;
+					}
+
+					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+					$resolver->set_query_arg( 'p', $source->parent_id );
+
+					return $resolver->one_to_one()->get_connection();
+				},
 			]
 		);
 
@@ -269,40 +280,6 @@ class Product_Variation {
 				},
 			],
 			'metaData'          => Meta_Data_Type::get_metadata_field_definition(),
-		];
-	}
-
-	/**
-	 * Defines connections of "ProductVariation".
-	 *
-	 * @return array
-	 */
-	public static function get_connections() {
-		return [
-			'attributes' => [
-				'toType'  => 'VariationAttribute',
-				'resolve' => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					$resolver = new Variation_Attribute_Connection_Resolver();
-
-					return $resolver->resolve( $source, $args, $context, $info );
-				},
-			],
-			'parent'     => [
-				'toType'      => 'Product',
-				'description' => __( 'The parent of the variation', 'wp-graphql-woocommerce' ),
-				'oneToOne'    => true,
-				'queryClass'  => '\WC_Product_Query',
-				'resolve'     => static function ( $source, $args, AppContext $context, ResolveInfo $info ) {
-					if ( empty( $source->parent_id ) ) {
-						return null;
-					}
-
-					$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
-					$resolver->set_query_arg( 'p', $source->parent_id );
-
-					return $resolver->one_to_one()->get_connection();
-				},
-			],
 		];
 	}
 }

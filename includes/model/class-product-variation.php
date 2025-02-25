@@ -84,6 +84,15 @@ class Product_Variation extends WC_Post {
 	}
 
 	/**
+	 * Returns the product variation type.
+	 *
+	 * @return string
+	 */
+	public function get_type() {
+		return $this->wc_data->get_type();
+	}
+
+	/**
 	 * Initializes the ProductVariation field resolvers.
 	 */
 	protected function init() {

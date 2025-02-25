@@ -129,6 +129,16 @@ class Product extends WC_Post {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = [] ) {
+		return array_merge(
+			parent::get_allowed_restricted_fields(),
+			[ 'type' ]
+		);
+	}
+
+	/**
 	 * Returns the product type.
 	 *
 	 * @return string

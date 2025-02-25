@@ -130,32 +130,29 @@ class Core_Schema_Filters {
 			$args['graphql_interfaces']               = [ 'ContentNode' ];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
-			$args['graphql_resolve_type']             = static function ( $value ) {
-				$type_registry  = \WPGraphQL::get_type_registry();
-				$possible_types = WooGraphQL::get_enabled_product_types();
-				$product_type   = $value->get_type();
-				if ( isset( $possible_types[ $product_type ] ) ) {
-					return $type_registry->get_type( $possible_types[ $product_type ] );
-				} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
-					$unsupported_type = WooGraphQL::get_supported_product_type();
-					return $type_registry->get_type( $unsupported_type );
-				}
-
-				throw new UserError(
-					sprintf(
-					/* translators: %s: Product type */
-						__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-						$value->type
-					)
-				);
-			};
-		}//end if
+			$args['graphql_resolve_type']             = [ self::class, 'resolve_product_type' ];
+		}
 		if ( 'product_variation' === $post_type ) {
-			$args['show_in_graphql']            = true;
-			$args['graphql_single_name']        = 'ProductVariation';
-			$args['graphql_plural_name']        = 'ProductVariations';
-			$args['publicly_queryable']         = true;
-			$args['skip_graphql_type_registry'] = true;
+			$args['show_in_graphql']                  = true;
+			$args['model']                            = \WPGraphQL\WooCommerce\Model\Product_Variation::class;
+			$args['graphql_single_name']              = 'ProductVariation';
+			$args['graphql_plural_name']              = 'ProductVariations';
+			$args['publicly_queryable']               = true;
+			$args['graphql_kind']                     = 'interface';
+			$args['graphql_interfaces']               = [
+				'Node',
+				'NodeWithFeaturedImage',
+				'ContentNode',
+				'UniformResourceIdentifiable',
+				'ProductUnion',
+				'ProductWithPricing',
+				'ProductWithDimensions',
+				'InventoriedProduct',
+				'DownloadableProduct',
+			];
+			$args['graphql_register_root_field']      = false;
+			$args['graphql_register_root_connection'] = false;
+			$args['graphql_resolve_type']             = [ self::class, 'resolve_product_variation_type' ];
 		}
 		if ( 'shop_coupon' === $post_type ) {
 			$args['show_in_graphql']            = true;
@@ -373,22 +370,7 @@ class Core_Schema_Filters {
 				$type = self::resolve_product_variation_type( $value );
 				break;
 			case 'Product':
-				$supported_types = WooGraphQL::get_enabled_product_types();
-				if ( in_array( $value->type, array_keys( $supported_types ), true ) ) {
-					$type_name = $supported_types[ $value->type ];
-					$type      = $type_registry->get_type( $type_name );
-				} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
-					$type_name = WooGraphQL::get_supported_product_type();
-					$type      = $type_registry->get_type( $type_name );
-				} else {
-					throw new UserError(
-						sprintf(
-						/* translators: %s: Product type */
-							__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-							$value->type
-						)
-					);
-				}
+				$type = self::resolve_product_type( $value );
 		}//end switch
 
 		return $type;
@@ -397,7 +379,7 @@ class Core_Schema_Filters {
 	/**
 	 * Resolves GraphQL type for provided product model.
 	 *
-	 * @param \WPGraphQL\WooCommerce\Model\Product $value  Product model.
+	 * @param \WPGraphQL\WooCommerce\Model\Product|\WPGraphQL\WooCommerce\Model\Product_Variation $value  Product model.
 	 *
 	 * @throws \GraphQL\Error\UserError Invalid product type requested.
 	 *
@@ -409,7 +391,7 @@ class Core_Schema_Filters {
 		$product_type   = $value->get_type();
 		if ( isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
-		} elseif ( str_ends_with( $product_type, 'variation' ) ) {
+		} elseif ( $value instanceof \WPGraphQL\WooCommerce\Model\Product_Variation ) {
 			return self::resolve_product_variation_type( $value );
 		} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 			$unsupported_type = WooGraphQL::get_supported_product_type();
@@ -428,7 +410,7 @@ class Core_Schema_Filters {
 	/**
 	 * Resolves GraphQL type for provided product variation model.
 	 *
-	 * @param \WPGraphQL\WooCommerce\Model\Product $value  Product model.
+	 * @param \WPGraphQL\WooCommerce\Model\Product_Variation $value  Product model.
 	 *
 	 * @throws \GraphQL\Error\UserError Invalid product type requested.
 	 *
