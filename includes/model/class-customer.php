@@ -47,9 +47,10 @@ class Customer extends Model {
 	 * Customer constructor
 	 *
 	 * @param \WC_Customer|int|string $id - User ID.
+	 * @param bool                    $is_session - Whether the customer is a session.
 	 */
-	public function __construct( $id = 'session' ) {
-		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( absint( $id ) );
+	public function __construct( $id = 'session', $is_session = false ) {
+		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( absint( $id ), $is_session );
 		$allowed_restricted_fields = [
 			'isRestricted',
 			'isPrivate',
