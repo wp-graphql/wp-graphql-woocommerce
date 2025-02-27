@@ -246,6 +246,211 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
+	public function testProductsPaginationWithOrderby() {
+		$products = [
+			$this->factory->product->createSimple( [ 'menu_order' => 0, 'regular_price' => 5 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 1, 'regular_price' => 4 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 2, 'regular_price' => 3, 'sale_price' => 0.50 ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 3, 'regular_price' => 2  ] ),
+			$this->factory->product->createSimple( [ 'menu_order' => 4, 'regular_price' => 1  ] ),
+		];
+
+		usort(
+			$products,
+			static function ( $key_a, $key_b ) {
+				return $key_a < $key_b;
+			}
+		);
+
+		$query = '
+			query ($first: Int, $last: Int, $after: String, $before: String, $where: RootQueryToProductUnionConnectionWhereArgs) {
+				products(first: $first, last: $last, after: $after, before: $before, where: $where) {
+					found
+					nodes {
+						databaseId
+						menuOrder
+                    }
+                    pageInfo {
+                        hasPreviousPage
+                        hasNextPage
+                        startCursor
+                        endCursor
+                    }
+                }
+			}
+        ';
+
+		/**
+		 * Assertion One
+		 *
+		 * Test "first" parameter with the "orderby.MENU_ORDER".
+		 */
+		$variables = [ 'first' => 2, 'where' => [ 'orderby' => [ [ 'field' => 'MENU_ORDER', 'order' => 'DESC' ] ] ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', 5 ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[0] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[0] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[1] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Test "after" parameter with the "orderby.MENU_ORDER".
+		 */
+		$variables = [
+			'first' => 3,
+			'after' => $this->toCursor( $products[1] ),
+			'where' => [ 'orderby' => [ [ 'field' => 'MENU_ORDER', 'order' => 'DESC' ] ] ],
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', static::IS_NULL ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[4] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[2] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[3] ),
+			$this->expectedField( 'products.nodes.2.databaseId', $products[4] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Three
+		 *
+		 * Test "last" parameter with the "orderby.MENU_ORDER".
+		 */
+		$variables = [ 'last' => 2, 'where' => [ 'orderby' => [ [ 'field' => 'MENU_ORDER', 'order' => 'DESC' ] ] ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', 5 ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[0] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[1] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[0] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Four
+		 *
+		 * Test "before" parameter with the "orderby.MENU_ORDER".
+		 */
+		$variables = [
+			'last'   => 2,
+			'before' => $this->toCursor( $products[1] ),
+			'where' => [ 'orderby' => [ [ 'field' => 'MENU_ORDER', 'order' => 'DESC' ] ] ]
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', static::IS_NULL ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[3] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[3] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[2] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Five
+		 *
+		 * Test "first" parameter with the "orderby.PRICE".
+		 */
+		$variables = [ 'first' => 2, 'where' => [ 'orderby' => [ [ 'field' => 'PRICE', 'order' => 'DESC' ] ] ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', 5 ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', false ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[4] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[3] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[4] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[3] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Six
+		 *
+		 * Test "after" parameter with the "orderby.PRICE".
+		 */
+		$variables = [
+			'first' => 3,
+			'after' => $this->toCursor( $products[3] ),
+			'where' => [ 'orderby' => [ [ 'field' => 'PRICE', 'order' => 'DESC' ] ] ],
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', static::IS_NULL ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[1] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[0] ),
+			$this->expectedField( 'products.nodes.2.databaseId', $products[2] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Seven
+		 *
+		 * Test "last" parameter with the "orderby.PRICE".
+		 */
+		$variables = [ 'last' => 2, 'where' => [ 'orderby' => [ [ 'field' => 'PRICE', 'order' => 'ASC' ] ] ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', 5 ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', false ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[0] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[2] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[0] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[2] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Eight
+		 *
+		 * Test "before" parameter with the "orderby.PRICE".
+		 */
+		$variables = [
+			'last'   => 2,
+			'before' => $this->toCursor( $products[0] ),
+			'where' => [ 'orderby' => [ [ 'field' => 'PRICE', 'order' => 'ASC' ] ] ]
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'products.found', static::IS_NULL ),
+			$this->expectedField( 'products.pageInfo.hasPreviousPage', true ),
+			$this->expectedField( 'products.pageInfo.hasNextPage', true ),
+			$this->expectedField( 'products.pageInfo.startCursor', $this->toCursor( $products[3] ) ),
+			$this->expectedField( 'products.pageInfo.endCursor', $this->toCursor( $products[1] ) ),
+			$this->expectedField( 'products.nodes.0.databaseId', $products[3] ),
+			$this->expectedField( 'products.nodes.1.databaseId', $products[1] ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
 	public function testOrdersPagination() {
 		$this->loginAsShopManager();
 
