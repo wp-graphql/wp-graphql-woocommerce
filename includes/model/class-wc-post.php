@@ -88,6 +88,14 @@ abstract class WC_Post extends Post {
 			'isPublic',
 			'id',
 			'databaseId',
+			'slug',
+			'uri',
+			'link',
+			'name',
+			'isPostsPage',
+			'isFrontPage',
+			'hasPassword',
+			'status',
 		];
 	}
 
@@ -142,6 +150,20 @@ abstract class WC_Post extends Post {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function is_private() {
+		/**
+		 * Published content is public, not private
+		 */
+		if ( 'publish' === $this->data->post_status && $this->post_type_object && empty( $this->data->post_password ) && ( true === $this->post_type_object->public || true === $this->post_type_object->publicly_queryable ) ) {
+			return false;
+		}
+
+		return parent::is_post_private( $this->data );
+	}
+
+	/**
 	 * Method for determining if the data should be considered private or not
 	 *
 	 * @param \WP_Post $post_object The object of the post we need to verify permissions for.
@@ -177,6 +199,10 @@ abstract class WC_Post extends Post {
 		}
 
 		if ( 'private' === $this->data->post_status && ( ! isset( $post_type_object->cap->read_private_posts ) || ! current_user_can( $post_type_object->cap->read_private_posts ) ) ) {
+			return true;
+		}
+
+		if ( ! empty( $post_object->post_password ) ) {
 			return true;
 		}
 
