@@ -66,6 +66,10 @@ class Customer_Update {
 					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 					'type'        => [ 'list_of' => 'MetaDataInput' ],
 				],
+				'isSession'             => [
+					'type'        => 'Boolean',
+					'description' => __( 'Whether to save changes on the session or in the database', 'wp-graphql-woocommerce' ),
+				],
 			]
 		);
 	}
@@ -93,6 +97,7 @@ class Customer_Update {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			$is_session   = isset( $input['isSession'] ) ? $input['isSession'] : false;
 			$session_only = empty( $input['id'] ) && ! is_user_logged_in();
 			$payload      = null;
 
@@ -116,7 +121,7 @@ class Customer_Update {
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'update' );
 
 			// Create customer object.
-			$customer = ! $session_only ? new WC_Customer( $payload['id'] ) : \WC()->customer;
+			$customer = ! $session_only ? new WC_Customer( $payload['id'], $is_session ) : \WC()->customer;
 
 			// Copy billing address as shipping address.
 			if ( isset( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
