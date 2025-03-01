@@ -1,6 +1,22 @@
 # Changelog
 
-## [v0.21.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.1) (2024-11-12)
+## [v0.21.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.2) (2025-03-01)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.21.1...v0.21.2)
+
+**New Features:**
+
+- "isSession" field added to the "UpdateCustomerInput" type [\#924](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/924) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: Better support for private and password protected products imple… [\#925](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/925) ([kidunot89](https://github.com/kidunot89))
+- fix: Bypasses Woo declare\_compatiblilty call if not in plugin directory [\#923](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/923) ([kidunot89](https://github.com/kidunot89))
+- fix: "menu\_order" pagination fixed [\#922](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/922) ([kidunot89](https://github.com/kidunot89))
+- fix: "key" argument for MetaData fields fixed [\#921](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/921) ([kidunot89](https://github.com/kidunot89))
+- fix: Debug code removed from checkout mutation [\#916](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/916) ([kidunot89](https://github.com/kidunot89))
+
+## [v0.21.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.1) (2024-12-09)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.21.0...v0.21.1)
 
