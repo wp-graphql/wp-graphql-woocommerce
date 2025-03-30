@@ -108,7 +108,6 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                             subtotal
                             orderNumber
                             orderKey
-                            createdVia
                             pricesIncludeTax
                             parent {
                                 id
