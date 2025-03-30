@@ -17,9 +17,10 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Remove_Coupons
  */
 class Cart_Remove_Coupons {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -63,7 +64,7 @@ class Cart_Remove_Coupons {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input ) {
+		return static function ( $input ) {
 			Cart_Mutation::check_session_token();
 
 			// Retrieve product database ID if relay ID provided.
@@ -84,6 +85,8 @@ class Cart_Remove_Coupons {
 					throw new UserError( __( 'Failed to remove coupon.', 'wp-graphql-woocommerce' ) );
 				}
 			}
+
+			do_action( 'woographql_update_session', true );
 
 			// Return payload.
 			return [ 'cart' => \WC()->cart ];

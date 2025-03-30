@@ -8,10 +8,12 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use WPGraphQL\WooCommerce\Data\Factory;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Trait WC_CPT_Loader_Common
+ *
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader $loader
  */
 trait WC_CPT_Loader_Common {
 	/**
@@ -41,33 +43,17 @@ trait WC_CPT_Loader_Common {
 	 * @return array
 	 */
 	public function sanitize_common_inputs( array $input ) {
-		$args = [];
-		if ( ! empty( $input['include'] ) ) {
-			$args['post__in'] = $input['include'];
-		}
-
-		if ( ! empty( $input['exclude'] ) ) {
-			$args['post__not_in'] = $input['exclude'];
-		}
-
-		if ( ! empty( $input['parent'] ) ) {
-			$args['post_parent'] = $input['parent'];
-		}
-
-		if ( ! empty( $input['parentIn'] ) ) {
-			if ( ! isset( $args['post_parent__in'] ) ) {
-				$args['post_parent__in'] = [];
-			}
-			$args['post_parent__in'] = array_merge( $args['post_parent__in'], $input['parentIn'] );
-		}
-
-		if ( ! empty( $input['parentNotIn'] ) ) {
-			$args['post_parent__not_in'] = $input['parentNotIn'];
-		}
-
-		if ( ! empty( $input['search'] ) ) {
-			$args['s'] = $input['search'];
-		}
+		$args = Utils::map_input(
+			$input,
+			[
+				'include'     => 'post__in',
+				'exclude'     => 'post__not_in',
+				'parent'      => 'post_parent',
+				'parentIn'    => 'post_parent__in',
+				'parentNotIn' => 'post_parent__not_in',
+				'search'      => 's',
+			]
+		);
 
 		/**
 		 * Map the orderby inputArgs to the WP_Query
@@ -76,25 +62,41 @@ trait WC_CPT_Loader_Common {
 			$args['orderby'] = [];
 			foreach ( $input['orderby'] as $orderby_input ) {
 				/**
+				 * Stores orderby field
+				 *
+				 * @var null|string $orderby_field
+				 */
+				$orderby_field = isset( $orderby_input['field'] ) ? (string) $orderby_input['field'] : null;
+
+				if ( null === $orderby_field ) {
+					continue;
+				}
+
+				$default_order = isset( $this->args['last'] ) ? 'ASC' : 'DESC';
+				/**
+				 * Stores orderby direction
+				 *
+				 * @var string $orderby_order
+				 */
+				$orderby_order = isset( $orderby_input['order'] ) ? $orderby_input['order'] : $default_order;
+
+				/**
 				 * These orderby options should not include the order parameter.
 				 */
-				if ( in_array(
-					$orderby_input['field'],
-					[ 'post__in', 'post_name__in', 'post_parent__in' ],
-					true
-				) ) {
-					$args['orderby'] = esc_sql( $orderby_input['field'] );
+				$post_fields = [ 'post__in', 'post_name__in', 'post_parent__in' ];
+				if ( in_array( $orderby_field, $post_fields, true ) ) {
+					$args['orderby'][ $orderby_field ] = $orderby_order;
 
-					// Handle meta fields.
-				} elseif ( in_array( $orderby_input['field'], $this->ordering_meta(), true ) ) {
-					$args['orderby']['meta_value_num'] = $orderby_input['order'];
-					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					$args['meta_key'] = esc_sql( $orderby_input['field'] );
-					// WPCS: slow query ok.
-
-					// Handle post object fields.
-				} elseif ( ! empty( $orderby_input['field'] ) ) {
-					$args['orderby'][ esc_sql( $orderby_input['field'] ) ] = esc_sql( $orderby_input['order'] );
+					// Handle non-numeric meta fields.
+				} elseif ( in_array( $orderby_field, $this->ordering_meta( false ), true ) ) {
+					$args['orderby']['meta_value'] = $orderby_order; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					$args['meta_key']              = $orderby_field;
+					// Handle numeric meta fields.
+				} elseif ( in_array( $orderby_field, $this->ordering_meta(), true ) ) {
+					$args['orderby']['meta_value_num'] = $orderby_order; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$args['meta_key']                  = $orderby_field;
+				} else {
+					$args['orderby'][ $orderby_field ] = $orderby_order;
 				}
 			}//end foreach
 		}//end if
@@ -114,6 +116,12 @@ trait WC_CPT_Loader_Common {
 	 * @return mixed|null
 	 */
 	public function get_cpt_model_by_id( $id ) {
-		return $this->loader->resolve_model( get_post_type( $id ), $id );
+		$post_type = get_post_type( $id );
+
+		if ( ! $post_type ) {
+			return null;
+		}
+
+		return $this->loader->resolve_model( $post_type, $id );
 	}
 }

@@ -19,9 +19,10 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Remove_Items
  */
 class Cart_Remove_Items {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -61,7 +62,7 @@ class Cart_Remove_Items {
 		return [
 			'cartItems' => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['items'];
 				},
 			],
@@ -75,7 +76,7 @@ class Cart_Remove_Items {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( \WC()->cart->is_empty() ) {
@@ -94,6 +95,8 @@ class Cart_Remove_Items {
 					throw new UserError( sprintf( __( 'Failed to remove item %s from cart.', 'wp-graphql-woocommerce' ), $item['key'] ) );
 				}
 			}
+
+			do_action( 'woographql_update_session', true );
 
 			// Return payload.
 			return [ 'items' => $cart_items ];

@@ -12,9 +12,10 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Product_Taxonomy_Filter_Input
  */
 class Product_Taxonomy_Filter_Input {
-
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_input_type(

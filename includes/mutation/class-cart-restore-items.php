@@ -19,9 +19,10 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Restore_Items
  */
 class Cart_Restore_Items {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -63,7 +64,7 @@ class Cart_Restore_Items {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( empty( $input['keys'] ) ) {
@@ -80,6 +81,8 @@ class Cart_Restore_Items {
 			}
 
 			$cart_items = Cart_Mutation::retrieve_cart_items( $input, $context, $info, 'restore' );
+
+			do_action( 'woographql_update_session', true );
 
 			// Return payload.
 			return [ 'items' => $cart_items ];

@@ -14,7 +14,7 @@ class ProductVariationHelper extends WCG_Helper {
 	}
 
 	public function to_relay_id( $id ) {
-		return Relay::toGlobalId( 'product_variation', $id );
+		return Relay::toGlobalId( 'post', $id );
 	}
 
 	public function reset_indexes() {

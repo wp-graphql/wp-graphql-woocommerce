@@ -15,7 +15,6 @@ use WPGraphQL\WooCommerce\Admin\General;
  * Class Admin
  */
 class Admin {
-
 	/**
 	 * Admin constructor
 	 */
@@ -24,20 +23,20 @@ class Admin {
 	}
 
 	/**
-	 * Registers the WooGraphQL Settings tab.
+	 * Registers the WPGraphQL for WooCommerce Settings tab.
 	 *
-	 * @param Settings $manager  Settings Manager.
+	 * @param \WPGraphQL\Admin\Settings\Settings $manager  Settings Manager.
 	 * @return void
 	 */
 	public function register_settings( Settings $manager ) {
 		$manager->settings_api->register_section(
 			'woographql_settings',
-			[ 'title' => __( 'WooGraphQL', 'wp-graphql-woocommerce' ) ]
+			[ 'title' => __( 'WooCommerce', 'wp-graphql-woocommerce' ) ]
 		);
 
 		$manager->settings_api->register_fields(
 			'woographql_settings',
-			General::get_fields(),
+			General::get_fields()
 		);
 	}
 }

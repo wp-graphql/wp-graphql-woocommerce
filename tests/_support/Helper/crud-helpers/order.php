@@ -11,7 +11,7 @@ class OrderHelper extends WCG_Helper {
 	}
 
 	public function to_relay_id( $id ) {
-		return Relay::toGlobalId( 'shop_order', $id );
+		return Relay::toGlobalId( 'order', $id );
 	}
 
     public function set_to_customer_billing_address( $order, $customer, $save = true ) {
@@ -205,7 +205,7 @@ class OrderHelper extends WCG_Helper {
 			'pricesIncludeTax'      => $data->get_prices_include_tax(),
 			'parent'                => null,
 			'customer'              => ! empty( $data->get_customer_id() )
-				? array( 'id' => Relay::toGlobalId( 'customer', $data->get_customer_id() ) )
+				? array( 'id' => Relay::toGlobalId( 'user', $data->get_customer_id() ) )
 				: null,
 			'customerIpAddress'     => ! empty( $data->get_customer_ip_address() )
 				? $data->get_customer_ip_address()

@@ -17,21 +17,20 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 	 * Class WP_GraphQL_WooCommerce
 	 */
 	final class WP_GraphQL_WooCommerce {
-
 		/**
 		 * Stores the instance of the WP_GraphQL_WooCommerce class
 		 *
-		 * @var WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
+		 * @var null|\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce The one true WP_GraphQL_WooCommerce
 		 */
-		private static $instance;
+		private static $instance = null;
 
 		/**
 		 * Returns a WP_GraphQL_WooCommerce Instance.
 		 *
-		 * @return WP_GraphQL_WooCommerce
+		 * @return \WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce
 		 */
 		public static function instance() {
-			if ( ! isset( self::$instance ) && ! ( is_a( self::$instance, __CLASS__ ) ) ) {
+			if ( is_null( self::$instance ) ) {
 				self::$instance = new self();
 				self::$instance->includes();
 				self::$instance->setup();
@@ -40,7 +39,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			/**
 			 * Fire off init action
 			 *
-			 * @param WP_GraphQL_WooCommerce $instance The instance of the WP_GraphQL_WooCommerce class
+			 * @param \WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce $instance The instance of the WP_GraphQL_WooCommerce class
 			 */
 			do_action( 'graphql_woocommerce_init', self::$instance );
 
@@ -84,9 +83,18 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
-		 * Returns GraphQL Product Type name for product types not supported by the GraphQL schema.
+		 * Returns WooCommerce product variation types to be exposed to the GraphQL schema.
 		 *
 		 * @return array
+		 */
+		public static function get_enabled_product_variation_types() {
+			return apply_filters( 'graphql_woocommerce_product_variation_types', [ 'variation' => 'SimpleProductVariation' ] );
+		}
+
+		/**
+		 * Returns GraphQL Product Type name for product types not supported by the GraphQL schema.
+		 *
+		 * @return string
 		 */
 		public static function get_supported_product_type() {
 			return apply_filters(
@@ -148,6 +156,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * Uses composer's autoload
 		 *
 		 * @since  0.0.1
+		 * @return void
 		 */
 		private function includes() {
 			$include_directory_path = get_includes_directory();
@@ -163,9 +172,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'model/class-product.php';
 			require $include_directory_path . 'model/class-product-variation.php';
 			require $include_directory_path . 'model/class-order.php';
-			require $include_directory_path . 'model/class-refund.php';
 			require $include_directory_path . 'model/class-order-item.php';
 			require $include_directory_path . 'model/class-shipping-method.php';
+			require $include_directory_path . 'model/class-shipping-zone.php';
 			require $include_directory_path . 'model/class-tax-rate.php';
 
 			// Include data loaders class files.
@@ -175,21 +184,22 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Include connection resolver trait/class files.
 			require $include_directory_path . 'data/connection/trait-wc-db-loader-common.php';
+			require $include_directory_path . 'data/connection/trait-wc-cpt-loader-common.php';
 			require $include_directory_path . 'data/connection/class-cart-item-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-downloadable-item-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-order-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-order-item-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-payment-gateway-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-product-attribute-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-product-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-shipping-method-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-shipping-zone-connection-resolver.php';
+			require $include_directory_path . 'data/connection/class-tax-class-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-tax-rate-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-variation-attribute-connection-resolver.php';
 
 			// Include deprecated resolver trait/class files.
-			require $include_directory_path . 'data/connection/trait-wc-cpt-loader-common.php';
 			require $include_directory_path . 'data/connection/class-coupon-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-product-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-refund-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-order-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-customer-connection-resolver.php';
 
 			// Include mutation processor class files.
@@ -198,9 +208,15 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/mutation/class-coupon-mutation.php';
 			require $include_directory_path . 'data/mutation/class-customer-mutation.php';
 			require $include_directory_path . 'data/mutation/class-order-mutation.php';
+			require $include_directory_path . 'data/mutation/class-shipping-mutation.php';
+			require $include_directory_path . 'data/mutation/class-settings-mutation.php';
 
 			// Include factory class file.
 			require $include_directory_path . 'data/class-factory.php';
+
+			// Include DB hooks class files.
+			require $include_directory_path . 'data/cursor/class-cot-cursor.php';
+			require $include_directory_path . 'data/class-db-hooks.php';
 
 			// Include enum type class files.
 			require $include_directory_path . 'type/enum/class-backorders.php';
@@ -225,13 +241,28 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/enum/class-tax-rate-connection-orderby-enum.php';
 			require $include_directory_path . 'type/enum/class-tax-status.php';
 			require $include_directory_path . 'type/enum/class-taxonomy-operator.php';
+			require $include_directory_path . 'type/enum/class-attribute-operator-enum.php';
+			require $include_directory_path . 'type/enum/class-product-attribute-enum.php';
+			require $include_directory_path . 'type/enum/class-currency-enum.php';
+			require $include_directory_path . 'type/enum/class-shipping-location-type-enum.php';
+			require $include_directory_path . 'type/enum/class-wc-setting-type-enum.php';
+			require $include_directory_path . 'type/enum/class-product-attributes-connection-orderby-enum.php';
 
 			// Include interface type class files.
 			require $include_directory_path . 'type/interface/class-attribute.php';
 			require $include_directory_path . 'type/interface/class-cart-error.php';
 			require $include_directory_path . 'type/interface/class-product-attribute.php';
 			require $include_directory_path . 'type/interface/class-product.php';
+			require $include_directory_path . 'type/interface/class-product-variation.php';
 			require $include_directory_path . 'type/interface/class-payment-token.php';
+			require $include_directory_path . 'type/interface/class-product-union.php';
+			require $include_directory_path . 'type/interface/class-cart-item.php';
+			require $include_directory_path . 'type/interface/class-downloadable-product.php';
+			require $include_directory_path . 'type/interface/class-inventoried-product.php';
+			require $include_directory_path . 'type/interface/class-product-with-dimensions.php';
+			require $include_directory_path . 'type/interface/class-product-with-pricing.php';
+			require $include_directory_path . 'type/interface/class-product-with-variations.php';
+			require $include_directory_path . 'type/interface/class-product-with-attributes.php';
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';
@@ -248,7 +279,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-product-category-type.php';
 			require $include_directory_path . 'type/object/class-product-download-type.php';
 			require $include_directory_path . 'type/object/class-product-types.php';
-			require $include_directory_path . 'type/object/class-product-variation-type.php';
 			require $include_directory_path . 'type/object/class-refund-type.php';
 			require $include_directory_path . 'type/object/class-root-query.php';
 			require $include_directory_path . 'type/object/class-shipping-method-type.php';
@@ -259,6 +289,11 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-variation-attribute-type.php';
 			require $include_directory_path . 'type/object/class-payment-token-types.php';
 			require $include_directory_path . 'type/object/class-country-state-type.php';
+			require $include_directory_path . 'type/object/class-collection-stats-type.php';
+			require $include_directory_path . 'type/object/class-shipping-location-type.php';
+			require $include_directory_path . 'type/object/class-shipping-zone-type.php';
+			require $include_directory_path . 'type/object/class-tax-class-type.php';
+			require $include_directory_path . 'type/object/class-wc-setting-type.php';
 
 			// Include input type class files.
 			require $include_directory_path . 'type/input/class-cart-item-input.php';
@@ -274,6 +309,12 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-product-taxonomy-input.php';
 			require $include_directory_path . 'type/input/class-shipping-line-input.php';
 			require $include_directory_path . 'type/input/class-tax-rate-connection-orderby-input.php';
+			require $include_directory_path . 'type/input/class-collection-stats-query-input.php';
+			require $include_directory_path . 'type/input/class-collection-stats-where-args.php';
+			require $include_directory_path . 'type/input/class-product-attribute-filter-input.php';
+			require $include_directory_path . 'type/input/class-product-attribute-query-input.php';
+			require $include_directory_path . 'type/input/class-shipping-location-input.php';
+			require $include_directory_path . 'type/input/class-wc-setting-input.php';
 
 			// Include mutation type class files.
 			require $include_directory_path . 'mutation/class-cart-add-fee.php';
@@ -302,6 +343,21 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-review-update.php';
 			require $include_directory_path . 'mutation/class-payment-method-delete.php';
 			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
+			require $include_directory_path . 'mutation/class-session-delete.php';
+			require $include_directory_path . 'mutation/class-session-update.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-create.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-delete.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-locations-clear.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-locations-update.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-method-add.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-method-remove.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-method-update.php';
+			require $include_directory_path . 'mutation/class-shipping-zone-update.php';
+			require $include_directory_path . 'mutation/class-tax-class-create.php';
+			require $include_directory_path . 'mutation/class-tax-class-delete.php';
+			require $include_directory_path . 'mutation/class-tax-rate-create.php';
+			require $include_directory_path . 'mutation/class-tax-rate-delete.php';
+			require $include_directory_path . 'mutation/class-tax-rate-update.php';
 
 			// Include connection class/function files.
 			require $include_directory_path . 'connection/wc-cpt-connection-args.php';
@@ -314,8 +370,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'connection/class-product-attributes.php';
 			require $include_directory_path . 'connection/class-products.php';
 			require $include_directory_path . 'connection/class-shipping-methods.php';
+			require $include_directory_path . 'connection/class-shipping-zones.php';
+			require $include_directory_path . 'connection/class-tax-classes.php';
 			require $include_directory_path . 'connection/class-tax-rates.php';
-			require $include_directory_path . 'connection/class-variation-attributes.php';
 			require $include_directory_path . 'connection/class-wc-terms.php';
 
 			// Include admin files.
@@ -334,7 +391,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'functions.php';
 
 			/**
-			 * WPGRAPHQL_AUTOLOAD can be set to "false" to prevent the autoloader from running.
+			 * WPGRAPHQL_WOOCOMMERCE_AUTOLOAD can be set to "false" to prevent the autoloader from running.
 			 * In most cases, this is not something that should be disabled, but some environments
 			 * may bootstrap their dependencies in a global autoloader that will autoload files
 			 * before we get to this point, and requiring the autoloader again can trigger fatal errors.
@@ -353,20 +410,20 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 				 * detected. This likely means the user cloned the repo from Github
 				 * but did not run `composer install`
 				 */
-				if ( ! class_exists( 'Firebase\JWT\JWT' ) ) {
+				if ( ! class_exists( 'WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT' ) ) {
 					add_action(
 						'admin_notices',
-						function () {
+						static function () {
 							if ( ! current_user_can( 'manage_options' ) ) {
 								return;
 							}
 
-							echo sprintf(
+							printf(
 								'<div class="notice notice-error">' .
 								'<p>%s</p>' .
 								'</div>',
 								esc_html__(
-									'WooGraphQL appears to have been installed without it\'s dependencies. It will not work properly until dependencies are installed. This likely means you have cloned WPGraphQL from Github and need to run the command `composer install`.',
+									'WPGraphQL for WooCommerce appears to have been installed without it\'s dependencies. It will not work properly until dependencies are installed. This likely means you have cloned WPGraphQL from Github and need to run the command `composer install`.',
 									'wp-graphql-woocommerce'
 								)
 							);
@@ -377,11 +434,45 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		}
 
 		/**
-		 * Sets up WooGraphQL schema.
+		 * Returns true if any authorizing urls are enabled.
+		 *
+		 * @return array
+		 */
+		public static function get_enabled_auth_urls() {
+			return woographql_setting( 'enable_authorizing_url_fields', [] );
+		}
+
+		/**
+		 * Returns true if any authorizing urls are enabled.
+		 *
+		 * @return bool
+		 */
+		public static function auth_router_is_enabled() {
+			return defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' )
+				|| ! empty( self::get_enabled_auth_urls() );
+		}
+
+		/**
+		 * Import and setups Protected_Router class instance.
+		 *
+		 * @return void
+		 */
+		public static function load_auth_router() {
+			require get_includes_directory() . 'utils/class-protected-router.php';
+			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'initialize' ] );
+		}
+
+		/**
+		 * Sets up WPGraphQL for WooCommerce schema.
+		 *
+		 * @return void
 		 */
 		private function setup() {
-			// Initialize WooGraphQL Settings.
+			// Initialize WPGraphQL for WooCommerce Settings.
 			new Admin();
+
+			// Initialize WPGraphQL for WooCommerce DB hooks.
+			new Data\DB_Hooks();
 
 			// Setup minor integrations.
 			Functions\setup_minor_integrations();
@@ -398,9 +489,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			// Register WPGraphQL JWT Authentication filters.
 			JWT_Auth_Schema_Filters::add_filters();
 
-			// Initialize WooGraphQL TypeRegistry.
+			// Initialize WPGraphQL for WooCommerce TypeRegistry.
 			$registry = new Type_Registry();
-			add_action( 'graphql_register_types', [ $registry, 'init' ], 10, 1 );
+			add_action( 'graphql_register_types', [ $registry, 'init' ] );
 		}
 	}
 

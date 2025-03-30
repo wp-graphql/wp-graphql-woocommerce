@@ -1,13 +1,20 @@
+---
+title: "Using Cart Data with WooGraphQL"
+description: "Learn how to retrieve and utilize cart data in your headless WooCommerce application with WPGraphQL for WooCommerce and WPGraphQL, enabling seamless shopping experiences for your customers."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, cart data, headless, shopping experience"
+author: "Geoff Taylor"
+---
+
 # Using Cart Data
 
-In this guide, we will create a "/cart" page that displays a table of the items in the cart. We will use the `UserSessionProvider` created in the last guide to pull the cart data using `useSession()`. The table will have four columns: `Product`, `Price`, `Quantity`, and `Total`. We will also create a cart totals table that displays the shipping totals, applied coupons, and the final total. Let's start by implementing the changes to the `useCartMutations` hook also created in the previous guide.
+In this section, we will create a "/cart" page that displays a table of the items in the cart. We will use the `UserSessionProvider` created in the last section to pull the cart data using `useSession()`. The table will have four columns: `Product`, `Price`, `Quantity`, and `Total`. We will also create a cart totals table that displays the shipping totals, applied coupons, and the final total. Let's start by implementing the changes to the `useCartMutations` hook also created in the previous section.
 
 ## Prerequisites
 
 - Basic knowledge of React and React Router.
 - Familiarity with GraphQL and WPGraphQL.
-- A setup WPGraphQL/WooGraphQL backend.
-- Read previous guides on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
+- A setup WPGraphQL/WPGraphQL for WooCommerce backend.
+- Read previous sections on [Routing By URI](routing-by-uri.md), [Using Product Data](using-product-data.md), and [Handling User Session and Using Cart Mutations](handing-user-session-and-using-cart-mutations).
 
 ## Step 0: Create `graphql.js` file
 
@@ -503,7 +510,7 @@ export const useOtherCartMutations = () => {
 };
 ```
 
-This hook provides the helper callbacks for the other cart mutations. These mutations are the ones that affect the cart and not cart items, at least not directly, like `applyCoupon`.
+This hook provides the helper callbacks for the other cart mutations. These mutations are the ones that effect the cart and not the cart items, at least not directly, like `applyCoupon`.
 
 ## Step 2: Create the `/cart` page
 
@@ -513,60 +520,142 @@ After making the necessary updates to `useCartMutations` and `useOtherCartMutati
 import React, { useState } from 'react';
 import { useSession } from './SessionProvider';
 import { useCartMutations, useOtherCartMutations } from './useCartMutations';
+import { ShippingInfo } from './ShippingInfo';
+import { ApplyCouponForm } from './ApplyCouponForm';
 ```
 
-Now, let's create the `ShippingLocaleForm` component that will be used later in the `CartPage` component:
+You should see two imports that don't exist yet. Let's create them. `ShippingInfo.js` and `ApplyCouponForm.js` are components that will be used in the `CartPage` component to handle two particular actions:
+
+First the `ShippingLocaleForm.js`.
 
 ```jsx
 import React, { useState } from 'react';
 import { useOtherCartMutations } from './useOtherCartMutations';
 
-const ShippingLocaleForm = () => {
+const ShippingInfo = () => {
   const [country, setCountry] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const { updateShippingLocale } = useOtherCartMutations();
+  const { cart } = useSession();
+  const {
+    updateShippingLocale,
+    setShippingMethod,
+    savingShippingInfo,
+    savingShippingMethod,
+  } = useOtherCartMutations();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await updateShippingLocale({ country, postalCode });
   };
 
+  const availableShippingRates = (cart?.availableShippingMethods || [])
+    .reduce(
+      (rates, nextPackage) => {
+        rates.push(...(nextPackage?.rates || []));
+
+        return rates;
+      },
+      [],
+    );
+
+  if (cart.needsShipping && !cart.needsShippingAddress) {
+    return (
+      <div>
+        <h4>Shipping</h4>
+        {availableShippingRates.map((shippingRate) => (
+          const { cost, id, label } = shippingRate;
+          <div key={id}>
+            <input
+              type="radio"
+              name="shipping-methods"
+              value={id}
+              disabled={savingShippingMethod}
+              onChange={(event) => setShippingMethod(event.target.value)}
+            />
+            <label>
+              {`${label}: `}
+              <strong>{`$${cost}`}</strong>
+            </label>
+          </div>
+        ))}
+        <p>Shipping Tax: {cart.shippingTax}</p>
+        <p>Shipping Total: {cart.shippingTotal}</p>
+      </div>
+    );
+  }
+
+  if (cart.needsShipping) {
+    return (
+      <form onSubmit={handleSubmit}>
+        <h4>Shipping Locale</h4>
+        <div>
+          <label htmlFor="country">Country:</label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="postalCode">Postal Code:</label>
+          <input
+            type="text"
+            id="postalCode"
+            name="postalCode"
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+          />
+        </div>
+        <button disabled={savingShippingInfo} type="submit">Update Shipping Locale</button>
+      </form>
+    );
+  }
+
+  return null;
+};
+
+export default ShippingInfo;
+```
+
+This component works by confirming the session shipping requirements and status before returning the proper output. If shipping is needed and a shipping address is set for the customer, the shipping rates are displayed for selection. If shipping is needed and no address is set, then a shipping address form is displayed to set the customer shipping address. If no shipping is needed, `null` is returned.
+
+Simple enough, now the `ApplyCoupon.js`
+
+```jsx
+import React, { useState } from 'react';
+import { useOtherCartMutations } from './useOtherCartMutations';
+
+const ApplyCoupon = () => {
+  const [code, setCode] = useState('');
+  const { applyCoupon, removeCoupon } = useOtherCartMutations();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    applyCoupon(code);
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Shipping Locale</h2>
-      <div>
-        <label htmlFor="country">Country:</label>
-        <input
-          type="text"
-          id="country"
-          name="country"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="postalCode">Postal Code:</label>
-        <input
-          type="text"
-          id="postalCode"
-          name="postalCode"
-          value={postalCode}
-          onChange={(e) => setPostalCode(e.target.value)}
-        />
-      </div>
-      <button type="submit">Update Shipping Locale</button>
+      <label>
+        Apply Coupon:
+        <input type="text" value={code} onChange={(e) => setCode(e.target.value)} />
+      </label>
+      <button type="submit">Apply</button>
     </form>
   );
 };
 
-export default ShippingLocaleForm;
+export default ApplyCouponForm;
 ```
 
-Next, create the `CartPage` component:
+Here we're providing a form to apply a coupon code, which calls the `applyCoupon` function from the `useOtherCartMutations` hook.
+
+Now, onto the `CartPage` component:
 
 ```jsx
-const CartPage = () => {
-  const CartPage = () => {
+function CartPage () {
   const { cart } = useSession();
   const { applyCoupon } = useOtherCartMutations();
 
@@ -625,19 +714,7 @@ const CartPage = () => {
         <tfoot>
           <tr>
             <td colSpan={4}>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const couponCode = e.target.elements.coupon.value;
-                  applyCoupon(couponCode);
-                }}
-              >
-                <label>
-                  Apply Coupon:
-                  <input type="text" name="coupon" />
-                </label>
-                <button type="submit">Apply</button>
-              </form>
+              <ApplyCoupon />
             </td>
           </tr>
         </tfoot>
@@ -645,26 +722,15 @@ const CartPage = () => {
 
       <div>
         <h3>Cart Totals</h3>
-        {cart.needsShipping && !cart.needsShippingAddress ? (
-          <div>
-            <h4>Shipping</h4>
-            {cart.availableShippingMethods.map((shippingMethod) => (
-              <div key={shippingMethod.id}>
-                <input type="radio" name="shipping_method" value={shippingMethod.id} />
-                <label>{shippingMethod.label}</label>
-              </div>
-            ))}
-            <p>Shipping Tax: {cart.shippingTax}</p>
-            <p>Shipping Total: {cart.shippingTotal}</p>
-          </div>
-        ) : cart.needsShipping ? (
-          <ShippingLocaleForm />
-        ) : null}
+        <ShippingInfo />
         <p>Subtotal: {cart.subtotal}</p>
         {cart.appliedCoupons.map(({ code, discountAmount }) => (
           <div key={code}>
             <p>
               Coupon: {code} - Discount: {discountAmount}
+              <span onClick={() => removeCoupon(code)} style={{ fontWeight: 'bold', color: 'red' }}>
+                X
+              </span>
             </p>
           </div>
         ))}
@@ -679,10 +745,10 @@ export default CartPage;
 
 In the `CartPage` component, we first fetch the `cart` from the `SessionProvider`. If the cart is not available, we show a loading message. Once the cart is loaded, we display the cart items in a table format, allowing users to remove items or update the quantity.
 
-We also provide a form to apply a coupon code, which calls the `applyCoupon` function from the `useOtherCartMutations` hook.
-
-If the cart requires shipping, we display the available shipping methods and shipping-related costs. If the cart needs a shipping address, we render the `ShippingLocaleForm` component.
-
-Lastly, we display the cart's subtotal, applied coupons with their respective discounts, and the cart's total.
+Lastly, we display the cart's subtotal, applied coupons with their respective discounts and removal buttons, and follow that up with the cart's total.
 
 Now, you can use the `CartPage` component in your app, allowing users to interact with the cart, apply coupons, and manage shipping options.
+
+## Conclusion
+
+With this you're essentially ready to develop a complete application. In the next couple sections we'll be exploring taking the user through checkout.

@@ -36,18 +36,18 @@ class CartHelper extends WCG_Helper {
 	public function print_query( $id = 0 ) {
 		$cart = WC()->cart;
 		return array(
-			'subtotal'                => \wc_graphql_price( $cart->get_subtotal() ),
-			'subtotalTax'             => \wc_graphql_price( $cart->get_subtotal_tax() ),
-			'discountTotal'           => \wc_graphql_price( $cart->get_discount_total() ),
-			'discountTax'             => \wc_graphql_price( $cart->get_discount_tax() ),
-			'shippingTotal'           => \wc_graphql_price( $cart->get_shipping_total() ),
-			'shippingTax'             => \wc_graphql_price( $cart->get_shipping_tax() ),
-			'contentsTotal'           => \wc_graphql_price( $cart->get_cart_contents_total() ),
-			'contentsTax'             => \wc_graphql_price( $cart->get_cart_contents_tax() ),
-			'feeTotal'                => \wc_graphql_price( $cart->get_fee_total() ),
-			'feeTax'                  => \wc_graphql_price( $cart->get_fee_tax() ),
-			'total'                   => \wc_graphql_price( $cart->get_totals()['total'] ),
-			'totalTax'                => \wc_graphql_price( $cart->get_total_tax() ),
+			'subtotal'                => wc_graphql_price( $cart->get_subtotal() ),
+			'subtotalTax'             => wc_graphql_price( $cart->get_subtotal_tax() ),
+			'discountTotal'           => wc_graphql_price( $cart->get_discount_total() ),
+			'discountTax'             => wc_graphql_price( $cart->get_discount_tax() ),
+			'shippingTotal'           => wc_graphql_price( $cart->get_shipping_total() ),
+			'shippingTax'             => wc_graphql_price( $cart->get_shipping_tax() ),
+			'contentsTotal'           => wc_graphql_price( $cart->get_cart_contents_total() ),
+			'contentsTax'             => wc_graphql_price( $cart->get_cart_contents_tax() ),
+			'feeTotal'                => wc_graphql_price( $cart->get_fee_total() ),
+			'feeTax'                  => wc_graphql_price( $cart->get_fee_tax() ),
+			'total'                   => wc_graphql_price( $cart->get_totals()['total'] ),
+			'totalTax'                => wc_graphql_price( $cart->get_total_tax() ),
 			'isEmpty'                 => $cart->is_empty(),
 			'displayPricesIncludeTax' => $cart->display_prices_including_tax(),
 			'needsShippingAddress'    => $cart->needs_shipping_address(),
@@ -58,7 +58,7 @@ class CartHelper extends WCG_Helper {
 							'id'         => $tax_data->tax_rate_id,
 							'label'      => $tax_data->label,
 							'isCompound' => $tax_data->is_compound,
-							'amount'     => \wc_graphql_price( $tax_data->amount ),
+							'amount'     => wc_graphql_price( $tax_data->amount ),
 						);
 					},
 					array_values( $cart->get_tax_totals() )
@@ -119,7 +119,7 @@ class CartHelper extends WCG_Helper {
 			'key'         => $item['key'],
 			'product'     => array(
 				'node' => array(
-					'id'         => Relay::toGlobalId( 'product', $item['product_id'] ),
+					'id'         => Relay::toGlobalId( 'post', $item['product_id'] ),
 					'databaseId' => $item['product_id'],
 				),
 			),
@@ -127,16 +127,16 @@ class CartHelper extends WCG_Helper {
 				? array(
 					'attributes' => $attributes,
 					'node'       => array(
-						'id'         => Relay::toGlobalId( 'product_variation', $item['variation_id'] ),
+						'id'         => Relay::toGlobalId( 'post', $item['variation_id'] ),
 						'databaseId' => $item['variation_id'],
 					),
 				)
 				: null,
 			'quantity'    => $item['quantity'],
-			'subtotal'    => \wc_graphql_price( $item['line_subtotal'] ),
-			'subtotalTax' => \wc_graphql_price( $item['line_subtotal_tax'] ),
-			'total'       => \wc_graphql_price( $item['line_total'] ),
-			'tax'         => \wc_graphql_price( $item['line_tax'] ),
+			'subtotal'    => wc_graphql_price( $item['line_subtotal'] ),
+			'subtotalTax' => wc_graphql_price( $item['line_subtotal_tax'] ),
+			'total'       => wc_graphql_price( $item['line_total'] ),
+			'tax'         => wc_graphql_price( $item['line_tax'] ),
 		);
 	}
 

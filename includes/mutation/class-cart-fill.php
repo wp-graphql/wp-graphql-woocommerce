@@ -22,6 +22,8 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
 class Cart_Fill {
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -65,7 +67,7 @@ class Cart_Fill {
 		return [
 			'added'                 => [
 				'type'    => [ 'list_of' => 'CartItem' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$items = [];
 					foreach ( $payload['added'] as $key ) {
 						$items[] = \WC()->cart->get_cart_item( $key );
@@ -76,21 +78,21 @@ class Cart_Fill {
 			],
 			'applied'               => [
 				'type'    => [ 'list_of' => 'AppliedCoupon' ],
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$codes = $payload['applied'];
 					return ! empty( $codes ) ? $codes : null;
 				},
 			],
 			'chosenShippingMethods' => [
 				'type'    => [ 'list_of' => 'String' ],
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$methods = $payload['chosen_shipping_methods'];
 					return ! empty( $methods ) ? $methods : null;
 				},
 			],
 			'cartErrors'            => [
 				'type'    => [ 'list_of' => 'CartError' ],
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$errors         = [];
 					$all_error_data = array_merge(
 						$payload['invalid_cart_items'],
@@ -99,23 +101,32 @@ class Cart_Fill {
 					);
 
 					foreach ( $all_error_data as $error_data ) {
+						$cart_error = [];
 						switch ( true ) {
 							case isset( $error_data['cart_item_data'] ):
 								$cart_error         = $error_data['cart_item_data'];
 								$cart_error['type'] = 'INVALID_CART_ITEM';
 								break;
 							case isset( $error_data['code'] ):
-								$cart_error         = [ 'code' => $error_data['code'] ];
-								$cart_error['type'] = 'INVALID_COUPON';
+								$cart_error = [
+									'code' => $error_data['code'],
+									'type' => 'INVALID_COUPON',
+								];
 								break;
 							case isset( $error_data['package'] ):
-								$cart_error         = [
+								$cart_error = [
 									'package'       => $error_data['package'],
 									'chosen_method' => $error_data['chosen_method'],
+									'type'          => 'INVALID_SHIPPING_METHOD',
 								];
-								$cart_error['type'] = 'INVALID_SHIPPING_METHOD';
 								break;
-						}
+							default:
+								$cart_error = [
+									'reasons' => [ 'Unknown error occurred.' ],
+									'type'    => 'UNKNOWN',
+								];
+								break;
+						}//end switch
 
 						if ( ! empty( $error_data['reasons'] ) ) {
 							$cart_error['reasons'] = $error_data['reasons'];
@@ -139,7 +150,7 @@ class Cart_Fill {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			// Throw error, if no cart item data provided.
@@ -175,7 +186,7 @@ class Cart_Fill {
 						$reason               = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );
 						$invalid_cart_items[] = compact( 'cart_item_data', 'reason' );
 					}
-				} catch ( \Exception $e ) {
+				} catch ( \Throwable $e ) {
 					// Get thrown error message.
 					$reason = $e->getMessage();
 
@@ -206,8 +217,9 @@ class Cart_Fill {
 					}
 
 					// If any session error notices, capture them.
-					if ( empty( $reason ) && ! empty( \WC()->session->get( 'wc_notices' ) ) ) {
-						$reason = implode( ' ', array_column( \WC()->session->get( 'wc_notices' ), 'notice' ) );
+					$error_notices = \WC()->session->get( 'wc_notices' );
+					if ( empty( $reason ) && is_array( $error_notices ) && ! empty( $error_notices ) ) {
+						$reason = implode( ' ', array_column( $error_notices, 'notice' ) );
 						\wc_clear_notices();
 					}
 
@@ -257,6 +269,8 @@ class Cart_Fill {
 
 			// Recalculate totals.
 			\WC()->cart->calculate_totals();
+
+			do_action( 'woographql_update_session', true );
 
 			// Return payload.
 			return compact(

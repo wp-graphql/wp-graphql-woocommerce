@@ -14,6 +14,8 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Customer_Connection_Orderby_Enum {
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_enum_type(

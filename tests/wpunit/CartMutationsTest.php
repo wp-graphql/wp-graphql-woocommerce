@@ -42,7 +42,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Confirm valid response
-		$this->assertIsValidQueryResponse( $response );
+		$this->assertResponseIsValid( $response );
 
 		// Get/validate cart item key.
 		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );
@@ -58,7 +58,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			[
 				$this->expectedField( 'addToCart.clientMutationId', 'someId' ),
 				$this->expectedField( 'addToCart.cartItem.key', $cart_item_key ),
-				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'product', $product_id ) ),
+				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'post', $product_id ) ),
 				$this->expectedField( 'addToCart.cartItem.quantity', 2 ),
 				$this->expectedField( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
 				$this->expectedField( 'addToCart.cartItem.subtotalTax', wc_graphql_price( $cart_item['line_subtotal_tax'] ) ),
@@ -115,7 +115,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Confirm valid response
-		$this->assertIsValidQueryResponse( $response );
+		$this->assertResponseIsValid( $response );
 
 		// Get/validate cart item key.
 		$cart_item_key = $this->lodashGet( $response, 'data.addToCart.cartItem.key' );
@@ -131,8 +131,8 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			[
 				$this->expectedField( 'addToCart.clientMutationId', 'someId' ),
 				$this->expectedField( 'addToCart.cartItem.key', $cart_item_key ),
-				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'product', $ids['product'] ) ),
-				$this->expectedField( 'addToCart.cartItem.variation.node.id', $this->toRelayId( 'product_variation', $ids['variations'][0] ) ),
+				$this->expectedField( 'addToCart.cartItem.product.node.id', $this->toRelayId( 'post', $ids['product'] ) ),
+				$this->expectedField( 'addToCart.cartItem.variation.node.id', $this->toRelayId( 'post', $ids['variations'][0] ) ),
 				$this->expectedField( 'addToCart.cartItem.quantity', 3 ),
 				$this->expectedField( 'addToCart.cartItem.subtotal', wc_graphql_price( $cart_item['line_subtotal'] ) ),
 				$this->expectedField( 'addToCart.cartItem.subtotalTax', wc_graphql_price( $cart_item['line_subtotal_tax'] ) ),
@@ -444,7 +444,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'key'         => $cart_item['key'],
 						'product'     => [
 							'node' => [
-								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
+								'id' => $this->toRelayId( 'post', $cart_item['product_id'] ),
 							],
 						],
 						'variation'   => null,
@@ -541,7 +541,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'key'         => $cart_item['key'],
 						'product'     => [
 							'node' => [
-								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
+								'id' => $this->toRelayId( 'post', $cart_item['product_id'] ),
 							],
 						],
 						'quantity'    => $cart_item['quantity'],
@@ -713,14 +713,14 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 			$response,
 			[
 				$this->expectedField( 'removeCoupons.clientMutationId', 'someId' ),
-				$this->expectedField( 'removeCoupons.cart.appliedCoupons', self::IS_NULL ),
+				$this->expectedField( 'removeCoupons.cart.appliedCoupons', static::IS_NULL ),
 				$this->expectedNode(
 					'removeCoupons.cart.contents.nodes',
 					[
 						'key'         => $cart_item['key'],
 						'product'     => [
 							'node' => [
-								'id' => $this->toRelayId( 'product', $cart_item['product_id'] ),
+								'id' => $this->toRelayId( 'post', $cart_item['product_id'] ),
 							],
 						],
 						'quantity'    => $cart_item['quantity'],
@@ -1067,25 +1067,25 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 				$this->expectedNode(
 					'addCartItems.cartErrors',
 					[
-						'type'        => 'INVALID_CART_ITEM',
-						'reasons'     => [ 'color and test are required fields' ],
-						'productId'   => $variation_ids['product'],
-						'quantity'    => 5,
-						'variationId' => $variation_ids['variations'][0],
-						'variation'   => null,
-						'extraData'   => null,
+						$this->expectedField( 'type', 'INVALID_CART_ITEM' ),
+						$this->expectedField( 'reasons.0', static::NOT_NULL ),
+						$this->expectedField( 'productId', $variation_ids['product'] ),
+						$this->expectedField( 'quantity', 5 ),
+						$this->expectedField( 'variationId', $variation_ids['variations'][0] ),
+						$this->expectedField( 'variation', static::IS_NULL ),
+						$this->expectedField( 'extraData', static::IS_NULL ),
 					]
 				),
 				$this->expectedNode(
 					'addCartItems.cartErrors',
 					[
-						'type'        => 'INVALID_CART_ITEM',
-						'reasons'     => [ 'No product found matching the ID provided' ],
-						'productId'   => $invalid_product,
-						'quantity'    => 4,
-						'variationId' => null,
-						'variation'   => null,
-						'extraData'   => null,
+						$this->expectedField( 'type', 'INVALID_CART_ITEM' ),
+						$this->expectedField( 'reasons.0', 'No product found matching the ID provided' ),
+						$this->expectedField( 'productId', $invalid_product ),
+						$this->expectedField( 'quantity', 4 ),
+						$this->expectedField( 'variationId', static::IS_NULL ),
+						$this->expectedField( 'variation', static::IS_NULL ),
+						$this->expectedField( 'extraData', static::IS_NULL ),
 					]
 				),
 			]
@@ -1204,7 +1204,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 										[
 											$this->expectedField( 'product.node.databaseId', $product_one ),
 											$this->expectedField( 'quantity', 3 ),
-											$this->expectedField( 'variation', self::IS_NULL ),
+											$this->expectedField( 'variation', static::IS_NULL ),
 										]
 									),
 									$this->expectedNode(
@@ -1212,7 +1212,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 										[
 											$this->expectedField( 'product.node.databaseId', $product_two ),
 											$this->expectedField( 'quantity', 2 ),
-											$this->expectedField( 'variation', self::IS_NULL ),
+											$this->expectedField( 'variation', static::IS_NULL ),
 										]
 									),
 								]

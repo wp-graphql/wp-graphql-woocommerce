@@ -14,9 +14,10 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
  * Class Variation_Attribute_Type
  */
 class Variation_Attribute_Type {
-
 	/**
 	 * Register VariationAttribute type to the WPGraphQL schema
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -28,40 +29,39 @@ class Variation_Attribute_Type {
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'The Global ID of the attribute.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['id'] ) ? $source['id'] : null;
 						},
 					],
 					'attributeId' => [
 						'type'        => 'Int',
 						'description' => __( 'The Database ID of the attribute.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
 						},
 					],
 					'label'       => [
 						'type'        => 'String',
 						'description' => __( 'Label of attribute', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							if ( ! isset( $source['name'] ) ) {
 								return null;
 							}
 
-							$slug = \wc_attribute_taxonomy_slug( $source['name'] );
-							return ucwords( str_replace( '_', ' ', $slug ) );
+							return \wc_attribute_taxonomy_slug( $source['name'] );
 						},
 					],
 					'name'        => [
 						'type'        => 'String',
 						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
 					],
 					'value'       => [
 						'type'        => 'String',
 						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;
 						},
 					],

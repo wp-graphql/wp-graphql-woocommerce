@@ -12,9 +12,10 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Shipping_Line_Input
  */
 class Shipping_Line_Input {
-
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_input_type(

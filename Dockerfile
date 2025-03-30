@@ -1,8 +1,6 @@
 ARG PHP_VERSION
 FROM wordpress:php${PHP_VERSION}-apache
 
-ARG XDEBUG_VERSION=2.9.6
-
 RUN apt-get update; \
 	apt-get install -y --no-install-recommends \
 	# WP-CLI dependencies.
@@ -13,14 +11,15 @@ RUN apt-get update; \
 	wget;
 
 # Setup xdebug. The latest version supported by PHP 5.6 is 2.5.5.
-RUN	pecl install "xdebug-${XDEBUG_VERSION}"; \
+RUN	pecl install xdebug; \
 	docker-php-ext-enable xdebug; \
 	echo "xdebug.default_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_autostart = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_connect_back = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_port = 9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_log = /var/www/html/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+	echo "xdebug.remote_log = /var/www/html/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.mode = coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 
 # Install PDO MySQL driver.
 RUN docker-php-ext-install pdo_mysql
@@ -38,7 +37,8 @@ ENV PATH "$PATH:~/.composer/vendor/bin"
 # Install wp-browser globally
 RUN composer global require --optimize-autoloader \
 	wp-cli/wp-cli-bundle:* \
-    lucatume/wp-browser \
+    "lucatume/wp-browser:>3.1 <3.5" \
+	phpunit/phpunit:^9.6 \
     codeception/module-asserts:* \
     codeception/module-cli:*  \
     codeception/module-db:*  \
@@ -47,10 +47,11 @@ RUN composer global require --optimize-autoloader \
     codeception/module-rest:*  \
     codeception/module-webdriver:*  \
     codeception/util-universalframework:*  \
+	guzzlehttp/guzzle \
     league/factory-muffin \
     league/factory-muffin-faker \
 	stripe/stripe-php \
-	wp-graphql/wp-graphql-testcase
+	wp-graphql/wp-graphql-testcase:^3.2
 
 # Remove exec statement from base entrypoint script.
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
@@ -73,8 +74,8 @@ ENV PROJECT_DIR="${PLUGINS_DIR}/wp-graphql-woocommerce"
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
-
 WORKDIR /var/www/html
+
 # Set codecept wrapper
 COPY bin/codecept /usr/local/bin/codecept
 RUN chmod 755 /usr/local/bin/codecept

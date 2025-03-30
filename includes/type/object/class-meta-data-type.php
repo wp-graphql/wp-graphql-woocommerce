@@ -10,15 +10,14 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
-
 /**
  * Class Meta_Data_Type
  */
 class Meta_Data_Type {
-
 	/**
 	 * Register Order type and queries to the WPGraphQL schema
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -29,21 +28,21 @@ class Meta_Data_Type {
 					'id'    => [
 						'type'        => 'ID',
 						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
 					],
 					'key'   => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							return ! empty( $source->key ) ? (string) $source->key : null;
 						},
 					],
 					'value' => [
 						'type'        => 'String',
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
-						'resolve'     => function ( $source ) {
+						'resolve'     => static function ( $source ) {
 							if ( empty( $source->value ) ) {
 								return null;
 							}
@@ -83,37 +82,39 @@ class Meta_Data_Type {
 					'description' => __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' ),
 				],
 			],
-			'resolve'     => function( $source, array $args ) {
+			'resolve'     => static function ( $source, array $args ) {
 				// Set unique flag.
-				$single = ! empty( $args['multiple'] ) ? ! $args['multiple'] : true;
+				$single = empty( $args['multiple'] );
 
 				// Check "key" argument and format meta_data objects.
 				if ( ! empty( $args['key'] ) && $source->meta_exists( $args['key'] ) ) {
-					$data = $source->get_meta( $args['key'], $single );
-					if ( ! is_array( $data ) ) {
-						$data = array_filter(
-							$source->get_meta_data(),
-							function( $meta ) use ( $data ) {
-								return $meta->value === $data;
-							}
-						);
+					$key  = $args['key'];
+					$data = $source->get_meta( $key, false );
+					if ( empty( $data ) ) {
+						$data = [];
+					} elseif ( $single ) {
+						$data = array_slice( $data, 0, 1 );
 					}
+
+					$data = array_map(
+						static function ( $value ) {
+							return (object) $value;
+						},
+						$data
+					);
 				} elseif ( ! empty( $args['keysIn'] ) ) {
 					// Check "keysIn" argument and format meta_data objects.
-					$keys = $args['keysIn'];
+					$keys_in = $args['keysIn'];
 
 					$found = [];
 					$data  = array_filter(
 						$source->get_meta_data(),
-						function( $meta ) use ( $keys, $single, &$found ) {
-							if ( in_array( $meta->key, $keys, true ) ) {
-								if ( $single ) {
-									if ( ! in_array( $meta->key, $found, true ) ) {
-										$found[] = $meta->key;
-										return true;
-									}
+						static function ( $meta ) use ( $keys_in, $single, &$found ) {
+							if ( in_array( $meta->key, $keys_in, true ) ) {
+								if ( $single && in_array( $meta->key, $found, true ) ) {
 									return false;
 								}
+								$found[] = $meta->key;
 								return true;
 							}
 						}
@@ -123,14 +124,12 @@ class Meta_Data_Type {
 					$found = [];
 					$data  = array_filter(
 						$source->get_meta_data(),
-						function( $meta ) use ( $single, &$found ) {
-							if ( $single ) {
-								if ( ! in_array( $meta->key, $found, true ) ) {
-									$found[] = $meta->key;
-									return true;
-								}
+						static function ( $meta ) use ( $single, &$found ) {
+							if ( $single && in_array( $meta->key, $found, true ) ) {
 								return false;
 							}
+
+							$found[] = $meta->key;
 							return true;
 						}
 					);

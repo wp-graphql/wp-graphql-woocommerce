@@ -39,7 +39,7 @@ install_wordpress() {
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
-		wp-cli/wp-cli-bundle
+		wp-cli/wp-cli-bundle:*
 }
 
 remove_wordpress() {
@@ -62,16 +62,16 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
-	composer require --dev \
-		lucatume/wp-browser:^3.1 \
-		codeception/codeception:^4.2 \
-		symfony/finder:* \
-		codeception/lib-asserts:^1.0 \
-		codeception/module-asserts:^1.3.1 \
-		codeception/module-rest:^2.0 \
-		codeception/util-universalframework:^1.0  \
-		wp-graphql/wp-graphql-testcase:^2.3 \
-		stripe/stripe-php
+	composer require --dev -W \
+		"lucatume/wp-browser:>3.1 <3.5" \
+		phpunit/phpunit:^9.6 \
+		codeception/lib-asserts:* \
+		codeception/module-asserts:* \
+		codeception/module-rest:* \
+		codeception/util-universalframework:*  \
+		wp-graphql/wp-graphql-testcase:^3.2 \
+		stripe/stripe-php \
+		fakerphp/faker
 
 }
 
@@ -96,18 +96,19 @@ remove_local_test_library() {
 	# Remove testing library dependencies.
 	composer remove --dev wp-graphql/wp-graphql-testcase \
 		codeception/module-asserts \
-		codeception/codeception \
 		codeception/lib-asserts \
-		symfony/finder \
+		phpunit/phpunit \
 		codeception/module-rest \
 		codeception/util-universalframework \
 		lucatume/wp-browser \
-		stripe/stripe-php
+		stripe/stripe-php \
+		fakerphp/faker
 }
 
 cleanup_composer_file() {
 	echo "Removing extra config..."
-	composer config --unset extra
+	composer config --unset extra.wordpress-install-dir
+	composer config --unset extra.installer-paths
 	echo "Removing repositories..."
 	composer config --unset repositories
 
@@ -126,7 +127,8 @@ cleanup_local_files() {
 
 	echo "Rebuilding lock file..."
 	rm -rf $PROJECT_ROOT_DIR/vendor
-	composer install --no-dev
+
+	composer install
 }
 
 install_db() {
@@ -192,6 +194,7 @@ setup_plugin() {
 	cd $WP_CORE_DIR
 
 	# Activate the plugin, it's dependencies should be activated already.
+	wp plugin activate woocommerce wp-graphql
 	wp plugin activate wp-graphql-woocommerce
 
 	# Flush the permalinks

@@ -11,7 +11,6 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\Data\Connection\UserConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Customer;
 
@@ -19,9 +18,10 @@ use WPGraphQL\WooCommerce\Model\Customer;
  * Class - Customers
  */
 class Customers {
-
 	/**
 	 * Registers the various connections from other Types to Customer
+	 *
+	 * @return void
 	 */
 	public static function register_connections() {
 		register_graphql_connection(
@@ -30,7 +30,7 @@ class Customers {
 				'toType'         => 'Customer',
 				'fromFieldName'  => 'customers',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
 
 					if ( ! self::should_execute() ) {
@@ -53,7 +53,7 @@ class Customers {
 				'toType'         => 'Customer',
 				'fromFieldName'  => 'usedBy',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
 
 					$resolver->set_query_arg( 'include', $source->used_by_ids );
@@ -124,12 +124,12 @@ class Customers {
 	 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 	 * from a GraphQL Query to the WP_Query
 	 *
-	 * @param array       $query_args  The mapped query arguments.
-	 * @param array       $where_args  Query "where" args.
-	 * @param mixed       $source      The query results for a query calling this.
-	 * @param array       $args        All of the arguments for the query (not just the "where" args).
-	 * @param AppContext  $context     The AppContext object.
-	 * @param ResolveInfo $info        The ResolveInfo object.
+	 * @param array                                $query_args  The mapped query arguments.
+	 * @param array                                $where_args  Query "where" args.
+	 * @param mixed                                $source      The query results for a query calling this.
+	 * @param array                                $args        All of the arguments for the query (not just the "where" args).
+	 * @param \WPGraphQL\AppContext                $context     The AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info        The ResolveInfo object.
 	 *
 	 * @return array Query arguments.
 	 */
@@ -171,12 +171,12 @@ class Customers {
 		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 		 * from a GraphQL Query to the WP_Query
 		 *
-		 * @param array       $args       The mapped query arguments
-		 * @param array       $where_args Query "where" args
-		 * @param mixed       $source     The query results for a query calling this
-		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param AppContext  $context    The AppContext object
-		 * @param ResolveInfo $info       The ResolveInfo object
+		 * @param array                                $args       The mapped query arguments
+		 * @param array                                $where_args Query "where" args
+		 * @param mixed                                $source     The query results for a query calling this
+		 * @param array                                $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param \WPGraphQL\AppContext                $context    The AppContext object
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
 		 */
 		$query_args = apply_filters(
 			'graphql_map_input_fields_to_customer_query',
@@ -195,13 +195,13 @@ class Customers {
 	 * Temporary function until necessary functionality
 	 * has been added to the UserConnectionResolver
 	 *
-	 * @param array                      $connection  Resolved connection.
-	 * @param AbstractConnectionResolver $resolver  Resolver class.
+	 * @param array                                                 $connection  Resolved connection.
+	 * @param \WPGraphQL\Data\Connection\AbstractConnectionResolver $resolver    Resolver class.
 	 *
 	 * @return array
 	 */
 	public static function upgrade_models( $connection, $resolver ) {
-		if ( 'customers' === $resolver->getInfo()->fieldName ) {
+		if ( 'customers' === $resolver->get_info()->fieldName ) {
 			$nodes = [];
 			$edges = [];
 			foreach ( $connection['nodes'] as $node ) {

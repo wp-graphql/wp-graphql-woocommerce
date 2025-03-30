@@ -12,18 +12,18 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
 use WPGraphQL\Mutation\CommentUpdate;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class Review_Update
  */
 class Review_Update {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -68,7 +68,7 @@ class Review_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Set comment type to "review".
 			$input['type'] = 'review';
 
@@ -79,12 +79,10 @@ class Review_Update {
 				'clientMutationId' => 1,
 			];
 
-			$payload       = [];
-			$id_parts      = ! empty( $input['id'] ) ? Relay::fromGlobalId( $input['id'] ) : null;
-			$payload['id'] = isset( $id_parts['id'] ) && absint( $id_parts['id'] ) ? absint( $id_parts['id'] ) : null;
-
-			if ( empty( $payload['id'] ) ) {
-				throw new UserError( __( 'The Review could not be updated', 'wp-graphql-woocommerce' ) );
+			$payload = [];
+			$id      = Utils::get_database_id_from_id( $input['id'] );
+			if ( ! $id ) {
+				throw new UserError( __( 'Provided review ID missing or invalid ', 'wp-graphql-woocommerce' ) );
 			}
 
 			if ( array_intersect_key( $input, $skip ) !== $input ) {

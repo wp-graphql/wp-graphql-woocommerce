@@ -10,7 +10,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
 use WPGraphQL\WooCommerce\Model\Coupon;
 
@@ -50,7 +49,8 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Prepare for later use
 		 */
-		$last = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
+		$last       = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
+		$query_args = [];
 
 		/**
 		 * Set the $query_args based on various defaults and primary input $args
@@ -61,12 +61,13 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['number']      = $this->get_query_amount() + 1;
 
 		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_user_query_cursor_pagination_support
-		 * to filter the WP_User_Query to support cursor pagination
+		 * Set the cursor args.
+		 *
+		 * @see \WPGraphQL\Data\Config::graphql_wp_query_cursor_pagination_support
 		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['graphql_after_cursor']   = $this->get_after_offset();
+		$query_args['graphql_before_cursor']  = $this->get_before_offset();
+		$query_args['graphql_cursor_compare'] = ! empty( $last ) ? '>' : '<';
 
 		$input_fields = [];
 		if ( ! empty( $this->args['where'] ) ) {
@@ -104,9 +105,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 				if ( in_array( $orderby_input['field'], [ 'login__in', 'nicename__in' ], true ) ) {
 					$query_args['orderby'] = esc_sql( $orderby_input['field'] );
 				} elseif ( ! empty( $orderby_input['field'] ) ) {
-					$query_args['orderby'] = [
-						esc_sql( $orderby_input['field'] ) => esc_sql( $orderby_input['order'] ),
-					];
+					$query_args['orderby'] = [ $orderby_input['field'] => $orderby_input['order'] ];
 				}
 			}
 		}
@@ -154,7 +153,7 @@ class Customer_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return \WP_User_Query
 	 */
 	public function get_query() {
 		return new \WP_User_Query( $this->get_query_args() );

@@ -8,34 +8,30 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use Firebase\JWT\JWT;
 use GraphQL\Error\UserError;
-use WC_Session_Handler;
 
 /**
  * Class - Session_Transaction_Manager
  */
 class Session_Transaction_Manager {
-
 	/**
 	 * The request's transaction ID.
 	 *
-	 * @var string
+	 * @var null|string
 	 */
 	public $transaction_id = null;
 
 	/**
 	 * Instance of parent session handler
 	 *
-	 * @var \WC_Session
+	 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler
 	 */
 	private $session_handler = null;
-
 
 	/**
 	 * Singleton instance of class.
 	 *
-	 * @var Session_Transaction_Manager $session_handler
+	 * @var \WPGraphQL\WooCommerce\Utils\Session_Transaction_Manager
 	 */
 	private static $instance = null;
 
@@ -43,9 +39,9 @@ class Session_Transaction_Manager {
 	 * Singleton retriever and cleaner.
 	 * Should not be called anywhere but in the session handler init function.
 	 *
-	 * @param \WC_Session $session_handler  WooCommerce Session Handler instance.
+	 * @param \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session_handler  WooCommerce Session Handler instance.
 	 *
-	 * @return Session_Transaction_Manager
+	 * @return \WPGraphQL\WooCommerce\Utils\Session_Transaction_Manager
 	 */
 	public static function get( &$session_handler ) {
 		if ( is_null( self::$instance ) ) {
@@ -55,17 +51,24 @@ class Session_Transaction_Manager {
 		return self::$instance;
 	}
 
-
 	/**
 	 * Session_Transaction_Manager constructor
 	 *
-	 * @param \WC_Session $session_handler  Reference back to session handler.
+	 * @param \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session_handler  Reference back to session handler.
 	 */
 	public function __construct( &$session_handler ) {
 		$this->session_handler = $session_handler;
 
 		add_action( 'graphql_before_resolve_field', [ $this, 'update_transaction_queue' ], 10, 4 );
-		add_action( 'graphql_process_http_request_response', [ $this, 'pop_transaction_id' ], 20 );
+		add_action( 'graphql_mutation_response', [ $this, 'pop_transaction_id' ], 20, 6 );
+
+		add_action( 'woographql_session_transaction_complete', [ $this->session_handler, 'save_if_dirty' ], 10 );
+
+		add_action( 'woocommerce_add_to_cart', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_item_removed', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_item_restored', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_item_set_quantity', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_cart_emptied', [ $this->session_handler, 'mark_dirty' ] );
 	}
 
 	/**
@@ -103,6 +106,8 @@ class Session_Transaction_Manager {
 				'updateItemQuantities',
 				'updateShippingMethod',
 				'updateCustomer',
+				'updateSession',
+				'forgetSession',
 			]
 		);
 	}
@@ -113,10 +118,12 @@ class Session_Transaction_Manager {
 	 * Creates an transaction ID if executing mutations that alter the session data, and stales
 	 * execution until the transaction ID is at the top of the queue.
 	 *
-	 * @param mixed                 $source   Operation root object.
-	 * @param array                 $args     Operation arguments.
-	 * @param \WPGraphQL\AppContext $context  AppContext instance.
-	 * @param \GraphQL\ResolveInfo  $info     Operation ResolveInfo object.
+	 * @param mixed                                $source   Operation root object.
+	 * @param array                                $args     Operation arguments.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     Operation ResolveInfo object.
+	 *
+	 * @return void
 	 */
 	public function update_transaction_queue( $source, $args, $context, $info ) {
 		// Bail early, if not one of the session mutations.
@@ -204,11 +211,25 @@ class Session_Transaction_Manager {
 	/**
 	 * Pop transaction ID off the top of the queue, ending the transaction.
 	 *
-	 * @throws UserError If transaction ID is not on the top of the queue.
+	 * @param array                                $payload          The Payload returned from the mutation.
+	 * @param array                                $input            The mutation input args, after being filtered by 'graphql_mutation_input'.
+	 * @param array                                $unfiltered_input The unfiltered input args of the mutation
+	 * @param \WPGraphQL\AppContext                $context          The AppContext object.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info             The ResolveInfo object.
+	 * @param string                               $mutation         The name of the mutation field.
+	 *
+	 * @throws \GraphQL\Error\UserError If transaction ID is not on the top of the queue.
+	 *
+	 * @return void
 	 */
-	public function pop_transaction_id() {
+	public function pop_transaction_id( $payload, $input, $unfiltered_input, $context, $info, $mutation ) {
 		// Bail if transaction not started.
 		if ( is_null( $this->transaction_id ) ) {
+			return;
+		}
+
+		// Bail if not the expected mutation.
+		if ( str_starts_with( $this->transaction_id, "wooSession_{$mutation}_" ) ) {
 			return;
 		}
 
@@ -217,12 +238,24 @@ class Session_Transaction_Manager {
 
 		// Throw if transaction ID not on top.
 		if ( $this->transaction_id !== $transaction_queue[0]['transaction_id'] ) {
+			$this->save_transaction_queue( [] );
+			$this->transaction_id = null;
 			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
 		} else {
 
 			// Remove Transaction ID and update queue.
 			array_shift( $transaction_queue );
 			$this->save_transaction_queue( $transaction_queue );
+
+			/**
+			 * Mark transaction completion
+			 *
+			 * @param string|null $transition_id     Removed transaction ID.
+			 * @param array       $transaction_queue Transaction Queue.
+			 */
+			do_action( 'woographql_session_transaction_complete', $this->transaction_id, $transaction_queue );
+
+			// Clear transaction ID.
 			$this->transaction_id = null;
 		}
 	}
@@ -231,6 +264,8 @@ class Session_Transaction_Manager {
 	 * Saves transaction queue.
 	 *
 	 * @param array $queue  Transaction queue.
+	 *
+	 * @return void
 	 */
 	public function save_transaction_queue( $queue = [] ) {
 		// If queue empty delete transient and bail.
@@ -240,7 +275,7 @@ class Session_Transaction_Manager {
 		}
 
 		// Save transaction queue.
-		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue );
+		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue, 5 * MINUTE_IN_SECONDS );
 	}
 
 	/**

@@ -1,7 +1,6 @@
 <?php
 
 class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -72,7 +71,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'customer.orders.nodes',
 					[
@@ -86,7 +85,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 									'downloadsRemaining',
 									isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
 										? $item['downloads_remaining']
-										: self::IS_NULL
+										: static::IS_NULL
 								),
 								$this->expectedField( 'name', $item['download_name'] ),
 								$this->expectedField( 'product.databaseId', $item['product_id'] ),
@@ -102,7 +101,6 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
-
 
 	public function testOrderToDownloadableItemsQueryArgs() {
 		$valid_product        = $this->factory->product->createSimple(
@@ -350,21 +348,21 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'customer.downloadableItems.nodes',
 					[
 						$this->expectedField( 'url', $item['download_url'] ),
 						$this->expectedField(
 							'accessExpires',
-							! empty( $item['access_expires'] ) ? $item['access_expires'] : self::IS_NULL
+							! empty( $item['access_expires'] ) ? $item['access_expires'] : static::IS_NULL
 						),
 						$this->expectedField( 'downloadId', $item['download_id'] ),
 						$this->expectedField(
 							'downloadsRemaining',
 							isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
 								? $item['downloads_remaining']
-								: self::IS_NULL
+								: static::IS_NULL
 						),
 						$this->expectedField( 'name', $item['download_name'] ),
 						$this->expectedField( 'product.databaseId', $item['product_id'] ),

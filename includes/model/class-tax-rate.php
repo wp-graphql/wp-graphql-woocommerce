@@ -15,13 +15,48 @@ use WPGraphQL\Model\Model;
 
 /**
  * Class Tax_Rate
+ *
+ * @property object{
+ *  tax_rate_id: int,
+ *  tax_rate_class: string,
+ *  tax_rate_country: string,
+ *  tax_rate_state: string,
+ *  tax_rate: string,
+ *  tax_rate_name: string,
+ *  tax_rate_priority: int,
+ *  tax_rate_compound: bool,
+ *  tax_rate_shipping: bool,
+ *  tax_rate_order: int,
+ *  tax_rate_city: string,
+ *  tax_rate_postcode: string,
+ *  tax_rate_postcodes: string,
+ *  tax_rate_cities: string
+ *  } $data
+ *
+ * @property int      $ID
+ * @property string   $id
+ * @property string   $databaseId
+ * @property string   $country
+ * @property string   $state
+ * @property string   $city
+ * @property string   $postcode
+ * @property string[] $postcodes
+ * @property string[] $cities
+ * @property string   $rate
+ * @property string   $name
+ * @property string   $priority
+ * @property bool     $compound
+ * @property bool     $shipping
+ * @property int      $order
+ * @property string   $class
+ *
+ * @package WPGraphQL\WooCommerce\Model
  */
 class Tax_Rate extends Model {
-
 	/**
 	 * Tax_Rate constructor
 	 *
-	 * @param int $rate - Tax rate object.
+	 * @param object{ tax_rate_id: int, tax_rate_class: string, tax_rate_country: string, tax_rate_state: string, tax_rate: string, tax_rate_name: string, tax_rate_priority: int, tax_rate_compound: bool, tax_rate_shipping: bool, tax_rate_order: int, tax_rate_city: string, tax_rate_postcode: string, tax_rate_postcodes: string, tax_rate_cities: string } $rate Tax rate object.
 	 */
 	public function __construct( $rate ) {
 		$this->data                = $rate;
@@ -54,46 +89,52 @@ class Tax_Rate extends Model {
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = [
-				'ID'         => function() {
+				'ID'         => function () {
 					return $this->data->tax_rate_id;
 				},
-				'id'         => function() {
-					return ! empty( $this->data->tax_rate_id ) ? Relay::toGlobalId( 'tax_rate', $this->data->tax_rate_id ) : null;
+				'id'         => function () {
+					return ! empty( $this->data->tax_rate_id ) ? Relay::toGlobalId( 'tax_rate', (string) $this->data->tax_rate_id ) : null;
 				},
-				'databaseId' => function() {
-					return $this->ID;
+				'databaseId' => function () {
+					return ! empty( $this->ID ) ? $this->ID : null;
 				},
-				'country'    => function() {
+				'country'    => function () {
 					return ! empty( $this->data->tax_rate_country ) ? $this->data->tax_rate_country : null;
 				},
-				'state'      => function() {
+				'state'      => function () {
 					return ! empty( $this->data->tax_rate_state ) ? $this->data->tax_rate_state : null;
 				},
-				'city'       => function() {
-					return ! empty( $this->data->tax_rate_city ) ? $this->data->tax_rate_city : [ '*' ];
+				'city'       => function () {
+					return ! empty( $this->data->tax_rate_city ) ? $this->data->tax_rate_city : '*';
 				},
-				'postcode'   => function() {
-					return ! empty( $this->data->tax_rate_postcode ) ? $this->data->tax_rate_postcode : [ '*' ];
+				'postcode'   => function () {
+					return ! empty( $this->data->tax_rate_postcode ) ? $this->data->tax_rate_postcode : '*';
 				},
-				'rate'       => function() {
+				'postcodes'  => function () {
+					return ! empty( $this->data->tax_rate_postcodes ) ? explode( ';', $this->data->tax_rate_postcodes ) : [ '*' ];
+				},
+				'cities'     => function () {
+					return ! empty( $this->data->tax_rate_cities ) ? explode( ';', $this->data->tax_rate_cities ) : [ '*' ];
+				},
+				'rate'       => function () {
 					return ! empty( $this->data->tax_rate ) ? $this->data->tax_rate : null;
 				},
-				'name'       => function() {
+				'name'       => function () {
 					return ! empty( $this->data->tax_rate_name ) ? $this->data->tax_rate_name : null;
 				},
-				'priority'   => function() {
+				'priority'   => function () {
 					return ! empty( $this->data->tax_rate_priority ) ? $this->data->tax_rate_priority : null;
 				},
-				'compound'   => function() {
-					return ! empty( $this->data->tax_rate_compound ) ? $this->data->tax_rate_compound : null;
+				'compound'   => function () {
+					return isset( $this->data->tax_rate_compound ) ? $this->data->tax_rate_compound : null;
 				},
-				'shipping'   => function() {
-					return ! empty( $this->data->tax_rate_shipping ) ? $this->data->tax_rate_shipping : null;
+				'shipping'   => function () {
+					return isset( $this->data->tax_rate_shipping ) ? $this->data->tax_rate_shipping : null;
 				},
-				'order'      => function() {
+				'order'      => function () {
 					return ! is_null( $this->data->tax_rate_order ) ? absint( $this->data->tax_rate_order ) : null;
 				},
-				'class'      => function() {
+				'class'      => function () {
 					return ! is_null( $this->data->tax_rate_class ) ? $this->data->tax_rate_class : '';
 				},
 			];

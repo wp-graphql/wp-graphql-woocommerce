@@ -10,19 +10,16 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Refund_Type
  */
 class Refund_Type {
-
 	/**
 	 * Register Refund type and queries to the WPGraphQL schema.
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -54,8 +51,12 @@ class Refund_Type {
 					'refundedBy' => [
 						'type'        => 'User',
 						'description' => __( 'User who completed the refund', 'wp-graphql-woocommerce' ),
-						'resolve'     => function( $source, array $args, AppContext $context ) {
-							return DataSource::resolve_user( $source->refunded_by_id, $context );
+						'resolve'     => static function ( $source, array $args, AppContext $context ) {
+							$user_id = absint( $source->refunded_by_id );
+							if ( 0 !== $user_id ) {
+								return $context->get_loader( 'user' )->load( $user_id );
+							}
+							return null;
 						},
 					],
 					'date'       => [

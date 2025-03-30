@@ -12,19 +12,20 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
+use WC_Order_Factory;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WC_Order_Factory;
 
 /**
  * Class Order_Delete
  */
 class Order_Delete {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -47,11 +48,12 @@ class Order_Delete {
 			[
 				'id'          => [
 					'type'        => 'ID',
-					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
+					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
 				],
 				'orderId'     => [
-					'type'        => 'Int',
-					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'type'              => 'Int',
+					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
 				],
 				'forceDelete' => [
 					'type'        => 'Boolean',
@@ -70,7 +72,7 @@ class Order_Delete {
 		return [
 			'order' => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['order'];
 				},
 			],
@@ -83,19 +85,19 @@ class Order_Delete {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve order ID.
-			$order_id = null;
+			$order_id = false;
 			if ( ! empty( $input['id'] ) ) {
-				$id_components = Relay::fromGlobalId( $input['id'] );
-				if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-					throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
-				}
-				$order_id = absint( $id_components['id'] );
+				$order_id = Utils::get_database_id_from_id( $input['id'] );
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+			}
+
+			if ( ! $order_id ) {
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Check if authorized to delete this order.
@@ -108,12 +110,16 @@ class Order_Delete {
 				$force_delete = $input['forceDelete'];
 			}
 
-			// Get Order model instance for output.
+			/**
+			 * Get Order model instance for output.
+			 *
+			 * @var \WC_Order $order
+			 */
 			$order = new Order( $order_id );
 
 			// Cache items to prevent null value errors.
 			// @codingStandardsIgnoreStart
-			$order->downloadableItems;
+			$order->get_downloadable_items();
 			$order->get_items();
 			$order->get_items( 'fee' );
 			$order->get_items( 'shipping' );
@@ -124,15 +130,21 @@ class Order_Delete {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
-			 * @param array       $input   Input data describing order.
-			 * @param AppContext  $context Request AppContext instance.
-			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 * @param \WC_Order|\WPGraphQL\WooCommerce\Model\Order $order   Order model instance.
+			 * @param array           $input   Input data describing order.
+			 * @param \WPGraphQL\AppContext      $context Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo     $info    Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_before_order_delete', $order, $input, $context, $info );
 
 			// Delete order.
-			$success = Order_Mutation::purge( WC_Order_Factory::get_order( $order->ID ), $force_delete );
+			$order_to_be_deleted = WC_Order_Factory::get_order( $order->get_id() );
+
+			if ( ! is_object( $order_to_be_deleted ) ) {
+				throw new UserError( __( 'Order to be deleted could not be found.', 'wp-graphql-woocommerce' ) );
+			}
+
+			$success = Order_Mutation::purge( $order_to_be_deleted, $force_delete );
 
 			if ( ! $success ) {
 				throw new UserError(
@@ -147,10 +159,10 @@ class Order_Delete {
 			/**
 			 * Action called before order is deleted.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
-			 * @param array       $input   Input data describing order
-			 * @param AppContext  $context Request AppContext instance.
-			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 * @param \WC_Order|\WPGraphQL\WooCommerce\Model\Order $order   Order model instance.
+			 * @param array           $input   Input data describing order
+			 * @param \WPGraphQL\AppContext      $context Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo     $info    Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $order, $input, $context, $info );
 

@@ -10,20 +10,21 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
+use WC_Customer;
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
-use WPGraphQL\WooCommerce\Model\Customer;
 use WPGraphQL\Mutation\UserCreate;
 use WPGraphQL\Mutation\UserUpdate;
-use WC_Customer;
+use WPGraphQL\WooCommerce\Data\Mutation\Customer_Mutation;
+use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class - Customer_Update
  */
 class Customer_Update {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -65,6 +66,10 @@ class Customer_Update {
 					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 					'type'        => [ 'list_of' => 'MetaDataInput' ],
 				],
+				'isSession'             => [
+					'type'        => 'Boolean',
+					'description' => __( 'Whether to save changes on the session or in the database', 'wp-graphql-woocommerce' ),
+				],
 			]
 		);
 	}
@@ -78,7 +83,7 @@ class Customer_Update {
 		return [
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Customer( $payload['id'] );
 				},
 			],
@@ -91,13 +96,18 @@ class Customer_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
-			$session_only = empty( $input['id'] );
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
+			$is_session   = isset( $input['isSession'] ) ? $input['isSession'] : false;
+			$session_only = empty( $input['id'] ) && ! is_user_logged_in();
 			$payload      = null;
 
 			if ( ! $session_only ) {
 				// Get closure from "UserRegister::mutate_and_get_payload".
 				$update_user = UserUpdate::mutate_and_get_payload();
+
+				if ( ! isset( $input['id'] ) ) {
+					$input['id'] = get_current_user_id();
+				}
 
 				// Update customer with core UserUpdate closure.
 				$payload = $update_user( $input, $context, $info );
@@ -111,10 +121,10 @@ class Customer_Update {
 			$customer_args = Customer_Mutation::prepare_customer_props( $input, 'update' );
 
 			// Create customer object.
-			$customer = ! $session_only ? new WC_Customer( $payload['id'] ) : \WC()->customer;
+			$customer = ! $session_only ? new WC_Customer( $payload['id'], $is_session ) : \WC()->customer;
 
 			// Copy billing address as shipping address.
-			if ( ! empty( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
+			if ( isset( $input['shippingSameAsBilling'] ) && $input['shippingSameAsBilling'] ) {
 				$customer_args['shipping'] = array_merge(
 					Customer_Mutation::empty_shipping(),
 					array_intersect_key( $customer->get_billing( 'edit' ), Customer_Mutation::empty_shipping() )
@@ -147,6 +157,10 @@ class Customer_Update {
 
 			// Save customer and get customer ID.
 			$customer->save();
+
+			if ( $session_only ) {
+				do_action( 'woographql_update_session', true );
+			}
 
 			// Return payload.
 			return ! empty( $payload ) ? $payload : [ 'id' => 'session' ];

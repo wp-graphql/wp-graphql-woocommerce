@@ -10,16 +10,14 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Model\Shipping_Zone;
 
 /**
  * Class Shipping_Method_Connection_Resolver
  */
 class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -35,6 +33,10 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		if ( ! wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
+			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+			return false;
+		}
 		return true;
 	}
 
@@ -51,20 +53,22 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return array|mixed|string[]
+	 * @return int[]
 	 */
 	public function get_query() {
-		// TODO: Implement get_query() method.
-		$wc_shipping = \WC_Shipping::instance();
-		$methods     = $wc_shipping->get_shipping_methods();
+		if ( $this->source instanceof Shipping_Zone ) {
+			$methods = $this->source->methods;
+		} else {
+			$wc_shipping = \WC_Shipping::instance();
+			$methods     = $wc_shipping->get_shipping_methods();
+		}
+
+		foreach ( $methods as $method ) {
+			$this->get_loader()->prime( $method->id, new Shipping_Method( $method ) );
+		}
 
 		// Get shipping method IDs.
-		$methods = array_map(
-			function( $item ) {
-				return $item->id;
-			},
-			array_values( $methods )
-		);
+		$methods = wp_list_pluck( array_values( $methods ), 'id' );
 
 		return $methods;
 	}
@@ -72,9 +76,9 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Return an array of items from the query
 	 *
-	 * @return array|mixed
+	 * @return array
 	 */
-	public function get_ids() {
+	public function get_ids_from_query() {
 		return ! empty( $this->query ) ? $this->query : [];
 	}
 
@@ -88,36 +92,4 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	public function is_valid_offset( $offset ) {
 		return is_string( $offset );
 	}
-
-	/**
-	 * Get_offset
-	 *
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		/**
-		 * Defaults
-		 */
-		$offset = 0;
-
-		/**
-		 * Get the $after offset
-		 */
-		if ( ! empty( $this->args['after'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
-		}
-
-		/**
-		 * Return the higher of the two values
-		 */
-		return $offset;
-	}
-
 }

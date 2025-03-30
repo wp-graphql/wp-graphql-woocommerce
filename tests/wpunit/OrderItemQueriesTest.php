@@ -1,17 +1,15 @@
 <?php
 
-use GraphQLRelay\Relay;
 use WPGraphQL\Type\WPEnumType;
 
 class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	// tests
 	public function testCouponLinesQuery() {
 		$order_id = $this->factory->order->createNew();
 		$this->factory->order->add_coupon_line( $order_id );
 		$order        = new WC_Order( $order_id );
 		$coupon_lines = $order->get_items( 'coupon' );
-		$id           = $this->toRelayId( 'shop_order', $order_id );
+		$id           = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -41,15 +39,15 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.couponLines.nodes',
 					[
 						$this->expectedField( 'databaseId', $item->get_id() ),
 						$this->expectedField( 'orderId', $item->get_order_id() ),
 						$this->expectedField( 'code', $item->get_code() ),
-						$this->expectedField( 'discount', $this->maybe( $item->get_discount(), self::IS_NULL ) ),
-						$this->expectedField( 'discountTax', $this->maybe( $item->get_discount_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'discount', $this->maybe( $item->get_discount(), static::IS_NULL ) ),
+						$this->expectedField( 'discountTax', $this->maybe( $item->get_discount_tax(), static::IS_NULL ) ),
 						$this->expectedField( 'coupon.id', $this->toRelayId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) ) ),
 					]
 				);
@@ -65,7 +63,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$this->factory->order->add_fee( $order_id );
 		$order     = new WC_Order( $order_id );
 		$fee_lines = $order->get_items( 'fee' );
-		$id        = $this->toRelayId( 'shop_order', $order_id );
+		$id        = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -95,7 +93,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.feeLines.nodes',
 					[
@@ -105,7 +103,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'name', $item->get_name() ),
 						$this->expectedField( 'taxStatus', strtoupper( $item->get_tax_status() ) ),
 						$this->expectedField( 'total', $item->get_total() ),
-						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), static::IS_NULL ) ),
 						$this->expectedField(
 							'taxClass',
 							! empty( $item->get_tax_class() )
@@ -125,7 +123,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$order_id       = $this->factory->order->createNew();
 		$order          = new WC_Order( $order_id );
 		$shipping_lines = $order->get_items( 'shipping' );
-		$id             = $this->toRelayId( 'shop_order', $order_id );
+		$id             = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -153,7 +151,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.shippingLines.nodes',
 					[
@@ -161,7 +159,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 						$this->expectedField( 'orderId', $item->get_order_id() ),
 						$this->expectedField( 'methodTitle', $item->get_method_title() ),
 						$this->expectedField( 'total', $item->get_total() ),
-						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), static::IS_NULL ) ),
 						$this->expectedField(
 							'taxClass',
 							! empty( $item->get_tax_class() )
@@ -184,7 +182,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$this->factory->order->add_tax( $order_id );
 		$order     = new WC_Order( $order_id );
 		$tax_lines = $order->get_items( 'tax' );
-		$id        = $this->toRelayId( 'shop_order', $order_id );
+		$id        = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -214,7 +212,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.taxLines.nodes',
 					[
@@ -237,7 +235,7 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$order_id   = $this->factory->order->createNew();
 		$order      = new WC_Order( $order_id );
 		$line_items = $order->get_items();
-		$id         = $this->toRelayId( 'shop_order', $order_id );
+		$id         = $this->toRelayId( 'order', $order_id );
 
 		$query = '
             query ($id: ID!) {
@@ -284,12 +282,12 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$variables = [ 'id' => $id ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_map(
-			function( $item ) {
+			function ( $item ) {
 				return $this->expectedNode(
 					'order.lineItems.nodes',
 					[
 						$this->expectedField( 'productId', $item->get_product_id() ),
-						$this->expectedField( 'variationId', $this->maybe( $item->get_variation_id(), self::IS_NULL ) ),
+						$this->expectedField( 'variationId', $this->maybe( $item->get_variation_id(), static::IS_NULL ) ),
 						$this->expectedField( 'quantity', $item->get_quantity() ),
 						$this->expectedField(
 							'taxClass',
@@ -297,18 +295,18 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 								? strtoupper( $item->get_tax_class() )
 								: 'STANDARD'
 						),
-						$this->expectedField( 'subtotal', $this->maybe( $item->get_subtotal(), self::IS_NULL ) ),
-						$this->expectedField( 'subtotalTax', $this->maybe( $item->get_subtotal_tax(), self::IS_NULL ) ),
-						$this->expectedField( 'total', $this->maybe( $item->get_total(), self::IS_NULL ) ),
-						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), self::IS_NULL ) ),
+						$this->expectedField( 'subtotal', $this->maybe( $item->get_subtotal(), static::IS_NULL ) ),
+						$this->expectedField( 'subtotalTax', $this->maybe( $item->get_subtotal_tax(), static::IS_NULL ) ),
+						$this->expectedField( 'total', $this->maybe( $item->get_total(), static::IS_NULL ) ),
+						$this->expectedField( 'totalTax', $this->maybe( $item->get_total_tax(), static::IS_NULL ) ),
 						$this->expectedField( 'itemDownloads', null ),
 						$this->expectedField( 'taxStatus', strtoupper( $item->get_tax_status() ) ),
-						$this->expectedField( 'product.node.id', $this->toRelayId( 'product', $item->get_product_id() ) ),
+						$this->expectedField( 'product.node.id', $this->toRelayId( 'post', $item->get_product_id() ) ),
 						$this->expectedField(
 							'variation.node.id',
 							! empty( $item->get_variation_id() )
-								? $this->toRelayId( 'product_variation', $item->get_variation_id() )
-								: self::IS_NULL
+								? $this->toRelayId( 'post', $item->get_variation_id() )
+								: static::IS_NULL
 						),
 					]
 				);

@@ -15,17 +15,17 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Checkout_Mutation;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
-use WPGraphQL\WooCommerce\Model\Order;
 use WPGraphQL\WooCommerce\Model\Customer;
-use Exception;
+use WPGraphQL\WooCommerce\Model\Order;
 
 /**
  * Class Checkout
  */
 class Checkout {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -97,25 +97,25 @@ class Checkout {
 		return [
 			'order'    => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Order( $payload['id'] );
 				},
 			],
 			'customer' => [
 				'type'    => 'Customer',
-				'resolve' => function() {
-					return is_user_logged_in() ? new Customer( get_current_user_id() ) : null;
+				'resolve' => static function () {
+					return is_user_logged_in() ? new Customer( get_current_user_id() ) : new Customer();
 				},
 			],
 			'result'   => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['result'];
 				},
 			],
 			'redirect' => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['redirect'];
 				},
 			],
@@ -128,7 +128,7 @@ class Checkout {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Create order.
 			$order = null;
 			try {
@@ -139,31 +139,39 @@ class Checkout {
 				 *
 				 * @param array       $args    Order data.
 				 * @param array       $input   Raw input data .
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_before_checkout', $args, $input, $context, $info );
 
+				// We define this now and pass it as a reference.
+				$results = [];
+
 				$order_id = Checkout_Mutation::process_checkout( $args, $input, $context, $info, $results );
 
-				if ( is_wp_error( $order_id ) ) {
-					throw new UserError( $order_id->get_error_message( 'checkout-error' ) );
-				}
-
 				$order = \WC_Order_Factory::get_order( $order_id );
+
+				if ( ! is_object( $order ) ) {
+					throw new UserError( __( 'Failed to retrieve order after checkout', 'wp-graphql-woocommerce' ) );
+				}//end if
+
 				/**
 				 * Action called after checking out.
 				 *
-				 * @param WC_Order    $order   WC_Order instance.
+				 * @param \WC_Order   $order   WC_Order instance.
 				 * @param array       $input   Input data describing order.
-				 * @param AppContext  $context Request AppContext instance.
-				 * @param ResolveInfo $info    Request ResolveInfo instance.
+				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
 				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 
 				return array_merge( [ 'id' => $order_id ], $results );
-			} catch ( Exception $e ) {
-				Order_Mutation::purge( $order );
+			} catch ( \Throwable $e ) {
+				// Delete order if it was created.
+				if ( is_object( $order ) ) {
+					Order_Mutation::purge( $order );
+				}
+				// Throw error.
 				throw new UserError( $e->getMessage() );
 			}//end try
 		};

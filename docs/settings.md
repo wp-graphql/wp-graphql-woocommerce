@@ -1,12 +1,19 @@
-# WooGraphQL Settings
+---
+title: "WPGraphQL for WooCommerce Settings Guide"
+description: "Learn how to configure and manage WPGraphQL for WooCommerce settings to optimize the integration of WooCommerce with WPGraphQL for your headless e-commerce solution."
+keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, settings, configuration, headless e-commerce"
+author: "Geoff Taylor"
+---
 
-The WooGraphQL settings tab on the WPGraphQL settings page provides several options to customize the behavior of the WooGraphQL plugin. Below is a detailed breakdown of each setting.
+# WPGraphQL for WooCommerce Settings
 
-![WooGraphQL Settings Overview Screenshot](images/overview-screenshot.png)
+The WPGraphQL for WooCommerce settings tab on the WPGraphQL settings page provides several options to customize the behavior of the WPGraphQL for WooCommerce plugin. Below is a detailed breakdown of each setting.
+
+![WPGraphQL for WooCommerce Settings Overview Screenshot](images/overview-screenshot.png)
 
 ## Disable QL Session Handler
 
-WooGraphQL comes with a custom WooCommerce User Session Handler called QL Session Handler, which extends the default WooCommerce session handler. The QL Session Handler uses JSON Web Tokens (JWT) instead of HTTP cookies for session identification. This setting allows you to disable the QL Session Handler and revert to the default WooCommerce session handler that uses HTTP cookies.
+WPGraphQL for WooCommerce comes with a custom WooCommerce User Session Handler called QL Session Handler, which extends the default WooCommerce session handler. The QL Session Handler uses JSON Web Tokens (JWT) instead of HTTP cookies for session identification. This setting allows you to disable the QL Session Handler and revert to the default WooCommerce session handler that uses HTTP cookies.
 
 ![Disable QL Session Handler Screenshot](images/disable-ql-session-handler-screenshot.png)
 
@@ -16,8 +23,25 @@ The default WooCommerce User Session Handler is responsible for capturing cart a
 
 ## Enable Unsupported types
 
-The settings is simple to understand and likely to be enabled if your using a WC extension that uses a product type that isn't support by WooGraphQL out-of-box. When enabled it will substitute the missing type with the SimpleProduct type. This way you can still you the product type and possibly pull what extra data you need from the `Product`'s `metaData` field.
+The settings is simple to understand and likely to be enabled if you're using a WC extension that uses a product type that isn't support by WPGraphQL for WooCommerce out-of-box. When enabled it will substitute the missing type with the SimpleProduct type. This way you can still use the product type and possibly pull what extra data you need from the `Product`'s `metaData` field.
 
+![Authorizing URL Settings Screenshot](images/authorizing-url-settings.png)
+
+## Enable User Session transferring URLs
+
+This setting, when activated, enables WooCommerce Session-backed nonce generator and transfer session endpoint for passing a user's session from a client to the WordPress installation. The primary use of these nonces is to create authorizing URLs that enable the user to travel to the backend as if it were a part of the front-end application. This setting is disabled if the QL Session Handler is disabled as it required for nonce generation to work. 
+
+The next four settings are all about customizing the names of different parts of the authorizing URL..
+
+### Endpoint for Authorizing URLs
+
+The endpoint (path) for transferring user sessions on the site. Defaults to `transfer-session`.
+
+### Cart URL nonce name, Checkout URL nonce name, and Add Payment Method URL nonce name
+
+The name of the nonce param for each respective URL. They have to be unique and cannot be identical.
+
+Using these settings alone is very insecure. It's highly recommended that specific measures be taken on the client to further secure the WP backend and end-user's data.
 ## WooGraphQL Pro Settings
 
 These settings allow you to enable or disable the GraphQL schema types, queries, and mutations for various WooCommerce extensions supported by WooGraphQL Pro. This is useful if you have one of the supported extensions installed and activated but don't need it exposed to the GraphQL API, keeping the schema lightweight.

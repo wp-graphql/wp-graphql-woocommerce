@@ -57,7 +57,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'product' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+					'id'            => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'commentCount'  => 1,
 					'commentStatus' => 'open',
 				],
@@ -101,7 +101,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'order' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
+					'id'            => \GraphQLRelay\Relay::toGlobalId( 'order', $order_id ),
 					'commentCount'  => 2,
 					'commentStatus' => 'open',
 				],
@@ -123,7 +123,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'order' => [
-					'id'            => \GraphQLRelay\Relay::toGlobalId( 'shop_order', $order_id ),
+					'id'            => \GraphQLRelay\Relay::toGlobalId( 'order', $order_id ),
 					'commentCount'  => 1,
 					'commentStatus' => 'closed',
 				],
@@ -165,7 +165,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'product' => [
-					'id'      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+					'id'      => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'content' => $product->get_description(),
 				],
 			],
@@ -206,7 +206,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'product' => [
-					'id'                      => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+					'id'                      => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'featuredImageId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
 					'featuredImageDatabaseId' => $attachment_id,
 				],
@@ -259,7 +259,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'product' => [
-					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
 					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
@@ -310,7 +310,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'product' => [
-					'id'  => \GraphQLRelay\Relay::toGlobalId( 'product', $product_id ),
+					'id'  => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'uri' => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
 				],
 			],
@@ -366,7 +366,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$expected = [
 			'data' => [
 				'productVariation' => [
-					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'product_variation', $variation_id ),
+					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'post', $variation_id ),
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
 					'dateGmt'                   => \WPGraphQL\Utils\Utils::prepare_date_response( $wp_product->post_date_gmt ),
@@ -395,5 +395,4 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 
 	public function testQueryProductWithNodeByUri() {
 	}
-
 }

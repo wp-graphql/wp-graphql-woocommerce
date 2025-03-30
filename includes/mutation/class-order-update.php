@@ -12,19 +12,20 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
+use WC_Order_Factory;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
-use WC_Order_Factory;
 
 /**
  * Class Order_Update
  */
 class Order_Update {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -48,15 +49,16 @@ class Order_Update {
 			[
 				'id'         => [
 					'type'        => 'ID',
-					'description' => __( 'Order global ID', 'wp-graphql-woocommerce' ),
+					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
 				],
 				'orderId'    => [
-					'type'        => 'Int',
-					'description' => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'type'              => 'Int',
+					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
 				],
 				'customerId' => [
-					'type'        => 'Int',
-					'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
+					'type'        => 'ID',
+					'description' => __( 'Database ID or global ID of the customer for the order', 'wp-graphql-woocommerce' ),
 				],
 			]
 		);
@@ -71,7 +73,7 @@ class Order_Update {
 		return [
 			'order' => [
 				'type'    => 'Order',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Order( $payload['id'] );
 				},
 			],
@@ -84,19 +86,19 @@ class Order_Update {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve order ID.
 			$order_id = null;
 			if ( ! empty( $input['id'] ) ) {
-				$id_components = Relay::fromGlobalId( $input['id'] );
-				if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-					throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
-				}
-				$order_id = absint( $id_components['id'] );
+				$order_id = Utils::get_database_id_from_id( $input['id'] );
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'No order ID provided.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+			}
+
+			if ( ! $order_id ) {
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Check if authorized to update this order.
@@ -109,8 +111,8 @@ class Order_Update {
 			 *
 			 * @param int         $order_id  Order ID.
 			 * @param array       $input     Input data describing order
-			 * @param AppContext  $context   Request AppContext instance.
-			 * @param ResolveInfo $info      Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext  $context   Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_before_order_update', $order_id, $input, $context, $info );
 
@@ -124,11 +126,15 @@ class Order_Update {
 
 			$order = WC_Order_Factory::get_order( $order_id );
 
+			if ( ! is_object( $order ) ) {
+				throw new UserError( __( 'Order not found.', 'wp-graphql-woocommerce' ) );
+			}
+
 			// Make sure gateways are loaded so hooks from gateways fire on save/create.
 			\WC()->payment_gateways();
 
 			// Validate customer ID.
-			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input ) ) {
+			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input['customerId'] ) ) {
 				throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -142,10 +148,10 @@ class Order_Update {
 			}
 
 			// Actions for after the order is saved.
-			if ( true === $input['isPaid'] ) {
+			if ( isset( $input['isPaid'] ) && true === $input['isPaid'] ) {
 				$order->payment_complete(
-					! empty( $input['transactionId'] ) ?
-						$input['transactionId']
+					! empty( $input['transactionId'] )
+						? $input['transactionId']
 						: ''
 				);
 			}
@@ -153,10 +159,10 @@ class Order_Update {
 			/**
 			 * Action called after order is updated.
 			 *
-			 * @param WC_Order    $order   WC_Order instance.
+			 * @param \WC_Order    $order   WC_Order instance.
 			 * @param array       $input   Input data describing order
-			 * @param AppContext  $context Request AppContext instance.
-			 * @param ResolveInfo $info    Request ResolveInfo instance.
+			 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
+			 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 			 */
 			do_action( 'graphql_woocommerce_after_order_update', $order, $input, $context, $info );
 

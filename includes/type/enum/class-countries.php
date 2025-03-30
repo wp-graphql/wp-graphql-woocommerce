@@ -14,13 +14,15 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
 class Countries {
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		$wc_countries = new \WC_Countries();
 		$countries    = $wc_countries->get_countries();
 		array_walk(
 			$countries,
-			function( &$value, $code ) {
+			static function ( &$value, $code ) {
 				$value = [ 'value' => $code ];
 			}
 		);

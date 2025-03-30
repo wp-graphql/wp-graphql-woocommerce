@@ -1,6 +1,5 @@
 <?php
 
-use WPGraphQL\Type\WPEnumType;
 
 class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function setUp(): void {
@@ -63,7 +62,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		// Additional cart fees.
 		add_action(
 			'woocommerce_cart_calculate_fees',
-			function() {
+			static function () {
 				$percentage = 0.01;
 				$surcharge  = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;
 				WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
@@ -349,7 +348,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
 			$this->expectedField( 'checkout.order.status', 'ON_HOLD' ),
 			$this->expectedNode(
 				'checkout.order.metaData',
@@ -362,98 +361,98 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 				'checkout.order.couponLines.nodes',
 				[
 					$this->expectedField( 'code', $coupon->get_code() ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'discount', self::NOT_NULL ),
-					$this->expectedField( 'discountTax', self::NOT_NULL ),
-					$this->expectedField( 'coupon', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'discount', static::NOT_NULL ),
+					$this->expectedField( 'discountTax', static::NOT_NULL ),
+					$this->expectedField( 'coupon', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.feeLines.nodes',
 				[
 					$this->expectedField( 'name', 'Surcharge' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'amount', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'amount', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.shippingLines.nodes',
 				[
 					$this->expectedField( 'methodTitle', 'Flat rate' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.taxLines.nodes',
 				[
 					$this->expectedField( 'label', 'VAT' ),
-					$this->expectedField( 'rateCode', self::NOT_NULL ),
-					$this->expectedField( 'taxTotal', self::NOT_NULL ),
-					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
-					$this->expectedField( 'isCompound', self::NOT_NULL ),
-					$this->expectedField( 'taxRate', self::NOT_NULL ),
+					$this->expectedField( 'rateCode', static::NOT_NULL ),
+					$this->expectedField( 'taxTotal', static::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', static::NOT_NULL ),
+					$this->expectedField( 'isCompound', static::NOT_NULL ),
+					$this->expectedField( 'taxRate', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[0] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[1] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[2] ),
-					$this->expectedField( 'variationId', self::NOT_NULL ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
-					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
+					$this->expectedField( 'variationId', static::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
+					$this->expectedField( 'variation.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedField(
 				'checkout.customer.id',
-				$this->toRelayId( 'customer', $this->customer )
+				$this->toRelayId( 'user', $this->customer )
 			),
 			$this->expectedField( 'checkout.result', 'success' ),
-			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
+			$this->expectedField( 'checkout.redirect', static::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -508,7 +507,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
 			$this->expectedField( 'checkout.order.status', 'ON_HOLD' ),
 			$this->expectedNode(
 				'checkout.order.metaData',
@@ -521,84 +520,84 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 				'checkout.order.feeLines.nodes',
 				[
 					$this->expectedField( 'name', 'Surcharge' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'amount', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'amount', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.shippingLines.nodes',
 				[
 					$this->expectedField( 'methodTitle', 'Flat rate' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.taxLines.nodes',
 				[
 					$this->expectedField( 'label', 'VAT' ),
-					$this->expectedField( 'rateCode', self::NOT_NULL ),
-					$this->expectedField( 'taxTotal', self::NOT_NULL ),
-					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
-					$this->expectedField( 'isCompound', self::NOT_NULL ),
-					$this->expectedField( 'taxRate', self::NOT_NULL ),
+					$this->expectedField( 'rateCode', static::NOT_NULL ),
+					$this->expectedField( 'taxTotal', static::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', static::NOT_NULL ),
+					$this->expectedField( 'isCompound', static::NOT_NULL ),
+					$this->expectedField( 'taxRate', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[0] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[1] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[2] ),
-					$this->expectedField( 'variationId', self::NOT_NULL ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
-					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
+					$this->expectedField( 'variationId', static::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
+					$this->expectedField( 'variation.node.id', static::NOT_NULL ),
 				]
 			),
-			$this->expectedField( 'checkout.customer.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.customer.id', static::NOT_NULL ),
 			$this->expectedField( 'checkout.result', 'success' ),
-			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
+			$this->expectedField( 'checkout.redirect', static::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -650,7 +649,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
 			$this->expectedField( 'checkout.order.status', 'ON_HOLD' ),
 			$this->expectedNode(
 				'checkout.order.metaData',
@@ -663,84 +662,84 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 				'checkout.order.feeLines.nodes',
 				[
 					$this->expectedField( 'name', 'Surcharge' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'amount', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'amount', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.shippingLines.nodes',
 				[
 					$this->expectedField( 'methodTitle', 'Flat rate' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.taxLines.nodes',
 				[
 					$this->expectedField( 'label', 'VAT' ),
-					$this->expectedField( 'rateCode', self::NOT_NULL ),
-					$this->expectedField( 'taxTotal', self::NOT_NULL ),
-					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
-					$this->expectedField( 'isCompound', self::NOT_NULL ),
-					$this->expectedField( 'taxRate', self::NOT_NULL ),
+					$this->expectedField( 'rateCode', static::NOT_NULL ),
+					$this->expectedField( 'taxTotal', static::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', static::NOT_NULL ),
+					$this->expectedField( 'isCompound', static::NOT_NULL ),
+					$this->expectedField( 'taxRate', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[0] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[1] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[2] ),
-					$this->expectedField( 'variationId', self::NOT_NULL ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
-					$this->expectedField( 'variation.node.id', self::NOT_NULL ),
+					$this->expectedField( 'variationId', static::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
+					$this->expectedField( 'variation.node.id', static::NOT_NULL ),
 				]
 			),
-			$this->expectedField( 'checkout.customer', self::IS_NULL ),
+			$this->expectedField( 'checkout.customer.id', 'guest' ),
 			$this->expectedField( 'checkout.result', 'success' ),
-			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
+			$this->expectedField( 'checkout.redirect', static::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -798,7 +797,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
 			$this->expectedField( 'checkout.order.status', 'COMPLETED' ),
 			$this->expectedNode(
 				'checkout.order.metaData',
@@ -811,57 +810,57 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 				'checkout.order.feeLines.nodes',
 				[
 					$this->expectedField( 'name', 'Surcharge' ),
-					$this->expectedField( 'databaseId', self::NOT_NULL ),
-					$this->expectedField( 'orderId', self::NOT_NULL ),
-					$this->expectedField( 'amount', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
+					$this->expectedField( 'databaseId', static::NOT_NULL ),
+					$this->expectedField( 'orderId', static::NOT_NULL ),
+					$this->expectedField( 'amount', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.taxLines.nodes',
 				[
 					$this->expectedField( 'label', 'VAT' ),
-					$this->expectedField( 'rateCode', self::NOT_NULL ),
-					$this->expectedField( 'taxTotal', self::NOT_NULL ),
-					$this->expectedField( 'shippingTaxTotal', self::NOT_NULL ),
-					$this->expectedField( 'isCompound', self::NOT_NULL ),
-					$this->expectedField( 'taxRate', self::NOT_NULL ),
+					$this->expectedField( 'rateCode', static::NOT_NULL ),
+					$this->expectedField( 'taxTotal', static::NOT_NULL ),
+					$this->expectedField( 'shippingTaxTotal', static::NOT_NULL ),
+					$this->expectedField( 'isCompound', static::NOT_NULL ),
+					$this->expectedField( 'taxRate', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[0] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[1] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
-			$this->expectedField( 'checkout.customer', self::IS_NULL ),
+			$this->expectedField( 'checkout.customer.id', 'guest' ),
 			$this->expectedField( 'checkout.result', 'success' ),
-			$this->expectedField( 'checkout.redirect', self::NOT_NULL ),
+			$this->expectedField( 'checkout.redirect', static::NOT_NULL ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -1031,7 +1030,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$expected = [
-			$this->expectedField( 'checkout.order.id', self::NOT_NULL ),
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
 			$this->expectedField( 'checkout.order.status', 'PROCESSING' ),
 			$this->expectedNode(
 				'checkout.order.metaData',
@@ -1049,28 +1048,28 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[0] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedNode(
 				'checkout.order.lineItems.nodes',
 				[
 					$this->expectedField( 'productId', $product_ids[1] ),
-					$this->expectedField( 'quantity', self::NOT_NULL ),
-					$this->expectedField( 'taxClass', self::NOT_NULL ),
-					$this->expectedField( 'subtotal', self::NOT_NULL ),
-					$this->expectedField( 'subtotalTax', self::NOT_NULL ),
-					$this->expectedField( 'total', self::NOT_NULL ),
-					$this->expectedField( 'totalTax', self::NOT_NULL ),
-					$this->expectedField( 'taxStatus', self::NOT_NULL ),
-					$this->expectedField( 'product.node.id', self::NOT_NULL ),
+					$this->expectedField( 'quantity', static::NOT_NULL ),
+					$this->expectedField( 'taxClass', static::NOT_NULL ),
+					$this->expectedField( 'subtotal', static::NOT_NULL ),
+					$this->expectedField( 'subtotalTax', static::NOT_NULL ),
+					$this->expectedField( 'total', static::NOT_NULL ),
+					$this->expectedField( 'totalTax', static::NOT_NULL ),
+					$this->expectedField( 'taxStatus', static::NOT_NULL ),
+					$this->expectedField( 'product.node.id', static::NOT_NULL ),
 				]
 			),
 			$this->expectedField( 'checkout.result', 'success' ),
@@ -1117,7 +1116,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		 * Ensure that checkout failed when stock is too low.
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [ $this->expectedField( 'checkout', self::IS_NULL ) ];
+		$expected = [ $this->expectedField( 'checkout', static::IS_NULL ) ];
 
 		$this->assertQueryError( $response, $expected );
 	}

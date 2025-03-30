@@ -50,10 +50,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -93,10 +90,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -130,10 +124,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -172,10 +163,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -213,10 +201,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -258,10 +243,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -289,10 +271,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -332,10 +311,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -373,10 +349,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -413,10 +386,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -595,10 +565,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		$response = $this->sendGraphQLRequest( $mutation, $input, $request_headers );
-
-		// Return response.
-		return $response;
+		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
 	}
 
 	/**
@@ -705,24 +672,216 @@ class GraphQLE2E extends \Codeception\Module {
 			$product_catalog[ $product['post_title'] ] = $product_id;
 		}
 
+		$cart_page_content = '<!-- wp:woocommerce/cart -->
+		<div class="wp-block-woocommerce-cart alignwide is-loading"><!-- wp:woocommerce/filled-cart-block -->
+		<div class="wp-block-woocommerce-filled-cart-block"><!-- wp:woocommerce/cart-items-block -->
+		<div class="wp-block-woocommerce-cart-items-block"><!-- wp:woocommerce/cart-line-items-block -->
+		<div class="wp-block-woocommerce-cart-line-items-block"></div>
+		<!-- /wp:woocommerce/cart-line-items-block -->
+		
+		<!-- wp:woocommerce/cart-cross-sells-block -->
+		<div class="wp-block-woocommerce-cart-cross-sells-block"><!-- wp:heading {"fontSize":"large"} -->
+		<h2 class="wp-block-heading has-large-font-size">' . __( 'You may be interested in…', 'woocommerce' ) . '</h2>
+		<!-- /wp:heading -->
+		
+		<!-- wp:woocommerce/cart-cross-sells-products-block -->
+		<div class="wp-block-woocommerce-cart-cross-sells-products-block"></div>
+		<!-- /wp:woocommerce/cart-cross-sells-products-block --></div>
+		<!-- /wp:woocommerce/cart-cross-sells-block --></div>
+		<!-- /wp:woocommerce/cart-items-block -->
+		
+		<!-- wp:woocommerce/cart-totals-block -->
+		<div class="wp-block-woocommerce-cart-totals-block"><!-- wp:woocommerce/cart-order-summary-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-block"><!-- wp:woocommerce/cart-order-summary-heading-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-heading-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-heading-block -->
+		
+		<!-- wp:woocommerce/cart-order-summary-coupon-form-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-coupon-form-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-coupon-form-block -->
+		
+		<!-- wp:woocommerce/cart-order-summary-subtotal-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-subtotal-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-subtotal-block -->
+		
+		<!-- wp:woocommerce/cart-order-summary-fee-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-fee-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-fee-block -->
+		
+		<!-- wp:woocommerce/cart-order-summary-discount-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-discount-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-discount-block -->
+		
+		<!-- wp:woocommerce/cart-order-summary-shipping-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-shipping-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-shipping-block -->
+		
+		<!-- wp:woocommerce/cart-order-summary-taxes-block -->
+		<div class="wp-block-woocommerce-cart-order-summary-taxes-block"></div>
+		<!-- /wp:woocommerce/cart-order-summary-taxes-block --></div>
+		<!-- /wp:woocommerce/cart-order-summary-block -->
+		
+		<!-- wp:woocommerce/cart-express-payment-block -->
+		<div class="wp-block-woocommerce-cart-express-payment-block"></div>
+		<!-- /wp:woocommerce/cart-express-payment-block -->
+		
+		<!-- wp:woocommerce/proceed-to-checkout-block -->
+		<div class="wp-block-woocommerce-proceed-to-checkout-block"></div>
+		<!-- /wp:woocommerce/proceed-to-checkout-block -->
+		
+		<!-- wp:woocommerce/cart-accepted-payment-methods-block -->
+		<div class="wp-block-woocommerce-cart-accepted-payment-methods-block"></div>
+		<!-- /wp:woocommerce/cart-accepted-payment-methods-block --></div>
+		<!-- /wp:woocommerce/cart-totals-block --></div>
+		<!-- /wp:woocommerce/filled-cart-block -->
+		
+		<!-- wp:woocommerce/empty-cart-block -->
+		<div class="wp-block-woocommerce-empty-cart-block"><!-- wp:heading {"textAlign":"center","className":"with-empty-cart-icon wc-block-cart__empty-cart__title"} -->
+		<h2 class="wp-block-heading has-text-align-center with-empty-cart-icon wc-block-cart__empty-cart__title">' . __( 'Your cart is currently empty!', 'woocommerce' ) . '</h2>
+		<!-- /wp:heading -->
+		
+		<!-- wp:separator {"className":"is-style-dots"} -->
+		<hr class="wp-block-separator has-alpha-channel-opacity is-style-dots"/>
+		<!-- /wp:separator -->
+		
+		<!-- wp:heading {"textAlign":"center"} -->
+		<h2 class="wp-block-heading has-text-align-center">' . __( 'New in store', 'woocommerce' ) . '</h2>
+		<!-- /wp:heading -->
+		
+		<!-- wp:woocommerce/product-new {"columns":4,"rows":1} /--></div>
+		<!-- /wp:woocommerce/empty-cart-block --></div>
+		<!-- /wp:woocommerce/cart -->';
+		$checkout_page_content = '<!-- wp:woocommerce/checkout -->
+		<div class="wp-block-woocommerce-checkout alignwide wc-block-checkout is-loading"><!-- wp:woocommerce/checkout-fields-block -->
+		<div class="wp-block-woocommerce-checkout-fields-block"><!-- wp:woocommerce/checkout-express-payment-block -->
+		<div class="wp-block-woocommerce-checkout-express-payment-block"></div>
+		<!-- /wp:woocommerce/checkout-express-payment-block -->
+		
+		<!-- wp:woocommerce/checkout-contact-information-block -->
+		<div class="wp-block-woocommerce-checkout-contact-information-block"></div>
+		<!-- /wp:woocommerce/checkout-contact-information-block -->
+		
+		<!-- wp:woocommerce/checkout-shipping-method-block -->
+		<div class="wp-block-woocommerce-checkout-shipping-method-block"></div>
+		<!-- /wp:woocommerce/checkout-shipping-method-block -->
+		
+		<!-- wp:woocommerce/checkout-pickup-options-block -->
+		<div class="wp-block-woocommerce-checkout-pickup-options-block"></div>
+		<!-- /wp:woocommerce/checkout-pickup-options-block -->
+		
+		<!-- wp:woocommerce/checkout-shipping-address-block -->
+		<div class="wp-block-woocommerce-checkout-shipping-address-block"></div>
+		<!-- /wp:woocommerce/checkout-shipping-address-block -->
+		
+		<!-- wp:woocommerce/checkout-billing-address-block -->
+		<div class="wp-block-woocommerce-checkout-billing-address-block"></div>
+		<!-- /wp:woocommerce/checkout-billing-address-block -->
+		
+		<!-- wp:woocommerce/checkout-shipping-methods-block -->
+		<div class="wp-block-woocommerce-checkout-shipping-methods-block"></div>
+		<!-- /wp:woocommerce/checkout-shipping-methods-block -->
+		
+		<!-- wp:woocommerce/checkout-payment-block -->
+		<div class="wp-block-woocommerce-checkout-payment-block"></div>
+		<!-- /wp:woocommerce/checkout-payment-block -->
+		
+		<!-- wp:woocommerce/checkout-additional-information-block -->
+		<div class="wp-block-woocommerce-checkout-additional-information-block"></div>
+		<!-- /wp:woocommerce/checkout-additional-information-block -->
+		
+		<!-- wp:woocommerce/checkout-order-note-block -->
+		<div class="wp-block-woocommerce-checkout-order-note-block"></div>
+		<!-- /wp:woocommerce/checkout-order-note-block -->
+		
+		<!-- wp:woocommerce/checkout-terms-block -->
+		<div class="wp-block-woocommerce-checkout-terms-block"></div>
+		<!-- /wp:woocommerce/checkout-terms-block -->
+		
+		<!-- wp:woocommerce/checkout-actions-block -->
+		<div class="wp-block-woocommerce-checkout-actions-block"></div>
+		<!-- /wp:woocommerce/checkout-actions-block --></div>
+		<!-- /wp:woocommerce/checkout-fields-block -->
+		
+		<!-- wp:woocommerce/checkout-totals-block -->
+		<div class="wp-block-woocommerce-checkout-totals-block"><!-- wp:woocommerce/checkout-order-summary-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-block"><!-- wp:woocommerce/checkout-order-summary-cart-items-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-cart-items-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-cart-items-block -->
+		
+		<!-- wp:woocommerce/checkout-order-summary-coupon-form-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-coupon-form-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-coupon-form-block -->
+		
+		<!-- wp:woocommerce/checkout-order-summary-subtotal-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-subtotal-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-subtotal-block -->
+		
+		<!-- wp:woocommerce/checkout-order-summary-fee-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-fee-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-fee-block -->
+		
+		<!-- wp:woocommerce/checkout-order-summary-discount-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-discount-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-discount-block -->
+		
+		<!-- wp:woocommerce/checkout-order-summary-shipping-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-shipping-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-shipping-block -->
+		
+		<!-- wp:woocommerce/checkout-order-summary-taxes-block -->
+		<div class="wp-block-woocommerce-checkout-order-summary-taxes-block"></div>
+		<!-- /wp:woocommerce/checkout-order-summary-taxes-block --></div>
+		<!-- /wp:woocommerce/checkout-order-summary-block --></div>
+		<!-- /wp:woocommerce/checkout-totals-block --></div>
+		<!-- /wp:woocommerce/checkout -->';
+
+		// Create cart page.
+		$wpdb         = $this->getModule( 'WPDb' );
+		
+		$cart_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Cart',
+				'post_name'    => 'cart',
+				'post_author'  => 1,
+				'post_content' => $cart_page_content,
+				'post_status'  => 'publish',
+			]
+		);
+		$wpdb->haveOptionInDatabase( 'woocommerce_cart_page_id', $cart_page_id );
+		$checkout_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Checkout',
+				'post_name'    => 'checkout',
+				'post_author'  => 1,
+				'post_content' => $checkout_page_content,
+				'post_status'  => 'publish',
+			]
+		);
+		$wpdb->haveOptionInDatabase( 'woocommerce_checkout_page_id', $checkout_page_id );
+
 		return $product_catalog;
 	}
 
 	/**
 	 * Initializes store options and actions
 	 *
-	 * @param AcceptanceTester $I
+	 * @param \Helper\AcceptanceTester $I
 	 * @return void
 	 */
 	public function _setupStore() {
+		$wpdb = $this->getModule( 'WPDb' );
+
+		$wpdb->useTheme( 'twentytwentyone' );
 		// Turn on tax calculations and store shipping countries. Important!
-		update_option( 'woocommerce_ship_to_countries', 'all' );
-		update_option( 'woocommerce_prices_include_tax', 'no' );
-		update_option( 'woocommerce_calc_taxes', 'yes' );
-		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_ship_to_countries', 'all' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_prices_include_tax', 'no' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_calc_taxes', 'yes' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_tax_round_at_subtotal', 'no' );
 
 		// Enable payment gateway.
-		update_option(
+		$wpdb->haveOptionInDatabase(
 			'woocommerce_bacs_settings',
 			[
 				'enabled'      => 'yes',
@@ -733,13 +892,16 @@ class GraphQLE2E extends \Codeception\Module {
 			]
 		);
 
-		// Additional cart fees.
+		// forcing has_block_template to be false
+		add_filter( 'woocommerce_has_block_template', '__return_false', 10, 2 );
+
+		//Additional cart fees.
 		add_action(
 			'woocommerce_cart_calculate_fees',
-			function() {
+			static function () {
 				$percentage = 0.01;
-				$surcharge  = ( \WC()->cart->cart_contents_total + \WC()->cart->shipping_total ) * $percentage;
-				\WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
+				$surcharge  = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;
+				WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
 			}
 		);
 
@@ -776,20 +938,32 @@ class GraphQLE2E extends \Codeception\Module {
 		$zone->save();
 		$zone->add_shipping_method( 'flat_rate' );
 		$zone->add_shipping_method( 'free_shipping' );
+
+		global $wp_rewrite; 
+
+		//Write the rule
+		$wp_rewrite->set_permalink_structure('/%postname%/'); 
+
+		//Set the option
+		update_option( "rewrite_rules", FALSE ); 
+
+		//Flush the rules and tell it to write htaccess
+		$wp_rewrite->flush_rules( true );
 	}
 
 	/**
 	 * Adds Product in database
 	 *
-	 * @param AcceptanceTester $I
-	 * @param array            $args        Product args.
-	 * @param integer          $product_id  ID for product being created.
-	 * @param string           $term        Product type. Defaults to 'simple'.
-	 * @param integer          $term_id     Product type term ID.
+	 * @param \Helper\AcceptanceTester $I
+	 * @param array                    $args        Product args.
+	 * @param integer                  $product_id  ID for product being created.
+	 * @param string                   $term        Product type. Defaults to 'simple'.
+	 * @param integer                  $term_id     Product type term ID.
 	 * @return void
 	 */
 	public function haveAProductInTheDatabase( $args, &$product_id, $term = 'simple', &$term_id = 0 ) {
 		$wpdb = $this->getModule( 'WPDb' );
+
 		// Create Product
 		$product_id = $wpdb->havePostInDatabase(
 			array_replace_recursive(
@@ -853,7 +1027,6 @@ class GraphQLE2E extends \Codeception\Module {
 		$wpdb->haveTermRelationshipInDatabase( $product_id, $term_id );
 	}
 
-
 	public function setupStoreAndUsers() {
 		$this->_setupStore();
 
@@ -866,5 +1039,23 @@ class GraphQLE2E extends \Codeception\Module {
 				'user_email' => 'jimbo1234@example.com',
 			]
 		);
+	}
+
+	public function verifyRedirect( $startUrl, $endUrl, $redirectCode = 301 ) {
+		$phpBrowser = $this->getModule( 'WPBrowser' );
+		$guzzle     = $phpBrowser->client;
+
+		// Disable the following of redirects
+		$guzzle->followRedirects( false );
+
+		$phpBrowser->_loadPage( 'GET', $startUrl );
+		$response       = $guzzle->getInternalResponse();
+		$responseCode   = $response->getStatusCode();
+		$locationHeader = $response->getHeader( 'Location' );
+
+		$this->assertEquals( $responseCode, $redirectCode );
+		$this->assertEquals( $endUrl, $locationHeader );
+
+		$guzzle->followRedirects( true );
 	}
 }

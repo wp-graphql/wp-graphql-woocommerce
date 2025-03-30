@@ -1,7 +1,6 @@
 <?php
 
 class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -89,7 +88,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				[
 					$this->expectedField( 'id', 'bacs' ),
 					$this->expectedField( 'title', 'Direct bank transfer' ),
-					$this->expectedField( 'icon', self::IS_NULL ),
+					$this->expectedField( 'icon', static::IS_NULL ),
 				]
 			),
 		];
@@ -105,7 +104,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedErrorPath( 'paymentGateways' ),
-			$this->expectedField( 'paymentGateways', self::IS_NULL ),
+			$this->expectedField( 'paymentGateways', static::IS_NULL ),
 		];
 
 		$this->assertQueryError( $response, $expected );
@@ -125,7 +124,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				[
 					$this->expectedField( 'id', 'bacs' ),
 					$this->expectedField( 'title', 'Direct bank transfer' ),
-					$this->expectedField( 'icon', self::IS_NULL ),
+					$this->expectedField( 'icon', static::IS_NULL ),
 				]
 			),
 			$this->expectedNode(
@@ -133,7 +132,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				[
 					$this->expectedField( 'id', 'cheque' ),
 					$this->expectedField( 'title', 'Check payments' ),
-					$this->expectedField( 'icon', self::IS_NULL ),
+					$this->expectedField( 'icon', static::IS_NULL ),
 				]
 			),
 			$this->expectedNode(
@@ -141,7 +140,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				[
 					$this->expectedField( 'id', 'cod' ),
 					$this->expectedField( 'title', 'Cash on delivery' ),
-					$this->expectedField( 'icon', self::IS_NULL ),
+					$this->expectedField( 'icon', static::IS_NULL ),
 				]
 			),
 			$this->expectedNode(
@@ -149,12 +148,11 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				[
 					$this->expectedField( 'id', 'stripe' ),
 					$this->expectedField( 'title', 'Credit Card (Stripe)' ),
-					$this->expectedField( 'icon', self::IS_NULL ),
+					$this->expectedField( 'icon', static::IS_NULL ),
 				]
 			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
-
 }

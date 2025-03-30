@@ -4,15 +4,15 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	public function expectedTaxRateData( $rate_id ) {
 		$rate = $this->factory->tax_rate->get_object_by_id( $rate_id );
 
-		$expected = [
+		return [
 			$this->expectedField( 'taxRate.id', $this->toRelayId( 'tax_rate', $rate_id ) ),
 			$this->expectedField( 'taxRate.databaseId', absint( $rate->tax_rate_id ) ),
-			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : self::IS_NULL ),
-			$this->expectedField( 'taxRate.state', ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : self::IS_NULL ),
-			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : [ '*' ] ),
-			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : [ '*' ] ),
-			$this->expectedField( 'taxRate.rate', ! empty( $rate->tax_rate ) ? $rate->tax_rate : self::IS_NULL ),
-			$this->expectedField( 'taxRate.name', ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : self::IS_NULL ),
+			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : static::IS_NULL ),
+			$this->expectedField( 'taxRate.state', ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : static::IS_NULL ),
+			$this->expectedField( 'taxRate.postcode', ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : '*' ),
+			$this->expectedField( 'taxRate.city', ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : '*' ),
+			$this->expectedField( 'taxRate.rate', ! empty( $rate->tax_rate ) ? $rate->tax_rate : static::IS_NULL ),
+			$this->expectedField( 'taxRate.name', ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : static::IS_NULL ),
 			$this->expectedField( 'taxRate.priority', absint( $rate->tax_rate_priority ) ),
 			$this->expectedField( 'taxRate.compound', (bool) $rate->tax_rate_compound ),
 			$this->expectedField( 'taxRate.shipping', (bool) $rate->tax_rate_shipping ),
@@ -24,8 +24,6 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					: 'STANDARD'
 			),
 		];
-
-		return $expected;
 	}
 
 	// tests
@@ -51,6 +49,14 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			}
 		';
+
+		// Execute the request expecting failure due to missing permissions.
+        $variables = [ 'id' => $this->toRelayId( 'tax_rate', $rate ) ];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+        $this->assertQueryError( $response );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
 
 		/**
 		 * Assertion One
@@ -121,6 +127,13 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			}
 		';
 
+		// Execute the request expecting failure due to missing permissions.
+        $response = $this->graphql( compact( 'query' ) );
+        $this->assertQuerySuccessful( $response, [ $this->expectedField( 'taxRates.nodes', static::IS_FALSY ) ] );
+
+        // Login as shop manager.
+        $this->loginAsShopManager();
+
 		/**
 		 * Assertion One
 		 *
@@ -128,7 +141,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $id ) {
+			function ( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
 					[
@@ -149,7 +162,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$reduced_tax_rates = array_values(
 			array_filter(
 				$rates,
-				function( $id ) {
+				function ( $id ) {
 					$rate = $this->factory->tax_rate->get_object_by_id( $id );
 					return 'reduced-rate' === $rate->tax_rate_class;
 				}
@@ -158,7 +171,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$variables         = [ 'class' => 'REDUCED_RATE' ];
 		$response          = $this->graphql( compact( 'query', 'variables' ) );
 		$expected          = array_map(
-			function( $id ) {
+			function ( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
 					[

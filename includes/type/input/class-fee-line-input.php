@@ -12,9 +12,10 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Fee_Line_Input
  */
 class Fee_Line_Input {
-
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_input_type(

@@ -10,19 +10,12 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use GraphQLRelay\Connection\ArrayConnection;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class Order_Item_Connection_Resolver
  */
 class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -52,11 +45,11 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Filter the $query_args to allow folks to customize queries programmatically.
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query.
-		 * @param mixed       $source     The source that's passed down the GraphQL queries.
-		 * @param array       $args       The inputArgs on the field.
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+		 * @param array                                $query_args The args that will be passed to the WP_Query.
+		 * @param mixed                                $source     The source that's passed down the GraphQL queries.
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field.
+		 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_order_item_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -66,7 +59,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return array
 	 */
 	public function get_query() {
 		// @codingStandardsIgnoreLine
@@ -87,11 +80,11 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				/**
 				 * Filter the $item_type to allow non-core item types.
 				 *
-				 * @param array       $query_args The args that will be passed to the WP_Query.
-				 * @param mixed       $source     The source that's passed down the GraphQL queries.
-				 * @param array       $args       The inputArgs on the field.
-				 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-				 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+				 * @param string                               $item_type  Order item type.
+				 * @param mixed                                $source     The source that's passed down the GraphQL queries.
+				 * @param array<string, mixed>|null            $args       The inputArgs on the field.
+				 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree.
+				 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 				 */
 				$type = apply_filters(
 					'graphql_order_item_connection_item_type',
@@ -105,10 +98,8 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 		}//end switch
 
 		$items = [];
-		foreach ( $this->source->get_items( $type ) as $id => $item ) {
-			$item->cached_order = $this->source;
-			$item->cached_id    = $id;
-			$items[]            = $item;
+		foreach ( $this->source->get_items( $type ) as $item ) {
+			$items[] = $item;
 		}
 
 		if ( empty( $items ) ) {
@@ -121,7 +112,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		$cursor = absint( $this->get_offset() );
+		$cursor = (int) $this->get_offset_for_cursor( $this->args['after'] ?? ( $this->args['before'] ?? 0 ) );
 		$first  = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 		$last   = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 
@@ -130,7 +121,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$items = array_reverse( $items );
 		}
 
-		$get_item_id = function( $item ) {
+		$get_item_id = static function ( $item ) {
 			return $item->get_id();
 		};
 
@@ -139,18 +130,22 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 			? array_search( $cursor, array_map( $get_item_id, $items ), true )
 			: 0;
 
+		if ( false === $offset ) {
+			$offset = 0;
+		}
+
 		// If cursor set, move index up one to ensure cursor not included in keys.
 		if ( $cursor ) {
-			$offset++;
+			++$offset;
 		}
 
 		$items = array_slice( $items, $offset, $this->query_amount + 1 );
 
 		// Cache items for later.
 		foreach ( $items as $item ) {
-			$this->loader->prime(
+			$this->get_loader()->prime(
 				$item->get_id(),
-				new \WPGraphQL\WooCommerce\Model\Order_Item( $item )
+				new \WPGraphQL\WooCommerce\Model\Order_Item( $item, $this->source )
 			);
 		}
 
@@ -175,36 +170,5 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function is_valid_offset( $offset ) {
 		return 'string' === gettype( $offset );
-	}
-
-	/**
-	 * Get_offset
-	 *
-	 * This returns the offset to be used in the $query_args based on the $args passed to the
-	 * GraphQL query.
-	 *
-	 * @return int|mixed
-	 */
-	public function get_offset() {
-		/**
-		 * Defaults
-		 */
-		$offset = 0;
-
-		/**
-		 * Get the $after offset
-		 */
-		if ( ! empty( $this->args['after'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['after'] ), strlen( 'arrayconnection:' ) );
-		} elseif ( ! empty( $this->args['before'] ) ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			$offset = substr( base64_decode( $this->args['before'] ), strlen( 'arrayconnection:' ) );
-		}
-
-		/**
-		 * Return the higher of the two values
-		 */
-		return $offset;
 	}
 }

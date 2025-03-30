@@ -8,11 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Data\Mutation;
 
-use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\Types;
-
 /**
  * Class Customer_Mutation
  */
@@ -101,6 +96,7 @@ class Customer_Mutation {
 			'state'      => '',
 			'postcode'   => '',
 			'country'    => '',
+			'phone'      => '',
 		];
 	}
 
@@ -112,10 +108,7 @@ class Customer_Mutation {
 	public static function empty_billing() {
 		return array_merge(
 			self::empty_shipping(),
-			[
-				'email' => '',
-				'phone' => '',
-			]
+			[ 'email' => '' ]
 		);
 	}
 
@@ -124,6 +117,8 @@ class Customer_Mutation {
 	 *
 	 * @param \WC_Customer $customer  Customer object.
 	 * @param array        $inputs    Incoming meta data.
+	 *
+	 * @return void
 	 */
 	public static function input_meta_data_mapping( $customer, $inputs ) {
 		if ( is_array( $inputs ) ) {

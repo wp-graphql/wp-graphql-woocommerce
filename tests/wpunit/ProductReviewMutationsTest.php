@@ -3,7 +3,6 @@
 use GraphQLRelay\Relay;
 
 class ProductReviewMutationsTest extends \Codeception\TestCase\WPTestCase {
-
 	public function setUp(): void {
 		// before
 		parent::setUp();

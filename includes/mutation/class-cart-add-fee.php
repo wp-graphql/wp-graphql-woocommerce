@@ -19,9 +19,10 @@ use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
  * Class - Cart_Add_Fee
  */
 class Cart_Add_Fee {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -40,7 +41,7 @@ class Cart_Add_Fee {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		$input_fields = [
+		return [
 			'name'     => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => __( 'Unique name for the fee.', 'wp-graphql-woocommerce' ),
@@ -58,8 +59,6 @@ class Cart_Add_Fee {
 				'description' => __( 'The tax class for the fee if taxable.', 'wp-graphql-woocommerce' ),
 			],
 		];
-
-		return $input_fields;
 	}
 
 	/**
@@ -71,7 +70,7 @@ class Cart_Add_Fee {
 		return [
 			'cartFee' => [
 				'type'    => 'CartFee',
-				'resolve' => function ( $payload ) {
+				'resolve' => static function ( $payload ) {
 					$fees = \WC()->cart->get_fees();
 					return $fees[ $payload['id'] ];
 				},
@@ -86,7 +85,7 @@ class Cart_Add_Fee {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
 			if ( ! current_user_can( 'edit_shop_orders' ) ) {
@@ -106,6 +105,8 @@ class Cart_Add_Fee {
 
 			// Add cart fee.
 			\WC()->cart->add_fee( ...$cart_fee_args );
+
+			do_action( 'woographql_update_session', true );
 
 			// Return payload.
 			return [ 'id' => \sanitize_title( $input['name'] ) ];

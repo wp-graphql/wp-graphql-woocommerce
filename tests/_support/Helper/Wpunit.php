@@ -30,10 +30,10 @@ class Wpunit extends \Codeception\Module {
 	 */
 	public function _beforeSuite( $settings = null ) {
 		$helper = $this->product();
-		$helper->create_attribute( 'size', [ 'small', 'medium', 'large' ] );
-		$helper->create_attribute( 'color', [ 'red', 'blue', 'green' ] );
+		$helper->create_attribute( 'size', [ 'small', 'medium', 'large' ], 'Product size' );
+		$helper->create_attribute( 'color', [ 'red', 'blue', 'green' ], 'Product color' );
 		codecept_debug( 'ATTRIBUTES_LOADED' );
-		add_action( 'init_graphql_request', [ __CLASS__, 'shortcode_test_init' ] );
+		add_action( 'init_graphql_request', [ self::class, 'shortcode_test_init' ] );
 		codecept_debug( 'SHORTCODE_INITIALIZED' );
 		\Stripe\Stripe::setApiKey(
 			defined( 'STRIPE_API_SECRET_KEY' ) ? STRIPE_API_SECRET_KEY : getenv( 'STRIPE_API_SECRET_KEY' )
@@ -91,11 +91,11 @@ class Wpunit extends \Codeception\Module {
 
 	public function clear_loader_cache( $loader_name ) {
 		$loader = \WPGraphQL::get_app_context()->get_loader( $loader_name );
-		$loader->clearAll();
+		$loader->clear_all();
 	}
 
 	public static function shortcode_test_init() {
-		add_shortcode( 'shortcode_test', [ __CLASS__, 'shortcode_test_handler' ] );
+		add_shortcode( 'shortcode_test', [ self::class, 'shortcode_test_handler' ] );
 	}
 
 	public static function shortcode_test_handler( $atts ) {

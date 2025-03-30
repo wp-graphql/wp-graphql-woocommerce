@@ -65,7 +65,7 @@ class Post_Type_Orderby_Enum {
 	/**
 	 * Return enumeration values.
 	 *
-	 * @array
+	 * @return array
 	 */
 	protected static function values() {
 		return self::post_type_values();
@@ -73,6 +73,8 @@ class Post_Type_Orderby_Enum {
 
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		$name = static::$name;

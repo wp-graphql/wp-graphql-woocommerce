@@ -10,11 +10,11 @@
 
 namespace WPGraphQL\WooCommerce\Data\Loader;
 
-use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use WPGraphQL\Data\Loader\AbstractDataLoader;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Model\Shipping_Method;
+use WPGraphQL\WooCommerce\Model\Shipping_Zone;
 use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
@@ -22,7 +22,7 @@ use WPGraphQL\WooCommerce\Model\Tax_Rate;
  */
 class WC_Db_Loader extends AbstractDataLoader {
 	/**
-	 * Stores loaded CPTs.
+	 * Stores loaded data objects.
 	 *
 	 * @var array
 	 */
@@ -38,11 +38,12 @@ class WC_Db_Loader extends AbstractDataLoader {
 	/**
 	 * WC_Db_Loader constructor
 	 *
-	 * @param AppContext $context      AppContext instance.
-	 * @param string     $loader_type  Type of loader be initialized.
+	 * @param \WPGraphQL\AppContext $context      AppContext instance.
+	 * @param string                $loader_type  Type of loader be initialized.
 	 */
 	public function __construct( $context, $loader_type ) {
 		$this->loader_type = $loader_type;
+
 		parent::__construct( $context );
 	}
 
@@ -64,6 +65,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 			case 'DOWNLOADABLE_ITEM':
 				$loader = [ $this, 'load_downloadable_item_from_id' ];
 				break;
+			case 'TAX_CLASS':
+				$loader = [ $this, 'load_tax_class_from_slug' ];
+				break;
 			case 'TAX_RATE':
 				$loader = [ $this, 'load_tax_rate_from_id' ];
 				break;
@@ -72,6 +76,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 				break;
 			case 'SHIPPING_METHOD':
 				$loader = [ $this, 'load_shipping_method_from_id' ];
+				break;
+			case 'SHIPPING_ZONE':
+				$loader = [ $this, 'load_shipping_zone_from_id' ];
 				break;
 			default:
 				/**
@@ -119,7 +126,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Downloadable item ID.
 	 *
-	 * @return WC_Customer_Download|null
+	 * @return \WC_Customer_Download|null
 	 */
 	public function load_downloadable_item_from_id( $id ) {
 		$node = new \WC_Customer_Download( $id );
@@ -127,33 +134,94 @@ class WC_Db_Loader extends AbstractDataLoader {
 	}
 
 	/**
+	 * Returns the tax class connected the provided IDs.
+	 *
+	 * @param int $slug - Tax class slug.
+	 *
+	 * @return array|null
+	 */
+	public function load_tax_class_from_slug( $slug ) {
+		if ( 'standard' === $slug ) {
+			return [
+				'slug' => 'standard',
+				'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
+			];
+		} else {
+			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
+			return is_array( $tax_class ) && ! empty( $tax_class ) ? $tax_class : null;
+		}
+	}
+
+	/**
 	 * Returns the tax rate connected the provided IDs.
 	 *
 	 * @param int $id - Tax rate IDs.
 	 *
-	 * @return Tax_Rate|null
+	 * @return \WPGraphQL\WooCommerce\Model\Tax_Rate|null
 	 */
 	public function load_tax_rate_from_id( $id ) {
 		global $wpdb;
 
+		/**
+		 * Get tax rate from WooCommerce.
+		 *
+		 * @var \stdClass&object{
+		 *  tax_rate_id: int,
+		 *  tax_rate_class: string,
+		 *  tax_rate_country: string,
+		 *  tax_rate_state: string,
+		 *  tax_rate: string,
+		 *  tax_rate_name: string,
+		 *  tax_rate_priority: int,
+		 *  tax_rate_compound: bool,
+		 *  tax_rate_shipping: bool,
+		 *  tax_rate_order: int,
+		 *  tax_rate_city: string,
+		 *  tax_rate_postcode: string,
+		 *  tax_rate_postcodes: string,
+		 *  tax_rate_cities: string
+		 *  } $rate
+		 */
 		$rate = \WC_Tax::_get_tax_rate( $id, OBJECT );
-		if ( ! \is_wp_error( $rate ) && ! empty( $rate ) ) {
+		if ( ! empty( $rate ) && is_object( $rate ) ) {
+			$rate->tax_rate_city      = '';
+			$rate->tax_rate_postcode  = '';
+			$rate->tax_rate_postcodes = '';
+			$rate->tax_rate_cities    = '';
+
 			// Get locales from a tax rate.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$locales = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT location_code, location_type
+					"
+					SELECT location_code, location_type
 					FROM {$wpdb->prefix}woocommerce_tax_rate_locations
-					WHERE tax_rate_id = %d",
+					WHERE tax_rate_id = %d
+					",
 					$rate->tax_rate_id
 				)
 			);
 
+			$cities    = [];
+			$postcodes = [];
 			foreach ( $locales as $locale ) {
-				if ( empty( $rate->{'tax_rate_' . $locale->location_type} ) ) {
-					$rate->{'tax_rate_' . $locale->location_type} = [];
+				if ( 'city' === $locale->location_type ) {
+					$cities[] = $locale->location_code;
+				} elseif ( 'postcode' === $locale->location_type ) {
+					$postcodes[] = $locale->location_code;
+				} else {
+					$rate->{'tax_rate_' . $locale->location_type} = $locale->location_code;
 				}
-				$rate->{'tax_rate_' . $locale->location_type}[] = $locale->location_code;
+			}
+
+			if ( ! empty( $cities ) ) {
+				$rate->tax_rate_cities = implode( ';', $cities );
+				$rate->tax_rate_city   = end( $cities );
+			}
+
+			if ( ! empty( $postcodes ) ) {
+				$rate->tax_rate_postcodes = implode( ';', $postcodes );
+				$rate->tax_rate_postcode  = end( $postcodes );
 			}
 			return new Tax_Rate( $rate );
 		} else {
@@ -166,9 +234,9 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 *
 	 * @param int $id - Shipping method ID.
 	 *
-	 * @return Shipping_Method
-	 * @access public
-	 * @throws UserError Invalid object.
+	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Method
+	 *
+	 * @throws \GraphQL\Error\UserError Invalid object.
 	 */
 	public function load_shipping_method_from_id( $id ) {
 		$wc_shipping = \WC_Shipping::instance();
@@ -186,11 +254,31 @@ class WC_Db_Loader extends AbstractDataLoader {
 	}
 
 	/**
+	 * Returns the shipping zone connected the provided IDs.
+	 *
+	 * @param int $id - Shipping zone IDs.
+	 *
+	 * @return \WPGraphQL\WooCommerce\Model\Shipping_Zone|null
+	 */
+	public function load_shipping_zone_from_id( $id ) {
+		/** @var \WC_Shipping_Zone|false $zone */
+		$zone = \WC_Shipping_Zones::get_zone( $id );
+
+		if ( false === $zone ) {
+			return null;
+		}
+
+		$zone = new Shipping_Zone( $zone );
+
+		return $zone;
+	}
+
+	/**
 	 * Returns the order item connected the provided IDs.
 	 *
 	 * @param int $id - Order item IDs.
 	 *
-	 * @return \WPGraphQL\Model\Order_Item|null
+	 * @return \WPGraphQL\WooCommerce\Model\Order_Item|null
 	 */
 	public function load_order_item_from_id( $id ) {
 		$item = \WC()->order_factory::get_order_item( $id );
@@ -199,7 +287,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 			return null;
 		}
 
-		$item = new \WPGraphQL\WooCommerce\ModelOrder_Item( $item );
+		$item = new \WPGraphQL\WooCommerce\Model\Order_Item( $item );
 
 		return $item;
 	}

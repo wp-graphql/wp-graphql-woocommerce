@@ -12,9 +12,10 @@ namespace WPGraphQL\WooCommerce\Type\WPInputObject;
  * Class Product_Attribute_Input
  */
 class Product_Attribute_Input {
-
 	/**
 	 * Registers type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_input_type(

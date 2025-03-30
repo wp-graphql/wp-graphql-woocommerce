@@ -11,7 +11,6 @@ namespace WPGraphQL\WooCommerce\Admin;
  * Section class
  */
 abstract class Section {
-
 	/**
 	 * Returns Section settings fields.
 	 *

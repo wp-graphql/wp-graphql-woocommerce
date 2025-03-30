@@ -10,18 +10,16 @@
 
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
-use GraphQLRelay\Connection\ArrayConnection;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
  * Class Cart_Item_Connection_Resolver
+ *
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader $loader
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
-
 	/**
 	 * Return the name of the loader to be used with the connection resolver
 	 *
@@ -51,8 +49,13 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 			$where_args = $this->args['where'];
 			if ( isset( $where_args['needsShipping'] ) ) {
 				$needs_shipping          = $where_args['needsShipping'];
-				$query_args['filters'][] = function( $cart_item ) use ( $needs_shipping ) {
+				$query_args['filters'][] = static function ( $cart_item ) use ( $needs_shipping ) {
 					$product = \WC()->product_factory->get_product( $cart_item['product_id'] );
+
+					if ( ! is_object( $product ) ) {
+						return false;
+					}
+
 					return $needs_shipping === (bool) $product->needs_shipping();
 				};
 			}
@@ -61,11 +64,11 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Filter the $query_args to allow folks to customize queries programmatically.
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query.
-		 * @param mixed       $source     The source that's passed down the GraphQL queries.
-		 * @param array       $args       The inputArgs on the field.
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree.
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
+		 * @param array                                $query_args The args that will be passed to the WP_Query.
+		 * @param mixed                                $source     The source that's passed down the GraphQL queries.
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field.
+		 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree.
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree.
 		 */
 		$query_args = apply_filters( 'graphql_cart_item_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -75,7 +78,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @return \WP_Query
+	 * @return array
 	 */
 	public function get_query() {
 		$cart_items = array_values( $this->source->get_cart() );
@@ -99,9 +102,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * {@inheritDoc}
 	 */
 	public function get_ids_from_query() {
-		$ids = ! empty( $this->query ) ? $this->query : [];
-
-		return $ids;
+		return ! empty( $this->query ) ? $this->query : [];
 	}
 
 	/**

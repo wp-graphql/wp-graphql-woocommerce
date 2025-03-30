@@ -1,7 +1,6 @@
 <?php
 
 class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-
 	// Tests
 	public function testSetDefaultPaymentMethodMutation() {
 		// Create customer.
@@ -47,14 +46,14 @@ class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		 */
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [ $this->expectedField( 'setDefaultPaymentMethod', self::IS_NULL ) ];
+		$expected = [ $this->expectedField( 'setDefaultPaymentMethod', static::IS_NULL ) ];
 
 		$this->assertQueryError( $response, $expected );
 
 		// Again, as admin.
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [ $this->expectedField( 'setDefaultPaymentMethod', self::IS_NULL ) ];
+		$expected = [ $this->expectedField( 'setDefaultPaymentMethod', static::IS_NULL ) ];
 
 		$this->assertQueryError( $response, $expected );
 
@@ -133,14 +132,14 @@ class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		 */
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [ $this->expectedField( 'deletePaymentMethod', self::IS_NULL ) ];
+		$expected = [ $this->expectedField( 'deletePaymentMethod', static::IS_NULL ) ];
 
 		$this->assertQueryError( $response, $expected );
 
 		// Again, as admin.
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [ $this->expectedField( 'deletePaymentMethod', self::IS_NULL ) ];
+		$expected = [ $this->expectedField( 'deletePaymentMethod', static::IS_NULL ) ];
 
 		$this->assertQueryError( $response, $expected );
 

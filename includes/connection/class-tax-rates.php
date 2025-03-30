@@ -18,9 +18,10 @@ use WPGraphQL\WooCommerce\Data\Connection\Tax_Rate_Connection_Resolver;
  * Class - Tax_Rates
  */
 class Tax_Rates {
-
 	/**
 	 * Registers the various connections from other Types to TaxRate
+	 *
+	 * @return void
 	 */
 	public static function register_connections() {
 		// From RootQuery.
@@ -41,7 +42,7 @@ class Tax_Rates {
 				'toType'         => 'TaxRate',
 				'fromFieldName'  => 'taxRates',
 				'connectionArgs' => self::get_connection_args(),
-				'resolve'        => function( $source, array $args, AppContext $context, ResolveInfo $info ) {
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Tax_Rate_Connection_Resolver( $source, $args, $context, $info );
 
 					return $resolver->get_connection();

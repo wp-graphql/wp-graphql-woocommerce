@@ -12,8 +12,8 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Coupon_Mutation;
 use WPGraphQL\WooCommerce\Model\Coupon;
 
@@ -21,9 +21,10 @@ use WPGraphQL\WooCommerce\Model\Coupon;
  * Class Coupon_Create
  */
 class Coupon_Create {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -31,7 +32,7 @@ class Coupon_Create {
 			[
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => [ __CLASS__, 'mutate_and_get_payload' ],
+				'mutateAndGetPayload' => [ self::class, 'mutate_and_get_payload' ],
 			]
 		);
 	}
@@ -135,13 +136,13 @@ class Coupon_Create {
 		return [
 			'coupon' => [
 				'type'    => 'Coupon',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return new Coupon( $payload['id'] );
 				},
 			],
 			'code'   => [
 				'type'    => 'String',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['code'];
 				},
 			],
@@ -151,27 +152,25 @@ class Coupon_Create {
 	/**
 	 * Defines the mutation data modification closure.
 	 *
-	 * @param array       $input    Mutation input.
-	 * @param AppContext  $context  AppContext instance.
-	 * @param ResolveInfo $info     ResolveInfo instance. Can be
+	 * @param array                                $input    Mutation input.
+	 * @param \WPGraphQL\AppContext                $context  AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo instance. Can be
 	 * use to get info about the current node in the GraphQL tree.
 	 *
-	 * @throws UserError Invalid ID provided | Lack of capabilities.
+	 * @throws \GraphQL\Error\UserError Invalid ID provided | Lack of capabilities.
 	 *
-	 * @return callable
+	 * @return array
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		// Retrieve order ID.
-		$coupon_id = 0;
-		if ( ! empty( $input['id'] ) && is_numeric( $input['id'] ) ) {
-			$coupon_id = absint( $input['id'] );
-		} elseif ( ! empty( $input['id'] ) ) {
-			$id_components = Relay::fromGlobalId( $input['id'] );
-			if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-				throw new UserError( __( 'The "id" provided is invalid', 'wp-graphql-woocommerce' ) );
-			}
+		if ( ! empty( $input['id'] ) ) {
+			$coupon_id = Utils::get_database_id_from_id( $input['id'] );
+		} else {
+			$coupon_id = 0;
+		}
 
-			$coupon_id = absint( $id_components['id'] );
+		if ( false === $coupon_id ) {
+			throw new UserError( __( 'Coupon ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
 		}
 
 		$coupon = new \WC_Coupon( $coupon_id );

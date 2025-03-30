@@ -15,14 +15,12 @@
  * @method void comment($description)
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
- * @SuppressWarnings(PHPMD)
+ * @SuppressWarnings(\PHPMD)
  */
 class WpunitTester extends \Codeception\Actor {
-
 	use _generated\WpunitTesterActions;
 
 	/**
 	 * Define custom actions here
 	 */
-
 }

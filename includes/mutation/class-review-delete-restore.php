@@ -14,15 +14,16 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
+use WPGraphQL\Utils\Utils;
 
 /**
  * Class Review_Delete_Restore
  */
 class Review_Delete_Restore {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		// Trash/Delete mutation.
@@ -85,7 +86,7 @@ class Review_Delete_Restore {
 			'rating'     => [
 				'type'        => 'Float',
 				'description' => __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['rating'] ) ) {
 						return null;
 					}
@@ -96,23 +97,23 @@ class Review_Delete_Restore {
 			'affectedId' => [
 				'type'        => 'Id',
 				'description' => __( 'The affected product review ID', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $payload ) {
+				'resolve'     => static function ( $payload ) {
 					$deleted = (object) $payload['commentObject'];
 
-					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', absint( $deleted->comment_ID ) ) : null;
+					return ! empty( $deleted->comment_ID ) ? Relay::toGlobalId( 'comment', (string) $deleted->comment_ID ) : null;
 				},
 			],
 			'review'     => [
 				'type'        => 'Comment',
 				'description' => __( 'The affected product review', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $payload, $args, AppContext $context, ResolveInfo $info ) use ( $restore ) {
+				'resolve'     => static function ( $payload, $args, AppContext $context ) use ( $restore ) {
 					if ( empty( $payload['commentObject'] ) ) {
 						return null;
 					}
 
 					if ( $restore ) {
 						return ! empty( $payload['commentObject']->comment_ID )
-							? DataSource::resolve_comment( absint( $payload['commentObject']->comment_ID ), $context )
+							? $context->get_loader( 'comment' )->load_deferred( $payload['commentObject']->comment_ID )
 							: null;
 					}
 
@@ -128,14 +129,14 @@ class Review_Delete_Restore {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input, AppContext $context, ResolveInfo $info ) {
+		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			// Retrieve the product review rating for the payload.
-			$id_parts = Relay::fromGlobalId( $input['id'] );
-			if ( empty( $id_parts['id'] ) ) {
+			$id = Utils::get_database_id_from_id( $input['id'] );
+			if ( ! $id ) {
 				throw new UserError( __( 'Invalid Product Review ID provided', 'wp-graphql-woocommerce' ) );
 			}
 
-			$rating = get_comment_meta( absint( $id_parts['id'] ), 'rating' );
+			$rating = get_comment_meta( absint( $id ), 'rating' );
 
 			// @codingStandardsIgnoreLine
 			switch ( $info->fieldName ) {
@@ -145,6 +146,10 @@ class Review_Delete_Restore {
 				case 'restoreReview':
 					$classname = '\WPGraphQL\Mutation\CommentRestore';
 					break;
+			}
+
+			if ( empty( $classname ) || ! class_exists( $classname ) ) {
+				throw new UserError( __( 'Failed to find mutation resolver. Please contact site adminstrator', 'wp-graphql-woocommerce' ) );
 			}
 
 			// Get the comment mutation resolver.

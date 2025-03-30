@@ -10,18 +10,14 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-
 /**
  * Class Tax_Rate_Type
  */
 class Tax_Rate_Type {
-
 	/**
 	 * Registers tax rate type
+	 *
+	 * @return void
 	 */
 	public static function register() {
 		register_graphql_object_type(
@@ -47,12 +43,22 @@ class Tax_Rate_Type {
 						'description' => __( 'State code.', 'wp-graphql-woocommerce' ),
 					],
 					'postcode'   => [
-						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'Postcode/ZIP.', 'wp-graphql-woocommerce' ),
+						'type'              => 'String',
+						'description'       => __( 'Postcode/ZIP.', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => 'Use "postcodes" instead.',
 					],
 					'city'       => [
+						'type'              => 'String',
+						'description'       => __( 'City name.', 'wp-graphql-woocommerce' ),
+						'deprecationReason' => 'Use "cities" instead.',
+					],
+					'postcodes'  => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'City name.', 'wp-graphql-woocommerce' ),
+						'description' => __( 'Postcodes/ZIPs.', 'wp-graphql-woocommerce' ),
+					],
+					'cities'     => [
+						'type'        => [ 'list_of' => 'String' ],
+						'description' => __( 'City names.', 'wp-graphql-woocommerce' ),
 					],
 					'rate'       => [
 						'type'        => 'String',

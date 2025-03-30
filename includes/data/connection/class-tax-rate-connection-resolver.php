@@ -11,13 +11,13 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\Model\Tax_Rate;
 
 /**
  * Class Tax_Rate_Connection_Resolver
+ *
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader $loader
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -35,6 +35,12 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+			graphql_debug(
+				__( 'User does not have permission to view tax rates.', 'wp-graphql-woocommerce' )
+			);
+			return false;
+		}
 		return true;
 	}
 
@@ -68,12 +74,13 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		$query_args['items_per_page'] = min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1;
 
 		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
-		 * to filter the WP_Query to support cursor pagination
+		 * Set the cursor args.
+		 *
+		 * @see \WPGraphQL\Data\Config::graphql_wp_query_cursor_pagination_support
 		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['graphql_after_cursor']   = $this->get_after_offset();
+		$query_args['graphql_before_cursor']  = $this->get_before_offset();
+		$query_args['graphql_cursor_compare'] = ! empty( $last ) ? '>' : '<';
 
 		/**
 		 * If there's no orderby params in the inputArgs, set order based on the first/last argument
@@ -88,11 +95,11 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Filter the $query args to allow folks to customize queries programmatically
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param array                                $query_args The args that will be passed to the WP_Query
+		 * @param mixed                                $source     The source that's passed down the GraphQL queries
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field
+		 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_tax_rate_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -107,8 +114,11 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	public function get_query() {
 		global $wpdb;
 
-		if ( ! empty( $this->query_args['where'] ) ) {
-			$sql_where = $this->query_args['where'];
+		/** @var array<string, mixed> $query_args */
+		$query_args = $this->query_args;
+
+		if ( ! empty( $query_args['where'] ) ) {
+			$sql_where = $query_args['where'];
 
 			$results = $wpdb->get_results( // @codingStandardsIgnoreStart
 				$wpdb->prepare(
@@ -119,8 +129,8 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 					WHERE {$sql_where}
 					GROUP BY rates.tax_rate_id
 					ORDER BY %s %s",
-					$this->query_args['orderby'],
-					$this->query_args['order']
+					$query_args['orderby'],
+					$query_args['order']
 				)
 			); // @codingStandardsIgnoreEnd
 		} else {
@@ -129,14 +139,14 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 					"SELECT tax_rate_id
 					FROM {$wpdb->prefix}woocommerce_tax_rates
 					ORDER BY %s %s",
-					$this->query_args['orderby'],
-					$this->query_args['order']
+					$query_args['orderby'],
+					$query_args['order']
 				)
 			); // @codingStandardsIgnoreEnd
 		}//end if
 
 		$results = array_map(
-			function( $rate ) {
+			static function ( $rate ) {
 				return $rate->tax_rate_id;
 			},
 			(array) $results
@@ -179,15 +189,11 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 			}
 		}
 
-		if (
-			isset( $where_args['class'] )
-			|| ! empty( $where_args['postCode'] )
-			|| ! empty( $where_args['postCodeIn'] )
-		) {
-			$args['where'] = '';
-		}
+		$args['where'] = '1=1';
 
 		if ( isset( $where_args['class'] ) ) {
+			$args['where'] .= ' AND ';
+
 			if ( empty( $where_args['class'] ) ) {
 				$args['where'] .= 'tax_rate_class = ""';
 			} else {
@@ -197,18 +203,13 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( ! empty( $where_args['postCode'] ) ) {
-			if ( ! empty( $args['where'] ) ) {
-				$args['where'] .= ' AND ';
-			}
-
+			$args['where'] .= ' AND ';
 			$post_code      = $where_args['postCode'];
 			$args['where'] .= "location_code = '{$post_code}'";
 		}
 
 		if ( ! empty( $where_args['postCodeIn'] ) ) {
-			if ( ! empty( $args['where'] ) ) {
-				$args['where'] .= ' AND ';
-			}
+			$args['where'] .= ' AND ';
 
 			$args['where'] .= ' (';
 			foreach ( $where_args['postCodeIn'] as $i => $post_code ) {

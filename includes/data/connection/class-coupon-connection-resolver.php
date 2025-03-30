@@ -11,16 +11,16 @@
 namespace WPGraphQL\WooCommerce\Data\Connection;
 
 use GraphQL\Error\InvariantViolation;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
-use WPGraphQL\Extension\WooCommerce\Model\Order;
-use WPGraphQL\Extension\WooCommerce\Model\Coupon;
 
 /**
  * Class Coupon_Connection_Resolver
  *
  * @deprecated v0.10.0
+ *
+ * @property \WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader $loader
+ *
+ * @package WPGraphQL\WooCommerce\Data\Connection
  */
 class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
@@ -38,16 +38,17 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Refund_Connection_Resolver constructor.
 	 *
-	 * @param mixed       $source    The object passed down from the previous level in the Resolve tree.
-	 * @param array       $args      The input arguments for the query.
-	 * @param AppContext  $context   The context of the request.
-	 * @param ResolveInfo $info      The resolve info passed down the Resolve tree.
+	 * @param mixed                                $source    The object passed down from the previous level in the Resolve tree.
+	 * @param array                                $args      The input arguments for the query.
+	 * @param \WPGraphQL\AppContext                $context   The context of the request.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info      The resolve info passed down the Resolve tree.
 	 */
 	public function __construct( $source, $args, $context, $info ) {
 		/**
 		 * Set the post type for the resolver
 		 */
 		$this->post_type = 'shop_coupon';
+
 		/**
 		 * Call the parent construct to setup class data
 		 */
@@ -68,7 +69,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 *
 	 * @param integer $id Node ID.
 	 *
-	 * @return mixed|Coupon|null
+	 * @return mixed|\WPGraphQL\WooCommerce\Model\Coupon|null
 	 */
 	public function get_node_by_id( $id ) {
 		return $this->get_cpt_model_by_id( $id );
@@ -80,6 +81,11 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
+		/**
+		 * Get coupon post type.
+		 *
+		 * @var \WP_Post_Type $post_type_obj
+		 */
 		$post_type_obj = get_post_type_object( 'shop_coupon' );
 		switch ( true ) {
 			case current_user_can( $post_type_obj->cap->edit_posts ):
@@ -110,20 +116,22 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		];
 
 		/**
-		 * Set the graphql_cursor_offset which is used by Config::graphql_wp_query_cursor_pagination_support
-		 * to filter the WP_Query to support cursor pagination
+		 * Set the cursor args.
+		 *
+		 * @see \WPGraphQL\Data\Config::graphql_wp_query_cursor_pagination_support
 		 */
-		$cursor_offset                        = $this->get_offset();
-		$query_args['graphql_cursor_offset']  = $cursor_offset;
-		$query_args['graphql_cursor_compare'] = ( ! empty( $last ) ) ? '>' : '<';
+		$query_args['graphql_after_cursor']   = $this->get_after_offset();
+		$query_args['graphql_before_cursor']  = $this->get_before_offset();
+		$query_args['graphql_cursor_compare'] = ! empty( $last ) ? '>' : '<';
 
 		/**
 		 * If the starting offset is not 0 sticky posts will not be queried as the automatic checks in wp-query don't
 		 * trigger due to the page parameter not being set in the query_vars, fixes #732
 		 */
-		if ( 0 !== $cursor_offset ) {
+		if ( empty( $query_args['graphql_after_cursor'] ) && empty( $query_args['graphql_before_cursor'] ) ) {
 			$query_args['ignore_sticky_posts'] = true;
 		}
+
 		/**
 		 * Pass the graphql $args to the WP_Query
 		 */
@@ -151,11 +159,11 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Filter the $query args to allow folks to customize queries programmatically
 		 *
-		 * @param array       $query_args The args that will be passed to the WP_Query
-		 * @param mixed       $source     The source that's passed down the GraphQL queries
-		 * @param array       $args       The inputArgs on the field
-		 * @param AppContext  $context    The AppContext passed down the GraphQL tree
-		 * @param ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
+		 * @param array                                $query_args The args that will be passed to the WP_Query
+		 * @param mixed                                $source     The source that's passed down the GraphQL queries
+		 * @param array<string, mixed>|null            $args       The inputArgs on the field
+		 * @param \WPGraphQL\AppContext                $context    The AppContext passed down the GraphQL tree
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo passed down the GraphQL tree
 		 */
 		$query_args = apply_filters( 'graphql_coupon_connection_query_args', $query_args, $this->source, $this->args, $this->context, $this->info );
 
@@ -165,12 +173,14 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Executes query
 	 *
-	 * @throws InvariantViolation Filtering suppressed.
+	 * @throws \GraphQL\Error\InvariantViolation Filtering suppressed.
 	 *
 	 * @return \WP_Query
 	 */
 	public function get_query() {
-		$query = new \WP_Query( $this->query_args );
+		/** @var array $query_args */
+		$query_args = $this->query_args;
+		$query      = new \WP_Query( $query_args );
 
 		if ( isset( $query->query_vars['suppress_filters'] ) && true === $query->query_vars['suppress_filters'] ) {
 			throw new InvariantViolation( __( 'WP_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql-woocommerce' ) );
@@ -191,10 +201,16 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	/**
 	 * Returns meta keys to be used for connection ordering.
 	 *
+	 * @param bool $is_numeric  Return numeric meta keys. Defaults to "true".
+	 *
 	 * @return array
 	 */
-	public function ordering_meta() {
-		return [];
+	public function ordering_meta( $is_numeric = true ) {
+		if ( ! $is_numeric ) {
+			return apply_filters( 'woographql_coupon_connection_orderby_meta_keys', [] );
+		}
+
+		return apply_filters( 'woographql_coupon_connection_orderby_numeric_meta_keys', [] );
 	}
 
 	/**
@@ -223,13 +239,13 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		 * This allows plugins/themes to hook in and alter what $args should be allowed to be passed
 		 * from a GraphQL Query to the WP_Query
 		 *
-		 * @param array       $args       The mapped query arguments
-		 * @param array       $where_args Query "where" args
-		 * @param mixed       $source     The query results for a query calling this
-		 * @param array       $all_args   All of the arguments for the query (not just the "where" args)
-		 * @param AppContext  $context    The AppContext object
-		 * @param ResolveInfo $info       The ResolveInfo object
-		 * @param mixed|string|array      $post_type  The post type for the query
+		 * @param array                                $args       The mapped query arguments
+		 * @param array                                $where_args Query "where" args
+		 * @param mixed                                $source     The query results for a query calling this
+		 * @param array<string, mixed>|null            $all_args   All of the arguments for the query (not just the "where" args)
+		 * @param \WPGraphQL\AppContext                $context    The AppContext object
+		 * @param \GraphQL\Type\Definition\ResolveInfo $info       The ResolveInfo object
+		 * @param mixed|string|array                   $post_type  The post type for the query
 		 */
 		$args = apply_filters(
 			'graphql_map_input_fields_to_coupon_query',

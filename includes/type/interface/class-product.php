@@ -14,15 +14,15 @@ use GraphQL\Error\UserError;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Factory;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - Product
  */
 class Product {
-
 	/**
 	 * Registers the "Product" interface.
+	 *
+	 * @return void
 	 */
 	public static function register_interface() {
 
@@ -46,7 +46,7 @@ class Product {
 						'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
 					],
 				],
-				'resolve'     => function ( $source, array $args, AppContext $context ) {
+				'resolve'     => static function ( $source, array $args, AppContext $context ) {
 					$id      = isset( $args['id'] ) ? $args['id'] : null;
 					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 
@@ -75,7 +75,9 @@ class Product {
 					if ( empty( $product_id ) ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
 						throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
-					} elseif ( get_post( $product_id )->post_type !== 'product' ) {
+					}
+					$product = get_post( $product_id );
+					if ( ! is_object( $product ) || 'product' !== $product->post_type ) {
 						/* translators: %1$s: ID type, %2$s: ID value */
 						throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
 					}
@@ -118,7 +120,7 @@ class Product {
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					],
 				],
-				'resolve'     => function( $source, $args ) {
+				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 						// @codingStandardsIgnoreLine.
 						return $source->descriptionRaw;
@@ -135,7 +137,7 @@ class Product {
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
 					],
 				],
-				'resolve'     => function( $source, $args ) {
+				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 						// @codingStandardsIgnoreLine.
 						return $source->shortDescriptionRaw;
@@ -183,7 +185,7 @@ class Product {
 			'image'             => [
 				'type'        => 'MediaItem',
 				'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
-				'resolve'     => function( $source, array $args, AppContext $context ) {
+				'resolve'     => static function ( $source, array $args, AppContext $context ) {
 					// @codingStandardsIgnoreLine.
 					if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
 						return null;
@@ -198,6 +200,10 @@ class Product {
 			'purchasable'       => [
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
+			],
+			'virtual'           => [
+				'type'        => 'Boolean',
+				'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
 			],
 			'metaData'          => \WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::get_metadata_field_definition(),
 		];

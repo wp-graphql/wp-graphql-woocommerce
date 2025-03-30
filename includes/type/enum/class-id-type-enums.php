@@ -12,7 +12,6 @@ namespace WPGraphQL\WooCommerce\Type\WPEnum;
  * Class - Id_Type_Enums
  */
 class Id_Type_Enums {
-
 	/**
 	 * Register the Enum used for setting the field to identify WC crud objects by
 	 *
@@ -41,12 +40,12 @@ class Id_Type_Enums {
 			[
 				'description' => __( 'The Type of Identifier used to fetch a single Order. Default is ID.', 'wp-graphql-woocommerce' ),
 				'values'      => [
-					'id'           => self::get_value( 'id' ),
-					'database_id'  => self::get_value( 'database_id' ),
-					'order_number' => [
-						'name'        => 'ORDER_NUMBER',
-						'value'       => 'order_number',
-						'description' => __( 'Order number.', 'wp-graphql-woocommerce' ),
+					'id'          => self::get_value( 'id' ),
+					'database_id' => self::get_value( 'database_id' ),
+					'order_key'   => [
+						'name'        => 'ORDER_KEY',
+						'value'       => 'order_key',
+						'description' => __( 'Order key.', 'wp-graphql-woocommerce' ),
 					],
 				],
 			]
@@ -103,6 +102,17 @@ class Id_Type_Enums {
 		);
 
 		register_graphql_enum_type(
+			'ShippingZoneIdTypeEnum',
+			[
+				'description' => __( 'The Type of Identifier used to fetch a single Shipping Zone. Default is ID.', 'wp-graphql-woocommerce' ),
+				'values'      => [
+					'id'          => self::get_value( 'id' ),
+					'database_id' => self::get_value( 'database_id' ),
+				],
+			]
+		);
+
+		register_graphql_enum_type(
 			'TaxRateIdTypeEnum',
 			[
 				'description' => __( 'The Type of Identifier used to fetch a single Tax rate. Default is ID.', 'wp-graphql-woocommerce' ),
@@ -131,12 +141,6 @@ class Id_Type_Enums {
 						'wp-graphql-woocommerce'
 					),
 				];
-			case 'id':
-				return [
-					'name'        => 'ID',
-					'value'       => 'global_id',
-					'description' => __( 'Identify a resource by the (hashed) Global ID.', 'wp-graphql-woocommerce' ),
-				];
 			case 'database_id':
 				return [
 					'name'        => 'DATABASE_ID',
@@ -148,6 +152,13 @@ class Id_Type_Enums {
 					'name'        => 'URI',
 					'value'       => 'uri',
 					'description' => __( 'Identify a resource by the URI.', 'wp-graphql-woocommerce' ),
+				];
+			case 'id':
+			default:
+				return [
+					'name'        => 'ID',
+					'value'       => 'global_id',
+					'description' => __( 'Identify a resource by the (hashed) Global ID.', 'wp-graphql-woocommerce' ),
 				];
 		}//end switch
 	}

@@ -42,6 +42,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			'Coupon',
 			'Customer',
 			'ShippingZone',
+			'TaxClass',
 			'TaxRate',
 			'Order',
 			'Refund',
@@ -69,6 +70,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 	public function tearDown(): void {
 		\WC()->cart->empty_cart( true );
+		$this->factory->product->deleteAttributes();
 
 		// then
 		parent::tearDown();
@@ -113,7 +115,13 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 *
 	 * @return mixed
 	 */
-	protected function maybe( $possible, $default = self::IS_NULL ) {
+	protected function maybe( $possible, $custom_default = null ) {
+		if ( null === $custom_default ) {
+			$default = static::IS_NULL;
+		} else {
+			$default = $custom_default;
+		}
+
 		if ( is_array( $possible ) && 2 === count( $possible ) ) {
 			list( $possible, $decorated ) = $possible;
 		} else {

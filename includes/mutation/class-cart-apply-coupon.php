@@ -12,15 +12,15 @@ namespace WPGraphQL\WooCommerce\Mutation;
 
 use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Data\Mutation\Cart_Mutation;
-use WC_Coupon;
 
 /**
  * Class - Cart_Apply_Coupon
  */
 class Cart_Apply_Coupon {
-
 	/**
 	 * Registers mutation
+	 *
+	 * @return void
 	 */
 	public static function register_mutation() {
 		register_graphql_mutation(
@@ -56,7 +56,7 @@ class Cart_Apply_Coupon {
 		return [
 			'applied' => [
 				'type'    => 'AppliedCoupon',
-				'resolve' => function( $payload ) {
+				'resolve' => static function ( $payload ) {
 					return $payload['code'];
 				},
 			],
@@ -70,12 +70,14 @@ class Cart_Apply_Coupon {
 	 * @return callable
 	 */
 	public static function mutate_and_get_payload() {
-		return function( $input ) {
+		return static function ( $input ) {
 			Cart_Mutation::check_session_token();
 
 			$reason = '';
 			// If validate and successful applied to cart, return payload.
 			if ( Cart_Mutation::validate_coupon( $input['code'], $reason ) && \WC()->cart->apply_coupon( $input['code'] ) ) {
+				do_action( 'woographql_update_session', true );
+
 				return [ 'code' => $input['code'] ];
 			}
 
