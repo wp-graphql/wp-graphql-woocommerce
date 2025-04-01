@@ -1115,4 +1115,39 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		$this->assertQueryError( $response, $expected );
 	}
+
+	public function testCheckoutMutationWithFees() {
+		add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
+
+		$product_id = $this->factory->product->createSimple();
+
+		WC()->cart->add_to_cart( $product_id, 1 );
+
+		$input     = [
+			'fees' => [
+				[
+					'name'    => 'Extra Fee',
+					'amount'  => 10,
+					'taxable' => true,
+				],
+			],
+		];
+		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
+		$query     = $this->getCheckoutMutation();
+
+				/**
+		 * Assertion One
+		 *
+		 * Ensure that checkout failed when stock is too low.
+		 */
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [ 
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
+			$this->expectedField( 'checkout.order.feeLines.nodes.#.name', 'Extra Fee' ),
+			$this->expectedField( 'checkout.order.feeLines.nodes.#.amount', "10" ),
+			$this->expectedField( 'checkout.order.feeLines.nodes.#.total', "10" ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

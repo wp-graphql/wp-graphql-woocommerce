@@ -73,7 +73,7 @@ class Checkout_Mutation {
 			'ship_to_different_address' => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
 		];
 
-		$skipped = [];
+		$skipped = ['fees'];
 		foreach ( self::get_checkout_fields() as $fieldset_key => $fieldset ) {
 			if ( self::maybe_skip_fieldset( $fieldset_key, $data ) ) {
 				$skipped[] = $fieldset_key;
@@ -95,6 +95,31 @@ class Checkout_Mutation {
 				}
 			}
 		}//end foreach
+
+		if ( ! empty( $input['fees'] ) ) {
+			$fees = $input['fees'];
+			add_action(
+				'woocommerce_cart_calculate_fees',
+				function () use ( $fees ) {
+					foreach( $fees as $fee_input ) {
+						if ( empty( $fee_input['name'] ) || empty( $fee_input['amount'] ) ) {
+							// TODO: Log invalid fee input.
+							continue;
+						}
+
+						$fee_args = [
+							$fee_input['name'],
+							$fee_input['amount'],
+							isset( $fee_input['taxable'] ) ? $fee_input['taxable'] : false,
+							isset( $fee_input['taxClass'] ) ? $fee_input['taxClass'] : '',
+						];
+						
+						\WC()->cart->add_fee( ...$fee_args );
+					}
+				}
+			);
+			
+		}
 
 		if ( in_array( 'shipping', $skipped, true ) && ( \WC()->cart->needs_shipping_address() || \wc_ship_to_billing_address_only() ) ) {
 			foreach ( self::get_checkout_fields( 'shipping' ) as $field => $input_key ) {

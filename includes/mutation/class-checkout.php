@@ -85,6 +85,10 @@ class Checkout {
 				'type'        => 'String',
 				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
 			],
+			'fees'                   => [
+				'type'        => [ 'list_of' => 'FeeInput' ],
+				'description' => __( 'Fees to add to the order.', 'wp-graphql-woocommerce' ),
+			]
 		];
 	}
 

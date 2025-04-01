@@ -308,6 +308,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/input/class-cart-item-quantity-input.php';
 			require $include_directory_path . 'type/input/class-create-account-input.php';
 			require $include_directory_path . 'type/input/class-customer-address-input.php';
+			require $include_directory_path . 'type/input/class-fee-input.php';
 			require $include_directory_path . 'type/input/class-fee-line-input.php';
 			require $include_directory_path . 'type/input/class-line-item-input.php';
 			require $include_directory_path . 'type/input/class-meta-data-input.php';

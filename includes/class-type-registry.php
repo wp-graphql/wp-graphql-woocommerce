@@ -57,6 +57,7 @@ class Type_Registry {
 		Type\WPInputObject\Customer_Address_Input::register();
 		Type\WPInputObject\Product_Attribute_Input::register();
 		Type\WPInputObject\Tax_Rate_Connection_Orderby_Input::register();
+		Type\WPInputObject\Fee_Input::register();
 		Type\WPInputObject\Fee_Line_Input::register();
 		Type\WPInputObject\Line_Item_Input::register();
 		Type\WPInputObject\Meta_Data_Input::register();

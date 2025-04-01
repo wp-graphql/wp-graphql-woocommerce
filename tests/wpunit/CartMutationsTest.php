@@ -735,6 +735,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 	}
 
 	public function testAddFeeMutation() {
+		$this->markTestSkipped( 'This mutation has been deprecated' );
 		// Create product and coupon.
 		$product_id  = $this->factory->product->createSimple();
 		$coupon_code = wc_get_coupon_code_by_id(
