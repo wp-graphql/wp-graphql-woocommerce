@@ -88,7 +88,7 @@ class Checkout {
 			'fees'                   => [
 				'type'        => [ 'list_of' => 'FeeInput' ],
 				'description' => __( 'Fees to add to the order.', 'wp-graphql-woocommerce' ),
-			]
+			],
 		];
 	}
 

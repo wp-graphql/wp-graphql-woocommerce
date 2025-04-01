@@ -88,9 +88,9 @@ class Cart_Add_Fee {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			Cart_Mutation::check_session_token();
 
-			// if ( ! current_user_can( 'edit_shop_orders' ) ) {
-			// 	throw new UserError( __( 'You do not have the appropriate capabilities to perform this action.', 'wp-graphql-woocommerce' ) );
-			// }
+			if ( ! current_user_can( 'edit_shop_orders' ) ) {
+				throw new UserError( __( 'You do not have the appropriate capabilities to perform this action.', 'wp-graphql-woocommerce' ) );
+			}
 
 			if ( empty( $input['name'] ) ) {
 				throw new UserError( __( 'No name provided for fee.', 'wp-graphql-woocommerce' ) );
