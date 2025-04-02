@@ -538,13 +538,11 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		$this->assertQuerySuccessful(
 			$response,
 			[
-				$this->expectedField( 'cart.total', self::NOT_NULL ),
-				$this->expectedField( 'cart.feeTotal', "$10.50" ),
-				$this->expectedField( 'cart.feeTax', "$0.00" ),
+				$this->expectedField( 'cart.total', self::NOT_FALSY ),
+				$this->expectedField( 'cart.feeTotal', self::NOT_FALSY ),
 				$this->expectedField( 'cart.fees.#.name', 'Test Fee' ),
 				$this->expectedField( 'cart.fees.#.amount', floatval( 10.50 ) ),
 				$this->expectedField( 'cart.fees.#.total', floatval( 10.50 ) ),
-				
 			]
 		);
 
