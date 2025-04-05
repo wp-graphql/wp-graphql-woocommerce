@@ -127,7 +127,7 @@ class Core_Schema_Filters {
 			$args['graphql_single_name']              = 'Product';
 			$args['graphql_plural_name']              = 'Products';
 			$args['graphql_kind']                     = 'interface';
-			$args['graphql_interfaces']               = [ 'ContentNode' ];
+			$args['graphql_interfaces']               = [ 'ContentNode', 'ProductUnion' ];
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
 			$args['graphql_resolve_type']             = [ self::class, 'resolve_product_type' ];
@@ -143,8 +143,8 @@ class Core_Schema_Filters {
 				'Node',
 				'NodeWithFeaturedImage',
 				'ContentNode',
+                'ProductUnion',
 				'UniformResourceIdentifiable',
-				'ProductUnion',
 				'ProductWithPricing',
 				'ProductWithDimensions',
 				'InventoriedProduct',

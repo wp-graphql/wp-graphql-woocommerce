@@ -25,7 +25,7 @@ class Inventoried_Product {
 			'InventoriedProduct',
 			[
 				'description' => __( 'A product with stock information.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node', 'Product' ],
+				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
 			]
