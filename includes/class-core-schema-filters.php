@@ -143,7 +143,7 @@ class Core_Schema_Filters {
 				'Node',
 				'NodeWithFeaturedImage',
 				'ContentNode',
-                'ProductUnion',
+				'ProductUnion',
 				'UniformResourceIdentifiable',
 				'ProductWithPricing',
 				'ProductWithDimensions',
