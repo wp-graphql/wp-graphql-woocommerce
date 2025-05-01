@@ -960,6 +960,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					reviewsAllowed
 					purchaseNote
 					menuOrder
+					virtual
 					... on ProductWithPricing {
 						price
 						regularPrice
@@ -985,7 +986,6 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 						shippingTaxable
 					}
 					... on DownloadableProduct {
-						virtual
 						downloadExpiry
 						downloadable
 						downloadLimit
