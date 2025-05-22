@@ -44,11 +44,7 @@ class Variation_Attribute_Type {
 						'type'        => 'String',
 						'description' => __( 'Label of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
-							if ( ! isset( $source['name'] ) ) {
-								return null;
-							}
-
-							return \wc_attribute_taxonomy_slug( $source['name'] );
+							return isset( $source['label'] ) ? $source['label'] : null;
 						},
 					],
 					'name'        => [

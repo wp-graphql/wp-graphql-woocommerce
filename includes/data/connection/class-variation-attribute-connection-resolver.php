@@ -94,6 +94,7 @@ class Variation_Attribute_Connection_Resolver {
 					'id'          => $id,
 					'attributeId' => 0,
 					'name'        => $name,
+					'label'				=> $value,
 					'value'       => $value,
 				];
 			} else {
@@ -101,6 +102,7 @@ class Variation_Attribute_Connection_Resolver {
 					'id'          => $id,
 					'attributeId' => $term->term_id,
 					'name'        => $term->taxonomy,
+					'label' 			=> $term->name,
 					'value'       => $term->slug,
 				];
 			}
