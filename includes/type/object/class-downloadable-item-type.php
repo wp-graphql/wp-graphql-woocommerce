@@ -63,8 +63,8 @@ class Downloadable_Item_Type {
 						'type'        => 'Int',
 						'description' => __( 'Number of times the item can be downloaded.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
-							return isset( $source['downloads_remaining'] ) && 'integer' === gettype( $source['downloads_remaining'] )
-								? $source['downloads_remaining']
+							return isset( $source['downloads_remaining'] ) && is_numeric( $source['downloads_remaining'] )
+								? intval( $source['downloads_remaining'] )
 								: null;
 						},
 					],
