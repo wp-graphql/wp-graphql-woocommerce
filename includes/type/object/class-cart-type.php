@@ -28,6 +28,7 @@ class Cart_Type {
 		self::register_cart_fee();
 		self::register_cart_tax();
 		self::register_applied_coupon();
+                self::register_cart_tax_line();
 		self::register_cart();
 	}
 
@@ -372,10 +373,66 @@ class Cart_Type {
 						return ! empty( $applied_coupons ) ? $applied_coupons : null;
 					},
 				],
+                'taxLines' => [
+                    'type'        => [ 'list_of' => 'CartTaxLine' ],
+                    'description' => __( 'Cart tax lines itemized', 'wp-graphql-woocommerce' ),
+                    'resolve'     => static function ( $cart, $args, $context ) {
+
+                        $tax_lines = [];
+
+                        if ( 'itemized' !== get_option( 'woocommerce_tax_total_display' ) ) {
+                            return $tax_lines;
+                        }
+
+                        $cart_tax_totals = $cart->get_tax_totals();
+                        $decimals        = wc_get_price_decimals();
+
+                        foreach ( $cart_tax_totals as $cart_tax_total ) {
+                            $tax_lines[] = array(
+                                'name'  => $cart_tax_total->label,
+                                'price' => number_format( $cart_tax_total->amount, $decimals),
+                                'rate'  => \WC_Tax::get_rate_percent( $cart_tax_total->tax_rate_id ),
+                            );
+                        }
+
+                        return $tax_lines;
+                    },
+                ],
 			],
 			$other_fields
 		);
 	}
+    public static function register_cart_tax_line() {
+        register_graphql_object_type(
+			'CartTaxLine',
+			[
+				'description' => __( 'The cart tax line object', 'wp-graphql-woocommerce' ),
+				'fields'      => [
+                    'name'         => [
+                        'type'        => 'String',
+                        'description' => __( 'Tax line name', 'wp-graphql-woocommerce' ),
+                        'resolve'     => static function ( $source ) {
+                            return ! empty( $source["name"] ) ? $source["name"] : null;
+                        },
+                    ],
+                    'price'         => [
+                        'type'        => 'String',
+                        'description' => __( 'Tax line price', 'wp-graphql-woocommerce' ),
+                        'resolve'     => static function ( $source ) {
+                            return ! empty( $source["price"]) ? wc_graphql_price($source["price"]) : null;
+                        },
+                    ],
+                    'rate'         => [
+                        'type'        => 'String',
+                        'description' => __( 'Tax line rate', 'wp-graphql-woocommerce' ),
+                        'resolve'     => static function ( $source ) {
+                            return ! empty( $source["rate"] ) ? $source["rate"] : null;
+                        },
+                    ],
+                ]
+			]
+		);
+    }
 
 	/**
 	 * Returns the "Cart" type connections.
