@@ -55,8 +55,8 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 					$is_expired          = isset( $downloadable_item['access_expires'] )
 						? time() > $downloadable_item['access_expires']->getTimestamp()
 						: false;
-					$downloads_remaining = ( 'integer' === gettype( $downloadable_item['downloads_remaining'] ) )
-						? 0 < $downloadable_item['downloads_remaining']
+					$downloads_remaining = ( is_numeric( $downloadable_item['downloads_remaining'] ) )
+						? 0 < intval( $downloadable_item['downloads_remaining'] )
 						: true;
 
 					return $active ? ( ! $is_expired && $downloads_remaining ) : ( $is_expired || ! $downloads_remaining );
@@ -79,8 +79,8 @@ class Downloadable_Item_Connection_Resolver extends AbstractConnectionResolver {
 				$has_downloads_remaining = $where_args['hasDownloadsRemaining'];
 
 				$query_args['filters'][] = static function ( $downloadable_item ) use ( $has_downloads_remaining ) {
-					$downloads_remaining = ( 'integer' === gettype( $downloadable_item['downloads_remaining'] ) )
-						? 0 < $downloadable_item['downloads_remaining']
+					$downloads_remaining = ( is_numeric( $downloadable_item['downloads_remaining'] ) )
+						? 0 < intval( $downloadable_item['downloads_remaining'] )
 						: true;
 
 					return $has_downloads_remaining === $downloads_remaining;
