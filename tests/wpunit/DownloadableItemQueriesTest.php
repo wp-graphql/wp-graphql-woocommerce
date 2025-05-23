@@ -83,8 +83,8 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 								$this->expectedField( 'downloadId', $item['download_id'] ),
 								$this->expectedField(
 									'downloadsRemaining',
-									isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
-										? $item['downloads_remaining']
+									isset( $item['downloads_remaining'] ) && is_numeric( $item['downloads_remaining'] )
+										? intval( $item['downloads_remaining'] )
 										: static::IS_NULL
 								),
 								$this->expectedField( 'name', $item['download_name'] ),
@@ -360,8 +360,8 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 						$this->expectedField( 'downloadId', $item['download_id'] ),
 						$this->expectedField(
 							'downloadsRemaining',
-							isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
-								? $item['downloads_remaining']
+							isset( $item['downloads_remaining'] ) && is_numeric( $item['downloads_remaining'] )
+								? intval( $item['downloads_remaining'] )
 								: static::IS_NULL
 						),
 						$this->expectedField( 'name', $item['download_name'] ),
