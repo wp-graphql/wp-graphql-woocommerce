@@ -335,7 +335,8 @@ class Order_Mutation {
 
 		// If subtotal or total is not provided, calculate it based on the product price and quantity.
 		// If name is not provided, use the actual product name.
-		if ( empty( $args['subtotal'] ) || empty( $args['total'] ) || empty( $args['name'] ) ) {
+		// ONLY IF $args is not empty.
+		if ( ! empty( $args ) && ( empty( $args['subtotal'] ) || empty( $args['total'] ) || empty( $args['name'] ) ) ) {
 			$product = ( ! empty( $item['product_id'] ) )
 				? wc_get_product( $item['product_id'] )
 				: wc_get_product( self::get_product_id( $args ) );
