@@ -333,8 +333,9 @@ class Order_Mutation {
 			}
 		}
 
-		// Calculate to subtotal/total for line items.
-		if ( empty( $args['subtotal'] ) || empty( $args['total'] ) ) {
+		// If subtotal or total is not provided, calculate it based on the product price and quantity.
+		// If name is not provided, use the actual product name.
+		if ( empty( $args['subtotal'] ) || empty( $args['total'] ) || empty( $args['name'] ) ) {
 			$product = ( ! empty( $item['product_id'] ) )
 				? wc_get_product( $item['product_id'] )
 				: wc_get_product( self::get_product_id( $args ) );
@@ -345,6 +346,7 @@ class Order_Mutation {
 			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ?? 1 ] );
 			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
 			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;
+			$args['name']     = ! empty( $args['name'] ) ? $args['name'] : $product->get_name();
 		}
 
 		// Set item props.
