@@ -334,7 +334,7 @@ class Order_Mutation {
 		}
 
 		// Calculate to subtotal/total for line items.
-		if ( isset( $args['quantity'] ) ) {
+		if ( empty( $args['subtotal'] ) || empty( $args['total'] ) ) {
 			$product = ( ! empty( $item['product_id'] ) )
 				? wc_get_product( $item['product_id'] )
 				: wc_get_product( self::get_product_id( $args ) );
@@ -342,7 +342,7 @@ class Order_Mutation {
 				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ] );
+			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ?? 1 ] );
 			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
 			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;
 		}
