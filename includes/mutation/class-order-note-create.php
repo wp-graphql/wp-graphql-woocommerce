@@ -14,6 +14,7 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Utils\Utils;
+use WPGraphQL\Model\Comment;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
 
@@ -69,13 +70,13 @@ class Order_Note_Create {
 			'orderNote' => [
 				'type'    => 'OrderNote',
 				'resolve' => static function ( $payload ) {
-					return $payload['note'];
+					return new Comment( $payload['note'] );
 				},
 			],
 			'order'     => [
 				'type'    => 'Order',
 				'resolve' => static function ( $payload ) {
-					return $payload['order'];
+					return new Order( $payload['order_id'] );
 				},
 			],
 		];
@@ -127,15 +128,14 @@ class Order_Note_Create {
 
 			// Get the created note.
 			$note = get_comment( $note_id );
-			$note->ID = $note_id;
 
 			if ( ! $note ) {
 				throw new UserError( __( 'Unable to retrieve created order note.', 'wp-graphql-woocommerce' ) );
 			}
 
 			return [
-				'order' => $order,
-				'note'  => $note,
+				'order_id' => $order_id,
+				'note'     => $note,
 			];
 		};
 	}

@@ -433,4 +433,67 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$this->assertQuerySuccessful( $response, $expected );
 		$this->clearLoaderCache( 'wc_post' );
 	}
+
+	public function testOrderNotesQuery() {
+		// Create an order
+		$order_id = $this->factory->order->createNew();
+		$order = wc_get_order( $order_id );
+
+		// Add some order notes
+		$note1_id = $order->add_order_note( 'Test order note 1', false );
+		$note2_id = $order->add_order_note( 'Test customer note 2', true );
+		
+		// Ensure we have valid IDs
+		$this->assertNotEmpty( $note1_id );
+		$this->assertNotEmpty( $note2_id );
+
+		$query = '
+			query ($id: ID!) {
+				order(id: $id) {
+					id
+					databaseId
+					orderNotes {
+						nodes {
+							id
+							databaseId
+							note
+							dateCreated
+							isCustomerNote
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'id' => $this->toRelayId( 'order', $order_id ),
+		];
+
+		// Must be shop manager to view order notes
+		$this->loginAsShopManager();
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+
+		$expected = [
+			$this->expectedField( 'order.id', $this->toRelayId( 'order', $order_id ) ),
+			$this->expectedField( 'order.databaseId', $order_id ),
+			$this->expectedNode(
+				'order.orderNotes.nodes',
+				[
+					$this->expectedField( 'note', 'Test customer note 2' ),
+					$this->expectedField( 'isCustomerNote', true ),
+				],
+				0
+			),
+			$this->expectedNode(
+				'order.orderNotes.nodes', 
+				[
+					$this->expectedField( 'note', 'Test order note 1' ),
+					$this->expectedField( 'isCustomerNote', false ),
+				],
+				1
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
