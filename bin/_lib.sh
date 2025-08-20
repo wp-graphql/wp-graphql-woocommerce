@@ -62,7 +62,10 @@ remove_wordpress() {
 install_local_test_library() {
 	# Install testing library dependencies.
 	composer install
+	# Pin behat/gherkin to a version compatible with codeception 4.2.2
+	# Versions 4.12+ introduced breaking changes that broke codeception's path-based i18n loading
 	composer require --dev -W \
+		"behat/gherkin:^4.8 <4.12" \
 		"lucatume/wp-browser:>3.1 <3.5" \
 		phpunit/phpunit:^9.6 \
 		codeception/lib-asserts:* \
@@ -102,7 +105,8 @@ remove_local_test_library() {
 		codeception/util-universalframework \
 		lucatume/wp-browser \
 		stripe/stripe-php \
-		fakerphp/faker
+		fakerphp/faker \
+		behat/gherkin
 }
 
 cleanup_composer_file() {

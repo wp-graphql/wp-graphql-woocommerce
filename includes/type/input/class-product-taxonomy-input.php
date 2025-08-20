@@ -31,6 +31,14 @@ class Product_Taxonomy_Input {
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
 						'description' => __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' ),
 					],
+					'or'       => [
+						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
+						'description' => __( 'Product taxonomy rules connected by OR logic', 'wp-graphql-woocommerce' ),
+					],
+					'and'      => [
+						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
+						'description' => __( 'Product taxonomy rules connected by AND logic', 'wp-graphql-woocommerce' ),
+					],
 				],
 			]
 		);
