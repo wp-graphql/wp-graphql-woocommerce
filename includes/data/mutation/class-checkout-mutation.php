@@ -472,31 +472,37 @@ class Checkout_Mutation {
 	 * Validates that the checkout has enough info to proceed.
 	 *
 	 * @param array $data  An array of posted data.
+	 * @param  WP_Error $errors Validation errors.
 	 *
 	 * @throws \GraphQL\Error\UserError Invalid input.
 	 *
 	 * @return void
 	 */
-	protected static function validate_checkout( &$data ) {
+	protected static function validate_checkout( &$data, &$errors ) {
 		self::validate_data( $data );
 		WC()->checkout()->check_cart_items();
 
 		// Throw cart validation errors stored in the session.
-		$cart_item_errors = wc_get_notices( 'error' );
+		// $cart_item_errors = wc_get_notices( 'error' );
 
-		if ( ! empty( $cart_item_errors ) ) {
-			$cart_item_error_msgs = implode( ' ', array_column( $cart_item_errors, 'notice' ) );
-			\wc_clear_notices();
-			throw new UserError( $cart_item_error_msgs );
+		// if ( ! empty( $cart_item_errors ) ) {
+		// 	$cart_item_error_msgs = implode( ' ', array_column( $cart_item_errors, 'notice' ) );
+		// 	\wc_clear_notices();
+		// 	throw new UserError( $cart_item_error_msgs );
+		// }
+
+		if ( empty( $data['woocommerce_checkout_update_totals'] ) && empty( $data['terms'] ) && ! empty( $data['terms-field'] ) ) {
+			$errors->add( 'terms', __( 'Please read and accept the terms and conditions to proceed with your order.', 'woocommerce' ) );
 		}
 
 		if ( WC()->cart->needs_shipping() ) {
 			$shipping_country = WC()->customer->get_shipping_country();
 
 			if ( empty( $shipping_country ) ) {
-				throw new UserError( __( 'Please enter an address to continue.', 'wp-graphql-woocommerce' ) );
+				$errors->add( 'shipping', __( 'Please enter an address to continue.', 'wp-graphql-woocommerce' ) );
 			} elseif ( ! in_array( WC()->customer->get_shipping_country(), array_keys( WC()->countries->get_shipping_countries() ), true ) ) {
-				throw new UserError(
+				$errors->add( 
+					'shipping',
 					sprintf(
 						/* translators: %s: shipping location */
 						__( 'Unfortunately, we do not ship %s. Please enter an alternative shipping address.', 'wp-graphql-woocommerce' ),
@@ -508,7 +514,7 @@ class Checkout_Mutation {
 
 				foreach ( WC()->shipping()->get_packages() as $i => $package ) {
 					if ( ! isset( $chosen_shipping_methods[ $i ], $package['rates'][ $chosen_shipping_methods[ $i ] ] ) ) {
-						throw new UserError( __( 'No shipping method has been selected. Please double check your address, or contact us if you need any help.', 'wp-graphql-woocommerce' ) );
+						$errors->add( 'shipping', __( 'No shipping method has been selected. Please double check your address, or contact us if you need any help.', 'wp-graphql-woocommerce' ) );
 					}
 				}
 			}
@@ -518,14 +524,15 @@ class Checkout_Mutation {
 			$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 			\codecept_debug( $available_gateways );
 			if ( ! isset( $available_gateways[ $data['payment_method'] ] ) ) {
-				throw new UserError( __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
+				$errors->add( 'payment', __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
 			} else {
 				$available_gateways[ $data['payment_method'] ]->validate_fields();
 			}
 		}
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		do_action( 'woocommerce_after_checkout_validation', $data, new WP_Error() );
+		do_action( 'woocommerce_after_checkout_validation', $data, $errors );
+		do_action( 'graphql_woocommerce_after_checkout_validation', $data, $errors );
 	}
 
 	/**
@@ -609,6 +616,7 @@ class Checkout_Mutation {
 
 		do_action( 'woocommerce_checkout_process', $data, $context, $info ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
+		
 		if ( ! empty( $input['billing']['overwrite'] ) && true === $input['billing']['overwrite'] ) {
 			self::clear_customer_address( 'billing' );
 		}
@@ -622,7 +630,19 @@ class Checkout_Mutation {
 		self::update_session( $data );
 
 		// Validate posted data and cart items before proceeding.
-		self::validate_checkout( $data );
+		$errors = new WP_Error();
+		self::validate_checkout( $data, $errors );
+
+		foreach ( $errors->errors as $code => $messages ) {
+			$data = $errors->get_error_data( $code );
+			foreach ( $messages as $message ) {
+				wc_add_notice( $message, 'error', $data );
+			}
+		}
+
+		if ( 0 < wc_notice_count( 'error' ) ) {
+			throw new UserError( __('Failed to validate checkout', 'wp-graphql-woocommerce') );
+		}
 
 		self::process_customer( $data );
 		$order_id = WC()->checkout->create_order( $data );
