@@ -78,7 +78,17 @@ class Product_Types {
 						'ProductWithPricing',
 					]
 				),
-				'fields'          => [],
+				'fields'          => [
+    'dateModified' => [
+        'type'        => 'String',
+        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+        'resolve'     => static function ( Model $source ) {
+            $modified = $source->get_date_modified();
+            return $modified ? $modified->date( 'c' ) : null;
+        },
+    ],
+],
+
 			]
 		);
 	}
@@ -103,7 +113,17 @@ class Product_Types {
 						'ProductWithVariations',
 					]
 				),
-				'fields'          => [],
+				'fields'          => [
+    'dateModified' => [
+        'type'        => 'String',
+        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+        'resolve'     => static function ( Model $source ) {
+            $modified = $source->get_date_modified();
+            return $modified ? $modified->date( 'c' ) : null;
+        },
+    ],
+],
+
 			]
 		);
 	}
@@ -121,20 +141,27 @@ class Product_Types {
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A external product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
-				'fields'          => array_merge(
-					[
-						'externalUrl' => [
-							'type'        => 'String',
-							'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
-						],
-						'buttonText'  => [
-							'type'        => 'String',
-							'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
-						],
-					]
-				),
-			]
-		);
+				'fields'          => [
+        'externalUrl' => [
+            'type'        => 'String',
+            'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
+        ],
+        'buttonText'  => [
+            'type'        => 'String',
+            'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
+        ],
+        'dateModified' => [
+            'type'        => 'String',
+            'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+            'resolve'     => static function ( Model $source ) {
+                $modified = $source->get_date_modified();
+                return $modified ? $modified->date( 'c' ) : null;
+            },
+        ],
+    ],
+]
+);
+		
 	}
 
 	/**
@@ -197,6 +224,14 @@ class Product_Types {
 							return wc_graphql_price( $min_price );
 						},
 					],
+					 'dateModified' => [
+        'type'        => 'String',
+        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+        'resolve'     => static function ( Model $source ) {
+            $modified = $source->get_date_modified();
+            return $modified ? $modified->date( 'c' ) : null;
+        },
+    ],
 				],
 			]
 		);
@@ -230,6 +265,14 @@ class Product_Types {
 							return 'unsupported';
 						},
 					],
+					'dateModified' => [
+        'type'        => 'String',
+        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+        'resolve'     => static function ( Model $source ) {
+            $modified = $source->get_date_modified();
+            return $modified ? $modified->date( 'c' ) : null;
+        },
+    ],
 				],
 			]
 		);
