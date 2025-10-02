@@ -59,16 +59,16 @@ class Session_Transaction_Manager {
 	public function __construct( &$session_handler ) {
 		$this->session_handler = $session_handler;
 
-		add_action( 'graphql_before_resolve_field', [ $this, 'update_transaction_queue' ], 10, 4 );
-		add_action( 'graphql_mutation_response', [ $this, 'pop_transaction_id' ], 20, 6 );
+		add_action( 'graphql_before_resolve_field', array( $this, 'update_transaction_queue' ), 10, 4 );
+		add_action( 'graphql_mutation_response', array( $this, 'pop_transaction_id' ), 20, 6 );
 
-		add_action( 'woographql_session_transaction_complete', [ $this->session_handler, 'save_if_dirty' ], 10 );
+		add_action( 'woographql_session_transaction_complete', array( $this->session_handler, 'save_if_dirty' ), 10 );
 
-		add_action( 'woocommerce_add_to_cart', [ $this->session_handler, 'mark_dirty' ] );
-		add_action( 'woocommerce_cart_item_removed', [ $this->session_handler, 'mark_dirty' ] );
-		add_action( 'woocommerce_cart_item_restored', [ $this->session_handler, 'mark_dirty' ] );
-		add_action( 'woocommerce_cart_item_set_quantity', [ $this->session_handler, 'mark_dirty' ] );
-		add_action( 'woocommerce_cart_emptied', [ $this->session_handler, 'mark_dirty' ] );
+		add_action( 'woocommerce_add_to_cart', array( $this->session_handler, 'mark_dirty' ) );
+		add_action( 'woocommerce_cart_item_removed', array( $this->session_handler, 'mark_dirty' ) );
+		add_action( 'woocommerce_cart_item_restored', array( $this->session_handler, 'mark_dirty' ) );
+		add_action( 'woocommerce_cart_item_set_quantity', array( $this->session_handler, 'mark_dirty' ) );
+		add_action( 'woocommerce_cart_emptied', array( $this->session_handler, 'mark_dirty' ) );
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Session_Transaction_Manager {
 		 */
 		return \apply_filters(
 			'woographql_session_mutations',
-			[
+			array(
 				'addToCart',
 				'updateItemQuantities',
 				'addFee',
@@ -108,7 +108,7 @@ class Session_Transaction_Manager {
 				'updateCustomer',
 				'updateSession',
 				'forgetSession',
-			]
+			)
 		);
 	}
 
@@ -191,7 +191,7 @@ class Session_Transaction_Manager {
 		// Get transaction queue.
 		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 		if ( ! $transaction_queue ) {
-			$transaction_queue = [];
+			$transaction_queue = array();
 		}
 
 		// If transaction ID not in queue, add it, and start transaction.
@@ -238,7 +238,7 @@ class Session_Transaction_Manager {
 
 		// Throw if transaction ID not on top.
 		if ( $this->transaction_id !== $transaction_queue[0]['transaction_id'] ) {
-			$this->save_transaction_queue( [] );
+			$this->save_transaction_queue( array() );
 			$this->transaction_id = null;
 			throw new UserError( __( 'Woo session transaction executed out of order', 'wp-graphql-woocommerce' ) );
 		} else {
@@ -267,7 +267,7 @@ class Session_Transaction_Manager {
 	 *
 	 * @return void
 	 */
-	public function save_transaction_queue( $queue = [] ) {
+	public function save_transaction_queue( $queue = array() ) {
 		// If queue empty delete transient and bail.
 		if ( empty( $queue ) ) {
 			delete_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );

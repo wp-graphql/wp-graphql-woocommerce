@@ -33,19 +33,19 @@ class Product {
 		register_graphql_field(
 			'RootQuery',
 			'product',
-			[
+			array(
 				'type'        => 'Product',
 				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'id'     => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'args'        => array(
+					'id'     => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The ID for identifying the product', 'wp-graphql-woocommerce' ),
-					],
-					'idType' => [
+					),
+					'idType' => array(
 						'type'        => 'ProductIdTypeEnum',
 						'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, array $args, AppContext $context ) {
 					$id      = isset( $args['id'] ) ? $args['id'] : null;
 					$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -84,7 +84,7 @@ class Product {
 
 					return Factory::resolve_crud_object( $product_id, $context );
 				},
-			]
+			)
 		);
 	}
 
@@ -94,32 +94,32 @@ class Product {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return [
-			'type'              => [
+		return array(
+			'type'              => array(
 				'type'        => 'ProductTypesEnum',
 				'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
-			],
-			'name'              => [
+			),
+			'name'              => array(
 				'type'        => 'String',
 				'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
-			],
-			'featured'          => [
+			),
+			'featured'          => array(
 				'type'        => 'Boolean',
 				'description' => __( 'If the product is featured', 'wp-graphql-woocommerce' ),
-			],
-			'catalogVisibility' => [
+			),
+			'catalogVisibility' => array(
 				'type'        => 'CatalogVisibilityEnum',
 				'description' => __( 'Catalog visibility', 'wp-graphql-woocommerce' ),
-			],
-			'description'       => [
+			),
+			'description'       => array(
 				'type'        => 'String',
 				'description' => __( 'Product description', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PostObjectFieldFormatEnum',
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 						// @codingStandardsIgnoreLine.
@@ -127,16 +127,16 @@ class Product {
 					}
 					return $source->description;
 				},
-			],
-			'shortDescription'  => [
+			),
+			'shortDescription'  => array(
 				'type'        => 'String',
 				'description' => __( 'Product short description', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PostObjectFieldFormatEnum',
 						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
 						// @codingStandardsIgnoreLine.
@@ -145,44 +145,44 @@ class Product {
 					// @codingStandardsIgnoreLine.
 					return $source->shortDescription;
 				},
-			],
-			'sku'               => [
+			),
+			'sku'               => array(
 				'type'        => 'String',
 				'description' => __( 'Product SKU', 'wp-graphql-woocommerce' ),
-			],
-			'dateOnSaleFrom'    => [
+			),
+			'dateOnSaleFrom'    => array(
 				'type'        => 'String',
 				'description' => __( 'Date on sale from', 'wp-graphql-woocommerce' ),
-			],
-			'dateOnSaleTo'      => [
+			),
+			'dateOnSaleTo'      => array(
 				'type'        => 'String',
 				'description' => __( 'Date on sale to', 'wp-graphql-woocommerce' ),
-			],
-			'totalSales'        => [
+			),
+			'totalSales'        => array(
 				'type'        => 'Int',
 				'description' => __( 'Number total of sales', 'wp-graphql-woocommerce' ),
-			],
-			'reviewsAllowed'    => [
+			),
+			'reviewsAllowed'    => array(
 				'type'        => 'Boolean',
 				'description' => __( 'If reviews are allowed', 'wp-graphql-woocommerce' ),
-			],
-			'purchaseNote'      => [
+			),
+			'purchaseNote'      => array(
 				'type'        => 'String',
 				'description' => __( 'Purchase note', 'wp-graphql-woocommerce' ),
-			],
-			'menuOrder'         => [
+			),
+			'menuOrder'         => array(
 				'type'        => 'Int',
 				'description' => __( 'Menu order', 'wp-graphql-woocommerce' ),
-			],
-			'averageRating'     => [
+			),
+			'averageRating'     => array(
 				'type'        => 'Float',
 				'description' => __( 'Product average count', 'wp-graphql-woocommerce' ),
-			],
-			'reviewCount'       => [
+			),
+			'reviewCount'       => array(
 				'type'        => 'Int',
 				'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
-			],
-			'image'             => [
+			),
+			'image'             => array(
 				'type'        => 'MediaItem',
 				'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -192,20 +192,20 @@ class Product {
 					}
 					return $context->get_loader( 'post' )->load_deferred( $source->image_id );
 				},
-			],
-			'onSale'            => [
+			),
+			'onSale'            => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Is product on sale?', 'wp-graphql-woocommerce' ),
-			],
-			'purchasable'       => [
+			),
+			'purchasable'       => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
-			],
-			'virtual'           => [
+			),
+			'virtual'           => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
-			],
+			),
 			'metaData'          => \WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::get_metadata_field_definition(),
-		];
+		);
 	}
 }

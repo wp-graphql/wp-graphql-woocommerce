@@ -35,19 +35,19 @@ class Shipping_Zones {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ): array {
+	public static function get_connection_config( $args = array() ): array {
 		return array_merge(
-			[
+			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'ShippingZone',
 				'fromFieldName'  => 'shippingZones',
-				'connectionArgs' => [],
+				'connectionArgs' => array(),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Shipping_Zone_Connection_Resolver( $source, $args, $context, $info );
 
 					return $resolver->get_connection();
 				},
-			],
+			),
 			$args
 		);
 	}
@@ -58,6 +58,6 @@ class Shipping_Zones {
 	 * @return array
 	 */
 	public static function get_connection_args(): array {
-		return [];
+		return array();
 	}
 }

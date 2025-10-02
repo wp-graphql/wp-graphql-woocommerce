@@ -46,7 +46,7 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|void
 	 */
 	public function get_query_args() {
-		return [];
+		return array();
 	}
 
 	/**
@@ -55,21 +55,21 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|mixed|string[]
 	 */
 	public function get_query() {
-		$tax_classes = [];
+		$tax_classes = array();
 
 		// Add standard class.
-		$tax_classes[] = [
+		$tax_classes[] = array(
 			'slug' => 'standard',
 			'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
-		];
+		);
 
 		$classes = \WC_Tax::get_tax_classes();
 
 		foreach ( $classes as $class ) {
-			$tax_classes[] = [
+			$tax_classes[] = array(
 				'slug' => sanitize_title( $class ),
 				'name' => $class,
-			];
+			);
 		}
 
 		// Cache cart items for later.
@@ -86,7 +86,7 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids_from_query() {
-		return ! empty( $this->query ) ? $this->query : [];
+		return ! empty( $this->query ) ? $this->query : array();
 	}
 
 	/**

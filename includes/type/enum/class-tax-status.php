@@ -20,14 +20,14 @@ class Tax_Status {
 	public static function register() {
 		register_graphql_enum_type(
 			'TaxStatusEnum',
-			[
+			array(
 				'description' => __( 'Product tax status enumeration', 'wp-graphql-woocommerce' ),
-				'values'      => [
-					'TAXABLE'  => [ 'value' => 'taxable' ],
-					'SHIPPING' => [ 'value' => 'shipping' ],
-					'NONE'     => [ 'value' => 'none' ],
-				],
-			]
+				'values'      => array(
+					'TAXABLE'  => array( 'value' => 'taxable' ),
+					'SHIPPING' => array( 'value' => 'shipping' ),
+					'NONE'     => array( 'value' => 'none' ),
+				),
+			)
 		);
 	}
 }

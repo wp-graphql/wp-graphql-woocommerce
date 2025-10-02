@@ -4,7 +4,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	public function expectedTaxRateData( $rate_id ) {
 		$rate = $this->factory->tax_rate->get_object_by_id( $rate_id );
 
-		return [
+		return array(
 			$this->expectedField( 'taxRate.id', $this->toRelayId( 'tax_rate', $rate_id ) ),
 			$this->expectedField( 'taxRate.databaseId', absint( $rate->tax_rate_id ) ),
 			$this->expectedField( 'taxRate.country', ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : static::IS_NULL ),
@@ -23,7 +23,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					? WPEnumType::get_safe_name( $rate->tax_rate_class )
 					: 'STANDARD'
 			),
-		];
+		);
 	}
 
 	// tests
@@ -51,19 +51,19 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		';
 
 		// Execute the request expecting failure due to missing permissions.
-        $variables = [ 'id' => $this->toRelayId( 'tax_rate', $rate ) ];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
-        $this->assertQueryError( $response );
+		$variables = array( 'id' => $this->toRelayId( 'tax_rate', $rate ) );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQueryError( $response );
 
-        // Login as shop manager.
-        $this->loginAsShopManager();
+		// Login as shop manager.
+		$this->loginAsShopManager();
 
 		/**
 		 * Assertion One
 		 *
 		 * Tests query, "id" query arg, and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'tax_rate', $rate ) ];
+		$variables = array( 'id' => $this->toRelayId( 'tax_rate', $rate ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = $this->expectedTaxRateData( $rate );
 
@@ -74,20 +74,20 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 *
 		 * Tests query, "rateId" query arg, and results
 		 */
-		$variables = [
+		$variables = array(
 			'id'     => $rate,
 			'idType' => 'DATABASE_ID',
-		];
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testTaxesQuery() {
-		$rates = [
+		$rates = array(
 			$this->factory->tax_rate->create(),
 			$this->factory->tax_rate->create(
-				[
+				array(
 					'country'  => 'US',
 					'state'    => 'AL',
 					'city'     => 'Montgomery',
@@ -98,10 +98,10 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					'compound' => '1',
 					'shipping' => '1',
 					'class'    => 'reduced-rate',
-				]
+				)
 			),
 			$this->factory->tax_rate->create(
-				[
+				array(
 					'country'  => 'US',
 					'state'    => 'VA',
 					'city'     => 'Norfolk',
@@ -112,9 +112,9 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 					'compound' => '1',
 					'shipping' => '1',
 					'class'    => 'zero-rate',
-				]
+				)
 			),
-		];
+		);
 
 		$query = '
 			query ( $class: TaxClassEnum, $postCode: String, $postCodeIn: [String] ) {
@@ -128,11 +128,11 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		';
 
 		// Execute the request expecting failure due to missing permissions.
-        $response = $this->graphql( compact( 'query' ) );
-        $this->assertQuerySuccessful( $response, [ $this->expectedField( 'taxRates.nodes', static::IS_FALSY ) ] );
+		$response = $this->graphql( compact( 'query' ) );
+		$this->assertQuerySuccessful( $response, array( $this->expectedField( 'taxRates.nodes', static::IS_FALSY ) ) );
 
-        // Login as shop manager.
-        $this->loginAsShopManager();
+		// Login as shop manager.
+		$this->loginAsShopManager();
 
 		/**
 		 * Assertion One
@@ -144,9 +144,9 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			function ( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
-					[
+					array(
 						$this->expectedField( 'id', $this->toRelayId( 'tax_rate', $id ) ),
-					]
+					)
 				);
 			},
 			$rates
@@ -168,15 +168,15 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			)
 		);
-		$variables         = [ 'class' => 'REDUCED_RATE' ];
+		$variables         = array( 'class' => 'REDUCED_RATE' );
 		$response          = $this->graphql( compact( 'query', 'variables' ) );
 		$expected          = array_map(
 			function ( $id ) {
 				return $this->expectedNode(
 					'taxRates.nodes',
-					[
+					array(
 						$this->expectedField( 'id', $this->toRelayId( 'tax_rate', $id ) ),
-					]
+					)
 				);
 			},
 			$reduced_tax_rates,
@@ -191,13 +191,13 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 *
 		 * Tests "postCode" where arg
 		 */
-		$variables = [ 'postCode' => '23451' ];
+		$variables = array( 'postCode' => '23451' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'taxRates.nodes.0.id', $this->toRelayId( 'tax_rate', $rates[2] ) ),
 			$this->not()->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[0] ) ),
 			$this->not()->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[1] ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -206,13 +206,13 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 *
 		 * Tests "postCodeIn" where arg
 		 */
-		$variables = [ 'postCodeIn' => [ '123456', '23451' ] ];
+		$variables = array( 'postCodeIn' => array( '123456', '23451' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[1] ) ),
 			$this->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[2] ) ),
 			$this->not()->expectedField( 'taxRates.nodes.#.id', $this->toRelayId( 'tax_rate', $rates[0] ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -220,7 +220,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	public function testTaxIncludedOptionEffect() {
 		// Create tax rate.
 		$this->factory->tax_rate->create(
-			[
+			array(
 				'country'  => 'US',
 				'state'    => '',
 				'rate'     => 10,
@@ -229,7 +229,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				'compound' => '0',
 				'shipping' => '1',
 				'class'    => '',
-			]
+			)
 		);
 
 		// Set customer address.
@@ -242,10 +242,10 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		// Create product to query.
 		$product_id = $this->factory->product->createSimple(
-			[
+			array(
 				'price'         => 10,
 				'regular_price' => 10,
-			]
+			)
 		);
 		$query      = '
 			query( $id: ID! ) {
@@ -257,7 +257,7 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 				}
 			}
 		';
-		$variables  = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$variables  = array( 'id' => $this->toRelayId( 'post', $product_id ) );
 
 		/**
 		 * Assertion One
@@ -266,9 +266,9 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 */
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'product.price', '$10.00' ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -287,9 +287,9 @@ class TaxRateQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		$this->logData( \wc_prices_include_tax() ? 'included' : 'excluded' );
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'product.price', '$11.00' ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

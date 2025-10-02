@@ -27,11 +27,11 @@ class ProtectedRouterCest {
 		 * Add t-shirt to the cart
 		 */
 		$success = $I->addToCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['t-shirt'],
 				'quantity'         => 5,
-			],
+			),
 		);
 
 		$I->assertArrayNotHasKey( 'errors', $success );
@@ -51,9 +51,9 @@ class ProtectedRouterCest {
 	}
 
 	public function _getLastRequestHeaders( $I ) {
-		return [
+		return array(
 			'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
-		];
+		);
 	}
 
 	public function tryToProceedToCheckoutPage( FunctionalTester $I, $scenario ) {
@@ -120,14 +120,14 @@ class ProtectedRouterCest {
         ';
 		$success = $I->sendGraphQLRequest(
 			$query,
-			[
-				'sessionData' => [
-					[
+			array(
+				'sessionData' => array(
+					array(
 						'key'   => 'client_session_id',
 						'value' => 'test-client-session-id',
-					],
-				],
-			],
+					),
+				),
+			),
 			$this->_getLastRequestHeaders( $I )
 		);
 
@@ -148,14 +148,14 @@ class ProtectedRouterCest {
 		$I->wantTo( 'Invalidate Checkout URL by updating the "client_session_id"' );
 		$success = $I->sendGraphQLRequest(
 			$query,
-			[
-				'sessionData' => [
-					[
+			array(
+				'sessionData' => array(
+					array(
 						'key'   => 'client_session_id',
 						'value' => 'new-test-client-session-id',
-					],
-				],
-			],
+					),
+				),
+			),
 			$this->_getLastRequestHeaders( $I )
 		);
 

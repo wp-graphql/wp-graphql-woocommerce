@@ -10,7 +10,7 @@ class CartHelper extends WCG_Helper {
 	public function add( ...$products ) {
 		$keys = array();
 
-		foreach( $products as $product ) {
+		foreach ( $products as $product ) {
 			if ( gettype( $product ) === 'array' ) {
 				if ( empty( $product['product_id'] ) ) {
 					codecept_debug( $product );
@@ -51,9 +51,9 @@ class CartHelper extends WCG_Helper {
 			'isEmpty'                 => $cart->is_empty(),
 			'displayPricesIncludeTax' => $cart->display_prices_including_tax(),
 			'needsShippingAddress'    => $cart->needs_shipping_address(),
-			'totalTaxes'			  => ! empty( $cart->get_tax_totals() )
+			'totalTaxes'              => ! empty( $cart->get_tax_totals() )
 				? array_map(
-					function( $tax_data ) {
+					function ( $tax_data ) {
 						return array(
 							'id'         => $tax_data->tax_rate_id,
 							'label'      => $tax_data->label,
@@ -79,8 +79,8 @@ class CartHelper extends WCG_Helper {
 		if ( ! empty( $variation ) ) {
 			$variation = \wc_get_product( $variation );
 			foreach ( $variation->get_attributes() as $name => $default_value ) {
-				if ( isset( $variation_data["attribute_{$name}"] ) ) {
-					$value = $variation_data["attribute_{$name}"];
+				if ( isset( $variation_data[ "attribute_{$name}" ] ) ) {
+					$value = $variation_data[ "attribute_{$name}" ];
 				} else {
 					$value = $default_value;
 				}
@@ -145,7 +145,7 @@ class CartHelper extends WCG_Helper {
 		$fees = $cart->get_fees();
 		$fee  = ! empty( $fees[ $id ] ) ? $fees[ $id ] : null;
 
-		return !empty( $fee )
+		return ! empty( $fee )
 			? array(
 				'id'       => $fee->id,
 				'name'     => $fee->name,
@@ -158,15 +158,15 @@ class CartHelper extends WCG_Helper {
 	}
 
 	public function print_nodes( $processors = array(), $_ = null ) {
-		$cart = WC()->cart;
-		$ids = array_keys( $cart->get_cart() );
+		$cart               = WC()->cart;
+		$ids                = array_keys( $cart->get_cart() );
 		$default_processors = array(
-			'mapper' => function( $key ) {
+			'mapper' => function ( $key ) {
 				return array( 'key' => $key );
 			},
-			'filter' => function( $key ) {
+			'filter' => function ( $key ) {
 				return true;
-			}
+			},
 		);
 
 		$processors = array_merge( $default_processors, $processors );
@@ -177,24 +177,24 @@ class CartHelper extends WCG_Helper {
 	}
 
 	public function print_fee_nodes( $processors = array(), $_ = null ) {
-		$cart = WC()->cart;
-		$ids = array_keys( $cart->get_fees() );
+		$cart               = WC()->cart;
+		$ids                = array_keys( $cart->get_fees() );
 		$default_processors = array(
-			'mapper' => function( $id ) {
+			'mapper' => function ( $id ) {
 				return array( 'id' => $id );
 			},
-			'sorter' => function( $id_a, $id_b ) {
+			'sorter' => function ( $id_a, $id_b ) {
 				return 0;
 			},
-			'filter' => function( $id ) {
+			'filter' => function ( $id ) {
 				return true;
-			}
+			},
 		);
 
 		$processors = array_merge( $default_processors, $processors );
 
 		$results = array_filter( $ids, $processors['filter'] );
-		if( ! empty( $results ) ) {
+		if ( ! empty( $results ) ) {
 			usort( $results, $processors['sorter'] );
 		}
 

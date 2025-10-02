@@ -30,11 +30,11 @@ class Checkout {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'checkout',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -44,48 +44,48 @@ class Checkout {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'paymentMethod'          => [
+		return array(
+			'paymentMethod'          => array(
 				'type'        => 'String',
 				'description' => __( 'Payment method ID.', 'wp-graphql-woocommerce' ),
-			],
-			'shippingMethod'         => [
-				'type'        => [ 'list_of' => 'String' ],
+			),
+			'shippingMethod'         => array(
+				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Order shipping method', 'wp-graphql-woocommerce' ),
-			],
-			'shipToDifferentAddress' => [
+			),
+			'shipToDifferentAddress' => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Ship to a separate address', 'wp-graphql-woocommerce' ),
-			],
-			'billing'                => [
+			),
+			'billing'                => array(
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order billing address', 'wp-graphql-woocommerce' ),
-			],
-			'shipping'               => [
+			),
+			'shipping'               => array(
 				'type'        => 'CustomerAddressInput',
 				'description' => __( 'Order shipping address', 'wp-graphql-woocommerce' ),
-			],
-			'account'                => [
+			),
+			'account'                => array(
 				'type'        => 'CreateAccountInput',
 				'description' => __( 'Create new customer account', 'wp-graphql-woocommerce' ),
-			],
-			'transactionId'          => [
+			),
+			'transactionId'          => array(
 				'type'        => 'String',
 				'description' => __( 'Order transaction ID', 'wp-graphql-woocommerce' ),
-			],
-			'isPaid'                 => [
+			),
+			'isPaid'                 => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
-			],
-			'metaData'               => [
-				'type'        => [ 'list_of' => 'MetaDataInput' ],
+			),
+			'metaData'               => array(
+				'type'        => array( 'list_of' => 'MetaDataInput' ),
 				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
-			],
-			'customerNote'           => [
+			),
+			'customerNote'           => array(
 				'type'        => 'String',
 				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -94,32 +94,32 @@ class Checkout {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'order'    => [
+		return array(
+			'order'    => array(
 				'type'    => 'Order',
 				'resolve' => static function ( $payload ) {
 					return new Order( $payload['id'] );
 				},
-			],
-			'customer' => [
+			),
+			'customer' => array(
 				'type'    => 'Customer',
 				'resolve' => static function () {
 					return is_user_logged_in() ? new Customer( get_current_user_id() ) : new Customer();
 				},
-			],
-			'result'   => [
+			),
+			'result'   => array(
 				'type'    => 'String',
 				'resolve' => static function ( $payload ) {
 					return $payload['result'];
 				},
-			],
-			'redirect' => [
+			),
+			'redirect' => array(
 				'type'    => 'String',
 				'resolve' => static function ( $payload ) {
 					return $payload['redirect'];
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Checkout {
 				do_action( 'graphql_woocommerce_before_checkout', $args, $input, $context, $info );
 
 				// We define this now and pass it as a reference.
-				$results = [];
+				$results = array();
 
 				$order_id = Checkout_Mutation::process_checkout( $args, $input, $context, $info, $results );
 
@@ -165,7 +165,7 @@ class Checkout {
 				 */
 				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 
-				return array_merge( [ 'id' => $order_id ], $results );
+				return array_merge( array( 'id' => $order_id ), $results );
 			} catch ( \Throwable $e ) {
 				// Delete order if it was created.
 				if ( is_object( $order ) ) {

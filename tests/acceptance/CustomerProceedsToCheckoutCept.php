@@ -12,9 +12,9 @@ $I->logOut();
 
 // Make quick helper for managing the session token.
 $request_headers = static function () use ( $I ) {
-	return [
+	return array(
 		'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
-	];
+	);
 };
 
 // Begin test.
@@ -23,11 +23,11 @@ $I->wantTo( 'add items to the cart' );
 /**
  * Add "T-Shirt" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['t-shirt'],
 	'quantity'         => 3,
-];
+);
 
 $success = $I->addToCart( $add_to_cart_input );
 
@@ -54,18 +54,18 @@ $update_session_mutation = '
 ';
 $success                 = $I->sendGraphQLRequest(
 	$update_session_mutation,
-	[
-		'sessionData' => [
-			[
+	array(
+		'sessionData' => array(
+			array(
 				'key'   => 'client_session_id',
 				'value' => 'test-client-session-id',
-			],
-			[
+			),
+			array(
 				'key'   => 'client_session_id_expiration',
 				'value' => (string) ( time() + 3600 ),
-			],
-		],
-	],
+			),
+		),
+	),
 	$request_headers()
 );
 

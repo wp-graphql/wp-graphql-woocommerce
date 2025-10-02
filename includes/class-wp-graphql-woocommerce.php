@@ -55,13 +55,13 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		public static function get_post_types() {
 			return apply_filters(
 				'graphql_woocommerce_post_types',
-				[
+				array(
 					'product',
 					'product_variation',
 					'shop_coupon',
 					'shop_order',
 					'shop_order_refund',
-				]
+				)
 			);
 		}
 
@@ -73,12 +73,12 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		public static function get_enabled_product_types() {
 			return apply_filters(
 				'graphql_woocommerce_product_types',
-				[
+				array(
 					'simple'   => 'SimpleProduct',
 					'variable' => 'VariableProduct',
 					'external' => 'ExternalProduct',
 					'grouped'  => 'GroupProduct',
-				]
+				)
 			);
 		}
 
@@ -88,7 +88,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return array
 		 */
 		public static function get_enabled_product_variation_types() {
-			return apply_filters( 'graphql_woocommerce_product_variation_types', [ 'variation' => 'SimpleProductVariation' ] );
+			return apply_filters( 'graphql_woocommerce_product_variation_types', array( 'variation' => 'SimpleProductVariation' ) );
 		}
 
 		/**
@@ -113,7 +113,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			$attribute_taxonomies = \wc_get_attribute_taxonomies();
 
 			// Get taxonomy names.
-			$attributes = [];
+			$attributes = array();
 			foreach ( $attribute_taxonomies as $tax ) {
 				$attributes[] = 'pa_' . $tax->attribute_name;
 			}
@@ -439,7 +439,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return array
 		 */
 		public static function get_enabled_auth_urls() {
-			return woographql_setting( 'enable_authorizing_url_fields', [] );
+			return woographql_setting( 'enable_authorizing_url_fields', array() );
 		}
 
 		/**
@@ -459,7 +459,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public static function load_auth_router() {
 			require get_includes_directory() . 'utils/class-protected-router.php';
-			add_action( 'after_setup_theme', [ Utils\Protected_Router::class, 'initialize' ] );
+			add_action( 'after_setup_theme', array( Utils\Protected_Router::class, 'initialize' ) );
 		}
 
 		/**
@@ -491,7 +491,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Initialize WPGraphQL for WooCommerce TypeRegistry.
 			$registry = new Type_Registry();
-			add_action( 'graphql_register_types', [ $registry, 'init' ] );
+			add_action( 'graphql_register_types', array( $registry, 'init' ) );
 		}
 	}
 

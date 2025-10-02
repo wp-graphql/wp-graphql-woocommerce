@@ -29,11 +29,11 @@ class Customer_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateCustomer',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -45,32 +45,32 @@ class Customer_Update {
 	public static function get_input_fields() {
 		return array_merge(
 			UserCreate::get_input_fields(),
-			[
-				'id'                    => [
+			array(
+				'id'                    => array(
 					'type'        => 'ID',
 					'description' => __( 'The ID of the user', 'wp-graphql-woocommerce' ),
-				],
-				'billing'               => [
+				),
+				'billing'               => array(
 					'type'        => 'CustomerAddressInput',
 					'description' => __( 'Customer billing information', 'wp-graphql-woocommerce' ),
-				],
-				'shipping'              => [
+				),
+				'shipping'              => array(
 					'type'        => 'CustomerAddressInput',
 					'description' => __( 'Customer shipping address', 'wp-graphql-woocommerce' ),
-				],
-				'shippingSameAsBilling' => [
+				),
+				'shippingSameAsBilling' => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' ),
-				],
-				'metaData'              => [
+				),
+				'metaData'              => array(
 					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
-					'type'        => [ 'list_of' => 'MetaDataInput' ],
-				],
-				'isSession'             => [
+					'type'        => array( 'list_of' => 'MetaDataInput' ),
+				),
+				'isSession'             => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Whether to save changes on the session or in the database', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -80,14 +80,14 @@ class Customer_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'customer' => [
+		return array(
+			'customer' => array(
 				'type'    => 'Customer',
 				'resolve' => static function ( $payload ) {
 					return new Customer( $payload['id'] );
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -139,13 +139,13 @@ class Customer_Update {
 
 					// Check if group field has set function and assigns new value.
 					foreach ( $value as $field => $field_value ) {
-						if ( is_callable( [ $customer, "set_{$prop}_{$field}" ] ) ) {
+						if ( is_callable( array( $customer, "set_{$prop}_{$field}" ) ) ) {
 							$customer->{"set_{$prop}_{$field}"}( $field_value );
 						}
 					}
 
 					// If field has set function and assigns new value.
-				} elseif ( is_callable( [ $customer, "set_{$prop}" ] ) ) {
+				} elseif ( is_callable( array( $customer, "set_{$prop}" ) ) ) {
 					$customer->{"set_{$prop}"}( $value );
 				}
 			}
@@ -163,7 +163,7 @@ class Customer_Update {
 			}
 
 			// Return payload.
-			return ! empty( $payload ) ? $payload : [ 'id' => 'session' ];
+			return ! empty( $payload ) ? $payload : array( 'id' => 'session' );
 		};
 	}
 }

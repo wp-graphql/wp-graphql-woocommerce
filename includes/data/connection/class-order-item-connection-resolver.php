@@ -40,7 +40,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_query_args() {
-		$query_args = [ 'filters' => [] ];
+		$query_args = array( 'filters' => array() );
 
 		/**
 		 * Filter the $query_args to allow folks to customize queries programmatically.
@@ -97,13 +97,13 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 				break;
 		}//end switch
 
-		$items = [];
+		$items = array();
 		foreach ( $this->source->get_items( $type ) as $item ) {
 			$items[] = $item;
 		}
 
 		if ( empty( $items ) ) {
-			return [];
+			return array();
 		}
 
 		if ( ! empty( $this->query_args['filters'] ) && is_array( $this->query_args['filters'] ) ) {
@@ -158,7 +158,7 @@ class Order_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids() {
-		return ! empty( $this->query ) ? $this->query : [];
+		return ! empty( $this->query ) ? $this->query : array();
 	}
 
 	/**

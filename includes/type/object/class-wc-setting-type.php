@@ -22,68 +22,68 @@ class WC_Setting_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'WCSetting',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A WC setting object', 'wp-graphql-woocommerce' ),
-				'fields'          => [
-					'id'          => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'fields'          => array(
+					'id'          => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the WC setting.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['id'] ) ? $source['id'] : null;
 						},
-					],
-					'label'       => [
+					),
+					'label'       => array(
 						'type'        => 'String',
 						'description' => __( 'A human readable label for the setting used in user interfaces.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['title'] ) ? $source['title'] : null;
 						},
-					],
-					'description' => [
+					),
+					'description' => array(
 						'type'        => 'String',
 						'description' => __( 'A human readable description for the setting used in user interfaces.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['description'] ) ? $source['description'] : null;
 						},
-					],
-					'type'        => [
+					),
+					'type'        => array(
 						'type'        => 'WCSettingTypeEnum',
 						'description' => __( 'Type of setting.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['type'] ) ? $source['type'] : null;
 						},
-					],
-					'value'       => [
+					),
+					'value'       => array(
 						'type'        => 'String',
 						'description' => __( 'Setting value.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['value'] ) ? $source['value'] : null;
 						},
-					],
-					'default'     => [
+					),
+					'default'     => array(
 						'type'        => 'String',
 						'description' => __( 'Default value for the setting.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['default'] ) ? $source['default'] : null;
 						},
-					],
-					'tip'         => [
+					),
+					'tip'         => array(
 						'type'        => 'String',
 						'description' => __( 'Additional help text shown to the user about the setting', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['desc_tip'] ) ? $source['desc_tip'] : null;
 						},
-					],
-					'placeholder' => [
+					),
+					'placeholder' => array(
 						'type'        => 'String',
 						'description' => __( 'Placeholder text to be displayed in text inputs.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['placeholder'] ) ? $source['placeholder'] : null;
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

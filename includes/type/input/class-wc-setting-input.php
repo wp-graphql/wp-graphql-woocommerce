@@ -20,19 +20,19 @@ class WC_Setting_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'WCSettingInput',
-			[
+			array(
 				'description' => __( 'WooCommerce setting input.', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'id'    => [
+				'fields'      => array(
+					'id'    => array(
 						'type'        => 'String',
 						'description' => __( 'A unique identifier for the setting.', 'wp-graphql-woocommerce' ),
-					],
-					'value' => [
+					),
+					'value' => array(
 						'type'        => 'String',
 						'description' => __( 'Setting value.', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

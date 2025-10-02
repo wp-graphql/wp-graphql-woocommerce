@@ -18,19 +18,19 @@ class Catalog_Visibility {
 	 * @return void
 	 */
 	public static function register() {
-		$values = [
-			'VISIBLE' => [ 'value' => 'visible' ],
-			'CATALOG' => [ 'value' => 'catalog' ],
-			'SEARCH'  => [ 'value' => 'search' ],
-			'HIDDEN'  => [ 'value' => 'hidden' ],
-		];
+		$values = array(
+			'VISIBLE' => array( 'value' => 'visible' ),
+			'CATALOG' => array( 'value' => 'catalog' ),
+			'SEARCH'  => array( 'value' => 'search' ),
+			'HIDDEN'  => array( 'value' => 'hidden' ),
+		);
 
 		register_graphql_enum_type(
 			'CatalogVisibilityEnum',
-			[
+			array(
 				'description' => __( 'Product catalog visibility enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			]
+			)
 		);
 	}
 }

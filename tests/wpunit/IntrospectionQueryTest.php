@@ -7,7 +7,7 @@ class IntrospectionQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGr
 
 		$settings = get_option( 'graphql_general_settings' );
 		if ( ! $settings ) {
-			$settings = [];
+			$settings = array();
 		}
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
@@ -36,7 +36,7 @@ class IntrospectionQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGr
 	// Test introspection query.
 	public function testIntrospectionQuery() {
 		$query   = \GraphQL\Type\Introspection::getIntrospectionQuery();
-		$results = graphql( [ 'query' => $query ] );
+		$results = graphql( array( 'query' => $query ) );
 
 		$this->assertArrayNotHasKey( 'errors', $results );
 	}

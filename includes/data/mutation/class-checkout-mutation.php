@@ -65,15 +65,15 @@ class Checkout_Mutation {
 	 * @return array
 	 */
 	public static function prepare_checkout_args( $input, $context, $info ) {
-		$data = [
+		$data = array(
 			'terms'                     => (int) isset( $input['terms'] ),
 			'createaccount'             => (int) ! empty( $input['account'] ),
 			'payment_method'            => isset( $input['paymentMethod'] ) ? $input['paymentMethod'] : '',
 			'shipping_method'           => isset( $input['shippingMethod'] ) ? $input['shippingMethod'] : '',
 			'ship_to_different_address' => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
-		];
+		);
 
-		$skipped = [];
+		$skipped = array();
 		foreach ( self::get_checkout_fields() as $fieldset_key => $fieldset ) {
 			if ( self::maybe_skip_fieldset( $fieldset_key, $data ) ) {
 				$skipped[] = $fieldset_key;
@@ -115,8 +115,8 @@ class Checkout_Mutation {
 	 * @return array
 	 */
 	public static function get_checkout_fields( $fieldset = '', $prefixed = false ) {
-		$fields = [
-			'billing'  => [
+		$fields = array(
+			'billing'  => array(
 				'first_name' => 'firstName',
 				'last_name'  => 'lastName',
 				'company'    => 'company',
@@ -128,8 +128,8 @@ class Checkout_Mutation {
 				'country'    => 'country',
 				'phone'      => 'phone',
 				'email'      => 'email',
-			],
-			'shipping' => [
+			),
+			'shipping' => array(
 				'first_name' => 'firstName',
 				'last_name'  => 'lastName',
 				'company'    => 'company',
@@ -139,15 +139,15 @@ class Checkout_Mutation {
 				'postcode'   => 'postcode',
 				'state'      => 'state',
 				'country'    => 'country',
-			],
-			'account'  => [
+			),
+			'account'  => array(
 				'username' => 'username',
 				'password' => 'password',
-			],
-			'order'    => [
+			),
+			'order'    => array(
 				'comments' => 'customerNote',
-			],
-		];
+			),
+		);
 
 		if ( $prefixed ) {
 			foreach ( $fields as $prefix => $values ) {
@@ -158,7 +158,7 @@ class Checkout_Mutation {
 		}
 
 		if ( ! empty( $fieldset ) ) {
-			return ! empty( $fields[ $fieldset ] ) ? $fields[ $fieldset ] : [];
+			return ! empty( $fields[ $fieldset ] ) ? $fields[ $fieldset ] : array();
 		}
 
 		return $fields;
@@ -173,7 +173,7 @@ class Checkout_Mutation {
 	 */
 	protected static function update_session( $data ) {
 		// Update both shipping and billing to the passed billing address first if set.
-		$address_fields = [
+		$address_fields = array(
 			'first_name',
 			'last_name',
 			'company',
@@ -185,7 +185,7 @@ class Checkout_Mutation {
 			'postcode',
 			'state',
 			'country',
-		];
+		);
 
 		foreach ( $address_fields as $field ) {
 			self::set_customer_address_fields( $field, $data );
@@ -220,7 +220,7 @@ class Checkout_Mutation {
 			return false;
 		}
 
-		$address = [
+		$address = array(
 			'first_name' => '',
 			'last_name'  => '',
 			'company'    => '',
@@ -230,15 +230,15 @@ class Checkout_Mutation {
 			'state'      => '',
 			'postcode'   => '',
 			'country'    => '',
-		];
+		);
 
 		if ( 'billing' === $type ) {
 			$address = array_merge(
 				$address,
-				[
+				array(
 					'email' => '',
 					'phone' => '',
-				]
+				)
 			);
 		}
 
@@ -270,10 +270,10 @@ class Checkout_Mutation {
 				$data['billing_email'],
 				$username,
 				$password,
-				[
+				array(
 					'first_name' => ! empty( $data['billing_first_name'] ) ? $data['billing_first_name'] : '',
 					'last_name'  => ! empty( $data['billing_last_name'] ) ? $data['billing_last_name'] : '',
-				]
+				)
 			);
 
 			if ( is_wp_error( $customer_id ) ) {
@@ -314,7 +314,7 @@ class Checkout_Mutation {
 
 			foreach ( $data as $key => $value ) {
 				// Use setters where available.
-				if ( is_callable( [ $customer, "set_{$key}" ] ) ) {
+				if ( is_callable( array( $customer, "set_{$key}" ) ) ) {
 					$customer->{"set_{$key}"}( $value );
 
 					// Store custom fields prefixed with wither shipping_ or billing_.
@@ -346,20 +346,20 @@ class Checkout_Mutation {
 		$billing_value  = null;
 		$shipping_value = null;
 
-		if ( isset( $data[ "billing_{$field}" ] ) && is_callable( [ WC()->customer, "set_billing_{$field}" ] ) ) {
+		if ( isset( $data[ "billing_{$field}" ] ) && is_callable( array( WC()->customer, "set_billing_{$field}" ) ) ) {
 			$billing_value  = $data[ "billing_{$field}" ];
 			$shipping_value = $data[ "billing_{$field}" ];
 		}
 
-		if ( isset( $data[ "shipping_{$field}" ] ) && is_callable( [ WC()->customer, "set_shipping_{$field}" ] ) ) {
+		if ( isset( $data[ "shipping_{$field}" ] ) && is_callable( array( WC()->customer, "set_shipping_{$field}" ) ) ) {
 			$shipping_value = $data[ "shipping_{$field}" ];
 		}
 
-		if ( ! is_null( $billing_value ) && is_callable( [ WC()->customer, "set_billing_{$field}" ] ) ) {
+		if ( ! is_null( $billing_value ) && is_callable( array( WC()->customer, "set_billing_{$field}" ) ) ) {
 			WC()->customer->{"set_billing_{$field}"}( $billing_value );
 		}
 
-		if ( ! is_null( $shipping_value ) && is_callable( [ WC()->customer, "set_shipping_{$field}" ] ) ) {
+		if ( ! is_null( $shipping_value ) && is_callable( array( WC()->customer, "set_shipping_{$field}" ) ) ) {
 			WC()->customer->{"set_shipping_{$field}"}( $shipping_value );
 		}
 	}
@@ -525,7 +525,7 @@ class Checkout_Mutation {
 
 		$process_payment_args = apply_filters(
 			"graphql_{$payment_method}_process_payment_args",
-			[ $order_id ],
+			array( $order_id ),
 			$payment_method
 		);
 
@@ -552,11 +552,11 @@ class Checkout_Mutation {
 
 		$order->payment_complete( $transaction_id );
 
-		return [
+		return array(
 			'result'   => 'success',
 			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			'redirect' => apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', $order->get_checkout_order_received_url(), $order ),
-		];
+		);
 	}
 
 	/**
@@ -649,7 +649,7 @@ class Checkout_Mutation {
 			if ( $valid ) {
 				$results = self::process_order_without_payment( $order_id, $transaction_id );
 			} else {
-				$results = [
+				$results = array(
 					'result'   => 'failed',
 					'redirect' => apply_filters(
 						'graphql_woocommerce_checkout_payment_failed_redirect',
@@ -658,7 +658,7 @@ class Checkout_Mutation {
 						$order_id,
 						$transaction_id
 					),
-				];
+				);
 			}
 		}//end if
 
@@ -701,7 +701,7 @@ class Checkout_Mutation {
 			$customer_object = WC()->customer;
 		}
 
-		if ( is_callable( [ $customer_object, "get_$input" ] ) ) {
+		if ( is_callable( array( $customer_object, "get_$input" ) ) ) {
 			$value = $customer_object->{"get_$input"}();
 		} elseif ( $customer_object->meta_exists( $input ) ) {
 			$value = $customer_object->get_meta( $input, true );

@@ -14,15 +14,15 @@ class OrderHelper extends WCG_Helper {
 		return Relay::toGlobalId( 'order', $id );
 	}
 
-    public function set_to_customer_billing_address( $order, $customer, $save = true ) {
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( absint( $order ) );
-        }
-        if ( ! is_a( $customer, WC_Customer::class ) ) {
-            $customer = new WC_Customer( $customer );
-        }
+	public function set_to_customer_billing_address( $order, $customer, $save = true ) {
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( absint( $order ) );
+		}
+		if ( ! is_a( $customer, WC_Customer::class ) ) {
+			$customer = new WC_Customer( $customer );
+		}
 
-        // Set billing address
+		// Set billing address
 		$order->set_billing_first_name( $customer->get_first_name() );
 		$order->set_billing_last_name( $customer->get_last_name() );
 		$order->set_billing_company( $customer->get_billing_company() );
@@ -33,24 +33,24 @@ class OrderHelper extends WCG_Helper {
 		$order->set_billing_postcode( $customer->get_billing_postcode() );
 		$order->set_billing_country( $customer->get_billing_country() );
 		$order->set_billing_email( $customer->get_billing_email() );
-        $order->set_billing_phone( $customer->get_billing_phone() );
+		$order->set_billing_phone( $customer->get_billing_phone() );
 
-        if ( $save ) {
-            return $order->save();
+		if ( $save ) {
+			return $order->save();
 		}
 
 		return $order;
-    }
+	}
 
-    public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
-        if ( ! is_a( $order, WC_Order::class ) ) {
-            $order = new WC_Order( absint( $order ) );
-        }
-        if ( ! is_a( $customer, WC_Customer::class ) ) {
-            $customer = new WC_Customer( $customer );
-        }
+	public function set_to_customer_shipping_address( $order, $customer, $save = true ) {
+		if ( ! is_a( $order, WC_Order::class ) ) {
+			$order = new WC_Order( absint( $order ) );
+		}
+		if ( ! is_a( $customer, WC_Customer::class ) ) {
+			$customer = new WC_Customer( $customer );
+		}
 
-        // Set shipping address
+		// Set shipping address
 		$order->set_shipping_first_name( $customer->get_first_name() );
 		$order->set_shipping_last_name( $customer->get_last_name() );
 		$order->set_shipping_company( $customer->get_shipping_company() );
@@ -59,46 +59,46 @@ class OrderHelper extends WCG_Helper {
 		$order->set_shipping_city( $customer->get_shipping_city() );
 		$order->set_shipping_state( $customer->get_shipping_state() );
 		$order->set_shipping_postcode( $customer->get_shipping_postcode() );
-        $order->set_shipping_country( $customer->get_shipping_country() );
+		$order->set_shipping_country( $customer->get_shipping_country() );
 
-        if ( $save ) {
-            return $order->save();
+		if ( $save ) {
+			return $order->save();
 		}
 
 		return $order;
-    }
+	}
 
 	public function create( $args = array(), $items = array() ) {
 		if ( empty( $args['customer_id'] ) ) {
-			$customer = new WC_Customer( CustomerHelper::instance()->create() );
+			$customer    = new WC_Customer( CustomerHelper::instance()->create() );
 			$customer_id = $customer->get_id();
 		} else {
 			$customer_id = $args['customer_id'];
 		}
 
 		$shipping_method_helper = ShippingMethodHelper::instance();
-        $shipping_method_helper->create_legacy_flat_rate_instance();
+		$shipping_method_helper->create_legacy_flat_rate_instance();
 
-        // Create order
-		$order_data = array_merge(
-            array(
-                'status'        => 'pending',
-                'customer_id'   => $customer_id,
-                'customer_note' => '',
-                'total'         => '',
-            ),
-            $args
+		// Create order
+		$order_data             = array_merge(
+			array(
+				'status'        => 'pending',
+				'customer_id'   => $customer_id,
+				'customer_note' => '',
+				'total'         => '',
+			),
+			$args
 		);
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1'; // Required, else wc_create_order throws an exception
-        $order 					= wc_create_order( $order_data );
+		$order                  = wc_create_order( $order_data );
 
 		// Add line items
 		if ( ! empty( $items['line_items'] ) ) {
-			foreach( $items['line_items'] as $item ) {
+			foreach ( $items['line_items'] as $item ) {
 				$order = OrderItemHelper::instance()->add_line_item( $order, $item, false );
 			}
 		} else {
-            for ( $i = 0; $i < rand( 1, 3 ); $i++ ) {
+			for ( $i = 0; $i < rand( 1, 3 ); $i++ ) {
 				$order = OrderItemHelper::instance()->add_line_item(
 					$order,
 					array(
@@ -107,33 +107,34 @@ class OrderHelper extends WCG_Helper {
 					),
 					false
 				);
-            }
+			}
 		}
 		$order->save();
 
-
-        // Add billing / shipping address
-        $order = $this->set_to_customer_billing_address( $order, $customer_id, false );
-        $order = $this->set_to_customer_shipping_address( $order, $customer_id, false );
+		// Add billing / shipping address
+		$order = $this->set_to_customer_billing_address( $order, $customer_id, false );
+		$order = $this->set_to_customer_shipping_address( $order, $customer_id, false );
 
 		// Add shipping costs
 		$shipping_taxes = WC_Tax::calc_shipping_tax( '10', WC_Tax::get_shipping_tax_rates() );
 		$rate           = new WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );
 		$item           = new WC_Order_Item_Shipping();
-		$item->set_props( array(
-			'method_title' => $rate->label,
-			'method_id'    => $rate->id,
-			'total'        => wc_format_decimal( $rate->cost ),
-			'taxes'        => $rate->taxes,
-		) );
+		$item->set_props(
+			array(
+				'method_title' => $rate->label,
+				'method_id'    => $rate->id,
+				'total'        => wc_format_decimal( $rate->cost ),
+				'taxes'        => $rate->taxes,
+			)
+		);
 		foreach ( $rate->get_meta_data() as $key => $value ) {
 			$item->add_meta_data( $key, $value, true );
 		}
-        $order->add_item( $item );
+		$order->add_item( $item );
 
 		// Set payment gateway
 		$payment_gateways = WC()->payment_gateways->payment_gateways();
-        $order->set_payment_method( $payment_gateways['bacs'] );
+		$order->set_payment_method( $payment_gateways['bacs'] );
 
 		// Set totals
 		$order->set_shipping_total( 10 );
@@ -141,14 +142,14 @@ class OrderHelper extends WCG_Helper {
 		$order->set_discount_tax( 0 );
 		$order->set_cart_tax( 0 );
 		$order->set_shipping_tax( 0 );
-        $order->set_total( 50 ); // 4 x $10 simple helper product
+		$order->set_total( 50 ); // 4 x $10 simple helper product
 
 		// Set meta data.
 		if ( ! empty( $args['meta_data'] ) ) {
 			$order->set_meta_data( $args['meta_data'] );
 		}
 
-        // Save and return ID.
+		// Save and return ID.
 		return $order->save();
 	}
 
@@ -157,24 +158,24 @@ class OrderHelper extends WCG_Helper {
 	}
 
 	public function has_product( $id, $product_id ) {
-		$order = new WC_Order( $id );
+		$order      = new WC_Order( $id );
 		$line_items = $order->get_items();
-        foreach ( $line_items as $item ) {
-            if ( $item['product_id'] == $product_id ) {
-                return true;
-            }
+		foreach ( $line_items as $item ) {
+			if ( $item['product_id'] == $product_id ) {
+				return true;
+			}
 		}
 		return false;
 	}
 
-    public function print_query( $id ) {
+	public function print_query( $id ) {
 		$data = new WC_Order( $id );
 
 		if ( ! $data->get_id() ) {
 			return null;
 		}
 		// Get unformatted country before it's cached.
-		$billing_country = ! empty( $data->get_billing_country( 'edit' ) )
+		$billing_country  = ! empty( $data->get_billing_country( 'edit' ) )
 			? 'US'
 			: null;
 		$shipping_country = ! empty( $data->get_address( 'shipping' )['country'] )
@@ -186,10 +187,10 @@ class OrderHelper extends WCG_Helper {
 			'databaseId'            => $data->get_id(),
 			'currency'              => ! empty( $data->get_currency() ) ? $data->get_currency() : null,
 			'orderVersion'          => ! empty( $data->get_version() ) ? $data->get_version() : null,
-            'date'                  => $data->get_date_created()->__toString(),
-            'modified'              => $data->get_date_modified()->__toString(),
+			'date'                  => $data->get_date_created()->__toString(),
+			'modified'              => $data->get_date_modified()->__toString(),
 			'status'                => WPEnumType::get_safe_name( $data->get_status() ),
-			'discountTotal'         => \wc_graphql_price(  $data->get_discount_total(), array( 'currency' => $data->get_currency() ) ),
+			'discountTotal'         => \wc_graphql_price( $data->get_discount_total(), array( 'currency' => $data->get_currency() ) ),
 			'discountTax'           => \wc_graphql_price( $data->get_discount_tax(), array( 'currency' => $data->get_currency() ) ),
 			'shippingTotal'         => \wc_graphql_price( $data->get_shipping_total(), array( 'currency' => $data->get_currency() ) ),
 			'shippingTax'           => \wc_graphql_price( $data->get_shipping_tax(), array( 'currency' => $data->get_currency() ) ),
@@ -328,8 +329,8 @@ class OrderHelper extends WCG_Helper {
 			'databaseId'            => $id,
 			'currency'              => null,
 			'orderVersion'          => null,
-            'date'                  => $data->get_date_created()->__toString(),
-            'modified'              => $data->get_date_modified()->__toString(),
+			'date'                  => $data->get_date_created()->__toString(),
+			'modified'              => $data->get_date_modified()->__toString(),
 			'status'                => WPEnumType::get_safe_name( $data->get_status() ),
 			'discountTotal'         => \wc_graphql_price( $data->get_discount_total(), array( 'currency' => $data->get_currency() ) ),
 			'discountTax'           => \wc_graphql_price( $data->get_discount_tax(), array( 'currency' => $data->get_currency() ) ),
@@ -424,7 +425,8 @@ class OrderHelper extends WCG_Helper {
 				: null,
 			'datePaid'              => ! empty( $data->get_date_paid() )
 				? $data->get_date_paid()->__toString()
-				: null,'cartHash'              => null,
+				: null,
+			'cartHash'              => null,
 			'shippingAddressMapUrl' => ! empty( $data->get_shipping_address_map_url() )
 				? $data->get_shipping_address_map_url()
 				: null,

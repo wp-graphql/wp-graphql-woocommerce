@@ -39,28 +39,28 @@ class CustomerHelper extends WCG_Helper {
 					'role'               => 'customer',
 					'username'           => $username,
 					'billing'            => array(
-						'first_name'     => $first_name,
-						'last_name'      => $last_name,
-						'company'        => '',
-						'address_1'      => $street,
-						'address_2'      => '',
-						'city'           => $city,
-						'state'          => $state,
-						'postcode'       => $postcode,
-						'country'        => $country,
-						'email'          => $email,
-						'phone'          => $phone,
+						'first_name' => $first_name,
+						'last_name'  => $last_name,
+						'company'    => '',
+						'address_1'  => $street,
+						'address_2'  => '',
+						'city'       => $city,
+						'state'      => $state,
+						'postcode'   => $postcode,
+						'country'    => $country,
+						'email'      => $email,
+						'phone'      => $phone,
 					),
 					'shipping'           => array(
-						'first_name'     => $first_name,
-						'last_name'      => $last_name,
-						'company'        => '',
-						'address_1'      => $street,
-						'address_2'      => '',
-						'city'           => $city,
-						'state'          => $state,
-						'postcode'       => $postcode,
-						'country'        => $country,
+						'first_name' => $first_name,
+						'last_name'  => $last_name,
+						'company'    => '',
+						'address_1'  => $street,
+						'address_2'  => '',
+						'city'       => $city,
+						'state'      => $state,
+						'postcode'   => $postcode,
+						'country'    => $country,
 					),
 					'is_paying_customer' => false,
 				),
@@ -77,7 +77,7 @@ class CustomerHelper extends WCG_Helper {
 	}
 
 	public function print_query( $id, $session = false ) {
-		$data = new WC_Customer( $id, $session );
+		$data    = new WC_Customer( $id, $session );
 		$wp_user = get_user_by( 'ID', $data->get_id() );
 
 		return array(

@@ -29,7 +29,7 @@ class Variation_Attribute_Connection_Resolver {
 	 * @return array
 	 */
 	public static function product_attributes_to_data_array( $attrs, $product_id ) {
-		$attributes = [];
+		$attributes = array();
 
 		foreach ( $attrs as $attribute ) {
 			if ( ! is_a( $attribute, 'WC_Product_Attribute' ) ) {
@@ -39,26 +39,26 @@ class Variation_Attribute_Connection_Resolver {
 
 			if ( $attribute->is_taxonomy() ) {
 				$attribute_taxonomy = $attribute->get_taxonomy_object();
-				$attribute_values   = wc_get_product_terms( $product_id, $attribute->get_name(), [ 'fields' => 'all' ] );
+				$attribute_values   = wc_get_product_terms( $product_id, $attribute->get_name(), array( 'fields' => 'all' ) );
 				foreach ( $attribute_values as $attribute_value ) {
 					$id           = base64_encode( $product_id . '|' . $name . '|' . $attribute_value->name ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-					$attributes[] = [
+					$attributes[] = array(
 						'id'          => $id,
 						'attributeId' => $attribute_value->term_id,
 						'name'        => $name,
 						'value'       => $attribute_value->name,
-					];
+					);
 				}
 			} else {
 				$values = $attribute->get_options();
 				foreach ( $values as $attribute_value ) {
 					$id           = base64_encode( $product_id . '|' . $name . '|' . $attribute_value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-					$attributes[] = [
+					$attributes[] = array(
 						'id'          => $id,
 						'attributeId' => 0,
 						'name'        => $name,
 						'value'       => $attribute_value,
-					];
+					);
 				}
 			}//end if
 		}//end foreach
@@ -75,10 +75,10 @@ class Variation_Attribute_Connection_Resolver {
 	 * @return array
 	 */
 	public static function variation_attributes_to_data_array( $attrs, $variation_id ) {
-		$attributes = [];
+		$attributes = array();
 
 		// Bail early if explicitly '0' attributes.
-		if ( [ '0' ] === $attrs ) {
+		if ( array( '0' ) === $attrs ) {
 			return $attributes;
 		}
 
@@ -90,19 +90,19 @@ class Variation_Attribute_Connection_Resolver {
 			$id = base64_encode( $variation_id . '||' . $name . '||' . $value );
 
 			if ( ! $term instanceof \WP_Term ) {
-				$attributes[] = [
+				$attributes[] = array(
 					'id'          => $id,
 					'attributeId' => 0,
 					'name'        => $name,
 					'value'       => $value,
-				];
+				);
 			} else {
-				$attributes[] = [
+				$attributes[] = array(
 					'id'          => $id,
 					'attributeId' => $term->term_id,
 					'name'        => $term->taxonomy,
 					'value'       => $term->slug,
-				];
+				);
 			}
 		}//end foreach
 
@@ -130,7 +130,7 @@ class Variation_Attribute_Connection_Resolver {
 		}
 
 		$connection = Relay::connectionFromArray( $attributes, $args );
-		$nodes      = [];
+		$nodes      = array();
 		if ( ! empty( $connection['edges'] ) && is_array( $connection['edges'] ) ) {
 			foreach ( $connection['edges'] as $edge ) {
 				$nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;

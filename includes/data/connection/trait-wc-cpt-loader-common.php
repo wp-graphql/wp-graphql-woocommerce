@@ -45,21 +45,21 @@ trait WC_CPT_Loader_Common {
 	public function sanitize_common_inputs( array $input ) {
 		$args = Utils::map_input(
 			$input,
-			[
+			array(
 				'include'     => 'post__in',
 				'exclude'     => 'post__not_in',
 				'parent'      => 'post_parent',
 				'parentIn'    => 'post_parent__in',
 				'parentNotIn' => 'post_parent__not_in',
 				'search'      => 's',
-			]
+			)
 		);
 
 		/**
 		 * Map the orderby inputArgs to the WP_Query
 		 */
 		if ( ! empty( $input['orderby'] ) && is_array( $input['orderby'] ) ) {
-			$args['orderby'] = [];
+			$args['orderby'] = array();
 			foreach ( $input['orderby'] as $orderby_input ) {
 				/**
 				 * Stores orderby field
@@ -83,7 +83,7 @@ trait WC_CPT_Loader_Common {
 				/**
 				 * These orderby options should not include the order parameter.
 				 */
-				$post_fields = [ 'post__in', 'post_name__in', 'post_parent__in' ];
+				$post_fields = array( 'post__in', 'post_name__in', 'post_parent__in' );
 				if ( in_array( $orderby_field, $post_fields, true ) ) {
 					$args['orderby'][ $orderby_field ] = $orderby_order;
 

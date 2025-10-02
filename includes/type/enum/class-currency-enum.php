@@ -22,20 +22,20 @@ class Currency_Enum {
 		array_walk(
 			$currencies,
 			static function ( &$name, $code ) {
-				$name = [
+				$name = array(
 					'name'        => $code,
 					'value'       => $code,
 					'description' => $name,
-				];
+				);
 			}
 		);
 
 		register_graphql_enum_type(
 			'CurrencyEnum',
-			[
+			array(
 				'description' => __( 'Currencies enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $currencies,
-			]
+			)
 		);
 	}
 }

@@ -28,11 +28,23 @@
         "axepress/wp-graphql-cs": "^2.0.0-beta",
         "axepress/wp-graphql-stubs": "^1.27.1",
         "brainmaestro/composer-git-hooks": "^2.8.5",
+        "codeception/codeception": "*",
+        "codeception/module-asserts": "*",
+        "codeception/module-phpbrowser": "*",
+        "codeception/module-rest": "*",
+        "lucatume/wp-browser": "*",
         "php-stubs/woocommerce-stubs": "9.1.0",
+        "phpcsstandards/phpcsutils": "^1.0",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpdoc-parser": "^1.22.0",
         "phpstan/phpstan": "^1.10",
-        "szepeviktor/phpstan-wordpress": "^1.3"
+        "squizlabs/php_codesniffer": "^3.7",
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpunit/phpunit": "^9.6 || ^10.0 || ^11.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "sirbrillig/phpcs-variable-analysis": "^2.11"
     },
     "config": {
         "optimize-autoloader": true,
@@ -73,8 +85,8 @@
         ],
         "dRunTestStandalone": "env $(sed -e '/^#/d' .env.testing) docker compose run --rm run_tests",
         "dDestroy": "docker compose down -v",
-        "lint": "vendor/bin/phpcs -vp .",
-        "fix": "vendor/bin/phpcbf -vp .",
+        "lint": "phpcs -p --standard=WordPress --extensions=php .",
+        "lint:fix": "phpcbf -p --standard=WordPress --extensions=php .",
         "stan": "phpstan analyze --ansi --memory-limit=1G",
         "strauss": [
             "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
@@ -92,7 +104,8 @@
         "post-update-cmd": [
             "@strauss",
             "[ $COMPOSER_DEV_MODE -eq 0 ] || composer cghooks update"
-        ]
+        ],
+        "test": "phpunit"
     },
     "support": {
         "issues": "https://github.com/wp-graphql/wp-graphql-woocommerce/issues",
@@ -121,14 +134,14 @@
         ]
     },
     "extra": {
-        "strauss" : {
+        "strauss": {
             "target_directory": "vendor-prefixed",
             "namespace_prefix": "WPGraphQL\\WooCommerce\\Vendor\\",
             "classmap_prefix": "WP_GraphQL_WooCommerce_Vendor",
             "constant_prefix": "WPGRAPHQL_WOOCOMMERCE_VENDOR",
             "delete_vendor_files": true,
             "include_modified_date": false,
-            "packages" : [
+            "packages": [
                 "firebase/php-jwt"
             ],
             "exclude_from_prefix": {

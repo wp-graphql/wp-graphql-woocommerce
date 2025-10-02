@@ -27,11 +27,11 @@ class Tax_Rate_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteTaxRate',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -41,12 +41,12 @@ class Tax_Rate_Delete {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'id' => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'id' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the tax rate to update.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -55,14 +55,14 @@ class Tax_Rate_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'taxRate' => [
+		return array(
+			'taxRate' => array(
 				'type'    => 'TaxRate',
 				'resolve' => static function ( $payload ) {
 					return $payload['taxRate'];
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -107,9 +107,9 @@ class Tax_Rate_Delete {
 			 */
 			$tax = apply_filters( 'graphql_woocommerce_tax_rate_delete', $tax, $input );
 
-			return [
+			return array(
 				'taxRate' => $tax,
-			];
+			);
 		};
 	}
 }

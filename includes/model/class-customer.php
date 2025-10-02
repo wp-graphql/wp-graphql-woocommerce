@@ -51,13 +51,13 @@ class Customer extends Model {
 	 */
 	public function __construct( $id = 'session', $is_session = false ) {
 		$this->data                = 'session' === $id ? \WC()->customer : new WC_Customer( absint( $id ), $is_session );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'customerId',
-		];
+		);
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'customer_restricted_cap', 'session' === $id ? '' : 'list_users' );
@@ -81,7 +81,7 @@ class Customer extends Model {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = [
+			$this->fields = array(
 				'ID'                    => function () {
 					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : \WC()->session->get_customer_id();
 				},
@@ -150,7 +150,7 @@ class Customer extends Model {
 				'last_order_id'         => function () {
 					return ( ! empty( $this->data->get_last_order() ) ) ? $this->data->get_last_order()->get_id() : null;
 				},
-			];
+			);
 		}//end if
 
 		parent::prepare_fields();

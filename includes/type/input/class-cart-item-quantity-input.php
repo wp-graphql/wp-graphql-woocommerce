@@ -20,19 +20,19 @@ class Cart_Item_Quantity_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'CartItemQuantityInput',
-			[
+			array(
 				'description' => __( 'Cart item quantity', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'key'      => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'fields'      => array(
+					'key'      => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'Cart item being updated', 'wp-graphql-woocommerce' ),
-					],
-					'quantity' => [
-						'type'        => [ 'non_null' => 'Int' ],
+					),
+					'quantity' => array(
+						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Cart item\'s new quantity', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

@@ -26,11 +26,11 @@ class Shipping_Zone_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteShippingZone',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,12 +40,12 @@ class Shipping_Zone_Delete {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'id' => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'id' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -54,14 +54,14 @@ class Shipping_Zone_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'shippingZone' => [
+		return array(
+			'shippingZone' => array(
 				'type'    => 'ShippingZone',
 				'resolve' => static function ( $payload ) {
 					return $payload['shippingZone'];
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Shipping_Zone_Delete {
 
 			$zone->delete();
 
-			return [ 'shippingZone' => $object ];
+			return array( 'shippingZone' => $object );
 		};
 	}
 }

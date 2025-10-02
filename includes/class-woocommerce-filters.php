@@ -31,17 +31,17 @@ class WooCommerce_Filters {
 
 		// Check if request is a GraphQL POST request.
 		if ( ! self::is_session_handler_disabled() ) {
-			add_filter( 'woocommerce_session_handler', [ self::class, 'woocommerce_session_handler' ] );
-			add_filter( 'graphql_response_headers_to_send', [ self::class, 'add_session_header_to_expose_headers' ] );
-			add_filter( 'graphql_access_control_allow_headers', [ self::class, 'add_session_header_to_allow_headers' ] );
+			add_filter( 'woocommerce_session_handler', array( self::class, 'woocommerce_session_handler' ) );
+			add_filter( 'graphql_response_headers_to_send', array( self::class, 'add_session_header_to_expose_headers' ) );
+			add_filter( 'graphql_access_control_allow_headers', array( self::class, 'add_session_header_to_allow_headers' ) );
 		}
 
 		// Add better support for Stripe payment gateway.
-		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
+		add_filter( 'graphql_stripe_process_payment_args', array( self::class, 'woographql_stripe_gateway_args' ), 10, 2 );
 
 		// WPGraphQL Reset password -> Use woocommerce email password template when requested.
-		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 3 );
-		add_filter( 'retrieve_password_title', [ self::class, 'get_reset_password_title' ] );
+		add_filter( 'retrieve_password_message', array( self::class, 'get_reset_password_message' ), 10, 3 );
+		add_filter( 'retrieve_password_title', array( self::class, 'get_reset_password_title' ) );
 	}
 
 	/**
@@ -62,7 +62,7 @@ class WooCommerce_Filters {
 		if ( defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) ) {
 			return \WPGraphQL\WooCommerce\Admin\General::enabled_authorizing_url_fields_value();
 		}
-		return woographql_setting( 'enable_authorizing_url_fields', [] );
+		return woographql_setting( 'enable_authorizing_url_fields', array() );
 	}
 
 	/**
@@ -165,13 +165,13 @@ class WooCommerce_Filters {
 
 		$stripe_source_id = $order->get_meta( '_stripe_source_id' );
 		if ( 'stripe' === $payment_method && ! empty( $stripe_source_id ) ) {
-			$gateway_args = [
+			$gateway_args = array(
 				$gateway_args[0],
 				true,
 				false,
 				false,
 				true,
-			];
+			);
 		}
 
 		return $gateway_args;
@@ -196,7 +196,7 @@ class WooCommerce_Filters {
 		$wc_reset_email = \WC()->mailer()->emails['WC_Email_Customer_Reset_Password'];
 
 		if ( $wc_reset_email && $wc_reset_email->is_enabled() ) {
-			add_filter( 'wp_mail_content_type', [ $wc_reset_email, 'get_content_type' ] );
+			add_filter( 'wp_mail_content_type', array( $wc_reset_email, 'get_content_type' ) );
 
 			$wc_reset_email->user_login = $user_login;
 			$wc_reset_email->reset_key  = $key;

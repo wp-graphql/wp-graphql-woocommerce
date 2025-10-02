@@ -23,12 +23,12 @@ class Product_With_Pricing {
 	public static function register_interface(): void {
 		register_graphql_interface_type(
 			'ProductWithPricing',
-			[
+			array(
 				'description' => __( 'Products with pricing.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => array( 'Node' ),
 				'fields'      => self::get_fields(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
-			]
+				'resolveType' => array( Core::class, 'resolve_product_type' ),
+			)
 		);
 	}
 
@@ -38,24 +38,24 @@ class Product_With_Pricing {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return [
-			'id'           => [
-				'type'        => [ 'non_null' => 'ID' ],
+		return array(
+			'id'           => array(
+				'type'        => array( 'non_null' => 'ID' ),
 				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
-			],
-			'databaseId'   => [
-				'type'        => [ 'non_null' => 'Int' ],
+			),
+			'databaseId'   => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
-			],
-			'price'        => [
+			),
+			'price'        => array(
 				'type'        => 'String',
 				'description' => __( 'Product\'s active price', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
                         // @codingStandardsIgnoreLine.
@@ -66,16 +66,16 @@ class Product_With_Pricing {
 						return $source->price;
 					}
 				},
-			],
-			'regularPrice' => [
+			),
+			'regularPrice' => array(
 				'type'        => 'String',
 				'description' => __( 'Product\'s regular price', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
                         // @codingStandardsIgnoreLine.
@@ -85,16 +85,16 @@ class Product_With_Pricing {
                         return $source->regularPrice;
 					}
 				},
-			],
-			'salePrice'    => [
+			),
+			'salePrice'    => array(
 				'type'        => 'String',
 				'description' => __( 'Product\'s sale price', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, $args ) {
 					if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
                         // @codingStandardsIgnoreLine.
@@ -104,15 +104,15 @@ class Product_With_Pricing {
                         return $source->salePrice;
 					}
 				},
-			],
-			'taxStatus'    => [
+			),
+			'taxStatus'    => array(
 				'type'        => 'TaxStatusEnum',
 				'description' => __( 'Tax status', 'wp-graphql-woocommerce' ),
-			],
-			'taxClass'     => [
+			),
+			'taxClass'     => array(
 				'type'        => 'TaxClassEnum',
 				'description' => __( 'Tax class', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 }

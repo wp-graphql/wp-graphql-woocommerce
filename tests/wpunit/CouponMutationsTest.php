@@ -17,14 +17,14 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			}
 		';
 
-		$variables = [
-			'input' => [
+		$variables = array(
+			'input' => array(
 				'clientMutationId' => 'some_id',
 				'code'             => 'testcode',
 				'amount'           => 0.25,
 				'discountType'     => 'PERCENT',
-			],
-		];
+			),
+		);
 
 		/**
 		 * Assertion One
@@ -32,10 +32,10 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Expect mutation to failed due to lack of capabilities
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedErrorPath( 'createCoupon' ),
 			$this->expectedField( 'createCoupon', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 
@@ -55,18 +55,18 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'createCoupon.coupon',
-				[
+				array(
 					$this->expectedField( 'id', static::NOT_FALSY ),
 					$this->expectedField( 'databaseId', static::NOT_FALSY ),
 					$this->expectedField( 'code', 'testcode' ),
 					$this->expectedField( 'amount', 0.25 ),
 					$this->expectedField( 'discountType', 'PERCENT' ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -88,15 +88,15 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			}
 		';
 
-		$variables = [
-			'input' => [
+		$variables = array(
+			'input' => array(
 				'clientMutationId' => 'some_id',
 				'id'               => $this->toRelayId( 'shop_coupon', $coupon_id ),
 				'code'             => 'blahblah',
 				'amount'           => 0.25,
 				'discountType'     => 'PERCENT',
-			],
-		];
+			),
+		);
 
 		/**
 		 * Assertion One
@@ -104,10 +104,10 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Expect mutation to failed due to lack of capabilities
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedErrorPath( 'updateCoupon' ),
 			$this->expectedField( 'updateCoupon', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 
@@ -127,18 +127,18 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateCoupon.coupon',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'shop_coupon', $coupon_id ) ),
 					$this->expectedField( 'databaseId', $coupon_id ),
 					$this->expectedField( 'code', 'blahblah' ),
 					$this->expectedField( 'amount', 0.25 ),
 					$this->expectedField( 'discountType', 'PERCENT' ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -157,12 +157,12 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			}
 		';
 
-		$variables = [
-			'input' => [
+		$variables = array(
+			'input' => array(
 				'clientMutationId' => 'some_id',
 				'id'               => $this->toRelayId( 'shop_coupon', $coupon_id ),
-			],
-		];
+			),
+		);
 
 		/**
 		 * Assertion One
@@ -170,10 +170,10 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Expect mutation to failed due to lack of capabilities
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedErrorPath( 'deleteCoupon' ),
 			$this->expectedField( 'deleteCoupon', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 
@@ -193,15 +193,15 @@ class CouponMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'deleteCoupon.coupon',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'shop_coupon', $coupon_id ) ),
 					$this->expectedField( 'databaseId', $coupon_id ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

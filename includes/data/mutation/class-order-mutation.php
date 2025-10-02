@@ -91,15 +91,15 @@ class Order_Mutation {
 
 		$order_id = $order->save();
 
-		$order_keys = [
+		$order_keys = array(
 			'status'       => 'status',
 			'customerId'   => 'customer_id',
 			'customerNote' => 'customer_note',
 			'parent'       => 'parent',
 			'createdVia'   => 'created_via',
-		];
+		);
 
-		$args = [ 'order_id' => $order_id ];
+		$args = array( 'order_id' => $order_id );
 		foreach ( $input as $key => $value ) {
 			if ( array_key_exists( $key, $order_keys ) ) {
 				$args[ $order_keys[ $key ] ] = $value;
@@ -152,17 +152,17 @@ class Order_Mutation {
 			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
 		}
 
-		$item_group_keys = [
+		$item_group_keys = array(
 			'lineItems'     => 'line_item',
 			'shippingLines' => 'shipping',
 			'feeLines'      => 'fee',
-		];
+		);
 
-		$order_items = [];
+		$order_items = array();
 		foreach ( $input as $key => $group_items ) {
 			if ( array_key_exists( $key, $item_group_keys ) ) {
 				$type                 = $item_group_keys[ $key ];
-				$order_items[ $type ] = [];
+				$order_items[ $type ] = array();
 
 				/**
 				 * Action called before an item group is added to an order.
@@ -321,7 +321,7 @@ class Order_Mutation {
 	protected static function map_input_to_item( &$item, $input, $type ) {
 		$item_keys = self::get_order_item_keys( $type );
 
-		$args      = [];
+		$args      = array();
 		$meta_data = null;
 		foreach ( $input as $key => $value ) {
 			if ( array_key_exists( $key, $item_keys ) ) {
@@ -342,14 +342,14 @@ class Order_Mutation {
 				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ] );
+			$total            = wc_get_price_excluding_tax( $product, array( 'qty' => $args['quantity'] ) );
 			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
 			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;
 		}
 
 		// Set item props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $item, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $item, "set_{$key}" ) ) ) {
 				$item->{"set_{$key}"}( $value );
 			}
 		}
@@ -379,26 +379,26 @@ class Order_Mutation {
 	protected static function get_order_item_keys( $type ) {
 		switch ( $type ) {
 			case 'line_item':
-				return [
+				return array(
 					'productId'   => 'product_id',
 					'variationId' => 'variation_id',
 					'taxClass'    => 'tax_class',
-				];
+				);
 
 			case 'shipping':
-				return [
+				return array(
 					'name'        => 'order_item_name',
 					'methodTitle' => 'method_title',
 					'methodId'    => 'method_id',
 					'instanceId'  => 'instance_id',
-				];
+				);
 
 			case 'fee':
-				return [
+				return array(
 					'name'      => 'name',
 					'taxClass'  => 'tax_class',
 					'taxStatus' => 'tax_status',
-				];
+				);
 			default:
 				/**
 				 * Allow filtering of order item keys for unknown item types.
@@ -406,7 +406,7 @@ class Order_Mutation {
 				 * @param array  $item_keys  Order item keys.
 				 * @param string $type       Order item type slug.
 				 */
-				return apply_filters( 'woographql_get_order_item_keys', [], $type );
+				return apply_filters( 'woographql_get_order_item_keys', array(), $type );
 		}//end switch
 	}
 
@@ -500,7 +500,7 @@ class Order_Mutation {
 					break;
 				default:
 					$prop = \wc_graphql_camel_case_to_underscore( $key );
-					if ( is_callable( [ $order, "set_{$prop}" ] ) ) {
+					if ( is_callable( array( $order, "set_{$prop}" ) ) ) {
 						$order->{"set_{$prop}"}( $value );
 					}
 					break;
@@ -540,7 +540,7 @@ class Order_Mutation {
 
 		$formatted_address = Customer_Mutation::address_input_mapping( $address, $type );
 		foreach ( $formatted_address as $key => $value ) {
-			if ( is_callable( [ $order, "set_{$type}_{$key}" ] ) ) {
+			if ( is_callable( array( $order, "set_{$type}_{$key}" ) ) ) {
 				$order->{"set_{$type}_{$key}"}( $value );
 			}
 		}

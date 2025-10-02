@@ -18,18 +18,18 @@ class Backorders {
 	 * @return void
 	 */
 	public static function register() {
-		$values = [
-			'NO'     => [ 'value' => 'no' ],
-			'NOTIFY' => [ 'value' => 'notify' ],
-			'YES'    => [ 'value' => 'yes' ],
-		];
+		$values = array(
+			'NO'     => array( 'value' => 'no' ),
+			'NOTIFY' => array( 'value' => 'notify' ),
+			'YES'    => array( 'value' => 'yes' ),
+		);
 
 		register_graphql_enum_type(
 			'BackordersEnum',
-			[
+			array(
 				'description' => __( 'Product backorder enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			]
+			)
 		);
 	}
 }

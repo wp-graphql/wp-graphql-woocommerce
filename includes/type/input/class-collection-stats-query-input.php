@@ -20,19 +20,19 @@ class Collection_Stats_Query_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'CollectionStatsQueryInput',
-			[
+			array(
 				'description' => __( 'Taxonomy query', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'taxonomy' => [
-						'type'        => [ 'non_null' => 'ProductAttributeEnum' ],
+				'fields'      => array(
+					'taxonomy' => array(
+						'type'        => array( 'non_null' => 'ProductAttributeEnum' ),
 						'description' => __( 'Product Taxonomy', 'wp-graphql-woocommerce' ),
-					],
-					'relation' => [
+					),
+					'relation' => array(
 						'type'        => 'RelationEnum',
 						'description' => __( 'Taxonomy relation to query', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

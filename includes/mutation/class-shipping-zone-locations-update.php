@@ -26,11 +26,11 @@ class Shipping_Zone_Locations_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateShippingZoneLocations',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,16 +40,16 @@ class Shipping_Zone_Locations_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'zoneId'    => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'zoneId'    => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
-			],
-			'locations' => [
-				'type'        => [ 'list_of' => 'ShippingLocationInput' ],
+			),
+			'locations' => array(
+				'type'        => array( 'list_of' => 'ShippingLocationInput' ),
 				'description' => __( 'The locations to add to the shipping zone.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -58,15 +58,15 @@ class Shipping_Zone_Locations_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'shippingZone' => [
+		return array(
+			'shippingZone' => array(
 				'type'    => 'ShippingZone',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
 					return $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] );
 				},
-			],
-			'locations'    => [
-				'type'    => [ 'list_of' => 'ShippingLocation' ],
+			),
+			'locations'    => array(
+				'type'    => array( 'list_of' => 'ShippingLocation' ),
 				'resolve' => static function ( $payload ) {
 					return ! empty( $payload['locations'] )
 						? array_map(
@@ -75,10 +75,10 @@ class Shipping_Zone_Locations_Update {
 							},
 							$payload['locations'],
 						)
-						: [];
+						: array();
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -108,15 +108,15 @@ class Shipping_Zone_Locations_Update {
 				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$raw_locations = ! empty( $input['locations'] ) ? $input['locations'] : [];
-			$locations     = [];
+			$raw_locations = ! empty( $input['locations'] ) ? $input['locations'] : array();
+			$locations     = array();
 			foreach ( $raw_locations as $location ) {
 				$type = ! empty( $location['type'] ) ? $location['type'] : 'country';
 
-				$locations[] = [
+				$locations[] = array(
 					'type' => $type,
 					'code' => $location['code'],
-				];
+				);
 			}
 
 			/**
@@ -131,10 +131,10 @@ class Shipping_Zone_Locations_Update {
 			$zone->set_locations( $locations );
 			$zone->save();
 
-			return [
+			return array(
 				'zone_id'   => $zone_id,
 				'locations' => $locations,
-			];
+			);
 		};
 	}
 }

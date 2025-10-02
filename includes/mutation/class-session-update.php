@@ -26,11 +26,11 @@ class Session_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateSession',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,12 +40,12 @@ class Session_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'sessionData' => [
-				'type'        => [ 'list_of' => 'MetaDataInput' ],
+		return array(
+			'sessionData' => array(
+				'type'        => array( 'list_of' => 'MetaDataInput' ),
 				'description' => __( 'Data to be persisted in the session.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -54,9 +54,9 @@ class Session_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'session'  => [
-				'type'    => [ 'list_of' => 'MetaData' ],
+		return array(
+			'session'  => array(
+				'type'    => array( 'list_of' => 'MetaData' ),
 				'resolve' => static function () {
 					/**
 					 * Session handler.
@@ -65,7 +65,7 @@ class Session_Update {
 					 */
 					$session      = \WC()->session;
 					$session_data = $session->get_session_data();
-					$session      = [];
+					$session      = array();
 					foreach ( $session_data as $key => $value ) {
 						$meta        = new \stdClass();
 						$meta->id    = null;
@@ -76,14 +76,14 @@ class Session_Update {
 
 					return $session;
 				},
-			],
-			'customer' => [
+			),
+			'customer' => array(
 				'type'    => 'Customer',
 				'resolve' => static function () {
 					return new Customer( 'session' );
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -126,7 +126,7 @@ class Session_Update {
 				\wc_clear_notices();
 				throw new UserError( $error_messages );
 			} else {
-				return [ 'status' => 'SUCCESS' ];
+				return array( 'status' => 'SUCCESS' );
 			}
 		};
 	}

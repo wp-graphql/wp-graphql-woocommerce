@@ -20,10 +20,10 @@ class Stock_Status {
 	public static function register() {
 		register_graphql_enum_type(
 			'StockStatusEnum',
-			[
+			array(
 				'description' => __( 'Product stock status enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => self::get_stock_statuses(),
-			]
+			)
 		);
 	}
 
@@ -35,11 +35,11 @@ class Stock_Status {
 	private static function get_stock_statuses() {
 		return apply_filters(
 			'graphql_woocommerce_product_stock_statuses',
-			[
-				'IN_STOCK'     => [ 'value' => 'instock' ],
-				'OUT_OF_STOCK' => [ 'value' => 'outofstock' ],
-				'ON_BACKORDER' => [ 'value' => 'onbackorder' ],
-			]
+			array(
+				'IN_STOCK'     => array( 'value' => 'instock' ),
+				'OUT_OF_STOCK' => array( 'value' => 'outofstock' ),
+				'ON_BACKORDER' => array( 'value' => 'onbackorder' ),
+			)
 		);
 	}
 }

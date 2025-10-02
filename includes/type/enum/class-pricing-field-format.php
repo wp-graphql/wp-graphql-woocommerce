@@ -18,17 +18,17 @@ class Pricing_Field_Format {
 	 * @return void
 	 */
 	public static function register() {
-		$values = [
-			'FORMATTED' => [ 'value' => 'formatted' ],
-			'RAW'       => [ 'value' => 'raw' ],
-		];
+		$values = array(
+			'FORMATTED' => array( 'value' => 'formatted' ),
+			'RAW'       => array( 'value' => 'raw' ),
+		);
 
 		register_graphql_enum_type(
 			'PricingFieldFormatEnum',
-			[
+			array(
 				'description' => __( 'Pricing field format enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			]
+			)
 		);
 	}
 }

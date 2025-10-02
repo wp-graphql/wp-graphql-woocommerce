@@ -11,24 +11,24 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 	// tests
 	public function testOrderToDownloadableItemsQuery() {
 		$downloadable_product = $this->factory->product->createSimple(
-			[
+			array(
 				'downloadable' => true,
-				'downloads'    => [ $this->factory->product->createDownload() ],
-			]
+				'downloads'    => array( $this->factory->product->createDownload() ),
+			)
 		);
 		$order_id             = $this->factory->order->createNew(
-			[
+			array(
 				'status'      => 'completed',
 				'customer_id' => $this->customer,
-			],
-			[
-				'line_items' => [
-					[
+			),
+			array(
+				'line_items' => array(
+					array(
 						'product' => $downloadable_product,
 						'qty'     => 1,
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 
 		// Force download permission updated.
@@ -74,10 +74,10 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			function ( $item ) {
 				return $this->expectedNode(
 					'customer.orders.nodes',
-					[
+					array(
 						$this->expectedNode(
 							'downloadableItems.nodes',
-							[
+							array(
 								$this->expectedField( 'url', $item['download_url'] ),
 								$this->expectedField( 'accessExpires', $item['access_expires'] ),
 								$this->expectedField( 'downloadId', $item['download_id'] ),
@@ -90,9 +90,9 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 								$this->expectedField( 'name', $item['download_name'] ),
 								$this->expectedField( 'product.databaseId', $item['product_id'] ),
 								$this->expectedField( 'download.downloadId', $item['download_id'] ),
-							]
+							)
 						),
-					],
+					),
 					0
 				);
 			},
@@ -104,48 +104,48 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 
 	public function testOrderToDownloadableItemsQueryArgs() {
 		$valid_product        = $this->factory->product->createSimple(
-			[
+			array(
 				'downloadable' => true,
-				'downloads'    => [ $this->factory->product->createDownload() ],
-			]
+				'downloads'    => array( $this->factory->product->createDownload() ),
+			)
 		);
 		$downloadable_product = $this->factory->product->createSimple(
-			[
+			array(
 				'download_expiry' => 5,
 				'download_limit'  => 3,
 				'downloadable'    => true,
-				'downloads'       => [ $this->factory->product->createDownload() ],
-			]
+				'downloads'       => array( $this->factory->product->createDownload() ),
+			)
 		);
 		$downloaded_product   = $this->factory->product->createSimple(
-			[
+			array(
 				'download_limit' => 0,
 				'downloadable'   => true,
-				'downloads'      => [ $this->factory->product->createDownload() ],
-			]
+				'downloads'      => array( $this->factory->product->createDownload() ),
+			)
 		);
 
 		$order_id = $this->factory->order->createNew(
-			[
+			array(
 				'status'      => 'completed',
 				'customer_id' => $this->customer,
-			],
-			[
-				'line_items' => [
-					[
+			),
+			array(
+				'line_items' => array(
+					array(
 						'product' => $valid_product,
 						'qty'     => 1,
-					],
-					[
+					),
+					array(
 						'product' => $downloadable_product,
 						'qty'     => 1,
-					],
-					[
+					),
+					array(
 						'product' => $downloaded_product,
 						'qty'     => 1,
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 
 		// Force download permission updated.
@@ -175,28 +175,28 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		 * Tests "active" whereArg
 		 */
 		$this->loginAsCustomer();
-		$variables = [ 'active' => true ];
+		$variables = array( 'active' => true );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedNode(
 				'customer.orders.nodes',
-				[
+				array(
 					$this->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $valid_product ) ]
+						array( $this->expectedField( 'product.databaseId', $valid_product ) )
 					),
 					$this->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloadable_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
 					),
 					$this->not()->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloaded_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
 					),
-				],
+				),
 				0
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -205,28 +205,28 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		 *
 		 * Tests "active" whereArg reversed
 		 */
-		$variables = [ 'active' => false ];
+		$variables = array( 'active' => false );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedNode(
 				'customer.orders.nodes',
-				[
+				array(
 					$this->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloaded_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
 					),
 					$this->not()->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $valid_product ) ]
+						array( $this->expectedField( 'product.databaseId', $valid_product ) )
 					),
 					$this->not()->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloadable_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
 					),
-				],
+				),
 				0
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -235,28 +235,28 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		 *
 		 * Tests "hasDownloadsRemaining" whereArg
 		 */
-		$variables = [ 'hasDownloadsRemaining' => true ];
+		$variables = array( 'hasDownloadsRemaining' => true );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedNode(
 				'customer.orders.nodes',
-				[
+				array(
 					$this->not()->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloaded_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
 					),
 					$this->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $valid_product ) ]
+						array( $this->expectedField( 'product.databaseId', $valid_product ) )
 					),
 					$this->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloadable_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
 					),
-				],
+				),
 				0
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -265,52 +265,52 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		 *
 		 * Tests "hasDownloadsRemaining" whereArg reversed
 		 */
-		$variables = [ 'hasDownloadsRemaining' => false ];
+		$variables = array( 'hasDownloadsRemaining' => false );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedNode(
 				'customer.orders.nodes',
-				[
+				array(
 					$this->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloaded_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloaded_product ) )
 					),
 					$this->not()->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $valid_product ) ]
+						array( $this->expectedField( 'product.databaseId', $valid_product ) )
 					),
 					$this->not()->expectedNode(
 						'downloadableItems.nodes',
-						[ $this->expectedField( 'product.databaseId', $downloadable_product ) ]
+						array( $this->expectedField( 'product.databaseId', $downloadable_product ) )
 					),
-				],
+				),
 				0
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCustomerToDownloadableItemsQuery() {
 		$downloadable_product = $this->factory->product->createSimple(
-			[
+			array(
 				'downloadable' => true,
-				'downloads'    => [ $this->factory->product->createDownload() ],
-			]
+				'downloads'    => array( $this->factory->product->createDownload() ),
+			)
 		);
 		$order_id             = $this->factory->order->createNew(
-			[
+			array(
 				'status'      => 'completed',
 				'customer_id' => $this->customer,
-			],
-			[
-				'line_items' => [
-					[
+			),
+			array(
+				'line_items' => array(
+					array(
 						'product' => $downloadable_product,
 						'qty'     => 1,
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 
 		// Force download permission updated.
@@ -351,7 +351,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			function ( $item ) {
 				return $this->expectedNode(
 					'customer.downloadableItems.nodes',
-					[
+					array(
 						$this->expectedField( 'url', $item['download_url'] ),
 						$this->expectedField(
 							'accessExpires',
@@ -367,7 +367,7 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 						$this->expectedField( 'name', $item['download_name'] ),
 						$this->expectedField( 'product.databaseId', $item['product_id'] ),
 						$this->expectedField( 'download.downloadId', $item['download_id'] ),
-					],
+					),
 					0
 				);
 			},

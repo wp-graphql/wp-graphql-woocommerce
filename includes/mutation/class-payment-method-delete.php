@@ -25,11 +25,11 @@ class Payment_Method_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deletePaymentMethod',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -39,13 +39,13 @@ class Payment_Method_Delete {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'tokenId' => [
-				'type'        => [ 'non_null' => 'Integer' ],
+		return array(
+			'tokenId' => array(
+				'type'        => array( 'non_null' => 'Integer' ),
 				'description' => __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' ),
 
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -54,15 +54,15 @@ class Payment_Method_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'status' => [
+		return array(
+			'status' => array(
 				'type'        => 'String',
 				'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Payment_Method_Delete {
 			WC_Payment_Tokens::delete( $token_id );
 			wc_add_notice( __( 'Payment method deleted.', 'wp-graphql-woocommerce' ) );
 
-			return [ 'status' => 'SUCCESS' ];
+			return array( 'status' => 'SUCCESS' );
 		};
 	}
 }

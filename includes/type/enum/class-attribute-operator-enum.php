@@ -20,14 +20,14 @@ class Attribute_Operator_Enum {
 	public static function register() {
 		register_graphql_enum_type(
 			'AttributeOperatorEnum',
-			[
+			array(
 				'description' => __( 'Collection statistic attributes operators', 'wp-graphql-woocommerce' ),
-				'values'      => [
-					'IN'     => [ 'value' => 'IN' ],
-					'NOT_IN' => [ 'value' => 'NOT IN' ],
-					'AND'    => [ 'value' => 'AND' ],
-				],
-			]
+				'values'      => array(
+					'IN'     => array( 'value' => 'IN' ),
+					'NOT_IN' => array( 'value' => 'NOT IN' ),
+					'AND'    => array( 'value' => 'AND' ),
+				),
+			)
 		);
 	}
 }

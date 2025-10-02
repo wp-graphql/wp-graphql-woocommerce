@@ -26,11 +26,11 @@ class Tax_Class_Create {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'createTaxClass',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,16 +40,16 @@ class Tax_Class_Create {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'name' => [
-				'type'        => [ 'non_null' => 'String' ],
+		return array(
+			'name' => array(
+				'type'        => array( 'non_null' => 'String' ),
 				'description' => __( 'Name of the tax class.', 'wp-graphql-woocommerce' ),
-			],
-			'slug' => [
+			),
+			'slug' => array(
 				'type'        => 'String',
 				'description' => __( 'Slug of the tax class.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -58,14 +58,14 @@ class Tax_Class_Create {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'taxClass' => [
+		return array(
+			'taxClass' => array(
 				'type'    => 'TaxClass',
 				'resolve' => static function ( $payload ) {
 					return ! empty( $payload['taxClass'] ) ? $payload['taxClass'] : null;
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Tax_Class_Create {
 			 */
 			$tax_class = apply_filters( 'graphql_woocommerce_tax_class_create', $tax_class, $input );
 
-			return [ 'taxClass' => $tax_class ];
+			return array( 'taxClass' => $tax_class );
 		};
 	}
 }

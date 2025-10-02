@@ -27,11 +27,11 @@ class Review_Write {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'writeReview',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -46,12 +46,12 @@ class Review_Write {
 
 		return array_merge(
 			$comment_input_fields,
-			[
-				'rating' => [
-					'type'        => [ 'non_null' => 'Int' ],
+			array(
+				'rating' => array(
+					'type'        => array( 'non_null' => 'Int' ),
 					'description' => __( 'Product rating', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -61,8 +61,8 @@ class Review_Write {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'rating' => [
+		return array(
+			'rating' => array(
 				'type'        => 'Float',
 				'description' => __( 'The product rating of the review that was created', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
@@ -71,8 +71,8 @@ class Review_Write {
 					}
 					return (float) get_comment_meta( $payload['id'], 'rating', true );
 				},
-			],
-			'review' => [
+			),
+			'review' => array(
 				'type'        => 'Comment',
 				'description' => __( 'The product review that was created', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
@@ -87,8 +87,8 @@ class Review_Write {
 
 					return new Comment( $comment );
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**

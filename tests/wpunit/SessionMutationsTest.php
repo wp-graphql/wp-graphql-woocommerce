@@ -27,38 +27,38 @@ class SessionMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
             }
         ';
 
-		$variables = [
-			'input' => [
-				'sessionData' => [
-					[
+		$variables = array(
+			'input' => array(
+				'sessionData' => array(
+					array(
 						'key'   => 'test-2',
 						'value' => 'test-value',
-					],
-				],
-			],
-		];
+					),
+				),
+			),
+		);
 
 		/**
 		 * Assert working.
 		 */
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateSession.session.#',
-				[
+				array(
 					$this->expectedField( 'key', 'test-2' ),
 					$this->expectedField( 'value', 'test-value' ),
-				]
+				)
 			),
 			$this->expectedField( 'updateSession.customer.id', $this->toRelayId( 'user', $registered ) ),
 			$this->expectedObject(
 				'updateSession.customer.session.#',
-				[
+				array(
 					$this->expectedField( 'key', 'test-2' ),
 					$this->expectedField( 'value', 'test-value' ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -72,14 +72,14 @@ class SessionMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Add products to cart.
 		$this->factory->cart->add(
-			[
+			array(
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 2,
-			],
-			[
+			),
+			array(
 				'product_id' => $this->factory->product->createSimple(),
 				'quantity'   => 1,
-			]
+			)
 		);
 
 		// Save session.
@@ -101,10 +101,10 @@ class SessionMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 			}
 		';
 
-		$response = $this->graphql( [ 'query' => $cart_query ] );
+		$response = $this->graphql( array( 'query' => $cart_query ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[ $this->expectedField( 'cart.contents.nodes', static::NOT_FALSY ) ]
+			array( $this->expectedField( 'cart.contents.nodes', static::NOT_FALSY ) )
 		);
 
 		// Forget session.
@@ -125,10 +125,10 @@ class SessionMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		\WC()->session->init();
 
 		// Confirm cart is empty.
-		$response = $this->graphql( [ 'query' => $cart_query ] );
+		$response = $this->graphql( array( 'query' => $cart_query ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[ $this->expectedField( 'cart.contents.nodes', static::IS_FALSY ) ]
+			array( $this->expectedField( 'cart.contents.nodes', static::IS_FALSY ) )
 		);
 	}
 }

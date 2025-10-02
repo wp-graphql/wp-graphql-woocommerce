@@ -90,13 +90,13 @@ class Order_Item extends Model {
 		$this->item_type           = $item->get_type();
 		$order_id                  = $item->get_order_id();
 		$this->order               = ! empty( $cached_order ) ? $cached_order : new Order( $order_id );
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
-		];
+		);
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'order_item_restricted_cap', '' );
@@ -120,7 +120,7 @@ class Order_Item extends Model {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = [
+			$this->fields = array(
 				'ID'         => function () {
 					return $this->data->get_id();
 				},
@@ -139,13 +139,13 @@ class Order_Item extends Model {
 				'type'       => function () {
 					return ! empty( $this->data->get_type() ) ? $this->data->get_type() : null;
 				},
-			];
+			);
 
 			switch ( $this->item_type ) {
 				case 'coupon':
 					$this->fields = array_merge(
 						$this->fields,
-						[
+						array(
 							'code'        => function () {
 								return ! empty( $this->data->get_code() ) ? $this->data->get_code() : null;
 							},
@@ -155,21 +155,21 @@ class Order_Item extends Model {
 							'discountTax' => function () {
 								return ! empty( $this->data->get_discount_tax() ) ? $this->data->get_discount_tax() : null;
 							},
-							'coupon_id'   => [
+							'coupon_id'   => array(
 								'callback'   => function () {
 									$coupon_id = \wc_get_coupon_id_by_code( $this->data->get_code() );
 									return ! empty( $coupon_id ) ? $coupon_id : null;
 								},
 								'capability' => 'edit_shop_orders',
-							],
-						]
+							),
+						)
 					);
 					break;
 
 				case 'fee':
 					$this->fields = array_merge(
 						$this->fields,
-						[
+						array(
 							'amount'    => function () {
 								return ! empty( $this->data->get_amount() ) ? $this->data->get_amount() : null;
 							},
@@ -198,14 +198,14 @@ class Order_Item extends Model {
 									? \wc_graphql_map_tax_statements( $this->data->get_taxes() )
 									: null;
 							},
-						]
+						)
 					);
 					break;
 
 				case 'shipping':
 					$this->fields = array_merge(
 						$this->fields,
-						[
+						array(
 							'name'        => function () {
 								return ! empty( $this->data->get_name() ) ? $this->data->get_name() : null;
 							},
@@ -229,14 +229,14 @@ class Order_Item extends Model {
 							'method_id'   => function () {
 								return ! empty( $this->data->get_method_id() ) ? $this->data->get_method_id() : null;
 							},
-						]
+						)
 					);
 					break;
 
 				case 'tax':
 					$this->fields = array_merge(
 						$this->fields,
-						[
+						array(
 							'rateCode'         => function () {
 								return ! empty( $this->data->get_rate_code() ) ? $this->data->get_rate_code() : null;
 							},
@@ -255,13 +255,13 @@ class Order_Item extends Model {
 							'rate_id'          => function () {
 								return ! empty( $this->data->get_rate_id() ) ? $this->data->get_rate_id() : null;
 							},
-						]
+						)
 					);
 					break;
 				default:
 					$this->fields = array_merge(
 						$this->fields,
-						[
+						array(
 							'productId'     => function () {
 								return ! empty( $this->data->get_product_id() ) ? $this->data->get_product_id() : null;
 							},
@@ -302,7 +302,7 @@ class Order_Item extends Model {
 								}
 								return null;
 							},
-						]
+						)
 					);
 					break;
 			}//end switch

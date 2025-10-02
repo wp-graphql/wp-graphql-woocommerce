@@ -24,20 +24,20 @@ class Payment_Token_Types {
 	public static function register() {
 		register_graphql_object_type(
 			'PaymentTokenCC',
-			[
+			array(
 				'description' => __( 'A credit cart payment token', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'PaymentToken' ],
+				'interfaces'  => array( 'PaymentToken' ),
 				'fields'      => Payment_Token::get_fields( self::get_credit_card_fields() ),
-			]
+			)
 		);
 
 		register_graphql_object_type(
 			'PaymentTokenECheck',
-			[
+			array(
 				'description' => __( 'A electronic check payment token', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'PaymentToken' ],
+				'interfaces'  => array( 'PaymentToken' ),
 				'fields'      => Payment_Token::get_fields( self::get_e_check_fields() ),
-			]
+			)
 		);
 	}
 
@@ -47,15 +47,15 @@ class Payment_Token_Types {
 	 * @return array
 	 */
 	public static function get_e_check_fields() {
-		return [
-			'last4' => [
+		return array(
+			'last4' => array(
 				'type'        => 'Integer',
 				'description' => __( 'Last 4 digits of the stored account number', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source->get_last4() ) ? $source->get_last4() : null;
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -64,35 +64,35 @@ class Payment_Token_Types {
 	 * @return array
 	 */
 	public static function get_credit_card_fields() {
-		return [
-			'cardType'    => [
+		return array(
+			'cardType'    => array(
 				'type'        => 'String',
 				'description' => __( 'Card type (visa, mastercard, etc)', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source->get_card_type() ) ? $source->get_card_type() : null;
 				},
-			],
-			'expiryYear'  => [
+			),
+			'expiryYear'  => array(
 				'type'        => 'String',
 				'description' => __( 'Card\'s expiration year.', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source->get_expiry_year() ) ? $source->get_expiry_year() : null;
 				},
-			],
-			'expiryMonth' => [
+			),
+			'expiryMonth' => array(
 				'type'        => 'String',
 				'description' => __( 'Card\'s expiration month', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source->get_expiry_month() ) ? $source->get_expiry_month() : null;
 				},
-			],
-			'last4'       => [
+			),
+			'last4'       => array(
 				'type'        => 'Integer',
 				'description' => __( 'Last 4 digits of the stored credit card number', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source->get_last4() ) ? $source->get_last4() : null;
 				},
-			],
-		];
+			),
+		);
 	}
 }

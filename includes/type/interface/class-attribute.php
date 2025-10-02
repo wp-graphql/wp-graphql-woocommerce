@@ -20,25 +20,25 @@ class Attribute {
 	public static function register_interface() {
 		register_graphql_interface_type(
 			'Attribute',
-			[
+			array(
 				'description' => __( 'Attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
-				'fields'      => [
-					'name'  => [
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
+					'name'  => array(
 						'type'        => 'String',
 						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
-					],
-					'value' => [
+					),
+					'value' => array(
 						'type'        => 'String',
 						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;
 						},
-					],
-				],
+					),
+				),
 				'resolveType' => static function ( $value ) {
 					$type_registry = \WPGraphQL::get_type_registry();
 					if ( $value->is_taxonomy() ) {
@@ -47,7 +47,7 @@ class Attribute {
 						return $type_registry->get_type( 'VariationAttribute' );
 					}
 				},
-			]
+			)
 		);
 	}
 }

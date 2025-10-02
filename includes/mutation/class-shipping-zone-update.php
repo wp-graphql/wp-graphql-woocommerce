@@ -26,11 +26,11 @@ class Shipping_Zone_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateShippingZone',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,20 +40,20 @@ class Shipping_Zone_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'id'    => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'id'    => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the shipping zone to update.', 'wp-graphql-woocommerce' ),
-			],
-			'name'  => [
+			),
+			'name'  => array(
 				'type'        => 'String',
 				'description' => __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' ),
-			],
-			'order' => [
+			),
+			'order' => array(
 				'type'        => 'Int',
 				'description' => __( 'Order of the shipping zone.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -62,14 +62,14 @@ class Shipping_Zone_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'shippingZone' => [
+		return array(
+			'shippingZone' => array(
 				'type'    => 'ShippingZone',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
 					return $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] );
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Shipping_Zone_Update {
 				$zone->save();
 			}
 
-			return [ 'zone_id' => $zone_id ];
+			return array( 'zone_id' => $zone_id );
 		};
 	}
 }

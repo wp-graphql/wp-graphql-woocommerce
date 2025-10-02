@@ -25,7 +25,7 @@ class Customers {
 	 */
 	public static function register_connections() {
 		register_graphql_connection(
-			[
+			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Customer',
 				'fromFieldName'  => 'customers',
@@ -34,21 +34,21 @@ class Customers {
 					$resolver = new UserConnectionResolver( $source, $args, $context, $info );
 
 					if ( ! self::should_execute() ) {
-						return [
-							'nodes' => [],
-							'edges' => [],
-						];
+						return array(
+							'nodes' => array(),
+							'edges' => array(),
+						);
 					}
 
 					$resolver->set_query_arg( 'role', 'customer' );
 
 					return $resolver->get_connection();
 				},
-			]
+			)
 		);
 
 		register_graphql_connection(
-			[
+			array(
 				'fromType'       => 'Coupon',
 				'toType'         => 'Customer',
 				'fromFieldName'  => 'usedBy',
@@ -60,15 +60,15 @@ class Customers {
 					$resolver->set_query_arg( 'role', 'customer' );
 
 					if ( ! self::should_execute() ) {
-						return [
-							'nodes' => [],
-							'edges' => [],
-						];
+						return array(
+							'nodes' => array(),
+							'edges' => array(),
+						);
 					}
 
 					return $resolver->get_connection();
 				},
-			]
+			)
 		);
 	}
 
@@ -92,32 +92,32 @@ class Customers {
 	 * @return array
 	 */
 	public static function get_connection_args(): array {
-		return [
-			'search'  => [
+		return array(
+			'search'  => array(
 				'type'        => 'String',
 				'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-			],
-			'exclude' => [
-				'type'        => [ 'list_of' => 'Int' ],
+			),
+			'exclude' => array(
+				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' ),
-			],
-			'include' => [
-				'type'        => [ 'list_of' => 'Int' ],
+			),
+			'include' => array(
+				'type'        => array( 'list_of' => 'Int' ),
 				'description' => __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' ),
-			],
-			'email'   => [
+			),
+			'email'   => array(
 				'type'        => 'String',
 				'description' => __( 'Limit result set to resources with a specific email.', 'wp-graphql-woocommerce' ),
-			],
-			'orderby' => [
+			),
+			'orderby' => array(
 				'type'        => 'CustomerConnectionOrderbyEnum',
 				'description' => __( 'Order results by a specific field.', 'wp-graphql-woocommerce' ),
-			],
-			'order'   => [
+			),
+			'order'   => array(
 				'type'        => 'OrderEnum',
 				'description' => __( 'Order of results.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -134,11 +134,11 @@ class Customers {
 	 * @return array Query arguments.
 	 */
 	public static function map_input_fields_to_wp_query( $query_args, $where_args, $source, $args, $context, $info ) {
-		$key_mapping = [
+		$key_mapping = array(
 			'search'  => 'search',
 			'exclude' => 'exclude',
 			'include' => 'include',
-		];
+		);
 
 		foreach ( $key_mapping as $key => $field ) {
 			if ( ! empty( $where_args[ $key ] ) ) {
@@ -149,7 +149,7 @@ class Customers {
 		// Filter by email.
 		if ( ! empty( $where_args['email'] ) ) {
 			$query_args['search']         = $where_args['email'];
-			$query_args['search_columns'] = [ 'user_email' ];
+			$query_args['search_columns'] = array( 'user_email' );
 		}
 
 		/**
@@ -202,8 +202,8 @@ class Customers {
 	 */
 	public static function upgrade_models( $connection, $resolver ) {
 		if ( 'customers' === $resolver->get_info()->fieldName ) {
-			$nodes = [];
-			$edges = [];
+			$nodes = array();
+			$edges = array();
 			foreach ( $connection['nodes'] as $node ) {
 				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				$nodes[] = new Customer( $node->databaseId );
@@ -213,7 +213,7 @@ class Customers {
 				$edges[] = array_merge(
 					$edge,
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					[ 'node' => new Customer( $edge['node']->databaseId ) ]
+					array( 'node' => new Customer( $edge['node']->databaseId ) )
 				);
 			}
 

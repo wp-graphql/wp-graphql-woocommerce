@@ -22,20 +22,20 @@ class Shipping_Location_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'ShippingLocation',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A Shipping zone object', 'wp-graphql-woocommerce' ),
-				'fields'          => [
-					'code' => [
+				'fields'          => array(
+					'code' => array(
 						'type'        => 'String',
 						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
-					],
-					'type' => [
+					),
+					'type' => array(
 						'type'        => 'ShippingLocationTypeEnum',
 						'description' => __( 'Shipping zone location name.', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

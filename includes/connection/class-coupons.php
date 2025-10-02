@@ -32,9 +32,9 @@ class Coupons {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ): array {
+	public static function get_connection_config( $args = array() ): array {
 		return array_merge(
-			[
+			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Coupon',
 				'fromFieldName'  => 'coupons',
@@ -43,15 +43,15 @@ class Coupons {
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'shop_coupon' );
 
 					if ( ! self::should_execute() ) {
-						return [
-							'edges' => [],
-							'nodes' => [],
-						];
+						return array(
+							'edges' => array(),
+							'nodes' => array(),
+						);
 					}
 
 					return $resolver->get_connection();
 				},
-			],
+			),
 			$args
 		);
 	}
@@ -84,12 +84,12 @@ class Coupons {
 	public static function get_connection_args(): array {
 		return array_merge(
 			get_wc_cpt_connection_args(),
-			[
-				'code' => [
+			array(
+				'code' => array(
 					'type'        => 'String',
 					'description' => __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -122,7 +122,7 @@ class Coupons {
 
 		if ( ! empty( $where_args['code'] ) ) {
 			$id                     = \wc_get_coupon_id_by_code( $where_args['code'] );
-			$ids                    = $id ? [ $id ] : [ '0' ];
+			$ids                    = $id ? array( $id ) : array( '0' );
 			$query_args['post__in'] = ! empty( $query_args['post__in'] )
 				? array_intersect( $ids, $query_args['post__in'] )
 				: $ids;

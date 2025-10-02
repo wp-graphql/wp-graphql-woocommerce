@@ -27,95 +27,95 @@ class Customer_Type {
 	 *
 	 * @return array
 	 */
-	public static function get_fields( $other_fields = [] ) {
+	public static function get_fields( $other_fields = array() ) {
 		return array_merge(
-			[
-				'id'                    => [
-					'type'        => [ 'non_null' => 'ID' ],
+			array(
+				'id'                    => array(
+					'type'        => array( 'non_null' => 'ID' ),
 					'description' => __( 'The globally unique identifier for the customer', 'wp-graphql-woocommerce' ),
-				],
-				'databaseId'            => [
+				),
+				'databaseId'            => array(
 					'type'        => 'Int',
 					'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						$database_id = absint( $source->ID );
 						return ! empty( $database_id ) ? $database_id : null;
 					},
-				],
-				'isVatExempt'           => [
+				),
+				'isVatExempt'           => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Is customer VAT exempt?', 'wp-graphql-woocommerce' ),
-				],
-				'hasCalculatedShipping' => [
+				),
+				'hasCalculatedShipping' => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Has calculated shipping?', 'wp-graphql-woocommerce' ),
-				],
-				'calculatedShipping'    => [
+				),
+				'calculatedShipping'    => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Has customer calculated shipping?', 'wp-graphql-woocommerce' ),
-				],
-				'lastOrder'             => [
+				),
+				'lastOrder'             => array(
 					'type'        => 'Order',
 					'description' => __( 'Gets the customers last order.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						return Factory::resolve_crud_object( $source->last_order_id, $context );
 					},
-				],
-				'orderCount'            => [
+				),
+				'orderCount'            => array(
 					'type'        => 'Int',
 					'description' => __( 'Return the number of orders this customer has.', 'wp-graphql-woocommerce' ),
-				],
-				'totalSpent'            => [
+				),
+				'totalSpent'            => array(
 					'type'        => 'Float',
 					'description' => __( 'Return how much money this customer has spent.', 'wp-graphql-woocommerce' ),
-				],
-				'username'              => [
+				),
+				'username'              => array(
 					'type'        => 'String',
 					'description' => __( 'Return the customer\'s username.', 'wp-graphql-woocommerce' ),
-				],
-				'email'                 => [
+				),
+				'email'                 => array(
 					'type'        => 'String',
 					'description' => __( 'Return the customer\'s email.', 'wp-graphql-woocommerce' ),
-				],
-				'firstName'             => [
+				),
+				'firstName'             => array(
 					'type'        => 'String',
 					'description' => __( 'Return the customer\'s first name.', 'wp-graphql-woocommerce' ),
-				],
-				'lastName'              => [
+				),
+				'lastName'              => array(
 					'type'        => 'String',
 					'description' => __( 'Return the customer\'s last name.', 'wp-graphql-woocommerce' ),
-				],
-				'displayName'           => [
+				),
+				'displayName'           => array(
 					'type'        => 'String',
 					'description' => __( 'Return the customer\'s display name.', 'wp-graphql-woocommerce' ),
-				],
-				'role'                  => [
+				),
+				'role'                  => array(
 					'type'        => 'String',
 					'description' => __( 'Return the customer\'s user role.', 'wp-graphql-woocommerce' ),
-				],
-				'date'                  => [
+				),
+				'date'                  => array(
 					'type'        => 'String',
 					'description' => __( 'Return the date customer was created', 'wp-graphql-woocommerce' ),
-				],
-				'modified'              => [
+				),
+				'modified'              => array(
 					'type'        => 'String',
 					'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
-				],
-				'billing'               => [
+				),
+				'billing'               => array(
 					'type'        => 'CustomerAddress',
 					'description' => __( 'Return the date customer billing address properties', 'wp-graphql-woocommerce' ),
-				],
-				'shipping'              => [
+				),
+				'shipping'              => array(
 					'type'        => 'CustomerAddress',
 					'description' => __( 'Return the date customer shipping address properties', 'wp-graphql-woocommerce' ),
-				],
-				'isPayingCustomer'      => [
+				),
+				'isPayingCustomer'      => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Return the date customer was last updated', 'wp-graphql-woocommerce' ),
-				],
+				),
 				'metaData'              => Meta_Data_Type::get_metadata_field_definition(),
-				'session'               => [
-					'type'        => [ 'list_of' => 'MetaData' ],
+				'session'               => array(
+					'type'        => array( 'list_of' => 'MetaData' ),
 					'description' => __( 'Session data for the viewing customer', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						/**
@@ -127,7 +127,7 @@ class Customer_Type {
 
 						if ( (string) $session->get_customer_id() === (string) $source->ID ) {
 							$session_data = $session->get_session_data();
-							$session      = [];
+							$session      = array();
 							foreach ( $session_data as $key => $value ) {
 								$meta        = new \stdClass();
 								$meta->id    = null;
@@ -141,8 +141,8 @@ class Customer_Type {
 
 						throw new UserError( __( 'It\'s not possible to access another user\'s session data', 'wp-graphql-woocommerce' ) );
 					},
-				],
-			],
+				),
+			),
 			$other_fields
 		);
 	}
@@ -154,32 +154,32 @@ class Customer_Type {
 	 *
 	 * @return array
 	 */
-	public static function get_connections( $other_connections = [] ) {
+	public static function get_connections( $other_connections = array() ) {
 		return array_merge(
-			[
-				'downloadableItems' => [
+			array(
+				'downloadableItems' => array(
 					'toType'         => 'DownloadableItem',
-					'connectionArgs' => [
-						'active'                => [
+					'connectionArgs' => array(
+						'active'                => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Limit results to downloadable items that can be downloaded now.', 'wp-graphql-woocommerce' ),
-						],
-						'expired'               => [
+						),
+						'expired'               => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Limit results to downloadable items that are expired.', 'wp-graphql-woocommerce' ),
-						],
-						'hasDownloadsRemaining' => [
+						),
+						'hasDownloadsRemaining' => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Limit results to downloadable items that have downloads remaining.', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 						$resolver = new Downloadable_Item_Connection_Resolver( $source, $args, $context, $info );
 
 						return $resolver->get_connection();
 					},
-				],
-			],
+				),
+			),
 			$other_connections
 		);
 	}
@@ -192,9 +192,9 @@ class Customer_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'Customer',
-			[
+			array(
 				'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => array( 'Node' ),
 				/**
 				 * Allows for a decisive filtering of the order fields.
 				 * Note: Only use if deregisteration or renaming the field(s) has failed.
@@ -211,7 +211,7 @@ class Customer_Type {
 				 * @return array
 				 */
 				'connections' => apply_filters( 'woographql_customer_connection_definitions', self::get_connections() ),
-			]
+			)
 		);
 
 		/**
@@ -219,9 +219,9 @@ class Customer_Type {
 		 */
 		register_graphql_fields(
 			'Customer',
-			[
-				'availablePaymentMethods'   => [
-					'type'        => [ 'list_of' => 'PaymentToken' ],
+			array(
+				'availablePaymentMethods'   => array(
+					'type'        => array( 'list_of' => 'PaymentToken' ),
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
@@ -229,14 +229,14 @@ class Customer_Type {
 						}
 
 						if ( get_current_user_id() === 0 ) {
-							return [];
+							return array();
 						}
 
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
 					},
-				],
-				'availablePaymentMethodsCC' => [
-					'type'        => [ 'list_of' => 'PaymentTokenCC' ],
+				),
+				'availablePaymentMethodsCC' => array(
+					'type'        => array( 'list_of' => 'PaymentTokenCC' ),
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
@@ -249,14 +249,14 @@ class Customer_Type {
 						}
 
 						if ( get_current_user_id() === 0 ) {
-							return [];
+							return array();
 						}
 
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
 					},
-				],
-				'availablePaymentMethodsEC' => [
-					'type'        => [ 'list_of' => 'PaymentTokenECheck' ],
+				),
+				'availablePaymentMethodsEC' => array(
+					'type'        => array( 'list_of' => 'PaymentTokenECheck' ),
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
@@ -269,13 +269,13 @@ class Customer_Type {
 						}
 
 						if ( get_current_user_id() === 0 ) {
-							return [];
+							return array();
 						}
 
 						throw new UserError( __( 'Not authorized to view this user\'s payment methods.', 'wp-graphql-woocommerce' ) );
 					},
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -291,7 +291,7 @@ class Customer_Type {
 		register_graphql_field(
 			'Customer',
 			'sessionToken',
-			[
+			array(
 				'type'        => 'String',
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
@@ -308,7 +308,7 @@ class Customer_Type {
 
 					return null;
 				},
-			]
+			)
 		);
 		/**
 		 * Register the "wooSessionToken" field to the "User" type.
@@ -316,7 +316,7 @@ class Customer_Type {
 		register_graphql_field(
 			'User',
 			'wooSessionToken',
-			[
+			array(
 				'type'        => 'String',
 				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
@@ -333,7 +333,7 @@ class Customer_Type {
 
 					return null;
 				},
-			]
+			)
 		);
 	}
 
@@ -347,8 +347,8 @@ class Customer_Type {
 		if ( in_array( 'cart_url', $fields_to_register, true ) ) {
 			register_graphql_fields(
 				'Customer',
-				[
-					'cartUrl'   => [
+				array(
+					'cartUrl'   => array(
 						'type'        => 'String',
 						'description' => __( 'A nonced link to the cart page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -363,10 +363,10 @@ class Customer_Type {
 
 							// Build nonced url as an unauthenticated user.
 							$nonce_name   = woographql_setting( 'cart_url_nonce_param', '_wc_cart' );
-							$query_params = [
+							$query_params = array(
 								'session_id' => $customer_id,
 								$nonce_name  => woographql_create_nonce( "load-cart_{$customer_id}" ),
-							];
+							);
 							$query_params = apply_filters( 'graphql_cart_url_query_params', $query_params, $customer_id, $source );
 							$url          = add_query_arg(
 								$query_params,
@@ -375,8 +375,8 @@ class Customer_Type {
 
 							return esc_url_raw( $url );
 						},
-					],
-					'cartNonce' => [
+					),
+					'cartNonce' => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce for the cart page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -391,16 +391,16 @@ class Customer_Type {
 
 							return woographql_create_nonce( "load-cart_{$customer_id}" );
 						},
-					],
-				]
+					),
+				)
 			);
 		}//end if
 
 		if ( in_array( 'checkout_url', $fields_to_register, true ) ) {
 			register_graphql_fields(
 				'Customer',
-				[
-					'checkoutUrl'   => [
+				array(
+					'checkoutUrl'   => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce link to the checkout page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -415,10 +415,10 @@ class Customer_Type {
 
 							// Build nonced url as an unauthenticated user.
 							$nonce_name   = woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' );
-							$query_params = [
+							$query_params = array(
 								'session_id' => $customer_id,
 								$nonce_name  => woographql_create_nonce( "load-checkout_{$customer_id}" ),
-							];
+							);
 							$query_params = apply_filters( 'graphql_checkout_url_query_params', $query_params, $customer_id, $source );
 							$url          = add_query_arg(
 								$query_params,
@@ -427,8 +427,8 @@ class Customer_Type {
 
 							return esc_url_raw( $url );
 						},
-					],
-					'checkoutNonce' => [
+					),
+					'checkoutNonce' => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce for the checkout page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -443,16 +443,16 @@ class Customer_Type {
 
 							return woographql_create_nonce( "load-checkout_{$customer_id}" );
 						},
-					],
-				]
+					),
+				)
 			);
 		}//end if
 
 		if ( in_array( 'account_url', $fields_to_register, true ) ) {
 			register_graphql_fields(
 				'Customer',
-				[
-					'accountUrl'   => [
+				array(
+					'accountUrl'   => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce link to the account page for session user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -471,10 +471,10 @@ class Customer_Type {
 
 							// Build nonced url as an unauthenticated user.
 							$nonce_name   = woographql_setting( 'account_url_nonce_param', '_wc_account' );
-							$query_params = [
+							$query_params = array(
 								'session_id' => $customer_id,
 								$nonce_name  => woographql_create_nonce( "load-account_{$customer_id}" ),
-							];
+							);
 							$query_params = apply_filters( 'graphql_account_url_query_params', $query_params, $customer_id, $source );
 							$url          = add_query_arg(
 								$query_params,
@@ -483,8 +483,8 @@ class Customer_Type {
 
 							return esc_url_raw( $url );
 						},
-					],
-					'accountNonce' => [
+					),
+					'accountNonce' => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce for the account page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -503,16 +503,16 @@ class Customer_Type {
 
 							return woographql_create_nonce( "load-account_{$customer_id}" );
 						},
-					],
-				]
+					),
+				)
 			);
 		}//end if
 
 		if ( in_array( 'add_payment_method_url', $fields_to_register, true ) ) {
 			register_graphql_fields(
 				'Customer',
-				[
-					'addPaymentMethodUrl'   => [
+				array(
+					'addPaymentMethodUrl'   => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce link to the add payment method page for the authenticated user. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -532,17 +532,17 @@ class Customer_Type {
 							// Build nonced url as an unauthenticated user.
 							$nonce_name = woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' );
 							$url        = add_query_arg(
-								[
+								array(
 									'session_id' => $customer_id,
 									$nonce_name  => woographql_create_nonce( "add-payment-method_{$customer_id}" ),
-								],
+								),
 								site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
 							);
 
 							return esc_url_raw( $url );
 						},
-					],
-					'addPaymentMethodNonce' => [
+					),
+					'addPaymentMethodNonce' => array(
 						'type'        => 'String',
 						'description' => __( 'A nonce for the add payment method page. By default, it expires in 1 hour.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -561,8 +561,8 @@ class Customer_Type {
 
 							return woographql_create_nonce( "add-payment-method_{$customer_id}" );
 						},
-					],
-				]
+					),
+				)
 			);
 		}//end if
 	}

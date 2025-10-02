@@ -21,7 +21,7 @@ class OrderItemHelper extends WCG_Helper {
 		if ( empty( $coupon_id ) ) {
 			// Get order product IDs
 			$product_ids = array();
-			foreach( $order->get_items() as $item ) {
+			foreach ( $order->get_items() as $item ) {
 				if ( ! in_array( $item->get_product_id(), $product_ids ) ) {
 					$product_ids[] = $item->get_product_id();
 				}
@@ -31,7 +31,7 @@ class OrderItemHelper extends WCG_Helper {
 				CouponHelper::instance()->create( array( 'product_ids' => $product_ids ) )
 			);
 		} else {
-			$coupon = new WC_Coupon( $coupon_id ); 
+			$coupon = new WC_Coupon( $coupon_id );
 		}
 
 		// Apply coupon to order.
@@ -55,17 +55,17 @@ class OrderItemHelper extends WCG_Helper {
 
 		// Set the array for tax calculations.
 		$calculate_tax_for = array(
-			'country' => $country_code, 
-			'state' => '', 
-			'postcode' => '', 
-			'city' => ''
+			'country'  => $country_code,
+			'state'    => '',
+			'postcode' => '',
+			'city'     => '',
 		);
 
 		$imported_total_fee = 8.4342;
 
 		// Create and add fee to order.
 		$item = new WC_Order_Item_Fee();
-		$item->set_name( "Fee" ); // Generic fee name
+		$item->set_name( 'Fee' ); // Generic fee name
 		$item->set_amount( $imported_total_fee ); // Fee amount
 		$item->set_tax_class( '' ); // default for ''
 		$item->set_tax_status( 'taxable' ); // or 'none'

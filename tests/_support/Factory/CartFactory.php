@@ -20,7 +20,7 @@ class CartFactory {
 	 * @return array<string>
 	 */
 	public function add( ...$products ) {
-		$keys = [];
+		$keys = array();
 
 		foreach ( $products as $product ) {
 			if ( gettype( $product ) === 'array' ) {
@@ -34,8 +34,8 @@ class CartFactory {
 					$product['product_id'],
 					! empty( $product['quantity'] ) ? $product['quantity'] : 1,
 					! empty( $product['variation_id'] ) ? $product['variation_id'] : 0,
-					! empty( $product['variation'] ) ? $product['variation'] : [],
-					! empty( $product['cart_item_data'] ) ? $product['cart_item_data'] : []
+					! empty( $product['variation'] ) ? $product['variation'] : array(),
+					! empty( $product['cart_item_data'] ) ? $product['cart_item_data'] : array()
 				);
 			} else {
 				WC()->cart->add_to_cart( $product, 1 );

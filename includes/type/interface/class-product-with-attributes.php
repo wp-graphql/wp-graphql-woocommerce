@@ -27,13 +27,13 @@ class Product_With_Attributes {
 	public static function register_interface(): void {
 		register_graphql_interface_type(
 			'ProductWithAttributes',
-			[
+			array(
 				'description' => __( 'Products with default attributes.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => array( 'Node' ),
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
-			]
+				'resolveType' => array( Core::class, 'resolve_product_type' ),
+			)
 		);
 	}
 
@@ -43,16 +43,16 @@ class Product_With_Attributes {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return [
-			'id'         => [
-				'type'        => [ 'non_null' => 'ID' ],
+		return array(
+			'id'         => array(
+				'type'        => array( 'non_null' => 'ID' ),
 				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
-			],
-			'databaseId' => [
-				'type'        => [ 'non_null' => 'Int' ],
+			),
+			'databaseId' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -61,8 +61,8 @@ class Product_With_Attributes {
 	 * @return array
 	 */
 	public static function get_connections() {
-		return [
-			'defaultAttributes' => [
+		return array(
+			'defaultAttributes' => array(
 				'toType'        => 'VariationAttribute',
 				'fromFieldName' => 'defaultAttributes',
 				'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -70,22 +70,22 @@ class Product_With_Attributes {
 
 					return $resolver->resolve( $source, $args, $context, $info );
 				},
-			],
-			'attributes'        => [
+			),
+			'attributes'        => array(
 				'toType'         => 'ProductAttribute',
 				'fromFieldName'  => 'attributes',
-				'connectionArgs' => [
-					'type' => [
+				'connectionArgs' => array(
+					'type' => array(
 						'type'        => 'ProductAttributeTypesEnum',
 						'description' => __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Product_Attribute_Connection_Resolver();
 
 					return $resolver->resolve( $source, $args, $context, $info );
 				},
-			],
-		];
+			),
+		);
 	}
 }

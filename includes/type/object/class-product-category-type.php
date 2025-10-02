@@ -24,8 +24,8 @@ class Product_Category_Type {
 	public static function register_fields() {
 		register_graphql_fields(
 			'ProductCategory',
-			[
-				'image'     => [
+			array(
+				'image'     => array(
 					'type'        => 'MediaItem',
 					'description' => __( 'Product category image', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -34,24 +34,24 @@ class Product_Category_Type {
 							? $context->get_loader( 'post' )->load_deferred( $thumbnail_id )
 							: null;
 					},
-				],
-				'display'   => [
+				),
+				'display'   => array(
 					'type'        => 'ProductCategoryDisplay',
 					'description' => __( 'Product category display type', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						$display = get_term_meta( $source->term_id, 'display_type', true );
 						return ! empty( $display ) ? $display : 'default';
 					},
-				],
-				'menuOrder' => [
+				),
+				'menuOrder' => array(
 					'type'        => 'Integer',
 					'description' => __( 'Product category menu order', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						$order = get_term_meta( $source->term_id, 'order', true );
 						return ! empty( $order ) ? $order : 0;
 					},
-				],
-			]
+				),
+			)
 		);
 	}
 }

@@ -101,7 +101,7 @@ function plugin_file_url( $filepath ) {
  *
  * @return array
  */
-function dependencies_not_ready( &$deps = [] ) {
+function dependencies_not_ready( &$deps = array() ) {
 	if ( ! class_exists( '\WPGraphQL' ) ) {
 		$deps[] = 'WPGraphQL';
 	}
@@ -119,7 +119,7 @@ function dependencies_not_ready( &$deps = [] ) {
  */
 function init() {
 	// We define this now and pass it as a reference.
-	$not_ready = [];
+	$not_ready = array();
 
 	if ( empty( dependencies_not_ready( $not_ready ) ) ) {
 		require_once get_includes_directory() . 'class-wp-graphql-woocommerce.php';

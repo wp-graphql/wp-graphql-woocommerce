@@ -20,19 +20,19 @@ class Product_Taxonomy_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'ProductTaxonomyInput',
-			[
+			array(
 				'description' => __( 'Product taxonomy filter type', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'relation' => [
+				'fields'      => array(
+					'relation' => array(
 						'type'        => 'RelationEnum',
 						'description' => __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' ),
-					],
-					'filters'  => [
-						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
+					),
+					'filters'  => array(
+						'type'        => array( 'list_of' => 'ProductTaxonomyFilterInput' ),
 						'description' => __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

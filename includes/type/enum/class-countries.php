@@ -23,16 +23,16 @@ class Countries {
 		array_walk(
 			$countries,
 			static function ( &$value, $code ) {
-				$value = [ 'value' => $code ];
+				$value = array( 'value' => $code );
 			}
 		);
 
 		register_graphql_enum_type(
 			'CountriesEnum',
-			[
+			array(
 				'description' => __( 'Countries enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $countries,
-			]
+			)
 		);
 	}
 }

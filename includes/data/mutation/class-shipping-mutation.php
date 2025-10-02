@@ -20,7 +20,7 @@ class Shipping_Mutation {
 	 * @return array<string, string>
 	 */
 	private static function flatten_settings_input( $settings_input ) {
-		$settings = [];
+		$settings = array();
 		foreach ( $settings_input as $setting ) {
 			$settings[ $setting['id'] ] = $setting['value'];
 		}
@@ -43,7 +43,7 @@ class Shipping_Mutation {
 		$errors_found      = false;
 		foreach ( $method->get_instance_form_fields() as $key => $field ) {
 			if ( isset( $settings[ $key ] ) ) {
-				if ( is_callable( [ Settings_Mutation::class, 'validate_setting_' . $field['type'] . '_field' ] ) ) {
+				if ( is_callable( array( Settings_Mutation::class, 'validate_setting_' . $field['type'] . '_field' ) ) ) {
 					$value = Settings_Mutation::{'validate_setting_' . $field['type'] . '_field'}( $settings[ $key ], $field );
 				} else {
 					$value = Settings_Mutation::validate_setting_text_field( $settings[ $key ], $field );
@@ -79,8 +79,8 @@ class Shipping_Mutation {
 
 		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			"{$wpdb->prefix}woocommerce_shipping_zone_methods",
-			[ 'method_order' => $order ],
-			[ 'instance_id' => $instance_id ]
+			array( 'method_order' => $order ),
+			array( 'instance_id' => $instance_id )
 		);
 		$method->method_order = $order;
 
@@ -100,7 +100,7 @@ class Shipping_Mutation {
 	public static function set_shipping_zone_method_enabled( $zone_id, $instance_id, $method, $enabled ) {
 		global $wpdb;
 
-		if ( $wpdb->update( "{$wpdb->prefix}woocommerce_shipping_zone_methods", [ 'is_enabled' => $enabled ], [ 'instance_id' => $instance_id ] ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( $wpdb->update( "{$wpdb->prefix}woocommerce_shipping_zone_methods", array( 'is_enabled' => $enabled ), array( 'instance_id' => $instance_id ) ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			do_action( 'woocommerce_shipping_zone_method_status_toggled', $instance_id, $method->id, $zone_id, $enabled ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$method->enabled = ( true === $enabled ? 'yes' : 'no' );
 		}

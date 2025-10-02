@@ -26,11 +26,11 @@ class Tax_Class_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteTaxClass',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,12 +40,12 @@ class Tax_Class_Delete {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'slug' => [
-				'type'        => [ 'non_null' => 'String' ],
+		return array(
+			'slug' => array(
+				'type'        => array( 'non_null' => 'String' ),
 				'description' => __( 'Slug of the tax class.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -54,14 +54,14 @@ class Tax_Class_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'taxClass' => [
+		return array(
+			'taxClass' => array(
 				'type'    => 'TaxClass',
 				'resolve' => static function ( $payload ) {
 					return ! empty( $payload['taxClass'] ) ? $payload['taxClass'] : null;
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Tax_Class_Delete {
 			 */
 			$tax_class = apply_filters( 'graphql_woocommerce_tax_class_delete', $tax_class, $input );
 
-			return [ 'taxClass' => $tax_class ];
+			return array( 'taxClass' => $tax_class );
 		};
 	}
 }

@@ -50,7 +50,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_query_args() {
-		$query_args = [];
+		$query_args = array();
 
 		// Prepare for later use.
 		$last  = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
@@ -59,7 +59,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = [];
+		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -160,7 +160,7 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids() {
-		return ! empty( $this->query ) ? $this->query : [];
+		return ! empty( $this->query ) ? $this->query : array();
 	}
 
 	/**
@@ -174,13 +174,13 @@ class Tax_Rate_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function sanitize_input_fields( array $where_args ) {
-		$args = [];
+		$args = array();
 		if ( ! empty( $where_args['orderby'] ) ) {
 			if ( ! empty( $where_args['orderby']['field'] ) ) {
-				$orderby_possibles = [
+				$orderby_possibles = array(
 					'id'    => 'tax_rate_id',
 					'order' => 'tax_rate_order',
-				];
+				);
 				$args['orderby']   = $orderby_possibles[ $where_args['orderby']['field'] ];
 			}
 

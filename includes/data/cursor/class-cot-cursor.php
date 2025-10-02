@@ -79,7 +79,7 @@ class COT_Cursor extends AbstractCursor {
 		$order_datastore       = wc_get_container()->get( OrdersTableDataStore::class );
 		$this->tables          = $order_datastore::get_all_table_names_with_id();
 		$mappings              = $order_datastore->get_all_order_column_mappings();
-		$this->column_mappings = [];
+		$this->column_mappings = array();
 		foreach ( $mappings['orders'] as $column => $meta_value ) {
 			$this->column_mappings[ "{$this->tables['orders']}.{$column}" ] = $meta_value['name'];
 		}
@@ -114,11 +114,11 @@ class COT_Cursor extends AbstractCursor {
 
 		$orderby_should_not_convert_to_sql = isset( $orderby ) && in_array(
 			$orderby,
-			[
+			array(
 				'include',
 				'id',
 				'parent_order_id',
-			],
+			),
 			true
 		);
 
@@ -188,7 +188,7 @@ class COT_Cursor extends AbstractCursor {
 			return;
 		}
 
-		$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : [];
+		$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : array();
 
 		if ( in_array( $by, $meta_orderby_keys, true ) && null !== $this->meta_query ) {
 			$orderby = $this->meta_query->get_orderby_clause_for_key( $by );
@@ -198,7 +198,7 @@ class COT_Cursor extends AbstractCursor {
 			$getter_name = $this->column_mappings[ $orderby ];
 
 			$method = "get_{$getter_name}";
-			$value  = is_callable( [ $this->cursor_node, $method ] ) ? $this->cursor_node->$method() : null;
+			$value  = is_callable( array( $this->cursor_node, $method ) ) ? $this->cursor_node->$method() : null;
 		}
 
 		if ( ! empty( $value ) && is_a( $value, '\WC_DateTime' ) ) {

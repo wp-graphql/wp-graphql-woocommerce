@@ -23,97 +23,97 @@ class Product_Attribute_Types {
 		// Local.
 		register_graphql_object_type(
 			'LocalProductAttribute',
-			[
+			array(
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'ProductAttribute' ],
-				'fields'      => [
-					'id'    => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'interfaces'  => array( 'ProductAttribute' ),
+				'fields'      => array(
+					'id'    => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'LocalProductAttribute', $attribute->get_id() );
 						},
-					],
-					'scope' => [
-						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
+					),
+					'scope' => array(
+						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function () {
 							return 'local';
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 
 		// Global.
 		register_graphql_object_type(
 			'GlobalProductAttribute',
-			[
+			array(
 				'description' => __( 'A product attribute object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'ProductAttribute' ],
-				'fields'      => [
-					'id'    => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'interfaces'  => array( 'ProductAttribute' ),
+				'fields'      => array(
+					'id'    => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
 						},
-					],
-					'scope' => [
-						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
+					),
+					'scope' => array(
+						'type'        => array( 'non_null' => 'ProductAttributeTypesEnum' ),
 						'description' => __( 'Product attribute scope.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function () {
 							return 'global';
 						},
-					],
-					'label' => [
+					),
+					'label' => array(
 						'type'        => 'String',
 						'description' => __( 'Attribute label', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
 							return $taxonomy ? $taxonomy->labels->singular_name : null;
 						},
-					],
-					'name'  => [
+					),
+					'name'  => array(
 						'type'        => 'String',
 						'description' => __( 'Product attribute name', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
 							return $attribute->get_name();
 						},
-					],
-					'slug'  => [
+					),
+					'slug'  => array(
 						'type'        => 'String',
 						'description' => __( 'Product attribute slug', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 
 		// ProductAttributeOutput for CartItemError and CartItem edges.
 		register_graphql_object_type(
 			'ProductAttributeOutput',
-			[
+			array(
 				'description' => __( 'A simple product attribute object', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'attributeName'  => [
+				'fields'      => array(
+					'attributeName'  => array(
 						'type'        => 'String',
 						'description' => __( 'Attribute name.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( array $attribute ) {
 							return ! empty( $attribute['attributeName'] ) ? $attribute['attributeName'] : null;
 						},
-					],
-					'attributeValue' => [
+					),
+					'attributeValue' => array(
 						'type'        => 'String',
 						'description' => __( 'Attribute value.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( array $attribute ) {
 							return ! empty( $attribute['attributeValue'] ) ? $attribute['attributeValue'] : null;
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

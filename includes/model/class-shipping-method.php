@@ -34,13 +34,13 @@ class Shipping_Method extends Model {
 	 */
 	public function __construct( $method ) {
 		$this->data                = $method;
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
-		];
+		);
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'shipping_method_restricted_cap', '' );
@@ -62,7 +62,7 @@ class Shipping_Method extends Model {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = [
+			$this->fields = array(
 				'ID'          => function () {
 					return $this->data->id;
 				},
@@ -78,7 +78,7 @@ class Shipping_Method extends Model {
 				'description' => function () {
 					return ! empty( $this->data->method_description ) ? $this->data->method_description : null;
 				},
-			];
+			);
 		}
 	}
 
@@ -93,7 +93,7 @@ class Shipping_Method extends Model {
 	 * @throws \BadMethodCallException Method not found on WC data object.
 	 */
 	public function __call( $method, $args ) {
-		if ( \is_callable( [ $this->data, $method ] ) ) {
+		if ( \is_callable( array( $this->data, $method ) ) ) {
 			return $this->data->$method( ...$args );
 		}
 

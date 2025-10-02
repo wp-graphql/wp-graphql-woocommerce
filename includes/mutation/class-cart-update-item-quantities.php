@@ -28,11 +28,11 @@ class Cart_Update_Item_Quantities {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateItemQuantities',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -42,12 +42,12 @@ class Cart_Update_Item_Quantities {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'items' => [
-				'type'        => [ 'list_of' => 'CartItemQuantityInput' ],
+		return array(
+			'items' => array(
+				'type'        => array( 'list_of' => 'CartItemQuantityInput' ),
 				'description' => __( 'Cart item being updated', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -56,37 +56,37 @@ class Cart_Update_Item_Quantities {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'updated' => [
-				'type'    => [ 'list_of' => 'CartItem' ],
+		return array(
+			'updated' => array(
+				'type'    => array( 'list_of' => 'CartItem' ),
 				'resolve' => static function ( $payload ) {
-					$items = [];
+					$items = array();
 					foreach ( $payload['updated'] as $key ) {
 						$items[] = WC()->cart->get_cart_item( $key );
 					}
 
 					return $items;
 				},
-			],
-			'removed' => [
-				'type'    => [ 'list_of' => 'CartItem' ],
+			),
+			'removed' => array(
+				'type'    => array( 'list_of' => 'CartItem' ),
 				'resolve' => static function ( $payload ) {
 					return $payload['removed'];
 				},
-			],
-			'items'   => [
-				'type'    => [ 'list_of' => 'CartItem' ],
+			),
+			'items'   => array(
+				'type'    => array( 'list_of' => 'CartItem' ),
 				'resolve' => static function ( $payload ) {
-					$updated = [];
+					$updated = array();
 					foreach ( $payload['updated'] as $key ) {
 						$updated[] = \WC()->cart->get_cart_item( $key );
 					}
 
 					return array_merge( $updated, $payload['removed'] );
 				},
-			],
+			),
 			'cart'    => Cart_Mutation::get_cart_field( true ),
-		];
+		);
 	}
 
 	/**
@@ -111,9 +111,9 @@ class Cart_Update_Item_Quantities {
 			do_action( 'graphql_woocommerce_before_set_item_quantities', $input['items'], $input, $context, $info );
 
 			// Update quantities. If quantity set to 0, the items in removed.
-			$removed       = [];
-			$updated       = [];
-			$removed_items = [];
+			$removed       = array();
+			$updated       = array();
+			$removed_items = array();
 			foreach ( $input['items'] as $item ) {
 				if ( Cart_Mutation::item_is_valid( $item ) ) {
 					$key      = $item['key'];
@@ -167,10 +167,10 @@ class Cart_Update_Item_Quantities {
 
 			do_action( 'woographql_update_session', true );
 
-			return [
+			return array(
 				'removed' => $removed_items,
 				'updated' => array_keys( $updated ),
-			];
+			);
 		};
 	}
 }

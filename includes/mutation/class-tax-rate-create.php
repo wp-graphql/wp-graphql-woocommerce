@@ -27,11 +27,11 @@ class Tax_Rate_Create {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'createTaxRate',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
-				'mutateAndGetPayload' => [ self::class, 'mutate_and_get_payload' ],
-			]
+				'mutateAndGetPayload' => array( self::class, 'mutate_and_get_payload' ),
+			)
 		);
 	}
 
@@ -41,52 +41,52 @@ class Tax_Rate_Create {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'country'   => [
+		return array(
+			'country'   => array(
 				'type'        => 'String',
 				'description' => __( 'Country code for the tax rate.', 'wp-graphql-woocommerce' ),
-			],
-			'state'     => [
+			),
+			'state'     => array(
 				'type'        => 'String',
 				'description' => __( 'State code for the tax rate.', 'wp-graphql-woocommerce' ),
-			],
-			'postcodes' => [
-				'type'        => [ 'list_of' => 'String' ],
+			),
+			'postcodes' => array(
+				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Postcodes for the tax rate.', 'wp-graphql-woocommerce' ),
-			],
-			'cities'    => [
-				'type'        => [ 'list_of' => 'String' ],
+			),
+			'cities'    => array(
+				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Cities for the tax rate.', 'wp-graphql-woocommerce' ),
-			],
-			'rate'      => [
+			),
+			'rate'      => array(
 				'type'        => 'String',
 				'description' => __( 'Tax rate.', 'wp-graphql-woocommerce' ),
-			],
-			'name'      => [
+			),
+			'name'      => array(
 				'type'        => 'String',
 				'description' => __( 'Tax rate name.', 'wp-graphql-woocommerce' ),
-			],
-			'priority'  => [
+			),
+			'priority'  => array(
 				'type'        => 'Int',
 				'description' => __( 'Tax rate priority.', 'wp-graphql-woocommerce' ),
-			],
-			'compound'  => [
+			),
+			'compound'  => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Whether the tax rate is compound.', 'wp-graphql-woocommerce' ),
-			],
-			'shipping'  => [
+			),
+			'shipping'  => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Whether the tax rate is applied to shipping.', 'wp-graphql-woocommerce' ),
-			],
-			'order'     => [
+			),
+			'order'     => array(
 				'type'        => 'Int',
 				'description' => __( 'Tax rate order.', 'wp-graphql-woocommerce' ),
-			],
-			'class'     => [
+			),
+			'class'     => array(
 				'type'        => 'TaxClassEnum',
 				'description' => __( 'Tax rate class.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -95,14 +95,14 @@ class Tax_Rate_Create {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'taxRate' => [
+		return array(
+			'taxRate' => array(
 				'type'    => 'TaxRate',
 				'resolve' => static function ( array $payload, array $args, AppContext $context ) {
 					return $context->get_loader( 'tax_rate' )->load( $payload['tax_rate_id'] );
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -158,8 +158,8 @@ class Tax_Rate_Create {
 			$current = \WC_Tax::_get_tax_rate( $id, OBJECT );
 		}
 
-		$data   = [];
-		$fields = [
+		$data   = array();
+		$fields = array(
 			'country'  => 'tax_rate_country',
 			'state'    => 'tax_rate_state',
 			'rate'     => 'tax_rate',
@@ -169,7 +169,7 @@ class Tax_Rate_Create {
 			'shipping' => 'tax_rate_shipping',
 			'order'    => 'tax_rate_order',
 			'class'    => 'tax_rate_class',
-		];
+		);
 
 		foreach ( $fields as $key => $field ) {
 			if ( ! isset( $input[ $key ] ) ) {
@@ -226,6 +226,6 @@ class Tax_Rate_Create {
 		 */
 		do_action( "graphql_woocommerce_tax_rate_{$action}", $id, $input );
 
-		return [ 'tax_rate_id' => $id ];
+		return array( 'tax_rate_id' => $id );
 	}
 }

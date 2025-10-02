@@ -1,0 +1,13 @@
+actor: WPBrowserTester
+modules:
+    enabled:
+        - WPBrowser
+        - \Helper\WP
+    config:
+        WPBrowser:
+            wpRootFolder: 'C:\xampp\htdocs\wordpress'  # <-- full path to your WordPress
+            dbName: 'wordpress_test'
+            dbHost: '127.0.0.1'
+            dbUser: 'root'
+            dbPassword: ''
+            dbPrefix: 'wp_'

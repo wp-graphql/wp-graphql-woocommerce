@@ -56,14 +56,14 @@ class Settings_Mutation {
 	 */
 	public static function validate_setting_multiselect_field( $values, $setting ) {
 		if ( empty( $values ) ) {
-			return [];
+			return array();
 		}
 
 		if ( ! is_array( $values ) ) {
 			throw new UserError( __( 'An invalid setting value was passed.', 'wp-graphql-woocommerce' ), 400 );
 		}
 
-		$final_values = [];
+		$final_values = array();
 		foreach ( $values as $value ) {
 			if ( array_key_exists( $value, $setting['options'] ) ) {
 				$final_values[] = $value;
@@ -126,7 +126,7 @@ class Settings_Mutation {
 	 * @return string
 	 */
 	public function validate_setting_checkbox_field( $value, $setting ) {
-		if ( in_array( $value, [ 'yes', 'no' ], true ) ) {
+		if ( in_array( $value, array( 'yes', 'no' ), true ) ) {
 			return $value;
 		} elseif ( empty( $value ) ) {
 			$value = isset( $setting['default'] ) ? $setting['default'] : 'no';
@@ -149,14 +149,14 @@ class Settings_Mutation {
 		return wp_kses(
 			trim( stripslashes( $value ) ),
 			array_merge(
-				[
-					'iframe' => [
+				array(
+					'iframe' => array(
 						'src'   => true,
 						'style' => true,
 						'id'    => true,
 						'class' => true,
-					],
-				],
+					),
+				),
 				wp_kses_allowed_html( 'post' )
 			)
 		);

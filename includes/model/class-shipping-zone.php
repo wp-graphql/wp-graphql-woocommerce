@@ -36,13 +36,13 @@ class Shipping_Zone extends Model {
 	 */
 	public function __construct( $zone ) {
 		$this->data                = $zone;
-		$allowed_restricted_fields = [
+		$allowed_restricted_fields = array(
 			'isRestricted',
 			'isPrivate',
 			'isPublic',
 			'id',
 			'databaseId',
-		];
+		);
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$restricted_cap = apply_filters( 'shipping_zone_restricted_cap', '' );
@@ -64,7 +64,7 @@ class Shipping_Zone extends Model {
 	 */
 	protected function init() {
 		if ( empty( $this->fields ) ) {
-			$this->fields = [
+			$this->fields = array(
 				'ID'         => function () {
 					return $this->data->get_id();
 				},
@@ -86,7 +86,7 @@ class Shipping_Zone extends Model {
 				'methods'    => function () {
 					return $this->data->get_shipping_methods();
 				},
-			];
+			);
 		}
 	}
 
@@ -101,7 +101,7 @@ class Shipping_Zone extends Model {
 	 * @throws \BadMethodCallException Method not found on WC data object.
 	 */
 	public function __call( $method, $args ) {
-		if ( \is_callable( [ $this->data, $method ] ) ) {
+		if ( \is_callable( array( $this->data, $method ) ) ) {
 			return $this->data->$method( ...$args );
 		}
 

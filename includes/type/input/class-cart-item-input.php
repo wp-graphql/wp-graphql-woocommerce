@@ -20,31 +20,31 @@ class Cart_Item_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'CartItemInput',
-			[
+			array(
 				'description' => __( 'Cart item quantity', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'productId'   => [
-						'type'        => [ 'non_null' => 'Int' ],
+				'fields'      => array(
+					'productId'   => array(
+						'type'        => array( 'non_null' => 'Int' ),
 						'description' => __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' ),
-					],
-					'quantity'    => [
+					),
+					'quantity'    => array(
 						'type'        => 'Int',
 						'description' => __( 'Cart item quantity', 'wp-graphql-woocommerce' ),
-					],
-					'variationId' => [
+					),
+					'variationId' => array(
 						'type'        => 'Int',
 						'description' => __( 'Cart item product variation database ID or global ID', 'wp-graphql-woocommerce' ),
-					],
-					'variation'   => [
-						'type'        => [ 'list_of' => 'ProductAttributeInput' ],
+					),
+					'variation'   => array(
+						'type'        => array( 'list_of' => 'ProductAttributeInput' ),
 						'description' => __( 'Cart item product variation attributes', 'wp-graphql-woocommerce' ),
-					],
-					'extraData'   => [
+					),
+					'extraData'   => array(
 						'type'        => 'String',
 						'description' => __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

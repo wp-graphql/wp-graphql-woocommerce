@@ -29,32 +29,32 @@ class Orders_Orderby_Enum extends Post_Type_Orderby_Enum {
 			'woographql_orderby_enum_values',
 			array_merge(
 				self::post_type_values(),
-				[
-					'ORDER_KEY'      => [
+				array(
+					'ORDER_KEY'      => array(
 						'value'       => '_order_key',
 						'description' => __( 'Order by order key', 'wp-graphql-woocommerce' ),
-					],
-					'DISCOUNT'       => [
+					),
+					'DISCOUNT'       => array(
 						'value'       => '_cart_discount',
 						'description' => __( 'Order by order discount amount', 'wp-graphql-woocommerce' ),
-					],
-					'TOTAL'          => [
+					),
+					'TOTAL'          => array(
 						'value'       => '_order_total',
 						'description' => __( 'Order by order total', 'wp-graphql-woocommerce' ),
-					],
-					'TAX'            => [
+					),
+					'TAX'            => array(
 						'value'       => '_order_tax',
 						'description' => __( 'Order by order total', 'wp-graphql-woocommerce' ),
-					],
-					'DATE_PAID'      => [
+					),
+					'DATE_PAID'      => array(
 						'value'       => '_date_paid',
 						'description' => __( 'Order by date the order was paid', 'wp-graphql-woocommerce' ),
-					],
-					'DATE_COMPLETED' => [
+					),
+					'DATE_COMPLETED' => array(
 						'value'       => '_date_completed',
 						'description' => __( 'Order by date the order was completed', 'wp-graphql-woocommerce' ),
-					],
-				]
+					),
+				)
 			)
 		);
 	}

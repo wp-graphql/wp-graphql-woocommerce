@@ -44,7 +44,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_query_args() {
-		$query_args = [ 'filters' => [] ];
+		$query_args = array( 'filters' => array() );
 		if ( ! empty( $this->args['where'] ) ) {
 			$where_args = $this->args['where'];
 			if ( isset( $where_args['needsShipping'] ) ) {
@@ -102,7 +102,7 @@ class Cart_Item_Connection_Resolver extends AbstractConnectionResolver {
 	 * {@inheritDoc}
 	 */
 	public function get_ids_from_query() {
-		return ! empty( $this->query ) ? $this->query : [];
+		return ! empty( $this->query ) ? $this->query : array();
 	}
 
 	/**

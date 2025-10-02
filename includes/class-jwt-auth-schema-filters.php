@@ -104,10 +104,10 @@ class JWT_Auth_Schema_Filters {
 		// Confirm WPGraphQL JWT Authentication is installed.
 		$auth_class = self::get_auth_class();
 		if ( ! is_null( $auth_class ) ) {
-			add_filter( 'graphql_jwt_user_types', [ self::class, 'add_customer_to_jwt_user_types' ], 10 );
-			add_filter( 'graphql_registerCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
-			add_filter( 'graphql_updateCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
-			add_action( 'graphql_register_types', [ self::class, 'add_customer_to_login_payload' ], 10 );
+			add_filter( 'graphql_jwt_user_types', array( self::class, 'add_customer_to_jwt_user_types' ), 10 );
+			add_filter( 'graphql_registerCustomerPayload_fields', array( self::class, 'add_jwt_output_fields' ), 10, 3 );
+			add_filter( 'graphql_updateCustomerPayload_fields', array( self::class, 'add_jwt_output_fields' ), 10, 3 );
+			add_action( 'graphql_register_types', array( self::class, 'add_customer_to_login_payload' ), 10 );
 		}
 	}
 
@@ -135,8 +135,8 @@ class JWT_Auth_Schema_Filters {
 	public static function add_jwt_output_fields( $fields, $object_type, $type_registry ): array {
 		$fields = array_merge(
 			$fields,
-			[
-				'authToken'    => [
+			array(
+				'authToken'    => array(
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $payload ) {
@@ -148,8 +148,8 @@ class JWT_Auth_Schema_Filters {
 
 						return self::get_auth_token( $user );
 					},
-				],
-				'refreshToken' => [
+				),
+				'refreshToken' => array(
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $payload ) {
@@ -161,8 +161,8 @@ class JWT_Auth_Schema_Filters {
 
 						return self::get_refresh_token( $user );
 					},
-				],
-			]
+				),
+			)
 		);
 
 		return $fields;
@@ -177,21 +177,21 @@ class JWT_Auth_Schema_Filters {
 		register_graphql_field(
 			'LoginPayload',
 			'customer',
-			[
+			array(
 				'type'        => 'Customer',
 				'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
 					$id = $payload['id'];
 					return new Customer( $id );
 				},
-			]
+			)
 		);
 
 		if ( ! WooCommerce_Filters::is_session_handler_disabled() ) {
 			register_graphql_field(
 				'LoginPayload',
 				'sessionToken',
-				[
+				array(
 					'type'        => 'String',
 					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function () {
@@ -204,7 +204,7 @@ class JWT_Auth_Schema_Filters {
 
 						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
 					},
-				]
+				)
 			);
 		}
 	}

@@ -27,13 +27,13 @@ class Product_With_Variations {
 	public static function register_interface(): void {
 		register_graphql_interface_type(
 			'ProductWithVariations',
-			[
+			array(
 				'description' => __( 'A product with variations.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node', 'ProductWithAttributes' ],
+				'interfaces'  => array( 'Node', 'ProductWithAttributes' ),
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
-			]
+				'resolveType' => array( Core::class, 'resolve_product_type' ),
+			)
 		);
 	}
 
@@ -43,16 +43,16 @@ class Product_With_Variations {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return [
-			'id'         => [
-				'type'        => [ 'non_null' => 'ID' ],
+		return array(
+			'id'         => array(
+				'type'        => array( 'non_null' => 'ID' ),
 				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
-			],
-			'databaseId' => [
-				'type'        => [ 'non_null' => 'Int' ],
+			),
+			'databaseId' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -61,8 +61,8 @@ class Product_With_Variations {
 	 * @return array
 	 */
 	public static function get_connections() {
-		return [
-			'variations' => [
+		return array(
+			'variations' => array(
 				'toType'         => 'ProductVariation',
 				'connectionArgs' => Products::get_connection_args(),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -74,7 +74,7 @@ class Product_With_Variations {
 
 					return $resolver->get_connection();
 				},
-			],
-		];
+			),
+		);
 	}
 }

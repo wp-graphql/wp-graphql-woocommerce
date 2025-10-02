@@ -23,7 +23,7 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 *
 		 * Confirm permission check is working
 		 */
-		$variables = [ 'id' => $id ];
+		$variables = array( 'id' => $id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQueryError( $response );
@@ -36,14 +36,14 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 *
 		 * Test "ID" ID type.
 		 */
-		$variables = [ 'id' => $id ];
+		$variables = array( 'id' => $id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [ 
+		$expected  = array(
 			$this->expectedField( 'shippingMethod.id', $id ),
 			$this->expectedField( 'shippingMethod.databaseId', 'flat_rate' ),
 			$this->expectedField( 'shippingMethod.title', static::NOT_NULL ),
 			$this->expectedField( 'shippingMethod.description', static::NOT_NULL ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -52,7 +52,10 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 *
 		 * Test "DATABASE_ID" ID type.
 		 */
-		$variables = [ 'id' => 'flat_rate', 'idType' => 'DATABASE_ID' ];
+		$variables = array(
+			'id'     => 'flat_rate',
+			'idType' => 'DATABASE_ID',
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -74,8 +77,8 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 *
 		 * Confirm permission check is working
 		 */
-		$response  = $this->graphql( compact( 'query' ) );
-		$this->assertQuerySuccessful( $response, [ $this->expectedField( 'shippingMethods.nodes', static::IS_FALSY ) ] );
+		$response = $this->graphql( compact( 'query' ) );
+		$this->assertQuerySuccessful( $response, array( $this->expectedField( 'shippingMethods.nodes', static::IS_FALSY ) ) );
 
 		// Login as shop manager.
 		$this->loginAsShopManager();
@@ -87,12 +90,11 @@ class ShippingMethodQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = array_map(
-			function( $method ) {
+			function ( $method ) {
 				return $this->expectedField( 'shippingMethods.nodes.#.id', $this->toRelayId( 'shipping_method', $method->id ) );
 			},
 			array_values( WC_Shipping::instance()->get_shipping_methods() )
 		);
-		
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

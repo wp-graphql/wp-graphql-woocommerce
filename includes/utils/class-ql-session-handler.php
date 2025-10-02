@@ -115,15 +115,15 @@ class QL_Session_Handler extends WC_Session_Handler {
 		 * @var self $this
 		 */
 		if ( Router::is_graphql_http_request() ) {
-			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
-			add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
-			add_action( 'shutdown', [ $this, 'save_data' ] );
+			add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_token' ), 10 );
+			add_action( 'woographql_update_session', array( $this, 'set_customer_session_token' ), 10 );
+			add_action( 'shutdown', array( $this, 'save_data' ) );
 		} else {
-			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_cookie' ], 10 );
-			add_action( 'shutdown', [ $this, 'save_data' ], 20 );
-			add_action( 'wp_logout', [ $this, 'destroy_session' ] );
+			add_action( 'woocommerce_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
+			add_action( 'shutdown', array( $this, 'save_data' ), 20 );
+			add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 			if ( ! is_user_logged_in() ) {
-				add_filter( 'nonce_user_logged_out', [ $this, 'maybe_update_nonce_user_logged_out' ], 10, 2 );
+				add_filter( 'nonce_user_logged_out', array( $this, 'maybe_update_nonce_user_logged_out' ), 10, 2 );
 			}
 		}
 	}
@@ -338,15 +338,15 @@ class QL_Session_Handler extends WC_Session_Handler {
 		);
 
 		// Configure the token array, which will be encoded.
-		$token = [
+		$token = array(
 			'iss'  => get_bloginfo( 'url' ),
 			'iat'  => $this->_session_issued,
 			'nbf'  => $not_before,
 			'exp'  => $this->_session_expiration,
-			'data' => [
+			'data' => array(
 				'customer_id' => $this->_customer_id,
-			],
-		];
+			),
+		);
 
 		/**
 		 * Filter the token, allowing for individual systems to configure the token as needed
@@ -453,7 +453,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 		$this->_session_expiration = apply_filters( 'wc_session_expiration', $this->_session_issued + ( 60 * 60 * 48 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$this->_session_expiration = apply_filters_deprecated(
 			'graphql_woocommerce_cart_session_expire',
-			[ $this->_session_expiration ],
+			array( $this->_session_expiration ),
 			'0.21.0',
 			'wc_session_expiration'
 		);

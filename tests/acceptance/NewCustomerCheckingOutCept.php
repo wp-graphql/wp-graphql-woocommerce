@@ -5,9 +5,9 @@ $product_catalog = $I->getCatalog();
 
 // Make quick helper for managing the session token.
 $request_headers = function () use ( $I, &$last_request_headers ) {
-	$last_request_headers = [
+	$last_request_headers = array(
 		'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
-	];
+	);
 
 	return $last_request_headers;
 };
@@ -18,11 +18,11 @@ $I->wantTo( 'add items to the cart' );
 /**
  * Add "T-Shirt" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['t-shirt'],
 	'quantity'         => 3,
-];
+);
 
 $success = $I->addToCart( $add_to_cart_input );
 
@@ -36,11 +36,11 @@ $shirt_key = $success['data']['addToCart']['cartItem']['key'];
 /**
  * Add "Belt" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['belt'],
 	'quantity'         => 2,
-];
+);
 
 $success = $I->addToCart(
 	$add_to_cart_input,
@@ -57,11 +57,11 @@ $belt_key = $success['data']['addToCart']['cartItem']['key'];
 /**
  * Add "Jeans" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['jeans'],
 	'quantity'         => 4,
-];
+);
 
 $success = $I->addToCart(
 	$add_to_cart_input,
@@ -78,11 +78,11 @@ $jeans_key = $success['data']['addToCart']['cartItem']['key'];
 /**
  * Add "Socks" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['socks'],
 	'quantity'         => 1,
-];
+);
 
 $success = $I->addToCart(
 	$add_to_cart_input,
@@ -101,10 +101,10 @@ $I->wantTo( 'remove some items from the cart' );
 /**
  * Remove "Socks" from cart and confirm response data.
  */
-$remove_from_cart_input = [
+$remove_from_cart_input = array(
 	'clientMutationId' => 'someId',
 	'keys'             => $socks_key,
-];
+);
 
 $success = $I->removeItemsFromCart(
 	$remove_from_cart_input,
@@ -124,19 +124,19 @@ $I->wantTo( 'update an item in the cart' );
  * - Change "Jeans" quantity to "1"
  * - Confirm response data.
  */
-$update_quantity_input = [
+$update_quantity_input = array(
 	'clientMutationId' => 'someId',
-	'items'            => [
-		[
+	'items'            => array(
+		array(
 			'key'      => $belt_key,
 			'quantity' => 0,
-		],
-		[
+		),
+		array(
 			'key'      => $jeans_key,
 			'quantity' => 1,
-		],
-	],
-];
+		),
+	),
+);
 
 $success = $I->updateItemQuantities(
 	$update_quantity_input,
@@ -162,11 +162,11 @@ $I->wantTo( 'checkout' );
 /**
  * Place order for items in the cart using the "Checkout" mutation and confirm response data.
  */
-$checkout_input = [
+$checkout_input = array(
 	'clientMutationId' => 'someId',
 	'paymentMethod'    => 'bacs',
-	'shippingMethod'   => [ 'flat rate' ],
-	'billing'          => [
+	'shippingMethod'   => array( 'flat rate' ),
+	'billing'          => array(
 		'firstName' => 'May',
 		'lastName'  => 'Parker',
 		'address1'  => '20 Ingram St',
@@ -176,8 +176,8 @@ $checkout_input = [
 		'country'   => 'US',
 		'email'     => 'superfreak500@gmail.com',
 		'phone'     => '555-555-1234',
-	],
-	'shipping'         => [
+	),
+	'shipping'         => array(
 		'firstName' => 'May',
 		'lastName'  => 'Parker',
 		'address1'  => '20 Ingram St',
@@ -185,8 +185,8 @@ $checkout_input = [
 		'state'     => 'NY',
 		'postcode'  => '12345',
 		'country'   => 'US',
-	],
-];
+	),
+);
 
 $success = $I->checkout(
 	$checkout_input,

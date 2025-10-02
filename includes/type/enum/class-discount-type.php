@@ -18,17 +18,17 @@ class Discount_Type {
 	 * @return void
 	 */
 	public static function register() {
-		$values = [];
+		$values = array();
 		foreach ( \wc_get_coupon_types() as $value => $description ) {
 			$values[ strtoupper( $value ) ] = compact( 'value', 'description' );
 		}
 
 		register_graphql_enum_type(
 			'DiscountTypeEnum',
-			[
+			array(
 				'description' => __( 'Coupon discount type enumeration', 'wp-graphql-woocommerce' ),
 				'values'      => $values,
-			]
+			)
 		);
 	}
 }

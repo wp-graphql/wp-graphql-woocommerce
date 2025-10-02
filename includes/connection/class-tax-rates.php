@@ -35,9 +35,9 @@ class Tax_Rates {
 	 * @param array $args - Connection configuration.
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ): array {
+	public static function get_connection_config( $args = array() ): array {
 		return array_merge(
-			[
+			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'TaxRate',
 				'fromFieldName'  => 'taxRates',
@@ -47,7 +47,7 @@ class Tax_Rates {
 
 					return $resolver->get_connection();
 				},
-			],
+			),
 			$args
 		);
 	}
@@ -58,23 +58,23 @@ class Tax_Rates {
 	 * @return array
 	 */
 	public static function get_connection_args(): array {
-		return [
-			'class'      => [
+		return array(
+			'class'      => array(
 				'type'        => 'TaxClassEnum',
 				'description' => __( 'Sort by tax class.', 'wp-graphql-woocommerce' ),
-			],
-			'postCode'   => [
+			),
+			'postCode'   => array(
 				'type'        => 'String',
 				'description' => __( 'Filter results by a post code.', 'wp-graphql-woocommerce' ),
-			],
-			'postCodeIn' => [
-				'type'        => [ 'list_of' => 'String' ],
+			),
+			'postCodeIn' => array(
+				'type'        => array( 'list_of' => 'String' ),
 				'description' => __( 'Filter results by a group of post codes.', 'wp-graphql-woocommerce' ),
-			],
-			'orderby'    => [
-				'type'        => [ 'list_of' => 'TaxRateConnectionOrderbyInput' ],
+			),
+			'orderby'    => array(
+				'type'        => array( 'list_of' => 'TaxRateConnectionOrderbyInput' ),
 				'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 }

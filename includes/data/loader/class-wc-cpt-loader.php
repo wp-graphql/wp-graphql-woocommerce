@@ -88,7 +88,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		 * to the count of the keys provided. The query must also return results
 		 * in the same order the keys were provided in.
 		 */
-		$args = [
+		$args = array(
 			'post_type'           => $wc_post_types,
 			'post_status'         => 'any',
 			//phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page
@@ -98,7 +98,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 			'no_found_rows'       => true,
 			'split_the_query'     => false,
 			'ignore_sticky_posts' => true,
-		];
+		);
 
 		/**
 		 * Ensure that WP_Query doesn't first ask for IDs since we already have them.
@@ -116,7 +116,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 		);
 		new \WP_Query( $args );
 
-		$loaded_posts = [];
+		$loaded_posts = array();
 
 		/**
 		 * Loop over the posts and return an array of all_posts,

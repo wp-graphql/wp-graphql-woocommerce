@@ -25,11 +25,11 @@ class Cart_Update_Shipping_Method {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateShippingMethod',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -39,11 +39,11 @@ class Cart_Update_Shipping_Method {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'shippingMethods' => [
-				'type' => [ 'list_of' => 'String' ],
-			],
-		];
+		return array(
+			'shippingMethods' => array(
+				'type' => array( 'list_of' => 'String' ),
+			),
+		);
 	}
 
 	/**
@@ -52,9 +52,9 @@ class Cart_Update_Shipping_Method {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
+		return array(
 			'cart' => Cart_Mutation::get_cart_field( true ),
-		];
+		);
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Cart_Update_Shipping_Method {
 
 			do_action( 'woographql_update_session', true );
 
-			return [];
+			return array();
 		};
 	}
 }

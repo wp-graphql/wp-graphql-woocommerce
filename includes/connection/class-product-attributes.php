@@ -28,24 +28,24 @@ class Product_Attributes {
 		// From Product to LocalProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
+				array(
 					'fromType'       => 'Product',
 					'toType'         => 'LocalProductAttribute',
 					'fromFieldName'  => 'localAttributes',
-					'connectionArgs' => [],
-				]
+					'connectionArgs' => array(),
+				)
 			)
 		);
 
 		// From Product to GlobalProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
+				array(
 					'fromType'       => 'Product',
 					'toType'         => 'GlobalProductAttribute',
 					'fromFieldName'  => 'globalAttributes',
-					'connectionArgs' => [],
-				]
+					'connectionArgs' => array(),
+				)
 			)
 		);
 	}
@@ -59,7 +59,7 @@ class Product_Attributes {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [] ): array {
+	public static function get_connection_config( $args = array() ): array {
 		if ( ! isset( $args['fromType'] ) ) {
 			throw new Error( __( 'The "fromType" is required for the ProductAttributes connection.', 'wp-graphql-woocommerce' ) );
 		}
@@ -69,9 +69,9 @@ class Product_Attributes {
 		}
 
 		return array_merge(
-			[
+			array(
 				'fromFieldName'  => 'attributes',
-				'connectionArgs' => [],
+				'connectionArgs' => array(),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$resolver = new Product_Attribute_Connection_Resolver();
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -84,7 +84,7 @@ class Product_Attributes {
 							return $resolver->resolve( $source, $args, $context, $info );
 					}
 				},
-			],
+			),
 			$args
 		);
 	}

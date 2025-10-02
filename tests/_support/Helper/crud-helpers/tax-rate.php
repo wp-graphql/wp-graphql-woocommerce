@@ -22,7 +22,7 @@ class TaxRateHelper extends WCG_Helper {
 
 	public function create( $args = array() ) {
 		$rate_args = array();
-		$fields = array(
+		$fields    = array(
 			'country'  => 'tax_rate_country',
 			'state'    => 'tax_rate_state',
 			'rate'     => 'tax_rate',
@@ -33,7 +33,7 @@ class TaxRateHelper extends WCG_Helper {
 			'order'    => 'tax_rate_order',
 			'class'    => 'tax_rate_class',
 		);
-		foreach( $args as $key => $value ) {
+		foreach ( $args as $key => $value ) {
 			if ( in_array( $key, array_keys( $fields ) ) ) {
 				$rate_args[ $fields[ $key ] ] = $value;
 			}
@@ -44,7 +44,7 @@ class TaxRateHelper extends WCG_Helper {
 				'tax_rate_country'  => 'US',
 				'tax_rate_state'    => '*',
 				'tax_rate'          => 20.0000,
-				'tax_rate_name'     => "VAT",
+				'tax_rate_name'     => 'VAT',
 				'tax_rate_priority' => 1,
 				'tax_rate_compound' => 1,
 				'tax_rate_shipping' => 1,
@@ -96,8 +96,8 @@ class TaxRateHelper extends WCG_Helper {
 				'databaseId' => absint( $rate->tax_rate_id ),
 				'country'    => ! empty( $rate->tax_rate_country ) ? $rate->tax_rate_country : null,
 				'state'      => ! empty( $rate->tax_rate_state ) ? $rate->tax_rate_state : null,
-				'postcode'   => ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : array( "*" ),
-				'city'       => ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : array( "*" ),
+				'postcode'   => ! empty( $rate->tax_rate_postcode ) ? $rate->tax_rate_postcode : array( '*' ),
+				'city'       => ! empty( $rate->tax_rate_city ) ? $rate->tax_rate_city : array( '*' ),
 				'rate'       => ! empty( $rate->tax_rate ) ? $rate->tax_rate : null,
 				'name'       => ! empty( $rate->tax_rate_name ) ? $rate->tax_rate_name : null,
 				'priority'   => absint( $rate->tax_rate_priority ),

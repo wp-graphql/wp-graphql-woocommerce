@@ -31,7 +31,7 @@ class Orders {
 		// From Customer To Orders.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
+				array(
 					'fromType'      => 'Customer',
 					'fromFieldName' => 'orders',
 					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
@@ -39,25 +39,25 @@ class Orders {
 
 						return self::get_customer_order_connection( $resolver, $source );
 					},
-				]
+				)
 			)
 		);
 
 		// From RootQuery To Refunds.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
+				array(
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
 					'connectionArgs' => self::get_refund_connection_args(),
-				],
+				),
 				'shop_order_refund'
 			)
 		);
 		// From Order To Refunds.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
+				array(
 					'fromType'       => 'Order',
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
@@ -70,14 +70,14 @@ class Orders {
 
 						return $resolver->get_connection();
 					},
-				],
+				),
 				'shop_order_refund'
 			)
 		);
 		// From Customer To Refunds.
 		register_graphql_connection(
 			self::get_connection_config(
-				[
+				array(
 					'fromType'       => 'Customer',
 					'toType'         => 'Refund',
 					'fromFieldName'  => 'refunds',
@@ -87,7 +87,7 @@ class Orders {
 
 						return self::get_customer_refund_connection( $resolver, $source );
 					},
-				],
+				),
 				'shop_order_refund'
 			)
 		);
@@ -104,10 +104,10 @@ class Orders {
 	private static function get_customer_order_connection( $resolver, $customer ) {
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
 		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return [
-				'nodes' => [],
-				'edges' => [],
-			];
+			return array(
+				'nodes' => array(),
+				'edges' => array(),
+			);
 		}
 
 		$customer_id   = $customer->get_id();
@@ -132,24 +132,24 @@ class Orders {
 	 * @return array|\GraphQL\Deferred
 	 */
 	private static function get_customer_refund_connection( $resolver, $customer ) {
-		$empty_results = [
+		$empty_results = array(
 			'pageInfo' => null,
-			'nodes'    => [],
-			'edges'    => [],
-		];
+			'nodes'    => array(),
+			'edges'    => array(),
+		);
 		// If not "billing email" or "ID" set bail early by returning an empty connection.
 		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
 			return $empty_results;
 		}
 
-		$order_ids     = [];
+		$order_ids     = array();
 		$customer_id   = $customer->get_id();
 		$billing_email = $customer->get_billing_email();
 		if ( ! empty( $customer_id ) ) {
-			$args = [
+			$args = array(
 				'customer_id' => $customer_id,
 				'return'      => 'ids',
-			];
+			);
 			/** @var array<int> $order_ids_by_customer_id */
 			$order_ids_by_customer_id = wc_get_orders( $args );
 
@@ -159,10 +159,10 @@ class Orders {
 		}
 
 		if ( ! empty( $billing_email ) ) {
-			$args = [
+			$args = array(
 				'billing_email' => $billing_email,
 				'return'        => 'ids',
-			];
+			);
 			/** @var array<int> $order_ids_by_email */
 			$order_ids_by_email = wc_get_orders( $args );
 			// Merge the arrays of order IDs.
@@ -200,7 +200,7 @@ class Orders {
 	 *
 	 * @return array
 	 */
-	public static function get_connection_config( $args = [], $post_type = 'shop_order' ): array {
+	public static function get_connection_config( $args = array(), $post_type = 'shop_order' ): array {
 		// Get Post type object for use in connection resolve function.
 		/**
 		 * Get connection post type.
@@ -210,7 +210,7 @@ class Orders {
 		$post_object = get_post_type_object( $post_type );
 
 		return array_merge(
-			[
+			array(
 				'fromType'       => 'RootQuery',
 				'toType'         => 'Order',
 				'fromFieldName'  => 'orders',
@@ -239,7 +239,7 @@ class Orders {
 
 					return $resolver->get_connection();
 				},
-			],
+			),
 			$args
 		);
 	}
@@ -255,58 +255,58 @@ class Orders {
 			case 'private':
 				return array_merge(
 					get_wc_cpt_connection_args(),
-					[
-						'statuses'     => [
-							'type'        => [ 'list_of' => 'OrderStatusEnum' ],
+					array(
+						'statuses'     => array(
+							'type'        => array( 'list_of' => 'OrderStatusEnum' ),
 							'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
-						],
-						'customerId'   => [
+						),
+						'customerId'   => array(
 							'type'        => 'Int',
 							'description' => __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' ),
-						],
-						'customersIn'  => [
-							'type'        => [ 'list_of' => 'Int' ],
+						),
+						'customersIn'  => array(
+							'type'        => array( 'list_of' => 'Int' ),
 							'description' => __( 'Limit result set to orders assigned a specific group of customers.', 'wp-graphql-woocommerce' ),
-						],
-						'productId'    => [
+						),
+						'productId'    => array(
 							'type'        => 'Int',
 							'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
-						],
-						'orderby'      => [
-							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
+						),
+						'orderby'      => array(
+							'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
 							'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-						],
-						'billingEmail' => [
+						),
+						'billingEmail' => array(
 							'type'        => 'String',
 							'description' => __( 'Limit result set to orders assigned a specific billing email.', 'wp-graphql-woocommerce' ),
-						],
-					]
+						),
+					)
 				);
 
 			case 'public':
 			default:
-				return [
-					'statuses'  => [
-						'type'        => [ 'list_of' => 'OrderStatusEnum' ],
+				return array(
+					'statuses'  => array(
+						'type'        => array( 'list_of' => 'OrderStatusEnum' ),
 						'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
-					],
-					'productId' => [
+					),
+					'productId' => array(
 						'type'        => 'Int',
 						'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
-					],
-					'orderby'   => [
-						'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
+					),
+					'orderby'   => array(
+						'type'        => array( 'list_of' => 'OrdersOrderbyInput' ),
 						'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-					],
-					'search'    => [
+					),
+					'search'    => array(
 						'type'        => 'String',
 						'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-					],
-					'dateQuery' => [
+					),
+					'dateQuery' => array(
 						'type'        => 'DateQueryInput',
 						'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
-					],
-				];
+					),
+				);
 		}//end switch
 	}
 
@@ -318,16 +318,16 @@ class Orders {
 	public static function get_refund_connection_args(): array {
 		return array_merge(
 			get_wc_cpt_connection_args(),
-			[
-				'statuses' => [
-					'type'        => [ 'list_of' => 'String' ],
+			array(
+				'statuses' => array(
+					'type'        => array( 'list_of' => 'String' ),
 					'description' => __( 'Limit result set to refunds assigned a specific status.', 'wp-graphql-woocommerce' ),
-				],
-				'orderIn'  => [
-					'type'        => [ 'list_of' => 'Int' ],
+				),
+				'orderIn'  => array(
+					'type'        => array( 'list_of' => 'Int' ),
 					'description' => __( 'Limit result set to refunds from a specific group of order IDs.', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 }

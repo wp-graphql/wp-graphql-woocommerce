@@ -18,7 +18,7 @@ class DB_Hooks {
 	 * DB_Hooks constructor.
 	 */
 	public function __construct() {
-		add_filter( 'woocommerce_orders_table_query_clauses', [ $this, 'add_cursor' ], 10, 3 );
+		add_filter( 'woocommerce_orders_table_query_clauses', array( $this, 'add_cursor' ), 10, 3 );
 	}
 
 	/**

@@ -131,10 +131,10 @@ class Product extends WC_Post {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = [] ) {
+	protected static function get_allowed_restricted_fields( $allowed_restricted_fields = array() ) {
 		return array_merge(
 			parent::get_allowed_restricted_fields(),
-			[ 'type' ]
+			array( 'type' )
 		);
 	}
 
@@ -201,7 +201,7 @@ class Product extends WC_Post {
 			parent::init();
 
 			$type   = $this->wc_data->get_type();
-			$fields = [
+			$fields = array(
 				'ID'                  => function () {
 					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
 				},
@@ -288,18 +288,18 @@ class Product extends WC_Post {
 				/**
 				 * Editor/Shop Manager only fields
 				 */
-				'catalogVisibility'   => [
+				'catalogVisibility'   => array(
 					'callback'   => function () {
 						return ! empty( $this->wc_data->get_catalog_visibility() ) ? $this->wc_data->get_catalog_visibility() : null;
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				],
-				'totalSales'          => [
+				),
+				'totalSales'          => array(
 					'callback'   => function () {
 						return $this->wc_data->get_total_sales();
 					},
 					'capability' => $this->post_type_object->cap->edit_posts,
-				],
+				),
 
 				/**
 				 * Connection resolvers fields
@@ -310,25 +310,25 @@ class Product extends WC_Post {
 				'upsell_ids'          => function () {
 					return ! empty( $this->wc_data->get_upsell_ids() )
 						? array_map( 'absint', $this->wc_data->get_upsell_ids() )
-						: [ '0' ];
+						: array( '0' );
 				},
 				'attributes'          => function () {
-					return ! empty( $this->wc_data->get_attributes() ) ? $this->wc_data->get_attributes() : [];
+					return ! empty( $this->wc_data->get_attributes() ) ? $this->wc_data->get_attributes() : array();
 				},
 				'default_attributes'  => function () {
-					return ! empty( $this->wc_data->get_default_attributes() ) ? $this->wc_data->get_default_attributes() : [ '0' ];
+					return ! empty( $this->wc_data->get_default_attributes() ) ? $this->wc_data->get_default_attributes() : array( '0' );
 				},
 				'image_id'            => function () {
 					return ! empty( $this->wc_data->get_image_id() ) ? $this->wc_data->get_image_id() : null;
 				},
 				'gallery_image_ids'   => function () {
-					return ! empty( $this->wc_data->get_gallery_image_ids() ) ? $this->wc_data->get_gallery_image_ids() : [ '0' ];
+					return ! empty( $this->wc_data->get_gallery_image_ids() ) ? $this->wc_data->get_gallery_image_ids() : array( '0' );
 				},
 				'category_ids'        => function () {
-					return ! empty( $this->wc_data->get_category_ids() ) ? $this->wc_data->get_category_ids() : [ '0' ];
+					return ! empty( $this->wc_data->get_category_ids() ) ? $this->wc_data->get_category_ids() : array( '0' );
 				},
 				'tag_ids'             => function () {
-					return ! empty( $this->wc_data->get_tag_ids() ) ? $this->wc_data->get_tag_ids() : [ '0' ];
+					return ! empty( $this->wc_data->get_tag_ids() ) ? $this->wc_data->get_tag_ids() : array( '0' );
 				},
 				'parent_id'           => function () {
 					return ! empty( $this->wc_data->get_parent_id() ) ? $this->wc_data->get_parent_id() : null;
@@ -336,7 +336,7 @@ class Product extends WC_Post {
 				'post'                => function () {
 					return ! empty( $this->wc_data->post ) ? $this->wc_data->post : null;
 				},
-			];
+			);
 
 			if (
 				apply_filters(
@@ -344,7 +344,7 @@ class Product extends WC_Post {
 					'grouped' !== $this->wc_data->get_type()
 				)
 			) {
-				$fields += [
+				$fields += array(
 					'price'           => function () {
 						return ! empty( $this->wc_data->get_price() )
 							? wc_graphql_price( \wc_get_price_to_display( $this->wc_data ) )
@@ -355,7 +355,7 @@ class Product extends WC_Post {
 					},
 					'regularPrice'    => function () {
 						return ! empty( $this->wc_data->get_regular_price() )
-							? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, [ 'price' => $this->wc_data->get_regular_price() ] ) )
+							? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, array( 'price' => $this->wc_data->get_regular_price() ) ) )
 							: null;
 					},
 					'regularPriceRaw' => function () {
@@ -366,9 +366,9 @@ class Product extends WC_Post {
 							? wc_graphql_price(
 								\wc_get_price_to_display(
 									$this->wc_data,
-									[
+									array(
 										'price' => $this->wc_data->get_sale_price(),
-									]
+									)
 								)
 							)
 							: null;
@@ -382,7 +382,7 @@ class Product extends WC_Post {
 					'taxClass'        => function () {
 						return $this->wc_data->get_tax_class();
 					},
-				];
+				);
 			}//end if
 
 			if (
@@ -391,7 +391,7 @@ class Product extends WC_Post {
 					'simple' === $type || 'variable' === $type
 				)
 			) {
-				$fields += [
+				$fields += array(
 					'manageStock'       => function () {
 						return ! empty( $this->wc_data->get_manage_stock() ) ? $this->wc_data->get_manage_stock() : null;
 					},
@@ -434,17 +434,17 @@ class Product extends WC_Post {
 					'cross_sell_ids'    => function () {
 						return ! empty( $this->wc_data->get_cross_sell_ids() )
 							? array_map( 'absint', $this->wc_data->get_cross_sell_ids() )
-							: [ '0' ];
+							: array( '0' );
 					},
 					'stockStatus'       => function () {
 						return ! empty( $this->wc_data->get_stock_status() ) ? $this->wc_data->get_stock_status() : null;
 					},
-				];
+				);
 			}//end if
 
 			switch ( true ) {
 				case apply_filters( "graphql_{$type}_product_model_use_virtual_data_fields", 'simple' === $type ):
-					$fields += [
+					$fields += array(
 						'virtual'        => function () {
 							return $this->wc_data->is_virtual();
 						},
@@ -460,10 +460,10 @@ class Product extends WC_Post {
 						'downloads'      => function () {
 							return ! empty( $this->wc_data->get_downloads() ) ? $this->wc_data->get_downloads() : null;
 						},
-					];
+					);
 					break;
 				case apply_filters( "graphql_{$type}_product_model_use_variation_pricing_fields", 'variable' === $type ):
-					$fields = [
+					$fields = array(
 						'price'           => function () {
 							return $this->get_variation_price();
 						},
@@ -476,7 +476,7 @@ class Product extends WC_Post {
 						'variation_ids'   => function () {
 							return ! empty( $this->wc_data->get_children() )
 								? array_map( 'absint', $this->wc_data->get_children() )
-								: [ '0' ];
+								: array( '0' );
 						},
 						'priceRaw'        => function () {
 							return $this->get_variation_price( '', true );
@@ -487,10 +487,10 @@ class Product extends WC_Post {
 						'salePriceRaw'    => function () {
 							return $this->get_variation_price( 'sale', true );
 						},
-					] + $fields;
+					) + $fields;
 					break;
 				case apply_filters( "graphql_{$type}_product_model_use_external_fields", 'external' === $type ):
-					$fields += [
+					$fields += array(
 						'externalUrl' => function () {
 							/**
 							 * External product
@@ -509,10 +509,10 @@ class Product extends WC_Post {
 							$data = $this->wc_data;
 							return ! empty( $data->get_button_text() ) ? $data->get_button_text() : null;
 						},
-					];
+					);
 					break;
 				case apply_filters( "graphql_{$type}_product_model_use_grouped_fields", 'grouped' === $type ):
-					$fields += [
+					$fields += array(
 						'addToCartText'        => function () {
 							return ! empty( $this->wc_data->add_to_cart_text() ) ? $this->wc_data->add_to_cart_text() : null;
 						},
@@ -524,9 +524,9 @@ class Product extends WC_Post {
 						'grouped_ids'          => function () {
 							return ! empty( $this->wc_data->get_children() )
 								? array_map( 'absint', $this->wc_data->get_children() )
-								: [ '0' ];
+								: array( '0' );
 						},
-					];
+					);
 					break;
 			}//end switch
 
@@ -536,7 +536,7 @@ class Product extends WC_Post {
 			 * These fields are used primarily by WPGraphQL core Node* interfaces
 			 * and some fields act as aliases/decorator for existing fields.
 			 */
-			$fields += [
+			$fields += array(
 				'commentCount'  => function () {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					return ! empty( $this->reviewCount ) ? $this->reviewCount : null;
@@ -545,7 +545,7 @@ class Product extends WC_Post {
 					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					return isset( $this->reviewsAllowed ) && $this->reviewsAllowed ? 'open' : 'closed';
 				},
-			];
+			);
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}//end if

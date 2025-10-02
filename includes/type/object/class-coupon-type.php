@@ -22,89 +22,89 @@ class Coupon_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'Coupon',
-			[
+			array(
 				'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
-				'fields'      => [
-					'id'                 => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
+					'id'                 => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the coupon', 'wp-graphql-woocommerce' ),
-					],
-					'databaseId'         => [
+					),
+					'databaseId'         => array(
 						'type'        => 'Int',
 						'description' => __( 'The ID of the coupon in the database', 'wp-graphql-woocommerce' ),
-					],
-					'code'               => [
+					),
+					'code'               => array(
 						'type'        => 'String',
 						'description' => __( 'Coupon code', 'wp-graphql-woocommerce' ),
-					],
-					'date'               => [
+					),
+					'date'               => array(
 						'type'        => 'String',
 						'description' => __( 'Date coupon created', 'wp-graphql-woocommerce' ),
-					],
-					'modified'           => [
+					),
+					'modified'           => array(
 						'type'        => 'String',
 						'description' => __( 'Date coupon modified', 'wp-graphql-woocommerce' ),
-					],
-					'description'        => [
+					),
+					'description'        => array(
 						'type'        => 'String',
 						'description' => __( 'Explanation of what the coupon does', 'wp-graphql-woocommerce' ),
-					],
-					'discountType'       => [
+					),
+					'discountType'       => array(
 						'type'        => 'DiscountTypeEnum',
 						'description' => __( 'Type of discount', 'wp-graphql-woocommerce' ),
-					],
-					'amount'             => [
+					),
+					'amount'             => array(
 						'type'        => 'Float',
 						'description' => __( 'Amount off provided by the coupon', 'wp-graphql-woocommerce' ),
-					],
-					'dateExpiry'         => [
+					),
+					'dateExpiry'         => array(
 						'type'        => 'String',
 						'description' => __( 'Date coupon expires', 'wp-graphql-woocommerce' ),
-					],
-					'usageCount'         => [
+					),
+					'usageCount'         => array(
 						'type'        => 'Int',
 						'description' => __( 'How many times the coupon has been used', 'wp-graphql-woocommerce' ),
-					],
-					'individualUse'      => [
+					),
+					'individualUse'      => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Individual use means this coupon cannot be used in conjunction with other coupons', 'wp-graphql-woocommerce' ),
-					],
-					'usageLimit'         => [
+					),
+					'usageLimit'         => array(
 						'type'        => 'Int',
 						'description' => __( 'Amount of times this coupon can be used globally', 'wp-graphql-woocommerce' ),
-					],
-					'usageLimitPerUser'  => [
+					),
+					'usageLimitPerUser'  => array(
 						'type'        => 'Int',
 						'description' => __( 'Amount of times this coupon can be used by a customer', 'wp-graphql-woocommerce' ),
-					],
-					'limitUsageToXItems' => [
+					),
+					'limitUsageToXItems' => array(
 						'type'        => 'Int',
 						'description' => __( 'The number of products in your cart this coupon can apply to (for product discounts)', 'wp-graphql-woocommerce' ),
-					],
-					'freeShipping'       => [
+					),
+					'freeShipping'       => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Does this coupon grant free shipping?', 'wp-graphql-woocommerce' ),
-					],
-					'excludeSaleItems'   => [
+					),
+					'excludeSaleItems'   => array(
 						'type'        => 'Boolean',
 						'description' => __( 'Excluding sale items mean this coupon cannot be used on items that are on sale (or carts that contain on sale items)', 'wp-graphql-woocommerce' ),
-					],
-					'minimumAmount'      => [
+					),
+					'minimumAmount'      => array(
 						'type'        => 'Float',
 						'description' => __( 'Minimum spend amount that must be met before this coupon can be used', 'wp-graphql-woocommerce' ),
-					],
-					'maximumAmount'      => [
+					),
+					'maximumAmount'      => array(
 						'type'        => 'Float',
 						'description' => __( 'Maximum spend amount that must be met before this coupon can be used ', 'wp-graphql-woocommerce' ),
-					],
-					'emailRestrictions'  => [
-						'type'        => [ 'list_of' => 'String' ],
+					),
+					'emailRestrictions'  => array(
+						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'Only customers with a matching email address can use the coupon', 'wp-graphql-woocommerce' ),
-					],
+					),
 					'metaData'           => Meta_Data_Type::get_metadata_field_definition(),
-				],
-			]
+				),
+			)
 		);
 	}
 }

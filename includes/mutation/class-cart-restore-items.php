@@ -27,11 +27,11 @@ class Cart_Restore_Items {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'restoreCartItems',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -41,12 +41,12 @@ class Cart_Restore_Items {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'keys' => [
-				'type'        => [ 'list_of' => 'ID' ],
+		return array(
+			'keys' => array(
+				'type'        => array( 'list_of' => 'ID' ),
 				'description' => __( 'Cart item key of the item being removed', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -85,7 +85,7 @@ class Cart_Restore_Items {
 			do_action( 'woographql_update_session', true );
 
 			// Return payload.
-			return [ 'items' => $cart_items ];
+			return array( 'items' => $cart_items );
 		};
 	}
 }

@@ -79,5 +79,5 @@ function initialize_hpos() {
 
 if ( defined( 'HPOS' ) ) {
 	\codecept_debug( 'HPOS activated!!!' );
-	//add_action( 'woocommerce_init', 'initialize_hpos' );
+	// add_action( 'woocommerce_init', 'initialize_hpos' );
 }

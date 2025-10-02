@@ -29,11 +29,11 @@ class Order_Delete_Items {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteOrderItems',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -44,21 +44,21 @@ class Order_Delete_Items {
 	 */
 	public static function get_input_fields() {
 		return array_merge(
-			[
-				'id'      => [
+			array(
+				'id'      => array(
 					'type'        => 'ID',
 					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
-				],
-				'orderId' => [
+				),
+				'orderId' => array(
 					'type'              => 'Int',
 					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
-				],
-				'itemIds' => [
-					'type'        => [ 'list_of' => 'Int' ],
+				),
+				'itemIds' => array(
+					'type'        => array( 'list_of' => 'Int' ),
 					'description' => __( 'ID Order items being deleted', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -68,14 +68,14 @@ class Order_Delete_Items {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'order' => [
+		return array(
+			'order' => array(
 				'type'    => 'Order',
 				'resolve' => static function ( $payload ) {
 					return $payload['order'];
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Order_Delete_Items {
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $ids, $working_order, $input, $context, $info );
 
-			return [ 'order' => $order ];
+			return array( 'order' => $order );
 		};
 	}
 }

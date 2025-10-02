@@ -20,27 +20,27 @@ class Product_Attribute_Filter_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'ProductAttributeFilterInput',
-			[
+			array(
 				'description' => __( 'Product filter', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'taxonomy' => [
-						'type'        => [ 'non_null' => 'ProductAttributeEnum' ],
+				'fields'      => array(
+					'taxonomy' => array(
+						'type'        => array( 'non_null' => 'ProductAttributeEnum' ),
 						'description' => __( 'Which field to select taxonomy term by.', 'wp-graphql-woocommerce' ),
-					],
-					'terms'    => [
-						'type'        => [ 'list_of' => 'String' ],
+					),
+					'terms'    => array(
+						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'A list of term slugs', 'wp-graphql-woocommerce' ),
-					],
-					'ids'      => [
-						'type'        => [ 'list_of' => 'Int' ],
+					),
+					'ids'      => array(
+						'type'        => array( 'list_of' => 'Int' ),
 						'description' => __( 'A list of term ids', 'wp-graphql-woocommerce' ),
-					],
-					'operator' => [
+					),
+					'operator' => array(
 						'type'        => 'AttributeOperatorEnum',
 						'description' => __( 'Filter operation type', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

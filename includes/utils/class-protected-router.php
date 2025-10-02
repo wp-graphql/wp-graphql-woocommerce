@@ -60,17 +60,17 @@ class Protected_Router {
 		/**
 		 * Create the rewrite rule for the route
 		 */
-		add_action( 'init', [ $this, 'add_rewrite_rule' ], 10 );
+		add_action( 'init', array( $this, 'add_rewrite_rule' ), 10 );
 
 		/**
 		 * Add the query var for the route
 		 */
-		add_filter( 'query_vars', [ $this, 'add_query_var' ], 1, 1 );
+		add_filter( 'query_vars', array( $this, 'add_query_var' ), 1, 1 );
 
 		/**
 		 * Redirects the route to the graphql processor
 		 */
-		add_action( 'pre_get_posts', [ $this, 'resolve_request' ], 1 );
+		add_action( 'pre_get_posts', array( $this, 'resolve_request' ), 1 );
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Protected_Router {
 		 * Remove the resolve_request function from the pre_get_posts action
 		 * to prevent an infinite loop
 		 */
-		remove_action( 'pre_get_posts', [ $this, 'resolve_request' ], 1 );
+		remove_action( 'pre_get_posts', array( $this, 'resolve_request' ), 1 );
 
 		/**
 		 * Access the $wp_query object
@@ -228,9 +228,9 @@ class Protected_Router {
 	public static function get_nonce_names() {
 		$enabled_authorizing_url_fields = WooCommerce_Filters::enabled_authorizing_url_fields();
 		if ( empty( $enabled_authorizing_url_fields ) ) {
-			return [];
+			return array();
 		}
-		$nonce_names = [];
+		$nonce_names = array();
 		foreach ( array_keys( $enabled_authorizing_url_fields ) as $field ) {
 			$nonce_names[ $field ] = WooCommerce_Filters::get_authorizing_url_nonce_param_name( $field );
 		}

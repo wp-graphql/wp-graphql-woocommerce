@@ -50,7 +50,7 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array|void
 	 */
 	public function get_query_args() {
-		return [];
+		return array();
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids_from_query() {
-		return ! empty( $this->query ) ? $this->query : [];
+		return ! empty( $this->query ) ? $this->query : array();
 	}
 
 	/**

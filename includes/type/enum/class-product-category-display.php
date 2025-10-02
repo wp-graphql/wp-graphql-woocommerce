@@ -20,27 +20,27 @@ class Product_Category_Display {
 	public static function register() {
 		register_graphql_enum_type(
 			'ProductCategoryDisplay',
-			[
+			array(
 				'description' => __( 'Product category display type enumeration', 'wp-graphql-woocommerce' ),
-				'values'      => [
-					'DEFAULT'       => [
+				'values'      => array(
+					'DEFAULT'       => array(
 						'value'       => 'default',
 						'description' => __( 'Display default content connected to this category.', 'wp-graphql-woocommerce' ),
-					],
-					'PRODUCTS'      => [
+					),
+					'PRODUCTS'      => array(
 						'value'       => 'products',
 						'description' => __( 'Display products associated with this category.', 'wp-graphql-woocommerce' ),
-					],
-					'SUBCATEGORIES' => [
+					),
+					'SUBCATEGORIES' => array(
 						'value'       => 'subcategories',
 						'description' => __( 'Display subcategories of this category.', 'wp-graphql-woocommerce' ),
-					],
-					'BOTH'          => [
+					),
+					'BOTH'          => array(
 						'value'       => 'both',
 						'description' => __( 'Display both products and subcategories of this category.', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

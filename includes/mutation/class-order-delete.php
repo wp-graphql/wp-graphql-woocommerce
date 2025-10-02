@@ -30,11 +30,11 @@ class Order_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'deleteOrder',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -45,21 +45,21 @@ class Order_Delete {
 	 */
 	public static function get_input_fields() {
 		return array_merge(
-			[
-				'id'          => [
+			array(
+				'id'          => array(
 					'type'        => 'ID',
 					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
-				],
-				'orderId'     => [
+				),
+				'orderId'     => array(
 					'type'              => 'Int',
 					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
-				],
-				'forceDelete' => [
+				),
+				'forceDelete' => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -69,14 +69,14 @@ class Order_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'order' => [
+		return array(
+			'order' => array(
 				'type'    => 'Order',
 				'resolve' => static function ( $payload ) {
 					return $payload['order'];
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Order_Delete {
 			 */
 			do_action( 'graphql_woocommerce_after_order_delete', $order, $input, $context, $info );
 
-			return [ 'order' => $order ];
+			return array( 'order' => $order );
 		};
 	}
 }

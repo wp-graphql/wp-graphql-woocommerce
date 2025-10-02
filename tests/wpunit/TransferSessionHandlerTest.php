@@ -23,7 +23,7 @@ class TransferSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		// after
 		parent::tearDown();
 
-		$_REQUEST = [];
+		$_REQUEST = array();
 	}
 
 	public function testInitSessionCookie() {

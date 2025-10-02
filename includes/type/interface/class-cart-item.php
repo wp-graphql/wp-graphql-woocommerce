@@ -27,9 +27,9 @@ class Cart_Item {
 		// Register cart item interface.
 		register_graphql_interface_type(
 			'CartItem',
-			[
+			array(
 				'description' => __( 'Cart item interface.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => array( 'Node' ),
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
 				'resolveType' => static function ( $cart_item ) {
@@ -47,17 +47,17 @@ class Cart_Item {
 
 					return $type_registry->get_type( $type_name );
 				},
-			]
+			)
 		);
 
 		register_graphql_object_type(
 			'SimpleCartItem',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A item in the cart', 'wp-graphql-woocommerce' ),
-				'interfaces'      => [ 'Node', 'CartItem' ],
-				'fields'          => [],
-			]
+				'interfaces'      => array( 'Node', 'CartItem' ),
+				'fields'          => array(),
+			)
 		);
 	}
 
@@ -67,30 +67,30 @@ class Cart_Item {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return [
-			'key'         => [
-				'type'        => [ 'non_null' => 'ID' ],
+		return array(
+			'key'         => array(
+				'type'        => array( 'non_null' => 'ID' ),
 				'description' => __( 'CartItem ID', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source['key'] ) ? $source['key'] : null;
 				},
-			],
-			'quantity'    => [
+			),
+			'quantity'    => array(
 				'type'        => 'Int',
 				'description' => __( 'Quantity of the product', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $source ) {
 					return isset( $source['quantity'] ) ? absint( $source['quantity'] ) : null;
 				},
-			],
-			'subtotal'    => [
+			),
+			'subtotal'    => array(
 				'type'        => 'String',
 				'description' => __( 'Item\'s subtotal', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, array $args ) {
 					$price = isset( $source['line_subtotal'] ) ? floatval( $source['line_subtotal'] ) : 0;
 
@@ -100,16 +100,16 @@ class Cart_Item {
 
 					return \wc_graphql_price( $price );
 				},
-			],
-			'subtotalTax' => [
+			),
+			'subtotalTax' => array(
 				'type'        => 'String',
 				'description' => __( 'Item\'s subtotal tax', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, array $args ) {
 					$price = isset( $source['line_subtotal_tax'] ) ? floatval( $source['line_subtotal_tax'] ) : 0;
 
@@ -119,16 +119,16 @@ class Cart_Item {
 
 					return \wc_graphql_price( $price );
 				},
-			],
-			'total'       => [
+			),
+			'total'       => array(
 				'type'        => 'String',
 				'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, array $args ) {
 					$price_without_tax = isset( $source['line_total'] ) ? floatval( $source['line_total'] ) : 0;
 					$tax               = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
@@ -140,16 +140,16 @@ class Cart_Item {
 
 					return \wc_graphql_price( $price );
 				},
-			],
-			'tax'         => [
+			),
+			'tax'         => array(
 				'type'        => 'String',
 				'description' => __( 'Item\'s tax', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'format' => [
+				'args'        => array(
+					'format' => array(
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, array $args ) {
 					$price = isset( $source['line_tax'] ) ? floatval( $source['line_tax'] ) : 0;
 
@@ -159,27 +159,27 @@ class Cart_Item {
 
 					return \wc_graphql_price( $price );
 				},
-			],
-			'extraData'   => [
-				'type'        => [ 'list_of' => 'MetaData' ],
+			),
+			'extraData'   => array(
+				'type'        => array( 'list_of' => 'MetaData' ),
 				'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
-				'args'        => [
-					'key'    => [
+				'args'        => array(
+					'key'    => array(
 						'type'        => 'String',
 						'description' => __( 'Retrieve meta by key', 'wp-graphql-woocommerce' ),
-					],
-					'keysIn' => [
-						'type'        => [ 'list_of' => 'String' ],
+					),
+					'keysIn' => array(
+						'type'        => array( 'list_of' => 'String' ),
 						'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
-					],
-				],
+					),
+				),
 				'resolve'     => static function ( $source, array $args ) {
 					// Check if "key" argument set and assigns to target "keys" array.
 					if ( ! empty( $args['key'] ) && ! empty( $source[ $args['key'] ] ) ) {
-						$keys = [ $args['key'] ];
+						$keys = array( $args['key'] );
 					} elseif ( ! empty( $args['keysIn'] ) ) {
 						// Check if "keysIn" argument set and assigns to target "keys" array.
-						$keys = [];
+						$keys = array();
 						foreach ( $args['keysIn'] as $key ) {
 							if ( ! empty( $source[ $key ] ) ) {
 								$keys[] = $key;
@@ -189,7 +189,7 @@ class Cart_Item {
 						// If no arguments set, all extra data keys are assigns to target "keys" array.
 						$keys = array_diff(
 							array_keys( $source ),
-							[
+							array(
 								'key',
 								'product_id',
 								'variation_id',
@@ -202,26 +202,26 @@ class Cart_Item {
 								'line_subtotal_tax',
 								'line_total',
 								'line_tax',
-							]
+							)
 						);
 					}//end if
 					// Create meta ID prefix.
 					$id_prefix = apply_filters( 'graphql_woocommerce_cart_meta_id_prefix', 'cart_' );
 
 					// Format meta data for resolution.
-					$data = [];
+					$data = array();
 					foreach ( $keys as $key ) {
-						$data[] = (object) [
+						$data[] = (object) array(
 							'id'    => "{$id_prefix}_{$key}",
 							'key'   => $key,
 							'value' => is_array( $source[ $key ] ) ? wp_json_encode( $source[ $key ] ) : $source[ $key ],
-						];
+						);
 					}
 
 					return $data;
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -230,16 +230,16 @@ class Cart_Item {
 	 * @return array
 	 */
 	public static function get_connections() {
-		return [
-			'product'   => [
+		return array(
+			'product'   => array(
 				'toType'     => 'Product',
 				'oneToOne'   => true,
-				'edgeFields' => [
-					'simpleVariations' => [
-						'type'        => [ 'list_of' => 'SimpleAttribute' ],
+				'edgeFields' => array(
+					'simpleVariations' => array(
+						'type'        => array( 'list_of' => 'SimpleAttribute' ),
 						'description' => __( 'Simple variation attribute data', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
-							$attributes = [];
+							$attributes = array();
 
 							$variation             = $source['node'];
 							$cart_item_data        = $source['source'];
@@ -250,8 +250,8 @@ class Cart_Item {
 
 							return $attributes;
 						},
-					],
-				],
+					),
+				),
 				'resolve'    => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id       = $source['product_id'];
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
@@ -261,16 +261,16 @@ class Cart_Item {
 						->set_query_arg( 'p', $id )
 						->get_connection();
 				},
-			],
-			'variation' => [
+			),
+			'variation' => array(
 				'toType'     => 'ProductVariation',
 				'oneToOne'   => true,
-				'edgeFields' => [
-					'attributes' => [
-						'type'        => [ 'list_of' => 'VariationAttribute' ],
+				'edgeFields' => array(
+					'attributes' => array(
+						'type'        => array( 'list_of' => 'VariationAttribute' ),
 						'description' => __( 'Attributes of the variation.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
-							$attributes = [];
+							$attributes = array();
 
 							$variation           = $source['node'];
 							$cart_item_data      = $source['source'];
@@ -285,8 +285,8 @@ class Cart_Item {
 
 							return Variation_Attribute_Connection_Resolver::variation_attributes_to_data_array( $attributes, $variation->ID );
 						},
-					],
-				],
+					),
+				),
 				'resolve'    => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					$id       = ! empty( $source['variation_id'] ) ? $source['variation_id'] : null;
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product_variation' );
@@ -300,7 +300,7 @@ class Cart_Item {
 						->set_query_arg( 'p', $id )
 						->get_connection();
 				},
-			],
-		];
+			),
+		);
 	}
 }

@@ -20,7 +20,7 @@ class Coupon_Mutation {
 	 * @return array
 	 */
 	public static function prepare_args( array $input ) {
-		$data_keys = [
+		$data_keys = array(
 			'code'                      => 'code',
 			'amount'                    => 'amount',
 			'discountType'              => 'discount_type',
@@ -41,9 +41,9 @@ class Coupon_Mutation {
 			'maximumAmount'             => 'maximum_amount',
 			'emailRestrictions'         => 'email_restrictions',
 			'metaData'                  => 'meta_data',
-		];
+		);
 
-		$args = [];
+		$args = array();
 		foreach ( $input as $input_field => $value ) {
 			if ( empty( $data_keys[ $input_field ] ) ) {
 				continue;

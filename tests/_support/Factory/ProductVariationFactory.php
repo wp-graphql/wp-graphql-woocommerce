@@ -15,9 +15,9 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = [
+		$this->default_generation_definitions = array(
 			'variation_class' => '\WC_Product_Variation',
-		];
+		);
 	}
 
 	public function create_object( $args ) {
@@ -31,7 +31,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		// Create variation.
 		$variation = new $variation_class();
 		foreach ( $args as $field => $field_value ) {
-			if ( ! is_callable( [ $variation, "set_{$field}" ] ) ) {
+			if ( ! is_callable( array( $variation, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s product variation field.', $field, $variation->get_type() )
 				);
@@ -59,7 +59,7 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $field => $field_value ) {
-			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
+			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s product variation field.', $field, $object->get_type() )
 				);
@@ -75,70 +75,70 @@ class ProductVariationFactory extends \WP_UnitTest_Factory_For_Thing {
 		return wc_get_product( absint( $product_id ) );
 	}
 
-	public function createSome( $product_id = null, $args = [] ) {
+	public function createSome( $product_id = null, $args = array() ) {
 		if ( ! $product_id ) {
 			$product_id = $this->factory->product->createVariable();
 		}
 		$product = wc_get_product( $product_id );
 
 		// Create variation stub data.
-		$variation_data = [
-			[
+		$variation_data = array(
+			array(
 				'parent_id'     => $product_id,
-				'attributes'    => [
+				'attributes'    => array(
 					'pa_size' => 'small',
 					'logo'    => 'Yes',
-				],
+				),
 				'image_id'      => null,
-				'downloads'     => [ $this->factory->product->createDownload() ],
+				'downloads'     => array( $this->factory->product->createDownload() ),
 				'regular_price' => 10,
-			],
-			[
+			),
+			array(
 				'parent_id'     => $product_id,
-				'attributes'    => [
+				'attributes'    => array(
 					'pa_size' => 'medium',
 					'logo'    => 'No',
-				],
+				),
 				'image_id'      => $this->factory->post->create(
-					[
+					array(
 						'post_status'  => 'publish',
 						'post_type'    => 'attachment',
 						'post_content' => 'product image',
-					]
+					)
 				),
-				'downloads'     => [],
+				'downloads'     => array(),
 				'regular_price' => 15,
-			],
-			[
+			),
+			array(
 				'parent_id'     => $product_id,
-				'attributes'    => [
+				'attributes'    => array(
 					'pa_size' => 'large',
 					'logo'    => 'Yes',
-				],
+				),
 				'image_id'      => null,
-				'downloads'     => [],
+				'downloads'     => array(),
 				'regular_price' => 20,
-			],
-		];
+			),
+		);
 
-		$variations = [];
+		$variations = array();
 		foreach ( $variation_data as $data ) {
 			$variation_args = array_merge( $data, $args );
-			$variation      = $this->create_and_get( $variation_args, [ 'variation_class' => '\WC_Product_Variation' ] );
+			$variation      = $this->create_and_get( $variation_args, array( 'variation_class' => '\WC_Product_Variation' ) );
 
 			$variations[] = $variation->get_id();
 		}
 
 		$product->set_default_attributes(
-			[
+			array(
 				'pa_size' => 'medium',
-			]
+			)
 		);
 		$product->save();
 
-		return [
+		return array(
 			'product'    => $product_id,
 			'variations' => $variations,
-		];
+		);
 	}
 }

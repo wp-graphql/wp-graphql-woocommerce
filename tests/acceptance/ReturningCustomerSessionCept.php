@@ -7,11 +7,11 @@ $product_catalog = $I->getCatalog();
 
 // Begin Tests.
 $I->wantTo( 'login' );
-$login_input = [
+$login_input = array(
 	'clientMutationId' => 'someId',
 	'username'         => 'jimbo1234',
 	'password'         => 'password',
-];
+);
 
 $success = $I->login( $login_input );
 
@@ -48,20 +48,20 @@ $query = '
 $response = $I->sendGraphQLRequest(
 	$query,
 	null,
-	[
+	array(
 		'Authorization'       => "Bearer {$authToken}",
 		'woocommerce-session' => "Session {$initial_session_token}",
-	]
+	)
 );
 
-$expected_results = [
-	'data' => [
-		'customer' => [
+$expected_results = array(
+	'data' => array(
+		'customer' => array(
 			'databaseId' => $customer_id,
 			'username'   => 'jimbo1234',
-		],
-	],
-];
+		),
+	),
+);
 
 $I->assertEquals( $expected_results, $response );
 
@@ -70,18 +70,18 @@ $I->wantTo( 'Put items in the cart' );
 /**
  * Add "T-Shirt" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['t-shirt'],
 	'quantity'         => 3,
-];
+);
 
 $success = $I->addToCart(
 	$add_to_cart_input,
-	[
+	array(
 		'Authorization'       => "Bearer {$authToken}",
 		'woocommerce-session' => "Session {$initial_session_token}",
-	]
+	)
 );
 
 $I->assertArrayNotHasKey( 'errors', $success );
@@ -113,29 +113,29 @@ $cart_query = '
 $response         = $I->sendGraphQLRequest(
 	$cart_query,
 	null,
-	[
+	array(
 		'Authorization'       => "Bearer {$authToken}",
 		'woocommerce-session' => "Session {$initial_session_token}",
-	]
+	)
 );
-$expected_results = [
-	'data' => [
-		'cart' => [
-			'contents' => [
-				'nodes' => [
-					[
+$expected_results = array(
+	'data' => array(
+		'cart' => array(
+			'contents' => array(
+				'nodes' => array(
+					array(
 						'key'     => $shirt_key,
-						'product' => [
-							'node' => [
+						'product' => array(
+							'node' => array(
 								'databaseId' => $product_catalog['t-shirt'],
-							],
-						],
-					],
-				],
-			],
-		],
-	],
-];
+							),
+						),
+					),
+				),
+			),
+		),
+	),
+);
 
 $I->assertEquals( $expected_results, $response );
 
@@ -147,11 +147,11 @@ $I->wantTo( 'End session' );
 
 $I->wantTo( 'Login and continue previous session.' );
 
-$login_input = [
+$login_input = array(
 	'clientMutationId' => 'someId',
 	'username'         => 'jimbo1234',
 	'password'         => 'password',
-];
+);
 $success     = $I->login( $login_input );
 
 $I->assertArrayNotHasKey( 'errors', $success );
@@ -184,25 +184,25 @@ $cart_query = '
 	}
 ';
 
-$response         = $I->sendGraphQLRequest( $cart_query, null, [ 'Authorization' => "Bearer {$authToken}" ] );
-$expected_results = [
-	'data' => [
-		'cart' => [
-			'contents' => [
-				'nodes' => [
-					[
+$response         = $I->sendGraphQLRequest( $cart_query, null, array( 'Authorization' => "Bearer {$authToken}" ) );
+$expected_results = array(
+	'data' => array(
+		'cart' => array(
+			'contents' => array(
+				'nodes' => array(
+					array(
 						'key'     => $shirt_key,
-						'product' => [
-							'node' => [
+						'product' => array(
+							'node' => array(
 								'databaseId' => $product_catalog['t-shirt'],
-							],
-						],
-					],
-				],
-			],
-		],
-	],
-];
+							),
+						),
+					),
+				),
+			),
+		),
+	),
+);
 
 $I->assertEquals( $expected_results, $response );
 
@@ -211,13 +211,13 @@ $I->wantTo( 'Put more items in the cart.' );
 /**
  * Add "Belt" to cart and confirm response data.
  */
-$add_to_cart_input = [
+$add_to_cart_input = array(
 	'clientMutationId' => 'someId',
 	'productId'        => $product_catalog['belt'],
 	'quantity'         => 2,
-];
+);
 
-$success = $I->addToCart( $add_to_cart_input, [ 'Authorization' => "Bearer {$authToken}" ] );
+$success = $I->addToCart( $add_to_cart_input, array( 'Authorization' => "Bearer {$authToken}" ) );
 
 $I->assertArrayNotHasKey( 'errors', $success );
 $I->assertArrayHasKey( 'data', $success );
@@ -254,37 +254,37 @@ $cart_query = '
 $response         = $I->sendGraphQLRequest(
 	$cart_query,
 	null,
-	[
+	array(
 		'Authorization'       => "Bearer {$authToken}",
 		'woocommerce-session' => "Session {$refreshed_session_token}",
-	]
+	)
 );
-$expected_results = [
-	'data' => [
-		'cart' => [
-			'contents' => [
-				'nodes' => [
-					[
+$expected_results = array(
+	'data' => array(
+		'cart' => array(
+			'contents' => array(
+				'nodes' => array(
+					array(
 						'key'     => $shirt_key,
-						'product' => [
-							'node' => [
+						'product' => array(
+							'node' => array(
 								'databaseId' => $product_catalog['t-shirt'],
-							],
-						],
-					],
-					[
+							),
+						),
+					),
+					array(
 						'key'     => $belt_key,
-						'product' => [
-							'node' => [
+						'product' => array(
+							'node' => array(
 								'databaseId' => $product_catalog['belt'],
-							],
-						],
-					],
-				],
-			],
-		],
-	],
-];
+							),
+						),
+					),
+				),
+			),
+		),
+	),
+);
 
 $I->assertEquals( $expected_results, $response );
 
@@ -296,11 +296,11 @@ $I->wantTo( 'End session' );
 
 $I->wantTo( 'Login and start a new session.' );
 
-$login_input = [
+$login_input = array(
 	'clientMutationId' => 'someId',
 	'username'         => 'jimbo1234',
 	'password'         => 'password',
-];
+);
 $success     = $I->login( $login_input );
 
 $I->assertArrayNotHasKey( 'errors', $success );
@@ -341,19 +341,19 @@ $cart_query = '
 $response         = $I->sendGraphQLRequest(
 	$cart_query,
 	null,
-	[
+	array(
 		'Authorization'       => "Bearer {$authToken}",
 		'woocommerce-session' => "Session {$new_session_token}",
-	]
+	)
 );
-$expected_results = [
-	'data' => [
-		'cart' => [
-			'contents' => [
-				'nodes' => [],
-			],
-		],
-	],
-];
+$expected_results = array(
+	'data' => array(
+		'cart' => array(
+			'contents' => array(
+				'nodes' => array(),
+			),
+		),
+	),
+);
 
 $I->assertEquals( $expected_results, $response );

@@ -25,7 +25,7 @@ class Posts extends PostObjects {
 		register_graphql_connection(
 			self::get_connection_config(
 				get_post_type_object( 'attachment' ),
-				[
+				array(
 					'fromType'      => 'Product',
 					'toType'        => 'MediaItem',
 					'fromFieldName' => 'galleryImages',
@@ -41,7 +41,7 @@ class Posts extends PostObjects {
 
 						return $resolver->get_connection();
 					},
-				]
+				)
 			)
 		);
 	}

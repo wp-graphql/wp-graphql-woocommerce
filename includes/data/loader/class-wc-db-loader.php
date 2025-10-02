@@ -60,25 +60,25 @@ class WC_Db_Loader extends AbstractDataLoader {
 		$loader = null;
 		switch ( $this->loader_type ) {
 			case 'CART_ITEM':
-				$loader = [ $this, 'load_cart_item_from_key' ];
+				$loader = array( $this, 'load_cart_item_from_key' );
 				break;
 			case 'DOWNLOADABLE_ITEM':
-				$loader = [ $this, 'load_downloadable_item_from_id' ];
+				$loader = array( $this, 'load_downloadable_item_from_id' );
 				break;
 			case 'TAX_CLASS':
-				$loader = [ $this, 'load_tax_class_from_slug' ];
+				$loader = array( $this, 'load_tax_class_from_slug' );
 				break;
 			case 'TAX_RATE':
-				$loader = [ $this, 'load_tax_rate_from_id' ];
+				$loader = array( $this, 'load_tax_rate_from_id' );
 				break;
 			case 'ORDER_ITEM':
-				$loader = [ $this, 'load_order_item_from_id' ];
+				$loader = array( $this, 'load_order_item_from_id' );
 				break;
 			case 'SHIPPING_METHOD':
-				$loader = [ $this, 'load_shipping_method_from_id' ];
+				$loader = array( $this, 'load_shipping_method_from_id' );
 				break;
 			case 'SHIPPING_ZONE':
-				$loader = [ $this, 'load_shipping_zone_from_id' ];
+				$loader = array( $this, 'load_shipping_zone_from_id' );
 				break;
 			default:
 				/**
@@ -97,7 +97,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 				}
 		}//end switch
 
-		$loaded_items = [];
+		$loaded_items = array();
 
 		/**
 		 * Loop over the keys and return an array of items.
@@ -106,7 +106,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 			$loaded_items[ $key ] = call_user_func( $loader, $key );
 		}
 
-		return ! empty( $loaded_items ) ? $loaded_items : [];
+		return ! empty( $loaded_items ) ? $loaded_items : array();
 	}
 
 	/**
@@ -142,10 +142,10 @@ class WC_Db_Loader extends AbstractDataLoader {
 	 */
 	public function load_tax_class_from_slug( $slug ) {
 		if ( 'standard' === $slug ) {
-			return [
+			return array(
 				'slug' => 'standard',
 				'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
-			];
+			);
 		} else {
 			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
 			return is_array( $tax_class ) && ! empty( $tax_class ) ? $tax_class : null;
@@ -202,8 +202,8 @@ class WC_Db_Loader extends AbstractDataLoader {
 				)
 			);
 
-			$cities    = [];
-			$postcodes = [];
+			$cities    = array();
+			$postcodes = array();
 			foreach ( $locales as $locale ) {
 				if ( 'city' === $locale->location_type ) {
 					$cities[] = $locale->location_code;

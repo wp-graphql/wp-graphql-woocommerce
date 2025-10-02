@@ -14,10 +14,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$billing  = $customer->get_billing();
 		$shipping = $customer->get_shipping();
 
-		return [
+		return array(
 			$this->expectedObject(
 				'customer',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'user', $id ) ),
 					$this->expectedField( 'databaseId', $id ),
 					$this->expectedField( 'isVatExempt', $customer->get_is_vat_exempt() ),
@@ -41,7 +41,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 					),
 					$this->expectedObject(
 						'billing',
-						[
+						array(
 							$this->expectedField( 'firstName', $this->maybe( $billing['first_name'] ) ),
 							$this->expectedField( 'lastName', $this->maybe( $billing['last_name'] ) ),
 							$this->expectedField( 'company', $this->maybe( $billing['company'] ) ),
@@ -51,11 +51,11 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 							$this->expectedField( 'postcode', $this->maybe( $billing['postcode'] ) ),
 							$this->expectedField( 'email', $this->maybe( $billing['email'] ) ),
 							$this->expectedField( 'phone', $this->maybe( $billing['phone'] ) ),
-						]
+						)
 					),
 					$this->expectedObject(
 						'shipping',
-						[
+						array(
 							$this->expectedField( 'firstName', $this->maybe( $shipping['first_name'] ) ),
 							$this->expectedField( 'lastName', $this->maybe( $shipping['last_name'] ) ),
 							$this->expectedField( 'company', $this->maybe( $shipping['company'] ) ),
@@ -63,7 +63,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 							$this->expectedField( 'address2', $this->maybe( $shipping['address_2'] ) ),
 							$this->expectedField( 'city', $this->maybe( $shipping['city'] ) ),
 							$this->expectedField( 'postcode', $this->maybe( $shipping['postcode'] ) ),
-						]
+						)
 					),
 					$this->expectedField( 'isPayingCustomer', $customer->get_is_paying_customer() ),
 					$this->expectedField(
@@ -78,9 +78,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 							? \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $wp_user )
 							: static::IS_NULL
 					),
-				]
+				)
 			),
-		];
+		);
 	}
 
 	// tests
@@ -142,12 +142,12 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Query should return null value due to lack of permissions.
 		 */
 		$this->loginAsCustomer();
-		$variables = [ 'id' => $this->toRelayId( 'user', $new_customer_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'user', $new_customer_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedErrorPath( 'customer' ),
 			$this->expectedField( 'customer', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 
@@ -159,7 +159,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Query should return requested data because user queried themselves.
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'user', $this->customer ) ];
+		$variables = array( 'id' => $this->toRelayId( 'user', $this->customer ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = $this->expectedCustomerData( $this->customer );
 
@@ -175,15 +175,15 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * but should not have access to JWT fields.
 		 */
 		$this->loginAsShopManager();
-		$variables = [ 'id' => $this->toRelayId( 'user', $new_customer_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'user', $new_customer_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_merge(
-			[
+			array(
 				$this->expectedErrorPath( 'customer.jwtAuthToken' ),
 				$this->expectedField( 'customer.jwtAuthToken', static::IS_NULL ),
 				$this->expectedErrorPath( 'customer.jwtRefreshToken' ),
 				$this->expectedField( 'customer.jwtRefreshToken', static::IS_NULL ),
-			],
+			),
 			$this->expectedCustomerData( $new_customer_id )
 		);
 
@@ -212,7 +212,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Query should return requested data because user queried themselves.
 		 */
 		$this->loginAs( $new_customer_id );
-		$variables = [ 'customerId' => $new_customer_id ];
+		$variables = array( 'customerId' => $new_customer_id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -226,12 +226,12 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Query should return null value due to lack of permissions..
 		 */
 		$this->loginAsCustomer();
-		$variables = [ 'customerId' => $new_customer_id ];
+		$variables = array( 'customerId' => $new_customer_id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedErrorPath( 'customer' ),
 			$this->expectedField( 'customer', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 
@@ -240,17 +240,17 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 	}
 
 	public function testCustomersQueryAndWhereArgs() {
-		$users = [
+		$users = array(
 			$this->factory->customer->create(
-				[
+				array(
 					'email'    => 'gotcha@example.com',
 					'username' => 'megaman8080',
-				]
+				)
 			),
 			$this->factory->customer->create(),
 			$this->factory->customer->create(),
 			$this->factory->customer->create(),
-		];
+		);
 
 		$query = '
 			query (
@@ -284,7 +284,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAs( $users[0] );
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [ $this->expectedField( 'customers.nodes', [] ) ];
+		$expected = array( $this->expectedField( 'customers.nodes', array() ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -295,7 +295,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[0] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
@@ -304,7 +304,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customers.nodes.1.billing.email', static::NOT_NULL ),
 			$this->expectedField( 'customers.nodes.2.billing.email', static::NOT_NULL ),
 			$this->expectedField( 'customers.nodes.3.billing.email', static::NOT_NULL ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -313,12 +313,12 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "search" where argument.
 		 */
-		$variables = [ 'search' => 'megaman8080' ];
+		$variables = array( 'search' => 'megaman8080' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[0] ),
 			$this->expectedField( 'customers.nodes.0.billing.email', static::NOT_NULL ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -327,12 +327,12 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "include" where argument.
 		 */
-		$variables = [ 'include' => [ $users[2] ] ];
+		$variables = array( 'include' => array( $users[2] ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[2] ),
 			$this->expectedField( 'customers.nodes.0.billing.email', static::NOT_NULL ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -341,9 +341,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "exclude" where argument.
 		 */
-		$variables = [ 'exclude' => [ $users[2] ] ];
+		$variables = array( 'exclude' => array( $users[2] ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[0] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
@@ -351,7 +351,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customers.nodes.1.billing.email', static::NOT_NULL ),
 			$this->expectedField( 'customers.nodes.2.billing.email', static::NOT_NULL ),
 			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -360,14 +360,14 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "email" where argument.
 		 */
-		$variables = [ 'email' => 'gotcha@example.com' ];
+		$variables = array( 'email' => 'gotcha@example.com' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[0] ),
 			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
 			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -376,21 +376,21 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "orderby" and "order" where arguments.
 		 */
-		$variables = [
+		$variables = array(
 			'orderby' => 'USERNAME',
 			'order'   => 'ASC',
-		];
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$all_users = get_users(
-			[
+			array(
 				'fields'  => 'ID',
 				'role'    => 'customer',
 				'orderby' => 'username',
 				'order'   => 'ASC',
-			]
+			)
 		);
-		$expected  = [];
+		$expected  = array();
 		foreach ( $all_users as $index => $user_id ) {
 			$expected[] = $this->expectedField(
 				"customers.nodes.{$index}.databaseId",
@@ -405,19 +405,19 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$new_customer_id = $this->factory->customer->create();
 
 		$order_1 = $this->factory->order->createNew(
-			[ 'customer_id' => $this->customer ]
+			array( 'customer_id' => $this->customer )
 		);
 		$order_2 = $this->factory->order->createNew(
-			[ 'customer_id' => $new_customer_id ]
+			array( 'customer_id' => $new_customer_id )
 		);
 
 		$guest_customer = new \WC_Customer();
 		$guest_customer->set_billing_email( 'test@test.com' );
 		$order_3 = $this->factory->order->createNew(
-			[
+			array(
 				'customer_id'   => $guest_customer->get_id(),
 				'billing_email' => $guest_customer->get_billing_email(),
-			]
+			)
 		);
 
 		$query = '
@@ -441,9 +441,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'customer.orders.nodes.#.databaseId', $order_1 ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -458,9 +458,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->loginAs( 0 );
 		WC()->customer = $guest_customer;
 		$response      = $this->graphql( compact( 'query' ) );
-		$expected      = [
+		$expected      = array(
 			$this->expectedField( 'customer.orders.nodes.#.databaseId', $order_3 ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -474,20 +474,20 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$expiry_year  = gmdate( 'Y', strtotime( '+1 year' ) );
 		$token_cc     = $this->factory->payment_token->createCCToken(
 			$customer_id,
-			[
+			array(
 				'last4'        => 1234,
 				'expiry_month' => $expiry_month,
 				'expiry_year'  => $expiry_year,
 				'card_type'    => 'visa',
 				'token'        => time(),
-			]
+			)
 		);
 		$token_ec     = $this->factory->payment_token->createECheckToken(
 			$customer_id,
-			[
+			array(
 				'last4' => 4567,
 				'token' => time(),
-			]
+			)
 		);
 
 		// Create query.
@@ -528,19 +528,19 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assert tokens are inaccessible as guest or admin
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'user', $customer_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'user', $customer_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [ $this->expectedField( 'customer', static::IS_NULL ) ];
+		$expected  = array( $this->expectedField( 'customer', static::IS_NULL ) );
 
 		$this->assertQueryError( $response, $expected );
 
 		// Again, as admin.
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedField( 'customer.availablePaymentMethods', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 
@@ -549,66 +549,66 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAs( $customer_id );
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedNode(
 				'customer.availablePaymentMethods',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
 					$this->expectedField( 'tokenId', $token_cc->get_id() ),
 					$this->expectedField( 'last4', 1234 ),
 					$this->expectedField( 'expiryMonth', $expiry_month ),
 					$this->expectedField( 'expiryYear', $expiry_year ),
 					$this->expectedField( 'cardType', 'visa' ),
-				]
+				)
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethodsCC',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
 					$this->expectedField( 'tokenId', $token_cc->get_id() ),
 					$this->expectedField( 'last4', 1234 ),
 					$this->expectedField( 'expiryMonth', $expiry_month ),
 					$this->expectedField( 'expiryYear', $expiry_year ),
 					$this->expectedField( 'cardType', 'visa' ),
-				]
+				)
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethodsEC',
-				[
+				array(
 					$this->not()->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
 					$this->not()->expectedField( 'tokenId', $token_cc->get_id() ),
 					$this->not()->expectedField( 'last4', 1234 ),
 					$this->not()->expectedField( 'expiryMonth', $expiry_month ),
 					$this->not()->expectedField( 'expiryYear', $expiry_year ),
 					$this->not()->expectedField( 'cardType', 'visa' ),
-				]
+				)
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethods',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
 					$this->expectedField( 'tokenId', $token_ec->get_id() ),
 					$this->expectedField( 'last4', 4567 ),
-				]
+				)
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethodsCC',
-				[
+				array(
 					$this->not()->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
 					$this->not()->expectedField( 'tokenId', $token_ec->get_id() ),
 					$this->not()->expectedField( 'last4', 4567 ),
-				]
+				)
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethodsEC',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
 					$this->expectedField( 'tokenId', $token_ec->get_id() ),
 					$this->expectedField( 'last4', 4567 ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -645,9 +645,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Assert NULL values when querying as admin
 		 */
 		$this->loginAsShopManager();
-		$variables = [ 'id' => $this->toRelayId( 'user', $customer_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'user', $customer_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedField( 'customer.cartUrl', static::IS_NULL ),
 			$this->expectedField( 'customer.cartNonce', static::IS_NULL ),
@@ -655,7 +655,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customer.checkoutNonce', static::IS_NULL ),
 			$this->expectedField( 'customer.addPaymentMethodUrl', static::IS_NULL ),
 			$this->expectedField( 'customer.addPaymentMethodNonce', static::IS_NULL ),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
@@ -663,7 +663,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$this->loginAs( $customer_id );
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'customer.id', $this->toRelayId( 'user', $customer_id ) ),
 			$this->expectedField( 'customer.cartUrl', static::NOT_NULL ),
 			$this->expectedField( 'customer.cartNonce', static::NOT_NULL ),
@@ -671,7 +671,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customer.checkoutNonce', static::NOT_NULL ),
 			$this->expectedField( 'customer.addPaymentMethodUrl', static::NOT_NULL ),
 			$this->expectedField( 'customer.addPaymentMethodNonce', static::NOT_NULL ),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 }

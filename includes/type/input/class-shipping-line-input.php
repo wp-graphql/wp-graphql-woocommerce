@@ -20,35 +20,35 @@ class Shipping_Line_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'ShippingLineInput',
-			[
+			array(
 				'description' => __( 'Shipping lines data.', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'id'          => [
+				'fields'      => array(
+					'id'          => array(
 						'type'        => 'ID',
 						'description' => __( 'Shipping Line ID', 'wp-graphql-woocommerce' ),
-					],
-					'methodTitle' => [
-						'type'        => [ 'non_null' => 'String' ],
+					),
+					'methodTitle' => array(
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Shipping method name.', 'wp-graphql-woocommerce' ),
-					],
-					'methodId'    => [
-						'type'        => [ 'non_null' => 'String' ],
+					),
+					'methodId'    => array(
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Shipping method ID.', 'wp-graphql-woocommerce' ),
-					],
-					'instanceId'  => [
+					),
+					'instanceId'  => array(
 						'type'        => 'String',
 						'description' => __( 'Shipping instance ID.', 'wp-graphql-woocommerce' ),
-					],
-					'total'       => [
-						'type'        => [ 'non_null' => 'String' ],
+					),
+					'total'       => array(
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Line total (after discounts).', 'wp-graphql-woocommerce' ),
-					],
-					'metaData'    => [
-						'type'        => [ 'list_of' => 'MetaDataInput' ],
+					),
+					'metaData'    => array(
+						'type'        => array( 'list_of' => 'MetaDataInput' ),
 						'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

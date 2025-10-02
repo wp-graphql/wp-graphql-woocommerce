@@ -14,40 +14,40 @@ namespace WPGraphQL\WooCommerce\Connection;
  * @return array
  */
 function get_wc_cpt_connection_args(): array {
-	return [
-		'search'      => [
+	return array(
+		'search'      => array(
 			'type'        => 'String',
 			'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-		],
-		'exclude'     => [
-			'type'        => [ 'list_of' => 'Int' ],
+		),
+		'exclude'     => array(
+			'type'        => array( 'list_of' => 'Int' ),
 			'description' => __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' ),
-		],
-		'include'     => [
-			'type'        => [ 'list_of' => 'Int' ],
+		),
+		'include'     => array(
+			'type'        => array( 'list_of' => 'Int' ),
 			'description' => __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' ),
-		],
-		'orderby'     => [
-			'type'        => [ 'list_of' => 'PostTypeOrderbyInput' ],
+		),
+		'orderby'     => array(
+			'type'        => array( 'list_of' => 'PostTypeOrderbyInput' ),
 			'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-		],
-		'dateQuery'   => [
+		),
+		'dateQuery'   => array(
 			'type'        => 'DateQueryInput',
 			'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
-		],
-		'parent'      => [
+		),
+		'parent'      => array(
 			'type'        => 'Int',
 			'description' => __( 'Use ID to return only children. Use 0 to return only top-level items.', 'wp-graphql-woocommerce' ),
-		],
-		'parentIn'    => [
-			'type'        => [ 'list_of' => 'Int' ],
+		),
+		'parentIn'    => array(
+			'type'        => array( 'list_of' => 'Int' ),
 			'description' => __( 'Specify objects whose parent is in an array.', 'wp-graphql-woocommerce' ),
-		],
-		'parentNotIn' => [
-			'type'        => [ 'list_of' => 'Int' ],
+		),
+		'parentNotIn' => array(
+			'type'        => array( 'list_of' => 'Int' ),
 			'description' => __( 'Specify objects whose parent is not in an array.', 'wp-graphql-woocommerce' ),
-		],
-	];
+		),
+	);
 }
 
 /**
@@ -58,8 +58,8 @@ function get_wc_cpt_connection_args(): array {
  *
  * @return array
  */
-function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = [] ) {
-	$args = [];
+function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = array() ) {
+	$args = array();
 	if ( ! empty( $input['include'] ) ) {
 		$args['post__in'] = $input['include'];
 	}
@@ -88,7 +88,7 @@ function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = [] 
 	 * Map the orderby inputArgs to the WP_Query
 	 */
 	if ( ! empty( $input['orderby'] ) && is_array( $input['orderby'] ) ) {
-		$args['orderby'] = [];
+		$args['orderby'] = array();
 		foreach ( $input['orderby'] as $orderby_input ) {
 
 			/**
@@ -113,7 +113,7 @@ function map_shared_input_fields_to_wp_query( array $input, $ordering_meta = [] 
 			/**
 			 * These orderby options should not include the order parameter.
 			 */
-			$post_fields = [ 'post__in', 'post_name__in', 'post_parent__in' ];
+			$post_fields = array( 'post__in', 'post_name__in', 'post_parent__in' );
 			if ( in_array( $orderby_field, $post_fields, true ) ) {
 				$args['orderby'][ $orderby_field ] = $orderby_order;
 

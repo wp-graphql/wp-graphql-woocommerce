@@ -22,7 +22,7 @@ class ProductHelper extends WCG_Helper {
 	}
 
 	private function next_slug() {
-		$slug = 'test-product-' . absint( $this->index );
+		$slug         = 'test-product-' . absint( $this->index );
 		$this->index += 1;
 		return $slug;
 	}
@@ -35,7 +35,7 @@ class ProductHelper extends WCG_Helper {
 		);
 
 		if ( in_array( $status, array_keys( $statuses ) ) ) {
-			return $statuses[$status];
+			return $statuses[ $status ];
 		}
 
 		return null;
@@ -55,7 +55,7 @@ class ProductHelper extends WCG_Helper {
 		if ( term_exists( $term, 'product_cat' ) ) {
 			$term = get_term( $term, 'product_cat', ARRAY_A );
 		} else {
-			$args = [];
+			$args = array();
 			if ( $parent_id ) {
 				$args['parent'] = $parent_id;
 			}
@@ -100,9 +100,9 @@ class ProductHelper extends WCG_Helper {
 	}
 
 	public function create_external( $args = array() ) {
-		$product       = new WC_Product_External();
-		$name          = $this->dummy->product();
-		$price         = $this->dummy->price( 15, 200 );
+		$product = new WC_Product_External();
+		$name    = $this->dummy->product();
+		$price   = $this->dummy->price( 15, 200 );
 		$product->set_props(
 			array_merge(
 				array(
@@ -124,7 +124,7 @@ class ProductHelper extends WCG_Helper {
 			$children = array( $this->create_simple() );
 		}
 
-		$product          = new WC_Product_Grouped();
+		$product = new WC_Product_Grouped();
 		$product->set_props(
 			array_merge(
 				array(
@@ -136,12 +136,15 @@ class ProductHelper extends WCG_Helper {
 			)
 		);
 		$product->set_children( $children );
-		return array( 'parent' => $product->save(), 'children' => $children );
+		return array(
+			'parent'   => $product->save(),
+			'children' => $children,
+		);
 	}
 
 	public function create_variable( $args = array() ) {
 		$product = new WC_Product_Variable();
-		$props = array_merge(
+		$props   = array_merge(
 			array(
 				'name' => $this->dummy->product(),
 				'slug' => $this->next_slug(),
@@ -204,7 +207,7 @@ class ProductHelper extends WCG_Helper {
 					'upsell_ids'     => $upsell_ids,
 				)
 			),
-			'related'   => array( $related_product_id ),
+			'related'    => array( $related_product_id ),
 			'cross_sell' => $cross_sell_ids,
 			'upsell'     => $upsell_ids,
 		);
@@ -278,7 +281,7 @@ class ProductHelper extends WCG_Helper {
 			$result = term_exists( $term, $attribute->slug );
 
 			if ( ! $result ) {
-				$result = wp_insert_term( $term, $attribute->slug );
+				$result               = wp_insert_term( $term, $attribute->slug );
 				$return['term_ids'][] = absint( $result['term_id'] );
 			} else {
 				$return['term_ids'][] = absint( $result['term_id'] );
@@ -300,7 +303,7 @@ class ProductHelper extends WCG_Helper {
 
 		if ( $id ) {
 			$product = \wc_get_product( $id );
-			$product->set_downloads( array($download) );
+			$product->set_downloads( array( $download ) );
 			$product->save();
 		}
 
@@ -308,9 +311,9 @@ class ProductHelper extends WCG_Helper {
 	}
 
 	public function print_query( $id, $raw = false ) {
-		$data = wc_get_product( $id );
+		$data            = wc_get_product( $id );
 		$is_shop_manager = false;
-		$user = wp_get_current_user();
+		$user            = wp_get_current_user();
 		if ( $user && in_array( 'shop_manager', (array) $user->roles ) ) {
 			$is_shop_manager = true;
 		}
@@ -380,7 +383,7 @@ class ProductHelper extends WCG_Helper {
 			'shippingTaxable'   => $data->is_shipping_taxable(),
 			'link'              => get_post_permalink( $id ),
 			'totalSales'        => $is_shop_manager ? $data->get_total_sales() : null,
-			'catalogVisibility' => $is_shop_manager ? strtoupper( $data->get_catalog_visibility() ) :null,
+			'catalogVisibility' => $is_shop_manager ? strtoupper( $data->get_catalog_visibility() ) : null,
 		);
 	}
 
@@ -390,7 +393,7 @@ class ProductHelper extends WCG_Helper {
 
 		$results = array();
 
-		foreach( $attributes as $attribute_name => $attribute ) {
+		foreach ( $attributes as $attribute_name => $attribute ) {
 			$results[] = array(
 				'id'          => base64_encode( $attribute_name . ':' . $id . ':' . $attribute->get_name() ),
 				'attributeId' => $attribute->get_id(),
@@ -405,12 +408,12 @@ class ProductHelper extends WCG_Helper {
 			);
 		}
 
-		return ! empty ( $results ) ? array( 'nodes' => $results ) : null;
+		return ! empty( $results ) ? array( 'nodes' => $results ) : null;
 	}
 
 	public function print_downloads( $id ) {
-		$product    = wc_get_product( $id );
-		$downloads  = (array) $product->get_downloads();
+		$product   = wc_get_product( $id );
+		$downloads = (array) $product->get_downloads();
 		if ( empty( $downloads ) ) {
 			return null;
 		}
@@ -433,10 +436,10 @@ class ProductHelper extends WCG_Helper {
 	}
 
 	public function print_grouped( $id ) {
-		$data = wc_get_product( $id );
+		$data     = wc_get_product( $id );
 		$children = array( 'nodes' => array() );
 		foreach ( $data->get_children() as $child ) {
-			$parent_id = $this->field( $child, 'parent_id' );
+			$parent_id           = $this->field( $child, 'parent_id' );
 			$children['nodes'][] = array(
 				'id'     => $this->to_relay_id( $child ),
 				'parent' => ! empty( $parent_id ) ? array( 'id' => $this->to_relay_id( $parent_id ) ) : null,
@@ -461,7 +464,7 @@ class ProductHelper extends WCG_Helper {
 	}
 
 	public function field( $id, $field_name = 'id', $args = array() ) {
-		$get = 'get_' . $field_name;
+		$get     = 'get_' . $field_name;
 		$product = wc_get_product( $id );
 		if ( ! empty( $product ) ) {
 			return $product->{$get}( ...$args );
@@ -472,7 +475,7 @@ class ProductHelper extends WCG_Helper {
 
 	public function create_review( $product_id, $args = array() ) {
 		$firstName = $this->dummy->firstname();
-		$data = array_merge(
+		$data      = array_merge(
 			array(
 				'comment_post_ID'      => $product_id,
 				'comment_author'       => $firstName,
@@ -503,7 +506,7 @@ class ProductHelper extends WCG_Helper {
 			$reviews[] = array(
 				'rating' => floatval( get_comment_meta( $review_id, 'rating', true ) ),
 				'node'   => array(
-					'id' => Relay::toGlobalId( 'comment', $review_id )
+					'id' => Relay::toGlobalId( 'comment', $review_id ),
 				),
 			);
 		}

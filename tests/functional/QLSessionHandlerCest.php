@@ -21,18 +21,18 @@ class QLSessionHandlerCest {
 		 * Add item to the cart
 		 */
 		$success = $I->addToCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['t-shirt'],
 				'quantity'         => 5,
-			]
+			)
 		);
 
 		$I->assertQuerySuccessful(
 			$success,
-			[
+			array(
 				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
-			]
+			)
 		);
 
 		$cart_item_key = $I->lodashGet( $success, 'data.addToCart.cartItem.key' );
@@ -76,30 +76,30 @@ class QLSessionHandlerCest {
             }
         ';
 
-		$actual   = $I->sendGraphQLRequest( $query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$actual = $I->sendGraphQLRequest( $query, null, array( 'woocommerce-session' => "Session {$session_token}" ) );
 		$I->assertQuerySuccessful(
 			$actual,
-			[
+			array(
 				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
-			]
+			)
 		);
 
 		/**
 		 * Remove item from the cart
 		 */
 		$success = $I->removeItemsFromCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'keys'             => $cart_item_key,
-			],
-			[ 'woocommerce-session' => "Session {$session_token}" ]
+			),
+			array( 'woocommerce-session' => "Session {$session_token}" )
 		);
 
 		$I->assertQuerySuccessful(
 			$success,
-			[
+			array(
 				$I->expectField( 'removeItemsFromCart.cartItems.#.key', $cart_item_key ),
-			]
+			)
 		);
 
 		/**
@@ -118,30 +118,30 @@ class QLSessionHandlerCest {
             }
         ';
 
-		$actual   = $I->sendGraphQLRequest( $query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$actual = $I->sendGraphQLRequest( $query, null, array( 'woocommerce-session' => "Session {$session_token}" ) );
 		$I->assertQuerySuccessful(
 			$actual,
-			[
+			array(
 				$I->expectField( 'cart.contents.nodes', Signal::IS_FALSY ),
-			]
+			)
 		);
 
 		/**
 		 * Restore item to the cart
 		 */
 		$success = $I->restoreCartItems(
-			[
+			array(
 				'clientMutationId' => 'someId',
-				'keys'             => [ $cart_item_key ],
-			],
-			[ 'woocommerce-session' => "Session {$session_token}" ]
+				'keys'             => array( $cart_item_key ),
+			),
+			array( 'woocommerce-session' => "Session {$session_token}" )
 		);
 
 		$I->assertQuerySuccessful(
 			$success,
-			[
+			array(
 				$I->expectField( 'restoreCartItems.cartItems.#.key', $cart_item_key ),
-			]
+			)
 		);
 
 		/**
@@ -160,12 +160,12 @@ class QLSessionHandlerCest {
             }
         ';
 
-		$actual   = $I->sendGraphQLRequest( $query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$actual = $I->sendGraphQLRequest( $query, null, array( 'woocommerce-session' => "Session {$session_token}" ) );
 		$I->assertQuerySuccessful(
 			$actual,
-			[
+			array(
 				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
-			]
+			)
 		);
 	}
 
@@ -174,18 +174,18 @@ class QLSessionHandlerCest {
 		 * Add item to cart and retrieve session token to corrupt.
 		 */
 		$success = $I->addToCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['t-shirt'],
 				'quantity'         => 1,
-			]
+			)
 		);
 
 		$I->assertQuerySuccessful(
 			$success,
-			[
+			array(
 				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
-			]
+			)
 		);
 		$cart_item_key = $I->lodashGet( $success, 'data.addToCart.cartItem.key' );
 
@@ -209,12 +209,12 @@ class QLSessionHandlerCest {
 		$invalid_token                    = JWT::encode( (array) $invalid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' );
 
 		$failed = $I->addToCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['t-shirt'],
 				'quantity'         => 1,
-			],
-			[ 'woocommerce-session' => "Session {$invalid_token}" ]
+			),
+			array( 'woocommerce-session' => "Session {$invalid_token}" )
 		);
 
 		$I->assertQueryError( $failed );
@@ -228,11 +228,11 @@ class QLSessionHandlerCest {
 		$invalid_token      = JWT::encode( (array) $invalid_token, GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' );
 
 		$failed = $I->removeItemsFromCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'keys'             => $cart_item_key,
-			],
-			[ 'woocommerce-session' => "Session {$invalid_token}" ]
+			),
+			array( 'woocommerce-session' => "Session {$invalid_token}" )
 		);
 
 		$I->assertQueryError( $failed );
@@ -242,16 +242,16 @@ class QLSessionHandlerCest {
 		 * GraphQL should throw an error and mutation will fail.
 		 */
 		$failed = $I->updateItemQuantities(
-			[
+			array(
 				'clientMutationId' => 'someId',
-				'items'            => [
-					[
+				'items'            => array(
+					array(
 						'key'      => $cart_item_key,
 						'quantity' => 0,
-					],
-				],
-			],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+					),
+				),
+			),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -261,8 +261,8 @@ class QLSessionHandlerCest {
 		 * GraphQL should throw an error and mutation will fail.
 		 */
 		$failed = $I->emptyCart(
-			[ 'clientMutationId' => 'someId' ],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+			array( 'clientMutationId' => 'someId' ),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -272,12 +272,12 @@ class QLSessionHandlerCest {
 		 * GraphQL should throw an error and mutation will fail.
 		 */
 		$failed = $I->addFee(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'name'             => 'extra_fee',
 				'amount'           => 49.99,
-			],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+			),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -289,11 +289,11 @@ class QLSessionHandlerCest {
 		 * @Note: No coupons exist in the database, but mutation should fail before that becomes a factor.
 		 */
 		$failed = $I->applyCoupon(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'code'             => 'some_coupon',
-			],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+			),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -305,11 +305,11 @@ class QLSessionHandlerCest {
 		 * @Note: No coupons exist on the cart, but mutation should failed before that becomes a factor.
 		 */
 		$failed = $I->removeCoupons(
-			[
+			array(
 				'clientMutationId' => 'someId',
-				'codes'            => [ 'some_coupon' ],
-			],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+				'codes'            => array( 'some_coupon' ),
+			),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -322,11 +322,11 @@ class QLSessionHandlerCest {
 		 * but mutation should failed before that becomes a factor.
 		 */
 		$failed = $I->restoreCartItems(
-			[
+			array(
 				'clientMutationId' => 'someId',
-				'keys'             => [ $cart_item_key ],
-			],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+				'keys'             => array( $cart_item_key ),
+			),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -339,11 +339,11 @@ class QLSessionHandlerCest {
 		 * but mutation should failed before that becomes a factor.
 		 */
 		$failed = $I->updateShippingMethod(
-			[
+			array(
 				'clientMutationId' => 'someId',
-				'shippingMethods'  => [ 'legacy_flat_rate' ],
-			],
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+				'shippingMethods'  => array( 'legacy_flat_rate' ),
+			),
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
@@ -367,30 +367,30 @@ class QLSessionHandlerCest {
 		$failed = $I->sendGraphQLRequest(
 			$query,
 			null,
-			[ 'woocommerce-session' => 'Session invalid-jwt-token-string' ]
+			array( 'woocommerce-session' => 'Session invalid-jwt-token-string' )
 		);
 
 		$I->assertQueryError( $failed );
 	}
 
 	public function testCartSessionDataMutations( FunctionalTester $I, $scenario ) {
-		//$scenario->skip( 'Test skipped until scenario can be created properly again.' );
+		// $scenario->skip( 'Test skipped until scenario can be created properly again.' );
 		/**
 		 * Add item to the cart
 		 */
 		$success = $I->addToCart(
-			[
+			array(
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['socks'],
 				'quantity'         => 2,
-			]
+			)
 		);
 
 		$I->assertQuerySuccessful(
 			$success,
-			[
+			array(
 				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
-			]
+			)
 		);
 		$cart_item_key = $I->lodashGet( $success, 'data.addToCart.cartItem.key' );
 
@@ -420,14 +420,14 @@ class QLSessionHandlerCest {
 		/**
 		 * Set shipping address, so shipping rates can be calculated
 		 */
-		$input = [
+		$input = array(
 			'clientMutationId' => 'someId',
-			'shipping'         => [
+			'shipping'         => array(
 				'state'    => 'New York',
 				'country'  => 'US',
 				'postcode' => '12345',
-			],
-		];
+			),
+		);
 
 		$mutation = '
             mutation ( $input: UpdateCustomerInput! ){
@@ -443,19 +443,19 @@ class QLSessionHandlerCest {
             }
         ';
 
-		$actual   = $I->sendGraphQLRequest( $mutation, $input, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$actual = $I->sendGraphQLRequest( $mutation, $input, array( 'woocommerce-session' => "Session {$session_token}" ) );
 		$I->assertQuerySuccessful(
 			$actual,
-			[
+			array(
 				$I->expectObject(
 					'updateCustomer.customer.shipping',
-					[
+					array(
 						$I->expectField( 'state', 'New York' ),
 						$I->expectField( 'country', 'US' ),
 						$I->expectField( 'postcode', '12345' ),
-					]
-				)
-			]
+					)
+				),
+			)
 		);
 
 		/**
@@ -483,34 +483,34 @@ class QLSessionHandlerCest {
             }
         ';
 
-		$actual   = $I->sendGraphQLRequest( $query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$actual = $I->sendGraphQLRequest( $query, null, array( 'woocommerce-session' => "Session {$session_token}" ) );
 		$I->assertQuerySuccessful(
 			$actual,
-			[
+			array(
 				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
 				$I->expectNode(
 					'cart.availableShippingMethods',
-					[
+					array(
 						$I->expectField( 'packageDetails', \html_entity_decode( 'socks &times;2' ) ),
 						$I->expectField( 'supportsShippingCalculator', true ),
 						$I->expectNode(
 							'rates',
-							[
+							array(
 								$I->expectField( 'cost', '0.00' ),
 								$I->expectField( 'label', 'Flat rate' ),
-							]
+							)
 						),
 						$I->expectNode(
 							'rates',
-							[
+							array(
 								$I->expectField( 'cost', '0.00' ),
 								$I->expectField( 'label', 'Free shipping' ),
-							]
+							)
 						),
-					],
+					),
 					0
 				),
-			]
+			)
 		);
 
 		$chosen_shipping_method = $I->lodashGet( $actual, 'data.cart.availableShippingMethods.0.rates.0.id' );
@@ -544,21 +544,21 @@ class QLSessionHandlerCest {
 
 		$success = $I->sendGraphQLRequest(
 			$mutation,
-			[
+			array(
 				'clientMutationId' => 'someId',
-				'shippingMethods'  => [ $chosen_shipping_method ],
-			],
-			[ 'woocommerce-session' => "Session {$session_token}" ]
+				'shippingMethods'  => array( $chosen_shipping_method ),
+			),
+			array( 'woocommerce-session' => "Session {$session_token}" )
 		);
 
 		$I->assertQuerySuccessful(
 			$success,
-			[
+			array(
 				$I->expectField(
 					'updateShippingMethod.cart.chosenShippingMethods.#',
 					$chosen_shipping_method
 				),
-			]
+			)
 		);
 	}
 }

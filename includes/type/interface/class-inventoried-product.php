@@ -23,12 +23,12 @@ class Inventoried_Product {
 	public static function register_interface(): void {
 		register_graphql_interface_type(
 			'InventoriedProduct',
-			[
+			array(
 				'description' => __( 'A product with stock information.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => array( 'Node' ),
 				'fields'      => self::get_fields(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
-			]
+				'resolveType' => array( Core::class, 'resolve_product_type' ),
+			)
 		);
 	}
 
@@ -38,43 +38,43 @@ class Inventoried_Product {
 	 * @return array
 	 */
 	public static function get_fields() {
-		return [
-			'id'                => [
-				'type'        => [ 'non_null' => 'ID' ],
+		return array(
+			'id'                => array(
+				'type'        => array( 'non_null' => 'ID' ),
 				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
-			],
-			'databaseId'        => [
-				'type'        => [ 'non_null' => 'Int' ],
+			),
+			'databaseId'        => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
-			],
-			'manageStock'       => [
+			),
+			'manageStock'       => array(
 				'type'        => 'ManageStockEnum',
 				'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
-			],
-			'lowStockAmount'    => [
+			),
+			'lowStockAmount'    => array(
 				'type'        => 'Int',
 				'description' => __( 'Low stock amount', 'wp-graphql-woocommerce' ),
-			],
-			'stockQuantity'     => [
+			),
+			'stockQuantity'     => array(
 				'type'        => 'Int',
 				'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),
-			],
-			'backorders'        => [
+			),
+			'backorders'        => array(
 				'type'        => 'BackordersEnum',
 				'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
-			],
-			'soldIndividually'  => [
+			),
+			'soldIndividually'  => array(
 				'type'        => 'Boolean',
 				'description' => __( 'If should be sold individually', 'wp-graphql-woocommerce' ),
-			],
-			'backordersAllowed' => [
+			),
+			'backordersAllowed' => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
-			],
-			'stockStatus'       => [
+			),
+			'stockStatus'       => array(
 				'type'        => 'StockStatusEnum',
 				'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 }

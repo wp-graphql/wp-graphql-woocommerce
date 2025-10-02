@@ -24,11 +24,11 @@ class Session_Delete {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'forgetSession',
-			[
-				'inputFields'         => [],
+			array(
+				'inputFields'         => array(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -38,17 +38,17 @@ class Session_Delete {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'session' => [
-				'type'    => [ 'list_of' => 'MetaData' ],
+		return array(
+			'session' => array(
+				'type'    => array( 'list_of' => 'MetaData' ),
 				'resolve' => static function ( $payload ) {
 					// Guard against missing session data.
 					if ( empty( $payload['session'] ) ) {
-						return [];
+						return array();
 					}
 
 					// Prepare session data.
-					$session = [];
+					$session = array();
 					foreach ( $payload['session'] as $key => $value ) {
 						$meta        = new \stdClass();
 						$meta->id    = null;
@@ -59,8 +59,8 @@ class Session_Delete {
 
 					return $session;
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Session_Delete {
 			do_action( 'woographql_after_forget_session', $session_data, $input, $session );
 
 			// Return payload.
-			return [ 'session' => $session_data ];
+			return array( 'session' => $session_data );
 		};
 	}
 }

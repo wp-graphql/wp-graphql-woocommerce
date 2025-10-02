@@ -27,11 +27,11 @@ class Cart_Add_Items {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'addCartItems',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -41,12 +41,12 @@ class Cart_Add_Items {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'items' => [
-				'type'        => [ 'list_of' => 'CartItemInput' ],
+		return array(
+			'items' => array(
+				'type'        => array( 'list_of' => 'CartItemInput' ),
 				'description' => __( 'Cart items to be added', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -55,22 +55,22 @@ class Cart_Add_Items {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'added'      => [
-				'type'    => [ 'list_of' => 'CartItem' ],
+		return array(
+			'added'      => array(
+				'type'    => array( 'list_of' => 'CartItem' ),
 				'resolve' => static function ( $payload ) {
-					$items = [];
+					$items = array();
 					foreach ( $payload['added'] as $key ) {
 						$items[] = \WC()->cart->get_cart_item( $key );
 					}
 
 					return $items;
 				},
-			],
-			'cartErrors' => [
-				'type'    => [ 'list_of' => 'CartItemError' ],
+			),
+			'cartErrors' => array(
+				'type'    => array( 'list_of' => 'CartItemError' ),
 				'resolve' => static function ( $payload ) {
-					$errors = [];
+					$errors = array();
 					foreach ( $payload['failure'] as $error_data ) {
 						$cart_error         = $error_data['cart_item_data'];
 						$cart_error['type'] = 'INVALID_CART_ITEM';
@@ -78,7 +78,7 @@ class Cart_Add_Items {
 						if ( ! empty( $error_data['reasons'] ) ) {
 							$cart_error['reasons'] = $error_data['reasons'];
 						} elseif ( $error_data['reason'] ) {
-							$cart_error['reasons'] = [ $error_data['reason'] ];
+							$cart_error['reasons'] = array( $error_data['reason'] );
 						}
 
 						$errors[] = $cart_error;
@@ -86,9 +86,9 @@ class Cart_Add_Items {
 
 					return $errors;
 				},
-			],
+			),
 			'cart'       => Cart_Mutation::get_cart_field( true ),
-		];
+		);
 	}
 
 	/**
@@ -106,8 +106,8 @@ class Cart_Add_Items {
 			}
 
 			// Validate cart item input.
-			$added   = [];
-			$failure = [];
+			$added   = array();
+			$failure = array();
 			foreach ( $input['items'] as $cart_item_data ) {
 				try {
 					// Prepare args for "add_to_cart" from input data.
@@ -144,7 +144,7 @@ class Cart_Add_Items {
 
 			// Log captured errors.
 			if ( ! empty( $failure ) ) {
-				graphql_debug( $failure, [ 'type' => 'INVALID_CART_ITEMS' ] );
+				graphql_debug( $failure, array( 'type' => 'INVALID_CART_ITEMS' ) );
 			}
 
 			// Throw error, if no items added.

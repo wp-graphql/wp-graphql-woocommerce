@@ -18,11 +18,10 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		parent::__construct( $factory );
 
 		$this->dummy                          = Dummy::instance();
-		$this->default_generation_definitions = [
+		$this->default_generation_definitions = array(
 			'zone_name'  => 'Test Shipping Zone ' . $this->dummy->number(),
 			'zone_order' => 0,
-		];
-		
+		);
 	}
 
 	public function create_object( $args ) {
@@ -53,7 +52,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $object, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $object, "set_{$key}" ) ) ) {
 				$object->{"set_{$key}"}( $value );
 			}
 		}
@@ -87,7 +86,7 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $key => $value ) {
-			if ( is_callable( [ $object, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $object, "set_{$key}" ) ) ) {
 				$object->{"set_{$key}"}( $value );
 			}
 		}
@@ -116,37 +115,37 @@ class ShippingZoneFactory extends \WP_UnitTest_Factory_For_Thing {
 		WC()->shipping()->load_shipping_methods();
 	}
 
-	public function createLegacyFlatRate( $args = [] ) {
+	public function createLegacyFlatRate( $args = array() ) {
 		$flat_rate_settings = array_merge(
-			[
+			array(
 				'enabled'      => 'yes',
 				'title'        => 'Flat rate',
 				'availability' => 'all',
 				'countries'    => '',
 				'tax_status'   => 'taxable',
 				'cost'         => '10',
-			],
+			),
 			$args
 		);
 		update_option( 'woocommerce_flat_rate_settings', $flat_rate_settings );
-		update_option( 'woocommerce_flat_rate', [] );
+		update_option( 'woocommerce_flat_rate', array() );
 		$this->reloadShippingMethods();
 
 		return 'legacy_flat_rate';
 	}
 
-	public function createLegacyFreeShipping( $args = [] ) {
+	public function createLegacyFreeShipping( $args = array() ) {
 		$free_shipping_settings = array_merge(
-			[
+			array(
 				'enabled'      => 'yes',
 				'title'        => 'Free shipping',
 				'availability' => 'all',
 				'countries'    => '',
-			],
+			),
 			$args
 		);
 		update_option( 'woocommerce_free_shipping_settings', $free_shipping_settings );
-		update_option( 'woocommerce_free_shipping', [] );
+		update_option( 'woocommerce_free_shipping', array() );
 		$this->reloadShippingMethods();
 
 		return 'legacy_free_shipping';

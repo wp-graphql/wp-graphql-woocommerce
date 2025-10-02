@@ -22,7 +22,7 @@ class Customer_Mutation {
 	 * @return array
 	 */
 	public static function prepare_customer_props( $input, $mutation ) {
-		$customer_args = [];
+		$customer_args = array();
 
 		if ( ! empty( $input['billing'] ) ) {
 			$customer_args['billing'] = self::address_input_mapping( $input['billing'], 'billing' );
@@ -54,19 +54,19 @@ class Customer_Mutation {
 	 */
 	public static function address_input_mapping( $input, $type = 'billing' ) {
 		// Map GQL input to address props array.
-		$key_mapping = [
+		$key_mapping = array(
 			'firstName' => 'first_name',
 			'lastName'  => 'last_name',
 			'address1'  => 'address_1',
 			'address2'  => 'address_2',
-		];
+		);
 
-		$skip = apply_filters( 'graphql_woocommerce_customer_address_input_mapping_skipped', [ 'overwrite' ] );
+		$skip = apply_filters( 'graphql_woocommerce_customer_address_input_mapping_skipped', array( 'overwrite' ) );
 
 		$type    = 'empty_' . $type;
 		$address = ! empty( $input['overwrite'] ) && true === $input['overwrite']
 			? self::{$type}()
-			: [];
+			: array();
 		foreach ( $input as $input_field => $value ) {
 			if ( in_array( $input_field, array_keys( $key_mapping ), true ) ) {
 				$address[ $key_mapping[ $input_field ] ] = $value;
@@ -86,7 +86,7 @@ class Customer_Mutation {
 	 * @return array
 	 */
 	public static function empty_shipping() {
-		return [
+		return array(
 			'first_name' => '',
 			'last_name'  => '',
 			'company'    => '',
@@ -97,7 +97,7 @@ class Customer_Mutation {
 			'postcode'   => '',
 			'country'    => '',
 			'phone'      => '',
-		];
+		);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Customer_Mutation {
 	public static function empty_billing() {
 		return array_merge(
 			self::empty_shipping(),
-			[ 'email' => '' ]
+			array( 'email' => '' )
 		);
 	}
 

@@ -21,23 +21,23 @@ class Product_Taxonomy {
 	 */
 	public static function register() {
 		// Get values from taxonomies connected to products.
-		$taxonomy_values    = [];
+		$taxonomy_values    = array();
 		$allowed_taxonomies = \WPGraphQL::get_allowed_taxonomies();
 
 		foreach ( $allowed_taxonomies as $taxonomy ) {
 			$tax_object = get_taxonomy( $taxonomy );
 
 			if ( false !== $tax_object && in_array( 'product', $tax_object->object_type, true ) ) {
-				$taxonomy_values[ WPEnumType::get_safe_name( $taxonomy ) ] = [ 'value' => $taxonomy ];
+				$taxonomy_values[ WPEnumType::get_safe_name( $taxonomy ) ] = array( 'value' => $taxonomy );
 			}
 		}
 
 		register_graphql_enum_type(
 			'ProductTaxonomyEnum',
-			[
+			array(
 				'description' => __( 'Product taxonomies', 'wp-graphql-woocommerce' ),
 				'values'      => $taxonomy_values,
-			]
+			)
 		);
 	}
 }

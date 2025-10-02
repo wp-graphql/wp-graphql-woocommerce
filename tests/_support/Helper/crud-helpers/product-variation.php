@@ -22,7 +22,7 @@ class ProductVariationHelper extends WCG_Helper {
 	}
 
 	private function next_slug() {
-		$slug = 'test-variation-' . absint( $this->index );
+		$slug         = 'test-variation-' . absint( $this->index );
 		$this->index += 1;
 		return $slug;
 	}
@@ -45,7 +45,7 @@ class ProductVariationHelper extends WCG_Helper {
 		}
 
 		// Create medium size variation with image
-		$image_id = \wp_insert_post(
+		$image_id    = \wp_insert_post(
 			array(
 				'post_author'  => 1,
 				'post_content' => '',
@@ -99,7 +99,7 @@ class ProductVariationHelper extends WCG_Helper {
 	public function print_query( $id ) {
 		$data = new WC_Product_Variation( $id );
 
-		if( empty( $data ) ) {
+		if ( empty( $data ) ) {
 			return null;
 		}
 
@@ -154,7 +154,7 @@ class ProductVariationHelper extends WCG_Helper {
 				: null,
 			'hasAttributes'     => ! empty( $data->has_attributes() ) ? $data->has_attributes() : null,
 			'type'              => WPEnumType::get_safe_name( $data->get_type() ),
-			'parent'            => array (
+			'parent'            => array(
 				'node' => array(
 					'id' => Relay::toGlobalId( 'product', $data->get_parent_id() ),
 				),
@@ -173,8 +173,8 @@ class ProductVariationHelper extends WCG_Helper {
 
 		$results = array();
 
-		foreach( $attributes as $name => $value ) {
-			$term   = get_term_by( 'slug', $value, $name );
+		foreach ( $attributes as $name => $value ) {
+			$term      = get_term_by( 'slug', $value, $name );
 			$results[] = array(
 				'id'          => base64_encode( $product->get_id() . '||' . $name . '||' . $value ),
 				'attributeId' => ! empty( $term ) ? $term->term_id : 0,
@@ -183,11 +183,11 @@ class ProductVariationHelper extends WCG_Helper {
 			);
 		}
 
-		return ! empty ( $results ) ? array( 'nodes' => $results ) : null;
+		return ! empty( $results ) ? array( 'nodes' => $results ) : null;
 	}
 
 	public function field( $id, $field_name = 'id' ) {
-		$get = 'get_' . $field_name;
+		$get       = 'get_' . $field_name;
 		$variation = new WC_Product_Variation( $id );
 		if ( ! empty( $variation ) ) {
 			return $variation->{$get}();

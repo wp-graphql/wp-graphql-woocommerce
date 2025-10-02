@@ -22,88 +22,88 @@ class Customer_Address_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'CustomerAddress',
-			[
+			array(
 				'description' => __( 'A customer address object', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'firstName' => [
+				'fields'      => array(
+					'firstName' => array(
 						'type'        => 'String',
 						'description' => __( 'First name', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['first_name'] ) ? $address['first_name'] : null;
 						},
-					],
-					'lastName'  => [
+					),
+					'lastName'  => array(
 						'type'        => 'String',
 						'description' => __( 'Last name', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['last_name'] ) ? $address['last_name'] : null;
 						},
-					],
-					'company'   => [
+					),
+					'company'   => array(
 						'type'        => 'String',
 						'description' => __( 'Company', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['company'] ) ? $address['company'] : null;
 						},
-					],
-					'address1'  => [
+					),
+					'address1'  => array(
 						'type'        => 'String',
 						'description' => __( 'Address 1', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['address_1'] ) ? $address['address_1'] : null;
 						},
-					],
-					'address2'  => [
+					),
+					'address2'  => array(
 						'type'        => 'String',
 						'description' => __( 'Address 2', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['address_2'] ) ? $address['address_2'] : null;
 						},
-					],
-					'city'      => [
+					),
+					'city'      => array(
 						'type'        => 'String',
 						'description' => __( 'City', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['city'] ) ? $address['city'] : null;
 						},
-					],
-					'state'     => [
+					),
+					'state'     => array(
 						'type'        => 'String',
 						'description' => __( 'State', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['state'] ) ? $address['state'] : null;
 						},
-					],
-					'postcode'  => [
+					),
+					'postcode'  => array(
 						'type'        => 'String',
 						'description' => __( 'Zip Postal Code', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['postcode'] ) ? $address['postcode'] : null;
 						},
-					],
-					'country'   => [
+					),
+					'country'   => array(
 						'type'        => 'CountriesEnum',
 						'description' => __( 'Country', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['country'] ) ? $address['country'] : null;
 						},
-					],
-					'email'     => [
+					),
+					'email'     => array(
 						'type'        => 'String',
 						'description' => __( 'E-mail', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['email'] ) ? $address['email'] : null;
 						},
-					],
-					'phone'     => [
+					),
+					'phone'     => array(
 						'type'        => 'String',
 						'description' => __( 'Phone', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['phone'] ) ? $address['phone'] : null;
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

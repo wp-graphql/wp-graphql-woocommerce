@@ -41,9 +41,9 @@ class Product_Types {
 	 *
 	 * @return array
 	 */
-	public static function get_product_interfaces( $other_interfaces = [] ) {
+	public static function get_product_interfaces( $other_interfaces = array() ) {
 		return array_merge(
-			[
+			array(
 				'Node',
 				'Product',
 				'ProductUnion',
@@ -53,7 +53,7 @@ class Product_Types {
 				'NodeWithFeaturedImage',
 				'ContentNode',
 				'UniformResourceIdentifiable',
-			],
+			),
 			$other_interfaces
 		);
 	}
@@ -66,30 +66,30 @@ class Product_Types {
 	private static function register_simple_product_type() {
 		register_graphql_object_type(
 			'SimpleProduct',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A simple product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces(
-					[
+					array(
 						'DownloadableProduct',
 						'InventoriedProduct',
 						'ProductWithDimensions',
 						'ProductWithPricing',
-					]
+					)
 				),
-				'fields'          => [
-    'dateModified' => [
-        'type'        => 'String',
-        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
-        'resolve'     => static function ( Model $source ) {
-            $modified = $source->get_date_modified();
-            return $modified ? $modified->date( 'c' ) : null;
-        },
-    ],
-],
+				'fields'          => array(
+					'dateModified' => array(
+						'type'        => 'String',
+						'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( Model $source ) {
+							$modified = $source->get_date_modified();
+							return $modified ? $modified->date( 'c' ) : null;
+						},
+					),
+				),
 
-			]
+			)
 		);
 	}
 
@@ -101,30 +101,30 @@ class Product_Types {
 	private static function register_variable_product_type() {
 		register_graphql_object_type(
 			'VariableProduct',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A variable product object', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces(
-					[
+					array(
 						'InventoriedProduct',
 						'ProductWithDimensions',
 						'ProductWithPricing',
 						'ProductWithVariations',
-					]
+					)
 				),
-				'fields'          => [
-    'dateModified' => [
-        'type'        => 'String',
-        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
-        'resolve'     => static function ( Model $source ) {
-            $modified = $source->get_date_modified();
-            return $modified ? $modified->date( 'c' ) : null;
-        },
-    ],
-],
+				'fields'          => array(
+					'dateModified' => array(
+						'type'        => 'String',
+						'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( Model $source ) {
+							$modified = $source->get_date_modified();
+							return $modified ? $modified->date( 'c' ) : null;
+						},
+					),
+				),
 
-			]
+			)
 		);
 	}
 
@@ -136,32 +136,31 @@ class Product_Types {
 	private static function register_external_product_type() {
 		register_graphql_object_type(
 			'ExternalProduct',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A external product object', 'wp-graphql-woocommerce' ),
-				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
-				'fields'          => [
-        'externalUrl' => [
-            'type'        => 'String',
-            'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
-        ],
-        'buttonText'  => [
-            'type'        => 'String',
-            'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
-        ],
-        'dateModified' => [
-            'type'        => 'String',
-            'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
-            'resolve'     => static function ( Model $source ) {
-                $modified = $source->get_date_modified();
-                return $modified ? $modified->date( 'c' ) : null;
-            },
-        ],
-    ],
-]
-);
-		
+				'interfaces'      => self::get_product_interfaces( array( 'ProductWithPricing' ) ),
+				'fields'          => array(
+					'externalUrl'  => array(
+						'type'        => 'String',
+						'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
+					),
+					'buttonText'   => array(
+						'type'        => 'String',
+						'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
+					),
+					'dateModified' => array(
+						'type'        => 'String',
+						'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( Model $source ) {
+							$modified = $source->get_date_modified();
+							return $modified ? $modified->date( 'c' ) : null;
+						},
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -172,26 +171,26 @@ class Product_Types {
 	private static function register_group_product_type() {
 		register_graphql_object_type(
 			'GroupProduct',
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A group product object', 'wp-graphql-woocommerce' ),
-				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
-				'fields'          => [
-					'addToCartText'        => [
+				'interfaces'      => self::get_product_interfaces( array( 'ProductWithPricing' ) ),
+				'fields'          => array(
+					'addToCartText'        => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
-					],
-					'addToCartDescription' => [
+					),
+					'addToCartDescription' => array(
 						'type'        => 'String',
 						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
-					],
-					'price'                => [
+					),
+					'price'                => array(
 						'type'        => 'String',
 						'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( Model $source ) {
 							$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
-							$child_prices     = [];
+							$child_prices     = array();
 							$children         = array_filter( array_map( 'wc_get_product', $source->grouped_ids ) );
 							$children         = array_filter( $children, 'wc_products_array_filter_visible_grouped' );
 
@@ -223,17 +222,17 @@ class Product_Types {
 
 							return wc_graphql_price( $min_price );
 						},
-					],
-					 'dateModified' => [
-        'type'        => 'String',
-        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
-        'resolve'     => static function ( Model $source ) {
-            $modified = $source->get_date_modified();
-            return $modified ? $modified->date( 'c' ) : null;
-        },
-    ],
-				],
-			]
+					),
+					'dateModified'         => array(
+						'type'        => 'String',
+						'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( Model $source ) {
+							$modified = $source->get_date_modified();
+							return $modified ? $modified->date( 'c' ) : null;
+						},
+					),
+				),
+			)
 		);
 	}
 
@@ -245,36 +244,36 @@ class Product_Types {
 	private static function register_unsupported_product_type() {
 		register_graphql_object_type(
 			WooGraphQL::get_supported_product_type(),
-			[
+			array(
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' ),
 				'interfaces'      => self::get_product_interfaces(
-					[
+					array(
 						'DownloadableProduct',
 						'InventoriedProduct',
 						'ProductWithDimensions',
 						'ProductWithPricing',
-					]
+					)
 				),
-				'fields'          => [
-					'type' => [
+				'fields'          => array(
+					'type'         => array(
 						'type'        => 'ProductTypesEnum',
 						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function () {
 							return 'unsupported';
 						},
-					],
-					'dateModified' => [
-        'type'        => 'String',
-        'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
-        'resolve'     => static function ( Model $source ) {
-            $modified = $source->get_date_modified();
-            return $modified ? $modified->date( 'c' ) : null;
-        },
-    ],
-				],
-			]
+					),
+					'dateModified' => array(
+						'type'        => 'String',
+						'description' => __( 'The date the product was last modified in GMT (ISO8601 format).', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( Model $source ) {
+							$modified = $source->get_date_modified();
+							return $modified ? $modified->date( 'c' ) : null;
+						},
+					),
+				),
+			)
 		);
 	}
 }

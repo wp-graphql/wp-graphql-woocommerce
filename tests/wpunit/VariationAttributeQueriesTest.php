@@ -7,29 +7,29 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 			? $product->get_default_attributes()
 			: $product->get_attributes();
 
-		$expected = [];
+		$expected = array();
 		foreach ( $attributes as $name => $value ) {
 			$term        = \get_term_by( 'slug', $value, $name );
 			$expected_id = base64_encode( $id . '||' . $name . '||' . $value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			if ( ! $term instanceof \WP_Term ) {
 				$expected[] = $this->expectedNode(
 					'nodes',
-					[
+					array(
 						$this->expectedField( 'id', $expected_id ),
 						$this->expectedField( 'attributeId', 0 ),
 						$this->expectedField( 'name', $name ),
 						$this->expectedField( 'value', $value ),
-					]
+					)
 				);
 			} else {
 				$expected[] = $this->expectedNode(
 					'nodes',
-					[
+					array(
 						$this->expectedField( 'id', $expected_id ),
 						$this->expectedField( 'attributeId', $term->term_id ),
 						$this->expectedField( 'name', $term->taxonomy ),
 						$this->expectedField( 'value', $term->name ),
-					]
+					)
 				);
 			}
 		}
@@ -41,20 +41,20 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		$product    = wc_get_product( $id );
 		$attributes = $product->get_attributes();
 
-		$expected = [];
+		$expected = array();
 		foreach ( $attributes as $attribute ) {
 			$name = $attribute->get_name();
 			if ( $attribute->is_taxonomy() ) {
-				$attribute_values = wc_get_product_terms( $id, $attribute->get_name(), [ 'fields' => 'all' ] );
+				$attribute_values = wc_get_product_terms( $id, $attribute->get_name(), array( 'fields' => 'all' ) );
 				foreach ( $attribute_values as $attribute_value ) {
 					$expected[] = $this->expectedNode(
 						'nodes',
-						[
+						array(
 							$this->expectedField( 'id', base64_encode( $id . '|' . $name . '|' . $attribute_value->name ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 							$this->expectedField( 'attributeId', $attribute_value->term_id ),
 							$this->expectedField( 'name', $name ),
 							$this->expectedField( 'value', $attribute_value->name ),
-						]
+						)
 					);
 				}
 			} else {
@@ -62,12 +62,12 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 				foreach ( $values as $attribute_value ) {
 					$expected[] = $this->expectedNode(
 						'nodes',
-						[
+						array(
 							$this->expectedField( 'id', base64_encode( $id . '|' . $name . '|' . $attribute_value ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 							$this->expectedField( 'attributeId', 0 ),
 							$this->expectedField( 'name', $name ),
 							$this->expectedField( 'value', $attribute_value ),
-						]
+						)
 					);
 				}
 			}
@@ -103,12 +103,12 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		 *
 		 * Test query and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'post', $variation_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'post', $variation_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'productVariation.id', $this->toRelayId( 'post', $variation_id ) ),
 			$this->expectedObject( 'productVariation.attributes', $this->expectedAttributes( $variation_id ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -142,27 +142,27 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		 *
 		 * Test query and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'post', $product_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedObject( 'product.defaultAttributes', $this->expectedAttributes( $product_id ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testSimpleProductToVariationAttributeQuery() {
 		// Create a product w/ default attributes.
-		$attribute_data = [
-			$this->factory->product->createAttribute( 'size', [ 'small' ] ),
-			$this->factory->product->createAttribute( 'color', [ 'red' ] ),
-			[
+		$attribute_data = array(
+			$this->factory->product->createAttribute( 'size', array( 'small' ) ),
+			$this->factory->product->createAttribute( 'color', array( 'red' ) ),
+			array(
 				'attribute_id'       => 0,
 				'attribute_taxonomy' => 'logo',
-				'term_ids'           => [ 'Yes' ],
-			],
-		];
+				'term_ids'           => array( 'Yes' ),
+			),
+		);
 		$attributes     = array_map(
 			static function ( $data, $index ) {
 				$attribute = new \WC_Product_Attribute();
@@ -178,14 +178,14 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 			array_keys( $attribute_data )
 		);
 		$product_id     = $this->factory->product->createSimple(
-			[
+			array(
 				'attributes'         => $attributes,
-				'default_attributes' => [
+				'default_attributes' => array(
 					'pa_size'  => 'small',
 					'pa_color' => 'red',
 					'logo'     => 'Yes',
-				],
-			]
+				),
+			)
 		);
 
 		// Create a query.
@@ -212,12 +212,12 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		 *
 		 * Test query and results
 		 */
-		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'post', $product_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedObject( 'product.defaultAttributes', $this->expectedDefaultAttributes( $product_id ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

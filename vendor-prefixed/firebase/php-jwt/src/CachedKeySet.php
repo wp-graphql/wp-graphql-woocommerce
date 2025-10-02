@@ -22,259 +22,256 @@ use UnexpectedValueException;
 /**
  * @implements ArrayAccess<string, Key>
  */
-class CachedKeySet implements ArrayAccess
-{
-    /**
-     * @var string
-     */
-    private $jwksUri;
-    /**
-     * @var ClientInterface
-     */
-    private $httpClient;
-    /**
-     * @var RequestFactoryInterface
-     */
-    private $httpFactory;
-    /**
-     * @var CacheItemPoolInterface
-     */
-    private $cache;
-    /**
-     * @var ?int
-     */
-    private $expiresAfter;
-    /**
-     * @var ?CacheItemInterface
-     */
-    private $cacheItem;
-    /**
-     * @var array<string, array<mixed>>
-     */
-    private $keySet;
-    /**
-     * @var string
-     */
-    private $cacheKey;
-    /**
-     * @var string
-     */
-    private $cacheKeyPrefix = 'jwks';
-    /**
-     * @var int
-     */
-    private $maxKeyLength = 64;
-    /**
-     * @var bool
-     */
-    private $rateLimit;
-    /**
-     * @var string
-     */
-    private $rateLimitCacheKey;
-    /**
-     * @var int
-     */
-    private $maxCallsPerMinute = 10;
-    /**
-     * @var string|null
-     */
-    private $defaultAlg;
+class CachedKeySet implements ArrayAccess {
 
-    public function __construct(
-        string $jwksUri,
-        ClientInterface $httpClient,
-        RequestFactoryInterface $httpFactory,
-        CacheItemPoolInterface $cache,
-        ?int $expiresAfter = null,
-        bool $rateLimit = false,
-        ?string $defaultAlg = null
-    ) {
-        $this->jwksUri = $jwksUri;
-        $this->httpClient = $httpClient;
-        $this->httpFactory = $httpFactory;
-        $this->cache = $cache;
-        $this->expiresAfter = $expiresAfter;
-        $this->rateLimit = $rateLimit;
-        $this->defaultAlg = $defaultAlg;
-        $this->setCacheKeys();
-    }
+	/**
+	 * @var string
+	 */
+	private $jwksUri;
+	/**
+	 * @var ClientInterface
+	 */
+	private $httpClient;
+	/**
+	 * @var RequestFactoryInterface
+	 */
+	private $httpFactory;
+	/**
+	 * @var CacheItemPoolInterface
+	 */
+	private $cache;
+	/**
+	 * @var ?int
+	 */
+	private $expiresAfter;
+	/**
+	 * @var ?CacheItemInterface
+	 */
+	private $cacheItem;
+	/**
+	 * @var array<string, array<mixed>>
+	 */
+	private $keySet;
+	/**
+	 * @var string
+	 */
+	private $cacheKey;
+	/**
+	 * @var string
+	 */
+	private $cacheKeyPrefix = 'jwks';
+	/**
+	 * @var int
+	 */
+	private $maxKeyLength = 64;
+	/**
+	 * @var bool
+	 */
+	private $rateLimit;
+	/**
+	 * @var string
+	 */
+	private $rateLimitCacheKey;
+	/**
+	 * @var int
+	 */
+	private $maxCallsPerMinute = 10;
+	/**
+	 * @var string|null
+	 */
+	private $defaultAlg;
 
-    /**
-     * @param string $keyId
-     * @return Key
-     */
-    public function offsetGet($keyId): Key
-    {
-        if (!$this->keyIdExists($keyId)) {
-            throw new OutOfBoundsException('Key ID not found');
-        }
-        return JWK::parseKey($this->keySet[$keyId], $this->defaultAlg);
-    }
+	public function __construct(
+		string $jwksUri,
+		ClientInterface $httpClient,
+		RequestFactoryInterface $httpFactory,
+		CacheItemPoolInterface $cache,
+		?int $expiresAfter = null,
+		bool $rateLimit = false,
+		?string $defaultAlg = null
+	) {
+		$this->jwksUri      = $jwksUri;
+		$this->httpClient   = $httpClient;
+		$this->httpFactory  = $httpFactory;
+		$this->cache        = $cache;
+		$this->expiresAfter = $expiresAfter;
+		$this->rateLimit    = $rateLimit;
+		$this->defaultAlg   = $defaultAlg;
+		$this->setCacheKeys();
+	}
 
-    /**
-     * @param string $keyId
-     * @return bool
-     */
-    public function offsetExists($keyId): bool
-    {
-        return $this->keyIdExists($keyId);
-    }
+	/**
+	 * @param string $keyId
+	 * @return Key
+	 */
+	public function offsetGet( $keyId ): Key {
+		if ( ! $this->keyIdExists( $keyId ) ) {
+			throw new OutOfBoundsException( 'Key ID not found' );
+		}
+		return JWK::parseKey( $this->keySet[ $keyId ], $this->defaultAlg );
+	}
 
-    /**
-     * @param string $offset
-     * @param Key $value
-     */
-    public function offsetSet($offset, $value): void
-    {
-        throw new LogicException('Method not implemented');
-    }
+	/**
+	 * @param string $keyId
+	 * @return bool
+	 */
+	public function offsetExists( $keyId ): bool {
+		return $this->keyIdExists( $keyId );
+	}
 
-    /**
-     * @param string $offset
-     */
-    public function offsetUnset($offset): void
-    {
-        throw new LogicException('Method not implemented');
-    }
+	/**
+	 * @param string $offset
+	 * @param Key    $value
+	 */
+	public function offsetSet( $offset, $value ): void {
+		throw new LogicException( 'Method not implemented' );
+	}
 
-    /**
-     * @return array<mixed>
-     */
-    private function formatJwksForCache(string $jwks): array
-    {
-        $jwks = json_decode($jwks, true);
+	/**
+	 * @param string $offset
+	 */
+	public function offsetUnset( $offset ): void {
+		throw new LogicException( 'Method not implemented' );
+	}
 
-        if (!isset($jwks['keys'])) {
-            throw new UnexpectedValueException('"keys" member must exist in the JWK Set');
-        }
+	/**
+	 * @return array<mixed>
+	 */
+	private function formatJwksForCache( string $jwks ): array {
+		$jwks = json_decode( $jwks, true );
 
-        if (empty($jwks['keys'])) {
-            throw new InvalidArgumentException('JWK Set did not contain any keys');
-        }
+		if ( ! isset( $jwks['keys'] ) ) {
+			throw new UnexpectedValueException( '"keys" member must exist in the JWK Set' );
+		}
 
-        $keys = [];
-        foreach ($jwks['keys'] as $k => $v) {
-            $kid = isset($v['kid']) ? $v['kid'] : $k;
-            $keys[(string) $kid] = $v;
-        }
+		if ( empty( $jwks['keys'] ) ) {
+			throw new InvalidArgumentException( 'JWK Set did not contain any keys' );
+		}
 
-        return $keys;
-    }
+		$keys = array();
+		foreach ( $jwks['keys'] as $k => $v ) {
+			$kid                   = isset( $v['kid'] ) ? $v['kid'] : $k;
+			$keys[ (string) $kid ] = $v;
+		}
 
-    private function keyIdExists(string $keyId): bool
-    {
-        if (null === $this->keySet) {
-            $item = $this->getCacheItem();
-            // Try to load keys from cache
-            if ($item->isHit()) {
-                // item found! retrieve it
-                $this->keySet = $item->get();
-                // If the cached item is a string, the JWKS response was cached (previous behavior).
-                // Parse this into expected format array<kid, jwk> instead.
-                if (\is_string($this->keySet)) {
-                    $this->keySet = $this->formatJwksForCache($this->keySet);
-                }
-            }
-        }
+		return $keys;
+	}
 
-        if (!isset($this->keySet[$keyId])) {
-            if ($this->rateLimitExceeded()) {
-                return false;
-            }
-            $request = $this->httpFactory->createRequest('GET', $this->jwksUri);
-            $jwksResponse = $this->httpClient->sendRequest($request);
-            if ($jwksResponse->getStatusCode() !== 200) {
-                throw new UnexpectedValueException(
-                    \sprintf('HTTP Error: %d %s for URI "%s"',
-                        $jwksResponse->getStatusCode(),
-                        $jwksResponse->getReasonPhrase(),
-                        $this->jwksUri,
-                    ),
-                    $jwksResponse->getStatusCode()
-                );
-            }
-            $this->keySet = $this->formatJwksForCache((string) $jwksResponse->getBody());
+	private function keyIdExists( string $keyId ): bool {
+		if ( null === $this->keySet ) {
+			$item = $this->getCacheItem();
+			// Try to load keys from cache
+			if ( $item->isHit() ) {
+				// item found! retrieve it
+				$this->keySet = $item->get();
+				// If the cached item is a string, the JWKS response was cached (previous behavior).
+				// Parse this into expected format array<kid, jwk> instead.
+				if ( \is_string( $this->keySet ) ) {
+					$this->keySet = $this->formatJwksForCache( $this->keySet );
+				}
+			}
+		}
 
-            if (!isset($this->keySet[$keyId])) {
-                return false;
-            }
+		if ( ! isset( $this->keySet[ $keyId ] ) ) {
+			if ( $this->rateLimitExceeded() ) {
+				return false;
+			}
+			$request      = $this->httpFactory->createRequest( 'GET', $this->jwksUri );
+			$jwksResponse = $this->httpClient->sendRequest( $request );
+			if ( $jwksResponse->getStatusCode() !== 200 ) {
+				throw new UnexpectedValueException(
+					\sprintf(
+						'HTTP Error: %d %s for URI "%s"',
+						$jwksResponse->getStatusCode(),
+						$jwksResponse->getReasonPhrase(),
+						$this->jwksUri,
+					),
+					$jwksResponse->getStatusCode()
+				);
+			}
+			$this->keySet = $this->formatJwksForCache( (string) $jwksResponse->getBody() );
 
-            $item = $this->getCacheItem();
-            $item->set($this->keySet);
-            if ($this->expiresAfter) {
-                $item->expiresAfter($this->expiresAfter);
-            }
-            $this->cache->save($item);
-        }
+			if ( ! isset( $this->keySet[ $keyId ] ) ) {
+				return false;
+			}
 
-        return true;
-    }
+			$item = $this->getCacheItem();
+			$item->set( $this->keySet );
+			if ( $this->expiresAfter ) {
+				$item->expiresAfter( $this->expiresAfter );
+			}
+			$this->cache->save( $item );
+		}
 
-    private function rateLimitExceeded(): bool
-    {
-        if (!$this->rateLimit) {
-            return false;
-        }
+		return true;
+	}
 
-        $cacheItem = $this->cache->getItem($this->rateLimitCacheKey);
+	private function rateLimitExceeded(): bool {
+		if ( ! $this->rateLimit ) {
+			return false;
+		}
 
-        $cacheItemData = [];
-        if ($cacheItem->isHit() && \is_array($data = $cacheItem->get())) {
-            $cacheItemData = $data;
-        }
+		$cacheItem = $this->cache->getItem( $this->rateLimitCacheKey );
 
-        $callsPerMinute = $cacheItemData['callsPerMinute'] ?? 0;
-        $expiry = $cacheItemData['expiry'] ?? new \DateTime('+60 seconds', new \DateTimeZone('UTC'));
+		$cacheItemData = array();
+		if ( $cacheItem->isHit() && \is_array( $data = $cacheItem->get() ) ) {
+			$cacheItemData = $data;
+		}
 
-        if (++$callsPerMinute > $this->maxCallsPerMinute) {
-            return true;
-        }
+		$callsPerMinute = $cacheItemData['callsPerMinute'] ?? 0;
+		$expiry         = $cacheItemData['expiry'] ?? new \DateTime( '+60 seconds', new \DateTimeZone( 'UTC' ) );
 
-        $cacheItem->set(['expiry' => $expiry, 'callsPerMinute' => $callsPerMinute]);
-        $cacheItem->expiresAt($expiry);
-        $this->cache->save($cacheItem);
-        return false;
-    }
+		if ( ++$callsPerMinute > $this->maxCallsPerMinute ) {
+			return true;
+		}
 
-    private function getCacheItem(): CacheItemInterface
-    {
-        if (\is_null($this->cacheItem)) {
-            $this->cacheItem = $this->cache->getItem($this->cacheKey);
-        }
+		$cacheItem->set(
+			array(
+				'expiry'         => $expiry,
+				'callsPerMinute' => $callsPerMinute,
+			)
+		);
+		$cacheItem->expiresAt( $expiry );
+		$this->cache->save( $cacheItem );
+		return false;
+	}
 
-        return $this->cacheItem;
-    }
+	private function getCacheItem(): CacheItemInterface {
+		if ( \is_null( $this->cacheItem ) ) {
+			$this->cacheItem = $this->cache->getItem( $this->cacheKey );
+		}
 
-    private function setCacheKeys(): void
-    {
-        if (empty($this->jwksUri)) {
-            throw new RuntimeException('JWKS URI is empty');
-        }
+		return $this->cacheItem;
+	}
 
-        // ensure we do not have illegal characters
-        $key = preg_replace('|[^a-zA-Z0-9_\.!]|', '', $this->jwksUri);
+	private function setCacheKeys(): void {
+		if ( empty( $this->jwksUri ) ) {
+			throw new RuntimeException( 'JWKS URI is empty' );
+		}
 
-        // add prefix
-        $key = $this->cacheKeyPrefix . $key;
+		// ensure we do not have illegal characters
+		$key = preg_replace( '|[^a-zA-Z0-9_\.!]|', '', $this->jwksUri );
 
-        // Hash keys if they exceed $maxKeyLength of 64
-        if (\strlen($key) > $this->maxKeyLength) {
-            $key = substr(hash('sha256', $key), 0, $this->maxKeyLength);
-        }
+		// add prefix
+		$key = $this->cacheKeyPrefix . $key;
 
-        $this->cacheKey = $key;
+		// Hash keys if they exceed $maxKeyLength of 64
+		if ( \strlen( $key ) > $this->maxKeyLength ) {
+			$key = substr( hash( 'sha256', $key ), 0, $this->maxKeyLength );
+		}
 
-        if ($this->rateLimit) {
-            // add prefix
-            $rateLimitKey = $this->cacheKeyPrefix . 'ratelimit' . $key;
+		$this->cacheKey = $key;
 
-            // Hash keys if they exceed $maxKeyLength of 64
-            if (\strlen($rateLimitKey) > $this->maxKeyLength) {
-                $rateLimitKey = substr(hash('sha256', $rateLimitKey), 0, $this->maxKeyLength);
-            }
+		if ( $this->rateLimit ) {
+			// add prefix
+			$rateLimitKey = $this->cacheKeyPrefix . 'ratelimit' . $key;
 
-            $this->rateLimitCacheKey = $rateLimitKey;
-        }
-    }
+			// Hash keys if they exceed $maxKeyLength of 64
+			if ( \strlen( $rateLimitKey ) > $this->maxKeyLength ) {
+				$rateLimitKey = substr( hash( 'sha256', $rateLimitKey ), 0, $this->maxKeyLength );
+			}
+
+			$this->rateLimitCacheKey = $rateLimitKey;
+		}
+	}
 }

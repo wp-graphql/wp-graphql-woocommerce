@@ -2,98 +2,108 @@
 
 class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	private function createProducts() {
-		$products = [
-			$this->factory->product->createSimple([
-				'name'          => 'Product Blue',
-				'slug'          => 'product-blue',
-				'description'   => 'A peach description',
-				'price'         => 100,
-				'regular_price' => 100,
-				'sale_price'    => 90,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 10,
-				'reviews_allowed' => true,
-				'average_rating' => 4.5,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Green',
-				'slug'          => 'product-green',
-				'description'   => 'A turquoise description',
-				'sku' 		    => 'green-sku',
-				'price'         => 200,
-				'regular_price' => 200,
-				'sale_price'    => 180,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 20,
-				'reviews_allowed' => true,
-				'average_rating' => 4.0,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Red',
-				'slug'          => 'product-red',
-				'description'   => 'A maroon description',
-				'price'         => 300,
-				'regular_price' => 300,
-				'sale_price'    => 270,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 30,
-				'reviews_allowed' => true,
-				'average_rating' => 3.5,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Yellow',
-				'slug'          => 'product-yellow',
-				'description'   => 'A teal description',
-				'price'         => 400,
-				'regular_price' => 400,
-				'sale_price'    => 360,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 40,
-				'reviews_allowed' => true,
-				'average_rating' => 3.0,
-			]),
-			$this->factory->product->createSimple([
-				'name'          => 'Product Purple',
-				'slug'          => 'product-purple',
-				'description'   => 'A magenta description',
-				'price'         => 500,
-				'regular_price' => 500,
-				'sale_price'    => 450,
-				'stock_status'  => 'instock',
-				'stock_quantity' => 50,
-				'reviews_allowed' => true,
-				'average_rating' => 2.5,
-			]),
-		];
+		$products = array(
+			$this->factory->product->createSimple(
+				array(
+					'name'            => 'Product Blue',
+					'slug'            => 'product-blue',
+					'description'     => 'A peach description',
+					'price'           => 100,
+					'regular_price'   => 100,
+					'sale_price'      => 90,
+					'stock_status'    => 'instock',
+					'stock_quantity'  => 10,
+					'reviews_allowed' => true,
+					'average_rating'  => 4.5,
+				)
+			),
+			$this->factory->product->createSimple(
+				array(
+					'name'            => 'Product Green',
+					'slug'            => 'product-green',
+					'description'     => 'A turquoise description',
+					'sku'             => 'green-sku',
+					'price'           => 200,
+					'regular_price'   => 200,
+					'sale_price'      => 180,
+					'stock_status'    => 'instock',
+					'stock_quantity'  => 20,
+					'reviews_allowed' => true,
+					'average_rating'  => 4.0,
+				)
+			),
+			$this->factory->product->createSimple(
+				array(
+					'name'            => 'Product Red',
+					'slug'            => 'product-red',
+					'description'     => 'A maroon description',
+					'price'           => 300,
+					'regular_price'   => 300,
+					'sale_price'      => 270,
+					'stock_status'    => 'instock',
+					'stock_quantity'  => 30,
+					'reviews_allowed' => true,
+					'average_rating'  => 3.5,
+				)
+			),
+			$this->factory->product->createSimple(
+				array(
+					'name'            => 'Product Yellow',
+					'slug'            => 'product-yellow',
+					'description'     => 'A teal description',
+					'price'           => 400,
+					'regular_price'   => 400,
+					'sale_price'      => 360,
+					'stock_status'    => 'instock',
+					'stock_quantity'  => 40,
+					'reviews_allowed' => true,
+					'average_rating'  => 3.0,
+				)
+			),
+			$this->factory->product->createSimple(
+				array(
+					'name'            => 'Product Purple',
+					'slug'            => 'product-purple',
+					'description'     => 'A magenta description',
+					'price'           => 500,
+					'regular_price'   => 500,
+					'sale_price'      => 450,
+					'stock_status'    => 'instock',
+					'stock_quantity'  => 50,
+					'reviews_allowed' => true,
+					'average_rating'  => 2.5,
+				)
+			),
+		);
 
 		$order_id = $this->factory->order->createNew(
-			[
+			array(
 				'payment_method' => 'cod',
-			],
-			[
-				'line_items' => [
-					[
+			),
+			array(
+				'line_items' => array(
+					array(
 						'product' => $products[0],
 						'qty'     => 10,
-					],
-					[
+					),
+					array(
 						'product' => $products[1],
 						'qty'     => 8,
-					],
-					[
+					),
+					array(
 						'product' => $products[2],
 						'qty'     => 6,
-					],
-					[
+					),
+					array(
 						'product' => $products[3],
 						'qty'     => 4,
-					],
-					[
+					),
+					array(
 						'product' => $products[4],
 						'qty'     => 2,
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 
 		$order = \wc_get_order( $order_id );
@@ -103,140 +113,140 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		wc_update_total_sales_counts( $order_id );
 
 		$review_one = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[0],
 				'comment_content'      => 'It worked great!',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_one, 'rating', 5.0 );
 		$review_one = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[0],
 				'comment_content'      => 'It worked great!',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_one, 'rating', 5.0 );
 
 		$review_two = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[2],
 				'comment_content'      => 'It was basic',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_two, 'rating', 3.0 );
 
 		$review_three = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[2],
 				'comment_content'      => 'Overpriced',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_three, 'rating', 2.0 );
 
 		$review_four = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[4],
 				'comment_content'      => 'Overpriced',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_four, 'rating', 3.5 );
 
 		$review_five = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[4],
 				'comment_content'      => 'Overpriced and ugly',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_five, 'rating', 2.5 );
 
 		$review_six = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[1],
 				'comment_content'      => 'It was cheap!',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_six, 'rating', 4.2 );
 		$review_six = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Customer',
 				'comment_author_email' => 'customer@example.com',
 				'comment_post_ID'      => $products[1],
 				'comment_content'      => 'It was cheap!',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $review_six, 'rating', 4.2 );
 
 		wc_update_product_lookup_tables();
 
 		return $products;
-	}    
+	}
 	// Tests
-    public function testProductsQueryAndWhereArgs() {
+	public function testProductsQueryAndWhereArgs() {
 		$category_3  = $this->factory->product->createProductCategory( 'category-three' );
 		$category_4  = $this->factory->product->createProductCategory( 'category-four' );
-		$product_ids = [
+		$product_ids = array(
 			$this->factory->product->createSimple(
-				[
+				array(
 					'slug'          => 'test-product-1',
 					'price'         => 6000,
 					'regular_price' => 6000,
-				]
+				)
 			),
 			$this->factory->product->createSimple(
-				[
+				array(
 					'price'         => 2,
 					'regular_price' => 2,
-					'category_ids'  => [ $category_3, $category_4 ],
-				]
+					'category_ids'  => array( $category_3, $category_4 ),
+				)
 			),
 			$this->factory->product->createSimple(
-				[
+				array(
 					'featured'     => 'true',
-					'category_ids' => [ $category_3 ],
-				]
+					'category_ids' => array( $category_3 ),
+				)
 			),
 			$this->factory->product->createExternal(),
 			$this->factory->product->createSimple(
-				[
+				array(
 					'price'             => 200,
 					'regular_price'     => 300,
 					'sale_price'        => 200,
 					'date_on_sale_from' => ( new \DateTime( 'yesterday' ) )->format( 'Y-m-d H:i:s' ),
 					'date_on_sale_to'   => ( new \DateTime( 'tomorrow' ) )->format( 'Y-m-d H:i:s' ),
 					'stock_status'      => 'outofstock',
-				]
+				)
 			),
-		];
+		);
 
 		$query = '
 			query (
@@ -297,7 +307,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			function ( $product_id ) {
 				return $this->expectedNode(
 					'products.nodes',
-					[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_id ) ) ]
+					array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_id ) ) )
 				);
 			},
 			$product_ids
@@ -317,7 +327,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "slug" where argument, and expect the product with
 		 * the slug "test-product-1" to be returned.
 		 */
-		$variables = [ 'slugIn' => [ 'test-product-1' ] ];
+		$variables = array( 'slugIn' => array( 'test-product-1' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -337,9 +347,9 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * a status of "pending" to be returned, which there are none among the test
 		 * product with that status.
 		 */
-		$variables = [ 'status' => 'pending' ];
+		$variables = array( 'status' => 'pending' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [ $this->expectedField( 'products.nodes', [] ) ];
+		$expected  = array( $this->expectedField( 'products.nodes', array() ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -349,7 +359,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "type" where argument, and expect only "simple" products
 		 * to be returned.
 		 */
-		$variables = [ 'type' => 'SIMPLE' ];
+		$variables = array( 'type' => 'SIMPLE' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -368,7 +378,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "typeIn" where argument, and expect only "simple" products
 		 * to be returned.
 		 */
-		$variables = [ 'typeIn' => [ 'SIMPLE' ] ];
+		$variables = array( 'typeIn' => array( 'SIMPLE' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		// No need to reassign the $expected for this assertion.
 
@@ -380,7 +390,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "typeNotIn" where argument, and expect all types of products
 		 * with except "simple" to be returned.
 		 */
-		$variables = [ 'typeNotIn' => [ 'SIMPLE' ] ];
+		$variables = array( 'typeNotIn' => array( 'SIMPLE' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -399,7 +409,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "featured" where argument, expect only featured products
 		 * to be returned.
 		 */
-		$variables = [ 'featured' => true ];
+		$variables = array( 'featured' => true );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -418,7 +428,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "maxPrice" where argument, and expect all product
 		 * with a price of 10.00+ to be returned.
 		 */
-		$variables = [ 'maxPrice' => 10.00 ];
+		$variables = array( 'maxPrice' => 10.00 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -437,28 +447,28 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "orderby" where argument, and expect products to
 		 * be return in descending order by "price".
 		 */
-		$variables = [
-			'orderby' => [
-				[
+		$variables = array(
+			'orderby' => array(
+				array(
 					'field' => 'PRICE',
 					'order' => 'DESC',
-				],
-			],
-		];
+				),
+			),
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedNode(
 				'products.nodes',
-				[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[0] ) ) ],
+				array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[0] ) ) ),
 				0
 			),
 			$this->expectedNode(
 				'products.nodes',
-				[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[1] ) ) ],
+				array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[1] ) ) ),
 				4
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -468,7 +478,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "category" where argument, and expect products in
 		 * the "category-three" category to be returned.
 		 */
-		$variables = [ 'category' => 'category-three' ];
+		$variables = array( 'category' => 'category-three' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -489,7 +499,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "categoryIn" where argument, and expect products in
 		 * the "category-three" category to be returned.
 		 */
-		$variables = [ 'categoryIn' => [ 'category-three' ] ];
+		$variables = array( 'categoryIn' => array( 'category-three' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		// No need to reassign the $expected for this assertion.
 
@@ -501,7 +511,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "categoryId" where argument, and expect products in
 		 * the "category-three" category to be returned.
 		 */
-		$variables = [ 'categoryId' => $category_3 ];
+		$variables = array( 'categoryId' => $category_3 );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		// No need to reassign the $expected for this assertion either.
 
@@ -513,7 +523,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "categoryNotIn" where argument, and expect all products
 		 * except products in the "category-four" category to be returned.
 		 */
-		$variables = [ 'categoryNotIn' => [ 'category-four' ] ];
+		$variables = array( 'categoryNotIn' => array( 'category-four' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -532,7 +542,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "categoryIdNotIn" where argument, and expect all products
 		 * except products in the "category-four" category to be returned.
 		 */
-		$variables = [ 'categoryIdNotIn' => [ $category_4 ] ];
+		$variables = array( 'categoryIdNotIn' => array( $category_4 ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		// No need to reassign the $expected for this assertion.
 
@@ -544,7 +554,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Tests query with "categoryIdIn" where argument, and expect products in
 		 * the "category-four" category to be returned.
 		 */
-		$variables = [ 'categoryIdIn' => [ $category_4 ] ];
+		$variables = array( 'categoryIdIn' => array( $category_4 ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -562,22 +572,22 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "taxonomyFilter" where argument
 		 */
-		$variables = [
-			'taxonomyFilter' => [
+		$variables = array(
+			'taxonomyFilter' => array(
 				'relation' => 'AND',
-				'filters'  => [
-					[
+				'filters'  => array(
+					array(
 						'taxonomy' => 'PRODUCT_CAT',
-						'terms'    => [ 'category-three' ],
-					],
-					[
+						'terms'    => array( 'category-three' ),
+					),
+					array(
 						'taxonomy' => 'PRODUCT_CAT',
-						'terms'    => [ 'category-four' ],
+						'terms'    => array( 'category-four' ),
 						'operator' => 'NOT_IN',
-					],
-				],
-			],
-		];
+					),
+				),
+			),
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = array_filter(
 			$all_expected_product_nodes,
@@ -596,28 +606,28 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "include" where argument
 		 */
-		$variables = [
-			'include' => [ $product_ids[0] ],
-		];
+		$variables = array(
+			'include' => array( $product_ids[0] ),
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedNode(
 				'products.nodes',
-				[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[0] ) ) ]
+				array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[0] ) ) )
 			),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 
-		$variables = [
-			'include' => [ 1000 ],
-		];
+		$variables = array(
+			'include' => array( 1000 ),
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField(
 				'products.nodes',
 				self::IS_FALSY
 			),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
@@ -625,26 +635,26 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "exclude" where argument
 		 */
-		$variables = [
-			'exclude' => [ $product_ids[0] ],
-		];
+		$variables = array(
+			'exclude' => array( $product_ids[0] ),
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->not()->expectedNode(
 				'products.nodes',
-				[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[0] ) ) ]
+				array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[0] ) ) )
 			),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 
-		$variables = [ 'exclude' => $product_ids ];
+		$variables = array( 'exclude' => $product_ids );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField(
 				'products.nodes',
 				self::IS_FALSY
 			),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
@@ -652,25 +662,25 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Tests "stockStatus" where argument
 		 */
-		$variables = [ 'stockStatus' => 'IN_STOCK' ];
+		$variables = array( 'stockStatus' => 'IN_STOCK' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->not()->expectedNode(
 				'products.nodes',
-				[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[4] ) ) ]
+				array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[4] ) ) )
 			),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 
-		$variables = [ 'stockStatus' => 'OUT_OF_STOCK' ];
+		$variables = array( 'stockStatus' => 'OUT_OF_STOCK' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedNode(
 				'products.nodes',
-				[ $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[4] ) ) ],
+				array( $this->expectedField( 'id', $this->toRelayId( 'post', $product_ids[4] ) ) ),
 				0
 			),
-		];
+		);
 		$this->assertQuerySuccessful( $response, $expected );
 	}
 
@@ -720,9 +730,9 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Test query with no arguments
 		 */
 		$this->loginAsShopManager();
-		$variables = [ 'id' => $id ];
+		$variables = array( 'id' => $id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'post', $variations[0] ) ),
 			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'post', $variations[1] ) ),
 			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'post', $variations[2] ) ),
@@ -739,7 +749,7 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 					. \wc_graphql_price( end( $prices['regular_price'] ) )
 			),
 			$this->expectedField( 'product.salePrice', self::IS_NULL ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -750,16 +760,16 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 *
 		 * Test "minPrice" where argument
 		 */
-		$variables = [
+		$variables = array(
 			'id'       => $id,
 			'minPrice' => 15,
-		];
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->not()->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'post', $variations[0] ) ),
 			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'post', $variations[1] ) ),
 			$this->expectedField( 'product.variations.nodes.#.id', $this->toRelayId( 'post', $variations[2] ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -799,34 +809,34 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assert sorting by price functions correctly.
 		 */
-		$variables = [
+		$variables = array(
 			'first'   => 2,
-			'orderby' => [
-				[
+			'orderby' => array(
+				array(
 					'field' => 'PRICE',
 					'order' => 'ASC',
-				],
-			],
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+				),
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) ),
+					),
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) ),
+					),
 					1
 				),
-			],
+			),
 			'Failed to sort products by price in ascending order.'
 		);
 
@@ -835,71 +845,71 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 */
 		$endCursor = $this->lodashGet( $response, 'data.products.pageInfo.endCursor' );
 		$this->logData( $endCursor );
-		$variables = [
+		$variables = array(
 			'first'   => 2,
 			'after'   => $endCursor,
-			'orderby' => [
-				[
+			'orderby' => array(
+				array(
 					'field' => 'PRICE',
 					'order' => 'ASC',
-				],
-			],
-		];
+				),
+			),
+		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) ),
+					),
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[3] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[3] ) ),
+					),
 					1
 				),
-			],
+			),
 			'Failed to sort products by price in ascending order with pagination.'
 		);
 
 		/**
 		 * Assert sorting by popularity functions correctly.
 		 */
-		$variables = [
+		$variables = array(
 			'first'   => 2,
-			'orderby' => [
-				[
+			'orderby' => array(
+				array(
 					'field' => 'POPULARITY',
 					'order' => 'DESC',
-				],
-			],
-		];
+				),
+			),
+		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) ),
+					),
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) ),
+					),
 					1
 				),
-			],
+			),
 			'Failed to sort products by popularity in ascending order.'
 		);
 
@@ -907,69 +917,69 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Assert sorting by popularity functions correctly w/ pagination.
 		 */
 		$endCursor = $this->lodashGet( $response, 'data.products.pageInfo.endCursor' );
-		$variables = [
+		$variables = array(
 			'first'   => 2,
 			'after'   => $endCursor,
-			'orderby' => [
-				[
+			'orderby' => array(
+				array(
 					'field' => 'POPULARITY',
 					'order' => 'DESC',
-				],
-			],
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+				),
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) ),
+					),
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[3] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[3] ) ),
+					),
 					1
 				),
-			],
+			),
 			'Failed to sort products by popularity in ascending order with pagination.'
 		);
 
 		/**
 		 * Assert sorting by rating functions correctly.
 		 */
-		$variables = [
+		$variables = array(
 			'first'   => 2,
-			'orderby' => [
-				[
+			'orderby' => array(
+				array(
 					'field' => 'RATING',
 					'order' => 'DESC',
-				],
-			],
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+				),
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) ),
+					),
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) ),
+					),
 					1
 				),
-			],
+			),
 			'Failed to sort products by rating in ascending order.'
 		);
 
@@ -977,35 +987,35 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		 * Assert sorting by rating functions correctly w/ pagination.
 		 */
 		$endCursor = $this->lodashGet( $response, 'data.products.pageInfo.endCursor' );
-		$variables = [
+		$variables = array(
 			'first'   => 2,
 			'after'   => $endCursor,
-			'orderby' => [
-				[
+			'orderby' => array(
+				array(
 					'field' => 'RATING',
 					'order' => 'DESC',
-				],
-			],
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+				),
+			),
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[4] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[4] ) ),
+					),
 					0
 				),
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) ),
+					),
 					1
 				),
-			],
+			),
 			'Failed to sort products by rating in ascending order with pagination.'
 		);
 	}
@@ -1042,74 +1052,74 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		/**
 		 * Assert search by product title functions correctly.
 		 */
-		$variables = [
+		$variables = array(
 			'search' => 'Green',
-		];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		);
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) ),
+					),
 					0
 				),
-			],
+			),
 			'Failed to search products by product title.'
 		);
 
 		/**
 		 * Assert search by product sku.
 		 */
-		$variables = [ 'search' => 'green-sku' ];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$variables = array( 'search' => 'green-sku' );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) ),
+					),
 					0
 				),
-			],
+			),
 			'Failed to search products by product sku.'
 		);
 
 		// Search by product description.
-		$variables = [ 'search' => 'magenta' ];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$variables = array( 'search' => 'magenta' );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[4] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[4] ) ),
+					),
 					0
 				),
-			],
+			),
 			'Failed to search products by product description content.'
 		);
 
 		// Search by slug.
-		$variables = [ 'search' => 'product-red' ];
-		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$variables = array( 'search' => 'product-red' );
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedNode(
 					'products.nodes',
-					[
-						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) )
-					],
+					array(
+						$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) ),
+					),
 					0
 				),
-			],
+			),
 			'Failed to search products by product slug.'
 		);
 	}

@@ -15,7 +15,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 	public function __construct( $factory = null ) {
 		parent::__construct( $factory );
 
-		$this->default_generation_definitions = [
+		$this->default_generation_definitions = array(
 			'status'        => '',
 			'customer_id'   => 0,
 			'customer_note' => '',
@@ -23,7 +23,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			'created_via'   => '',
 			'cart_hash'     => '',
 			'order_id'      => 0,
-		];
+		);
 	}
 
 	public function create_object( $args ) {
@@ -36,7 +36,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		// Set props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $order, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $order, "set_{$key}" ) ) ) {
 				$order->{"set_{$key}"}( $value );
 			}
 		}
@@ -50,7 +50,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 
 		foreach ( $fields as $field => $field_value ) {
-			if ( ! is_callable( [ $object, "set_{$field}" ] ) ) {
+			if ( ! is_callable( array( $object, "set_{$field}" ) ) ) {
 				throw new \Exception(
 					sprintf( '"%1$s" is not a valid %2$s coupon field.', $field, $object->get_type() )
 				);
@@ -66,7 +66,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		return \wc_get_order( $id );
 	}
 
-	public function createNew( $args = [], $items = [] ) {
+	public function createNew( $args = array(), $items = array() ) {
 		if ( ! isset( $args['customer_id'] ) ) {
 			$customer            = new \WC_Customer( $this->factory->customer->create() );
 			$args['customer_id'] = $customer->get_id();
@@ -88,10 +88,10 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 				for ( $i = 0; $i < $random_amount; $i++ ) {
 					$order = $this->add_line_item(
 						$order,
-						[
+						array(
 							'product' => $this->factory->product->createSimple(),
 							'qty'     => rand( 1, 6 ),
-						],
+						),
 						false
 					);
 				}
@@ -107,12 +107,12 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			$rate           = new \WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', $shipping_taxes, 'flat_rate' );
 			$item           = new \WC_Order_Item_Shipping();
 			$item->set_props(
-				[
+				array(
 					'method_title' => $rate->label,
 					'method_id'    => $rate->id,
 					'total'        => \wc_format_decimal( $rate->cost ),
 					'taxes'        => $rate->taxes,
-				]
+				)
 			);
 			foreach ( $rate->get_meta_data() as $key => $value ) {
 				$item->add_meta_data( $key, $value, true );
@@ -140,7 +140,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		}
 	}
 
-	public function add_line_item( $order, $args = [], $save = true ) {
+	public function add_line_item( $order, $args = array(), $save = true ) {
 		$order = $save ? \wc_get_order( $order ) : $order;
 
 		if ( ! empty( $args['variation_id'] ) ) {
@@ -161,12 +161,12 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 
 		$item = new \WC_Order_Item_Product();
 		$item->set_props(
-			[
+			array(
 				'product'  => $product,
 				'quantity' => $qty,
-				'subtotal' => \wc_get_price_excluding_tax( $product, [ 'qty' => $qty ] ),
-				'total'    => \wc_get_price_excluding_tax( $product, [ 'qty' => $qty ] ),
-			]
+				'subtotal' => \wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
+				'total'    => \wc_get_price_excluding_tax( $product, array( 'qty' => $qty ) ),
+			)
 		);
 
 		// Set meta data.
@@ -183,22 +183,22 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order->save();
 	}
 
-	public function add_shipping_line( $order, $args = [], $save = true ) {
+	public function add_shipping_line( $order, $args = array(), $save = true ) {
 		$order = $save ? \wc_get_order( $order ) : $order;
 
 		$this->factory->shipping_zone->createLegacyFlatRate();
 		$item = new WC_Order_Item_Shipping();
 		$item->set_props(
 			array_merge(
-				[
+				array(
 					'method_title' => 'Flat Rate',
 					'method_id'    => 'flat_rate',
 					'total'        => '',
 					'total_tax'    => '',
-					'taxes'        => [
-						'total' => [],
-					],
-				],
+					'taxes'        => array(
+						'total' => array(),
+					),
+				),
 				$args
 			)
 		);
@@ -227,7 +227,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		// Create new coupon if $coupon_id not passed.
 		if ( empty( $coupon_id ) ) {
 			// Get order product IDs
-			$product_ids = [];
+			$product_ids = array();
 			foreach ( $order->get_items() as $item ) {
 				if ( ! in_array( $item->get_product_id(), $product_ids, true ) ) {
 					$product_ids[] = $item->get_product_id();
@@ -235,7 +235,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 			}
 
 			$coupon = new \WC_Coupon(
-				$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
+				$this->factory->coupon->create( array( 'product_ids' => $product_ids ) )
 			);
 		} else {
 			$coupon = new \WC_Coupon( $coupon_id );
@@ -253,19 +253,19 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order->save();
 	}
 
-	public function add_fee( $order, $args = [], $save = true ) {
+	public function add_fee( $order, $args = array(), $save = true ) {
 		$order = \wc_get_order( $order );
 
 		// Get thre customer country code.
 		$country_code = $order->get_shipping_country();
 
 		// Set the array for tax calculations.
-		$calculate_tax_for = [
+		$calculate_tax_for = array(
 			'country'  => $country_code,
 			'state'    => '',
 			'postcode' => '',
 			'city'     => '',
-		];
+		);
 
 		$imported_total_fee = 8.4342;
 
@@ -301,7 +301,7 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$order->save();
 	}
 
-	public function add_tax( $order, $args = [], $save = true ) {
+	public function add_tax( $order, $args = array(), $save = true ) {
 		$order = \wc_get_order( $order );
 
 		if ( empty( $args['rate_id'] ) ) {
@@ -313,14 +313,14 @@ class OrderFactory extends \WP_UnitTest_Factory_For_Thing {
 		$item = new \WC_Order_Item_Tax();
 		$item->set_props(
 			array_merge(
-				[
+				array(
 					'rate_id'            => $rate_id,
 					'tax_total'          => 100.66,
 					'shipping_tax_total' => 150.45,
 					'rate_code'          => \WC_Tax::get_rate_code( $rate_id ),
 					'label'              => \WC_Tax::get_rate_label( $rate_id ),
 					'compound'           => \WC_Tax::is_compound( $rate_id ),
-				],
+				),
 				$args
 			)
 		);

@@ -2,9 +2,9 @@
 class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function testUnsupportedProductTypeFailsWhenDisabled() {
 		$product_id = $this->factory->product->createSimple(
-			[
+			array(
 				'product_class' => '\WC_Product_Advanced',
-			]
+			)
 		);
 
 		$query = '
@@ -15,11 +15,11 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
             }
         ';
 
-		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'post', $product_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'post', static::IS_NULL ),
-		];
+		);
 
 		$this->assertQueryError( $response, $expected );
 	}
@@ -27,11 +27,11 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 	public function testUnsupportedProductTypePassesWhenEnabled() {
 		update_option(
 			'woographql_settings',
-			[ 'enable_unsupported_product_type' => 'on' ]
+			array( 'enable_unsupported_product_type' => 'on' )
 		);
 
 		$product_id = $this->factory->product->createSimple(
-			[ 'product_class' => '\WC_Product_Advanced' ]
+			array( 'product_class' => '\WC_Product_Advanced' )
 		);
 
 		$query = '
@@ -43,12 +43,12 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
             }
         ';
 
-		$variables = [ 'id' => $this->toRelayId( 'post', $product_id ) ];
+		$variables = array( 'id' => $this->toRelayId( 'post', $product_id ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedField( 'product.type', 'UNSUPPORTED' ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -62,10 +62,10 @@ class UnsupportedProductTypeTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
         ';
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'unsupportedProduct.id', $this->toRelayId( 'post', $product_id ) ),
 			$this->expectedField( 'unsupportedProduct.type', 'UNSUPPORTED' ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

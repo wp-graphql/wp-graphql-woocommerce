@@ -28,11 +28,11 @@ class Review_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateReview',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -44,12 +44,12 @@ class Review_Update {
 	public static function get_input_fields() {
 		return array_merge(
 			Review_Write::get_input_fields(),
-			[
-				'id' => [
-					'type'        => [ 'non_null' => 'ID' ],
+			array(
+				'id' => array(
+					'type'        => array( 'non_null' => 'ID' ),
 					'description' => __( 'The ID of the review being updated.', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -72,14 +72,14 @@ class Review_Update {
 			// Set comment type to "review".
 			$input['type'] = 'review';
 
-			$skip = [
+			$skip = array(
 				'type'             => 'review',
 				'id'               => 1,
 				'rating'           => 1,
 				'clientMutationId' => 1,
-			];
+			);
 
-			$payload = [];
+			$payload = array();
 			$id      = Utils::get_database_id_from_id( $input['id'] );
 			if ( ! $id ) {
 				throw new UserError( __( 'Provided review ID missing or invalid ', 'wp-graphql-woocommerce' ) );

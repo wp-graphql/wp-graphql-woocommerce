@@ -43,13 +43,13 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$postcode   = $this->faker->postcode();
 		$country    = 'US';
 
-		return [
+		return array(
 			'firstName' => $first_name,
 			'lastName'  => $last_name,
 			'username'  => $username,
 			'password'  => $password,
 			'email'     => $email,
-			'billing'   => [
+			'billing'   => array(
 				'firstName' => $first_name,
 				'lastName'  => $last_name,
 				'address1'  => $address,
@@ -59,8 +59,8 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'country'   => $country,
 				'email'     => $email,
 				'phone'     => $phone,
-			],
-			'shipping'  => [
+			),
+			'shipping'  => array(
 				'firstName' => $first_name,
 				'lastName'  => $last_name,
 				'address1'  => $address,
@@ -69,12 +69,12 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				'postcode'  => $postcode,
 				'country'   => $country,
 				'phone'     => $phone,
-			],
-		];
+			),
+		);
 	}
 
 	private function empty_shipping() {
-		return [
+		return array(
 			'firstName' => null,
 			'lastName'  => null,
 			'company'   => null,
@@ -85,11 +85,11 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'postcode'  => null,
 			'country'   => null,
 			'phone'     => null,
-		];
+		);
 	}
 
 	private function empty_billing() {
-		return [
+		return array(
 			'firstName' => null,
 			'lastName'  => null,
 			'company'   => null,
@@ -101,7 +101,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'country'   => null,
 			'email'     => null,
 			'phone'     => null,
-		];
+		);
 	}
 
 	private function executeRegisterCustomerMutation( $input ) {
@@ -150,7 +150,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			}
 		';
 
-		$variables = [ 'input' => $input ];
+		$variables = array( 'input' => $input );
 		return $this->graphql( compact( 'query', 'variables' ) );
 	}
 
@@ -194,7 +194,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			}
 		';
 
-		$variables = [ 'input' => $input ];
+		$variables = array( 'input' => $input );
 		return $this->graphql( compact( 'query', 'variables' ) );
 	}
 
@@ -212,10 +212,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$response = $this->executeRegisterCustomerMutation(
 			array_merge(
 				$customer_input,
-				[
-					'billing'  => [],
-					'shipping' => [],
-				]
+				array(
+					'billing'  => array(),
+					'shipping' => array(),
+				)
 			)
 		);
 
@@ -223,12 +223,12 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'registerCustomer.authToken', \WPGraphQL\JWT_Authentication\Auth::get_token( $user ) ),
 			$this->expectedField( 'registerCustomer.refreshToken', \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ) ),
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $customer_input['username'] ),
@@ -236,10 +236,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', $this->empty_billing() ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
-				]
+				)
 			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -258,21 +258,21 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$response = $this->executeRegisterCustomerMutation(
 			array_merge(
 				$customer_input,
-				[
-					'shipping' => [],
-				]
+				array(
+					'shipping' => array(),
+				)
 			)
 		);
 
 		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'registerCustomer.authToken', \WPGraphQL\JWT_Authentication\Auth::get_token( $user ) ),
 			$this->expectedField( 'registerCustomer.refreshToken', \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ) ),
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $customer_input['username'] ),
@@ -280,10 +280,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
-				]
+				)
 			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -302,22 +302,22 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$response = $this->executeRegisterCustomerMutation(
 			array_merge(
 				$customer_input,
-				[
-					'shipping'              => [],
+				array(
+					'shipping'              => array(),
 					'shippingSameAsBilling' => true,
-				]
+				)
 			)
 		);
 
 		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'registerCustomer.authToken', \WPGraphQL\JWT_Authentication\Auth::get_token( $user ) ),
 			$this->expectedField( 'registerCustomer.refreshToken', \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ) ),
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $customer_input['username'] ),
@@ -331,10 +331,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 							array_intersect_key( $customer_input['billing'], $this->empty_shipping() )
 						)
 					),
-				]
+				)
 			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -355,12 +355,12 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'registerCustomer.authToken', \WPGraphQL\JWT_Authentication\Auth::get_token( $user ) ),
 			$this->expectedField( 'registerCustomer.refreshToken', \WPGraphQL\JWT_Authentication\Auth::get_refresh_token( $user ) ),
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $customer_input['username'] ),
@@ -368,10 +368,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $customer_input['shipping'] ) ),
-				]
+				)
 			),
 			$this->expectedField( 'registerCustomer.viewer.userId', $user->ID ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -392,10 +392,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$user = get_user_by( 'email', $initial_customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $initial_customer_input['email'] ),
 					$this->expectedField( 'username', $initial_customer_input['username'] ),
@@ -403,9 +403,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $initial_customer_input['lastName'] ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $initial_customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $initial_customer_input['shipping'] ) ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -417,16 +417,16 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$response = $this->executeUpdateCustomerMutation(
 			array_merge(
 				$customer_input,
-				[
+				array(
 					'id' => $this->toRelayId( 'customer', $user->ID ),
-				]
+				)
 			)
 		);
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $initial_customer_input['username'] ),
@@ -434,9 +434,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $customer_input['shipping'] ) ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -457,10 +457,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$user = get_user_by( 'email', $initial_customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $initial_customer_input['email'] ),
 					$this->expectedField( 'username', $initial_customer_input['username'] ),
@@ -468,9 +468,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $initial_customer_input['lastName'] ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $initial_customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $initial_customer_input['shipping'] ) ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -483,10 +483,10 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		unset( $customer_input['username'] );
 		$response = $this->executeUpdateCustomerMutation( $customer_input );
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $initial_customer_input['username'] ),
@@ -494,9 +494,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', array_merge( $this->empty_billing(), $customer_input['billing'] ) ),
 					$this->expectedField( 'shipping', array_merge( $this->empty_shipping(), $customer_input['shipping'] ) ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -515,9 +515,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$this->executeRegisterCustomerMutation(
 			array_merge(
 				$customer_input,
-				[
-					'shipping' => [],
-				]
+				array(
+					'shipping' => array(),
+				)
 			)
 		);
 
@@ -525,17 +525,17 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
 		$response = $this->executeUpdateCustomerMutation(
-			[
+			array(
 				'clientMutationId'      => 'someId',
 				'id'                    => $this->toRelayId( 'customer', $user->ID ),
 				'shippingSameAsBilling' => true,
-			]
+			)
 		);
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'username', $customer_input['username'] ),
@@ -549,9 +549,9 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 							array_intersect_key( $customer_input['billing'], $this->empty_shipping() )
 						)
 					),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -568,29 +568,29 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		 * Tests mutation without a providing an username and password.
 		 */
 		$response = $this->executeRegisterCustomerMutation(
-			[
+			array(
 				'email'     => $customer_input['email'],
 				'firstName' => $customer_input['firstName'],
 				'lastName'  => $customer_input['lastName'],
-			]
+			)
 		);
 
 		$user = get_user_by( 'email', $customer_input['email'] );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', $customer_input['email'] ),
 					$this->expectedField( 'firstName', $customer_input['firstName'] ),
 					$this->expectedField( 'lastName', $customer_input['lastName'] ),
 					$this->expectedField( 'billing', $this->empty_billing() ),
 					$this->expectedField( 'shipping', $this->empty_shipping() ),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
@@ -615,40 +615,40 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 				}
 			}
 		';
-		$variables = [
-			'input' => [
+		$variables = array(
+			'input' => array(
 				'clientMutationId' => 'some_id',
 				'email'            => 'user@woographql.test',
-				'metaData'         => [
-					[
+				'metaData'         => array(
+					array(
 						'key'   => 'test_meta_key',
 						'value' => 'test_meta_value',
-					],
-				],
-			],
-		];
+					),
+				),
+			),
+		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		$user = get_user_by( 'email', 'user@woographql.test' );
 		$this->assertTrue( is_a( $user, WP_User::class ) );
 
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'registerCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', 'user@woographql.test' ),
 					$this->expectedNode(
 						'metaData',
-						[
+						array(
 							$this->expectedField( 'key', 'test_meta_key' ),
 							$this->expectedField( 'value', 'test_meta_value' ),
-						]
+						)
 					),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -673,36 +673,36 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		';
 		$this->loginAs( $user->ID );
 		\WC()->initialize_session();
-		$variables = [
-			'input' => [
+		$variables = array(
+			'input' => array(
 				'clientMutationId' => 'some_id',
 				'id'               => $this->toRelayId( 'customer', $user->ID ),
-				'metaData'         => [
-					[
+				'metaData'         => array(
+					array(
 						'key'   => 'test_meta_key',
 						'value' => 'new_meta_value',
-					],
-				],
-			],
-		];
+					),
+				),
+			),
+		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'databaseId', $user->ID ),
 					$this->expectedField( 'email', 'user@woographql.test' ),
 					$this->expectedNode(
 						'metaData',
-						[
+						array(
 							$this->expectedField( 'key', 'test_meta_key' ),
 							$this->expectedField( 'value', 'new_meta_value' ),
-						]
+						)
 					),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -726,34 +726,34 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 		';
 		$this->loginAs( 0 );
 		\WC()->initialize_session();
-		$variables = [
-			'input' => [
+		$variables = array(
+			'input' => array(
 				'clientMutationId' => 'some_id',
-				'metaData'         => [
-					[
+				'metaData'         => array(
+					array(
 						'key'   => 'test_meta_key',
 						'value' => 'test_meta_value',
-					],
-				],
-			],
-		];
+					),
+				),
+			),
+		);
 
 		$response = $this->graphql( compact( 'query', 'variables' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedObject(
 				'updateCustomer.customer',
-				[
+				array(
 					$this->expectedField( 'id', 'guest' ),
 					$this->expectedNode(
 						'metaData',
-						[
+						array(
 							$this->expectedField( 'key', 'test_meta_key' ),
 							$this->expectedField( 'value', 'test_meta_value' ),
-						]
+						)
 					),
-				]
+				)
 			),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}

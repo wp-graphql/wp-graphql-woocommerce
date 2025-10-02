@@ -25,11 +25,11 @@ class Payment_Method_Set_Default {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'setDefaultPaymentMethod',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -39,12 +39,12 @@ class Payment_Method_Set_Default {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'tokenId' => [
-				'type'        => [ 'non_null' => 'Integer' ],
+		return array(
+			'tokenId' => array(
+				'type'        => array( 'non_null' => 'Integer' ),
 				'description' => __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -53,22 +53,22 @@ class Payment_Method_Set_Default {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'status' => [
+		return array(
+			'status' => array(
 				'type'        => 'String',
 				'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
 				},
-			],
-			'token'  => [
+			),
+			'token'  => array(
 				'type'        => 'PaymentToken',
 				'description' => __( 'Preferred payment method token', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['token'] ) ? $payload['token'] : null;
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -93,10 +93,10 @@ class Payment_Method_Set_Default {
 			WC_Payment_Tokens::set_users_default( $token->get_user_id(), intval( $token_id ) );
 			wc_add_notice( __( 'This payment method was successfully set as your default.', 'wp-graphql-woocommerce' ) );
 
-			return [
+			return array(
 				'status' => 'SUCCESS',
 				'token'  => WC_Payment_Tokens::get( $token_id ),
-			];
+			);
 		};
 	}
 }

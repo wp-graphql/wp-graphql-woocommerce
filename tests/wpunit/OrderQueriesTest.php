@@ -6,10 +6,10 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 	public function expectedOrderData( $order_id ) {
 		$order = \wc_get_order( $order_id );
 
-		return [
+		return array(
 			$this->expectedObject(
 				'order',
-				[
+				array(
 					$this->expectedField( 'id', $this->toRelayId( 'order', $order_id ) ),
 					$this->expectedField( 'databaseId', $order->get_id() ),
 					$this->expectedField( 'currency', $this->maybe( $order->get_currency() ) ),
@@ -17,14 +17,14 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 					$this->expectedField( 'date', $order->get_date_created()->__toString() ),
 					$this->expectedField( 'modified', $order->get_date_modified()->__toString() ),
 					$this->expectedField( 'status', WPEnumType::get_safe_name( $order->get_status() ) ),
-					$this->expectedField( 'discountTotal', \wc_graphql_price( $order->get_discount_total(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'discountTax', \wc_graphql_price( $order->get_discount_tax(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'shippingTotal', \wc_graphql_price( $order->get_shipping_total(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'shippingTax', \wc_graphql_price( $order->get_shipping_tax(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'cartTax', \wc_graphql_price( $order->get_cart_tax(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'total', \wc_graphql_price( $order->get_total(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'totalTax', \wc_graphql_price( $order->get_total_tax(), [ 'currency' => $order->get_currency() ] ) ),
-					$this->expectedField( 'subtotal', \wc_graphql_price( $order->get_subtotal(), [ 'currency' => $order->get_currency() ] ) ),
+					$this->expectedField( 'discountTotal', \wc_graphql_price( $order->get_discount_total(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'discountTax', \wc_graphql_price( $order->get_discount_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'shippingTotal', \wc_graphql_price( $order->get_shipping_total(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'shippingTax', \wc_graphql_price( $order->get_shipping_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'cartTax', \wc_graphql_price( $order->get_cart_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'total', \wc_graphql_price( $order->get_total(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'totalTax', \wc_graphql_price( $order->get_total_tax(), array( 'currency' => $order->get_currency() ) ) ),
+					$this->expectedField( 'subtotal', \wc_graphql_price( $order->get_subtotal(), array( 'currency' => $order->get_currency() ) ) ),
 					$this->expectedField( 'orderNumber', $order->get_order_number() ),
 					$this->expectedField( 'orderKey', $order->get_order_key() ),
 					$this->expectedField( 'createdVia', $this->maybe( $order->get_created_via() ) ),
@@ -33,10 +33,10 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 					$this->expectedField(
 						'customer',
 						$this->maybe(
-							[
+							array(
 								$order->get_customer_id(),
-								[ 'id' => $this->toRelayId( 'user', $order->get_customer_id() ) ],
-							],
+								array( 'id' => $this->toRelayId( 'user', $order->get_customer_id() ) ),
+							),
 							static::IS_NULL
 						)
 					),
@@ -45,7 +45,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 					$this->expectedField( 'customerNote', $this->maybe( $order->get_customer_note() ) ),
 					$this->expectedObject(
 						'billing',
-						[
+						array(
 							$this->expectedField( 'firstName', $this->maybe( $order->get_billing_first_name() ) ),
 							$this->expectedField( 'lastName', $this->maybe( $order->get_billing_last_name() ) ),
 							$this->expectedField( 'company', $this->maybe( $order->get_billing_company() ) ),
@@ -57,11 +57,11 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 							$this->expectedField( 'country', $this->maybe( $order->get_billing_country() ) ),
 							$this->expectedField( 'email', $this->maybe( $order->get_billing_email() ) ),
 							$this->expectedField( 'phone', $this->maybe( $order->get_billing_phone() ) ),
-						]
+						)
 					),
 					$this->expectedObject(
 						'shipping',
-						[
+						array(
 							$this->expectedField( 'firstName', $this->maybe( $order->get_shipping_first_name() ) ),
 							$this->expectedField( 'lastName', $this->maybe( $order->get_shipping_last_name() ) ),
 							$this->expectedField( 'company', $this->maybe( $order->get_shipping_company() ) ),
@@ -71,7 +71,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 							$this->expectedField( 'state', $this->maybe( $order->get_shipping_state() ) ),
 							$this->expectedField( 'postcode', $this->maybe( $order->get_shipping_postcode() ) ),
 							$this->expectedField( 'country', $this->maybe( $order->get_shipping_country() ) ),
-						]
+						)
 					),
 					$this->expectedField( 'paymentMethod', $this->maybe( $order->get_payment_method() ) ),
 					$this->expectedField( 'paymentMethodTitle', $this->maybe( $order->get_payment_method_title() ) ),
@@ -87,9 +87,9 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 					$this->expectedField( 'hasDownloadableItem', $order->has_downloadable_item() ),
 					$this->expectedField( 'needsPayment', $order->needs_payment() ),
 					$this->expectedField( 'needsProcessing', $order->needs_processing() ),
-				]
+				)
 			),
-		];
+		);
 	}
 
 	// tests
@@ -191,9 +191,9 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 * Tests query as customer, should return "null" because the customer isn't authorized.
 		 */
 		$this->loginAsCustomer();
-		$variables = [ 'id' => $id ];
+		$variables = array( 'id' => $id );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [ $this->expectedField( 'order', static::IS_NULL ) ];
+		$expected  = array( $this->expectedField( 'order', static::IS_NULL ) );
 
 		$this->assertQueryError( $response, $expected );
 
@@ -229,12 +229,12 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "ID" ID type.
 		 */
-		$variables = [
+		$variables = array(
 			'id'     => $id,
 			'idType' => 'ID',
-		];
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [ $this->expectedField( 'order.id', $id ) ];
+		$expected  = array( $this->expectedField( 'order.id', $id ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 
@@ -243,10 +243,10 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "DATABASE_ID" ID type.
 		 */
-		$variables = [
+		$variables = array(
 			'id'     => $order_id,
 			'idType' => 'DATABASE_ID',
-		];
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -256,10 +256,10 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "ORDER_KEY" ID type
 		 */
-		$variables = [
+		$variables = array(
 			'id'     => $this->factory->order->get_order_key( $order_id ),
 			'idType' => 'ORDER_KEY',
-		];
+		);
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -278,35 +278,35 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		// Create order for query response.
 		$customer = $this->factory->customer->create();
 		$product  = $this->factory->product->createSimple();
-		$orders   = [
+		$orders   = array(
 			$this->factory->order->createNew(
-				[
+				array(
 					'billing_email' => 'test@example.com',
-				],
-				[
-					'line_items' => [
-						[
+				),
+				array(
+					'line_items' => array(
+						array(
 							'product' => $product,
 							'qty'     => 4,
-						],
-					],
-				]
+						),
+					),
+				)
 			),
 			$this->factory->order->createNew(
-				[
+				array(
 					'status'      => 'completed',
 					'customer_id' => $customer,
-				],
-				[
-					'line_items' => [
-						[
+				),
+				array(
+					'line_items' => array(
+						array(
 							'product' => $product,
 							'qty'     => 2,
-						],
-					],
-				]
+						),
+					),
+				)
 			),
-		];
+		);
 
 		$query = '
 			query ($statuses: [OrderStatusEnum], $customerId: Int, $customersIn: [Int], $billingEmail: String, $productId: Int) {
@@ -335,7 +335,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 */
 		$this->loginAsCustomer();
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [ $this->expectedField( 'orders.nodes', [] ) ];
+		$expected = array( $this->expectedField( 'orders.nodes', array() ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
 		$this->clearLoaderCache( 'wc_post' );
@@ -347,11 +347,11 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 */
 		$this->loginAsShopManager();
 		$response = $this->graphql( compact( 'query' ) );
-		$expected = [
+		$expected = array(
 			$this->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $orders[0] ) ),
 			$this->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $orders[1] ) ),
 			$this->not()->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $old_orders[0]->get_id() ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 		$this->clearLoaderCache( 'wc_post' );
@@ -361,11 +361,11 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "statuses" where argument
 		 */
-		$variables = [ 'statuses' => [ 'COMPLETED' ] ];
+		$variables = array( 'statuses' => array( 'COMPLETED' ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
-		$expected  = [
+		$expected  = array(
 			$this->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $orders[1] ) ),
-		];
+		);
 
 		$this->assertQuerySuccessful( $response, $expected );
 		$this->clearLoaderCache( 'wc_post' );
@@ -375,7 +375,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "customerId" where argument
 		 */
-		$variables = [ 'customerId' => $customer ];
+		$variables = array( 'customerId' => $customer );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -386,7 +386,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "customerIn" where argument
 		 */
-		$variables = [ 'customersIn' => [ $customer ] ];
+		$variables = array( 'customersIn' => array( $customer ) );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -397,16 +397,16 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "billingEmail" where argument
 		 */
-		$variables = [ 'billingEmail' => 'test@example.com' ];
+		$variables = array( 'billingEmail' => 'test@example.com' );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful(
 			$response,
-			[
+			array(
 				$this->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $orders[0] ) ),
 				$this->not()->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $orders[1] ) ),
 				$this->not()->expectedField( 'orders.nodes.#.id', $this->toRelayId( 'order', $old_orders[0] ) ),
-			]
+			)
 		);
 		$this->clearLoaderCache( 'wc_post' );
 
@@ -415,7 +415,7 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		 *
 		 * Tests "productId" where argument
 		 */
-		$variables = [ 'productId' => $product ];
+		$variables = array( 'productId' => $product );
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
 		$this->assertQuerySuccessful( $response, $expected );

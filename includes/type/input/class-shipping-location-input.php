@@ -20,19 +20,19 @@ class Shipping_Location_Input {
 	public static function register() {
 		register_graphql_input_type(
 			'ShippingLocationInput',
-			[
+			array(
 				'description' => __( 'Shipping lines data.', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'code' => [
+				'fields'      => array(
+					'code' => array(
 						'type'        => 'String',
 						'description' => __( 'Shipping location code.', 'wp-graphql-woocommerce' ),
-					],
-					'type' => [
+					),
+					'type' => array(
 						'type'        => 'ShippingLocationTypeEnum',
 						'description' => __( 'Shipping location type.', 'wp-graphql-woocommerce' ),
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

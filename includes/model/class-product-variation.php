@@ -99,7 +99,7 @@ class Product_Variation extends WC_Post {
 		if ( empty( $this->fields ) ) {
 			parent::init();
 
-			$fields = [
+			$fields = array(
 				'ID'                => function () {
 					return ! empty( $this->wc_data->get_id() ) ? $this->wc_data->get_id() : null;
 				},
@@ -123,17 +123,17 @@ class Product_Variation extends WC_Post {
 				},
 				'price'             => function () {
 					return ! empty( $this->wc_data->get_price() )
-						? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, [ 'price' => $this->wc_data->get_price() ] ) )
+						? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, array( 'price' => $this->wc_data->get_price() ) ) )
 						: null;
 				},
 				'regularPrice'      => function () {
 					return ! empty( $this->wc_data->get_regular_price() )
-						? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, [ 'price' => $this->wc_data->get_regular_price() ] ) )
+						? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, array( 'price' => $this->wc_data->get_regular_price() ) ) )
 						: null;
 				},
 				'salePrice'         => function () {
 					return ! empty( $this->wc_data->get_sale_price() )
-						? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, [ 'price' => $this->wc_data->get_sale_price() ] ) )
+						? wc_graphql_price( \wc_get_price_to_display( $this->wc_data, array( 'price' => $this->wc_data->get_sale_price() ) ) )
 						: null;
 				},
 				'dateOnSaleFrom'    => function () {
@@ -246,7 +246,7 @@ class Product_Variation extends WC_Post {
 				'attributes'        => function () {
 					return ! empty( $this->wc_data->get_attributes() ) ? $this->wc_data->get_attributes() : null;
 				},
-			];
+			);
 
 			$this->fields = array_merge( $this->fields, $fields );
 		}//end if

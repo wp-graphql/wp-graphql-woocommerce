@@ -28,11 +28,11 @@ class Shipping_Zone_Method_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateMethodOnShippingZone',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -42,28 +42,28 @@ class Shipping_Zone_Method_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'zoneId'     => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'zoneId'     => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
-			],
-			'instanceId' => [
-				'type'        => [ 'non_null' => 'Int' ],
+			),
+			'instanceId' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Shipping method instance ID', 'wp-graphql-woocommerce' ),
-			],
-			'enabled'    => [
+			),
+			'enabled'    => array(
 				'type'        => 'Boolean',
 				'description' => __( 'Whether the shipping method is enabled or not.', 'wp-graphql-woocommerce' ),
-			],
-			'order'      => [
+			),
+			'order'      => array(
 				'type'        => 'Int',
 				'description' => __( 'The order of the shipping method.', 'wp-graphql-woocommerce' ),
-			],
-			'settings'   => [
-				'type'        => [ 'list_of' => 'WCSettingInput' ],
+			),
+			'settings'   => array(
+				'type'        => array( 'list_of' => 'WCSettingInput' ),
 				'description' => __( 'The settings for the shipping method.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -72,24 +72,24 @@ class Shipping_Zone_Method_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'shippingZone' => [
+		return array(
+			'shippingZone' => array(
 				'type'    => 'ShippingZone',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
 					return $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] );
 				},
-			],
-			'method'       => [
+			),
+			'method'       => array(
 				'type'    => 'ShippingZoneToShippingMethodConnectionEdge',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
-					return [
+					return array(
 						// Call the Shipping_Method constructor directly because "$payload['method']" is a non-scalar value.
 						'node'   => new Shipping_Method( $payload['method'] ),
 						'source' => $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] ),
-					];
+					);
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -157,11 +157,11 @@ class Shipping_Zone_Method_Update {
 			 */
 			$method = apply_filters( 'graphql_woocommerce_shipping_zone_method_update', $method, $zone, $input );
 
-			return [
+			return array(
 				'zone_id' => $zone_id,
 				'zone'    => $zone,
 				'method'  => $method,
-			];
+			);
 		};
 	}
 }

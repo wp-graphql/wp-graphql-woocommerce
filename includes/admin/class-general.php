@@ -21,15 +21,15 @@ class General extends Section {
 	public static function get_other_nonce_values( $excluded ) {
 		$nonce_values = apply_filters(
 			'woographql_authorizing_url_nonce_values',
-			[
+			array(
 				'cart_url'               => woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
 				'checkout_url'           => woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
 				'account_url'            => woographql_setting( 'account_url_nonce_param', '_wc_account' ),
 				'add_payment_method_url' => woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
-			]
+			)
 		);
 
-		return array_values( array_diff_key( $nonce_values, [ $excluded => '' ] ) );
+		return array_values( array_diff_key( $nonce_values, array( $excluded => '' ) ) );
 	}
 
 	/**
@@ -40,12 +40,12 @@ class General extends Section {
 	public static function enabled_authorizing_url_fields_value() {
 		return apply_filters(
 			'woographql_enabled_authorizing_url_fields',
-			[
+			array(
 				'cart_url'               => 'cart_url',
 				'checkout_url'           => 'checkout_url',
 				'account_url'            => 'account_url',
 				'add_payment_method_url' => 'add_payment_method_url',
-			]
+			)
 		);
 	}
 
@@ -56,8 +56,8 @@ class General extends Section {
 	 */
 	public static function get_fields() {
 		$custom_endpoint                = apply_filters( 'woographql_authorizing_url_endpoint', null );
-		$enabled_authorizing_url_fields = woographql_setting( 'enable_authorizing_url_fields', [] );
-		$enabled_authorizing_url_fields = ! empty( $enabled_authorizing_url_fields ) ? array_keys( $enabled_authorizing_url_fields ) : [];
+		$enabled_authorizing_url_fields = woographql_setting( 'enable_authorizing_url_fields', array() );
+		$enabled_authorizing_url_fields = ! empty( $enabled_authorizing_url_fields ) ? array_keys( $enabled_authorizing_url_fields ) : array();
 		$all_urls_checked               = self::enabled_authorizing_url_fields_value();
 
 		$cart_url_hardcoded               = defined( 'CART_URL_NONCE_PARAM' ) && ! empty( constant( 'CART_URL_NONCE_PARAM' ) );
@@ -67,8 +67,8 @@ class General extends Section {
 
 		$enable_auth_urls_hardcoded = defined( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) && ! empty( constant( 'WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS' ) );
 
-		return [
-			[
+		return array(
+			array(
 				'name'     => 'disable_ql_session_handler',
 				'label'    => __( 'Disable QL Session Handler', 'wp-graphql-woocommerce' ),
 				'desc'     => __( 'The QL Session Handler takes over management of WooCommerce Session Management on WPGraphQL request replacing the usage of HTTP Cookies with JSON Web Tokens.', 'wp-graphql-woocommerce' )
@@ -76,8 +76,8 @@ class General extends Section {
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'on' : woographql_setting( 'disable_ql_session_handler', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
-			],
-			[
+			),
+			array(
 				'name'     => 'enable_ql_session_handler_on_ajax',
 				'label'    => __( 'Enable QL Session Handler on WC AJAX requests.', 'wp-graphql-woocommerce' ),
 				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WC AJAX requests.', 'wp-graphql-woocommerce' )
@@ -85,8 +85,8 @@ class General extends Section {
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'off' : woographql_setting( 'enable_ql_session_handler_on_ajax', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
-			],
-			[
+			),
+			array(
 				'name'     => 'enable_ql_session_handler_on_rest',
 				'label'    => __( 'Enable QL Session Handler on WP REST requests.', 'wp-graphql-woocommerce' ),
 				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WP REST requests.', 'wp-graphql-woocommerce' )
@@ -94,15 +94,15 @@ class General extends Section {
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'off' : woographql_setting( 'enable_ql_session_handler_on_rest', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
-			],
-			[
+			),
+			array(
 				'name'    => 'enable_unsupported_product_type',
 				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
 				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),
 				'type'    => 'checkbox',
 				'default' => 'off',
-			],
-			[
+			),
+			array(
 				'name'              => 'enable_authorizing_url_fields',
 				'label'             => __( 'Enable User Session transferring URLs', 'wp-graphql-woocommerce' ),
 				'desc'              => __( 'URL fields to add to the <strong>Customer</strong> type.', 'wp-graphql-woocommerce' )
@@ -110,24 +110,24 @@ class General extends Section {
 				'type'              => 'multicheck',
 				'options'           => apply_filters(
 					'woographql_settings_enable_authorizing_url_options',
-					[
+					array(
 						'cart_url'               => __( 'Cart URL. Field name: <strong>cartUrl</strong>', 'wp-graphql-woocommerce' ),
 						'checkout_url'           => __( 'Checkout URL. Field name: <strong>checkoutUrl</strong>', 'wp-graphql-woocommerce' ),
 						'account_url'            => __( 'Account URL. Field name: <strong>accountUrl</strong>', 'wp-graphql-woocommerce' ),
 						'add_payment_method_url' => __( 'Add Payment Method URL. Field name: <strong>addPaymentMethodUrl</strong>', 'wp-graphql-woocommerce' ),
-					]
+					)
 				),
-				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
+				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', array() ),
 				'disabled'          => $enable_auth_urls_hardcoded,
 				'sanitize_callback' => static function ( $value ) {
 					if ( empty( $value ) ) {
-						return [];
+						return array();
 					}
 
 					return $value;
 				},
-			],
-			[
+			),
+			array(
 				'name'     => 'authorizing_url_endpoint',
 				'label'    => __( 'Endpoint for Authorizing URLs', 'wp-graphql-woocommerce' ),
 				'desc'     => sprintf(
@@ -139,8 +139,8 @@ class General extends Section {
 				'type'     => 'text',
 				'default'  => ! empty( $custom_endpoint ) ? $custom_endpoint : 'transfer-session',
 				'disabled' => empty( $enabled_authorizing_url_fields ),
-			],
-			[
+			),
+			array(
 				'name'              => 'cart_url_nonce_param',
 				'label'             => __( 'Cart URL nonce name', 'wp-graphql-woocommerce' ),
 				'desc'              => __( 'Query parameter name of the nonce included in the "cartUrl" field', 'wp-graphql-woocommerce' )
@@ -163,8 +163,8 @@ class General extends Section {
 
 					return $value;
 				},
-			],
-			[
+			),
+			array(
 				'name'              => 'checkout_url_nonce_param',
 				'label'             => __( 'Checkout URL nonce name', 'wp-graphql-woocommerce' ),
 				'desc'              => __( 'Query parameter name of the nonce included in the "checkoutUrl" field', 'wp-graphql-woocommerce' )
@@ -187,8 +187,8 @@ class General extends Section {
 
 					return $value;
 				},
-			],
-			[
+			),
+			array(
 				'name'              => 'account_url_nonce_param',
 				'label'             => __( 'Account URL nonce name', 'wp-graphql-woocommerce' ),
 				'desc'              => __( 'Query parameter name of the nonce included in the "accountUrl" field', 'wp-graphql-woocommerce' )
@@ -211,8 +211,8 @@ class General extends Section {
 
 					return $value;
 				},
-			],
-			[
+			),
+			array(
 				'name'              => 'add_payment_method_url_nonce_param',
 				'label'             => __( 'Add Payment Method URL nonce name', 'wp-graphql-woocommerce' ),
 				'desc'              => __( 'Query parameter name of the nonce included in the "addPaymentMethodUrl" field', 'wp-graphql-woocommerce' )
@@ -235,7 +235,7 @@ class General extends Section {
 
 					return $value;
 				},
-			],
-		];
+			),
+		);
 	}
 }

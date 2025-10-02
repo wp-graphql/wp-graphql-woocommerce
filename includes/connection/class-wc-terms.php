@@ -55,7 +55,7 @@ class WC_Terms extends TermObjects {
 					register_graphql_connection(
 						self::get_connection_config(
 							$tax_object,
-							[
+							array(
 								'fromType'      => $post_type_object->graphql_single_name,
 								'toType'        => $tax_object->graphql_single_name,
 								'fromFieldName' => $tax_object->graphql_plural_name,
@@ -64,11 +64,11 @@ class WC_Terms extends TermObjects {
 
 									$term_ids = \wc_get_object_terms( $source->ID, $tax_object->name, 'term_id' );
 
-									$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : [ '0' ] );
+									$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : array( '0' ) );
 
 									return $resolver->get_connection();
 								},
-							]
+							)
 						)
 					);
 				}//end if
@@ -84,7 +84,7 @@ class WC_Terms extends TermObjects {
 		register_graphql_connection(
 			self::get_connection_config(
 				$tax_object,
-				[
+				array(
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'productCategories',
 					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
@@ -93,13 +93,13 @@ class WC_Terms extends TermObjects {
 
 						return $resolver->get_connection();
 					},
-				]
+				)
 			)
 		);
 		register_graphql_connection(
 			self::get_connection_config(
 				$tax_object,
-				[
+				array(
 					'fromType'      => 'Coupon',
 					'fromFieldName' => 'excludedProductCategories',
 					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
@@ -108,23 +108,23 @@ class WC_Terms extends TermObjects {
 
 						return $resolver->get_connection();
 					},
-				]
+				)
 			)
 		);
 
 		register_graphql_connection(
-			[
+			array(
 				'fromType'       => 'GlobalProductAttribute',
 				'toType'         => 'TermNode',
 				'queryClass'     => 'WP_Term_Query',
 				'fromFieldName'  => 'terms',
 				'connectionArgs' => self::get_connection_args(
-					[
-						'orderby' => [
+					array(
+						'orderby' => array(
 							'type'        => 'ProductAttributesConnectionOrderbyEnum',
 							'description' => __( 'Field(s) to order terms by. Defaults to \'name\'.', 'wp-graphql-woocommerce' ),
-						],
-					]
+						),
+					)
 				),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					if ( ! $source->is_taxonomy() ) {
@@ -135,7 +135,7 @@ class WC_Terms extends TermObjects {
 					$resolver->set_query_arg( 'slug', $source->get_slugs() );
 					return $resolver->get_connection();
 				},
-			]
+			)
 		);
 	}
 }

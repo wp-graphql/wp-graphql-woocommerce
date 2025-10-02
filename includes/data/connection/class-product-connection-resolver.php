@@ -88,7 +88,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$last  = ! empty( $this->args['last'] ) ? $this->args['last'] : null;
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
-		$query_args = [];
+		$query_args = array();
 		/**
 		 * Ignore sticky posts by default
 		 */
@@ -107,7 +107,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Set the post_status
 		 */
-		$query_args['post_status'] = [ 'draft', 'pending', 'private', 'publish' ];
+		$query_args['post_status'] = array( 'draft', 'pending', 'private', 'publish' );
 		$query_args['perm']        = 'readable';
 
 		/**
@@ -140,7 +140,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = [];
+		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -208,10 +208,10 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args['graphql_cursor_compare_by_rating_value']        = $offset_product->get_average_rating();
 			$query_args['graphql_cursor_compare_by_rating_key']          = 'wc_product_meta_lookup.average_rating';
 		} elseif ( $offset_product && 'menu_order title' === $query_args['orderby'] ) {
-			$query_args['orderby'] = [
+			$query_args['orderby'] = array(
 				'menu_order' => $query_args['order'],
 				'post_title' => isset( $this->args['last'] ) ? 'ASC' : 'DESC',
-			];
+			);
 			unset( $query_args['order'] );
 		}
 
@@ -237,13 +237,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	 * {@inheritDoc}
 	 */
 	public function get_query() {
-		add_filter( 'posts_clauses', [ $this->products_query, 'add_query_clauses' ], 10, 2 );
+		add_filter( 'posts_clauses', array( $this->products_query, 'add_query_clauses' ), 10, 2 );
 
 		// Temporary fix for the search query.
 		if ( ! empty( $this->query_args['search'] ) ) {
 			$this->query_args['fulltext_search'] = $this->query_args['search'];
 			unset( $this->query_args['search'] );
-			add_filter( 'posts_clauses', [ $this, 'add_search_query_clause' ], 10, 2 );
+			add_filter( 'posts_clauses', array( $this, 'add_search_query_clause' ), 10, 2 );
 		}
 
 		return new \WP_Query();
@@ -257,10 +257,10 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$ids = $this->query->query( $this->query_args );
 
 		if ( ! empty( $this->query_args['fulltext_search'] ) ) {
-			remove_filter( 'posts_clauses', [ $this, 'add_search_query_clause' ], 10 );
+			remove_filter( 'posts_clauses', array( $this, 'add_search_query_clause' ), 10 );
 		}
 
-		remove_filter( 'posts_clauses', [ $this->products_query, 'add_query_clauses' ], 10 );
+		remove_filter( 'posts_clauses', array( $this->products_query, 'add_query_clauses' ), 10 );
 
 		// If we're going backwards, we need to reverse the array.
 		if ( ! empty( $this->args['last'] ) ) {
@@ -281,17 +281,17 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! $is_numeric ) {
 			return apply_filters(
 				'woographql_product_connection_orderby_meta_keys',
-				[]
+				array()
 			);
 		}
 
 		return apply_filters(
 			'woographql_product_connection_orderby_numeric_meta_keys',
-			[
+			array(
 				'_sale_price_dates_from',
 				'_sale_price_dates_to',
 				'total_sales',
-			]
+			)
 		);
 	}
 
@@ -332,7 +332,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	public function sanitize_input_fields( array $where_args ) {
 		$query_args = Utils::map_input(
 			$where_args,
-			[
+			array(
 				'slugIn'      => 'post_name__in',
 				'minPrice'    => 'min_price',
 				'maxPrice'    => 'max_price',
@@ -345,7 +345,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				'parentNotIn' => 'post_parent__not_in',
 				'search'      => 'search',
 
-			]
+			)
 		);
 
 		if ( ! empty( $where_args['orderby'] ) ) {
@@ -362,11 +362,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( isset( $where_args['includeVariations'] ) && $where_args['includeVariations'] ) {
-			$query_args['post_type'] = [ 'product', 'product_variation' ];
+			$query_args['post_type'] = array( 'product', 'product_variation' );
 		}
 
-		$tax_query     = [];
-		$taxonomy_args = [
+		$tax_query     = array();
+		$taxonomy_args = array(
 			'type'            => 'product_type',
 			'typeIn'          => 'product_type',
 			'typeNotIn'       => 'product_type',
@@ -382,7 +382,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			'tagId'           => 'product_tag',
 			'tagIdIn'         => 'product_tag',
 			'tagIdNotIn'      => 'product_tag',
-		];
+		);
 
 		foreach ( $taxonomy_args as $field => $taxonomy ) {
 			if ( ! empty( $where_args[ $field ] ) ) {
@@ -401,27 +401,27 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					case 'type':
 						// If the type is variation, we only need to set the post_type arg.
 						if ( 'variation' === $where_args[ $field ] ) {
-							$query_args['post_type'] = [ 'product_variation' ];
+							$query_args['post_type'] = array( 'product_variation' );
 							break;
 						}
 						// Otherwise continue to create a tax query.
 					case 'typeIn':
 						if ( is_array( $where_args[ $field ] ) && in_array( 'variation', $where_args[ $field ], true ) ) {
-							$query_args['post_type'] = array_merge( $this->post_type, [ 'product_variation' ] );
+							$query_args['post_type'] = array_merge( $this->post_type, array( 'product_variation' ) );
 						}
-						$tax_query[] = [ // phpcs:ignore SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed.DisallowedPartiallyKeyed
+						$tax_query[] = array( // phpcs:ignore SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed.DisallowedPartiallyKeyed
 							'relation' => 'OR',
-							[
+							array(
 								'taxonomy' => 'product_type',
 								'field'    => 'slug',
 								'terms'    => $where_args[ $field ],
-							],
-							[
+							),
+							array(
 								'taxonomy' => 'product_type',
 								'field'    => 'id',
 								'operator' => 'NOT EXISTS',
-							],
-						];
+							),
+						);
 						break;
 					case 'typeNotIn':
 					case 'category':
@@ -433,11 +433,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 						// Get terms.
 						$terms = $where_args[ $field ];
 						if ( ! is_array( $terms ) ) {
-							$terms = [ $terms ];
+							$terms = array( $terms );
 						}
 
 						// Get term taxonomy IDs for complex tax queries.
-						$term_taxonomy_ids = [];
+						$term_taxonomy_ids = array();
 						foreach ( $terms as $term_slug ) {
 							$term = get_term_by( 'slug', $term_slug, $taxonomy );
 							if ( ! $term || is_wp_error( $term ) ) {
@@ -445,12 +445,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 							}
 							$term_taxonomy_ids[] = $term->term_taxonomy_id;
 						}
-						$tax_query[] = [
+						$tax_query[] = array(
 							'taxonomy' => $taxonomy,
 							'field'    => 'term_taxonomy_id',
 							'terms'    => $term_taxonomy_ids,
 							'operator' => $operator,
-						];
+						);
 						break;
 					case 'categoryId':
 					case 'categoryIdIn':
@@ -458,12 +458,12 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					case 'tagId':
 					case 'tagIdIn':
 					case 'tagIdNotIn':
-						$tax_query[] = [
+						$tax_query[] = array(
 							'taxonomy' => $taxonomy,
 							'field'    => 'term_id',
 							'terms'    => $where_args[ $field ],
 							'operator' => $operator,
-						];
+						);
 						break;
 				}//end switch
 			}//end if
@@ -475,18 +475,18 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				__( 'The "attribute" and "attributeTerm" arguments have been deprecated. Please use the "attributes" argument instead.', 'wp-graphql-woocommerce' ),
 			);
 			if ( in_array( $where_args['attribute'], \wc_get_attribute_taxonomy_names(), true ) ) {
-				$tax_query[] = [
+				$tax_query[] = array(
 					'taxonomy' => $where_args['attribute'],
 					'field'    => 'slug',
 					'terms'    => $where_args['attributeTerm'],
-				];
+				);
 			}
 		}
 
 		// Filter by attributes.
 		if ( ! empty( $where_args['attributes'] ) && ! empty( $where_args['attributes']['queries'] ) ) {
 			$attributes  = $where_args['attributes']['queries'];
-			$att_queries = [];
+			$att_queries = array();
 
 			foreach ( $attributes as $attribute ) {
 				if ( empty( $attribute['ids'] ) && empty( $attribute['terms'] ) ) {
@@ -501,23 +501,23 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 				if ( ! empty( $attribute['terms'] ) ) {
 					foreach ( $attribute['terms'] as $term ) {
-						$att_queries[] = [
+						$att_queries[] = array(
 							'taxonomy' => $attribute['taxonomy'],
 							'field'    => 'slug',
 							'terms'    => $term,
 							'operator' => $operator,
-						];
+						);
 					}
 				}
 
 				if ( ! empty( $attribute['ids'] ) ) {
 					foreach ( $attribute['ids'] as $id ) {
-						$att_queries[] = [
+						$att_queries[] = array(
 							'taxonomy' => $attribute['taxonomy'],
 							'field'    => 'term_id',
 							'terms'    => $id,
 							'operator' => $operator,
-						];
+						);
 					}
 				}
 			}
@@ -530,7 +530,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				}
 
 				$tax_query[] = array_merge(
-					[ 'relation' => $relation ],
+					array( 'relation' => $relation ),
 					$att_queries
 				);
 			} else {
@@ -544,34 +544,34 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$terms           = ! empty( $where_args['typeNotIn'] )
 				? array_diff( $supported_types, $where_args['typeNotIn'] )
 				: $supported_types;
-			$tax_query[]     = [
+			$tax_query[]     = array(
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
 				'terms'    => $terms,
-			];
+			);
 		}
 
 		if ( isset( $where_args['featured'] ) ) {
 			$product_visibility_term_ids = wc_get_product_visibility_term_ids();
 			if ( $where_args['featured'] ) {
-				$tax_query[] = [
+				$tax_query[] = array(
 					'taxonomy' => 'product_visibility',
 					'field'    => 'term_taxonomy_id',
-					'terms'    => [ $product_visibility_term_ids['featured'] ],
-				];
-				$tax_query[] = [
+					'terms'    => array( $product_visibility_term_ids['featured'] ),
+				);
+				$tax_query[] = array(
 					'taxonomy' => 'product_visibility',
 					'field'    => 'term_taxonomy_id',
-					'terms'    => [ $product_visibility_term_ids['exclude-from-catalog'] ],
+					'terms'    => array( $product_visibility_term_ids['exclude-from-catalog'] ),
 					'operator' => 'NOT IN',
-				];
+				);
 			} else {
-				$tax_query[] = [
+				$tax_query[] = array(
 					'taxonomy' => 'product_visibility',
 					'field'    => 'term_taxonomy_id',
-					'terms'    => [ $product_visibility_term_ids['featured'] ],
+					'terms'    => array( $product_visibility_term_ids['featured'] ),
 					'operator' => 'NOT IN',
-				];
+				);
 			}
 		}//end if
 
@@ -579,84 +579,84 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $where_args['visibility'] ) ) {
 			switch ( $where_args['visibility'] ) {
 				case 'search':
-					$tax_query[] = [
+					$tax_query[] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
-						'terms'    => [ 'exclude-from-search' ],
+						'terms'    => array( 'exclude-from-search' ),
 						'operator' => 'NOT IN',
-					];
+					);
 					break;
 				case 'catalog':
-					$tax_query[] = [
+					$tax_query[] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
-						'terms'    => [ 'exclude-from-catalog' ],
+						'terms'    => array( 'exclude-from-catalog' ),
 						'operator' => 'NOT IN',
-					];
+					);
 					break;
 				case 'visible':
-					$tax_query[] = [
+					$tax_query[] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
-						'terms'    => [ 'exclude-from-catalog', 'exclude-from-search' ],
+						'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
 						'operator' => 'NOT IN',
-					];
+					);
 					break;
 				case 'hidden':
-					$tax_query[] = [
+					$tax_query[] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
-						'terms'    => [ 'exclude-from-catalog', 'exclude-from-search' ],
+						'terms'    => array( 'exclude-from-catalog', 'exclude-from-search' ),
 						'operator' => 'AND',
-					];
+					);
 					break;
 			}//end switch
 		}//end if
 
 		if ( ! empty( $where_args['rating'] ) ) {
 			$rating       = $where_args['rating'];
-			$rating_terms = [];
+			$rating_terms = array();
 			foreach ( $rating as $value ) {
 				$rating_terms[] = 'rated-' . $value;
 			}
-			$tax_query[] = [
+			$tax_query[] = array(
 				'taxonomy' => 'product_visibility',
 				'field'    => 'name',
 				'terms'    => $rating_terms,
-			];
+			);
 		}
 
 		// Process "taxonomyFilter".
-		$tax_filter_query = [];
+		$tax_filter_query = array();
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
 			$taxonomy_query = $where_args['taxonomyFilter'];
 			$relation       = ! empty( $taxonomy_query['relation'] ) ? $taxonomy_query['relation'] : 'AND';
 
 			if ( ! empty( $taxonomy_query['filters'] ) ) {
-				$tax_groups = [];
+				$tax_groups = array();
 				foreach ( $taxonomy_query['filters'] as $filter ) {
-					$common = [
+					$common = array(
 						'taxonomy' => $filter['taxonomy'],
 						'operator' => ! empty( $filter['operator'] ) ? $filter['operator'] : 'IN',
-					];
+					);
 
 					if ( ! empty( $filter['ids'] ) ) {
 						$tax_groups[] = array_merge(
 							$common,
-							[
+							array(
 								'field' => 'ID',
 								'terms' => $filter['ids'],
-							]
+							)
 						);
 					}
 
 					if ( ! empty( $filter['terms'] ) ) {
 						$tax_groups[] = array_merge(
 							$common,
-							[
+							array(
 								'field' => 'slug',
 								'terms' => $filter['terms'],
-							]
+							)
 						);
 					}
 				}//end foreach
@@ -684,13 +684,13 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$query_args['tax_query'] = $tax_query;
 		}
 
-		$meta_query = [];
+		$meta_query = array();
 		if ( ! empty( $where_args['sku'] ) ) {
-			$meta_query[] = [
+			$meta_query[] = array(
 				'key'     => '_sku',
 				'value'   => $where_args['sku'],
 				'compare' => 'LIKE',
-			];
+			);
 		}
 		if ( ! empty( $where_args['minPrice'] ) ) {
 			$query_args['min_price'] = number_format( $where_args['minPrice'], 2, '', '' );
@@ -701,11 +701,11 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( isset( $where_args['stockStatus'] ) ) {
-			$meta_query[] = [
+			$meta_query[] = array(
 				'key'     => '_stock_status',
 				'value'   => $where_args['stockStatus'],
 				'compare' => is_array( $where_args['stockStatus'] ) ? 'IN' : '=',
-			];
+			);
 		}
 
 		if ( ! empty( $meta_query ) ) {
@@ -717,7 +717,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			$on_sale_key = $where_args['onSale'] ? 'post__in' : 'post__not_in';
 			$on_sale_ids = \wc_get_product_ids_on_sale();
 
-			$on_sale_ids                = empty( $on_sale_ids ) ? [ 0 ] : $on_sale_ids;
+			$on_sale_ids                = empty( $on_sale_ids ) ? array( 0 ) : $on_sale_ids;
 			$query_args[ $on_sale_key ] = $on_sale_ids;
 		}
 
@@ -750,7 +750,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		$query_args = apply_filters_deprecated(
 			'graphql_map_input_fields_to_product_query',
-			[
+			array(
 				$query_args,
 				$where_args,
 				$this->source,
@@ -758,7 +758,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 				$this->context,
 				$this->info,
 				$this->post_type,
-			],
+			),
 			'0.9.0',
 			'graphql_map_input_fields_to_wp_query'
 		);

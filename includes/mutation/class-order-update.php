@@ -30,11 +30,11 @@ class Order_Update {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'updateOrder',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -46,21 +46,21 @@ class Order_Update {
 	public static function get_input_fields() {
 		return array_merge(
 			Order_Create::get_input_fields(),
-			[
-				'id'         => [
+			array(
+				'id'         => array(
 					'type'        => 'ID',
 					'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
-				],
-				'orderId'    => [
+				),
+				'orderId'    => array(
 					'type'              => 'Int',
 					'description'       => __( 'Order WP ID', 'wp-graphql-woocommerce' ),
 					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
-				],
-				'customerId' => [
+				),
+				'customerId' => array(
 					'type'        => 'ID',
 					'description' => __( 'Database ID or global ID of the customer for the order', 'wp-graphql-woocommerce' ),
-				],
-			]
+				),
+			)
 		);
 	}
 
@@ -70,14 +70,14 @@ class Order_Update {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'order' => [
+		return array(
+			'order' => array(
 				'type'    => 'Order',
 				'resolve' => static function ( $payload ) {
 					return new Order( $payload['id'] );
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Order_Update {
 			 */
 			do_action( 'graphql_woocommerce_after_order_update', $order, $input, $context, $info );
 
-			return [ 'id' => $order->get_id() ];
+			return array( 'id' => $order->get_id() );
 		};
 	}
 }

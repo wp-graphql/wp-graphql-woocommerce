@@ -22,24 +22,24 @@ class Meta_Data_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'MetaData',
-			[
+			array(
 				'description' => __( 'Extra data defined on the WC object', 'wp-graphql-woocommerce' ),
-				'fields'      => [
-					'id'    => [
+				'fields'      => array(
+					'id'    => array(
 						'type'        => 'ID',
 						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
-					],
-					'key'   => [
-						'type'        => [ 'non_null' => 'String' ],
+					),
+					'key'   => array(
+						'type'        => array( 'non_null' => 'String' ),
 						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->key ) ? (string) $source->key : null;
 						},
-					],
-					'value' => [
+					),
+					'value' => array(
 						'type'        => 'String',
 						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
@@ -53,9 +53,9 @@ class Meta_Data_Type {
 
 							return (string) $source->value;
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 
@@ -65,23 +65,23 @@ class Meta_Data_Type {
 	 * @return array
 	 */
 	public static function get_metadata_field_definition() {
-		return [
-			'type'        => [ 'list_of' => 'MetaData' ],
+		return array(
+			'type'        => array( 'list_of' => 'MetaData' ),
 			'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
-			'args'        => [
-				'key'      => [
+			'args'        => array(
+				'key'      => array(
 					'type'        => 'String',
 					'description' => __( 'Retrieve meta by key', 'wp-graphql-woocommerce' ),
-				],
-				'keysIn'   => [
-					'type'        => [ 'list_of' => 'String' ],
+				),
+				'keysIn'   => array(
+					'type'        => array( 'list_of' => 'String' ),
 					'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
-				],
-				'multiple' => [
+				),
+				'multiple' => array(
 					'type'        => 'Boolean',
 					'description' => __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' ),
-				],
-			],
+				),
+			),
 			'resolve'     => static function ( $source, array $args ) {
 				// Set unique flag.
 				$single = empty( $args['multiple'] );
@@ -91,7 +91,7 @@ class Meta_Data_Type {
 					$key  = $args['key'];
 					$data = $source->get_meta( $key, false );
 					if ( empty( $data ) ) {
-						$data = [];
+						$data = array();
 					} elseif ( $single ) {
 						$data = array_slice( $data, 0, 1 );
 					}
@@ -106,7 +106,7 @@ class Meta_Data_Type {
 					// Check "keysIn" argument and format meta_data objects.
 					$keys_in = $args['keysIn'];
 
-					$found = [];
+					$found = array();
 					$data  = array_filter(
 						$source->get_meta_data(),
 						static function ( $meta ) use ( $keys_in, $single, &$found ) {
@@ -121,7 +121,7 @@ class Meta_Data_Type {
 					);
 				} else {
 					// If no arguments set return all meta (in accordance with unique flag).
-					$found = [];
+					$found = array();
 					$data  = array_filter(
 						$source->get_meta_data(),
 						static function ( $meta ) use ( $single, &$found ) {
@@ -137,6 +137,6 @@ class Meta_Data_Type {
 
 				return ! empty( $data ) ? $data : null;
 			},
-		];
+		);
 	}
 }

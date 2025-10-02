@@ -22,11 +22,11 @@ class CouponHelper extends WCG_Helper {
 		$coupon->set_props(
 			array_merge(
 				array(
-					'code'                        => $amount . 'off',
-					'amount'                      => floatval( $amount ),
-					'date_expires'                => null,
-					'discount_type'               => 'percent',
-					'description'                 => 'Test coupon',
+					'code'          => $amount . 'off',
+					'amount'        => floatval( $amount ),
+					'date_expires'  => null,
+					'discount_type' => 'percent',
+					'description'   => 'Test coupon',
 				),
 				$args
 			)
@@ -38,7 +38,7 @@ class CouponHelper extends WCG_Helper {
 		}
 
 		// Return instance in not saving.
-		if( ! $save ) {
+		if ( ! $save ) {
 			return $coupon;
 		}
 
@@ -79,46 +79,46 @@ class CouponHelper extends WCG_Helper {
 			'emailRestrictions'         => ! empty( $data->get_email_restrictions() )
 				? $data->get_email_restrictions()
 				: null,
-			'products'                  => [
+			'products'                  => array(
 				'nodes' => array_map(
-					function( $id ) {
+					function ( $id ) {
 						return array( 'databaseId' => $id );
 					},
 					$data->get_product_ids()
 				),
-			],
-			'excludedProducts'          => [
+			),
+			'excludedProducts'          => array(
 				'nodes' => array_map(
-					function( $id ) {
+					function ( $id ) {
 						return array( 'databaseId' => $id );
 					},
 					$data->get_excluded_product_ids()
 				),
-			],
-			'productCategories'         => [
+			),
+			'productCategories'         => array(
 				'nodes' => array_map(
-					function( $id ) {
+					function ( $id ) {
 						return array( 'productCategoryId' => $id );
 					},
 					$data->get_product_categories()
 				),
-			],
-			'excludedProductCategories' => [
+			),
+			'excludedProductCategories' => array(
 				'nodes' => array_map(
-					function( $id ) {
+					function ( $id ) {
 						return array( 'productCategoryId' => $id );
 					},
 					$data->get_excluded_product_categories()
 				),
-			],
-			'usedBy'                    => [
+			),
+			'usedBy'                    => array(
 				'nodes' => array_map(
-					function( $id ) {
+					function ( $id ) {
 						return array( 'databaseId' => $id );
 					},
 					$data->get_used_by()
 				),
-			],
+			),
 		);
 	}
 

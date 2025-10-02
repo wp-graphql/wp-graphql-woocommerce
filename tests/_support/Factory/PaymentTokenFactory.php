@@ -18,7 +18,7 @@ class PaymentTokenFactory {
 	 * @since 2.6
 	 * @return \WC_Payment_Token_CC object
 	 */
-	public static function createCCToken( $user_id = '', $args = [] ) {
+	public static function createCCToken( $user_id = '', $args = array() ) {
 		$token = new \WC_Payment_Token_CC();
 		$token->set_last4( 1234 );
 		$token->set_expiry_month( '08' );
@@ -31,7 +31,7 @@ class PaymentTokenFactory {
 
 		// Set props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $token, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $token, "set_{$key}" ) ) ) {
 				$token->{"set_{$key}"}( $value );
 			}
 		}
@@ -46,7 +46,7 @@ class PaymentTokenFactory {
 	 * @since 2.6
 	 * @return \WC_Payment_Token_ECheck object
 	 */
-	public static function createECheckToken( $user_id = '', $args = [] ) {
+	public static function createECheckToken( $user_id = '', $args = array() ) {
 		$token = new \WC_Payment_Token_ECheck();
 		$token->set_last4( 1234 );
 		$token->set_token( time() );
@@ -57,7 +57,7 @@ class PaymentTokenFactory {
 
 		// Set props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $token, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $token, "set_{$key}" ) ) ) {
 				$token->{"set_{$key}"}( $value );
 			}
 		}
@@ -73,14 +73,14 @@ class PaymentTokenFactory {
 	 * @param  string $extra A string to insert and get to test the metadata functionality of a token
 	 * @return \WC_Payment_Token_Stub object
 	 */
-	public static function createStubToken( $extra, $args = [] ) {
+	public static function createStubToken( $extra, $args = array() ) {
 		$token = new \WC_Payment_Token_Stub();
 		$token->set_extra( $extra );
 		$token->set_token( time() );
 
 		// Set props.
 		foreach ( $args as $key => $value ) {
-			if ( is_callable( [ $token, "set_{$key}" ] ) ) {
+			if ( is_callable( array( $token, "set_{$key}" ) ) ) {
 				$token->{"set_{$key}"}( $value );
 			}
 		}

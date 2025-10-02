@@ -27,11 +27,11 @@ class Shipping_Zone_Method_Remove {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'removeMethodFromShippingZone',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -41,16 +41,16 @@ class Shipping_Zone_Method_Remove {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'zoneId'     => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'zoneId'     => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
-			],
-			'instanceId' => [
-				'type'        => [ 'non_null' => 'Int' ],
+			),
+			'instanceId' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'Shipping method instance ID', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -59,24 +59,24 @@ class Shipping_Zone_Method_Remove {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'shippingZone'  => [
+		return array(
+			'shippingZone'  => array(
 				'type'    => 'ShippingZone',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
 					return $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] );
 				},
-			],
-			'removedMethod' => [
+			),
+			'removedMethod' => array(
 				'type'    => 'ShippingZoneToShippingMethodConnectionEdge',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
-					return [
+					return array(
 						// Call the Shipping_Method constructor directly because "$payload['method']" is a non-scalar value.
 						'node'   => new Shipping_Method( $payload['method'] ),
 						'source' => $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] ),
-					];
+					);
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -132,11 +132,11 @@ class Shipping_Zone_Method_Remove {
 
 			$zone->delete_shipping_method( $instance_id );
 
-			return [
+			return array(
 				'zone_id' => $zone_id,
 				'zone'    => $zone,
 				'method'  => $method,
-			];
+			);
 		};
 	}
 }

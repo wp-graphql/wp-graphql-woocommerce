@@ -51,11 +51,11 @@ if ( ! function_exists( 'wc_graphql_map_tax_statements' ) ) {
 	 * @return array
 	 */
 	function wc_graphql_map_tax_statements( $raw_taxes ) {
-		$taxes = [];
+		$taxes = array();
 		foreach ( $raw_taxes as $field => $values ) {
 			foreach ( $values as $id => $amount ) {
 				if ( empty( $taxes[ $id ] ) ) {
-					$taxes[ $id ] = [];
+					$taxes[ $id ] = array();
 				}
 				$taxes[ $id ]['ID']     = $id;
 				$taxes[ $id ][ $field ] = $amount;
@@ -73,7 +73,7 @@ if ( ! function_exists( 'wc_graphql_get_order_statuses' ) ) {
 	 * @return array
 	 */
 	function wc_graphql_get_order_statuses() {
-		$order_statuses = [];
+		$order_statuses = array();
 		foreach ( array_keys( wc_get_order_statuses() ) as $status ) {
 			$order_statuses[] = str_replace( 'wc-', '', $status );
 		}
@@ -103,19 +103,19 @@ if ( ! function_exists( 'wc_graphql_price' ) ) {
 	 * }
 	 * @return string
 	 */
-	function wc_graphql_price( $price, $args = [] ) {
+	function wc_graphql_price( $price, $args = array() ) {
 		$price = floatval( $price );
 		$args  = apply_filters(
 			'wc_price_args', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			wp_parse_args(
 				$args,
-				[
+				array(
 					'currency'           => '',
 					'decimal_separator'  => wc_get_price_decimal_separator(),
 					'thousand_separator' => wc_get_price_thousand_separator(),
 					'decimals'           => wc_get_price_decimals(),
 					'price_format'       => get_woocommerce_price_format(),
-				]
+				)
 			)
 		);
 

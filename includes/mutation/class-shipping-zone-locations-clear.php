@@ -26,11 +26,11 @@ class Shipping_Zone_Locations_Clear {
 	public static function register_mutation() {
 		register_graphql_mutation(
 			'clearShippingZoneLocations',
-			[
+			array(
 				'inputFields'         => self::get_input_fields(),
 				'outputFields'        => self::get_output_fields(),
 				'mutateAndGetPayload' => self::mutate_and_get_payload(),
-			]
+			)
 		);
 	}
 
@@ -40,16 +40,16 @@ class Shipping_Zone_Locations_Clear {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return [
-			'zoneId' => [
-				'type'        => [ 'non_null' => 'Int' ],
+		return array(
+			'zoneId' => array(
+				'type'        => array( 'non_null' => 'Int' ),
 				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
-			],
-			'type'   => [
+			),
+			'type'   => array(
 				'type'        => 'ShippingLocationTypeEnum',
 				'description' => __( 'The type of location to remove.', 'wp-graphql-woocommerce' ),
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -58,15 +58,15 @@ class Shipping_Zone_Locations_Clear {
 	 * @return array
 	 */
 	public static function get_output_fields() {
-		return [
-			'shippingZone'     => [
+		return array(
+			'shippingZone'     => array(
 				'type'    => 'ShippingZone',
 				'resolve' => static function ( $payload, array $args, AppContext $context ) {
 					return $context->get_loader( 'shipping_zone' )->load( $payload['zone_id'] );
 				},
-			],
-			'removedLocations' => [
-				'type'    => [ 'list_of' => 'ShippingLocation' ],
+			),
+			'removedLocations' => array(
+				'type'    => array( 'list_of' => 'ShippingLocation' ),
 				'resolve' => static function ( $payload ) {
 					return ! empty( $payload['removedLocations'] )
 						? array_map(
@@ -75,10 +75,10 @@ class Shipping_Zone_Locations_Clear {
 							},
 							$payload['removedLocations'],
 						)
-						: [];
+						: array();
 				},
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -108,9 +108,9 @@ class Shipping_Zone_Locations_Clear {
 				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$types = [ 'postcode', 'state', 'country', 'continent' ];
+			$types = array( 'postcode', 'state', 'country', 'continent' );
 			if ( ! empty( $input['type'] ) ) {
-				$types = [ $input['type'] ];
+				$types = array( $input['type'] );
 			}
 
 			$all_locations = $zone->get_zone_locations();
@@ -133,10 +133,10 @@ class Shipping_Zone_Locations_Clear {
 			$zone->clear_locations( $types );
 			$zone->save();
 
-			return [
+			return array(
 				'zone_id'          => $zone_id,
 				'removedLocations' => $locations,
-			];
+			);
 		};
 	}
 }

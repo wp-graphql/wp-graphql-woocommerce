@@ -18,21 +18,21 @@ class ProtectedRouterTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 	}
 
 	public function testAddQueryVar() {
-		$query_vars = [];
+		$query_vars = array();
 		$router     = \WPGraphQL\WooCommerce\Utils\Protected_Router::instance();
 		$actual     = $router->add_query_var( $query_vars );
-		$this->assertEquals( $actual, [ apply_filters( 'woographql_authorizing_url_endpoint', \WPGraphQL\WooCommerce\Utils\Protected_Router::$route ) ] );
+		$this->assertEquals( $actual, array( apply_filters( 'woographql_authorizing_url_endpoint', \WPGraphQL\WooCommerce\Utils\Protected_Router::$route ) ) );
 	}
 
 	public function testGetNonceNames() {
 		$router = \WPGraphQL\WooCommerce\Utils\Protected_Router::instance();
 		$this->assertEquals(
-			[
+			array(
 				'cart_url'               => '_wc_cart',
 				'checkout_url'           => '_wc_checkout',
 				'account_url'            => '_wc_account',
 				'add_payment_method_url' => '_wc_payment',
-			],
+			),
 			$router->get_nonce_names()
 		);
 	}

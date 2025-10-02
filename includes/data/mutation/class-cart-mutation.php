@@ -22,7 +22,7 @@ class Cart_Mutation {
 	 * @return array
 	 */
 	public static function get_cart_field( $fallback = false ) {
-		return [
+		return array(
 			'type'    => 'Cart',
 			'resolve' => static function ( $payload ) use ( $fallback ) {
 				$cart = ! empty( $payload['cart'] ) ? $payload['cart'] : null;
@@ -32,7 +32,7 @@ class Cart_Mutation {
 				}
 				return $cart;
 			},
-		];
+		);
 	}
 
 	/**
@@ -55,13 +55,13 @@ class Cart_Mutation {
 			throw new UserError( __( 'No product found matching the ID provided', 'wp-graphql-woocommerce' ) );
 		}
 
-		$cart_item_args   = [ $input['productId'] ];
+		$cart_item_args   = array( $input['productId'] );
 		$cart_item_args[] = ! empty( $input['quantity'] ) ? $input['quantity'] : 1;
 		$cart_item_args[] = ! empty( $input['variationId'] ) ? $input['variationId'] : 0;
-		$cart_item_args[] = ! empty( $input['variation'] ) ? self::prepare_attributes( $input['productId'], $input['variation'] ) : [];
+		$cart_item_args[] = ! empty( $input['variation'] ) ? self::prepare_attributes( $input['productId'], $input['variation'] ) : array();
 		$cart_item_args[] = ! empty( $input['extraData'] )
 			? json_decode( $input['extraData'], true )
-			: [];
+			: array();
 
 		return apply_filters( 'graphql_woocommerce_new_cart_item_data', $cart_item_args, $input, $context, $info );
 	}
@@ -76,7 +76,7 @@ class Cart_Mutation {
 	 *
 	 * @throws \GraphQL\Error\UserError  Invalid cart attribute provided.
 	 */
-	public static function prepare_attributes( $product_id, array $variation_data = [] ) {
+	public static function prepare_attributes( $product_id, array $variation_data = array() ) {
 		$product = wc_get_product( $product_id );
 
 		// Bail if bad product ID.
@@ -92,7 +92,7 @@ class Cart_Mutation {
 
 		$attribute_names = array_keys( $product->get_attributes() );
 
-		$attributes = [];
+		$attributes = array();
 		foreach ( $variation_data as $attribute ) {
 			$attribute_name = $attribute['attributeName'];
 			if ( in_array( "pa_{$attribute_name}", $attribute_names, true ) ) {
@@ -138,7 +138,7 @@ class Cart_Mutation {
 		// If keys are provided and cart items haven't been retrieve yet,
 		// retrieve the cart items by key.
 		if ( ! empty( $input['keys'] ) && null === $items ) {
-			$items = [];
+			$items = array();
 			foreach ( $input['keys'] as $key ) {
 				$item = \WC()->cart->get_cart_item( $key );
 				if ( empty( $item ) ) {
@@ -162,12 +162,12 @@ class Cart_Mutation {
 	 * @return array
 	 */
 	public static function prepare_cart_fee( $input, $context, $info ) {
-		$cart_item_args = [
+		$cart_item_args = array(
 			$input['name'],
 			$input['amount'],
 			! empty( $input['taxable'] ) ? $input['taxable'] : false,
 			! empty( $input['taxClass'] ) ? $input['taxClass'] : '',
-		];
+		);
 
 		return apply_filters( 'graphql_woocommerce_new_cart_fee_data', $cart_item_args, $input, $context, $info );
 	}
@@ -218,7 +218,7 @@ class Cart_Mutation {
 		// Get available shipping packages.
 		$available_packages = \WC()->cart->needs_shipping()
 			? \WC()->shipping()->calculate_shipping( \WC()->cart->get_shipping_packages() )
-			: [];
+			: array();
 
 		if ( ! isset( $available_packages[ $index ] ) ) {
 			$reason = sprintf(
@@ -237,7 +237,7 @@ class Cart_Mutation {
 			return true;
 		}
 
-		$product_names = [];
+		$product_names = array();
 		foreach ( $package['contents'] as $item_id => $values ) {
 			$product_names[ $item_id ] = \html_entity_decode( $values['data']->get_name() . ' &times;' . $values['quantity'] );
 		}

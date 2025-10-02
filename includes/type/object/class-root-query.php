@@ -28,15 +28,15 @@ class Root_Query {
 	public static function register_fields() {
 		register_graphql_fields(
 			'RootQuery',
-			[
-				'cart'             => [
+			array(
+				'cart'             => array(
 					'type'        => 'Cart',
-					'args'        => [
-						'recalculateTotals' => [
+					'args'        => array(
+						'recalculateTotals' => array(
 							'type'        => 'Boolean',
 							'description' => __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
 						$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
@@ -51,14 +51,14 @@ class Root_Query {
 
 						return $cart;
 					},
-				],
-				'cartItem'         => [
+				),
+				'cartItem'         => array(
 					'type'        => 'CartItem',
-					'args'        => [
-						'key' => [
-							'type' => [ 'non_null' => 'ID' ],
-						],
-					],
+					'args'        => array(
+						'key' => array(
+							'type' => array( 'non_null' => 'ID' ),
+						),
+					),
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source, array $args ) {
 						$item = Factory::resolve_cart()->get_cart_item( $args['key'] );
@@ -68,14 +68,14 @@ class Root_Query {
 
 						return $item;
 					},
-				],
-				'cartFee'          => [
+				),
+				'cartFee'          => array(
 					'type'        => 'CartFee',
-					'args'        => [
-						'id' => [
-							'type' => [ 'non_null' => 'ID' ],
-						],
-					],
+					'args'        => array(
+						'id' => array(
+							'type' => array( 'non_null' => 'ID' ),
+						),
+					),
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source, array $args ) {
 						$fees   = Factory::resolve_cart()->get_fees();
@@ -87,17 +87,17 @@ class Root_Query {
 
 						return $fees[ $fee_id ];
 					},
-				],
-				'coupon'           => [
+				),
+				'coupon'           => array(
 					'type'        => 'Coupon',
 					'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [ 'type' => [ 'non_null' => 'ID' ] ],
-						'idType' => [
+					'args'        => array(
+						'id'     => array( 'type' => array( 'non_null' => 'ID' ) ),
+						'idType' => array(
 							'type'        => 'CouponIdTypeEnum',
 							'description' => __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -145,20 +145,20 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $coupon_id, $context );
 					},
-				],
-				'customer'         => [
+				),
+				'customer'         => array(
 					'type'        => 'Customer',
 					'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'         => [
+					'args'        => array(
+						'id'         => array(
 							'type'        => 'ID',
 							'description' => __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' ),
-						],
-						'customerId' => [
+						),
+						'customerId' => array(
 							'type'        => 'Int',
 							'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$current_user_id = get_current_user_id();
 
@@ -193,20 +193,20 @@ class Root_Query {
 						// Resolve to the session customer.
 						return Factory::resolve_session_customer();
 					},
-				],
-				'order'            => [
+				),
+				'order'            => array(
 					'type'        => 'Order',
 					'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [
+					'args'        => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the order', 'wp-graphql-woocommerce' ),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'OrderIdTypeEnum',
 							'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -250,13 +250,13 @@ class Root_Query {
 						if ( ! $is_authorized && get_current_user_id() ) {
 							/** @var \WC_Order[] $orders */
 							$orders = wc_get_orders(
-								[
+								array(
 									'type'          => 'shop_order',
-									'post__in'      => [ $order_id ],
+									'post__in'      => array( $order_id ),
 									'customer_id'   => get_current_user_id(),
 									'no_rows_found' => true,
 									'return'        => 'ids',
-								]
+								)
 							);
 
 							if ( in_array( $order_id, $orders, true ) ) {
@@ -271,20 +271,20 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $order_id, $context );
 					},
-				],
-				'productVariation' => [
+				),
+				'productVariation' => array(
 					'type'        => 'ProductVariation',
 					'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [
+					'args'        => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' ),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'ProductVariationIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -317,20 +317,20 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $variation_id, $context );
 					},
-				],
-				'refund'           => [
+				),
+				'refund'           => array(
 					'type'        => 'Refund',
 					'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [
-							'type'        => [ 'non_null' => 'ID' ],
+					'args'        => array(
+						'id'     => array(
+							'type'        => array( 'non_null' => 'ID' ),
 							'description' => __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' ),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'RefundIdTypeEnum',
 							'description' => __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -377,13 +377,13 @@ class Root_Query {
 
 							/** @var \WC_Order[] $orders */
 							$orders = wc_get_orders(
-								[
+								array(
 									'type'          => 'shop_order',
-									'post__in'      => [ $order_id ],
+									'post__in'      => array( $order_id ),
 									'customer_id'   => get_current_user_id(),
 									'no_rows_found' => true,
 									'return'        => 'ids',
-								]
+								)
 							);
 
 							if ( in_array( $order_id, $orders, true ) ) {
@@ -398,20 +398,20 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $refund_id, $context );
 					},
-				],
-				'shippingMethod'   => [
+				),
+				'shippingMethod'   => array(
 					'type'        => 'ShippingMethod',
 					'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [
+					'args'        => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' ),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'ShippingMethodIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args ) {
 						if ( ! \wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
 							throw new UserError( __( 'Sorry, you cannot view shipping methods.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
@@ -437,20 +437,20 @@ class Root_Query {
 
 						return Factory::resolve_shipping_method( $method_id );
 					},
-				],
-				'shippingZone'     => [
+				),
+				'shippingZone'     => array(
 					'type'        => 'ShippingZone',
 					'description' => __( 'A shipping zone object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [
+					'args'        => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the shipping zone', 'wp-graphql-woocommerce' ),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'ShippingZoneIdTypeEnum',
 							'description' => __( 'Type of ID being used identify shipping zone', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						if ( ! \wc_shipping_enabled() ) {
 							throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
@@ -480,20 +480,20 @@ class Root_Query {
 
 						return $context->get_loader( 'shipping_zone' )->load( $zone_id );
 					},
-				],
-				'taxRate'          => [
+				),
+				'taxRate'          => array(
 					'type'        => 'TaxRate',
 					'description' => __( 'A tax rate object', 'wp-graphql-woocommerce' ),
-					'args'        => [
-						'id'     => [
+					'args'        => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => __( 'The ID for identifying the tax rate', 'wp-graphql-woocommerce' ),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'TaxRateIdTypeEnum',
 							'description' => __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
 							throw new UserError( __( 'Sorry, you cannot view tax rates.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
@@ -518,9 +518,9 @@ class Root_Query {
 
 						return Factory::resolve_tax_rate( $rate_id, $context );
 					},
-				],
-				'countries'        => [
-					'type'        => [ 'list_of' => 'CountriesEnum' ],
+				),
+				'countries'        => array(
+					'type'        => array( 'list_of' => 'CountriesEnum' ),
 					'description' => __( 'Countries', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function () {
 						$wc_countries = new \WC_Countries();
@@ -528,9 +528,9 @@ class Root_Query {
 
 						return array_keys( $countries );
 					},
-				],
-				'allowedCountries' => [
-					'type'        => [ 'list_of' => 'CountriesEnum' ],
+				),
+				'allowedCountries' => array(
+					'type'        => array( 'list_of' => 'CountriesEnum' ),
 					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function () {
 						$wc_countries = new \WC_Countries();
@@ -538,15 +538,15 @@ class Root_Query {
 
 						return array_keys( $countries );
 					},
-				],
-				'countryStates'    => [
-					'type'        => [ 'list_of' => 'CountryState' ],
-					'args'        => [
-						'country' => [
-							'type'        => [ 'non_null' => 'CountriesEnum' ],
+				),
+				'countryStates'    => array(
+					'type'        => array( 'list_of' => 'CountryState' ),
+					'args'        => array(
+						'country' => array(
+							'type'        => array( 'non_null' => 'CountriesEnum' ),
 							'description' => __( 'Target country', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
 						$country      = $args['country'];
@@ -554,7 +554,7 @@ class Root_Query {
 						$states       = $wc_countries->get_shipping_country_states();
 
 						if ( ! empty( $states ) && ! empty( $states[ $country ] ) ) {
-							$formatted_states = [];
+							$formatted_states = array();
 							foreach ( $states[ $country ] as $code => $name ) {
 								$formatted_states[] = compact( 'name', 'code' );
 							}
@@ -562,51 +562,51 @@ class Root_Query {
 							return $formatted_states;
 						}
 
-						return [];
+						return array();
 					},
-				],
-				'collectionStats'  => [
+				),
+				'collectionStats'  => array(
 					'type'        => 'CollectionStats',
-					'args'        => [
-						'calculatePriceRange'        => [
+					'args'        => array(
+						'calculatePriceRange'        => array(
 							'type'        => 'Boolean',
 							'description' => __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' ),
-						],
-						'calculateRatingCounts'      => [
+						),
+						'calculateRatingCounts'      => array(
 							'type'        => 'Boolean',
 							'description' => __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' ),
-						],
-						'calculateStockStatusCounts' => [
+						),
+						'calculateStockStatusCounts' => array(
 							'type'        => 'Boolean',
 							'description' => __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' ),
-						],
-						'taxonomies'                 => [
-							'type' => [ 'list_of' => 'CollectionStatsQueryInput' ],
-						],
-						'where'                      => [
+						),
+						'taxonomies'                 => array(
+							'type' => array( 'list_of' => 'CollectionStatsQueryInput' ),
+						),
+						'where'                      => array(
 							'type' => 'CollectionStatsWhereArgs',
-						],
-					],
+						),
+					),
 					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
 						/** @var array<string, mixed> $data */
-						$data    = [
+						$data    = array(
 							'min_price'           => null,
 							'max_price'           => null,
 							'attribute_counts'    => null,
 							'stock_status_counts' => null,
 							'rating_counts'       => null,
-						];
+						);
 						$filters = new ProductQueryFilters();
 
 						// Process client-side filters.
-						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? [] );
+						$request = Collection_Stats_Type::prepare_rest_request( $args['where'] ?? array() );
 
 						// Format taxonomies.
 						if ( ! empty( $args['taxonomies'] ) ) {
-							$calculate_attribute_counts = [];
+							$calculate_attribute_counts = array();
 							foreach ( $args['taxonomies'] as $attribute_to_count ) {
-								$attribute = [ 'taxonomy' => $attribute_to_count['taxonomy'] ];
+								$attribute = array( 'taxonomy' => $attribute_to_count['taxonomy'] );
 								// Set the query type.
 								if ( ! empty( $attribute_to_count['relation'] ) ) {
 									$attribute['query_type'] = strtolower( $attribute_to_count['relation'] );
@@ -649,19 +649,19 @@ class Root_Query {
 							$filter_request = clone $request;
 							$counts         = $filters->get_stock_status_counts( $filter_request );
 
-							$data['stock_status_counts'] = [];
+							$data['stock_status_counts'] = array();
 
 							foreach ( $counts as $key => $value ) {
-								$data['stock_status_counts'][] = (object) [
+								$data['stock_status_counts'][] = (object) array(
 									'status' => $key,
 									'count'  => $value,
-								];
+								);
 							}
 						}
 
 						if ( ! empty( $request['calculate_attribute_counts'] ) ) {
-							$taxonomy__or_queries  = [];
-							$taxonomy__and_queries = [];
+							$taxonomy__or_queries  = array();
+							$taxonomy__and_queries = array();
 							foreach ( $request['calculate_attribute_counts'] as $attributes_to_count ) {
 								if ( ! isset( $attributes_to_count['taxonomy'] ) ) {
 									continue;
@@ -674,7 +674,7 @@ class Root_Query {
 								}
 							}
 
-							$data['attribute_counts'] = [];
+							$data['attribute_counts'] = array();
 							if ( ! empty( $taxonomy__or_queries ) ) {
 								foreach ( $taxonomy__or_queries as $taxonomy ) {
 									/**
@@ -695,15 +695,15 @@ class Root_Query {
 									}
 
 									$filter_request->set_param( 'attributes', $filter_attributes );
-									$counts = $filters->get_attribute_counts( $filter_request, [ $taxonomy ] );
+									$counts = $filters->get_attribute_counts( $filter_request, array( $taxonomy ) );
 
-									$data['attribute_counts'][ $taxonomy ] = [];
+									$data['attribute_counts'][ $taxonomy ] = array();
 									foreach ( $counts as $key => $value ) {
-										$data['attribute_counts'][ $taxonomy ][] = (object) [
+										$data['attribute_counts'][ $taxonomy ][] = (object) array(
 											'taxonomy' => $taxonomy,
 											'termId'   => $key,
 											'count'    => $value,
-										];
+										);
 									}
 								}
 							}
@@ -712,13 +712,13 @@ class Root_Query {
 								$counts = $filters->get_attribute_counts( $request, $taxonomy__and_queries );
 
 								foreach ( $taxonomy__and_queries as $taxonomy ) {
-									$data['attribute_counts'][ $taxonomy ] = [];
+									$data['attribute_counts'][ $taxonomy ] = array();
 									foreach ( $counts as $key => $value ) {
-										$data['attribute_counts'][ $taxonomy ][] = (object) [
+										$data['attribute_counts'][ $taxonomy ][] = (object) array(
 											'taxonomy' => $taxonomy,
 											'termId'   => $key,
 											'count'    => $value,
-										];
+										);
 									}
 								}
 							}
@@ -732,20 +732,20 @@ class Root_Query {
 							 */
 							$filter_request        = clone $request;
 							$counts                = $filters->get_rating_counts( $filter_request );
-							$data['rating_counts'] = [];
+							$data['rating_counts'] = array();
 
 							foreach ( $counts as $key => $value ) {
-								$data['rating_counts'][] = (object) [
+								$data['rating_counts'][] = (object) array(
 									'rating' => $key,
 									'count'  => $value,
-								];
+								);
 							}
 						}
 
 						return $data;
 					},
-				],
-			]
+				),
+			)
 		);
 
 		// Product queries.
@@ -774,25 +774,25 @@ class Root_Query {
 			register_graphql_field(
 				'RootQuery',
 				$field_name,
-				[
+				array(
 					'type'              => $type_name,
 					/* translators: Product type slug */
 					'description'       => sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key ),
 					'deprecationReason' => 'Use "product" instead.',
-					'args'              => [
-						'id'     => [
+					'args'              => array(
+						'id'     => array(
 							'type'        => 'ID',
 							'description' => sprintf(
 								/* translators: %s: product type */
 								__( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ),
 								$type_name
 							),
-						],
-						'idType' => [
+						),
+						'idType' => array(
 							'type'        => 'ProductIdTypeEnum',
 							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
-						],
-					],
+						),
+					),
 					'resolve'           => static function ( $source, array $args, AppContext $context ) use ( $type_key, $unsupported_type_enabled ) {
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -837,7 +837,7 @@ class Root_Query {
 
 						return Factory::resolve_crud_object( $product_id, $context );
 					},
-				]
+				)
 			);
 		}//end foreach
 	}

@@ -12,7 +12,7 @@ if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
 }
 
 class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-	
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -67,9 +67,9 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		usleep( 1000000 );
 
 		// Initialize session token for next request.
-		remove_action( 'woocommerce_set_cart_cookies', [ $session, 'set_customer_session_token' ] );
-		remove_action( 'woographql_update_session', [ $session, 'set_customer_session_token' ] );
-		remove_action( 'shutdown', [ $session, 'save_data' ] );
+		remove_action( 'woocommerce_set_cart_cookies', array( $session, 'set_customer_session_token' ) );
+		remove_action( 'woographql_update_session', array( $session, 'set_customer_session_token' ) );
+		remove_action( 'shutdown', array( $session, 'save_data' ) );
 
 		// Create new session handler.
 		$session = new QL_Session_Handler();
@@ -222,12 +222,12 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		// Should fail to set headers if run before initialization.
 		$session->set_customer_session_token( true );
-		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', [] );
+		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
 		$this->assertArrayNotHasKey( 'woocommerce-session', $graphql_response_headers );
 
 		// Should success when run after initialization.
 		$session->init_session_token();
-		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', [] );
+		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', array() );
 		$this->assertArrayHasKey( 'woocommerce-session', $graphql_response_headers );
 	}
 

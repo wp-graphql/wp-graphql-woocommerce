@@ -5,8 +5,8 @@ paths:
   support: tests/_support
   envs: tests/_envs
 params:
-  - env
-  - .env.docker
+  - .env
+  # - .env.docker
 actor_suffix: Tester
 settings:
   colors: true

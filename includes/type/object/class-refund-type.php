@@ -24,31 +24,31 @@ class Refund_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'Refund',
-			[
+			array(
 				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
-				'fields'      => [
-					'id'         => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
+					'id'         => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the refund', 'wp-graphql-woocommerce' ),
-					],
-					'databaseId' => [
+					),
+					'databaseId' => array(
 						'type'        => 'Int',
 						'description' => __( 'The ID of the refund in the database', 'wp-graphql-woocommerce' ),
-					],
-					'title'      => [
+					),
+					'title'      => array(
 						'type'        => 'String',
 						'description' => __( 'A title for the new post type', 'wp-graphql-woocommerce' ),
-					],
-					'amount'     => [
+					),
+					'amount'     => array(
 						'type'        => 'Float',
 						'description' => __( 'Refunded amount', 'wp-graphql-woocommerce' ),
-					],
-					'reason'     => [
+					),
+					'reason'     => array(
 						'type'        => 'String',
 						'description' => __( 'Reason for refund', 'wp-graphql-woocommerce' ),
-					],
-					'refundedBy' => [
+					),
+					'refundedBy' => array(
 						'type'        => 'User',
 						'description' => __( 'User who completed the refund', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -58,15 +58,15 @@ class Refund_Type {
 							}
 							return null;
 						},
-					],
-					'date'       => [
+					),
+					'date'       => array(
 						'type'        => 'String',
 						'description' => __( 'The date of the refund', 'wp-graphql-woocommerce' ),
-					],
+					),
 
 					'metaData'   => Meta_Data_Type::get_metadata_field_definition(),
-				],
-			]
+				),
+			)
 		);
 	}
 }

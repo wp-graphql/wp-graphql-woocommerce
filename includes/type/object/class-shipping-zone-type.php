@@ -26,37 +26,37 @@ class Shipping_Zone_Type {
 	public static function register() {
 		register_graphql_object_type(
 			'ShippingZone',
-			[
+			array(
 				'description' => __( 'A Shipping zone object', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
-				'fields'      => [
-					'id'         => [
-						'type'        => [ 'non_null' => 'ID' ],
+				'interfaces'  => array( 'Node' ),
+				'fields'      => array(
+					'id'         => array(
+						'type'        => array( 'non_null' => 'ID' ),
 						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
-					],
-					'databaseId' => [
+					),
+					'databaseId' => array(
 						'type'        => 'Int',
 						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
-					],
-					'name'       => [
+					),
+					'name'       => array(
 						'type'        => 'String',
 						'description' => __( 'Shipping zone name.', 'wp-graphql-woocommerce' ),
-					],
-					'order'      => [
+					),
+					'order'      => array(
 						'type'        => 'Int',
 						'description' => __( 'Shipping zone order.', 'wp-graphql-woocommerce' ),
-					],
-					'locations'  => [
-						'type'        => [ 'list_of' => 'ShippingLocation' ],
+					),
+					'locations'  => array(
+						'type'        => array( 'list_of' => 'ShippingLocation' ),
 						'description' => __( 'Shipping zone locations.', 'wp-graphql-woocommerce' ),
-					],
-				],
-				'connections' => [
-					'methods' => [
+					),
+				),
+				'connections' => array(
+					'methods' => array(
 						'toType'     => 'ShippingMethod',
-						'edgeFields' => [
-							'id'         => [
-								'type'        => [ 'non_null' => 'ID' ],
+						'edgeFields' => array(
+							'id'         => array(
+								'type'        => array( 'non_null' => 'ID' ),
 								'description' => __( 'The globally unique identifier for the shipping method.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
@@ -67,8 +67,8 @@ class Shipping_Zone_Type {
 									}
 									return null;
 								},
-							],
-							'instanceId' => [
+							),
+							'instanceId' => array(
 								'type'        => 'Int',
 								'description' => __( 'Shipping method instance ID.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
@@ -78,8 +78,8 @@ class Shipping_Zone_Type {
 									}
 									return null;
 								},
-							],
-							'order'      => [
+							),
+							'order'      => array(
 								'type'        => 'Int',
 								'description' => __( 'The order of the shipping method.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
@@ -89,8 +89,8 @@ class Shipping_Zone_Type {
 									}
 									return null;
 								},
-							],
-							'enabled'    => [
+							),
+							'enabled'    => array(
 								'type'        => 'Boolean',
 								'description' => __( 'Whether the shipping method is enabled.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
@@ -101,12 +101,12 @@ class Shipping_Zone_Type {
 									}
 									return false;
 								},
-							],
-							'settings'   => [
-								'type'        => [ 'list_of' => 'WCSetting' ],
+							),
+							'settings'   => array(
+								'type'        => array( 'list_of' => 'WCSetting' ),
 								'description' => __( 'Shipping method settings.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
-									$settings = [];
+									$settings = array();
 									if ( isset( $edge['node'] ) ) {
 										$shipping_method   = $edge['node']->as_WC_Data();
 										$instance_settings = $shipping_method->instance_settings;
@@ -116,25 +116,25 @@ class Shipping_Zone_Type {
 											$value         = ! empty( $instance_settings[ $key ] ) ? $instance_settings[ $key ] : $default_value;
 											$settings[]    = array_merge(
 												$field,
-												[
+												array(
 													'id' => $key,
 													'value' => $value,
-												]
+												)
 											);
 										}
 									}
 									return $settings;
 								},
-							],
-						],
+							),
+						),
 						'resolve'    => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 							$resolver = new Shipping_Method_Connection_Resolver( $source, $args, $context, $info );
 
 							return $resolver->get_connection();
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 }

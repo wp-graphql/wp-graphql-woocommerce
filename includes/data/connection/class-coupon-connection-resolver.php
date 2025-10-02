@@ -104,7 +104,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
-		$query_args = [
+		$query_args = array(
 			'post_type'      => 'shop_coupon',
 			'post_status'    => 'any',
 			'perm'           => 'readable',
@@ -113,7 +113,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 			// phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page
 			'posts_per_page' => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
 			'post_parent'    => 0,
-		];
+		);
 
 		/**
 		 * Set the cursor args.
@@ -140,7 +140,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = [];
+		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -195,7 +195,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return array
 	 */
 	public function get_ids() {
-		return ! empty( $this->query->posts ) ? $this->query->posts : [];
+		return ! empty( $this->query->posts ) ? $this->query->posts : array();
 	}
 
 	/**
@@ -207,10 +207,10 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function ordering_meta( $is_numeric = true ) {
 		if ( ! $is_numeric ) {
-			return apply_filters( 'woographql_coupon_connection_orderby_meta_keys', [] );
+			return apply_filters( 'woographql_coupon_connection_orderby_meta_keys', array() );
 		}
 
-		return apply_filters( 'woographql_coupon_connection_orderby_numeric_meta_keys', [] );
+		return apply_filters( 'woographql_coupon_connection_orderby_numeric_meta_keys', array() );
 	}
 
 	/**
@@ -228,7 +228,7 @@ class Coupon_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( ! empty( $where_args['code'] ) ) {
 			$id               = \wc_get_coupon_id_by_code( $where_args['code'] );
-			$ids              = $id ? [ $id ] : [ '0' ];
+			$ids              = $id ? array( $id ) : array( '0' );
 			$args['post__in'] = isset( $args['post__in'] )
 			? array_intersect( $ids, $args['post__in'] )
 			: $ids;

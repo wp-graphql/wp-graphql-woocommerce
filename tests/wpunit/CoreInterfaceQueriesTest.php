@@ -25,14 +25,14 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// Create product and review to be queried.
 		$product_id = $this->products->create_simple();
 		$comment_id = $this->factory()->comment->create(
-			[
+			array(
 				'comment_author'       => 'Rude customer',
 				'comment_author_email' => 'rude-guy@example.com',
 				'comment_post_ID'      => $product_id,
 				'comment_content'      => 'It came covered in poop!!!',
 				'comment_approved'     => 1,
 				'comment_type'         => 'review',
-			]
+			)
 		);
 		update_comment_meta( $comment_id, 'rating', 1 );
 
@@ -48,21 +48,21 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [ 'id' => $product_id ];
+		$variables = array( 'id' => $product_id );
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'product' => [
+		$expected = array(
+			'data' => array(
+				'product' => array(
 					'id'            => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'commentCount'  => 1,
 					'commentStatus' => 'open',
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -87,26 +87,26 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [ 'id' => $order_id ];
+		$variables = array( 'id' => $order_id );
 
 		/**
 		 * Assertion One
 		 *
 		 * Authenticate as a shop manager and execute query and validate response.
 		 */
-		wp_set_current_user( $this->factory->user->create( [ 'role' => 'shop_manager' ] ) );
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'shop_manager' ) ) );
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'order' => [
+		$expected = array(
+			'data' => array(
+				'order' => array(
 					'id'            => \GraphQLRelay\Relay::toGlobalId( 'order', $order_id ),
 					'commentCount'  => 2,
 					'commentStatus' => 'open',
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -120,15 +120,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'order' => [
+		$expected = array(
+			'data' => array(
+				'order' => array(
 					'id'            => \GraphQLRelay\Relay::toGlobalId( 'order', $order_id ),
 					'commentCount'  => 1,
 					'commentStatus' => 'closed',
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -140,7 +140,7 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		$product    = \wc_get_product( $product_id );
 
 		// Authenticate to view RAW content.
-		wp_set_current_user( $this->factory->user->create( [ 'role' => 'shop_manager' ] ) );
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'shop_manager' ) ) );
 
 		// Define query and variables.
 		$query     = '
@@ -153,23 +153,23 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [
+		$variables = array(
 			'id'     => $product_id,
 			'format' => 'RAW',
-		];
+		);
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'product' => [
+		$expected = array(
+			'data' => array(
+				'product' => array(
 					'id'      => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'content' => $product->get_description(),
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -178,12 +178,12 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 	public function testProductAsNodeWithFeaturedImage() {
 		// Create product to be queried.
 		$attachment_id = $this->factory()->attachment->create(
-			[
+			array(
 				'post_mime_type' => 'image/gif',
 				'post_author'    => $this->admin,
-			]
+			)
 		);
-		$product_id    = $this->products->create_simple( [ 'image_id' => $attachment_id ] );
+		$product_id    = $this->products->create_simple( array( 'image_id' => $attachment_id ) );
 
 		// Define query and variables.
 		$query     = '
@@ -197,21 +197,21 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [ 'id' => $product_id ];
+		$variables = array( 'id' => $product_id );
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'product' => [
+		$expected = array(
+			'data' => array(
+				'product' => array(
 					'id'                      => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'featuredImageId'         => \GraphQLRelay\Relay::toGlobalId( 'post', $attachment_id ),
 					'featuredImageDatabaseId' => $attachment_id,
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -250,15 +250,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [ 'id' => $product_id ];
+		$variables = array( 'id' => $product_id );
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'product' => [
+		$expected = array(
+			'data' => array(
+				'product' => array(
 					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
@@ -276,9 +276,9 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'isPreview'                 => null,
 					'previewRevisionDatabaseId' => null,
 					'previewRevisionId'         => null,
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -301,20 +301,20 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [ 'id' => $product_id ];
+		$variables = array( 'id' => $product_id );
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'product' => [
+		$expected = array(
+			'data' => array(
+				'product' => array(
 					'id'  => \GraphQLRelay\Relay::toGlobalId( 'post', $product_id ),
 					'uri' => str_ireplace( home_url(), '', get_permalink( $wp_product->ID ) ),
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );
@@ -357,15 +357,15 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 				}
 			}
 		';
-		$variables = [ 'id' => $variation_id ];
+		$variables = array( 'id' => $variation_id );
 
 		// Execute query and retrieve response.
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Define expected data object.
-		$expected = [
-			'data' => [
-				'productVariation' => [
+		$expected = array(
+			'data' => array(
+				'productVariation' => array(
 					'id'                        => \GraphQLRelay\Relay::toGlobalId( 'post', $variation_id ),
 					'databaseId'                => $wp_product->ID,
 					'date'                      => (string) $wc_product->get_date_created(),
@@ -385,9 +385,9 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 					'previewRevisionId'         => null,
 					'featuredImageId'           => \GraphQLRelay\Relay::toGlobalId( 'post', $wc_product->get_image_id() ),
 					'featuredImageDatabaseId'   => $wc_product->get_image_id(),
-				],
-			],
-		];
+				),
+			),
+		);
 
 		// Assert query response valid.
 		$this->assertEquals( $expected, $response );

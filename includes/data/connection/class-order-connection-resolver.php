@@ -127,12 +127,12 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$first = ! empty( $this->args['first'] ) ? $this->args['first'] : null;
 
 		// Set the $query_args based on various defaults and primary input $args.
-		$query_args = [
+		$query_args = array(
 			'post_type'     => $this->post_type,
 			'no_rows_found' => true,
 			'return'        => 'ids',
 			'limit'         => min( max( absint( $first ), absint( $last ), 10 ), $this->query_amount ) + 1,
-		];
+		);
 
 		/**
 		 * Set posts_per_page the highest value of $first and $last, with a (filterable) max of 100
@@ -162,7 +162,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		/**
 		 * Collect the input_fields and sanitize them to prepare them for sending to the WP_Query
 		 */
-		$input_fields = [];
+		$input_fields = array();
 		if ( ! empty( $this->args['where'] ) ) {
 			$input_fields = $this->sanitize_input_fields( $this->args['where'] );
 		}
@@ -176,7 +176,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		 */
 		if ( empty( $query_args['orderby'] ) ) {
 			$query_args['order']   = ! empty( $last ) ? 'ASC' : 'DESC';
-			$query_args['orderby'] = [ 'date' => $query_args['order'] ];
+			$query_args['orderby'] = array( 'date' => $query_args['order'] );
 		}
 
 		/**
@@ -216,7 +216,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 	 * {@inheritDoc}
 	 */
 	public function get_ids_from_query() {
-		$ids = ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : [];
+		$ids = ! empty( $this->query->get_orders() ) ? $this->query->get_orders() : array();
 
 		// If we're going backwards, we need to reverse the array.
 		if ( ! empty( $this->args['last'] ) ) {
@@ -237,21 +237,21 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! $is_numeric ) {
 			return apply_filters(
 				'woographql_order_connection_orderby_meta_keys',
-				[
+				array(
 					'_order_key',
 					'_date_paid',
 					'_date_completed',
-				]
+				)
 			);
 		}
 
 		return apply_filters(
 			'woographql_order_connection_orderby_numeric_meta_keys',
-			[
+			array(
 				'_cart_discount',
 				'_order_total',
 				'_order_tax',
-			]
+			)
 		);
 	}
 
@@ -269,11 +269,11 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		global $wpdb;
 		$args = $this->sanitize_common_inputs( $where_args );
 
-		$key_mapping = [
+		$key_mapping = array(
 			'post_parent'         => 'parent',
 			'post_parent__not_in' => 'parent_exclude',
 			'post__not_in'        => 'exclude',
-		];
+		);
 
 		foreach ( $key_mapping as $key => $field ) {
 			if ( isset( $args[ $key ] ) ) {
@@ -300,7 +300,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		if ( ! empty( $where_args['billingEmail'] ) ) {
 			$billing_email    = $where_args['billingEmail'];
 			$args['customer'] = ! empty( $args['customer'] )
-				? array_merge( $args['customer'], [ $billing_email ] )
+				? array_merge( $args['customer'], array( $billing_email ) )
 				: $billing_email;
 		}
 
@@ -318,7 +318,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 			);
 
 			// Force WP_Query return empty if don't found any order.
-			$args['post__in'] = ! empty( $order_ids ) ? $order_ids : [ 0 ];
+			$args['post__in'] = ! empty( $order_ids ) ? $order_ids : array( 0 );
 		}
 
 		// Search.
