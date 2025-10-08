@@ -181,6 +181,13 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/loader/class-wc-cpt-loader.php';
 			require $include_directory_path . 'data/loader/class-wc-customer-loader.php';
 			require $include_directory_path . 'data/loader/class-wc-db-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-cart-item-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-downloadable-item-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-order-item-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-shipping-method-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-shipping-zone-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-tax-class-loader.php';
+			require $include_directory_path . 'data/loader/class-wc-tax-rate-loader.php';
 
 			// Include connection resolver trait/class files.
 			require $include_directory_path . 'data/connection/trait-wc-db-loader-common.php';

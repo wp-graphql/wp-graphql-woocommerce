@@ -12,7 +12,13 @@ use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Cart_Item_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Downloadable_Item_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Order_Item_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Shipping_Method_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Shipping_Zone_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Tax_Class_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Tax_Rate_Loader;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
@@ -33,7 +39,7 @@ class Core_Schema_Filters {
 		add_filter( 'register_taxonomy_args', [ self::class, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
-		add_filter( 'graphql_data_loaders', [ self::class, 'graphql_data_loaders' ], 10, 2 );
+		add_filter( 'graphql_data_loader_classes', [ self::class, 'graphql_data_loader_classes' ], 10, 2 );
 
 		// Add node resolvers.
 		add_filter(
@@ -271,30 +277,21 @@ class Core_Schema_Filters {
 	 *
 	 * @return array
 	 */
-	public static function graphql_data_loaders( $loaders, $context ) {
+	public static function graphql_data_loader_classes( $loaders ) {
 		// WooCommerce customer loader.
-		$customer_loader        = new WC_Customer_Loader( $context );
-		$loaders['wc_customer'] = &$customer_loader;
+		$loaders['wc_customer'] = WC_Customer_Loader::class;
 
 		// WooCommerce CPT loader.
-		$cpt_loader         = new WC_CPT_Loader( $context );
-		$loaders['wc_post'] = &$cpt_loader;
+		$loaders['wc_post'] = WC_CPT_Loader::class;
 
 		// WooCommerce DB loaders.
-		$cart_item_loader             = new WC_Db_Loader( $context, 'CART_ITEM' );
-		$loaders['cart_item']         = &$cart_item_loader;
-		$downloadable_item_loader     = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
-		$loaders['downloadable_item'] = &$downloadable_item_loader;
-		$tax_class_loader             = new WC_Db_Loader( $context, 'TAX_CLASS' );
-		$loaders['tax_class']         = &$tax_class_loader;
-		$tax_rate_loader              = new WC_Db_Loader( $context, 'TAX_RATE' );
-		$loaders['tax_rate']          = &$tax_rate_loader;
-		$order_item_loader            = new WC_Db_Loader( $context, 'ORDER_ITEM' );
-		$loaders['order_item']        = &$order_item_loader;
-		$shipping_item_loader         = new WC_Db_Loader( $context, 'SHIPPING_METHOD' );
-		$loaders['shipping_method']   = &$shipping_item_loader;
-		$shipping_zone_loader         = new WC_Db_Loader( $context, 'SHIPPING_ZONE' );
-		$loaders['shipping_zone']     = &$shipping_zone_loader;
+		$loaders['cart_item']         = WC_Cart_Item_Loader::class;
+		$loaders['downloadable_item'] = WC_Downloadable_Item_Loader::class;
+		$loaders['tax_class']         = WC_Tax_Class_Loader::class;
+		$loaders['tax_rate']          = WC_Tax_Rate_Loader::class;
+		$loaders['order_item']        = WC_Order_Item_Loader::class;
+		$loaders['shipping_method']   = WC_Shipping_Method_Loader::class;
+		$loaders['shipping_zone']     = WC_Shipping_Zone_Loader::class;
 		return $loaders;
 	}
 
