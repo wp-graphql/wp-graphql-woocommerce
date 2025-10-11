@@ -592,7 +592,70 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
-		 * Assertion 17-18
+		 * Assertion Seventeen
+		 *
+		 * Tests "taxonomyFilter" with new "or" syntax
+		 */
+		$variables = [
+			'taxonomyFilter' => [
+				'or' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'terms'    => [ 'category-three' ],
+					],
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'terms'    => [ 'category-four' ],
+					],
+				],
+			],
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			static function ( $node, $index ) use ( $product_ids, $category_4, $category_3 ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return in_array( $category_4, $product->get_category_ids(), true )
+					|| in_array( $category_3, $product->get_category_ids(), true );
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion Eighteen  
+		 *
+		 * Tests "taxonomyFilter" with new "and" syntax
+		 */
+		$variables = [
+			'taxonomyFilter' => [
+				'and' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'terms'    => [ 'category-three' ],
+					],
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'terms'    => [ 'category-four' ],
+						'operator' => 'NOT_IN',
+					],
+				],
+			],
+		];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = array_filter(
+			$all_expected_product_nodes,
+			static function ( $node, $index ) use ( $product_ids, $category_4, $category_3 ) {
+				$product = \wc_get_product( $product_ids[ $index ] );
+				return ! in_array( $category_4, $product->get_category_ids(), true )
+					&& in_array( $category_3, $product->get_category_ids(), true );
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+		$this->assertQuerySuccessful( $response, $expected );
+
+		/**
+		 * Assertion 19-20
 		 *
 		 * Tests "include" where argument
 		 */
@@ -1112,5 +1175,259 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			],
 			'Failed to search products by product slug.'
 		);
+	}
+
+	public function testProductsQueryWithNewTaxonomyFilterSyntax() {
+		// Create test categories using WooCommerce factory
+		$category1 = $this->factory->product->createProductCategory('electronics');
+		$category2 = $this->factory->product->createProductCategory('clothing');
+		$category3 = $this->factory->product->createProductCategory('books');
+
+		$products = [
+			// Product in Electronics category
+			$this->factory->product->createSimple([
+				'name'         => 'Laptop',
+				'category_ids' => [$category1],
+			]),
+			// Product in Clothing category
+			$this->factory->product->createSimple([
+				'name'         => 'T-shirt', 
+				'category_ids' => [$category2],
+			]),
+			// Product in both Electronics and Books categories
+			$this->factory->product->createSimple([
+				'name'         => 'E-book Reader',
+				'category_ids' => [$category1, $category3],
+			]),
+			// Product in Books category only
+			$this->factory->product->createSimple([
+				'name'         => 'Novel',
+				'category_ids' => [$category3],
+			]),
+		];
+
+		// Query using new "or" syntax
+		$query = '
+			query testProductsWithTaxonomyOr($taxonomyFilter: ProductTaxonomyInput) {
+				products(where: {taxonomyFilter: $taxonomyFilter}) {
+					nodes {
+						id
+						databaseId
+						name
+					}
+				}
+			}
+		';
+
+		// Test OR syntax - should return products from Electronics OR Books
+		$variables = [
+			'taxonomyFilter' => [
+				'or' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category1],
+						'operator' => 'IN',
+					],
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category3],
+						'operator' => 'IN',
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) ),
+					$this->expectedField( 'name', 'Laptop' ),
+				]
+			),
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) ),
+					$this->expectedField( 'name', 'E-book Reader' ),
+				]
+			),
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[3] ) ),
+					$this->expectedField( 'name', 'Novel' ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected, 'OR taxonomy filter should work correctly' );
+
+		// Test AND syntax - should return products that have BOTH Electronics AND Books
+		$variables = [
+			'taxonomyFilter' => [
+				'and' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category1],
+						'operator' => 'IN',
+					],
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category3],
+						'operator' => 'IN',
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[2] ) ),
+					$this->expectedField( 'name', 'E-book Reader' ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected, 'AND taxonomy filter should work correctly' );
+	}
+
+	public function testProductsQueryWithLegacyTaxonomyFilterSyntax() {
+		// Create test categories using WooCommerce factory
+		$category1 = $this->factory->product->createProductCategory('legacy-electronics');
+		$category2 = $this->factory->product->createProductCategory('legacy-clothing');
+
+		$products = [
+			$this->factory->product->createSimple([
+				'name'         => 'Legacy Laptop',
+				'category_ids' => [$category1],
+			]),
+			$this->factory->product->createSimple([
+				'name'         => 'Legacy T-shirt',
+				'category_ids' => [$category2],
+			]),
+		];
+
+		// Test legacy syntax still works
+		$query = '
+			query testProductsWithLegacyTaxonomy($taxonomyFilter: ProductTaxonomyInput) {
+				products(where: {taxonomyFilter: $taxonomyFilter}) {
+					nodes {
+						id
+						databaseId
+						name
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'taxonomyFilter' => [
+				'relation' => 'OR',
+				'filters' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category1],
+						'operator' => 'IN',
+					],
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category2],
+						'operator' => 'IN',
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) ),
+					$this->expectedField( 'name', 'Legacy Laptop' ),
+				]
+			),
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[1] ) ),
+					$this->expectedField( 'name', 'Legacy T-shirt' ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected, 'Legacy taxonomy filter syntax should work correctly' );
+	}
+
+	public function testTaxonomyFilterPriority() {
+		// Test that new syntax takes priority over legacy syntax
+		$category1 = $this->factory->product->createProductCategory('priority-electronics');
+		$category2 = $this->factory->product->createProductCategory('priority-clothing');
+
+		$products = [
+			$this->factory->product->createSimple([
+				'name'         => 'Priority Laptop',
+				'category_ids' => [$category1],
+			]),
+			$this->factory->product->createSimple([
+				'name'         => 'Priority T-shirt',
+				'category_ids' => [$category2],
+			]),
+		];
+
+		$query = '
+			query testTaxonomyPriority($taxonomyFilter: ProductTaxonomyInput) {
+				products(where: {taxonomyFilter: $taxonomyFilter}) {
+					nodes {
+						id
+						databaseId
+						name
+					}
+				}
+			}
+		';
+
+		// Use both new "or" syntax and legacy "filters" syntax - "or" should take priority
+		$variables = [
+			'taxonomyFilter' => [
+				'or' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category1],
+						'operator' => 'IN',
+					],
+				],
+				'relation' => 'OR',
+				'filters' => [
+					[
+						'taxonomy' => 'PRODUCT_CAT',
+						'ids'      => [$category2],
+						'operator' => 'IN',
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		
+		$expected = [
+			$this->expectedNode(
+				'products.nodes',
+				[
+					$this->expectedField( 'id', $this->toRelayId( 'post', $products[0] ) ),
+					$this->expectedField( 'name', 'Priority Laptop' ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected, 'New OR syntax should take priority over legacy filters syntax' );
 	}
 }

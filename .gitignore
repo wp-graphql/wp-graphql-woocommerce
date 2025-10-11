@@ -29,3 +29,5 @@ codeception.yml
 .editorconfig
 plugin-build
 bin/strauss.phar
+CLAUDE.md
+.claude

@@ -147,7 +147,7 @@ class PaymentGatewayQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 				'paymentGateways.nodes',
 				[
 					$this->expectedField( 'id', 'stripe' ),
-					$this->expectedField( 'title', 'Credit Card (Stripe)' ),
+					$this->expectedField( 'title', 'Credit / Debit Card' ),
 					$this->expectedField( 'icon', static::IS_NULL ),
 				]
 			),

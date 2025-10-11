@@ -274,6 +274,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-meta-data-type.php';
 			require $include_directory_path . 'type/object/class-order-item-type.php';
 			require $include_directory_path . 'type/object/class-order-type.php';
+			require $include_directory_path . 'type/object/class-order-note-type.php';
 			require $include_directory_path . 'type/object/class-payment-gateway-type.php';
 			require $include_directory_path . 'type/object/class-product-attribute-types.php';
 			require $include_directory_path . 'type/object/class-product-category-type.php';
@@ -337,6 +338,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-order-create.php';
 			require $include_directory_path . 'mutation/class-order-delete-items.php';
 			require $include_directory_path . 'mutation/class-order-delete.php';
+			require $include_directory_path . 'mutation/class-order-note-create.php';
+			require $include_directory_path . 'mutation/class-order-note-delete.php';
 			require $include_directory_path . 'mutation/class-order-update.php';
 			require $include_directory_path . 'mutation/class-review-write.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';

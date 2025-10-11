@@ -1260,7 +1260,7 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 						'cartErrors',
 						[
 							$this->expectedField( 'type', 'INVALID_COUPON' ),
-							$this->expectedField( 'reasons', [ "Coupon \"{$invalid_coupon}\" does not exist!" ] ),
+							$this->expectedField( 'reasons', [ "Coupon &quot;{$invalid_coupon}&quot; cannot be applied because it does not exist." ] ),
 							$this->expectedField( 'code', $invalid_coupon ),
 						]
 					),

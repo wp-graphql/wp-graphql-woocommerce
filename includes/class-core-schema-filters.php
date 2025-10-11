@@ -78,6 +78,22 @@ class Core_Schema_Filters {
 			3
 		);
 
+		// Filter to allow order notes to be visible in GraphQL queries.
+		add_filter(
+			'graphql_data_is_private',
+			[ self::class, 'make_order_notes_visible' ],
+			10,
+			3
+		);
+
+		// Filter to set order notes visibility to public for authorized users.
+		add_filter(
+			'graphql_object_visibility',
+			[ self::class, 'set_order_notes_visibility' ],
+			10,
+			5
+		);
+
 		add_filter(
 			'graphql_dataloader_get_model',
 			[ '\WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader', 'inject_user_loader_models' ],
@@ -432,5 +448,78 @@ class Core_Schema_Filters {
 				$value->type
 			)
 		);
+	}
+
+	/**
+	 * Filter to make order notes visible in GraphQL queries for authorized users.
+	 *
+	 * @param bool   $is_private Whether the data is private.
+	 * @param string $model_name The name of the model being checked.
+	 * @param mixed  $data       The data being checked.
+	 *
+	 * @return bool
+	 */
+	public static function make_order_notes_visible( $is_private, $model_name, $data ) {
+		// Only apply to Comment models.
+		if ( 'CommentObject' !== $model_name ) {
+			return $is_private;
+		}
+
+		// Check if this is an order note.
+		if ( $data instanceof \WP_Comment && 'order_note' === $data->comment_type ) {
+			// Get the parent order.
+			$order_id = absint( $data->comment_post_ID );
+			$order = wc_get_order( $order_id );
+			
+			if ( ! $order ) {
+				return true; // Keep it private if order not found.
+			}
+
+			// Allow shop managers and admins to see all order notes.
+			if ( current_user_can( 'edit_shop_orders' ) ) {
+				return false; // Not private.
+			}
+
+			// Allow customers to see customer notes on their own orders.
+			$is_customer_note = get_comment_meta( $data->comment_ID, 'is_customer_note', true );
+			if ( $is_customer_note && get_current_user_id() === $order->get_customer_id() ) {
+				return false; // Not private.
+			}
+
+			// Otherwise keep it private.
+			return true;
+		}
+
+		return $is_private;
+	}
+
+	/**
+	 * Filter to set order notes visibility to public for authorized users.
+	 *
+	 * @param string     $visibility   The visibility of the object.
+	 * @param string     $model_name   The name of the model being checked.
+	 * @param mixed      $data         The data being checked.
+	 * @param int|null   $owner        The owner of the object.
+	 * @param \WP_User   $current_user The current user.
+	 *
+	 * @return string
+	 */
+	public static function set_order_notes_visibility( $visibility, $model_name, $data, $owner, $current_user ) {
+		// Only apply to Comment models.
+		if ( 'CommentObject' !== $model_name ) {
+			return $visibility;
+		}
+
+		// Check if this is an order note and if user owns the order.
+		if ( $data instanceof \WP_Comment && 'order_note' === $data->comment_type ) {
+			$order = wc_get_order( $data->comment_post_ID );
+			
+			// If user is the order owner, make it public.
+			if ( $order && get_current_user_id() === $order->get_customer_id() ) {
+				return 'public';
+			}
+		}
+
+		return $visibility;
 	}
 }

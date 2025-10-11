@@ -71,7 +71,7 @@ class Comments extends Comments_Core {
 			self::get_connection_config(
 				[
 					'fromType'      => 'Order',
-					'toType'        => 'Comment',
+					'toType'        => 'OrderNote',
 					'fromFieldName' => 'orderNotes',
 					'edgeFields'    => [
 						'isCustomerNote' => [

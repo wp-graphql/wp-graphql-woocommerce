@@ -320,6 +320,57 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 	}
 
 	/**
+	 * Process taxonomy filters for taxonomyFilter argument.
+	 *
+	 * @param array  $filters  Array of taxonomy filters.
+	 * @param string $relation The relation between filters (AND/OR).
+	 *
+	 * @return array
+	 */
+	private function process_taxonomy_filters( array $filters, string $relation ) {
+		$tax_groups = [];
+
+		foreach ( $filters as $filter ) {
+			$common = [
+				'taxonomy' => $filter['taxonomy'],
+				'operator' => ! empty( $filter['operator'] ) ? $filter['operator'] : 'IN',
+			];
+
+			if ( ! empty( $filter['ids'] ) ) {
+				$tax_groups[] = array_merge(
+					$common,
+					[
+						'field' => 'ID',
+						'terms' => $filter['ids'],
+					]
+				);
+			}
+
+			if ( ! empty( $filter['terms'] ) ) {
+				$tax_groups[] = array_merge(
+					$common,
+					[
+						'field' => 'slug',
+						'terms' => $filter['terms'],
+					]
+				);
+			}
+		}//end foreach
+
+		if ( empty( $tax_groups ) ) {
+			return [];
+		}
+
+		if ( 1 === count( $tax_groups ) ) {
+			return $tax_groups[0];
+		}
+
+		// Add relation if there are multiple groups.
+		$tax_groups['relation'] = $relation;
+		return $tax_groups;
+	}
+
+	/**
 	 * This sets up the "allowed" args, and translates the GraphQL-friendly keys to WP_Query
 	 * friendly keys. There's probably a cleaner/more dynamic way to approach this, but
 	 * this was quick. I'd be down to explore more dynamic ways to map this, but for
@@ -630,45 +681,17 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		$tax_filter_query = [];
 		if ( ! empty( $where_args['taxonomyFilter'] ) ) {
 			$taxonomy_query = $where_args['taxonomyFilter'];
-			$relation       = ! empty( $taxonomy_query['relation'] ) ? $taxonomy_query['relation'] : 'AND';
 
-			if ( ! empty( $taxonomy_query['filters'] ) ) {
-				$tax_groups = [];
-				foreach ( $taxonomy_query['filters'] as $filter ) {
-					$common = [
-						'taxonomy' => $filter['taxonomy'],
-						'operator' => ! empty( $filter['operator'] ) ? $filter['operator'] : 'IN',
-					];
-
-					if ( ! empty( $filter['ids'] ) ) {
-						$tax_groups[] = array_merge(
-							$common,
-							[
-								'field' => 'ID',
-								'terms' => $filter['ids'],
-							]
-						);
-					}
-
-					if ( ! empty( $filter['terms'] ) ) {
-						$tax_groups[] = array_merge(
-							$common,
-							[
-								'field' => 'slug',
-								'terms' => $filter['terms'],
-							]
-						);
-					}
-				}//end foreach
-
-				if ( ! empty( $tax_groups ) ) {
-					array_push( $tax_filter_query, ...$tax_groups );
-				}
-
-				if ( 1 < count( $tax_filter_query ) ) {
-					$tax_filter_query['relation'] = $relation;
-				}
-			}//end if
+			// Handle new "or" and "and" syntax.
+			if ( ! empty( $taxonomy_query['or'] ) ) {
+				$tax_filter_query = $this->process_taxonomy_filters( $taxonomy_query['or'], 'OR' );
+			} elseif ( ! empty( $taxonomy_query['and'] ) ) {
+				$tax_filter_query = $this->process_taxonomy_filters( $taxonomy_query['and'], 'AND' );
+			} elseif ( ! empty( $taxonomy_query['filters'] ) ) {
+				// Handle legacy "relation" + "filters" syntax.
+				$relation         = ! empty( $taxonomy_query['relation'] ) ? $taxonomy_query['relation'] : 'AND';
+				$tax_filter_query = $this->process_taxonomy_filters( $taxonomy_query['filters'], $relation );
+			}
 		}//end if
 
 		if ( ! empty( $tax_filter_query ) ) {

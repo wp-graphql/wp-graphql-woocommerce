@@ -2,7 +2,7 @@
 
 use WPGraphQL\Type\WPEnumType;
 
-class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
+class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -1088,5 +1088,196 @@ class OrderMutationsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $initial_response['data']['createOrder'], $actual['data']['deleteOrderItems'] );
 		$this->assertFalse( \WC_Order_Factory::get_order_item( current( $line_items ) ) );
 		$this->assertFalse( \WC_Order_Factory::get_order_item( current( $coupon_lines ) ) );
+	}
+
+	private function orderNoteMutation( $input, $operation_name = 'createOrderNote', $input_type = 'CreateOrderNoteInput' ) {
+		$mutation = "
+			mutation {$operation_name}( \$input: {$input_type}! ) {
+				{$operation_name}( input: \$input ) {
+					clientMutationId
+					orderNote {
+						id
+						databaseId
+						dateCreated
+						note
+						isCustomerNote
+					}
+					order {
+						id
+						databaseId
+					}
+				}
+			}
+		";
+
+		return $this->graphql(
+			[
+				'query'          => $mutation,
+				'operation_name' => $operation_name,
+				'variables'      => [ 'input' => $input ],
+			]
+		);
+	}
+
+	public function testCreateOrderNoteMutation() {
+		$customer_id = $this->factory->customer->create();
+		$order_id = $this->factory->order->createNew([
+			'customer_id' => $customer_id,
+		]);
+		$input = [
+			'clientMutationId' => 'someId',
+			'orderId'          => $order_id,
+			'note'             => 'Test order note content',
+			'isCustomerNote'   => false,
+		];
+
+		/**
+		 * Assertion One
+		 *
+		 * User without necessary capabilities cannot create an order note.
+		 */
+		$this->loginAsCustomer();
+		$actual = $this->orderNoteMutation( $input );
+
+		$this->assertQueryError( $actual );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Test mutation and input.
+		 */
+		$this->loginAsShopManager();
+		$actual = $this->orderNoteMutation( $input );
+
+		$expected = [
+			$this->expectedField( 'createOrderNote.clientMutationId', 'someId' ),
+			$this->expectedField( 'createOrderNote.orderNote.note', 'Test order note content' ),
+			$this->expectedField( 'createOrderNote.orderNote.isCustomerNote', false ),
+			$this->expectedField( 'createOrderNote.orderNote.id', self::NOT_NULL ),
+			$this->expectedField( 'createOrderNote.orderNote.databaseId', self::NOT_NULL ),
+			$this->expectedField( 'createOrderNote.orderNote.dateCreated', self::NOT_NULL ),
+			$this->expectedField( 'createOrderNote.order.id', $this->toRelayId( 'order', $order_id ) ),
+			$this->expectedField( 'createOrderNote.order.databaseId', $order_id ),
+		];
+
+		$this->assertQuerySuccessful( $actual, $expected );
+
+		// Test customer note
+		$customer_input = [
+			'clientMutationId' => 'customerId',
+			'orderId'          => $order_id,
+			'note'             => 'Customer visible note',
+			'isCustomerNote'   => true,
+		];
+
+		$customer_actual = $this->orderNoteMutation( $customer_input );
+		
+		$customer_expected = [
+			$this->expectedField( 'createOrderNote.orderNote.note', 'Customer visible note' ),
+			$this->expectedField( 'createOrderNote.orderNote.isCustomerNote', true ),
+		];
+
+		$this->assertQuerySuccessful( $customer_actual, $customer_expected );
+
+
+		/**
+		 * Assertion Three
+		 * 
+		 * Test mutation and input
+		 */
+		$this->loginAs( $customer_id );
+		$customer_input = [
+			'clientMutationId' => 'customerId',
+			'orderId'          => $order_id,
+			'note'             => 'Customer visible note',
+			'isCustomerNote'   => true,
+		];
+
+		$customer_actual = $this->orderNoteMutation( $customer_input );
+
+		$customer_expected = [
+			$this->expectedField( 'createOrderNote.orderNote.note', 'Customer visible note' ),
+			$this->expectedField( 'createOrderNote.orderNote.isCustomerNote', true ),
+		];
+
+		$this->assertQuerySuccessful( $customer_actual, $customer_expected );
+	}
+
+	public function testDeleteOrderNoteMutation() {
+		// First create a note to delete
+		$this->loginAsShopManager();
+		$create_input = [
+			'clientMutationId' => 'createId',
+			'orderId'          => $this->order_id,
+			'note'             => 'Note to be deleted',
+			'isCustomerNote'   => false,
+		];
+
+		$create_result = $this->orderNoteMutation( $create_input );
+		// Get note ID from the proper expected field result
+		$note_id = $this->lodashGet( $create_result, 'data.createOrderNote.orderNote.databaseId' );
+
+		$delete_input = [
+			'clientMutationId' => 'deleteId',
+			'id'               => $note_id,
+			'orderId'          => $this->order_id,
+			'force'            => true,
+		];
+
+		/**
+		 * Assertion One
+		 *
+		 * User without necessary capabilities cannot delete an order note.
+		 */
+		$this->loginAsCustomer();
+		$actual = $this->orderNoteMutation( $delete_input, 'deleteOrderNote', 'DeleteOrderNoteInput' );
+
+		$this->assertQueryError( $actual );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Test mutation and input.
+		 */
+		$this->loginAsShopManager();
+		$actual = $this->orderNoteMutation( $delete_input, 'deleteOrderNote', 'DeleteOrderNoteInput' );
+
+		$expected = [
+			$this->expectedField( 'deleteOrderNote.clientMutationId', 'deleteId' ),
+			$this->expectedField( 'deleteOrderNote.orderNote.note', 'Note to be deleted' ),
+			$this->expectedField( 'deleteOrderNote.order.databaseId', $this->order_id ),
+		];
+
+		$this->assertQuerySuccessful( $actual, $expected );
+
+		// Verify the note was deleted by checking it doesn't exist
+		$deleted_note = get_comment( $note_id );
+		$this->assertNull( $deleted_note );
+	}
+
+	public function testCreateOrderNoteValidation() {
+		$this->loginAsShopManager();
+
+		// Test missing note content
+		$invalid_input = [
+			'clientMutationId' => 'invalidId',
+			'orderId'          => $this->order_id,
+			'note'             => '',
+			'isCustomerNote'   => false,
+		];
+
+		$actual = $this->orderNoteMutation( $invalid_input );
+		$this->assertQueryError( $actual );
+
+		// Test invalid order ID
+		$invalid_order_input = [
+			'clientMutationId' => 'invalidOrderId',
+			'orderId'          => 99999,
+			'note'             => 'Valid note content',
+			'isCustomerNote'   => false,
+		];
+
+		$actual = $this->orderNoteMutation( $invalid_order_input );
+		$this->assertQueryError( $actual );
 	}
 }

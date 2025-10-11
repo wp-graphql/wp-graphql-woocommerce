@@ -18,46 +18,31 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		update_option( 'woocommerce_enable_guest_checkout', 'yes' );
 
 		// Enable payment gateways.
-		update_option(
-			'woocommerce_bacs_settings',
-			[
-				'enabled'      => 'yes',
-				'title'        => 'Direct bank transfer',
-				'description'  => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.',
-				'instructions' => 'Instructions that will be added to the thank you page and emails.',
-				'account'      => '',
-			]
+		$gateways     = \WC()->payment_gateways->payment_gateways();
+		$bacs_gateway = $gateways['bacs'];
+		$bacs_gateway->settings['enabled'] = 'yes';
+		update_option( $bacs_gateway->get_option_key(), $bacs_gateway->settings );
+		$stripe_settings                         = WC_Stripe_Helper::get_stripe_settings();
+		$stripe_settings['enabled']              = 'yes';
+		$stripe_settings['testmode']             = 'yes';
+		$stripe_settings['test_publishable_key'] = defined( 'STRIPE_API_PUBLISHABLE_KEY' )
+			? STRIPE_API_PUBLISHABLE_KEY
+			: getenv( 'STRIPE_API_PUBLISHABLE_KEY' );
+		$stripe_settings['test_secret_key']      = defined( 'STRIPE_API_SECRET_KEY' )
+			? STRIPE_API_SECRET_KEY
+			: getenv( 'STRIPE_API_SECRET_KEY' );
+		WC_Stripe_Helper::update_main_stripe_settings( $stripe_settings );
+		$_SERVER['HTTPS'] = false;
+		add_filter( 'wc_stripe_is_upe_checkout_enabled', '__return_false' );
+		add_filter(
+			'woocommerce_available_payment_gateways',
+			function( $available_gateways ) {
+				$stripe_gateway = new WC_Gateway_Stripe();
+				$available_gateways[ $stripe_gateway->id ] = $stripe_gateway; 
+				return $available_gateways;
+			}
 		);
-
-		update_option(
-			'woocommerce_stripe_settings',
-			[
-				'enabled'                       => 'yes',
-				'title'                         => 'Credit Card (Stripe)',
-				'description'                   => 'Pay with your credit card via Stripe',
-				'webhook'                       => '',
-				'testmode'                      => 'yes',
-				'test_publishable_key'          => defined( 'STRIPE_API_PUBLISHABLE_KEY' )
-					? STRIPE_API_PUBLISHABLE_KEY
-					: getenv( 'STRIPE_API_PUBLISHABLE_KEY' ),
-				'test_secret_key'               => defined( 'STRIPE_API_SECRET_KEY' )
-					? STRIPE_API_SECRET_KEY
-					: getenv( 'STRIPE_API_SECRET_KEY' ),
-				'test_webhook_secret'           => '',
-				'publishable_key'               => '',
-				'secret_key'                    => '',
-				'webhook_secret'                => '',
-				'inline_cc_form'                => 'no',
-				'statement_descriptor'          => '',
-				'capture'                       => 'yes',
-				'payment_request'               => 'yes',
-				'payment_request_button_type'   => 'buy',
-				'payment_request_button_theme'  => 'dark',
-				'payment_request_button_height' => '44',
-				'saved_cards'                   => 'yes',
-				'logging'                       => 'no',
-			]
-		);
+		\WC()->payment_gateways->init();
 
 		// Additional cart fees.
 		add_action(

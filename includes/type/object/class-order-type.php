@@ -286,8 +286,9 @@ class Order_Type {
 					'description' => __( 'Cart hash', 'wp-graphql-woocommerce' ),
 				],
 				'customerNote'          => [
-					'type'        => 'String',
-					'description' => __( 'Customer note', 'wp-graphql-woocommerce' ),
+					'type'             => 'String',
+					'description'      => __( 'Customer note', 'wp-graphql-woocommerce' ),
+					'deprecatedReason' => __( 'Use "orderNotes" field instead.', 'wp-graphql-woocommerce' ),
 				],
 				'isDownloadPermitted'   => [
 					'type'        => 'Boolean',
