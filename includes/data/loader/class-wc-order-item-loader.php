@@ -14,12 +14,12 @@ namespace WPGraphQL\WooCommerce\Data\Loader;
  * Class WC_Order_Item_Loader
  */
 class WC_Order_Item_Loader extends WC_Db_Loader {
-    /**
+	/**
 	 * WC_Order_Item_Loader constructor
 	 *
 	 * @param \WPGraphQL\AppContext $context AppContext instance.
 	 */
-    public function __construct( $context ) {
-        parent::__construct( $context, 'ORDER_ITEM' );
-    }
+	public function __construct( $context ) {
+		parent::__construct( $context, 'ORDER_ITEM' );
+	}
 }

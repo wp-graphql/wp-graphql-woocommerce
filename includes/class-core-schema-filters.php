@@ -11,8 +11,8 @@ namespace WPGraphQL\WooCommerce;
 use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Cart_Item_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Downloadable_Item_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Order_Item_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Shipping_Method_Loader;
@@ -39,7 +39,7 @@ class Core_Schema_Filters {
 		add_filter( 'register_taxonomy_args', [ self::class, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
-		add_filter( 'graphql_data_loader_classes', [ self::class, 'graphql_data_loader_classes' ], 10, 2 );
+		add_filter( 'graphql_data_loader_classes', [ self::class, 'graphql_data_loader_classes' ], 10 );
 
 		// Add node resolvers.
 		add_filter(
@@ -272,8 +272,7 @@ class Core_Schema_Filters {
 	/**
 	 * Registers data-loaders to be used when resolving WooCommerce-related GraphQL types
 	 *
-	 * @param array                 $loaders - assigned loaders.
-	 * @param \WPGraphQL\AppContext $context - AppContext instance.
+	 * @param array $loaders  Assigned loaders.
 	 *
 	 * @return array
 	 */
@@ -409,6 +408,7 @@ class Core_Schema_Filters {
 		} elseif ( $value instanceof \WPGraphQL\Model\Post && ( 'product' !== $value->post_type && 'product_variation' !== $value->post_type ) ) {
 			throw new UserError(
 				sprintf(
+					/* translators: %s: Post type slug */
 					__( 'The "%s" post type is not a valid product type.', 'wp-graphql-woocommerce' ),
 					$value->post_type
 				)
@@ -417,7 +417,7 @@ class Core_Schema_Filters {
 			$product_model = $value;
 		}
 
-		$product_type   = $product_model->get_type();
+		$product_type = $product_model->get_type();
 		if ( isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
 		} elseif ( $product_model instanceof \WPGraphQL\WooCommerce\Model\Product_Variation ) {
@@ -482,8 +482,8 @@ class Core_Schema_Filters {
 		if ( $data instanceof \WP_Comment && 'order_note' === $data->comment_type ) {
 			// Get the parent order.
 			$order_id = absint( $data->comment_post_ID );
-			$order = wc_get_order( $order_id );
-			
+			$order    = wc_get_order( $order_id );
+
 			if ( ! $order ) {
 				return true; // Keep it private if order not found.
 			}
@@ -494,9 +494,14 @@ class Core_Schema_Filters {
 			}
 
 			// Allow customers to see customer notes on their own orders.
-			$is_customer_note = get_comment_meta( $data->comment_ID, 'is_customer_note', true );
-			if ( $is_customer_note && get_current_user_id() === $order->get_customer_id() ) {
-				return false; // Not private.
+			$comment_id = absint( $data->comment_ID );
+			$is_customer_note = get_comment_meta( $comment_id, 'is_customer_note', true );
+			if ( $is_customer_note && ! is_bool( $order ) && is_a( $order, \WC_Order::class ) ) {
+				if ( get_current_user_id() === $order->get_customer_id() ) return false; // Not private.
+			} elseif ( $is_customer_note && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
+				/** @var \WC_Order|false $parent */
+				$parent = wc_get_order( $order->get_parent_id() );
+				if ( $parent && get_current_user_id() === $parent->get_customer_id() ) return false; // Not private.
 			}
 
 			// Otherwise keep it private.
@@ -509,11 +514,11 @@ class Core_Schema_Filters {
 	/**
 	 * Filter to set order notes visibility to public for authorized users.
 	 *
-	 * @param string     $visibility   The visibility of the object.
-	 * @param string     $model_name   The name of the model being checked.
-	 * @param mixed      $data         The data being checked.
-	 * @param int|null   $owner        The owner of the object.
-	 * @param \WP_User   $current_user The current user.
+	 * @param string   $visibility   The visibility of the object.
+	 * @param string   $model_name   The name of the model being checked.
+	 * @param mixed    $data         The data being checked.
+	 * @param int|null $owner        The owner of the object.
+	 * @param \WP_User $current_user The current user.
 	 *
 	 * @return string
 	 */
@@ -526,10 +531,14 @@ class Core_Schema_Filters {
 		// Check if this is an order note and if user owns the order.
 		if ( $data instanceof \WP_Comment && 'order_note' === $data->comment_type ) {
 			$order = wc_get_order( $data->comment_post_ID );
-			
+
 			// If user is the order owner, make it public.
-			if ( $order && get_current_user_id() === $order->get_customer_id() ) {
-				return 'public';
+			if ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order::class ) ) {
+				return get_current_user_id() === $order->get_customer_id() ? 'public' : $visibility;
+			} else if ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
+				/** @var \WC_Order|false $parent */
+				$parent = wc_get_order( $order->get_parent_id() );
+				return $parent && get_current_user_id() === $parent->get_customer_id() ? 'public' : $visibility;
 			}
 		}
 

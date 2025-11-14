@@ -14,12 +14,12 @@ namespace WPGraphQL\WooCommerce\Data\Loader;
  * Class WC_Tax_Class_Loader
  */
 class WC_Tax_Class_Loader extends WC_Db_Loader {
-    /**
+	/**
 	 * WC_Tax_Class_Loader constructor
 	 *
 	 * @param \WPGraphQL\AppContext $context AppContext instance.
 	 */
-    public function __construct( $context ) {
-        parent::__construct( $context, 'TAX_CLASS' );
-    }
+	public function __construct( $context ) {
+		parent::__construct( $context, 'TAX_CLASS' );
+	}
 }
