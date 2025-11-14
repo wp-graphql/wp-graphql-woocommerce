@@ -401,11 +401,27 @@ class Core_Schema_Filters {
 	public static function resolve_product_type( $value ) {
 		$type_registry  = \WPGraphQL::get_type_registry();
 		$possible_types = WooGraphQL::get_enabled_product_types();
-		$product_type   = $value->get_type();
+
+		if ( $value instanceof \WPGraphQL\Model\Post && ( 'product' === $value->post_type || 'product_variation' === $value->post_type ) ) {
+			$product_model = \WPGraphQL::get_app_context()
+				->get_loader( 'wc_post' )
+				->load( $value->ID );
+		} elseif ( $value instanceof \WPGraphQL\Model\Post && ( 'product' !== $value->post_type && 'product_variation' !== $value->post_type ) ) {
+			throw new UserError(
+				sprintf(
+					__( 'The "%s" post type is not a valid product type.', 'wp-graphql-woocommerce' ),
+					$value->post_type
+				)
+			);
+		} else {
+			$product_model = $value;
+		}
+
+		$product_type   = $product_model->get_type();
 		if ( isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
-		} elseif ( $value instanceof \WPGraphQL\WooCommerce\Model\Product_Variation ) {
-			return self::resolve_product_variation_type( $value );
+		} elseif ( $product_model instanceof \WPGraphQL\WooCommerce\Model\Product_Variation ) {
+			return self::resolve_product_variation_type( $product_model );
 		} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 			$unsupported_type = WooGraphQL::get_supported_product_type();
 			return $type_registry->get_type( $unsupported_type );
@@ -415,7 +431,7 @@ class Core_Schema_Filters {
 			sprintf(
 			/* translators: %s: Product type */
 				__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-				$value->type
+				$product_model->type
 			)
 		);
 	}
