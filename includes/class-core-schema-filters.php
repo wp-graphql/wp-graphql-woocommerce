@@ -11,8 +11,14 @@ namespace WPGraphQL\WooCommerce;
 use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Data\Factory;
 use WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Cart_Item_Loader;
 use WPGraphQL\WooCommerce\Data\Loader\WC_Customer_Loader;
-use WPGraphQL\WooCommerce\Data\Loader\WC_Db_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Downloadable_Item_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Order_Item_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Shipping_Method_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Shipping_Zone_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Tax_Class_Loader;
+use WPGraphQL\WooCommerce\Data\Loader\WC_Tax_Rate_Loader;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
@@ -33,7 +39,7 @@ class Core_Schema_Filters {
 		add_filter( 'register_taxonomy_args', [ self::class, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
-		add_filter( 'graphql_data_loaders', [ self::class, 'graphql_data_loaders' ], 10, 2 );
+		add_filter( 'graphql_data_loader_classes', [ self::class, 'graphql_data_loader_classes' ], 10 );
 
 		// Add node resolvers.
 		add_filter(
@@ -266,35 +272,25 @@ class Core_Schema_Filters {
 	/**
 	 * Registers data-loaders to be used when resolving WooCommerce-related GraphQL types
 	 *
-	 * @param array                 $loaders - assigned loaders.
-	 * @param \WPGraphQL\AppContext $context - AppContext instance.
+	 * @param array $loaders  Assigned loaders.
 	 *
 	 * @return array
 	 */
-	public static function graphql_data_loaders( $loaders, $context ) {
+	public static function graphql_data_loader_classes( $loaders ) {
 		// WooCommerce customer loader.
-		$customer_loader        = new WC_Customer_Loader( $context );
-		$loaders['wc_customer'] = &$customer_loader;
+		$loaders['wc_customer'] = WC_Customer_Loader::class;
 
 		// WooCommerce CPT loader.
-		$cpt_loader         = new WC_CPT_Loader( $context );
-		$loaders['wc_post'] = &$cpt_loader;
+		$loaders['wc_post'] = WC_CPT_Loader::class;
 
 		// WooCommerce DB loaders.
-		$cart_item_loader             = new WC_Db_Loader( $context, 'CART_ITEM' );
-		$loaders['cart_item']         = &$cart_item_loader;
-		$downloadable_item_loader     = new WC_Db_Loader( $context, 'DOWNLOADABLE_ITEM' );
-		$loaders['downloadable_item'] = &$downloadable_item_loader;
-		$tax_class_loader             = new WC_Db_Loader( $context, 'TAX_CLASS' );
-		$loaders['tax_class']         = &$tax_class_loader;
-		$tax_rate_loader              = new WC_Db_Loader( $context, 'TAX_RATE' );
-		$loaders['tax_rate']          = &$tax_rate_loader;
-		$order_item_loader            = new WC_Db_Loader( $context, 'ORDER_ITEM' );
-		$loaders['order_item']        = &$order_item_loader;
-		$shipping_item_loader         = new WC_Db_Loader( $context, 'SHIPPING_METHOD' );
-		$loaders['shipping_method']   = &$shipping_item_loader;
-		$shipping_zone_loader         = new WC_Db_Loader( $context, 'SHIPPING_ZONE' );
-		$loaders['shipping_zone']     = &$shipping_zone_loader;
+		$loaders['cart_item']         = WC_Cart_Item_Loader::class;
+		$loaders['downloadable_item'] = WC_Downloadable_Item_Loader::class;
+		$loaders['tax_class']         = WC_Tax_Class_Loader::class;
+		$loaders['tax_rate']          = WC_Tax_Rate_Loader::class;
+		$loaders['order_item']        = WC_Order_Item_Loader::class;
+		$loaders['shipping_method']   = WC_Shipping_Method_Loader::class;
+		$loaders['shipping_zone']     = WC_Shipping_Zone_Loader::class;
 		return $loaders;
 	}
 
@@ -404,11 +400,28 @@ class Core_Schema_Filters {
 	public static function resolve_product_type( $value ) {
 		$type_registry  = \WPGraphQL::get_type_registry();
 		$possible_types = WooGraphQL::get_enabled_product_types();
-		$product_type   = $value->get_type();
+
+		if ( $value instanceof \WPGraphQL\Model\Post && ( 'product' === $value->post_type || 'product_variation' === $value->post_type ) ) {
+			$product_model = \WPGraphQL::get_app_context()
+				->get_loader( 'wc_post' )
+				->load( $value->ID );
+		} elseif ( $value instanceof \WPGraphQL\Model\Post && ( 'product' !== $value->post_type && 'product_variation' !== $value->post_type ) ) {
+			throw new UserError(
+				sprintf(
+					/* translators: %s: Post type slug */
+					__( 'The "%s" post type is not a valid product type.', 'wp-graphql-woocommerce' ),
+					$value->post_type
+				)
+			);
+		} else {
+			$product_model = $value;
+		}
+
+		$product_type = $product_model->get_type();
 		if ( isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
-		} elseif ( $value instanceof \WPGraphQL\WooCommerce\Model\Product_Variation ) {
-			return self::resolve_product_variation_type( $value );
+		} elseif ( $product_model instanceof \WPGraphQL\WooCommerce\Model\Product_Variation ) {
+			return self::resolve_product_variation_type( $product_model );
 		} elseif ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 			$unsupported_type = WooGraphQL::get_supported_product_type();
 			return $type_registry->get_type( $unsupported_type );
@@ -418,7 +431,7 @@ class Core_Schema_Filters {
 			sprintf(
 			/* translators: %s: Product type */
 				__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-				$value->type
+				$product_model->type
 			)
 		);
 	}
@@ -469,8 +482,8 @@ class Core_Schema_Filters {
 		if ( $data instanceof \WP_Comment && 'order_note' === $data->comment_type ) {
 			// Get the parent order.
 			$order_id = absint( $data->comment_post_ID );
-			$order = wc_get_order( $order_id );
-			
+			$order    = wc_get_order( $order_id );
+
 			if ( ! $order ) {
 				return true; // Keep it private if order not found.
 			}
@@ -481,9 +494,18 @@ class Core_Schema_Filters {
 			}
 
 			// Allow customers to see customer notes on their own orders.
-			$is_customer_note = get_comment_meta( $data->comment_ID, 'is_customer_note', true );
-			if ( $is_customer_note && get_current_user_id() === $order->get_customer_id() ) {
-				return false; // Not private.
+			$comment_id       = absint( $data->comment_ID );
+			$is_customer_note = get_comment_meta( $comment_id, 'is_customer_note', true );
+			if ( $is_customer_note && ! is_bool( $order ) && is_a( $order, \WC_Order::class ) ) {
+				if ( get_current_user_id() === $order->get_customer_id() ) {
+					return false; // Not private.
+				}
+			} elseif ( $is_customer_note && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
+				/** @var \WC_Order|false $parent */
+				$parent = wc_get_order( $order->get_parent_id() );
+				if ( $parent && get_current_user_id() === $parent->get_customer_id() ) {
+					return false; // Not private.
+				}
 			}
 
 			// Otherwise keep it private.
@@ -496,11 +518,11 @@ class Core_Schema_Filters {
 	/**
 	 * Filter to set order notes visibility to public for authorized users.
 	 *
-	 * @param string     $visibility   The visibility of the object.
-	 * @param string     $model_name   The name of the model being checked.
-	 * @param mixed      $data         The data being checked.
-	 * @param int|null   $owner        The owner of the object.
-	 * @param \WP_User   $current_user The current user.
+	 * @param string   $visibility   The visibility of the object.
+	 * @param string   $model_name   The name of the model being checked.
+	 * @param mixed    $data         The data being checked.
+	 * @param int|null $owner        The owner of the object.
+	 * @param \WP_User $current_user The current user.
 	 *
 	 * @return string
 	 */
@@ -513,10 +535,14 @@ class Core_Schema_Filters {
 		// Check if this is an order note and if user owns the order.
 		if ( $data instanceof \WP_Comment && 'order_note' === $data->comment_type ) {
 			$order = wc_get_order( $data->comment_post_ID );
-			
+
 			// If user is the order owner, make it public.
-			if ( $order && get_current_user_id() === $order->get_customer_id() ) {
-				return 'public';
+			if ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order::class ) ) {
+				return get_current_user_id() === $order->get_customer_id() ? 'public' : $visibility;
+			} elseif ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
+				/** @var \WC_Order|false $parent */
+				$parent = wc_get_order( $order->get_parent_id() );
+				return $parent && get_current_user_id() === $parent->get_customer_id() ? 'public' : $visibility;
 			}
 		}
 

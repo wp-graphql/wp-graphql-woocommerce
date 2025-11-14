@@ -13,8 +13,8 @@ namespace WPGraphQL\WooCommerce\Mutation;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
-use WPGraphQL\Utils\Utils;
 use WPGraphQL\Model\Comment;
+use WPGraphQL\Utils\Utils;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
 
@@ -127,7 +127,8 @@ class Order_Note_Delete {
 				throw new UserError( __( 'Invalid resource ID.', 'wp-graphql-woocommerce' ) );
 			}
 
-			$result = wc_delete_order_note( $note->comment_ID );
+			$comment_id = absint( $note->comment_ID );
+			$result     = wc_delete_order_note( $comment_id );
 
 			if ( ! $result ) {
 				throw new UserError( __( 'Unable to delete order note.', 'wp-graphql-woocommerce' ) );

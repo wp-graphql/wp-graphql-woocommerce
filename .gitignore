@@ -30,4 +30,4 @@ codeception.yml
 plugin-build
 bin/strauss.phar
 CLAUDE.md
-.claude
+.claude/

@@ -25,7 +25,7 @@ class Order_Note_Type {
 		register_graphql_object_type(
 			'OrderNote',
 			[
-				'interfaces'      => ['Node'],
+				'interfaces'      => [ 'Node' ],
 				'eagerlyLoadType' => true,
 				'description'     => __( 'A order note', 'wp-graphql-woocommerce' ),
 				'fields'          => apply_filters( 'woographql_order_note_field_definitions', self::get_fields() ),
@@ -43,7 +43,7 @@ class Order_Note_Type {
 		return array_merge(
 			[
 				'id'             => [
-					'type'        => ['non_null' => 'ID'],
+					'type'        => [ 'non_null' => 'ID' ],
 					'description' => __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $order_note ) {
 						return Relay::toGlobalId( 'order_note', $order_note->databaseId );
