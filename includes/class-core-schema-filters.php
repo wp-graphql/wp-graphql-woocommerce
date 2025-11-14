@@ -494,14 +494,18 @@ class Core_Schema_Filters {
 			}
 
 			// Allow customers to see customer notes on their own orders.
-			$comment_id = absint( $data->comment_ID );
+			$comment_id       = absint( $data->comment_ID );
 			$is_customer_note = get_comment_meta( $comment_id, 'is_customer_note', true );
 			if ( $is_customer_note && ! is_bool( $order ) && is_a( $order, \WC_Order::class ) ) {
-				if ( get_current_user_id() === $order->get_customer_id() ) return false; // Not private.
+				if ( get_current_user_id() === $order->get_customer_id() ) {
+					return false; // Not private.
+				}
 			} elseif ( $is_customer_note && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
 				/** @var \WC_Order|false $parent */
 				$parent = wc_get_order( $order->get_parent_id() );
-				if ( $parent && get_current_user_id() === $parent->get_customer_id() ) return false; // Not private.
+				if ( $parent && get_current_user_id() === $parent->get_customer_id() ) {
+					return false; // Not private.
+				}
 			}
 
 			// Otherwise keep it private.
@@ -535,7 +539,7 @@ class Core_Schema_Filters {
 			// If user is the order owner, make it public.
 			if ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order::class ) ) {
 				return get_current_user_id() === $order->get_customer_id() ? 'public' : $visibility;
-			} else if ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
+			} elseif ( $order && ! is_bool( $order ) && is_a( $order, \WC_Order_Refund::class ) ) {
 				/** @var \WC_Order|false $parent */
 				$parent = wc_get_order( $order->get_parent_id() );
 				return $parent && get_current_user_id() === $parent->get_customer_id() ? 'public' : $visibility;

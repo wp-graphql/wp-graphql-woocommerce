@@ -128,7 +128,7 @@ class Order_Note_Delete {
 			}
 
 			$comment_id = absint( $note->comment_ID );
-			$result = wc_delete_order_note( $comment_id );
+			$result     = wc_delete_order_note( $comment_id );
 
 			if ( ! $result ) {
 				throw new UserError( __( 'Unable to delete order note.', 'wp-graphql-woocommerce' ) );
