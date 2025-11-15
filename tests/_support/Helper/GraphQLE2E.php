@@ -50,7 +50,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -90,7 +90,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -124,7 +124,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -163,7 +163,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -201,7 +201,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -243,7 +243,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -271,7 +271,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -311,7 +311,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -349,7 +349,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -386,7 +386,7 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
@@ -565,20 +565,20 @@ class GraphQLE2E extends \Codeception\Module {
         ';
 
 		// Send GraphQL request and get response.
-		return $this->sendGraphQLRequest( $mutation, $input, $request_headers );
+		return $this->sendGraphQLRequest( $mutation, [ 'input' => $input ], $request_headers );
 	}
 
 	/**
 	 * Sends GraphQL and returns a response
 	 *
 	 * @param string      $mutation
-	 * @param array       $input
+	 * @param array       $variables
 	 * @param string|null $session_header
 	 * @param bool        $update_header
 	 *
 	 * @return array
 	 */
-	public function sendGraphQLRequest( $query, $input, $request_headers = [] ) {
+	public function sendGraphQLRequest( $query, $variables, $request_headers = [] ) {
 		$rest = $this->getModule( 'REST' );
 
 		// Add item to cart.
@@ -595,7 +595,7 @@ class GraphQLE2E extends \Codeception\Module {
 			json_encode(
 				[
 					'query'     => $query,
-					'variables' => [ 'input' => $input ],
+					'variables' => $variables,
 				]
 			)
 		);
@@ -1057,5 +1057,129 @@ class GraphQLE2E extends \Codeception\Module {
 		$this->assertEquals( $endUrl, $locationHeader );
 
 		$guzzle->followRedirects( true );
+	}
+
+	/**
+     * Sets a WordPress option in the database
+     *
+     * @param string $option_name  Option name.
+     * @param mixed  $option_value Option value.
+     *
+     * @return void
+     */
+    public function haveOptionInDatabase( $option_name, $option_value ) {
+      $wpdb = $this->getModule( 'WPDb' );
+      $wpdb->haveOptionInDatabase( $option_name, $option_value );
+    }
+
+	/**
+	 * Gets the WordPress salt value for Store API Cart-Token
+	 *
+	 * The Store API uses '@' . wp_salt() as the secret.
+	 * wp_salt() returns AUTH_KEY . AUTH_SALT from wp-config.php.
+	 *
+	 * @return string
+	 */
+	public function getStoreApiSecret() {
+		$wpCli = $this->getModule( 'WPCLI' );
+		$auth_key  = $wpCli->cliToString( [ 'config', 'get', 'AUTH_KEY' ] );
+		$auth_salt = $wpCli->cliToString( [ 'config', 'get', 'AUTH_SALT' ] );
+		return '@' . trim( $auth_key ) . trim( $auth_salt );
+	}
+
+	/**
+	 * Creates a cart page with WooCommerce shortcode in the database
+	 *
+	 * @param string $slug  The page slug. Defaults to 'cart-shortcode'.
+	 * @return int The post ID of the created cart page
+	 */
+	public function haveACartShortcodePageInDatabase( $slug = 'cart-shortcode' ) {
+		$wpdb = $this->getModule( 'WPDb' );
+
+		$cart_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Cart Shortcode',
+				'post_name'    => $slug,
+				'post_author'  => 1,
+				'post_status'  => 'publish',
+				'post_content' => '[woocommerce_cart]',
+			]
+		);
+
+		return $cart_page_id;
+	}
+
+	/**
+	 * Creates a cart page with WooCommerce Cart Block in the database
+	 *
+	 * @return int The post ID of the created cart page
+	 */
+	public function haveACartBlockPageInDatabase() {
+		$wpdb = $this->getModule( 'WPDb' );
+
+		$cart_page_id = $wpdb->havePostInDatabase([
+			'post_type'    => 'page',
+			'post_title'   => 'Cart',
+			'post_name'    => 'cart',
+			'post_author'  => 1,
+			'post_status'  => 'publish',
+			'post_content' => '<!-- wp:woocommerce/cart {"align":"wide"} -->
+<div class="wp-block-woocommerce-cart alignwide is-loading"><!-- wp:woocommerce/filled-cart-block -->
+<div class="wp-block-woocommerce-filled-cart-block"><!-- wp:woocommerce/cart-items-block -->
+<div class="wp-block-woocommerce-cart-items-block"><!-- wp:woocommerce/cart-line-items-block -->
+<div class="wp-block-woocommerce-cart-line-items-block"></div>
+<!-- /wp:woocommerce/cart-line-items-block -->
+
+<!-- wp:woocommerce/cart-cross-sells-block -->
+<div class="wp-block-woocommerce-cart-cross-sells-block"></div>
+<!-- /wp:woocommerce/cart-cross-sells-block --></div>
+<!-- /wp:woocommerce/cart-items-block -->
+
+<!-- wp:woocommerce/cart-totals-block -->
+<div class="wp-block-woocommerce-cart-totals-block"><!-- wp:woocommerce/cart-order-summary-block -->
+<div class="wp-block-woocommerce-cart-order-summary-block"></div>
+<!-- /wp:woocommerce/cart-order-summary-block -->
+
+<!-- wp:woocommerce/cart-express-payment-block -->
+<div class="wp-block-woocommerce-cart-express-payment-block"></div>
+<!-- /wp:woocommerce/cart-express-payment-block -->
+
+<!-- wp:woocommerce/proceed-to-checkout-block -->
+<div class="wp-block-woocommerce-proceed-to-checkout-block"></div>
+<!-- /wp:woocommerce/proceed-to-checkout-block -->
+
+<!-- wp:woocommerce/cart-accepted-payment-methods-block -->
+<div class="wp-block-woocommerce-cart-accepted-payment-methods-block"></div>
+<!-- /wp:woocommerce/cart-accepted-payment-methods-block --></div>
+<!-- /wp:woocommerce/cart-totals-block --></div>
+<!-- /wp:woocommerce/filled-cart-block -->
+
+<!-- wp:woocommerce/empty-cart-block -->
+<div class="wp-block-woocommerce-empty-cart-block"><!-- wp:heading {"textAlign":"center","className":"with-empty-cart-icon wc-block-cart__empty-cart__title"} -->
+<h2 class="wp-block-heading has-text-align-center with-empty-cart-icon wc-block-cart__empty-cart__title">Your cart is currently empty!</h2>
+<!-- /wp:heading -->
+
+<!-- wp:separator {"className":"is-style-dots"} -->
+<hr class="wp-separator has-alpha-channel-opacity is-style-dots"/>
+<!-- /wp:separator -->
+
+<!-- wp:heading {"textAlign":"center"} -->
+<h2 class="wp-block-heading has-text-align-center">Start shopping</h2>
+<!-- /wp:heading -->
+
+<!-- wp:woocommerce/all-products {"columns":3,"rows":1,"alignButtons":false,"contentVisibility":{"orderBy":true},"orderby":"date","layoutConfig":[["woocommerce/product-image",{"productId":0}],["woocommerce/product-title",{"productId":0}],["woocommerce/product-price",{"productId":0}],["woocommerce/product-rating",{"productId":0}],["woocommerce/product-button",{"productId":0}]]} -->
+<div class="wp-block-woocommerce-all-products wc-block-all-products" data-attributes="{&quot;alignButtons&quot;:false,&quot;columns&quot;:3,&quot;contentVisibility&quot;:{&quot;orderBy&quot;:true},&quot;isPreview&quot;:false,&quot;layoutConfig&quot;:[[&quot;woocommerce/product-image&quot;,{&quot;productId&quot;:0}],[&quot;woocommerce/product-title&quot;,{&quot;productId&quot;:0}],[&quot;woocommerce/product-price&quot;,{&quot;productId&quot;:0}],[&quot;woocommerce/product-rating&quot;,{&quot;productId&quot;:0}],[&quot;woocommerce/product-button&quot;,{&quot;productId&quot;:0}]],&quot;orderby&quot;:&quot;date&quot;,&quot;rows&quot;:1,&quot;stockStatus&quot;:[&quot;instock&quot;,&quot;outofstock&quot;,&quot;onbackorder&quot;]}"></div>
+<!-- /wp:woocommerce/all-products --></div>
+<!-- /wp:woocommerce/empty-cart-block --></div>
+<!-- /wp:woocommerce/cart -->',
+			'post_status'  => 'publish',
+			'post_type'    => 'page',
+		]);
+
+		// Set this as the WooCommerce cart page
+		$wpdb->haveOptionInDatabase( 'woocommerce_cart_page_id', $cart_page_id );
+
+		return $cart_page_id;
 	}
 }

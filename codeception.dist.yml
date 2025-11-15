@@ -36,21 +36,26 @@ modules:
   config:
     \Tests\WPGraphQL\Codeception\Module\WPGraphQL:
       endpoint: '%WORDPRESS_URL%/graphql'
+      modules:
+    WPCLI:
+      path: '%WP_ROOT_FOLDER%'
+      allow-root: true
+      throw: true
     WPDb:
       dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
       user: '%DB_USER%'
       password: '%DB_PASSWORD%'
       populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
       dump: 'local/db/app_db.sql'
-      populate: true
-      cleanup: false
-      waitlock: 10
+      populate: false
+      cleanup: true
+      waitlock: 0
       url: '%WORDPRESS_URL%'
       urlReplacement: true
       tablePrefix: '%WP_TABLE_PREFIX%'
     WPBrowser:
       url: '%WORDPRESS_URL%'
-      wpRootFolder: '%WP_CORE_DIR%'
+      wpRootFolder: '%WP_ROOT_FOLDER%'
       adminUsername: '%ADMIN_USERNAME%'
       adminPassword: '%ADMIN_PASSWORD%'
       adminPath: '/wp-admin'
@@ -59,13 +64,13 @@ modules:
       url: '%WORDPRESS_URL%'
       cookies: false
     WPFilesystem:
-      wpRootFolder: '%WP_CORE_DIR%'
+      wpRootFolder: '%WP_ROOT_FOLDER%'
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       themes: '/wp-content/themes'
       uploads: '/wp-content/uploads'
     WPLoader:
-      wpRootFolder: '%WP_CORE_DIR%'
+      wpRootFolder: '%WP_ROOT_FOLDER%'
       dbHost: '%DB_HOST%'
       dbName: '%DB_NAME%'
       dbUser: '%DB_USER%'

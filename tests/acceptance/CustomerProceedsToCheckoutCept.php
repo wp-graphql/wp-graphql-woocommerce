@@ -54,17 +54,19 @@ $update_session_mutation = '
 ';
 $success                 = $I->sendGraphQLRequest(
 	$update_session_mutation,
-	[
-		'sessionData' => [
-			[
-				'key'   => 'client_session_id',
-				'value' => 'test-client-session-id',
+	[ 
+		'input' => [
+			'sessionData' => [
+				[
+					'key'   => 'client_session_id',
+					'value' => 'test-client-session-id',
+				],
+				[
+					'key'   => 'client_session_id_expiration',
+					'value' => (string) ( time() + 3600 ),
+				],
 			],
-			[
-				'key'   => 'client_session_id_expiration',
-				'value' => (string) ( time() + 3600 ),
-			],
-		],
+		], 
 	],
 	$request_headers()
 );

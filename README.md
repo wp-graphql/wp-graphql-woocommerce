@@ -34,7 +34,7 @@
 
 - Query your shop's products and variations with detailed filtering options.
 - Query customers, orders, coupons, and refunds. Note: Operations have user restrictions.
-- Manage customer sessions using JWTs, and use cart/customer queries and mutations. Note: Operations have user restrictions.
+- Manage customer sessions using JWTs or WooCommerce Store API Cart-Tokens, and use cart/customer queries and mutations. Note: Operations have user restrictions.
 - Manually create orders, automate order creation with the checkout mutation, or delegate a customer's session to the WooCommerce checkout page in your theme for comprehensive payment gateway support.
 
 (*) These operations have user restrictions. Learn how to utilize them correctly at the resources listed below:

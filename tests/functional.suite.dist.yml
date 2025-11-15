@@ -8,6 +8,7 @@ coverage:
   enabled: false
 modules:
   enabled:
+    - WPCLI
     - WPDb
     - WPBrowser
     - REST
