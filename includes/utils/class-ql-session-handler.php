@@ -244,7 +244,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Validate legacy GraphQL session token
 	 *
 	 * @param string $session_header The session header value.
-	 * @return object|\WP_Error|false
+	 *
+	 * @throws \Exception Invalid token.
+	 *
+	 * @return object{ iat: int, exp: int, data: object{ customer_id: string } }|\WP_Error|false
 	 */
 	protected function validate_legacy_token( $session_header ) {
 		// Get the token from the header.
@@ -295,7 +298,10 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 * Validate Store API Cart-Token
 	 *
 	 * @param string $cart_token The Cart-Token value.
-	 * @return object|\WP_Error|false
+	 *
+	 * @throws \Exception Invalid token.
+	 *
+	 * @return object{ iat: int, exp: int, data: object{ customer_id: string } }|\WP_Error|false
 	 */
 	protected function validate_cart_token( $cart_token ) {
 		// Validate Cart-Token using WooCommerce's JsonWebToken utility if available.
@@ -315,12 +321,16 @@ class QL_Session_Handler extends WC_Session_Handler {
 			}
 
 			// Decode the token to get the payload.
-			$parts   = \Automattic\WooCommerce\StoreApi\Utilities\JsonWebToken::get_parts( $cart_token );
-			$payload = $parts->payload;
+			/** @var object{ payload: object{ user_id: string, iat: int, exp: int } } $parts */
+			$parts = \Automattic\WooCommerce\StoreApi\Utilities\JsonWebToken::get_parts( $cart_token );
 
 			// Transform to match legacy token structure for compatibility.
-			// The user_id field contains the customer ID.
-			$payload->data = (object) [ 'customer_id' => $payload->user_id ?? '' ];
+			/** @var object{ iat: int, exp: int, data: object{ customer_id: string } } $payload */
+			$payload = (object) [
+				'iat'  => $parts->payload->iat,
+				'exp'  => $parts->payload->exp,
+				'data' => (object) [ 'customer_id' => $parts->payload->user_id ?? '' ]
+			];
 		} catch ( \Throwable $error ) {
 			return new \WP_Error( 'invalid_cart_token', $error->getMessage() );
 		}//end try
