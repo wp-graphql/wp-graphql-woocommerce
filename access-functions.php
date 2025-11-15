@@ -299,7 +299,7 @@ if ( ! function_exists( 'woographql_create_nonce' ) ) :
 	/**
 	 * Creates WPGraphQL for WooCommerce session transfer nonces.
 	 *
-	 * @param string|int $action  Nonce name.
+	 * @param string|-1 $action  Nonce name.
 	 *
 	 * @return string The nonce.
 	 */
@@ -317,7 +317,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	 * Validate WPGraphQL for WooCommerce session transfer nonces.
 	 *
 	 * @param string         $nonce   Nonce to validated.
-	 * @param integer|string $action  Nonce name.
+	 * @param string|-1 $action  Nonce name.
 	 *
 	 * @return false|int
 	 */
