@@ -329,7 +329,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			$payload = (object) [
 				'iat'  => $parts->payload->iat,
 				'exp'  => $parts->payload->exp,
-				'data' => (object) [ 'customer_id' => $parts->payload->user_id ?? '' ]
+				'data' => (object) [ 'customer_id' => $parts->payload->user_id ?? '' ],
 			];
 		} catch ( \Throwable $error ) {
 			return new \WP_Error( 'invalid_cart_token', $error->getMessage() );

@@ -316,7 +316,7 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	/**
 	 * Validate WPGraphQL for WooCommerce session transfer nonces.
 	 *
-	 * @param string         $nonce   Nonce to validated.
+	 * @param string    $nonce   Nonce to validated.
 	 * @param string|-1 $action  Nonce name.
 	 *
 	 * @return false|int
