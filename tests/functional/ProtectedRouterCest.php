@@ -120,11 +120,13 @@ class ProtectedRouterCest {
         ';
 		$success = $I->sendGraphQLRequest(
 			$query,
-			[
-				'sessionData' => [
-					[
-						'key'   => 'client_session_id',
-						'value' => 'test-client-session-id',
+			[ 
+				'input' => [
+					'sessionData' => [
+						[
+							'key'   => 'client_session_id',
+							'value' => 'test-client-session-id',
+						],
 					],
 				],
 			],
@@ -148,11 +150,13 @@ class ProtectedRouterCest {
 		$I->wantTo( 'Invalidate Checkout URL by updating the "client_session_id"' );
 		$success = $I->sendGraphQLRequest(
 			$query,
-			[
-				'sessionData' => [
-					[
-						'key'   => 'client_session_id',
-						'value' => 'new-test-client-session-id',
+			[ 
+				'input' => [
+					'sessionData' => [
+						[
+							'key'   => 'client_session_id',
+							'value' => 'new-test-client-session-id',
+						],
 					],
 				],
 			],

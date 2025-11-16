@@ -182,3 +182,17 @@ add_action(
 		}
 	}
 );
+
+// Confirm WC Cart & Checkout Blocks compatibility.
+add_action(
+	'before_woocommerce_init',
+	static function () {
+		if ( get_plugin_directory() !== WP_PLUGIN_DIR . '/wp-graphql-woocommerce/' ) {
+			return;
+		}
+
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
+		}
+	}
+);

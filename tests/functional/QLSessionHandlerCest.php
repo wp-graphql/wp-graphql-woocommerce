@@ -443,7 +443,7 @@ class QLSessionHandlerCest {
             }
         ';
 
-		$actual   = $I->sendGraphQLRequest( $mutation, $input, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$actual   = $I->sendGraphQLRequest( $mutation, [ 'input' => $input ], [ 'woocommerce-session' => "Session {$session_token}" ] );
 		$I->assertQuerySuccessful(
 			$actual,
 			[
@@ -544,9 +544,11 @@ class QLSessionHandlerCest {
 
 		$success = $I->sendGraphQLRequest(
 			$mutation,
-			[
-				'clientMutationId' => 'someId',
-				'shippingMethods'  => [ $chosen_shipping_method ],
+			[ 
+				'input' => [
+					'clientMutationId' => 'someId',
+					'shippingMethods'  => [ $chosen_shipping_method ],
+				],
 			],
 			[ 'woocommerce-session' => "Session {$session_token}" ]
 		);
@@ -560,5 +562,131 @@ class QLSessionHandlerCest {
 				),
 			]
 		);
+	}
+
+	public function testStoreAPICartTokenGeneration( FunctionalTester $I ) {
+		// Set token type to 'store-api'
+		$I->haveOptionInDatabase( 'woographql_settings', [ 'set_session_token_type' => 'store-api' ] );
+
+		/**
+		 * Add item to the cart
+		 */
+		$success = $I->addToCart(
+			[
+				'clientMutationId' => 'someId',
+				'productId'        => $this->product_catalog['t-shirt'],
+				'quantity'         => 1,
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$success,
+			[
+				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
+			]
+		);
+
+		/**
+		 * Assert that Cart-Token header exists and woocommerce-session does NOT
+		 */
+		$I->seeHttpHeaderOnce( 'Cart-Token' );
+		$I->dontSeeHttpHeader( 'woocommerce-session' );
+
+		$cart_token = $I->grabHttpHeader( 'Cart-Token' );
+
+		// Decode token using Store API secret (same as build_cart_token uses)
+		JWT::$leeway = 60;
+		$token_data  = ! empty( $cart_token )
+			? JWT::decode( $cart_token, new Key( $I->getStoreApiSecret(), 'HS256' ) )
+			: null;
+
+		$I->assertNotEmpty( $token_data );
+		$I->assertNotEmpty( $token_data->user_id );
+		$I->assertNotEmpty( $token_data->exp );
+		$I->assertEquals( 'store-api', $token_data->iss );
+	}
+
+	public function testBothTokenTypesGeneration( FunctionalTester $I ) {
+		// Set token type to 'both'
+		$I->haveOptionInDatabase( 'woographql_settings', [ 'set_session_token_type' => 'both' ] );
+
+		/**
+		 * Add item to the cart
+		 */
+		$success = $I->addToCart(
+			[
+				'clientMutationId' => 'someId',
+				'productId'        => $this->product_catalog['t-shirt'],
+				'quantity'         => 1,
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$success,
+			[
+				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
+			]
+		);
+
+		/**
+		 * Assert that both woocommerce-session and Cart-Token headers exist
+		 */
+		$I->seeHttpHeaderOnce( 'woocommerce-session' );
+		$I->seeHttpHeaderOnce( 'Cart-Token' );
+
+		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+		$cart_token    = $I->grabHttpHeader( 'Cart-Token' );
+
+		// Decode legacy token
+		JWT::$leeway     = 60;
+		$session_data    = ! empty( $session_token )
+			? JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) )
+			: null;
+
+		$I->assertNotEmpty( $session_data );
+		$I->assertNotEmpty( $session_data->data );
+		$I->assertNotEmpty( $session_data->data->customer_id );
+
+		// Decode Cart-Token using Store API secret (same as build_cart_token uses)
+		$cart_data = ! empty( $cart_token )
+			? JWT::decode( $cart_token, new Key( $I->getStoreApiSecret(), 'HS256' ) )
+			: null;
+
+		$I->assertNotEmpty( $cart_data );
+		$I->assertNotEmpty( $cart_data->user_id );
+		$I->assertEquals( 'store-api', $cart_data->iss );
+
+		// Verify both tokens reference the same customer
+		$I->assertEquals( $session_data->data->customer_id, $cart_data->user_id );
+	}
+
+	public function testLegacyTokenOnlyWhenSetToLegacy( FunctionalTester $I ) {
+		// Legacy mode is the default, so no need to set option
+		// But we'll set it explicitly for clarity
+		$I->haveOptionInDatabase( 'woographql_settings', [ 'set_session_token_type' => 'legacy' ] );
+
+		/**
+		 * Add item to the cart
+		 */
+		$success = $I->addToCart(
+			[
+				'clientMutationId' => 'someId',
+				'productId'        => $this->product_catalog['t-shirt'],
+				'quantity'         => 1,
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$success,
+			[
+				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
+			]
+		);
+
+		/**
+		 * Assert that only woocommerce-session header exists, NOT Cart-Token
+		 */
+		$I->seeHttpHeaderOnce( 'woocommerce-session' );
+		$I->dontSeeHttpHeader( 'Cart-Token' );
 	}
 }

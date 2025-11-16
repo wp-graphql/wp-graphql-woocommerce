@@ -4,7 +4,7 @@ FROM wordpress:php${PHP_VERSION}-apache
 RUN apt-get update; \
 	apt-get install -y --no-install-recommends \
 	# WP-CLI dependencies.
-	bash less default-mysql-client git \
+	bash less mariadb-client git \
 	# MailHog dependencies.
 	msmtp \
 	# Dockerize dependencies.
@@ -30,6 +30,11 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer \
     --install-dir=/usr/local/bin
+
+# Install WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
 # Add composer global binaries to PATH
 ENV PATH "$PATH:~/.composer/vendor/bin"
@@ -57,6 +62,12 @@ RUN composer global require --optimize-autoloader \
 RUN sed -i '$d' /usr/local/bin/docker-entrypoint.sh
 
 COPY local/php.ini /usr/local/etc/php/php.ini
+
+# Disable SSL for MySQL client globally
+RUN mkdir -p /etc/mysql/conf.d && \
+    echo '[client]' > /etc/mysql/conf.d/disable-ssl.cnf && \
+    echo 'ssl=0' >> /etc/mysql/conf.d/disable-ssl.cnf
+
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 RUN service apache2 restart
 
