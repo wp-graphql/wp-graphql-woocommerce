@@ -36,11 +36,12 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 			graphql_debug( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ) );
 			return false;
 		}
-
-		if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
-			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
-			return false;
-		}
+//This item has been added.
+// 		if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+// 			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+// 			return false;
+// 		}
+//This item has been added.
 		return true;
 	}
 

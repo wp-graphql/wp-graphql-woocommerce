@@ -153,19 +153,6 @@ class Order extends Model {
 			'commentStatus',
 		];
 
-		if ( 'shop_order_refund' === $this->get_type() ) {
-			$allowed_restricted_fields = array_merge(
-				$allowed_restricted_fields,
-				[
-					'title',
-					'amount',
-					'reason',
-					'refunded_by_id',
-					'date',
-				]
-			);
-		}
-
 		$restricted_cap = $this->get_restricted_cap();
 
 		parent::__construct( $restricted_cap, $allowed_restricted_fields, 1 );

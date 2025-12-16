@@ -3,7 +3,7 @@
  * Plugin Name: WPGraphQL for WooCommerce (WooGraphQL)
  * Plugin URI: https://github.com/wp-graphql/wp-graphql-woocommerce
  * Description: Adds Woocommerce functionality to WPGraphQL schema.
- * Version: 0.21.2 ~ Beta
+ * Version: 0.21.2
  * Author: kidunot89
  * Author URI: https://axistaylor.com
  * Text Domain: wp-graphql-woocommerce
@@ -179,20 +179,6 @@ add_action(
 
 		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-		}
-	}
-);
-
-// Confirm WC Cart & Checkout Blocks compatibility.
-add_action(
-	'before_woocommerce_init',
-	static function () {
-		if ( get_plugin_directory() !== WP_PLUGIN_DIR . '/wp-graphql-woocommerce/' ) {
-			return;
-		}
-
-		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
 		}
 	}
 );

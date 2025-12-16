@@ -85,6 +85,10 @@ class Checkout {
 				'type'        => 'String',
 				'description' => __( 'Order customer note', 'wp-graphql-woocommerce' ),
 			],
+			'coupons'                => [
+				'type'        => [ 'list_of' => 'String' ],
+				'description' => __( 'Coupon codes to be applied to order', 'wp-graphql-woocommerce' ),
+			],
 		];
 	}
 

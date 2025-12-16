@@ -181,13 +181,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/loader/class-wc-cpt-loader.php';
 			require $include_directory_path . 'data/loader/class-wc-customer-loader.php';
 			require $include_directory_path . 'data/loader/class-wc-db-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-cart-item-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-downloadable-item-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-order-item-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-shipping-method-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-shipping-zone-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-tax-class-loader.php';
-			require $include_directory_path . 'data/loader/class-wc-tax-rate-loader.php';
 
 			// Include connection resolver trait/class files.
 			require $include_directory_path . 'data/connection/trait-wc-db-loader-common.php';
@@ -281,7 +274,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-meta-data-type.php';
 			require $include_directory_path . 'type/object/class-order-item-type.php';
 			require $include_directory_path . 'type/object/class-order-type.php';
-			require $include_directory_path . 'type/object/class-order-note-type.php';
 			require $include_directory_path . 'type/object/class-payment-gateway-type.php';
 			require $include_directory_path . 'type/object/class-product-attribute-types.php';
 			require $include_directory_path . 'type/object/class-product-category-type.php';
@@ -345,8 +337,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-order-create.php';
 			require $include_directory_path . 'mutation/class-order-delete-items.php';
 			require $include_directory_path . 'mutation/class-order-delete.php';
-			require $include_directory_path . 'mutation/class-order-note-create.php';
-			require $include_directory_path . 'mutation/class-order-note-delete.php';
 			require $include_directory_path . 'mutation/class-order-update.php';
 			require $include_directory_path . 'mutation/class-review-write.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';

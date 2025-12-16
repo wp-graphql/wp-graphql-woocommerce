@@ -25,7 +25,7 @@ class Downloadable_Product {
 			'DownloadableProduct',
 			[
 				'description' => __( 'A downloadable product.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => [ 'Node', 'Product' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
 			]

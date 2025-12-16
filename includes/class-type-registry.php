@@ -101,7 +101,6 @@ class Type_Registry {
 		Type\WPObject\Product_Attribute_Types::register();
 		Type\WPObject\Order_Item_Type::register();
 		Type\WPObject\Order_Type::register();
-		Type\WPObject\Order_Note_Type::register();
 		Type\WPObject\Refund_Type::register();
 		Type\WPObject\Product_Download_Type::register();
 		Type\WPObject\Customer_Type::register();
@@ -178,8 +177,6 @@ class Type_Registry {
 		Mutation\Order_Update::register_mutation();
 		Mutation\Order_Delete::register_mutation();
 		Mutation\Order_Delete_Items::register_mutation();
-		Mutation\Order_Note_Create::register_mutation();
-		Mutation\Order_Note_Delete::register_mutation();
 		Mutation\Checkout::register_mutation();
 		Mutation\Review_Write::register_mutation();
 		Mutation\Review_Update::register_mutation();

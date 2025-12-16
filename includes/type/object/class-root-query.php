@@ -43,6 +43,19 @@ class Root_Query {
 						if ( $token_invalid ) {
 							throw new UserError( $token_invalid );
 						}
+//This item has been added.						
+						// Reload session data to ensure we have the latest cart data from database
+						// This is especially important for guest users where session data might not be in memory
+						if ( function_exists( 'WC' ) && WC()->session && is_a( WC()->session, 'WPGraphQL\WooCommerce\Utils\QL_Session_Handler' ) && method_exists( WC()->session, 'reload_data' ) ) {
+							WC()->session->reload_data();
+						}
+
+											// Load cart from session after reloading session data
+						// Load cart from session after reloading session data
+						if ( function_exists( 'WC' ) && WC()->cart ) {
+							WC()->cart->get_cart_from_session();
+						}
+//This item has been added at the end.
 
 						$cart = Factory::resolve_cart();
 						if ( ! empty( $args['recalculateTotals'] ) ) {
@@ -413,10 +426,11 @@ class Root_Query {
 						],
 					],
 					'resolve'     => static function ( $source, array $args ) {
-						if ( ! \wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
-							throw new UserError( __( 'Sorry, you cannot view shipping methods.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
-						}
-
+						//This item has been added.
+// 						if ( ! \wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
+// 							throw new UserError( __( 'Sorry, you cannot view shipping methods.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+// 						}
+//This item has been added.
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
 

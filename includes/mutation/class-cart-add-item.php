@@ -89,7 +89,7 @@ class Cart_Add_Item {
 	 */
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
-			Cart_Mutation::check_session_token();
+ 			Cart_Mutation::check_session_token();
 
 			// Prepare args for "add_to_cart" from input data.
 			$cart_item_args = Cart_Mutation::prepare_cart_item( $input, $context, $info );

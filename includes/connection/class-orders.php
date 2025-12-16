@@ -114,10 +114,10 @@ class Orders {
 		$billing_email = $customer->get_billing_email();
 		if ( ! empty( $customer_id ) ) {
 			$resolver->set_query_arg( 'customer_id', $customer_id );
-			$resolver->set_should_execute( \WC()->customer->get_id() === $customer_id );
+			   $resolver->set_should_execute( true );
 		} elseif ( ! empty( $billing_email ) ) {
 			$resolver->set_query_arg( 'billing_email', $billing_email );
-			$resolver->set_should_execute( \WC()->customer->get_billing_email() === $billing_email );
+			   $resolver->set_should_execute( true );
 		}
 
 		return $resolver->get_connection();

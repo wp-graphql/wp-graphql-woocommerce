@@ -136,7 +136,7 @@ class Review_Delete_Restore {
 				throw new UserError( __( 'Invalid Product Review ID provided', 'wp-graphql-woocommerce' ) );
 			}
 
-			$rating = get_comment_meta( absint( $id ), 'rating', true );
+			$rating = get_comment_meta( absint( $id ), 'rating' );
 
 			// @codingStandardsIgnoreLine
 			switch ( $info->fieldName ) {

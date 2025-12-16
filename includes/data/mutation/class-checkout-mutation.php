@@ -492,7 +492,6 @@ class Checkout_Mutation {
 
 		if ( WC()->cart->needs_payment() ) {
 			$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-			\codecept_debug( $available_gateways );
 			if ( ! isset( $available_gateways[ $data['payment_method'] ] ) ) {
 				throw new UserError( __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
 			} else {
@@ -577,10 +576,155 @@ class Checkout_Mutation {
 		wc_maybe_define_constant( 'WOOCOMMERCE_CHECKOUT', true );
 		wc_set_time_limit( 0 );
 
+		// Ensure session is initialized and cart is loaded (for both logged in and guest users)
+		// This is especially important when switching from cookie to JWT authentication
+		if ( WC()->session ) {
+			// CRITICAL: Save current applied coupons and shipping method BEFORE reloading session
+			// This prevents losing them when session is reloaded for logged-in users
+			$saved_coupons = array();
+			$saved_shipping_methods = array();
+			if ( WC()->cart ) {
+				$saved_coupons = WC()->cart->get_applied_coupons();
+				// Also explicitly save coupons to session to ensure they persist
+				if ( ! empty( $saved_coupons ) ) {
+					WC()->session->set( 'applied_coupons', $saved_coupons );
+				}
+			}
+			// Save shipping methods from session
+			$saved_shipping_methods = WC()->session->get( 'chosen_shipping_methods', array() );
+			// Also get from input if provided (has priority)
+			if ( ! empty( $input['shippingMethod'] ) && is_array( $input['shippingMethod'] ) ) {
+				$saved_shipping_methods = $input['shippingMethod'];
+			}
+			
+			// Initialize session if it hasn't been initialized yet
+			if ( method_exists( WC()->session, 'has_session' ) && ! WC()->session->has_session() ) {
+				if ( method_exists( WC()->session, 'init' ) ) {
+					WC()->session->init();
+				}
+			}
+			
+			// For QL_Session_Handler, ensure customer_id is updated if user recently logged in
+			if ( is_a( WC()->session, 'WPGraphQL\WooCommerce\Utils\QL_Session_Handler' ) ) {
+				// Save session data including coupons before reloading
+				if ( method_exists( WC()->session, 'save_if_dirty' ) ) {
+					WC()->session->save_if_dirty();
+				}
+				
+				// Reload session data to ensure we have the latest cart (for JWT/cookie transition)
+				// This is critical when switching from cookie-based to JWT-based authentication
+				if ( method_exists( WC()->session, 'reload_data' ) ) {
+					WC()->session->reload_data();
+				}
+			} else {
+				// For other session handlers, just reload cart from session
+				if ( WC()->cart && method_exists( WC()->cart, 'get_cart_from_session' ) ) {
+					WC()->cart->get_cart_from_session();
+				}
+			}
+			
+			// After reloading cart from session, restore coupons if they were lost
+			// This is critical when user logs in and session is reloaded
+			// WooCommerce stores coupons in the cart object itself, not in a separate session key
+			// When get_cart_from_session() is called, it should restore coupons automatically
+			// But when switching sessions (guest to logged-in), coupons might be lost
+			if ( WC()->cart ) {
+				// Force cart to reload from session completely, including coupons
+				// This ensures all cart data including coupons is restored
+				WC()->cart->get_cart_from_session();
+				
+				// Get current applied coupons after reload
+				$current_coupons = WC()->cart->get_applied_coupons();
+				
+				// If we had coupons before but lost them after reload, restore them
+				if ( ! empty( $saved_coupons ) ) {
+					$coupons_to_restore = array_diff( $saved_coupons, $current_coupons );
+					if ( ! empty( $coupons_to_restore ) ) {
+						foreach ( $coupons_to_restore as $coupon_code ) {
+							if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+								// Validate and re-apply coupon
+								$coupon = new \WC_Coupon( $coupon_code );
+								// Set customer context for validation (important for logged-in users)
+								if ( is_user_logged_in() ) {
+									$coupon->set_email_restrictions( array() );
+								}
+								if ( $coupon->is_valid() ) {
+									WC()->cart->apply_coupon( $coupon_code );
+								}
+							}
+						}
+					}
+				}
+				
+				// Also try multiple ways to get coupons from session
+				if ( empty( WC()->cart->get_applied_coupons() ) && WC()->session ) {
+					// Method 1: Try session key 'applied_coupons'
+					$session_coupons = WC()->session->get( 'applied_coupons', array() );
+					
+					// Method 2: Try to get from cart session data
+					if ( empty( $session_coupons ) ) {
+						$cart_session = WC()->session->get( 'cart', array() );
+						// WooCommerce might store coupons in cart session data
+						if ( ! empty( $cart_session ) && is_array( $cart_session ) ) {
+							// Check if coupons are stored in cart session
+							foreach ( $cart_session as $cart_item_key => $cart_item ) {
+								if ( isset( $cart_item['applied_coupons'] ) ) {
+									$session_coupons = $cart_item['applied_coupons'];
+									break;
+								}
+							}
+						}
+					}
+					
+					// Method 3: Use saved coupons as last resort
+					if ( empty( $session_coupons ) && ! empty( $saved_coupons ) ) {
+						$session_coupons = $saved_coupons;
+					}
+					
+					// Apply coupons found in session
+					if ( ! empty( $session_coupons ) && is_array( $session_coupons ) ) {
+						foreach ( $session_coupons as $coupon_code ) {
+							if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+								$coupon = new \WC_Coupon( $coupon_code );
+								// Set customer context for validation
+								if ( is_user_logged_in() ) {
+									$coupon->set_email_restrictions( array() );
+								}
+								if ( $coupon->is_valid() ) {
+									WC()->cart->apply_coupon( $coupon_code );
+								}
+							}
+						}
+					}
+				}
+				
+				// Recalculate cart totals to ensure coupons are properly applied
+				WC()->cart->calculate_totals();
+				
+				// Final check: ensure coupons are still in session after recalculation
+				$final_coupons = WC()->cart->get_applied_coupons();
+				if ( ! empty( $final_coupons ) ) {
+					WC()->session->set( 'applied_coupons', $final_coupons );
+					// Also ensure cart session is saved with coupons
+					WC()->cart->set_session();
+				}
+			}
+			
+			// CRITICAL: Restore shipping methods after session reload
+			// Shipping methods can be lost when session is reloaded for logged-in users
+			if ( ! empty( $saved_shipping_methods ) && is_array( $saved_shipping_methods ) ) {
+				$current_shipping_methods = WC()->session->get( 'chosen_shipping_methods', array() );
+				// If shipping methods were lost or changed, restore them
+				if ( empty( $current_shipping_methods ) || $current_shipping_methods !== $saved_shipping_methods ) {
+					WC()->session->set( 'chosen_shipping_methods', $saved_shipping_methods );
+				}
+			}
+		}
+
 		do_action( 'woocommerce_before_checkout_process' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		if ( WC()->cart->is_empty() ) {
-			throw new UserError( __( 'Sorry, no session found.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Your cart is currently empty.', 'wp-graphql-woocommerce' ) );
 		}
 
 		do_action( 'woocommerce_checkout_process', $data, $context, $info ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -594,13 +738,82 @@ class Checkout_Mutation {
 			self::clear_customer_address( 'shipping' );
 		}
 
+		// CRITICAL: Ensure shipping method from input is set before update_session()
+		// This ensures the correct shipping method is used even if session was reset
+		if ( ! empty( $input['shippingMethod'] ) && is_array( $input['shippingMethod'] ) && WC()->session ) {
+			WC()->session->set( 'chosen_shipping_methods', $input['shippingMethod'] );
+		}
+		
 		// Update session for customer and totals.
 		self::update_session( $data );
+		
+		// CRITICAL: Ensure coupons are still in cart after update_session()
+		// update_session() calls calculate_totals() which might reset coupons
+		if ( WC()->cart && WC()->session ) {
+			$current_coupons = WC()->cart->get_applied_coupons();
+			$session_coupons = WC()->session->get( 'applied_coupons', array() );
+			
+			// If coupons are missing from cart but exist in session, restore them
+			if ( empty( $current_coupons ) && ! empty( $session_coupons ) && is_array( $session_coupons ) ) {
+				foreach ( $session_coupons as $coupon_code ) {
+					if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+						$coupon = new \WC_Coupon( $coupon_code );
+						if ( $coupon->is_valid() ) {
+							WC()->cart->apply_coupon( $coupon_code );
+						}
+					}
+				}
+				WC()->cart->calculate_totals();
+			}
+		}
+		
+		// CRITICAL: Ensure shipping method is still correct after update_session()
+		// update_session() might override shipping method, so restore from input if provided
+		if ( ! empty( $input['shippingMethod'] ) && is_array( $input['shippingMethod'] ) && WC()->session ) {
+			$current_shipping = WC()->session->get( 'chosen_shipping_methods', array() );
+			if ( $current_shipping !== $input['shippingMethod'] ) {
+				WC()->session->set( 'chosen_shipping_methods', $input['shippingMethod'] );
+			}
+		}
 
 		// Validate posted data and cart items before proceeding.
 		self::validate_checkout( $data );
 
 		self::process_customer( $data );
+		
+		// CRITICAL: Apply coupons from input if provided (for logged-in users who lost coupons)
+		// This ensures coupons are applied even if they were lost during session reload
+		if ( ! empty( $input['coupons'] ) && is_array( $input['coupons'] ) && WC()->cart ) {
+			foreach ( $input['coupons'] as $coupon_code ) {
+				if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+					$coupon = new \WC_Coupon( $coupon_code );
+					if ( $coupon->is_valid() ) {
+						WC()->cart->apply_coupon( $coupon_code );
+					}
+				}
+			}
+			WC()->cart->calculate_totals();
+		}
+		
+		// Final check before creating order: ensure coupons are still applied
+		if ( WC()->cart && WC()->session ) {
+			$final_coupons = WC()->cart->get_applied_coupons();
+			$session_coupons = WC()->session->get( 'applied_coupons', array() );
+			
+			// If coupons are missing, try to restore from session one more time
+			if ( empty( $final_coupons ) && ! empty( $session_coupons ) && is_array( $session_coupons ) ) {
+				foreach ( $session_coupons as $coupon_code ) {
+					if ( ! WC()->cart->has_discount( $coupon_code ) ) {
+						$coupon = new \WC_Coupon( $coupon_code );
+						if ( $coupon->is_valid() ) {
+							WC()->cart->apply_coupon( $coupon_code );
+						}
+					}
+				}
+				WC()->cart->calculate_totals();
+			}
+		}
+		
 		$order_id = WC()->checkout->create_order( $data );
 		$order    = wc_get_order( $order_id );
 

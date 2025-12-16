@@ -75,9 +75,13 @@ class Cart_Update_Shipping_Method {
 			// Set updated shipping methods in session.
 			\WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
 
+			
+			
 			// Recalculate totals.
 			\WC()->cart->calculate_totals();
 
+			
+			
 			do_action( 'woographql_update_session', true );
 
 			return [];

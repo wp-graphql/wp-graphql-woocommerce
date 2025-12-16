@@ -33,10 +33,12 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 * @return bool
 	 */
 	public function should_execute() {
-		if ( ! wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
-			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
-			return false;
-		}
+		//This item has been added.
+// 		if ( ! wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
+// 			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+// 			return false;
+// 		}
+// 		//This item has been added.
 		return true;
 	}
 

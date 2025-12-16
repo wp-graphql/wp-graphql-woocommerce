@@ -25,7 +25,7 @@ class Product_With_Pricing {
 			'ProductWithPricing',
 			[
 				'description' => __( 'Products with pricing.', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'Node' ],
+				'interfaces'  => [ 'Node', 'Product' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => [ Core::class, 'resolve_product_type' ],
 			]

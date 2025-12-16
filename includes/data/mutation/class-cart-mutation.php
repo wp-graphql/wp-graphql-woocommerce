@@ -313,12 +313,35 @@ class Cart_Mutation {
 	 *
 	 * @return void
 	 */
-	public static function check_session_token() {
+// 	public static function check_session_token() {
+// 		$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
+// 		if ( $token_invalid ) {
+// 			throw new UserError( $token_invalid );
+// 		}
+
+// 		\WC()->cart->get_cart_from_session();
+// 	}
+
+	
+		public static function check_session_token() {
+		// Removed token validation to allow guest users to add items to cart
+		// Token validation is now optional - if token is invalid, we'll just log it but continue
 		$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
 		if ( $token_invalid ) {
-			throw new UserError( $token_invalid );
+			// Log the error but don't throw - allow guest cart operations
+			graphql_debug( $token_invalid, [ 'type' => 'SESSION_TOKEN_WARNING' ] );
+			// Don't throw error - allow cart operations without valid token
+			// throw new UserError( $token_invalid );
 		}
-
+			
+//This item has been added.
+	// Reload session data to ensure we have the latest cart data from database
+		// This ensures all previously added items are loaded before adding new items
+		if ( function_exists( 'WC' ) && \WC()->session && is_a( \WC()->session, 'WPGraphQL\WooCommerce\Utils\QL_Session_Handler' ) && method_exists( \WC()->session, 'reload_data' ) ) {
+			\WC()->session->reload_data();
+		}
+			
+//This item has been added end
 		\WC()->cart->get_cart_from_session();
 	}
 }

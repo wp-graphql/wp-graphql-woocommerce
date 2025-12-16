@@ -96,20 +96,6 @@ class General extends Section {
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
-				'name'     => 'set_session_token_type',
-				'label'    => __( 'Session Token Type', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'Choose which session token type(s) to generate. "Legacy" uses GraphQL session tokens only. "Store API" uses WooCommerce Blocks Cart-Token only (requires WooCommerce 5.5.0+). "Both" generates both token types for maximum compatibility with headless implementations using WooCommerce Blocks.', 'wp-graphql-woocommerce' )
-					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
-				'type'     => 'select',
-				'options'  => [
-					'legacy'    => __( 'Legacy (GraphQL Session Token only)', 'wp-graphql-woocommerce' ),
-					'store-api' => __( 'Store API (Cart-Token only)', 'wp-graphql-woocommerce' ),
-					'both'      => __( 'Both (GraphQL + Store API)', 'wp-graphql-woocommerce' ),
-				],
-				'default'  => 'legacy',
-				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
-			],
-			[
 				'name'    => 'enable_unsupported_product_type',
 				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
 				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),
