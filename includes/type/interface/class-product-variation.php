@@ -12,7 +12,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Connection\Variation_Attribute_Connection_Resolver;
-use WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type;
 
 
 /**
@@ -78,11 +77,11 @@ class Product_Variation {
 	 */
 	public static function get_fields() {
 		return [
-			'shippingClass'     => [
+			'shippingClass' => [
 				'type'        => 'String',
 				'description' => __( 'Product variation shipping class', 'wp-graphql-woocommerce' ),
 			],
-			'hasAttributes'     => [
+			'hasAttributes' => [
 				'type'        => 'Boolean',
 				'description' => __( 'Does product variation have any visible attributes', 'wp-graphql-woocommerce' ),
 			],

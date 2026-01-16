@@ -226,8 +226,7 @@ class Customer_Type {
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
-							$tokens = array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
-							return $tokens;
+							return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
 						}
 
 						if ( get_current_user_id() === 0 ) {
@@ -301,7 +300,7 @@ class Customer_Type {
 					'resolve'     => static function ( $source ) {
 						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
 							return new Deferred(
-								function () {
+								static function () {
 									/**
 									 * Session handler.
 									 *
@@ -312,7 +311,6 @@ class Customer_Type {
 									return apply_filters( 'graphql_customer_session_token', $session->build_token() );
 								}
 							);
-							
 						}
 
 						return null;
@@ -332,7 +330,7 @@ class Customer_Type {
 					'resolve'     => static function ( $source ) {
 						if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							return new Deferred(
-								function () {
+								static function () {
 									/**
 									 * Session handler
 									 *
@@ -364,7 +362,7 @@ class Customer_Type {
 					'resolve'     => static function ( $source ) {
 						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
 							return new Deferred(
-								function () {
+								static function () {
 									/**
 									 * Session handler.
 									 *
@@ -375,7 +373,6 @@ class Customer_Type {
 									return apply_filters( 'graphql_cart_token', $session->build_cart_token() );
 								}
 							);
-							
 						}
 
 						return null;
@@ -395,7 +392,7 @@ class Customer_Type {
 					'resolve'     => static function ( $source ) {
 						if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							return new Deferred(
-								function () {
+								static function () {
 									/**
 									 * Session handler
 									 *

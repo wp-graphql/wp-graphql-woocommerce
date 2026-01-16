@@ -92,7 +92,7 @@ class Orders {
 				'shop_order_refund'
 			)
 		);
-	}	
+	}
 
 	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
@@ -136,7 +136,7 @@ class Orders {
 					 */
 					if ( $not_manager ) {
 						return 'shop_order_refund' === $post_object->name
-							? self::get_customer_refund_connection( $resolver, new Customer( 'session', ! is_user_logged_in()) )
+							? self::get_customer_refund_connection( $resolver, new Customer( 'session', ! is_user_logged_in() ) )
 							: self::get_customer_order_connection( $resolver, new Customer( 'session', ! is_user_logged_in() ) );
 					}
 
@@ -251,12 +251,12 @@ class Orders {
 			];
 		}
 
-		$target_customer_id   = absint( $customer->ID );
-		$current_customer_id  = absint( \WC()->customer->get_id() );
+		$target_customer_id  = absint( $customer->ID );
+		$current_customer_id = absint( \WC()->customer->get_id() );
 		if ( ! empty( $target_customer_id ) ) {
 			$resolver->set_query_arg( 'customer_id', $target_customer_id );
 			$resolver->set_should_execute( $current_customer_id === $target_customer_id );
-		} elseif ( ! empty( $billing_email ) ) {
+		} elseif ( ! empty( $customer->billing['email'] ) ) {
 			$resolver->set_query_arg( 'billing_email', $customer->billing['email'] );
 			$resolver->set_should_execute( \WC()->customer->get_billing_email() === $customer->billing['email'] );
 		}
