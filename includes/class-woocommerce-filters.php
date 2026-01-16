@@ -34,6 +34,9 @@ class WooCommerce_Filters {
 			add_filter( 'woocommerce_session_handler', [ self::class, 'woocommerce_session_handler' ] );
 			add_filter( 'graphql_response_headers_to_send', [ self::class, 'add_session_header_to_expose_headers' ] );
 			add_filter( 'graphql_access_control_allow_headers', [ self::class, 'add_session_header_to_allow_headers' ] );
+
+			// Initialize cart/session after JWT authentication has had a chance to run.
+			add_action( 'graphql_process_http_request', [ self::class, 'initialize_session_and_cart' ] );
 		}
 
 		// Add better support for Stripe payment gateway.
@@ -50,7 +53,27 @@ class WooCommerce_Filters {
 	 * @return boolean
 	 */
 	public static function is_session_handler_disabled() {
-		return defined( 'NO_QL_SESSION_HANDLER' ) || 'on' === woographql_setting( 'disable_ql_session_handler', 'off' );
+		return \defined( 'NO_QL_SESSION_HANDLER' ) || 'on' === woographql_setting( 'disable_ql_session_handler', 'off' );
+	}
+
+	/**
+	 * Initialize WooCommerce session and cart for GraphQL requests.
+	 *
+	 * This is hooked to 'graphql_before_execute' to ensure JWT authentication has
+	 * had a chance to set the current user before the session is initialized.
+	 * This fixes an issue where guest sessions weren't being updated when a user
+	 * provides both a Cart-Token (session) and Authorization (JWT) header.
+	 *
+	 * @return void
+	 */
+	public static function initialize_session_and_cart() {
+		// Clear any existing WooCommerce objects to ensure fresh initialization
+		// with the correct user context after JWT authentication.
+		\WC()->customer = null;
+		\WC()->cart     = null;
+		\WC()->session  = null;
+
+		wc_load_cart();
 	}
 
 	/**

@@ -1,9 +1,9 @@
----
+<!--
 title: "Testing (Quick-Start Guide)"
 author: "Geoff Taylor"
 description: "A simple guide to get started testing with WooGraphQL."
 keywords: ""
----
+-->
 
 # Testing (Quick-Start Guide)
 

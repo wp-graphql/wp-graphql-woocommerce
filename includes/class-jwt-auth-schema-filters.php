@@ -188,24 +188,47 @@ class JWT_Auth_Schema_Filters {
 		);
 
 		if ( ! WooCommerce_Filters::is_session_handler_disabled() ) {
-			register_graphql_field(
-				'LoginPayload',
-				'sessionToken',
-				[
-					'type'        => 'String',
-					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function () {
-						/**
-						 * Session Handler.
-						 *
-						 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
-						 */
-						$session = \WC()->session;
+			$token_type = woographql_setting( 'set_session_token_type', 'legacy' );
+			if ( in_array( $token_type, [ 'legacy', 'both' ], true ) ) {
+				register_graphql_field(
+					'LoginPayload',
+					'sessionToken',
+					[
+						'type'        => 'String',
+						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function () {
+							/**
+							 * Session Handler.
+							 *
+							 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
+							 */
+							$session = \WC()->session;
 
-						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
-					},
-				]
-			);
+							return apply_filters( 'graphql_customer_session_token', $session->build_token() );
+						},
+					]
+				);
+			}
+			if ( in_array( $token_type, [ 'store-api', 'both' ], true ) ) {
+				register_graphql_field(
+					'LoginPayload',
+					'cartToken',
+					[
+						'type'        => 'String',
+						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function () {
+							/**
+							 * Session Handler.
+							 *
+							 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
+							 */
+							$session = \WC()->session;
+
+							return apply_filters( 'graphql_customer_session_token', $session->build_cart_token() );
+						},
+					]
+				);
+			}
 		}
 	}
 }

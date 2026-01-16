@@ -1,9 +1,9 @@
----
+<!--
 title: "Using Subscription Data + Mutations with WooGraphQL"
 description: "Learn how to use the Subscription functionality provided by WooGraphQL Pro and build upon the code written in `Using Product Data` and `Routing by URI` by rewriting the `ProductListing` and `SingleProduct` components to support `SubscriptionProduct` types."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, Subscription functionality, ProductListing, SingleProduct, SubscriptionProduct types"
 author: "Geoff Taylor"
----
+-->
 
 # Using Subscription Data + Mutations
 

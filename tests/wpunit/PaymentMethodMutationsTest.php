@@ -33,8 +33,14 @@ class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 				setDefaultPaymentMethod(input: { tokenId: $tokenId }) {
 					status
                     token {
-                        id
+						type
                         isDefault
+						... on PaymentTokenCC {
+							last4
+						}
+						... on PaymentTokenECheck {
+							last4
+						}
                     }
 				}
 			}
@@ -67,7 +73,7 @@ class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 			$this->expectedObject(
 				'setDefaultPaymentMethod.token',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
+					$this->expectedField( 'type', 'eCheck' ),
 					$this->expectedField( 'isDefault', true ),
 				]
 			),
@@ -83,7 +89,7 @@ class PaymentMethodMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 			$this->expectedObject(
 				'setDefaultPaymentMethod.token',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
+					$this->expectedField( 'type', 'CC' ),
 					$this->expectedField( 'isDefault', true ),
 				]
 			),

@@ -496,8 +496,6 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				customer(id: $id) {
 					id
 					availablePaymentMethods {
-						id
-						tokenId
 						... on PaymentTokenCC {
 							last4
 							expiryMonth
@@ -509,16 +507,12 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 						}
 					}
 					availablePaymentMethodsCC {
-						id
-						tokenId
 						last4
 						expiryMonth
 						expiryYear
 						cardType
 					}
 					availablePaymentMethodsEC {
-						id
-						tokenId
 						last4
 					}
 				}
@@ -554,8 +548,6 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedNode(
 				'customer.availablePaymentMethods',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
-					$this->expectedField( 'tokenId', $token_cc->get_id() ),
 					$this->expectedField( 'last4', 1234 ),
 					$this->expectedField( 'expiryMonth', $expiry_month ),
 					$this->expectedField( 'expiryYear', $expiry_year ),
@@ -565,8 +557,6 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedNode(
 				'customer.availablePaymentMethodsCC',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
-					$this->expectedField( 'tokenId', $token_cc->get_id() ),
 					$this->expectedField( 'last4', 1234 ),
 					$this->expectedField( 'expiryMonth', $expiry_month ),
 					$this->expectedField( 'expiryYear', $expiry_year ),
@@ -576,8 +566,6 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedNode(
 				'customer.availablePaymentMethodsEC',
 				[
-					$this->not()->expectedField( 'id', $this->toRelayId( 'token', $token_cc->get_id() ) ),
-					$this->not()->expectedField( 'tokenId', $token_cc->get_id() ),
 					$this->not()->expectedField( 'last4', 1234 ),
 					$this->not()->expectedField( 'expiryMonth', $expiry_month ),
 					$this->not()->expectedField( 'expiryYear', $expiry_year ),
@@ -587,24 +575,18 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedNode(
 				'customer.availablePaymentMethods',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
-					$this->expectedField( 'tokenId', $token_ec->get_id() ),
 					$this->expectedField( 'last4', 4567 ),
 				]
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethodsCC',
 				[
-					$this->not()->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
-					$this->not()->expectedField( 'tokenId', $token_ec->get_id() ),
 					$this->not()->expectedField( 'last4', 4567 ),
 				]
 			),
 			$this->expectedNode(
 				'customer.availablePaymentMethodsEC',
 				[
-					$this->expectedField( 'id', $this->toRelayId( 'token', $token_ec->get_id() ) ),
-					$this->expectedField( 'tokenId', $token_ec->get_id() ),
 					$this->expectedField( 'last4', 4567 ),
 				]
 			),

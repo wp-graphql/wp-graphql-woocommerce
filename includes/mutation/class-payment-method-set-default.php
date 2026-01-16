@@ -62,7 +62,7 @@ class Payment_Method_Set_Default {
 				},
 			],
 			'token'  => [
-				'type'        => 'PaymentToken',
+				'type'        => 'PaymentTokenInterface',
 				'description' => __( 'Preferred payment method token', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['token'] ) ? $payload['token'] : null;

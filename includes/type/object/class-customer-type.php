@@ -10,6 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
+use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
@@ -221,11 +222,12 @@ class Customer_Type {
 			'Customer',
 			[
 				'availablePaymentMethods'   => [
-					'type'        => [ 'list_of' => 'PaymentToken' ],
+					'type'        => [ 'list_of' => 'PaymentTokenInterface' ],
 					'description' => __( 'Customer\'s stored payment tokens.', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
 						if ( get_current_user_id() === $source->ID ) {
-							return array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
+							$tokens = array_values( \WC_Payment_Tokens::get_customer_tokens( $source->ID ) );
+							return $tokens;
 						}
 
 						if ( get_current_user_id() === 0 ) {
@@ -285,56 +287,132 @@ class Customer_Type {
 	 * @return void
 	 */
 	public static function register_session_handler_fields() {
-		/**
-		 * Register the "sessionToken" field to the "Customer" type.
-		 */
-		register_graphql_field(
-			'Customer',
-			'sessionToken',
-			[
-				'type'        => 'String',
-				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function ( $source ) {
-					if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
-						/**
-						 * Session handler.
-						 *
-						 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
-						 */
-						$session = \WC()->session;
+		$token_type = woographql_setting( 'set_session_token_type', 'legacy' );
+		if ( in_array( $token_type, [ 'legacy', 'both' ], true ) ) {
+			/**
+			 * Register the "sessionToken" field to the "Customer" type.
+			 */
+			register_graphql_field(
+				'Customer',
+				'sessionToken',
+				[
+					'type'        => 'String',
+					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $source ) {
+						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
+							return new Deferred(
+								function () {
+									/**
+									 * Session handler.
+									 *
+									 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
+									 */
+									$session = \WC()->session;
 
-						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
-					}
+									return apply_filters( 'graphql_customer_session_token', $session->build_token() );
+								}
+							);
+							
+						}
 
-					return null;
-				},
-			]
-		);
-		/**
-		 * Register the "wooSessionToken" field to the "User" type.
-		 */
-		register_graphql_field(
-			'User',
-			'wooSessionToken',
-			[
-				'type'        => 'String',
-				'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
-				'resolve'     => static function ( $source ) {
-					if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						/**
-						 * Session handler
-						 *
-						 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
-						 */
-						$session = \WC()->session;
+						return null;
+					},
+				]
+			);
 
-						return apply_filters( 'graphql_customer_session_token', $session->build_token() );
-					}
+			/**
+			 * Register the "wooSessionToken" field to the "User" type.
+			 */
+			register_graphql_field(
+				'User',
+				'wooSessionToken',
+				[
+					'type'        => 'String',
+					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $source ) {
+						if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							return new Deferred(
+								function () {
+									/**
+									 * Session handler
+									 *
+									 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
+									 */
+									$session = \WC()->session;
 
-					return null;
-				},
-			]
-		);
+									return apply_filters( 'graphql_customer_session_token', $session->build_token() );
+								}
+							);
+						}
+
+						return null;
+					},
+				]
+			);
+		}
+
+		if ( in_array( $token_type, [ 'store-api', 'both' ], true ) ) {
+			/**
+			 * Register the "cartToken" field to the "Customer" type.
+			 */
+			register_graphql_field(
+				'Customer',
+				'cartToken',
+				[
+					'type'        => 'String',
+					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $source ) {
+						if ( \get_current_user_id() === $source->ID || 'guest' === $source->id ) {
+							return new Deferred(
+								function () {
+									/**
+									 * Session handler.
+									 *
+									 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
+									 */
+									$session = \WC()->session;
+
+									return apply_filters( 'graphql_cart_token', $session->build_cart_token() );
+								}
+							);
+							
+						}
+
+						return null;
+					},
+				]
+			);
+
+			/**
+			 * Register the "cartToken" field to the "User" type.
+			 */
+			register_graphql_field(
+				'User',
+				'cartToken',
+				[
+					'type'        => 'String',
+					'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $source ) {
+						if ( \get_current_user_id() === $source->userId ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							return new Deferred(
+								function () {
+									/**
+									 * Session handler
+									 *
+									 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
+									 */
+									$session = \WC()->session;
+
+									return apply_filters( 'graphql_cart_token', $session->build_cart_token() );
+								}
+							);
+						}
+
+						return null;
+					},
+				]
+			);
+		}
 	}
 
 	/**

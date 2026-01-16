@@ -17,8 +17,6 @@ use WPGraphQL\Model\Model;
 /**
  * Class Customer
  *
- * @property \WC_Customer $wc_data
- *
  * @property int $ID
  * @property string $id
  * @property int $databaseId
@@ -86,7 +84,7 @@ class Customer extends Model {
 					return ( ! empty( $this->data->get_id() ) ) ? $this->data->get_id() : \WC()->session->get_customer_id();
 				},
 				'id'                    => function () {
-					return ( ! empty( $this->data->get_id() ) )
+					return ! empty( $this->data->get_id() )
 						? Relay::toGlobalId( 'user', $this->data->get_id() )
 						: 'guest';
 				},
