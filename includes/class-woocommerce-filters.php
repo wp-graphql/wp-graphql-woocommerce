@@ -69,12 +69,13 @@ class WooCommerce_Filters {
 	public static function initialize_session_and_cart() {
 		// Clear any existing WooCommerce objects to ensure fresh initialization
 		// with the correct user context after JWT authentication.
+		
 		// @phpstan-ignore-next-line
 		\WC()->customer = null;
 		// @phpstan-ignore-next-line
-		\WC()->cart     = null;
+		\WC()->cart = null;
 		// @phpstan-ignore-next-line
-		\WC()->session  = null;
+		\WC()->session = null;
 
 		wc_load_cart();
 	}

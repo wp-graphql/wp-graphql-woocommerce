@@ -40,6 +40,15 @@ if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
 	rm -f "${WP_ROOT_FOLDER}/wp-config.php"
 fi
 
+echo "Using alternative database export method for WordPress 6.8+"
+# Create a basic MySQL client config that forces no SSL
+echo "[client]
+ssl=false
+[mysql]
+ssl=false
+[mysqldump]
+ssl=false" > /tmp/.my.cnf
+
 echo "Creating wp-config.php..."
 wp config create \
 	--path="${WP_ROOT_FOLDER}" \
@@ -52,16 +61,7 @@ wp config create \
 	--quiet \
 	--allow-root
 
-# Use alternative database export for WordPress 6.8+ to avoid MariaDB SSL issues
-if [[ "${WP_VERSION}" == "6.8"* ]]; then
-    echo "Using alternative database export method for WordPress 6.8+"
-    # Create a basic MySQL client config that forces no SSL
-    echo "[client]
-ssl=false
-[mysql]
-ssl=false
-[mysqldump]
-ssl=false" > /tmp/.my.cnf
+
 
     # Export using mysqldump directly with SSL disabled
     MYSQL_PWD=${WORDPRESS_DB_PASSWORD} mysqldump \
