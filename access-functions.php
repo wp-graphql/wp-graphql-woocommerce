@@ -42,54 +42,6 @@ if ( ! function_exists( 'str_ends_with' ) ) {
 	}
 }//end if
 
-if ( ! function_exists( 'woographql_is_graphql_http_request_early' ) ) {
-	/**
-	 * Check if the current request is a GraphQL HTTP request.
-	 *
-	 * This is a simplified check that doesn't depend on WPGraphQL being fully loaded.
-	 * It checks if the request URI matches the GraphQL endpoint.
-	 * Use this for early checks during plugins_loaded before WPGraphQL is available.
-	 *
-	 * @return bool
-	 */
-	function woographql_is_graphql_http_request_early() {
-		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
-			return false;
-		}
-
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
-
-		// Check for ?graphql query parameter (used by wp-graphiql).
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( isset( $_GET['graphql'] ) ) {
-			return true;
-		}
-
-		$graphql_endpoint = 'graphql';
-		if ( \defined( 'GRAPHQL_ENDPOINT' ) ) {
-			$graphql_endpoint = GRAPHQL_ENDPOINT;
-		} else {
-			$wpgraphql_settings = get_option( 'graphql_general_settings', [] );
-			if ( ! empty( $wpgraphql_settings['graphql_endpoint'] ) ) {
-				$graphql_endpoint = $wpgraphql_settings['graphql_endpoint'];
-			}
-		}
-
-		$request_path = wp_parse_url( $request_uri, PHP_URL_PATH );
-		if ( empty( $request_path ) ) {
-			return false;
-		}
-
-		$request_path     = trim( $request_path, '/' );
-		$graphql_endpoint = trim( $graphql_endpoint, '/' );
-
-		// This handles both /graphql and /subdir/graphql cases for unique installation like Bedrock WP.
-		return $request_path === $graphql_endpoint
-			|| str_ends_with( $request_path, '/' . $graphql_endpoint );
-	}
-}//end if
-
 if ( ! function_exists( 'wc_graphql_map_tax_statements' ) ) {
 	/**
 	 * Returns formatted array of tax statement objects.
