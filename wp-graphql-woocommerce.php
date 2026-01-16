@@ -181,7 +181,7 @@ function prevent_early_wc_cart_loading() {
 		return;
 	}
 
-	//add_filter( 'woocommerce_is_rest_api_request', '__return_true' );
+	add_filter( 'woocommerce_is_rest_api_request', '__return_true' );
 }
 add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\prevent_early_wc_cart_loading', 0 );
 
