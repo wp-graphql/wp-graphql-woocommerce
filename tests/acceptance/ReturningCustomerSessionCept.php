@@ -319,7 +319,7 @@ $authToken = $success['data']['login']['authToken'];
 // any existing sessions.
 $new_session_token = $success['data']['login']['sessionToken'];
 
-$I->wantTo( 'Check the cart and should be empty' );
+$I->wantTo( 'Check the cart and should contain the contents from our guest session' );
 
 $cart_query = '
 	query {
@@ -346,14 +346,5 @@ $response         = $I->sendGraphQLRequest(
 		'woocommerce-session' => "Session {$new_session_token}",
 	]
 );
-$expected_results = [
-	'data' => [
-		'cart' => [
-			'contents' => [
-				'nodes' => [],
-			],
-		],
-	],
-];
 
 $I->assertEquals( $expected_results, $response );

@@ -939,6 +939,14 @@ class GraphQLE2E extends \Codeception\Module {
 		$zone->add_shipping_method( 'flat_rate' );
 		$zone->add_shipping_method( 'free_shipping' );
 
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'US' );
+		$zone->set_zone_order( 5 );
+		$zone->add_location( 'US:NY', 'state' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+		$zone->add_shipping_method( 'free_shipping' );
+
 		global $wp_rewrite; 
 
 		//Write the rule
