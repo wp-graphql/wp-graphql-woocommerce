@@ -508,7 +508,6 @@ class QLSessionHandlerCest {
 							]
 						),
 					],
-					0
 				),
 			]
 		);
