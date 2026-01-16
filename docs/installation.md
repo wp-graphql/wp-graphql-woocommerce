@@ -1,9 +1,9 @@
----
+<!--
 title: "WPGraphQL for WooCommerce Installation Guide"
 author: "Geoff Taylor"
 description: "Step-by-step instructions to install and set up WooGraphQL, the WPGraphQL extension that integrates WooCommerce with GraphQL for headless e-commerce solutions."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, installation, setup, headless e-commerce"
----
+-->
 
 # Installation
 

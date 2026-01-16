@@ -1,9 +1,9 @@
----
+<!--
 title: "Using Order Data with WooGraphQL"
 description: "Learn how to utilize the Order queries and type by building a basic order status page in React.js that works by taking an `email` and returning a list of all the orders connected to that `email`."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, Order queries, React.js, order status page"
 author: "Geoff Taylor"
----
+-->
 
 # Using Order Data
 

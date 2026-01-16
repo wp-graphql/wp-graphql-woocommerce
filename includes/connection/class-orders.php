@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Connection;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver;
+use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
  * Class - Orders
@@ -94,104 +95,6 @@ class Orders {
 	}
 
 	/**
-	 * Returns order connection filter by customer.
-	 *
-	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
-	 * @param \WC_Customer                                                     $customer  Customer object of querying user.
-	 *
-	 * @return array|\GraphQL\Deferred
-	 */
-	private static function get_customer_order_connection( $resolver, $customer ) {
-		// If not "billing email" or "ID" set bail early by returning an empty connection.
-		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return [
-				'nodes' => [],
-				'edges' => [],
-			];
-		}
-
-		$customer_id   = $customer->get_id();
-		$billing_email = $customer->get_billing_email();
-		if ( ! empty( $customer_id ) ) {
-			$resolver->set_query_arg( 'customer_id', $customer_id );
-			$resolver->set_should_execute( \WC()->customer->get_id() === $customer_id );
-		} elseif ( ! empty( $billing_email ) ) {
-			$resolver->set_query_arg( 'billing_email', $billing_email );
-			$resolver->set_should_execute( \WC()->customer->get_billing_email() === $billing_email );
-		}
-
-		return $resolver->get_connection();
-	}
-
-	/**
-	 * Returns refund connection filter by customer.
-	 *
-	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
-	 * @param \WC_Customer                                                     $customer  Customer object of querying user.
-	 *
-	 * @return array|\GraphQL\Deferred
-	 */
-	private static function get_customer_refund_connection( $resolver, $customer ) {
-		$empty_results = [
-			'pageInfo' => null,
-			'nodes'    => [],
-			'edges'    => [],
-		];
-		// If not "billing email" or "ID" set bail early by returning an empty connection.
-		if ( empty( $customer->get_billing_email() ) && empty( $customer->get_id() ) ) {
-			return $empty_results;
-		}
-
-		$order_ids     = [];
-		$customer_id   = $customer->get_id();
-		$billing_email = $customer->get_billing_email();
-		if ( ! empty( $customer_id ) ) {
-			$args = [
-				'customer_id' => $customer_id,
-				'return'      => 'ids',
-			];
-			/** @var array<int> $order_ids_by_customer_id */
-			$order_ids_by_customer_id = wc_get_orders( $args );
-
-			if ( is_array( $order_ids_by_customer_id ) ) {
-				$order_ids = $order_ids_by_customer_id;
-			}
-		}
-
-		if ( ! empty( $billing_email ) ) {
-			$args = [
-				'billing_email' => $billing_email,
-				'return'        => 'ids',
-			];
-			/** @var array<int> $order_ids_by_email */
-			$order_ids_by_email = wc_get_orders( $args );
-			// Merge the arrays of order IDs.
-			if ( is_array( $order_ids_by_email ) ) {
-				$order_ids = array_merge( $order_ids, $order_ids_by_email );
-			}
-		}
-
-		// If no orders found, return empty connection.
-		if ( empty( $order_ids ) ) {
-			return $empty_results;
-		}
-
-		// Remove duplicates.
-		$order_ids = array_unique( $order_ids );
-
-		// Set connection args.
-		$resolver->set_should_execute(
-			( 0 !== $customer_id && \WC()->customer->get_id() === $customer_id )
-				|| \WC()->customer->get_billing_email() === $billing_email
-		);
-
-		$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $order_ids ) );
-
-		// Execute and return connection.
-		return $resolver->get_connection();
-	}
-
-	/**
 	 * Given an array of $args, this returns the connection config, merging the provided args
 	 * with the defaults.
 	 *
@@ -233,8 +136,8 @@ class Orders {
 					 */
 					if ( $not_manager ) {
 						return 'shop_order_refund' === $post_object->name
-							? self::get_customer_refund_connection( $resolver, \WC()->customer )
-							: self::get_customer_order_connection( $resolver, \WC()->customer );
+							? self::get_customer_refund_connection( $resolver, new Customer( 'session', ! is_user_logged_in() ) )
+							: self::get_customer_order_connection( $resolver, new Customer( 'session', ! is_user_logged_in() ) );
 					}
 
 					return $resolver->get_connection();
@@ -329,5 +232,103 @@ class Orders {
 				],
 			]
 		);
+	}
+
+	/**
+	 * Returns order connection filter by customer.
+	 *
+	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
+	 * @param \WPGraphQL\WooCommerce\Model\Customer                            $customer  Customer object of querying user.
+	 *
+	 * @return array|\GraphQL\Deferred
+	 */
+	private static function get_customer_order_connection( $resolver, Customer $customer ) {
+		// If not "billing email" or "ID" set bail early by returning an empty connection.
+		if ( empty( $customer->billing['email'] ) && ( empty( absint( $customer->ID ) ) ) ) {
+			return [
+				'nodes' => [],
+				'edges' => [],
+			];
+		}
+
+		$target_customer_id  = absint( $customer->ID );
+		$current_customer_id = absint( \WC()->customer->get_id() );
+		if ( ! empty( $target_customer_id ) ) {
+			$resolver->set_query_arg( 'customer_id', $target_customer_id );
+			$resolver->set_should_execute( $current_customer_id === $target_customer_id );
+		} elseif ( ! empty( $customer->billing['email'] ) ) {
+			$resolver->set_query_arg( 'billing_email', $customer->billing['email'] );
+			$resolver->set_should_execute( \WC()->customer->get_billing_email() === $customer->billing['email'] );
+		}
+
+		return $resolver->get_connection();
+	}
+
+	/**
+	 * Returns refund connection filter by customer.
+	 *
+	 * @param \WPGraphQL\WooCommerce\Data\Connection\Order_Connection_Resolver $resolver  Connection resolver.
+	 * @param \WPGraphQL\WooCommerce\Model\Customer                            $customer  Customer object of querying user.
+	 *
+	 * @return array|\GraphQL\Deferred
+	 */
+	private static function get_customer_refund_connection( Order_Connection_Resolver $resolver, Customer $customer ) {
+		$empty_results = [
+			'pageInfo' => null,
+			'nodes'    => [],
+			'edges'    => [],
+		];
+		// If not "billing email" or "ID" set bail early by returning an empty connection.
+		if ( empty( $customer->billing['email'] ) && empty( $customer->ID ) ) {
+			return $empty_results;
+		}
+
+		$order_ids     = [];
+		$customer_id   = $customer->ID;
+		$billing_email = $customer->billing['email'];
+		if ( ! empty( $customer_id ) ) {
+			$args = [
+				'customer_id' => $customer_id,
+				'return'      => 'ids',
+			];
+			/** @var array<int> $order_ids_by_customer_id */
+			$order_ids_by_customer_id = wc_get_orders( $args );
+
+			if ( is_array( $order_ids_by_customer_id ) ) {
+				$order_ids = $order_ids_by_customer_id;
+			}
+		}
+
+		if ( ! empty( $billing_email ) ) {
+			$args = [
+				'billing_email' => $billing_email,
+				'return'        => 'ids',
+			];
+			/** @var array<int> $order_ids_by_email */
+			$order_ids_by_email = wc_get_orders( $args );
+			// Merge the arrays of order IDs.
+			if ( is_array( $order_ids_by_email ) ) {
+				$order_ids = array_merge( $order_ids, $order_ids_by_email );
+			}
+		}
+
+		// If no orders found, return empty connection.
+		if ( empty( $order_ids ) ) {
+			return $empty_results;
+		}
+
+		// Remove duplicates.
+		$order_ids = array_unique( $order_ids );
+
+		// Set connection args.
+		$resolver->set_should_execute(
+			( 0 !== $customer_id && \WC()->customer->get_id() === $customer_id )
+				|| \WC()->customer->get_billing_email() === $billing_email
+		);
+
+		$resolver->set_query_arg( 'post_parent__in', array_map( 'absint', $order_ids ) );
+
+		// Execute and return connection.
+		return $resolver->get_connection();
 	}
 }

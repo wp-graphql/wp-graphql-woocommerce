@@ -54,10 +54,10 @@ class Shipping_Rate_Type {
 						},
 					],
 					'cost'       => [
-						'type'        => 'String',
+						'type'        => 'Float',
 						'description' => __( 'Shipping rate cost', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
-							return ! empty( $source->get_cost() ) ? $source->get_cost() : null;
+							return ! is_null( $source->get_cost() ) ? $source->get_cost() : null;
 						},
 					],
 				],

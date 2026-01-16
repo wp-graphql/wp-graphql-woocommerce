@@ -1,9 +1,9 @@
----
+<!--
 title: "Configuring GraphQL Client for User Session"
 description: "A step-by-step guide on how to configure your GraphQL client to handle user sessions, authentication, and more when working with WPGraphQL for WooCommerce and WPGraphQL."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, user session, authentication, configuration, client"
 author: "Geoff Taylor"
----
+-->
 
 # Configuring a GraphQL Client for WooCommerce User Session Management
 

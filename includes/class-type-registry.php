@@ -81,7 +81,7 @@ class Type_Registry {
 		Type\WPInterface\Attribute::register_interface();
 		Type\WPInterface\Product_Attribute::register_interface();
 		Type\WPInterface\Cart_Error::register_interface();
-		Type\WPInterface\Payment_Token::register_interface();
+		Type\WPInterface\Payment_Token_Interface::register_interface();
 		Type\WPInterface\Product_Union::register_interface();
 		Type\WPInterface\Cart_Item::register_interface();
 		Type\WPInterface\Downloadable_Product::register_interface();

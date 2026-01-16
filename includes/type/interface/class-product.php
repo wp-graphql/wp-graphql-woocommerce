@@ -25,11 +25,8 @@ class Product {
 	 * @return void
 	 */
 	public static function register_interface() {
-
 		// Register the fields to the Product Interface
 		// the product interface is defined by the post_type registration.
-		register_graphql_fields( 'Product', self::get_fields() );
-
 		register_graphql_field(
 			'RootQuery',
 			'product',

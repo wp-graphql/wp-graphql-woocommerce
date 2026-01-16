@@ -163,6 +163,28 @@ function init_auth_router() {
 }
 add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\init_auth_router' );
 
+/**
+ * Prevent WooCommerce from loading cart during 'init' for GraphQL requests.
+ *
+ * WooCommerce calls wc_load_cart() during the 'init' action for frontend requests.
+ * This happens before JWT authentication can set the current user, causing the
+ * session to be initialized with the wrong user context.
+ *
+ * By making WooCommerce think GraphQL requests are REST API requests, we prevent
+ * the early cart loading. The cart is then loaded later during 'graphql_before_execute'
+ * after JWT authentication has had a chance to run.
+ *
+ * @return void
+ */
+function prevent_early_wc_cart_loading() {
+	if ( ! is_graphql_http_request() ) {
+		return;
+	}
+
+	add_filter( 'woocommerce_is_rest_api_request', '__return_true' );
+}
+add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\prevent_early_wc_cart_loading', 0 );
+
 // Load constants.
 constants();
 

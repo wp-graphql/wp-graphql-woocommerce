@@ -52,6 +52,19 @@ wp config create \
 	--quiet \
 	--allow-root
 
+# Install WP if not yet installed
+if ! $( wp core is-installed --allow-root ); then
+	echo "Installing WordPress..."
+	wp core install \
+		--path="${WP_ROOT_FOLDER}" \
+		--url="${WORDPRESS_URL}" \
+		--title='Test' \
+		--admin_user="${ADMIN_USERNAME}" \
+		--admin_password="${ADMIN_PASSWORD}" \
+		--admin_email="${ADMIN_EMAIL}" \
+		--allow-root
+fi
+
 # Use alternative database export for WordPress 6.8+ to avoid MariaDB SSL issues
 if [[ "${WP_VERSION}" == "6.8"* ]]; then
     echo "Using alternative database export method for WordPress 6.8+"

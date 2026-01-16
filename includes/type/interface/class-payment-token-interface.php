@@ -1,6 +1,6 @@
 <?php
 /**
- * WPInterface Type - Payment_Token
+ * WPInterface Type - Payment_Token_Interface
  *
  * @package WPGraphQL\WooCommerce\Type\WPInterface
  * @since   0.10.1
@@ -8,13 +8,10 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
-use GraphQL\Error\UserError;
-use GraphQLRelay\Relay;
-
 /**
- * Class Payment_Token
+ * Class Payment_Token_Interface
  */
-class Payment_Token {
+class Payment_Token_Interface {
 	/**
 	 * Registers the "PaymentToken" interface.
 	 *
@@ -22,7 +19,7 @@ class Payment_Token {
 	 */
 	public static function register_interface() {
 		register_graphql_interface_type(
-			'PaymentToken',
+			'PaymentTokenInterface',
 			[
 				'description' => __( 'Payment token object', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
@@ -36,13 +33,7 @@ class Payment_Token {
 						case 'eCheck':
 							return $type_registry->get_type( 'PaymentTokenECheck' );
 						default:
-							throw new UserError(
-								sprintf(
-									/* translators: %s: Payment token type */
-									__( 'The "%s" token type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-									$type
-								)
-							);
+							return $type_registry->get_type( 'PaymentToken' );
 					}
 				},
 			]
@@ -58,20 +49,6 @@ class Payment_Token {
 	public static function get_fields( $other_fields = [] ) {
 		return array_merge(
 			[
-				'id'        => [
-					'type'        => [ 'non_null' => 'ID' ],
-					'description' => __( 'Token ID unique identifier', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function ( $source ) {
-						return ! empty( $source->get_id() ) ? Relay::toGlobalId( 'token', $source->get_id() ) : null;
-					},
-				],
-				'tokenId'   => [
-					'type'        => [ 'non_null' => 'Integer' ],
-					'description' => __( 'Token database ID.', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function ( $source ) {
-						return ! empty( $source->get_id() ) ? $source->get_id() : null;
-					},
-				],
 				'type'      => [
 					'type'        => [ 'non_null' => 'String' ],
 					'description' => __( 'Token type', 'wp-graphql-woocommerce' ),

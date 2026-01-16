@@ -12,6 +12,7 @@ namespace WPGraphQL\WooCommerce\Type\WPObject;
 
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
+use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 use WPGraphQL\WooCommerce\Data\Factory;
 
 /**
@@ -211,7 +212,7 @@ class Order_Item_Type {
 						'oneToOne' => true,
 						'resolve'  => static function ( $source, array $args, AppContext $context, $info ) {
 							$id       = $source->productId; // @phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-							$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'product' );
+							$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
 
 							return $resolver
 								->one_to_one()

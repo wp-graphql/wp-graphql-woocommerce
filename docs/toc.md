@@ -20,10 +20,7 @@
 
 ## WooGraphQL Pro
 
-- [Using Subscription Data + Mutations](using-subscription-data-and-mutations.md)
-- [Using Composite Product Data + Mutations](using-composite-product-data-and-mutations.md)
-- [Using Product Bundle Data + Mutations](using-product-bundle-data-and-mutations.md)
-- [Using Product Add-ons Data + Mutations](using-product-addons-data-and-mutations.md)
+For documentation on using premium WooCommerce extensions with WooGraphQL, see the [WooGraphQL Pro Documentation](https://woographql.com/docs/woographql-pro).
 
 ## Extending WooGraphQL
 

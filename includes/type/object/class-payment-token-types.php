@@ -10,7 +10,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;
 
-use WPGraphQL\WooCommerce\Type\WPInterface\Payment_Token;
+use WPGraphQL\WooCommerce\Type\WPInterface\Payment_Token_Interface;
 
 /**
  * Class Payment_Token_Types
@@ -23,20 +23,28 @@ class Payment_Token_Types {
 	 */
 	public static function register() {
 		register_graphql_object_type(
+			'PaymentToken',
+			[
+				'description' => __( 'A payment token', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'PaymentTokenInterface' ],
+				'fields'      => [],
+			]
+		);
+		register_graphql_object_type(
 			'PaymentTokenCC',
 			[
-				'description' => __( 'A credit cart payment token', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'PaymentToken' ],
-				'fields'      => Payment_Token::get_fields( self::get_credit_card_fields() ),
+				'description' => __( 'A credit card payment token', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'PaymentTokenInterface' ],
+				'fields'      => Payment_Token_Interface::get_fields( self::get_credit_card_fields() ),
 			]
 		);
 
 		register_graphql_object_type(
 			'PaymentTokenECheck',
 			[
-				'description' => __( 'A electronic check payment token', 'wp-graphql-woocommerce' ),
-				'interfaces'  => [ 'PaymentToken' ],
-				'fields'      => Payment_Token::get_fields( self::get_e_check_fields() ),
+				'description' => __( 'An electronic check payment token', 'wp-graphql-woocommerce' ),
+				'interfaces'  => [ 'PaymentTokenInterface' ],
+				'fields'      => Payment_Token_Interface::get_fields( self::get_e_check_fields() ),
 			]
 		);
 	}

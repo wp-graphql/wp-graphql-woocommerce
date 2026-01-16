@@ -1,9 +1,9 @@
----
+<!--
 title: "WPGraphQL for WooCommerce Settings Guide"
 description: "Learn how to configure and manage WPGraphQL for WooCommerce settings to optimize the integration of WooCommerce with WPGraphQL for your headless e-commerce solution."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, settings, configuration, headless e-commerce"
 author: "Geoff Taylor"
----
+-->
 
 # WPGraphQL for WooCommerce Settings
 

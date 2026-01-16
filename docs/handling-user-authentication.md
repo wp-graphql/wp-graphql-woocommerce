@@ -1,9 +1,9 @@
----
+<!--
 title: "Handling User Authentication with WooGraphQL"
 description: "Learn how to handle user authentication in your headless WooCommerce application using WPGraphQL for WooCommerce and WPGraphQL for secure and seamless user experiences."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, user authentication, login, register, secure, headless"
 author: "Geoff Taylor"
----
+-->
 
 # Handling User Authentication
 

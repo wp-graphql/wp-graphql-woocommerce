@@ -118,6 +118,8 @@ class QL_Session_Handler extends WC_Session_Handler {
 			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_token' ], 10 );
 			add_action( 'woographql_update_session', [ $this, 'set_customer_session_token' ], 10 );
 			add_action( 'shutdown', [ $this, 'save_data' ] );
+			add_filter( 'graphql_jwt_auth_after_authenticate', [ $this, 'reinitialize_session_token' ], 10 );
+			add_filter( 'graphql_login_payload', [ $this, 'reinitialize_session_token' ], 10 );
 		} else {
 			add_action( 'woocommerce_set_cart_cookies', [ $this, 'set_customer_session_cookie' ], 10 );
 			add_action( 'shutdown', [ $this, 'save_data' ], 20 );
@@ -185,11 +187,11 @@ class QL_Session_Handler extends WC_Session_Handler {
 			if ( $token->exp < $this->_session_expiration ) {
 				$this->update_session_timestamp( (string) $this->_customer_id, $this->_session_expiration );
 			}
-		} elseif ( is_wp_error( $token ) ) {
+		} elseif ( Router::is_graphql_http_request() && is_wp_error( $token ) ) {
 			add_filter(
 				'graphql_woocommerce_session_token_errors',
 				static function ( $errors ) use ( $token ) {
-					$errors = $token->get_error_message();
+					$errors = $token->get_error_code() . ': ' . $token->get_error_message();
 					return $errors;
 				}
 			);
@@ -212,6 +214,29 @@ class QL_Session_Handler extends WC_Session_Handler {
 		} else {
 			$this->init_session_cookie();
 		}
+	}
+
+	/**
+	 * Reinitialize session token in response after authentication in GraphQL.
+	 *
+	 * @param array $response The authentication response.
+	 *
+	 * @return array
+	 */
+	public function reinitialize_session_token( $response ) {
+		$this->init_session_token();
+
+		$token = $this->build_token();
+		if ( $token ) {
+			$response['session_token'] = $token;
+		}
+
+		// Add Store API Cart-Token if enabled.
+		$cart_token = $this->build_cart_token();
+		if ( ! empty( $cart_token ) ) {
+			$response['cart_token'] = $cart_token;
+		}
+		return $response;
 	}
 
 	/**
@@ -480,7 +505,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 *
 	 * @return string|null Cart-Token JWT or null if feature disabled or unavailable.
 	 */
-	protected function build_cart_token() {
+	public function build_cart_token() {
 		// Check if Store API token generation is enabled.
 		$token_type = woographql_setting( 'set_session_token_type', 'legacy' );
 		if ( ! in_array( $token_type, [ 'store-api', 'both' ], true ) ) {
@@ -633,10 +658,9 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	public function set_session_expiration() {
 		$this->_session_issued = time();
-		// 47 hours.
-		$this->_session_expiring = apply_filters( 'wc_session_expiring', $this->_session_issued + ( 60 * 60 * 47 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		// 48 hours.
-		$this->_session_expiration = apply_filters( 'wc_session_expiration', $this->_session_issued + ( 60 * 60 * 48 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+
+		parent::set_session_expiration();
+
 		$this->_session_expiration = apply_filters_deprecated(
 			'graphql_woocommerce_cart_session_expire',
 			[ $this->_session_expiration ],

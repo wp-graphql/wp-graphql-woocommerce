@@ -261,7 +261,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/interface/class-product-attribute.php';
 			require $include_directory_path . 'type/interface/class-product.php';
 			require $include_directory_path . 'type/interface/class-product-variation.php';
-			require $include_directory_path . 'type/interface/class-payment-token.php';
+			require $include_directory_path . 'type/interface/class-payment-token-interface.php';
 			require $include_directory_path . 'type/interface/class-product-union.php';
 			require $include_directory_path . 'type/interface/class-cart-item.php';
 			require $include_directory_path . 'type/interface/class-downloadable-product.php';

@@ -488,6 +488,7 @@ class QLSessionHandlerCest {
 			$actual,
 			[
 				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
+				$I->expectField( 'cart.availableShippingMethods', Signal::NOT_FALSY ),
 				$I->expectNode(
 					'cart.availableShippingMethods',
 					[
@@ -496,14 +497,14 @@ class QLSessionHandlerCest {
 						$I->expectNode(
 							'rates',
 							[
-								$I->expectField( 'cost', '0.00' ),
+								$I->expectField( 'cost',  0 ),
 								$I->expectField( 'label', 'Flat rate' ),
 							]
 						),
 						$I->expectNode(
 							'rates',
 							[
-								$I->expectField( 'cost', '0.00' ),
+								$I->expectField( 'cost',  0 ),
 								$I->expectField( 'label', 'Free shipping' ),
 							]
 						),
