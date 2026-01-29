@@ -1,9 +1,9 @@
-<!--
+---
 title: "Using Product Data with WooGraphQL"
 description: "Learn how to efficiently fetch and use product data in your headless WooCommerce application using WPGraphQL for WooCommerce and WPGraphQL for a seamless shopping experience."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, product data, headless, shopping experience"
 author: "Geoff Taylor"
--->
+---
 
 # Using Product Data
 

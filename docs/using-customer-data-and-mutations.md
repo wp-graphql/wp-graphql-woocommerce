@@ -1,9 +1,9 @@
-<!--
+---
 title: "Using Customer Data + Mutations with WooGraphQL"
 description: "Learn how to utilize the `customer` query and mutations by building a clone of a WooCommerce's user account pages in React.js."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, customer query, customer mutations, React.js, user account pages"
 author: "Geoff Taylor"
--->
+---
 
 # Using Customer Data + Mutations
 

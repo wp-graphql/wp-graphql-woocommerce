@@ -1,9 +1,9 @@
-<!--
+---
 title: "Using Composite Product Data + Mutations with WooGraphQL"
 description: "Learn how to use the Composite Product functionality with WPGraphQL for WooCommerce by building upon the code from `Using Product Data` and `Creating Session Provider and using Cart Mutations`."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, Composite Product functionality, Product Data, Session Provider, Cart Mutations"
 author: "Geoff Taylor"
--->
+---
 
 # Using Composite Product Data + Mutations
 

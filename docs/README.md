@@ -1,9 +1,9 @@
-<!--
+---
 title: "WPGraphQL for WooCommerce"
 description: "Comprehensive documentation for WPGraphQL for WooCommerce (WooGraphQL) - the WPGraphQL extension that integrates WooCommerce with GraphQL for headless e-commerce solutions."
 author: "Geoff Taylor"
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, headless, e-commerce"
--->
+---
 
 # WPGraphQL for WooCommerce
 
