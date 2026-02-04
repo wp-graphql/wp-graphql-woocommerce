@@ -8,6 +8,8 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
+use GraphQLRelay\Relay;
+
 /**
  * Class Payment_Token_Interface
  */
@@ -49,6 +51,20 @@ class Payment_Token_Interface {
 	public static function get_fields( $other_fields = [] ) {
 		return array_merge(
 			[
+				'id'        => [
+					'type'        => [ 'non_null' => 'ID' ],
+					'description' => __( 'Token ID unique identifier', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $source ) {
+						return ! empty( $source->get_id() ) ? Relay::toGlobalId( 'token', $source->get_id() ) : null;
+					},
+				],
+				'tokenId'   => [
+					'type'        => [ 'non_null' => 'Integer' ],
+					'description' => __( 'Token database ID.', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function ( $source ) {
+						return ! empty( $source->get_id() ) ? $source->get_id() : null;
+					},
+				],
 				'type'      => [
 					'type'        => [ 'non_null' => 'String' ],
 					'description' => __( 'Token type', 'wp-graphql-woocommerce' ),
@@ -60,7 +76,12 @@ class Payment_Token_Interface {
 					'type'        => 'PaymentGateway',
 					'description' => __( 'Token payment gateway', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
+						$gateways = \WC()->payment_gateways()->payment_gateways();
 						$gateway_id = $source->get_gateway_id();
+						if ( isset( $gateways[ $gateway_id ] ) ) {
+							return $gateways[ $gateway_id ];
+						}
+						
 						return null;
 					},
 				],

@@ -496,6 +496,8 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				customer(id: $id) {
 					id
 					availablePaymentMethods {
+						id
+						tokenId
 						... on PaymentTokenCC {
 							last4
 							expiryMonth
@@ -507,12 +509,16 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 						}
 					}
 					availablePaymentMethodsCC {
+						id
+						tokenId
 						last4
 						expiryMonth
 						expiryYear
 						cardType
 					}
 					availablePaymentMethodsEC {
+						id
+						tokenId
 						last4
 					}
 				}
