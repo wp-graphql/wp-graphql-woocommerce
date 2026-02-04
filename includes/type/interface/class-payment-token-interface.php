@@ -76,12 +76,12 @@ class Payment_Token_Interface {
 					'type'        => 'PaymentGateway',
 					'description' => __( 'Token payment gateway', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $source ) {
-						$gateways = \WC()->payment_gateways()->payment_gateways();
+						$gateways   = \WC()->payment_gateways()->payment_gateways();
 						$gateway_id = $source->get_gateway_id();
 						if ( isset( $gateways[ $gateway_id ] ) ) {
 							return $gateways[ $gateway_id ];
 						}
-						
+
 						return null;
 					},
 				],
