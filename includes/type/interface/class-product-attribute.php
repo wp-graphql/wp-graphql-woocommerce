@@ -58,7 +58,7 @@ class Product_Attribute {
 				'type'        => 'String',
 				'description' => __( 'Attribute name', 'wp-graphql-woocommerce' ),
 				'resolve'     => static function ( $attribute ) {
-					return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
+          return ! empty( $attribute->get_name() ) ? sanitize_title( $attribute->get_name() ) : null;
 				},
 			],
 			'label'       => [
