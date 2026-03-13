@@ -5,6 +5,10 @@ author: "Geoff Taylor"
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, headless, e-commerce"
 -->
 
+<p align="center">
+  <img src="../logo.svg" alt="WPGraphQL for WooCommerce" width="200" />
+</p>
+
 # WPGraphQL for WooCommerce
 
 WPGraphQL for WooCommerce (WooGraphQL) is a free, open-source WordPress plugin that extends the WPGraphQL plugin, allowing you to access WooCommerce data through GraphQL queries and mutations.
