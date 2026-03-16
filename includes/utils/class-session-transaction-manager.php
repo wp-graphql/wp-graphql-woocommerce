@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use GraphQL\Error\UserError;
-
 /**
  * Class - Session_Transaction_Manager
  */
@@ -131,7 +129,7 @@ class Session_Transaction_Manager {
 	private function get_lock_name() {
 		// MySQL advisory lock names are limited to 64 characters.
 		$customer_id = $this->session_handler->get_customer_id();
-		return 'woo_stq_' . substr( md5( $customer_id ), 0, 20 );
+		return 'woo_stq_' . substr( md5( (string) $customer_id ), 0, 20 );
 	}
 
 	/**
@@ -171,7 +169,7 @@ class Session_Transaction_Manager {
 	private static function generate_transaction_id() {
 		// Use zero-padded microtime for consistent alphabetical/chronological sorting.
 		list( $usec, $sec ) = explode( ' ', microtime() );
-		return sprintf( '%010d_%06d', $sec, intval( $usec * 1000000 ) );
+		return sprintf( '%010d_%06d', $sec, intval( absint( $usec ) * 1000000 ) );
 	}
 
 	/**
@@ -282,7 +280,7 @@ class Session_Transaction_Manager {
 			// Insert in sorted position based on transaction ID (timestamp-based).
 			$inserted = false;
 			foreach ( $transaction_queue as $index => $queued ) {
-				if ( strcmp( $transaction_id, $queued['transaction_id'] ) < 0 ) {
+				if ( ! empty( $transaction_id ) && strcmp( $transaction_id, $queued['transaction_id'] ) < 0 ) {
 					array_splice( $transaction_queue, $index, 0, [ $entry ] );
 					$inserted = true;
 					break;

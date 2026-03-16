@@ -148,6 +148,7 @@ function init() {
 		);
 	}
 }
+
 add_action( 'graphql_init', 'WPGraphQL\WooCommerce\init' );
 
 /**
@@ -161,6 +162,7 @@ function init_auth_router() {
 		WP_GraphQL_WooCommerce::load_auth_router();
 	}
 }
+
 add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\init_auth_router' );
 
 /**
@@ -183,6 +185,7 @@ function prevent_early_wc_cart_loading() {
 
 	add_filter( 'woocommerce_is_rest_api_request', '__return_true' );
 }
+
 add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\prevent_early_wc_cart_loading', 0 );
 
 // Load constants.
