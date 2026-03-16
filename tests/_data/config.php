@@ -4,6 +4,7 @@
  * suite already bootstraps the autoloader and creates
  * fatal errors when the autoloader is loaded twice
  */
+
 if ( ! defined( 'GRAPHQL_DEBUG' ) ) {
 	define( 'GRAPHQL_DEBUG', true );
 }
@@ -29,7 +30,11 @@ if ( ! defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) ) {
 }
 
 if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
-	define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'testingtesting123' );
+	define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'testingtesting123testingtesting123' );
+}
+
+if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
+	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
 }
 
 if ( ! defined( 'HPOS' ) && ! empty( getenv( 'HPOS' ) ) ) {
@@ -43,3 +48,5 @@ if ( ! defined( 'STRIPE_API_PUBLISHABLE_KEY' ) && false !== getenv( 'STRIPE_API_
 if ( ! defined( 'STRIPE_API_SECRET_KEY' ) && false !== getenv( 'STRIPE_API_SECRET_KEY' ) ) {
 	define( 'STRIPE_API_SECRET_KEY', getenv( 'STRIPE_API_SECRET_KEY' ) );
 }
+
+define( 'DISABLE_WP_CRON', true );

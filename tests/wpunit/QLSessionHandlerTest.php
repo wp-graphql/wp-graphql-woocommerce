@@ -25,7 +25,7 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		unset( $_COOKIE[ $customer_cookie_key ] );
 	}
 	public function tearDown(): void {
-		unset( $_SERVER );
+		unset( $_SERVER['HTTP_WOOCOMMERCE_SESSION'] );
 		WC()->session->destroy_session();
 
 		// after

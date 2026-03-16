@@ -106,12 +106,12 @@ wp theme activate twentytwentyone --allow-root
 
 if ! wp config has GRAPHQL_JWT_AUTH_SECRET_KEY --allow-root; then
 	echo "Adding WPGraphQL-JWT-Authentication salt..."
-    wp config set GRAPHQL_JWT_AUTH_SECRET_KEY 'test' --allow-root
+    wp config set GRAPHQL_JWT_AUTH_SECRET_KEY 'testingtesting123testingtesting123' --allow-root
 fi
 
 if ! wp config has GRAPHQL_WOOCOMMERCE_SECRET_KEY --allow-root; then
 	echo "Adding WooGraphQL JWT Session Handler salt..."
-	wp config set GRAPHQL_WOOCOMMERCE_SECRET_KEY 'testestestestest' --allow-root
+	wp config set GRAPHQL_WOOCOMMERCE_SECRET_KEY 'testestestestestestestestestest!!' --allow-root
 fi
 
 if wp config has GRAPHQL_DEBUG --allow-root; then
