@@ -5,8 +5,7 @@ use Tests\WPGraphQL\Logger\CodeceptLogger as Signal;
 class CartTransactionQueueCest {
 	private $product_catalog;
 
-	public function _before( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'This test is unstable' );
+	public function _before( FunctionalTester $I ) {
 		// Create Products
 		$this->product_catalog = $I->getCatalog();
 	}
@@ -117,7 +116,7 @@ class CartTransactionQueueCest {
 	}
 
 	// tests
-	public function testCartTransactionQueueWithConcurrentRequest( FunctionalTester $I, $scenario ) {
+	public function testCartTransactionQueueWithConcurrentRequests( FunctionalTester $I, $scenario ) {
 		//$scenario->skip( 'The test is unstable, and will be skipped until success is guaranteed on each run.' );
 		$tokens = $this->_startAuthenticatedSession( $I );
 
@@ -175,19 +174,6 @@ class CartTransactionQueueCest {
 				}
 			}
 		';
-		$cart_query                      = '
-			query {
-				cart {
-					contents {
-						nodes {
-							key
-							quantity
-						}
-					}
-				}
-			}
-		';
-
 		$operations                      = [
 			[
 				'query'     => $update_item_quantities_mutation,
@@ -244,7 +230,7 @@ class CartTransactionQueueCest {
 				'woocommerce-session' => "Session {$session_token}",
 			],
 		];
-		$responses = $I->concurrentRequests( $operations, $selected_options, 800 );
+		$responses = $I->concurrentRequests( $operations, $selected_options, 150 );
 
 		$I->assertQuerySuccessful(
 			$responses[0],
@@ -315,6 +301,212 @@ class CartTransactionQueueCest {
 
 		$I->assertQuerySuccessful(
 			$responses[3],
+			[
+				$I->expectObject(
+					'restoreCartItems',
+					[
+						$I->expectObject(
+							'cart.contents.nodes.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 4 )
+							]
+						)
+					]
+				)
+			]
+		);
+	}
+
+	public function testCartTransactionQueueWithConcurrentBatchRequests( FunctionalTester $I, $scenario ) {
+		$tokens = $this->_startAuthenticatedSession( $I );
+
+		$key           = $tokens['key'];
+		$auth_token    = $tokens['auth_token'];
+		$session_token = $tokens['session_token'];
+
+		$I->wantTo( 'Running a bunch of cart mutations one after the another wait for all the response at once' );
+		$update_item_quantities_mutation = '
+			mutation( $input: UpdateItemQuantitiesInput! ) {
+				updateItemQuantities( input: $input ) {
+					clientMutationId
+					updated {
+						key
+						quantity
+					}
+					removed {
+						key
+						quantity
+					}
+					items {
+						key
+						quantity
+					}
+				}
+			}
+		';
+		$remove_item_mutation            = '
+			mutation ( $input: RemoveItemsFromCartInput! ) {
+				removeItemsFromCart( input: $input ) {
+					clientMutationId
+					cart {
+						contents {
+							nodes {
+								key
+								quantity
+							}
+						}
+					}
+				}
+			}
+		';
+		$restore_item_mutation           = '
+			mutation ( $input: RestoreCartItemsInput! ) {
+				restoreCartItems( input: $input ) {
+					clientMutationId
+					cart {
+						contents {
+							nodes {
+								key
+								quantity
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$operations                      = [
+			[
+				[
+					'query'     => $update_item_quantities_mutation,
+					'variables' => [
+						'input' => [
+							'clientMutationId' => 'some_id',
+							'items'            => [
+								[
+									'key'      => $key,
+									'quantity' => 3,
+								],
+							],
+						],
+					],
+				],
+				[
+					'query'     => $update_item_quantities_mutation,
+					'variables' => [
+						'input' => [
+							'clientMutationId' => 'some_id',
+							'items'            => [
+								[
+									'key'      => $key,
+									'quantity' => 4,
+								],
+							],
+						],
+					],
+				],
+			],
+			[
+				[
+					'query'     => $remove_item_mutation,
+					'variables' => [
+						'input' => [
+							'clientMutationId' => 'some_id',
+							'keys'             => [ $key ],
+						],
+					],
+				],
+				[
+					'query'     => $restore_item_mutation,
+					'variables' => [
+						'input' => [
+							'clientMutationId' => 'some_id',
+							'keys'             => [ $key ],
+						],
+					],
+				],
+			],
+		];
+
+		$selected_options  = [
+			'headers' => [
+				'Content-Type'        => 'application/json',
+				'Authorization'       => "Bearer {$auth_token}",
+				'woocommerce-session' => "Session {$session_token}",
+			],
+		];
+		$responses = $I->concurrentRequests( $operations, $selected_options, 150 );
+
+		$I->assertQuerySuccessful(
+			$responses[0][0],
+			[
+				$I->expectObject(
+					'updateItemQuantities',
+					[
+						$I->expectObject(
+							'updated.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 3 )
+							]
+						),
+						$I->expectField( 'removed', Signal::IS_FALSY ),
+						$I->expectObject(
+							'items.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 3 )
+							]
+						)
+					]
+				)
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$responses[0][1],
+			[
+				$I->expectObject(
+					'updateItemQuantities',
+					[
+						$I->expectObject(
+							'updated.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 4 )
+							]
+						),
+						$I->expectField( 'removed', Signal::IS_FALSY ),
+						$I->expectObject(
+							'items.0',
+							[
+								$I->expectField( 'key', $key ),
+								$I->expectField( 'quantity', 4 )
+							]
+						)
+					]
+				)
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$responses[1][0],
+			[
+				$I->expectObject(
+					'removeItemsFromCart',
+					[
+						$I->expectField(
+							'cart.contents.nodes',
+							Signal::IS_FALSY
+						)
+					]
+				)
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$responses[1][1],
 			[
 				$I->expectObject(
 					'restoreCartItems',
