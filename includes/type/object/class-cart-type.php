@@ -241,15 +241,16 @@ class Cart_Type {
 					},
 				],
 				'feeTotal'                 => [
-					'type'        => 'String',
-					'description' => __( 'Cart fee total', 'wp-graphql-woocommerce' ),
-					'args'        => [
+					'type'              => 'String',
+					'description'       => __( 'Cart fee total', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Always null', 'wp-graphql-woocommerce' ),
+					'args'              => [
 						'format' => [
 							'type'        => 'PricingFieldFormatEnum',
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function ( $source, array $args ) {
+					'resolve'           => static function ( $source, array $args ) {
 						$price = ! is_null( $source->get_fee_total() ) ? $source->get_fee_total() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -260,15 +261,16 @@ class Cart_Type {
 					},
 				],
 				'feeTax'                   => [
-					'type'        => 'String',
-					'description' => __( 'Cart fee tax', 'wp-graphql-woocommerce' ),
-					'args'        => [
+					'type'              => 'String',
+					'description'       => __( 'Cart fee tax', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Always null', 'wp-graphql-woocommerce' ),
+					'args'              => [
 						'format' => [
 							'type'        => 'PricingFieldFormatEnum',
 							'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
 						],
 					],
-					'resolve'     => static function ( $source, array $args ) {
+					'resolve'           => static function ( $source, array $args ) {
 						$price = ! is_null( $source->get_fee_tax() ) ? $source->get_fee_tax() : 0;
 
 						if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
@@ -353,9 +355,10 @@ class Cart_Type {
 					},
 				],
 				'fees'                     => [
-					'type'        => [ 'list_of' => 'CartFee' ],
-					'description' => __( 'Additional fees on the cart.', 'wp-graphql-woocommerce' ),
-					'resolve'     => static function ( $source ) {
+					'type'              => [ 'list_of' => 'CartFee' ],
+					'description'       => __( 'Additional fees on the cart.', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Always null', 'wp-graphql-woocommerce' ),
+					'resolve'           => static function ( $source ) {
 						$fees = $source->get_fees();
 						return ! empty( $fees ) ? array_values( $fees ) : null;
 					},

@@ -188,28 +188,31 @@ class Orders {
 
 			case 'public':
 			default:
-				return [
-					'statuses'  => [
-						'type'        => [ 'list_of' => 'OrderStatusEnum' ],
-						'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
-					],
-					'productId' => [
-						'type'        => 'Int',
-						'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
-					],
-					'orderby'   => [
-						'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
-						'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
-					],
-					'search'    => [
-						'type'        => 'String',
-						'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
-					],
-					'dateQuery' => [
-						'type'        => 'DateQueryInput',
-						'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
-					],
-				];
+				return array_merge(
+					get_wc_cpt_connection_args(),
+					[
+						'statuses'  => [
+							'type'        => [ 'list_of' => 'OrderStatusEnum' ],
+							'description' => __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' ),
+						],
+						'productId' => [
+							'type'        => 'Int',
+							'description' => __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' ),
+						],
+						'orderby'   => [
+							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
+							'description' => __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' ),
+						],
+						'search'    => [
+							'type'        => 'String',
+							'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
+						],
+						'dateQuery' => [
+							'type'        => 'DateQueryInput',
+							'description' => __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' ),
+						],
+					]
+				);
 		}//end switch
 	}
 

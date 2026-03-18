@@ -36,6 +36,10 @@ class Root_Query {
 							'type'        => 'Boolean',
 							'description' => __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' ),
 						],
+						'fees'              => [
+							'type'        => [ 'list_of' => 'FeeInput' ],
+							'description' => __( 'Fees to add to the cart.', 'wp-graphql-woocommerce' ),
+						],
 					],
 					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
 					'resolve'     => static function ( $_, $args ) {
@@ -45,6 +49,31 @@ class Root_Query {
 						}
 
 						$cart = Factory::resolve_cart();
+
+						if ( ! empty( $args['fees'] ) ) {
+							$fees = $args['fees'];
+							add_action(
+								'woocommerce_cart_calculate_fees',
+								static function () use ( $fees ) {
+									foreach ( $fees as $fee_input ) {
+										if ( empty( $fee_input['name'] ) || empty( $fee_input['amount'] ) ) {
+											// TODO: Log invalid fee input.
+											continue;
+										}
+
+										$fee_args = [
+											$fee_input['name'],
+											$fee_input['amount'],
+											isset( $fee_input['taxable'] ) ? $fee_input['taxable'] : false,
+											isset( $fee_input['taxClass'] ) ? $fee_input['taxClass'] : '',
+										];
+
+										\WC()->cart->add_fee( ...$fee_args );
+									}
+								}
+							);
+						}
+
 						if ( ! empty( $args['recalculateTotals'] ) ) {
 							$cart->calculate_totals();
 						}

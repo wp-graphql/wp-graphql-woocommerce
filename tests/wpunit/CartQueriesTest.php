@@ -503,4 +503,49 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	public function testCartQueryWithFees() {
+		$product_id = $this->factory->product->createSimple();
+		WC()->cart->add_to_cart( $product_id, 3 );
+
+		$query = '
+			query($fees: [FeeInput]) {
+				cart(fees: $fees) {
+					total
+					feeTotal
+					feeTax
+					fees {
+						name
+						amount
+						total
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'fees' => [
+				[
+					'name'     => 'Test Fee',
+					'amount'   => 10.50,
+					'taxable'  => false,
+					'taxClass' => 'STANDARD',
+				],
+			],
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'cart.total', self::NOT_FALSY ),
+				$this->expectedField( 'cart.feeTotal', self::NOT_FALSY ),
+				$this->expectedField( 'cart.fees.#.name', 'Test Fee' ),
+				$this->expectedField( 'cart.fees.#.amount', floatval( 10.50 ) ),
+				$this->expectedField( 'cart.fees.#.total', floatval( 10.50 ) ),
+			]
+		);
+
+		
+	}
 }
