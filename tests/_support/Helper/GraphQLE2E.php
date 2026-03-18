@@ -1089,10 +1089,7 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @return string
 	 */
 	public function getStoreApiSecret() {
-		$wpCli = $this->getModule( 'WPCLI' );
-		$auth_key  = $wpCli->cliToString( [ 'config', 'get', 'AUTH_KEY' ] );
-		$auth_salt = $wpCli->cliToString( [ 'config', 'get', 'AUTH_SALT' ] );
-		return '@' . trim( $auth_key ) . trim( $auth_salt );
+		return '@' . wp_salt();
 	}
 
 	/**

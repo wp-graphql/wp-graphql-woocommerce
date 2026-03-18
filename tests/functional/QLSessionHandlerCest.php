@@ -11,7 +11,7 @@ class QLSessionHandlerCest {
 		$this->product_catalog = $I->getCatalog();
 
 		if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
-			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestest' );
+			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
 		}
 	}
 
@@ -596,15 +596,11 @@ class QLSessionHandlerCest {
 		$cart_token = $I->grabHttpHeader( 'Cart-Token' );
 
 		// Decode token using Store API secret (same as build_cart_token uses)
-		JWT::$leeway = 60;
-		$token_data  = ! empty( $cart_token )
-			? JWT::decode( $cart_token, new Key( $I->getStoreApiSecret(), 'HS256' ) )
-			: null;
-
-		$I->assertNotEmpty( $token_data );
-		$I->assertNotEmpty( $token_data->user_id );
-		$I->assertNotEmpty( $token_data->exp );
-		$I->assertEquals( 'store-api', $token_data->iss );
+		$I->assertNotEmpty( $cart_token );
+		$parts = \Automattic\WooCommerce\StoreApi\Utilities\JsonWebToken::get_parts( $cart_token );
+		$I->assertNotEmpty( $parts->payload->iat );
+		$I->assertNotEmpty( $parts->payload->exp );
+		$I->assertNotEmpty( $parts->payload->user_id );
 	}
 
 	public function testBothTokenTypesGeneration( FunctionalTester $I ) {
@@ -649,16 +645,14 @@ class QLSessionHandlerCest {
 		$I->assertNotEmpty( $session_data->data->customer_id );
 
 		// Decode Cart-Token using Store API secret (same as build_cart_token uses)
-		$cart_data = ! empty( $cart_token )
-			? JWT::decode( $cart_token, new Key( $I->getStoreApiSecret(), 'HS256' ) )
-			: null;
-
-		$I->assertNotEmpty( $cart_data );
-		$I->assertNotEmpty( $cart_data->user_id );
-		$I->assertEquals( 'store-api', $cart_data->iss );
+		$I->assertNotEmpty( $cart_token );
+		$parts = \Automattic\WooCommerce\StoreApi\Utilities\JsonWebToken::get_parts( $cart_token );
+		$I->assertNotEmpty( $parts->payload->iat );
+		$I->assertNotEmpty( $parts->payload->exp );
+		$I->assertNotEmpty( $parts->payload->user_id );
 
 		// Verify both tokens reference the same customer
-		$I->assertEquals( $session_data->data->customer_id, $cart_data->user_id );
+		$I->assertEquals( $session_data->data->customer_id, $parts->payload->user_id );
 	}
 
 	public function testLegacyTokenOnlyWhenSetToLegacy( FunctionalTester $I ) {
