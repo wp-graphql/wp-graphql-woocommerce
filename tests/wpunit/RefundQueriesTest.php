@@ -294,4 +294,89 @@ class RefundQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	public function testCustomerRefundFieldsNotNull() {
+		$order_id  = $this->factory->order->createNew( [ 'customer_id' => $this->customer ] );
+		$this->loginAsShopManager();
+		$refund_id = $this->factory->refund->createNew( $order_id, [ 'amount' => 0.5 ] );
+		$refund    = \wc_get_order( $refund_id );
+		$relay_id  = $this->toRelayId( 'order', $order_id );
+
+		/**
+		 * Assertion One
+		 *
+		 * Customer can see refund fields via customer.refunds connection.
+		 */
+		$query = '
+			query {
+				customer {
+					refunds {
+						nodes {
+							databaseId
+							title
+							amount
+							reason
+						}
+					}
+				}
+			}
+		';
+
+		$this->loginAsCustomer();
+		$response = $this->graphql( compact( 'query' ) );
+
+		$expected = [
+			$this->expectedNode(
+				'customer.refunds.nodes',
+				[
+					'databaseId' => $refund->get_id(),
+					'title'      => $refund->get_post_title(),
+					'amount'     => floatval( $refund->get_amount() ),
+					'reason'     => $refund->get_reason(),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Clear loader cache.
+		$this->clearLoaderCache( 'wc_post' );
+
+		/**
+		 * Assertion Two
+		 *
+		 * Customer can see refund fields via order.refunds connection.
+		 */
+		$query = '
+			query ( $id: ID! ) {
+				order( id: $id ) {
+					refunds {
+						nodes {
+							databaseId
+							title
+							amount
+							reason
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'id' => $relay_id ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$expected = [
+			$this->expectedNode(
+				'order.refunds.nodes',
+				[
+					'databaseId' => $refund->get_id(),
+					'title'      => $refund->get_post_title(),
+					'amount'     => floatval( $refund->get_amount() ),
+					'reason'     => $refund->get_reason(),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
