@@ -166,6 +166,13 @@ class Checkout {
 					throw new UserError( __( 'Failed to retrieve order after checkout', 'wp-graphql-woocommerce' ) );
 				}//end if
 
+				// Capture any non-error notices for successful checkouts.
+				$notices           = wc_get_notices();
+				$formatted_notices = self::format_notices_for_response( $notices );
+
+				// Clear notices to prevent persistence.
+				wc_clear_notices();
+
 				/**
 				 * Action called after checking out.
 				 *
@@ -174,13 +181,6 @@ class Checkout {
 				 * @param \WPGraphQL\AppContext  $context Request AppContext instance.
 				 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 				 */
-				// Capture any non-error notices for successful checkouts
-				$notices = wc_get_notices();
-				$formatted_notices = self::format_notices_for_response( $notices );
-
-				// Clear notices to prevent persistence
-				wc_clear_notices();
-
 				do_action( 'graphql_woocommerce_after_checkout', $order, $input, $context, $info );
 
 				return array_merge( [ 'id' => $order_id ], $results, [ 'notices' => $formatted_notices ] );
@@ -190,11 +190,11 @@ class Checkout {
 					Order_Mutation::purge( $order );
 				}
 
-				// Capture any WC notices that were added during checkout process
-				$notices = wc_get_notices();
+				// Capture any WC notices that were added during checkout process.
+				$notices       = wc_get_notices();
 				$error_message = $e->getMessage();
 
-				// If there are notices, use them instead of the original error
+				// If there are notices, use them instead of the original error.
 				if ( ! empty( $notices ) ) {
 					$formatted_notices = self::format_notices_for_error( $notices );
 					if ( ! empty( $formatted_notices ) ) {
@@ -202,25 +202,25 @@ class Checkout {
 					}
 				}
 
-				// Clear notices to prevent them from persisting to next request
+				// Clear notices to prevent them from persisting to next request.
 				wc_clear_notices();
 
-				// Throw error with enhanced message
+				// Throw error with enhanced message.
 				throw new UserError( $error_message );
 			}//end try
 		};
 	}
 
 	/**
-	 * Format WC notices for GraphQL response
+	 * Format WC notices for GraphQL response.
 	 *
-	 * @param array $notices WC notices array
+	 * @param array $notices WC notices array.
 	 * @return array Formatted notices for GraphQL
 	 */
 	private static function format_notices_for_response( $notices ) {
 		$formatted_notices = [];
 
-		// Include non-error notices (success, notice)
+		// Include non-error notices (success, notice).
 		foreach ( [ 'success', 'notice' ] as $type ) {
 			if ( ! empty( $notices[ $type ] ) ) {
 				foreach ( $notices[ $type ] as $notice ) {
@@ -244,14 +244,14 @@ class Checkout {
 	private static function format_notices_for_error( $notices ) {
 		$error_messages = [];
 
-		// Prioritize error notices
+		// Prioritize error notices.
 		if ( ! empty( $notices['error'] ) ) {
 			foreach ( $notices['error'] as $notice ) {
 				$error_messages[] = $notice['notice'] ?? $notice;
 			}
 		}
 
-		// Include other notice types if no errors
+		// Include other notice types if no errors.
 		if ( empty( $error_messages ) ) {
 			foreach ( [ 'notice', 'success' ] as $type ) {
 				if ( ! empty( $notices[ $type ] ) ) {

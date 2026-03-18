@@ -23,7 +23,7 @@ class Cart_Notice {
 			[
 				'description' => __( 'A WooCommerce notice', 'wp-graphql-woocommerce' ),
 				'fields'      => [
-					'type' => [
+					'type'    => [
 						'type'        => 'CartNoticeTypeEnum',
 						'description' => __( 'Notice type', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $notice ) {

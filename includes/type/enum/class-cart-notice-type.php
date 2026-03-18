@@ -23,7 +23,7 @@ class Cart_Notice_Type {
 			[
 				'description' => __( 'WooCommerce notice types', 'wp-graphql-woocommerce' ),
 				'values'      => [
-					'ERROR' => [
+					'ERROR'   => [
 						'value'       => 'error',
 						'description' => __( 'Error notice', 'wp-graphql-woocommerce' ),
 					],
@@ -31,7 +31,7 @@ class Cart_Notice_Type {
 						'value'       => 'success',
 						'description' => __( 'Success notice', 'wp-graphql-woocommerce' ),
 					],
-					'NOTICE' => [
+					'NOTICE'  => [
 						'value'       => 'notice',
 						'description' => __( 'General notice', 'wp-graphql-woocommerce' ),
 					],

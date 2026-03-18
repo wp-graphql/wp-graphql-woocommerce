@@ -471,8 +471,8 @@ class Checkout_Mutation {
 	/**
 	 * Validates that the checkout has enough info to proceed.
 	 *
-	 * @param array $data  An array of posted data.
-	 * @param  WP_Error $errors Validation errors.
+	 * @param array     $data  An array of posted data.
+	 * @param  \WP_Error $errors Validation errors.
 	 *
 	 * @throws \GraphQL\Error\UserError Invalid input.
 	 *
@@ -482,17 +482,8 @@ class Checkout_Mutation {
 		self::validate_data( $data );
 		WC()->checkout()->check_cart_items();
 
-		// Throw cart validation errors stored in the session.
-		// $cart_item_errors = wc_get_notices( 'error' );
-
-		// if ( ! empty( $cart_item_errors ) ) {
-		// 	$cart_item_error_msgs = implode( ' ', array_column( $cart_item_errors, 'notice' ) );
-		// 	\wc_clear_notices();
-		// 	throw new UserError( $cart_item_error_msgs );
-		// }
-
 		if ( empty( $data['woocommerce_checkout_update_totals'] ) && empty( $data['terms'] ) && ! empty( $data['terms-field'] ) ) {
-			$errors->add( 'terms', __( 'Please read and accept the terms and conditions to proceed with your order.', 'woocommerce' ) );
+			$errors->add( 'terms', __( 'Please read and accept the terms and conditions to proceed with your order.', 'wp-graphql-woocommerce' ) );
 		}
 
 		if ( WC()->cart->needs_shipping() ) {
@@ -501,7 +492,7 @@ class Checkout_Mutation {
 			if ( empty( $shipping_country ) ) {
 				$errors->add( 'shipping', __( 'Please enter an address to continue.', 'wp-graphql-woocommerce' ) );
 			} elseif ( ! in_array( WC()->customer->get_shipping_country(), array_keys( WC()->countries->get_shipping_countries() ), true ) ) {
-				$errors->add( 
+				$errors->add(
 					'shipping',
 					sprintf(
 						/* translators: %s: shipping location */
@@ -616,7 +607,6 @@ class Checkout_Mutation {
 
 		do_action( 'woocommerce_checkout_process', $data, $context, $info ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
-		
 		if ( ! empty( $input['billing']['overwrite'] ) && true === $input['billing']['overwrite'] ) {
 			self::clear_customer_address( 'billing' );
 		}
@@ -641,7 +631,7 @@ class Checkout_Mutation {
 		}
 
 		if ( 0 < wc_notice_count( 'error' ) ) {
-			throw new UserError( __('Failed to validate checkout', 'wp-graphql-woocommerce') );
+			throw new UserError( __( 'Failed to validate checkout', 'wp-graphql-woocommerce' ) );
 		}
 
 		self::process_customer( $data );
