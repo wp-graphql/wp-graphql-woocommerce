@@ -6,6 +6,13 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		// before
 		parent::setUp();
 
+		// Force WP_Filesystem to use the direct method so WooCommerce's
+		// FileV2 log handler doesn't attempt FTP operations which fail
+		// in the test environment (null FTP connection on PHP 8.1+).
+		add_filter( 'filesystem_method', function () {
+			return 'direct';
+		} );
+
 		$this->loginAs( 0 );
 
 		// Turn on tax calculations and store shipping countries. Important!

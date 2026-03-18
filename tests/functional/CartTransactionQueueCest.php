@@ -230,7 +230,7 @@ class CartTransactionQueueCest {
 				'woocommerce-session' => "Session {$session_token}",
 			],
 		];
-		$responses = $I->concurrentRequests( $operations, $selected_options, 150 );
+		$responses = $I->concurrentRequests( $operations, $selected_options, 200 );
 
 		$I->assertQuerySuccessful(
 			$responses[0],
