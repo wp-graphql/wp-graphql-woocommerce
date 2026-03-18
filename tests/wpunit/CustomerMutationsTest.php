@@ -620,6 +620,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'input' => [
 				'clientMutationId' => 'some_id',
 				'email'            => 'user@woographql.test',
+				'authenticate'     => true,
 				'metaData'         => [
 					[
 						'key'   => 'test_meta_key',
