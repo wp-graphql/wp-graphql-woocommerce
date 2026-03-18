@@ -255,4 +255,47 @@ class CheckoutNoticesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$notices = wc_get_notices();
 		$this->assertEmpty( $notices, 'Session update mutation should clear notices' );
 	}
+
+	/**
+	 * Test that stale notices from a failed checkout do not leak into the next attempt.
+	 * This reproduces the exact scenario from GitHub issue #666.
+	 */
+	public function testStaleNoticesDoNotLeakBetweenCheckoutAttempts() {
+		$product_id = $this->factory->product->createSimple();
+		WC()->cart->add_to_cart( $product_id, 1 );
+
+		$query     = $this->getCheckoutMutation();
+		$variables = [ 'input' => $this->getCheckoutInput() ];
+
+		// Simulate a payment gateway failure on the first attempt.
+		$fail_callback = static function () {
+			wc_add_notice( 'Card declined: insufficient funds', 'error' );
+		};
+		add_action( 'woocommerce_checkout_process', $fail_callback, 10 );
+
+		$first_response = $this->graphql( compact( 'query', 'variables' ) );
+
+		// First attempt should fail with the gateway error.
+		$this->assertQueryError( $first_response );
+		$this->assertStringContainsString( 'Card declined: insufficient funds', $first_response['errors'][0]['message'] );
+
+		// Remove the failure hook so the second attempt uses a different error.
+		remove_action( 'woocommerce_checkout_process', $fail_callback, 10 );
+
+		// Re-add the product (cart was emptied by the failed checkout cleanup).
+		WC()->cart->add_to_cart( $product_id, 1 );
+
+		// Simulate a different failure on the second attempt.
+		$second_fail_callback = static function () {
+			wc_add_notice( 'Card declined: expired card', 'error' );
+		};
+		add_action( 'woocommerce_checkout_process', $second_fail_callback, 10 );
+
+		$second_response = $this->graphql( compact( 'query', 'variables' ) );
+
+		// Second attempt should fail with ONLY the new error, not the stale one.
+		$this->assertQueryError( $second_response );
+		$this->assertStringContainsString( 'Card declined: expired card', $second_response['errors'][0]['message'] );
+		$this->assertStringNotContainsString( 'insufficient funds', $second_response['errors'][0]['message'], 'Stale notice from first attempt should not appear in second attempt.' );
+	}
 }
