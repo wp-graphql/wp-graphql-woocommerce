@@ -29,6 +29,14 @@ if ( ! defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) ) {
 	define( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM', '_wc_payment' );
 }
 
+if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
+	define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'testingtesting123testingtesting123' );
+}
+
+if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
+	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
+}
+
 if ( ! defined( 'HPOS' ) && ! empty( getenv( 'HPOS' ) ) ) {
 	define( 'HPOS', true );
 }

@@ -8,7 +8,7 @@ use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
 
 if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
-	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'graphql-woo-cart-session' );
+	define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
 }
 
 class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
