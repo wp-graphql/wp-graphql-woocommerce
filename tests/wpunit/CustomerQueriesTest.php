@@ -247,9 +247,9 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 					'username' => 'megaman8080',
 				]
 			),
-			$this->factory->customer->create(),
-			$this->factory->customer->create(),
-			$this->factory->customer->create(),
+			$this->factory->customer->create([ 'email' => 'example1@example.com' ]),
+			$this->factory->customer->create([ 'email' => 'example2@example.com' ]),
+			$this->factory->customer->create([ 'email' => 'example3@example.com' ]),
 		];
 
 		$query = '
@@ -300,10 +300,10 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
-			$this->expectedField( 'customers.nodes.0.billing.email', static::NOT_NULL ),
-			$this->expectedField( 'customers.nodes.1.billing.email', static::NOT_NULL ),
-			$this->expectedField( 'customers.nodes.2.billing.email', static::NOT_NULL ),
-			$this->expectedField( 'customers.nodes.3.billing.email', static::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'gotcha@example.com' ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'example1@example.com' ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'example2@example.com' ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'example3@example.com' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -317,7 +317,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[0] ),
-			$this->expectedField( 'customers.nodes.0.billing.email', static::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.0.billing.email', 'gotcha@example.com' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -331,7 +331,7 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
 			$this->expectedField( 'customers.nodes.0.databaseId', $users[2] ),
-			$this->expectedField( 'customers.nodes.0.billing.email', static::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.0.billing.email', 'example2@example.com' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -347,10 +347,11 @@ class CustomerQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[0] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[1] ),
 			$this->expectedField( 'customers.nodes.#.databaseId', $users[3] ),
-			$this->expectedField( 'customers.nodes.0.billing.email', static::NOT_NULL ),
-			$this->expectedField( 'customers.nodes.1.billing.email', static::NOT_NULL ),
-			$this->expectedField( 'customers.nodes.2.billing.email', static::NOT_NULL ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'gotcha@example.com' ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'example1@example.com' ),
+			$this->expectedField( 'customers.nodes.#.billing.email', 'example3@example.com' ),
 			$this->not()->expectedField( 'customers.nodes.#.databaseId', $users[2] ),
+			$this->not()->expectedField( 'customers.nodes.#.billing.email', 'example2@example.com' ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );

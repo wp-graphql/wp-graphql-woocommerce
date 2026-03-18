@@ -29,16 +29,16 @@ class CustomerFactory extends \WP_UnitTest_Factory_For_Thing {
 		$customer = new \WC_Customer();
 
 		// Create customer details
-		$username   = $this->dummy->userName();
-		$first_name = $this->dummy->firstName();
-		$last_name  = $this->dummy->lastName();
-		$street     = $this->dummy->streetAddress();
-		$city       = $this->dummy->city();
-		$state      = $this->dummy->state();
-		$postcode   = $this->dummy->postcode();
-		$country    = 'US';
-		$email      = $this->dummy->email();
-		$phone      = $this->dummy->phoneNumber();
+		$username   = empty( $args['username'] ) ? $this->dummy->userName() : $args['username'];
+		$first_name = empty( $args['first_name'] ) ? $this->dummy->firstName() : $args['first_name'];
+		$last_name  = empty( $args['last_name'] ) ? $this->dummy->lastName() : $args['last_name'];
+		$street     = empty( $args['street'] ) ? $this->dummy->streetAddress() : $args['street'];
+		$city       = empty( $args['city'] ) ? $this->dummy->city() : $args['city'];
+		$state      = empty( $args['state'] ) ? $this->dummy->state() : $args['state'];
+		$postcode   = empty( $args['postcode'] ) ? $this->dummy->postcode() : $args['postcode'];
+		$country    = empty( $args['country'] ) ? 'US' : $args['country'];
+		$email      = empty( $args['email'] ) ? $this->dummy->email() : $args['email'];
+		$phone      = empty( $args['phone'] ) ? $this->dummy->phoneNumber() : $args['phone'];
 
 		$args = array_merge(
 			[
