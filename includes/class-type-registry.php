@@ -48,6 +48,7 @@ class Type_Registry {
 		Type\WPEnum\Currency_Enum::register();
 		Type\WPEnum\Shipping_Location_Type_Enum::register();
 		Type\WPEnum\WC_Setting_Type_Enum::register();
+		Type\WPEnum\Cart_Notice_Type::register();
 		Type\WPEnum\Product_Attributes_Connection_Orderby_Enum::register();
 
 		/**
@@ -123,6 +124,7 @@ class Type_Registry {
 		Type\WPObject\Shipping_Location_Type::register();
 		Type\WPObject\Tax_Class_Type::register();
 		Type\WPObject\WC_Setting_Type::register();
+		Type\WPObject\Cart_Notice::register();
 
 		/**
 		 * Object fields.

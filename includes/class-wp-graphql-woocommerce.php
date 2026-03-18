@@ -253,6 +253,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/enum/class-currency-enum.php';
 			require $include_directory_path . 'type/enum/class-shipping-location-type-enum.php';
 			require $include_directory_path . 'type/enum/class-wc-setting-type-enum.php';
+			require $include_directory_path . 'type/enum/class-cart-notice-type.php';
 			require $include_directory_path . 'type/enum/class-product-attributes-connection-orderby-enum.php';
 
 			// Include interface type class files.
@@ -273,6 +274,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Include object type class files.
 			require $include_directory_path . 'type/object/class-cart-error-types.php';
+			require $include_directory_path . 'type/object/class-cart-notice.php';
 			require $include_directory_path . 'type/object/class-cart-type.php';
 			require $include_directory_path . 'type/object/class-coupon-type.php';
 			require $include_directory_path . 'type/object/class-customer-address-type.php';
