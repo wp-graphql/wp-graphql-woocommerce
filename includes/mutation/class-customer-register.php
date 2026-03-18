@@ -63,6 +63,10 @@ class Customer_Register {
 					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
 					'type'        => [ 'list_of' => 'MetaDataInput' ],
 				],
+				'authenticate'          => [
+					'type'        => 'Boolean',
+					'description' => __( 'Set the current user to the newly registered customer. Avoid using in GraphiQL or contexts where a nonce is sent, as it will cause nonce verification to fail.', 'wp-graphql-woocommerce' ),
+				],
 			]
 		);
 
@@ -185,9 +189,17 @@ class Customer_Register {
 			// Save customer and get customer ID.
 			$customer->save();
 
-			// Update current user.
-			if ( ! is_user_logged_in() ) {
+			// Optionally authenticate as the newly registered customer.
+			// Defaults to false to avoid nonce verification failures in
+			// contexts like GraphiQL that send a nonce with the request.
+			if ( ! empty( $input['authenticate'] ) && ! is_user_logged_in() ) {
 				wp_set_current_user( $user_id );
+
+				// Reinitialize the session token so the response header
+				// reflects the newly authenticated user instead of the guest.
+				if ( \WC()->session instanceof \WPGraphQL\WooCommerce\Utils\QL_Session_Handler ) {
+					\WC()->session->init_session_token();
+				}
 			}
 
 			// Return payload.

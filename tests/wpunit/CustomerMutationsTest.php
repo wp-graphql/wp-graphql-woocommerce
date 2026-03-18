@@ -150,7 +150,8 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			}
 		';
 
-		$variables = [ 'input' => $input ];
+		$input['authenticate'] = true;
+		$variables             = [ 'input' => $input ];
 		return $this->graphql( compact( 'query', 'variables' ) );
 	}
 
@@ -619,6 +620,7 @@ class CustomerMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGra
 			'input' => [
 				'clientMutationId' => 'some_id',
 				'email'            => 'user@woographql.test',
+				'authenticate'     => true,
 				'metaData'         => [
 					[
 						'key'   => 'test_meta_key',
