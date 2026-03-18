@@ -1089,12 +1089,19 @@ class GraphQLE2E extends \Codeception\Module {
 	 * @return string
 	 */
 	public function getStoreApiSecret() {
-		$wpCli = $this->getModule( 'WPCLI' );
-		$auth_key  = $wpCli->cliToString( [ 'config', 'get', 'AUTH_KEY' ] );
-		$auth_salt = $wpCli->cliToString( [ 'config', 'get', 'AUTH_SALT' ] );
-		return '@' . trim( $auth_key ) . trim( $auth_salt );
+		return '@' . wp_salt();
 	}
 
+	/**
+	 * Validates a Store API Cart-Token JWT using WooCommerce's own JsonWebToken class.
+	 *
+	 * Uses the same class and secret that signed the token, avoiding cross-library
+	 * signature mismatches between WooCommerce's JWT implementation and firebase/php-jwt.
+	 *
+	 * @param string $token  The Cart-Token JWT string.
+	 *
+	 * @return array  The decoded token payload.
+	 */
 	/**
 	 * Creates a cart page with WooCommerce shortcode in the database
 	 *

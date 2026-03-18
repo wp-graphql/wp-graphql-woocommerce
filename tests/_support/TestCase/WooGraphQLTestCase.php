@@ -34,6 +34,11 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
+		// Flush the object cache to prevent stale WooCommerce product
+		// data from leaking between tests (e.g. related product lookups,
+		// featured product queries, product meta cache groups).
+		wp_cache_flush();
+
 		// Load factories.
 		$factories = [
 			'Product',
@@ -69,8 +74,16 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	}
 
 	public function tearDown(): void {
+		global $wpdb;
+
 		\WC()->cart->empty_cart( true );
 		$this->factory->product->deleteAttributes();
+
+		// Clean WooCommerce lookup tables that are not covered by
+		// WPBrowser's transaction rollback, preventing stale data
+		// from leaking into subsequent test queries.
+		$wpdb->query( "DELETE FROM {$wpdb->prefix}wc_product_meta_lookup" );
+		$wpdb->query( "DELETE FROM {$wpdb->prefix}wc_product_attributes_lookup" );
 
 		// then
 		parent::tearDown();

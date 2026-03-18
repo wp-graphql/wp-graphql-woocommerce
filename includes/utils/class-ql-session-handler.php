@@ -93,8 +93,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	 */
 	private function get_secret_key() {
 		// Use the defined secret key, if it exists.
-
-		$secret_key = defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) && ! empty( GRAPHQL_WOOCOMMERCE_SECRET_KEY )
+		$secret_key = defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) && GRAPHQL_WOOCOMMERCE_SECRET_KEY !== false && GRAPHQL_WOOCOMMERCE_SECRET_KEY !== ''
 			? GRAPHQL_WOOCOMMERCE_SECRET_KEY :
 			'graphql-woo-cart-session';
 		return apply_filters( 'graphql_woocommerce_secret_key', $secret_key );

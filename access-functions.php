@@ -218,6 +218,7 @@ if ( ! function_exists( 'wc_graphql_camel_case_to_underscore' ) ) {
 }//end if
 
 if ( ! function_exists( 'woographql_setting' ) ) :
+
 	/**
 	 * Get an option value from WPGraphQL for WooCommerce settings
 	 *
@@ -259,9 +260,11 @@ if ( ! function_exists( 'woographql_setting' ) ) :
 		 */
 		return apply_filters( 'woographql_settings_section_field_value', $value, $default_value, $option_name, $section_fields, $section_name );
 	}
+
 endif;
 
 if ( ! function_exists( 'woographql_get_session_uid' ) ) :
+
 	/**
 	 * Returns end-user's customer ID.
 	 *
@@ -276,9 +279,11 @@ if ( ! function_exists( 'woographql_get_session_uid' ) ) :
 		$session = WC()->session;
 		return $session->get_customer_id();
 	}
+
 endif;
 
 if ( ! function_exists( 'woographql_get_session_token' ) ) :
+
 	/**
 	 * Returns session user's "client_session_id"
 	 *
@@ -293,9 +298,11 @@ if ( ! function_exists( 'woographql_get_session_token' ) ) :
 		$session = WC()->session;
 		return $session->get_client_session_id();
 	}
+
 endif;
 
 if ( ! function_exists( 'woographql_create_nonce' ) ) :
+
 	/**
 	 * Creates WPGraphQL for WooCommerce session transfer nonces.
 	 *
@@ -310,9 +317,11 @@ if ( ! function_exists( 'woographql_create_nonce' ) ) :
 
 		return substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
 	}
+
 endif;
 
 if ( ! function_exists( 'woographql_verify_nonce' ) ) :
+
 	/**
 	 * Validate WPGraphQL for WooCommerce session transfer nonces.
 	 *
@@ -359,4 +368,5 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 		// Invalid nonce.
 		return false;
 	}
+
 endif;
