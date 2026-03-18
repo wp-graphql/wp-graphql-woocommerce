@@ -12,23 +12,36 @@ if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
 }
 
 class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTestCase {
-	
+
+	/**
+	 * @var int Original error reporting level, restored in tearDown.
+	 */
+	private $original_error_reporting;
+
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->markTestSkipped( 'Skipping test for now.' );
-
-		// before
+		// Clear session state.
 		unset( $_SERVER['HTTP_WOOCOMMERCE_SESSION'] );
+		unset( $_SERVER['HTTP_CART_TOKEN'] );
 		$customer_cookie_key = apply_filters( 'woocommerce_cookie', 'wp_woocommerce_session_' . COOKIEHASH );
-		wc_setcookie( $customer_cookie_key, 0, time() - HOUR_IN_SECONDS );
 		unset( $_COOKIE[ $customer_cookie_key ] );
+
+		// Suppress E_USER_NOTICE from wc_setcookie() which fires when
+		// headers have already been sent (always the case in PHPUnit).
+		// WooCommerce's session handler calls setcookie() in many paths
+		// (init_session_cookie, destroy_session, forget_session, etc.)
+		// and triggers notices that Codeception promotes to exceptions.
+		$this->original_error_reporting = error_reporting();
+		error_reporting( $this->original_error_reporting & ~E_USER_NOTICE );
 	}
 	public function tearDown(): void {
 		unset( $_SERVER['HTTP_WOOCOMMERCE_SESSION'] );
-		WC()->session->destroy_session();
+		unset( $_SERVER['HTTP_CART_TOKEN'] );
 
-		// after
+		// Restore error reporting.
+		error_reporting( $this->original_error_reporting );
+
 		parent::tearDown();
 	}
 
@@ -220,13 +233,16 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		// Create session handler.
 		$session = new QL_Session_Handler();
 
-		// Should fail to set headers if run before initialization.
-		$session->set_customer_session_token( true );
-		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', [] );
-		$this->assertArrayNotHasKey( 'woocommerce-session', $graphql_response_headers );
+		// Before initialization, the session should not be issuing tokens.
+		$this->assertFalse( $session->sending_token(), 'Should not be issuing a token before initialization.' );
 
-		// Should success when run after initialization.
+		// After initialization, session token should be available in response headers.
 		$session->init_session_token();
+		$session->set_customer_session_token( true );
+
+		// Remove any leftover header filters and re-apply to test the current session only.
+		remove_all_filters( 'graphql_response_headers_to_send' );
+		$session->set_customer_session_token( true );
 		$graphql_response_headers = apply_filters( 'graphql_response_headers_to_send', [] );
 		$this->assertArrayHasKey( 'woocommerce-session', $graphql_response_headers );
 	}
@@ -243,8 +259,8 @@ class QLSessionHandlerTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$old_token = $session->build_token();
 		$this->assertIsString( $old_token );
 
-		// Forget session
-		$session->forget_session();
+		// Forget session (suppress cookie notice in PHPUnit context).
+		@$session->forget_session();
 
 		// Get new token.
 		$new_token = $session->build_token();

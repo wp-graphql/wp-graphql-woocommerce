@@ -179,7 +179,7 @@ add_action( 'plugins_loaded', 'WPGraphQL\WooCommerce\init_auth_router' );
  * @return void
  */
 function prevent_early_wc_cart_loading() {
-	if ( ! is_graphql_http_request() ) {
+	if ( ! function_exists( 'is_graphql_http_request' ) || ! is_graphql_http_request() ) {
 		return;
 	}
 

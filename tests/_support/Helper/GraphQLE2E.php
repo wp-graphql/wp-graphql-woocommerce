@@ -1096,6 +1096,16 @@ class GraphQLE2E extends \Codeception\Module {
 	}
 
 	/**
+	 * Validates a Store API Cart-Token JWT using WooCommerce's own JsonWebToken class.
+	 *
+	 * Uses the same class and secret that signed the token, avoiding cross-library
+	 * signature mismatches between WooCommerce's JWT implementation and firebase/php-jwt.
+	 *
+	 * @param string $token  The Cart-Token JWT string.
+	 *
+	 * @return array  The decoded token payload.
+	 */
+	/**
 	 * Creates a cart page with WooCommerce shortcode in the database
 	 *
 	 * @param string $slug  The page slug. Defaults to 'cart-shortcode'.

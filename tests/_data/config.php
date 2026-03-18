@@ -48,5 +48,3 @@ if ( ! defined( 'STRIPE_API_PUBLISHABLE_KEY' ) && false !== getenv( 'STRIPE_API_
 if ( ! defined( 'STRIPE_API_SECRET_KEY' ) && false !== getenv( 'STRIPE_API_SECRET_KEY' ) ) {
 	define( 'STRIPE_API_SECRET_KEY', getenv( 'STRIPE_API_SECRET_KEY' ) );
 }
-
-define( 'DISABLE_WP_CRON', true );
