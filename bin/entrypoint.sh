@@ -52,19 +52,6 @@ wp config create \
 	--quiet \
 	--allow-root
 
-# Set unique salt constants so wp_salt() uses them directly instead of
-# falling back to auto-generated DB values when Docker lacks internet
-# access to fetch salts from the WordPress.org API.
-echo "Setting WordPress salts..."
-wp config set AUTH_KEY         'woogql-test-auth-key-7f3a9b2c1d4e5f6071829a3b4c5d6e' --allow-root
-wp config set SECURE_AUTH_KEY  'woogql-test-secure-auth-key-8a4b2c3d5e6f7081' --allow-root
-wp config set LOGGED_IN_KEY    'woogql-test-logged-in-key-9b5c3d4e6f708192' --allow-root
-wp config set NONCE_KEY        'woogql-test-nonce-key-0c6d4e5f70819203a4b5' --allow-root
-wp config set AUTH_SALT        'woogql-test-auth-salt-1d7e5f60819203a4b5c6' --allow-root
-wp config set SECURE_AUTH_SALT 'woogql-test-secure-auth-salt-2e8f607192a3b4' --allow-root
-wp config set LOGGED_IN_SALT   'woogql-test-logged-in-salt-3f90718293a4b5c6' --allow-root
-wp config set NONCE_SALT       'woogql-test-nonce-salt-40a18293b4c5d6e7f809' --allow-root
-
 # Install WP if not yet installed
 if ! $( wp core is-installed --allow-root ); then
 	echo "Installing WordPress..."
