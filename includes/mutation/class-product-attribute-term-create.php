@@ -140,7 +140,7 @@ class Product_Attribute_Term_Create {
 			$term = wp_insert_term( $name, $taxonomy, $args );
 		} else {
 			$updating = 'updateProductAttributeTerm' === $info->fieldName;
-			throw new UserError( 
+			throw new UserError(
 				$updating
 					? __( 'A name is required to create a new product attribute term.', 'wp-graphql-woocommerce' )
 					: __( 'A valid term "id" and changeable parameter are required to update a product attribute term.', 'wp-graphql-woocommerce' )
@@ -153,7 +153,7 @@ class Product_Attribute_Term_Create {
 
 		/**
 		 * Newly created product attribute term.
-		 * 
+		 *
 		 * @var \WP_Term|\WP_Error|null $term
 		 */
 		$term = get_term( $term['term_id'], $taxonomy );

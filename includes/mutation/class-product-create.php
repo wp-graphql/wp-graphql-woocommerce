@@ -409,7 +409,6 @@ class Product_Create {
 				$product->set_manage_stock( $manage_stock );
 			}
 
-
 			if ( isset( $input['backorders'] ) ) {
 				$product->set_backorders( $input['backorders'] );
 			}

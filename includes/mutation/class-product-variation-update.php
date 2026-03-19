@@ -38,7 +38,7 @@ class Product_Variation_Update {
 	 * @return array
 	 */
 	public static function get_input_fields() {
-		return array_merge( 
+		return array_merge(
 			[
 				'id' => [
 					'type'        => [ 'non_null' => 'ID' ],

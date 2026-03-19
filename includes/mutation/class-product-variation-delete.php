@@ -103,7 +103,7 @@ class Product_Variation_Delete {
 
 			/**
 			 * Get the variation to be deleted.
-			 * 
+			 *
 			 * @var \WC_Product_Variation $variation_to_be_deleted
 			 */
 			$variation_to_be_deleted = \wc_get_product( $object->ID );
@@ -121,7 +121,7 @@ class Product_Variation_Delete {
 					if ( 'trash' === $variation_to_be_deleted->get_status() ) {
 						throw new UserError( __( 'Product variation is already in the trash.', 'wp-graphql-woocommerce' ) );
 					}
-	
+
 					$variation_to_be_deleted->delete();
 
 					/**

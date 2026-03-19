@@ -118,7 +118,6 @@ class Product_Attribute_Create {
 			 */
 			do_action( 'graphql_woocommerce_insert_product_attribute', $attribute, $input, true );
 
-
 			return [ 'attribute' => $attribute ];
 		};
 	}

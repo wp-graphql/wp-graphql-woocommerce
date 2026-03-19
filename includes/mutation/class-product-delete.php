@@ -148,7 +148,7 @@ class Product_Delete {
 					if ( 'trash' === $product_to_be_deleted->get_status() ) {
 						throw new UserError( __( 'Product is already in the trash.', 'wp-graphql-woocommerce' ) );
 					}
-	
+
 					$product_to_be_deleted->delete();
 
 					/**

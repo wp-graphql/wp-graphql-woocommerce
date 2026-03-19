@@ -19,7 +19,7 @@ class Product_Mutation {
 	 *
 	 * @param \WC_Product $product  Product object.
 	 * @param array       $input    Mutation input.
-	 * 
+	 *
 	 * @return \WC_Product
 	 */
 	public static function save_product_shipping_data( $product, $input ) {
@@ -50,13 +50,13 @@ class Product_Mutation {
 		if ( isset( $input['shippingClass'] ) ) {
 			/**
 			 * Shipping class.
-			 * 
+			 *
 			 * @var string $shippingClass
 			 */
 			$shippingClass = wc_clean( $input['shippingClass'] );
 			/**
 			 * WC product data store instance.
-			 * 
+			 *
 			 * @var \WC_Product_Data_Store_Interface $data_store
 			 */
 			$data_store        = $product->get_data_store();
@@ -78,19 +78,19 @@ class Product_Mutation {
 	 * Prepare product attribute
 	 *
 	 * @param array $attribute  Product attribute data.
-	 * 
+	 *
 	 * @return \WC_Product_Attribute|null
 	 */
 	public static function prepare_attribute( $attribute ) {
 		/**
 		 * Attribute ID.
-		 * 
+		 *
 		 * @var int $attribute_id
 		 */
 		$attribute_id = 0;
 		/**
 		 * Attribute name.
-		 * 
+		 *
 		 * @var string $attribute_name
 		 */
 		$attribute_name = '';
@@ -160,7 +160,7 @@ class Product_Mutation {
 	 * @param \WC_Product $product   Product instance.
 	 * @param array       $term_ids  Terms IDs.
 	 * @param string      $taxonomy  Taxonomy name.
-	 * 
+	 *
 	 * @return \WC_Product
 	 */
 	public static function save_taxonomy_terms( $product, $term_ids, $taxonomy = 'cat' ) {
@@ -178,7 +178,7 @@ class Product_Mutation {
 	 *
 	 * @param \WC_Product|\WC_Product_Variation $product    Product instance.
 	 * @param array                             $downloads  Downloads data.
-	 * 
+	 *
 	 * @return \WC_Product|\WC_Product_Variation
 	 */
 	public static function save_downloadable_files( $product, $downloads ) {
@@ -205,7 +205,7 @@ class Product_Mutation {
 	 *
 	 * @param \WC_Product $product  Product object.
 	 * @param array       $input    Mutation input.
-	 * 
+	 *
 	 * @return \WC_Product
 	 */
 	public static function save_default_attributes( $product, $input ) {
@@ -216,13 +216,13 @@ class Product_Mutation {
 			foreach ( $input['defaultAttributes'] as $attribute ) {
 				/**
 				 * Attribute ID.
-				 * 
+				 *
 				 * @var int $attribute_id
 				 */
 				$attribute_id = 0;
 				/**
 				 * Attribute name.
-				 * 
+				 *
 				 * @var string $attribute_name
 				 */
 				$attribute_name = '';
@@ -247,7 +247,7 @@ class Product_Mutation {
 						 *
 						 * @var string $value
 						 */
-						$value = isset( $attribute['attributeValue'] ) ? wc_clean( stripslashes( $attribute['attributeValue'] ) ) : ''; 
+						$value = isset( $attribute['attributeValue'] ) ? wc_clean( stripslashes( $attribute['attributeValue'] ) ) : '';
 
 						if ( ! empty( $_attribute['is_taxonomy'] ) ) {
 							$term = get_term_by( 'name', $value, $attribute_name );
@@ -277,9 +277,9 @@ class Product_Mutation {
 	 *
 	 * @param \WC_Product $product Product instance.
 	 * @param array       $images  Images data.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If image upload fails | Invalid image ID.
-	 * 
+	 *
 	 * @return \WC_Product
 	 */
 	public static function set_product_images( $product, $images ) {
@@ -343,7 +343,7 @@ class Product_Mutation {
 
 			/**
 			 * Featured image ID in position 0.
-			 * 
+			 *
 			 * @var int $image_id
 			 */
 			$image_id = array_shift( $gallery );
@@ -363,7 +363,7 @@ class Product_Mutation {
 	 * Retrieve product attribute
 	 *
 	 * @param int $id  Attribute ID.
-	 * 
+	 *
 	 * @throws \GraphQL\Error\UserError If attribute ID is invalid.
 	 *
 	 * @return object{'attribute_id': int}

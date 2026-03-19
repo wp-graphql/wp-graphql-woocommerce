@@ -78,7 +78,7 @@ class Product_Attribute_Term_Delete {
 			if ( ! $input['attributeId'] ) {
 				throw new UserError( __( 'A valid attributeId is required to create a new product attribute term.', 'wp-graphql-woocommerce' ) );
 			}
-			
+
 			$taxonomy = wc_attribute_taxonomy_name_by_id( $input['attributeId'] );
 			if ( empty( $taxonomy ) ) {
 				throw new UserError( __( 'Invalid attribute ID.', 'wp-graphql-woocommerce' ) );
