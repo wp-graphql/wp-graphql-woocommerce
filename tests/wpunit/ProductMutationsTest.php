@@ -37,12 +37,14 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                             shippingRequired
                             shippingTaxable
                         }
-                        attributes {
-                            nodes {
-                                id
-                                name
-                                label
-                                options
+                        ... on SimpleProduct {
+                            attributes {
+                                nodes {
+                                    id
+                                    name
+                                    label
+                                    options
+                                }
                             }
                         }
                     }
@@ -354,13 +356,13 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                     ],
                     array_map(
                         function( $id ) {
-                            return $this->expectedField( 'upsell.nodes.#.id', $this->toRelayId( 'product', $id ) );
+                            return $this->expectedField( 'upsell.nodes.#.id', $this->toRelayId( 'post', $id ) );
                         },
                         $upsell_ids
                     ),
                     array_map(
                         function( $id ) {
-                            return $this->expectedField( 'crossSell.nodes.#.id', $this->toRelayId( 'product', $id ) );
+                            return $this->expectedField( 'crossSell.nodes.#.id', $this->toRelayId( 'post', $id ) );
                         },
                         $cross_sell_ids
                     )
@@ -379,12 +381,14 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                         id
                         name
                         type
-                        attributes {
-                            nodes {
-                                id
-                                name
-                                label
-                                options
+                        ... on SimpleProduct {
+                            attributes {
+                                nodes {
+                                    id
+                                    name
+                                    label
+                                    options
+                                }
                             }
                         }
                     }
@@ -425,7 +429,7 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                                 [
                                     $this->expectedField( 'id', self::NOT_NULL ),
                                     $this->expectedField( 'name', 'pa_kind' ),
-                                    $this->expectedField( 'label', 'Kind' ),
+                                    $this->expectedField( 'label', 'kind' ),
                                     $this->expectedField( 'options', [ 'special' ] ),
                                 ],
                                 0
@@ -521,7 +525,7 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                                 [
                                     $this->expectedField( 'id', self::NOT_NULL ),
                                     $this->expectedField( 'name', 'pa_kind' ),
-                                    $this->expectedField( 'label', 'Kind' ),
+                                    $this->expectedField( 'label', 'kind' ),
                                     $this->expectedField( 'options', [ 'normal', 'special' ] ),
                                     $this->expectedField( 'variation', true ),
                                     $this->expectedField( 'scope', 'GLOBAL' ),
@@ -532,7 +536,7 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                                 [
                                     $this->expectedField( 'id', self::NOT_NULL ),
                                     $this->expectedField( 'name', 'logo' ),
-                                    $this->expectedField( 'label', 'Logo' ),
+                                    $this->expectedField( 'label', 'logo' ),
                                     $this->expectedField( 'options', [ 'yes', 'no' ] ),
                                     $this->expectedField( 'variation', true ),
                                     $this->expectedField( 'scope', 'LOCAL' ),
@@ -548,7 +552,7 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                                 [
                                     $this->expectedField( 'id', self::NOT_NULL ),
                                     $this->expectedField( 'name', 'pa_kind' ),
-                                    $this->expectedField( 'label', 'Kind' ),
+                                    $this->expectedField( 'label', 'kind' ),
                                     $this->expectedField( 'value', 'special' ),
                                 ],
                             ),
@@ -557,7 +561,7 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                                 [
                                     $this->expectedField( 'id', self::NOT_NULL ),
                                     $this->expectedField( 'name', 'logo' ),
-                                    $this->expectedField( 'label', 'Logo' ),
+                                    $this->expectedField( 'label', 'logo' ),
                                     $this->expectedField( 'value', 'yes' ),
                                 ],
                             ),
@@ -691,12 +695,14 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                         ... on InventoriedProduct {
                             stockQuantity
                         }
-                        attributes {
-                            nodes {
-                                id
-                                name
-                                label
-                                options
+                        ... on SimpleProduct {
+                            attributes {
+                                nodes {
+                                    id
+                                    name
+                                    label
+                                    options
+                                }
                             }
                         }
                     }
@@ -770,12 +776,14 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                         ... on InventoriedProduct {
                             stockQuantity
                         }
-                        attributes {
-                            nodes {
-                                id
-                                name
-                                label
-                                options
+                        ... on SimpleProduct {
+                            attributes {
+                                nodes {
+                                    id
+                                    name
+                                    label
+                                    options
+                                }
                             }
                         }
                     }
@@ -784,7 +792,7 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
         ';
 
         $variables = [
-            'input' => [ 
+            'input' => [
                 'id'    => $product_id,
                 'force' => true,
             ],
@@ -819,7 +827,8 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
         ];
         $this->assertQuerySuccessful( $response, $expected );
 
-        // Assert product is deleted.
+        // Assert product is deleted from the database.
+        wp_cache_flush();
         $product = wc_get_product( $product_id );
         $this->assertFalse( $product );
     }

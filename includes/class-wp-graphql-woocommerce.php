@@ -375,8 +375,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-review-write.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';
 			require $include_directory_path . 'mutation/class-review-update.php';
-			require $include_directory_path . 'mutation/class-payment-method-delete.php';
-			require $include_directory_path . 'mutation/class-payment-method-set-default.php';
 			require $include_directory_path . 'mutation/class-session-delete.php';
 			require $include_directory_path . 'mutation/class-session-update.php';
 			require $include_directory_path . 'mutation/class-shipping-zone-create.php';

@@ -63,7 +63,7 @@ class Product_Delete {
 			'product' => [
 				'type'    => 'Product',
 				'resolve' => static function ( $payload ) {
-					return $payload['product'];
+					return ! empty( $payload['product'] ) ? $payload['product'] : null;
 				},
 			],
 		];
@@ -78,8 +78,9 @@ class Product_Delete {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			$product_id = $input['id'];
 			$force      = isset( $input['force'] ) ? $input['force'] : false;
-			$object     = new Product( $product_id );
 			$result     = false;
+
+			$object = new Product( $product_id );
 
 			if ( 0 === $object->ID ) {
 				throw new UserError( __( 'Invalid product ID.', 'wp-graphql-woocommerce' ) );
@@ -107,11 +108,15 @@ class Product_Delete {
 
 			/**
 			 * Get the product to be deleted.
-			 * 
+			 *
 			 * @var \WC_Product $product_to_be_deleted
 			 */
 			$product_to_be_deleted = \wc_get_product( $object->ID );
-			
+
+			// Capture the WP_Post before deletion so it can be re-cached
+			// after deletion for the type resolver.
+			$cached_post = get_post( $object->ID );
+
 			if ( $force ) {
 				if ( $product_to_be_deleted->is_type( 'variable' ) ) {
 					foreach ( $product_to_be_deleted->get_children() as $child_id ) {
@@ -169,6 +174,12 @@ class Product_Delete {
 			 * @param array   $input   The mutation input.
 			 */
 			do_action( 'graphql_woocommerce_delete_product_object', $object, $input );
+
+			// Re-cache the post after deletion so the Product model's type
+			// resolver can still determine the GraphQL type for the response.
+			if ( $cached_post ) {
+				wp_cache_set( $cached_post->ID, $cached_post, 'posts' );
+			}
 
 			return [ 'product' => $object ];
 		};

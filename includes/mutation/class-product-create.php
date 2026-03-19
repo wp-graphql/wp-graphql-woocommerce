@@ -252,7 +252,7 @@ class Product_Create {
 	 *
 	 * @return array
 	 */
-	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {        
+	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		$product_id = ! empty( $input['id'] ) ? $input['id'] : 0;
 		$type       = ! empty( $input['type'] ) ? $input['type'] : 'simple';
 
@@ -525,7 +525,7 @@ class Product_Create {
 		 * @param array       $input     GraphQL input object.
 		 * @param bool        $creating  If is creating a new object.
 		 */
-		$product = apply_filters( 'graphql_woocommerce_pre_insert_product_object', $product, $input, true ); 
+		$product = apply_filters( 'graphql_woocommerce_pre_insert_product_object', $product, $input, true );
 
 		$product_id = $product->save();
 

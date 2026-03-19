@@ -60,7 +60,7 @@ class ProductVariationMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'createProductVariation.variation',
                 [
                     $this->expectedField( 'id', self::NOT_NULL ),
-                    $this->expectedField( 'parent.node.id', $this->toRelayId( 'product', $product_id ) ),
+                    $this->expectedField( 'parent.node.id', $this->toRelayId( 'post', $product_id ) ),
                     $this->expectedField( 'price', "$9.99" ),
                     $this->expectedField( 'regularPrice', "$14.99" ),
                     $this->expectedField( 'salePrice', "$9.99" ),
@@ -111,8 +111,8 @@ class ProductVariationMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
             $this->expectedObject(
                 'updateProductVariation.variation',
                 [
-                    $this->expectedField( 'id', $this->toRelayId( 'product_variation', $ids['variations'][0] ) ),
-                    $this->expectedField( 'parent.node.id', $this->toRelayId( 'product', $ids['product'] ) ),
+                    $this->expectedField( 'id', $this->toRelayId( 'post', $ids['variations'][0] ) ),
+                    $this->expectedField( 'parent.node.id', $this->toRelayId( 'post', $ids['product'] ) ),
                     $this->expectedField( 'price', "$14.99" ),
                     $this->expectedField( 'regularPrice', "$19.99" ),
                     $this->expectedField( 'salePrice', "$14.99" ),
@@ -160,8 +160,8 @@ class ProductVariationMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
             $this->expectedObject(
                 'deleteProductVariation.variation',
                 [
-                    $this->expectedField( 'id', $this->toRelayId( 'product_variation', $ids['variations'][0] ) ),
-                    $this->expectedField( 'parent.node.id', $this->toRelayId( 'product', $ids['product'] ) ),
+                    $this->expectedField( 'id', $this->toRelayId( 'post', $ids['variations'][0] ) ),
+                    $this->expectedField( 'parent.node.id', $this->toRelayId( 'post', $ids['product'] ) ),
                     $this->expectedField( 'price', self::NOT_NULL ),
                 ]
             )
