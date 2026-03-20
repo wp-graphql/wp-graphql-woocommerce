@@ -649,6 +649,9 @@ class Checkout_Mutation {
 		// Add meta data.
 		if ( ! empty( $input['metaData'] ) ) {
 			self::update_order_meta( $order_id, $input['metaData'], $input, $context, $info );
+
+			// Refresh the order object so the hook below receives the updated meta.
+			$order = wc_get_order( $order_id );
 		}
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
