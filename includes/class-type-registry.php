@@ -193,13 +193,9 @@ class Type_Registry {
 		Mutation\Order_Delete_Items::register_mutation();
 		Mutation\Order_Note_Create::register_mutation();
 		Mutation\Order_Note_Delete::register_mutation();
-		Mutation\Checkout::register_mutation();
 		Mutation\Review_Write::register_mutation();
 		Mutation\Review_Update::register_mutation();
 		Mutation\Review_Delete_Restore::register_mutation();
-		Mutation\Coupon_Create::register_mutation();
-		Mutation\Coupon_Update::register_mutation();
-		Mutation\Coupon_Delete::register_mutation();
 		Mutation\Payment_Method_Delete::register_mutation();
 		Mutation\Payment_Method_Set_Default::register_mutation();
 		Mutation\Product_Attribute_Create::register_mutation();
@@ -214,9 +210,6 @@ class Type_Registry {
 		Mutation\Product_Variation_Create::register_mutation();
 		Mutation\Product_Variation_Update::register_mutation();
 		Mutation\Product_Variation_Delete::register_mutation();
-		Mutation\Review_Write::register_mutation();
-		Mutation\Review_Update::register_mutation();
-		Mutation\Review_Delete_Restore::register_mutation();
 		Mutation\Session_Delete::register_mutation();
 		Mutation\Session_Update::register_mutation();
 		Mutation\Shipping_Zone_Create::register_mutation();
