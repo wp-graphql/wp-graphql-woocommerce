@@ -118,7 +118,9 @@ class Product_Mutation {
 				}
 
 				$values = array_map( 'wc_sanitize_term_text_based', $options );
-				$values = array_filter( $values, 'strlen' );
+				/** @var callable(string): bool */
+				$callback = 'strlen';
+				$values   = array_filter( $values, $callback );
 			} else {
 				$values = [];
 			}
@@ -252,7 +254,7 @@ class Product_Mutation {
 						if ( ! empty( $_attribute['is_taxonomy'] ) ) {
 							$term = get_term_by( 'name', $value, $attribute_name );
 
-							if ( $term && ! is_wp_error( $term ) ) {
+							if ( ! empty( $term ) ) {
 								$value = $term->slug;
 							} else {
 								$value = sanitize_title( $value );

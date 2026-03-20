@@ -19,8 +19,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
         $variables = [
             'input' => [
-                'name'        => 'Pattern',
-                'slug'        => 'pattern',
+                'name'        => 'Fabric',
+                'slug'        => 'fabric',
                 'orderBy'     => 'menu_order',
                 'hasArchives' => false,
             ],
@@ -44,8 +44,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'createProductAttribute.attribute',
                 [
                     $this->expectedField( 'id', self::NOT_NULL ),
-                    $this->expectedField( 'name', 'pattern' ),
-                    $this->expectedField( 'label', 'Pattern' ),
+                    $this->expectedField( 'name', 'fabric' ),
+                    $this->expectedField( 'label', 'Fabric' ),
                     $this->expectedField( 'type', 'select' ),
                     $this->expectedField( 'orderBy', 'menu_order' ),
                     $this->expectedField( 'hasArchives', false ),
@@ -73,8 +73,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
         $variables = [
             'input' => [
-                'name'        => 'Pattern',
-                'slug'        => 'pattern',
+                'name'        => 'Fabric',
+                'slug'        => 'fabric',
                 'orderBy'     => 'menu_order',
                 'hasArchives' => false,
             ],
@@ -114,8 +114,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
         $variables = [
             'input' => [
                 'id'          => $attribute_id,
-                'name'        => 'Pattern',
-                'slug'        => 'pattern',
+                'name'        => 'Fabric',
+                'slug'        => 'fabric',
                 'orderBy'     => 'menu_order',
                 'hasArchives' => true,
             ],
@@ -140,8 +140,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
                 'updateProductAttribute.attribute',
                 [
                     $this->expectedField( 'id', $attribute_id ),
-                    $this->expectedField( 'name', 'pattern' ),
-                    $this->expectedField( 'label', 'Pattern' ),
+                    $this->expectedField( 'name', 'fabric' ),
+                    $this->expectedField( 'label', 'Fabric' ),
                     $this->expectedField( 'type', 'select' ),
                     $this->expectedField( 'orderBy', 'menu_order' ),
                     $this->expectedField( 'hasArchives', true ),
@@ -165,8 +165,8 @@ class ProductAttributeMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
         $variables = [
             'input' => [
-                'name'        => 'Pattern',
-                'slug'        => 'pattern',
+                'name'        => 'Fabric',
+                'slug'        => 'fabric',
                 'orderBy'     => 'menu_order',
                 'hasArchives' => false,
             ],

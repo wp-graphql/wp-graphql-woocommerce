@@ -337,7 +337,7 @@ class Product_Variation_Create {
 					// If dealing with a taxonomy, we need to get the slug from the name posted to the API.
                     $term = get_term_by( 'name', $attribute_value, $raw_attribute_name ); // @codingStandardsIgnoreLine
 
-					if ( $term && ! is_wp_error( $term ) ) {
+					if ( ! empty( $term ) ) {
 						$attribute_value = $term->slug;
 					} else {
 						$attribute_value = sanitize_title( $attribute_value );
