@@ -36,8 +36,8 @@ class IntrospectionQueryTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGr
 	// Test introspection query.
 	public function testIntrospectionQuery() {
 		$query   = \GraphQL\Type\Introspection::getIntrospectionQuery();
-		$results = graphql( [ 'query' => $query ] );
+		$results = $this->graphql( compact( 'query' ) );
 
-		$this->assertArrayNotHasKey( 'errors', $results );
+		$this->assertQuerySuccessful( $results, [] );
 	}
 }

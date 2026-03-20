@@ -153,7 +153,8 @@ class Core_Schema_Filters {
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
 			$args['graphql_resolve_type']             = [ self::class, 'resolve_product_type' ];
-		}
+			$args['graphql_exclude_mutations']        = [ 'create', 'delete', 'update' ];
+		}//end if
 		if ( 'product_variation' === $post_type ) {
 			$args['show_in_graphql']                  = true;
 			$args['model']                            = \WPGraphQL\WooCommerce\Model\Product_Variation::class;
@@ -175,6 +176,7 @@ class Core_Schema_Filters {
 			$args['graphql_register_root_field']      = false;
 			$args['graphql_register_root_connection'] = false;
 			$args['graphql_resolve_type']             = [ self::class, 'resolve_product_variation_type' ];
+			$args['graphql_exclude_mutations']        = [ 'create', 'delete', 'update' ];
 		}
 		if ( 'shop_coupon' === $post_type ) {
 			$args['show_in_graphql']            = true;

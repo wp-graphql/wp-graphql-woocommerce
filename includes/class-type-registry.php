@@ -74,6 +74,10 @@ class Type_Registry {
 		Type\WPInputObject\Product_Attribute_Query_Input::register();
 		Type\WPInputObject\Shipping_Location_Input::register();
 		Type\WPInputObject\WC_Setting_Input::register();
+		Type\WPInputObject\Product_Attributes_Input::register();
+		Type\WPInputObject\Product_Dimensions_Input::register();
+		Type\WPInputObject\Product_Download_Input::register();
+		Type\WPInputObject\Product_Image_Input::register();
 
 		/**
 		 * Interfaces.
@@ -125,6 +129,8 @@ class Type_Registry {
 		Type\WPObject\Tax_Class_Type::register();
 		Type\WPObject\WC_Setting_Type::register();
 		Type\WPObject\Cart_Notice::register();
+		Type\WPObject\Product_Attribute_Object_Type::register();
+		Type\WPObject\Product_Attribute_Term_Object_Type::register();
 
 		/**
 		 * Object fields.
@@ -164,19 +170,23 @@ class Type_Registry {
 		/**
 		 * Mutations.
 		 */
-		Mutation\Customer_Register::register_mutation();
-		Mutation\Customer_Update::register_mutation();
+		Mutation\Cart_Add_Fee::register_mutation();
 		Mutation\Cart_Add_Item::register_mutation();
 		Mutation\Cart_Add_Items::register_mutation();
-		Mutation\Cart_Update_Item_Quantities::register_mutation();
-		Mutation\Cart_Remove_Items::register_mutation();
-		Mutation\Cart_Restore_Items::register_mutation();
-		Mutation\Cart_Empty::register_mutation();
 		Mutation\Cart_Apply_Coupon::register_mutation();
-		Mutation\Cart_Remove_Coupons::register_mutation();
-		Mutation\Cart_Add_Fee::register_mutation();
-		Mutation\Cart_Update_Shipping_Method::register_mutation();
+		Mutation\Cart_Empty::register_mutation();
 		Mutation\Cart_Fill::register_mutation();
+		Mutation\Cart_Remove_Items::register_mutation();
+		Mutation\Cart_Remove_Coupons::register_mutation();
+		Mutation\Cart_Restore_Items::register_mutation();
+		Mutation\Cart_Update_Item_Quantities::register_mutation();
+		Mutation\Cart_Update_Shipping_Method::register_mutation();
+		Mutation\Checkout::register_mutation();
+		Mutation\Coupon_Create::register_mutation();
+		Mutation\Coupon_Update::register_mutation();
+		Mutation\Coupon_Delete::register_mutation();
+		Mutation\Customer_Register::register_mutation();
+		Mutation\Customer_Update::register_mutation();
 		Mutation\Order_Create::register_mutation();
 		Mutation\Order_Update::register_mutation();
 		Mutation\Order_Delete::register_mutation();
@@ -192,6 +202,23 @@ class Type_Registry {
 		Mutation\Coupon_Delete::register_mutation();
 		Mutation\Payment_Method_Delete::register_mutation();
 		Mutation\Payment_Method_Set_Default::register_mutation();
+		Mutation\Product_Attribute_Create::register_mutation();
+		Mutation\Product_Attribute_Update::register_mutation();
+		Mutation\Product_Attribute_Delete::register_mutation();
+		Mutation\Product_Attribute_Term_Create::register_mutation();
+		Mutation\Product_Attribute_Term_Update::register_mutation();
+		Mutation\Product_Attribute_Term_Delete::register_mutation();
+		Mutation\Product_Create::register_mutation();
+		Mutation\Product_Update::register_mutation();
+		Mutation\Product_Delete::register_mutation();
+		Mutation\Product_Variation_Create::register_mutation();
+		Mutation\Product_Variation_Update::register_mutation();
+		Mutation\Product_Variation_Delete::register_mutation();
+		Mutation\Review_Write::register_mutation();
+		Mutation\Review_Update::register_mutation();
+		Mutation\Review_Delete_Restore::register_mutation();
+		Mutation\Session_Delete::register_mutation();
+		Mutation\Session_Update::register_mutation();
 		Mutation\Shipping_Zone_Create::register_mutation();
 		Mutation\Shipping_Zone_Delete::register_mutation();
 		Mutation\Shipping_Zone_Locations_Clear::register_mutation();
@@ -205,7 +232,5 @@ class Type_Registry {
 		Mutation\Tax_Rate_Create::register_mutation();
 		Mutation\Tax_Rate_Delete::register_mutation();
 		Mutation\Tax_Rate_Update::register_mutation();
-		Mutation\Session_Delete::register_mutation();
-		Mutation\Session_Update::register_mutation();
 	}
 }
