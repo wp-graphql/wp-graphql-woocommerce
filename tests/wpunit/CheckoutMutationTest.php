@@ -1150,4 +1150,52 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Tests that metadata passed in the checkout input is available
+	 * on the order object in the woocommerce_checkout_order_processed hook.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/932
+	 */
+	public function testCheckoutMetaDataAvailableInProcessedHook() {
+		add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
+
+		$product_id = $this->factory->product->createSimple();
+		\WC()->cart->add_to_cart( $product_id, 1 );
+
+		// Listen for the hook and capture the order's meta.
+		$captured_meta = null;
+		add_action(
+			'woocommerce_checkout_order_processed',
+			function ( $order_id, $data, $order ) use ( &$captured_meta ) {
+				$captured_meta = $order->get_meta( 'checkout_source' );
+			},
+			10,
+			3
+		);
+
+		$input = $this->getCheckoutInput(
+			[
+				'metaData' => [
+					[
+						'key'   => 'checkout_source',
+						'value' => 'graphql_test',
+					],
+				],
+			]
+		);
+
+		$variables = [ 'input' => $input ];
+		$query     = $this->getCheckoutMutation();
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$expected = [
+			$this->expectedField( 'checkout.order.id', static::NOT_NULL ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Verify the hook received the order with meta already saved.
+		$this->assertEquals( 'graphql_test', $captured_meta, 'woocommerce_checkout_order_processed hook should receive the order with updated meta data.' );
+	}
 }
