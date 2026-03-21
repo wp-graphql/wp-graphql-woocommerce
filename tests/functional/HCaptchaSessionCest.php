@@ -165,4 +165,43 @@ class HCaptchaSessionCest {
 			'Session token after updateSession should still be the authenticated user ID, not a new guest.'
 		);
 	}
+
+	/**
+	 * Reproduces the exact scenario from #941: a cold login (no prior session)
+	 * should return a session token linked to the authenticated user, not a guest.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/941
+	 */
+	public function testColdLoginReturnsAuthenticatedSessionToken( FunctionalTester $I ) {
+		$I->setupStoreAndUsers();
+
+		$login_response = $I->login(
+			[
+				'clientMutationId' => 'coldLoginId',
+				'username'         => 'jimbo1234@example.com',
+				'password'         => 'password',
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$login_response,
+			[
+				$I->expectField( 'login.customer.databaseId', Signal::NOT_NULL ),
+				$I->expectField( 'login.authToken', Signal::NOT_NULL ),
+			]
+		);
+
+		$customer_id   = $I->lodashGet( $login_response, 'data.login.customer.databaseId' );
+		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+
+		// Decode the session token from the response header and verify the customer ID matches.
+		JWT::$leeway  = 60;
+		$token_data   = JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) );
+
+		$I->assertEquals(
+			(string) $customer_id,
+			$token_data->data->customer_id,
+			'Session token after login should contain the authenticated user ID, not a guest.'
+		);
+	}
 }
