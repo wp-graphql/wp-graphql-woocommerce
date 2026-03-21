@@ -36,6 +36,7 @@ install_wordpress() {
 		johnpbloch/wordpress:* \
         wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce \
+		wpackagist-plugin/hcaptcha-for-forms-and-more \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
@@ -54,6 +55,7 @@ remove_wordpress() {
         wpackagist-plugin/wp-graphql \
         wpackagist-theme/twentytwentyone \
         wpackagist-plugin/woocommerce \
+		wpackagist-plugin/hcaptcha-for-forms-and-more \
 		johnpbloch/wordpress \
 		composer/installers \
 		wp-cli/wp-cli-bundle
