@@ -182,6 +182,8 @@ class Type_Registry {
 		Mutation\Cart_Update_Item_Quantities::register_mutation();
 		Mutation\Cart_Update_Shipping_Method::register_mutation();
 		Mutation\Checkout::register_mutation();
+		Mutation\Product_Category_Create::register();
+		Mutation\Product_Category_Update::register();
 		Mutation\Coupon_Create::register_mutation();
 		Mutation\Coupon_Update::register_mutation();
 		Mutation\Coupon_Delete::register_mutation();

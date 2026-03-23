@@ -259,6 +259,12 @@ class Core_Schema_Filters {
 			$args['graphql_plural_name'] = 'shippingClasses';
 		}
 
+		if ( 'product_brand' === $taxonomy ) {
+			$args['show_in_graphql']     = true;
+			$args['graphql_single_name'] = 'productBrand';
+			$args['graphql_plural_name'] = 'productBrands';
+		}
+
 		// Filter product attributes taxonomies.
 		$attributes = WooGraphQL::get_product_attribute_taxonomies();
 		if ( in_array( $taxonomy, $attributes, true ) ) {
