@@ -418,21 +418,27 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		$tax_query     = [];
 		$taxonomy_args = [
-			'type'            => 'product_type',
-			'typeIn'          => 'product_type',
-			'typeNotIn'       => 'product_type',
-			'category'        => 'product_cat',
-			'categoryIn'      => 'product_cat',
-			'categoryNotIn'   => 'product_cat',
-			'categoryId'      => 'product_cat',
-			'categoryIdIn'    => 'product_cat',
-			'categoryIdNotIn' => 'product_cat',
-			'tag'             => 'product_tag',
-			'tagIn'           => 'product_tag',
-			'tagNotIn'        => 'product_tag',
-			'tagId'           => 'product_tag',
-			'tagIdIn'         => 'product_tag',
-			'tagIdNotIn'      => 'product_tag',
+			'type'                => 'product_type',
+			'typeIn'              => 'product_type',
+			'typeNotIn'           => 'product_type',
+			'category'            => 'product_cat',
+			'categoryIn'          => 'product_cat',
+			'categoryNotIn'       => 'product_cat',
+			'categoryId'          => 'product_cat',
+			'categoryIdIn'        => 'product_cat',
+			'categoryIdNotIn'     => 'product_cat',
+			'tag'                 => 'product_tag',
+			'tagIn'               => 'product_tag',
+			'tagNotIn'            => 'product_tag',
+			'tagId'               => 'product_tag',
+			'tagIdIn'             => 'product_tag',
+			'tagIdNotIn'          => 'product_tag',
+			'productBrand'        => 'product_brand',
+			'productBrandIn'      => 'product_brand',
+			'productBrandNotIn'   => 'product_brand',
+			'productBrandId'      => 'product_brand',
+			'productBrandIdIn'    => 'product_brand',
+			'productBrandIdNotIn' => 'product_brand',
 		];
 
 		foreach ( $taxonomy_args as $field => $taxonomy ) {
@@ -481,6 +487,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					case 'tag':
 					case 'tagIn':
 					case 'tagNotIn':
+					case 'productBrand':
+					case 'productBrandIn':
+					case 'productBrandNotIn':
 						// Get terms.
 						$terms = $where_args[ $field ];
 						if ( ! is_array( $terms ) ) {
@@ -509,6 +518,9 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 					case 'tagId':
 					case 'tagIdIn':
 					case 'tagIdNotIn':
+					case 'productBrandId':
+					case 'productBrandIdIn':
+					case 'productBrandIdNotIn':
 						$tax_query[] = [
 							'taxonomy' => $taxonomy,
 							'field'    => 'term_id',
