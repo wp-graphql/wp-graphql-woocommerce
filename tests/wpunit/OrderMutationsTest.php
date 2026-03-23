@@ -1280,4 +1280,112 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$actual = $this->orderNoteMutation( $invalid_order_input );
 		$this->assertQueryError( $actual );
 	}
+
+	/**
+	 * Test that updateOrder with only metaData does not create a duplicate order.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/591
+	 */
+	public function testUpdateOrderMetaDataDoesNotDuplicate() {
+		wp_set_current_user( $this->shop_manager );
+
+		// Create an order.
+		$order_id = $this->order->create(
+			[
+				'status'      => 'processing',
+				'customer_id' => $this->customer,
+			]
+		);
+
+		// Count orders before mutation.
+		$orders_before = wc_get_orders( [ 'return' => 'ids', 'limit' => -1 ] );
+		$count_before  = count( $orders_before );
+
+		// Update only metaData — the exact scenario from #591.
+		$mutation = '
+			mutation updateOrder($input: UpdateOrderInput!) {
+				updateOrder(input: $input) {
+					order {
+						databaseId
+						metaData {
+							key
+							value
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'input' => [
+				'id'       => $order_id,
+				'metaData' => [
+					[
+						'key'   => '_tracking_number',
+						'value' => 'ABC123',
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+
+		$expected = [
+			$this->expectedField( 'updateOrder.order.databaseId', $order_id ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Verify metaData was set.
+		$order = wc_get_order( $order_id );
+		$this->assertEquals( 'ABC123', $order->get_meta( '_tracking_number' ) );
+
+		// Count orders after mutation — should be the same.
+		$orders_after = wc_get_orders( [ 'return' => 'ids', 'limit' => -1 ] );
+		$count_after  = count( $orders_after );
+
+		$this->assertEquals(
+			$count_before,
+			$count_after,
+			'updateOrder with new metaData should not create a duplicate order.'
+		);
+
+		// Now update the same meta key with a new value.
+		$count_before_update = $count_after;
+
+		$variables['input']['metaData'] = [
+			[
+				'key'   => '_tracking_number',
+				'value' => 'XYZ789',
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Verify metaData was updated.
+		$order = wc_get_order( $order_id );
+		$this->assertEquals( 'XYZ789', $order->get_meta( '_tracking_number' ) );
+
+		// Count orders after updating existing meta — should still be the same.
+		$orders_after_update = wc_get_orders( [ 'return' => 'ids', 'limit' => -1 ] );
+		$count_after_update  = count( $orders_after_update );
+
+		$this->assertEquals(
+			$count_before_update,
+			$count_after_update,
+			'updateOrder with existing metaData should not create a duplicate order.'
+		);
+	}
 }
