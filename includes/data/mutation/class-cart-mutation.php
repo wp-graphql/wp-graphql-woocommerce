@@ -192,7 +192,7 @@ class Cart_Mutation {
 
 		// Check it can be used with cart.
 		$discounts = new \WC_Discounts( \WC()->cart );
-		$valid = $discounts->is_coupon_valid( $the_coupon );
+		$valid     = $discounts->is_coupon_valid( $the_coupon );
 		if ( is_wp_error( $valid ) ) {
 			$reason = $valid->get_error_message();
 			return false;
