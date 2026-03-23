@@ -85,6 +85,24 @@ class Product_With_Attributes {
 					return $resolver->get_connection();
 				},
 			],
+			'localAttributes'   => [
+				'toType'         => 'LocalProductAttribute',
+				'fromFieldName'  => 'localAttributes',
+				'connectionArgs' => [],
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info, 'local' );
+					return $resolver->get_connection();
+				},
+			],
+			'globalAttributes'  => [
+				'toType'         => 'GlobalProductAttribute',
+				'fromFieldName'  => 'globalAttributes',
+				'connectionArgs' => [],
+				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+					$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info, 'global' );
+					return $resolver->get_connection();
+				},
+			],
 		];
 	}
 }

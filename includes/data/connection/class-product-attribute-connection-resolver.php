@@ -15,17 +15,14 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQLRelay\Relay;
 use WPGraphQL\AppContext;
 
-const GLOBAL_ID_DELIMITER = ':';
-
 /**
  * Class Product_Attribute_Connection_Resolver
  */
 class Product_Attribute_Connection_Resolver {
-
 	/**
 	 * The source from the field calling the connection.
 	 *
-	 * @var \WPGraphQL\WooCommerce\Model\Product|null
+	 * @var \WPGraphQL\WooCommerce\Model\Product|\WPGraphQL\Model\Term|null
 	 */
 	protected $source;
 
@@ -53,7 +50,7 @@ class Product_Attribute_Connection_Resolver {
 	/**
 	 * The attribute type.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $type;
 
@@ -61,44 +58,17 @@ class Product_Attribute_Connection_Resolver {
 	 * Product_Attribute_Connection_Resolver constructor.
 	 *
 	 * @param \WPGraphQL\WooCommerce\Model\Product|null $source   Source node.
-	 * @param ?array                                     $args     Connection arguments.
+	 * @param array                                     $args     Connection arguments.
 	 * @param \WPGraphQL\AppContext                     $context  AppContext object.
 	 * @param \GraphQL\Type\Definition\ResolveInfo      $info     ResolveInfo object.
-	 * @param string                                    $type     Attribute type.
+	 * @param string|null                               $type     Attribute type.
 	 */
-	public function __construct( $source, array $args, AppContext $context, ResolveInfo $info, string $type = null ) {
+	public function __construct( $source, array $args, AppContext $context, ResolveInfo $info, $type = null ) {
 		$this->source  = $source;
 		$this->args    = $args;
 		$this->context = $context;
 		$this->info    = $info;
 		$this->type    = $type;
-	}
-
-	/**
-	 * Builds Product attribute items
-	 *
-	 * @param array                                $attributes  Array of WC_Product_Attributes instances.
-	 * @param \WPGraphQL\WooCommerce\Model\Product $source      Parent product model.
-	 * @param array                                $args        Connection arguments.
-	 * @param \WPGraphQL\AppContext                $context     AppContext object.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info        ResolveInfo object.
-	 * @param string                               $type     Attribute type.
-	 *
-	 * @throws \GraphQL\Error\UserError  Invalid product attribute enumeration value.
-	 * @return array
-	 * 
-	 * @deprecated TBD
-	 */
-	private function get_items( $attributes, $source, $args, $context, $info, $type = null ) {
-		_deprecated_function( __METHOD__, 'TBD', static::class . '::build_nodes_from_product_attributes()' );
-
-		$this->source  = $source;
-		$this->args    = $args;
-		$this->context = $context;
-		$this->info    = $info;
-		$this->type    = $type;
-
-		return $this->build_nodes_from_source_attributes();
 	}
 
 	/**
@@ -108,15 +78,15 @@ class Product_Attribute_Connection_Resolver {
 	 * @param array                                $args     Connection arguments.
 	 * @param \WPGraphQL\AppContext                $context  AppContext object.
 	 * @param \GraphQL\Type\Definition\ResolveInfo $info     ResolveInfo object.
-	 * @param string                               $type     Attribute type.
+	 * @param string|null                          $type     Attribute type.
 	 *
 	 * @return array|null
-	 * 
+	 *
 	 * @deprecated TBD
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info, $type = null ) {
 		_deprecated_function( __METHOD__, 'TBD', static::class . '::get_connection()' );
-		
+
 		$this->source  = $source;
 		$this->args    = $args;
 		$this->context = $context;
@@ -129,31 +99,24 @@ class Product_Attribute_Connection_Resolver {
 	/**
 	 * Builds connection nodes from source product's attributes.
 	 *
+	 * @throws \GraphQL\Error\UserError If an invalid attribute type is provided in the connection args.
 	 * @return array
 	 */
 	private function build_nodes_from_source_attributes() {
 		$items = [];
-		if ( ! $this->source ) {
+		if ( ! $this->source instanceof \WPGraphQL\WooCommerce\Model\Product ) {
 			return $items;
 		}
 
 		$attributes = $this->source->attributes;
 
-		
 		if ( empty( $attributes ) ) {
 			return $items;
 		}
 
 		foreach ( $attributes as $attribute_name => $data ) {
-			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			$data->_relay_id = base64_encode(
-				$attribute_name
-				. GLOBAL_ID_DELIMITER
-				. $this->source->ID
-				. GLOBAL_ID_DELIMITER
-				. $data->get_name()
-			);
-			$items[]         = $data;
+			$data->_product_id = $this->source->ID;
+			$items[]           = $data;
 		}
 
 		$attribute_type = ! empty( $this->args['where'] ) && ! empty( $this->args['where']['type'] )
@@ -187,43 +150,137 @@ class Product_Attribute_Connection_Resolver {
 	}
 
 	/**
-	 * Builds connection nodes from woocommerce global product attributes.
+	 * Builds connection nodes from WooCommerce global product attributes.
 	 *
 	 * @return array
 	 */
 	private function build_nodes_from_global_attributes() {
-		// TODO: Implement this method.
-		return [];
+		$items                = [];
+		$attribute_taxonomies = wc_get_attribute_taxonomies();
+
+		if ( empty( $attribute_taxonomies ) ) {
+			return $items;
+		}
+
+		foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
+			$taxonomy_name = wc_attribute_taxonomy_name( $attribute_taxonomy->attribute_name );
+			$terms         = get_terms(
+				[
+					'taxonomy'   => $taxonomy_name,
+					'hide_empty' => false,
+				]
+			);
+
+			$term_values = [];
+			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+				$term_values = wp_list_pluck( $terms, 'slug' );
+			}
+
+			$attribute = new \WC_Product_Attribute();
+			$attribute->set_id( (int) $attribute_taxonomy->attribute_id );
+			$attribute->set_name( $taxonomy_name );
+			$attribute->set_options( $term_values );
+			$attribute->set_position( (int) $attribute_taxonomy->attribute_orderby );
+			$attribute->set_visible( (bool) $attribute_taxonomy->attribute_public );
+			$attribute->set_variation( false );
+
+			$items[] = $attribute;
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Builds connection nodes from product attributes scoped to a product category.
+	 *
+	 * @return array
+	 */
+	private function build_nodes_from_category_attributes() {
+		$items = [];
+
+		if ( ! $this->source instanceof \WPGraphQL\Model\Term ) {
+			return $items;
+		}
+
+		$category_id = $this->source->term_id;
+
+		// Get all products in this category.
+		$query       = new \WP_Query(
+			[
+				'post_type'      => 'product',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'tax_query'      => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					[
+						'taxonomy' => 'product_cat',
+						'field'    => 'term_id',
+						'terms'    => $category_id,
+					],
+				],
+			]
+		);
+		$product_ids = $query->posts;
+
+		if ( empty( $product_ids ) ) {
+			return $items;
+		}
+
+		// Collect unique attributes across all products in the category.
+		$seen_attributes = [];
+		foreach ( $product_ids as $product_id ) {
+			$product = wc_get_product( $product_id );
+			if ( ! $product ) {
+				continue;
+			}
+
+			$attributes = $product->get_attributes();
+			foreach ( $attributes as $attribute_name => $attribute ) {
+				if ( isset( $seen_attributes[ $attribute_name ] ) ) {
+					continue;
+				}
+
+				$seen_attributes[ $attribute_name ] = true;
+				$items[]                            = $attribute;
+			}
+		}
+
+		return $items;
 	}
 
 	/**
 	 * Builds connection from nodes array.
-	 * 
+	 *
 	 * @param array $nodes  Array of connection nodes.
 	 *
 	 * @return array|null
 	 */
 	private function build_connection( $nodes = [] ) {
-		$connection = $this->build_connection( $nodes );
-		$connection = Relay::connectionFromArray( $nodes, $this->args );
-		$nodes      = [];
+		if ( empty( $nodes ) ) {
+			return null;
+		}
+
+		$connection       = Relay::connectionFromArray( $nodes, $this->args );
+		$connection_nodes = [];
 		if ( ! empty( $connection['edges'] ) && is_array( $connection['edges'] ) ) {
 			foreach ( $connection['edges'] as $edge ) {
-				$nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;
+				$connection_nodes[] = ! empty( $edge['node'] ) ? $edge['node'] : null;
 			}
 		}
-		$connection['nodes'] = ! empty( $nodes ) ? $nodes : null;
-		return ! empty( $attributes ) ? $connection : null;
+		$connection['nodes'] = ! empty( $connection_nodes ) ? $connection_nodes : null;
+
+		return $connection;
 	}
 
 	/**
 	 * Constructs the connection.
-	 * 
+	 *
 	 * @return array|null
 	 */
 	public function get_connection() {
 		if ( ! $this->source ) {
 			$attributes = $this->build_nodes_from_global_attributes();
+		} elseif ( $this->source instanceof \WPGraphQL\Model\Term ) {
+			$attributes = $this->build_nodes_from_category_attributes();
 		} else {
 			$attributes = $this->build_nodes_from_source_attributes();
 		}

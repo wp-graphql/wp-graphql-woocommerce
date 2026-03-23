@@ -31,7 +31,11 @@ class Product_Attribute_Types {
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
-							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'LocalProductAttribute', $attribute->get_id() );
+							$id_parts = [ $attribute->get_name() ];
+							if ( ! empty( $attribute->_product_id ) ) {
+								$id_parts[] = $attribute->_product_id;
+							}
+							return Relay::toGlobalId( 'LocalProductAttribute', implode( ':', $id_parts ) );
 						},
 					],
 					'scope' => [
@@ -56,7 +60,7 @@ class Product_Attribute_Types {
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => __( 'Attribute Global ID', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $attribute ) {
-							return ! empty( $attribute->_relay_id ) ? $attribute->_relay_id : Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
+							return Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
 						},
 					],
 					'scope' => [

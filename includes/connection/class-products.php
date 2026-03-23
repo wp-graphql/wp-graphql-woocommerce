@@ -61,6 +61,46 @@ class Products {
 			)
 		);
 
+		// From ProductAttribute to Product.
+		register_graphql_connection(
+			self::get_connection_config(
+				[
+					'fromType'      => 'ProductAttribute',
+					'fromFieldName' => 'products',
+					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
+						$resolver = new Product_Connection_Resolver( $source, $args, $context, $info );
+
+						if ( $source->is_taxonomy() ) {
+							$resolver->set_query_arg(
+								'tax_query',
+								[
+									[
+										'taxonomy' => $source->get_name(),
+										'field'    => 'slug',
+										'terms'    => $source->get_slugs(),
+										'operator' => 'IN',
+									],
+								]
+							);
+						} else {
+							$resolver->set_query_arg(
+								'meta_query',
+								[
+									[
+										'key'     => '_product_attributes',
+										'value'   => $source->get_name(),
+										'compare' => 'LIKE',
+									],
+								]
+							);
+						}
+
+						return $resolver->get_connection();
+					},
+				]
+			)
+		);
+
 		// Connections from all product types to related and upsell.
 		register_graphql_connection(
 			self::get_connection_config(

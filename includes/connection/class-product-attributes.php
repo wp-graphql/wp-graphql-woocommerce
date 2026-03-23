@@ -25,43 +25,24 @@ class Product_Attributes {
 	 * @return void
 	 */
 	public static function register_connections() {
-		// From Product to LocalProductAttribute.
-		register_graphql_connection(
-			self::get_connection_config(
-				[
-					'fromType'       => 'Product',
-					'toType'         => 'LocalProductAttribute',
-					'fromFieldName'  => 'localAttributes',
-					'connectionArgs' => [],
-				]
-			)
-		);
-
-		// From Product to GlobalProductAttribute.
-		register_graphql_connection(
-			self::get_connection_config(
-				[
-					'fromType'       => 'Product',
-					'toType'         => 'GlobalProductAttribute',
-					'fromFieldName'  => 'globalAttributes',
-					'connectionArgs' => [],
-				]
-			)
-		);
-
 		// From RootQuery to GlobalProductAttribute.
 		register_graphql_connection(
 			self::get_connection_config(
 				[
-					'fromType'       => 'RootQuery',
-					'toType'         => 'GlobalProductAttribute',
-					'fromFieldName'  => 'productAttributes',
-					'connectionArgs' => [],
-					'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-						$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info );
+					'fromType'      => 'RootQuery',
+					'toType'        => 'GlobalProductAttribute',
+					'fromFieldName' => 'productAttributes',
+				]
+			)
+		);
 
-						return $resolver->get_connection();
-					},
+		// From ProductCategory to GlobalProductAttribute.
+		register_graphql_connection(
+			self::get_connection_config(
+				[
+					'fromType'      => 'ProductCategory',
+					'toType'        => 'GlobalProductAttribute',
+					'fromFieldName' => 'productAttributes',
 				]
 			)
 		);
@@ -90,19 +71,7 @@ class Product_Attributes {
 				'fromFieldName'  => 'attributes',
 				'connectionArgs' => [],
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
-					
-					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					switch ( $info->fieldName ) {
-						case 'globalAttributes':
-							$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info, 'global' );
-							break;
-						case 'localAttributes':
-							$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info, 'local' );
-							break;
-						default:
-							$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info );
-							break;
-					}
+					$resolver = new Product_Attribute_Connection_Resolver( $source, $args, $context, $info );
 
 					return $resolver->get_connection();
 				},
