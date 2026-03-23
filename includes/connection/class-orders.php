@@ -122,10 +122,10 @@ class Orders {
 					// Check if user shop manager.
 					$not_manager = ! current_user_can( $post_object->cap->edit_posts );
 
-					// Remove any arguments that require querying user to have "shop manager" role.
-					$args = $not_manager && 'shop_order' === $post_object->name
-						? \array_intersect_key( $args, array_keys( self::get_connection_args( 'public' ) ) )
-						: $args;
+					// Remove any where arguments that require querying user to have "shop manager" role.
+					if ( $not_manager && 'shop_order' === $post_object->name && isset( $args['where'] ) ) {
+						$args['where'] = \array_intersect_key( $args['where'], self::get_connection_args( 'public' ) );
+					}
 
 					// Initialize connection resolver.
 					$resolver = new Order_Connection_Resolver( $source, $args, $context, $info, $post_object->name );
