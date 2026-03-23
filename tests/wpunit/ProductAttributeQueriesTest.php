@@ -8,10 +8,15 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$expected = [];
 
 		foreach ( $attributes as $attribute_name => $attribute ) {
+			if ( $attribute->is_taxonomy() ) {
+				$expected_id = \GraphQLRelay\Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
+			} else {
+				$expected_id = \GraphQLRelay\Relay::toGlobalId( 'LocalProductAttribute', $attribute->get_name() . ':' . $product_id );
+			}
 			$expected[] = $this->expectedNode(
 				$path,
 				[
-					$this->expectedField( 'id', base64_encode( $attribute_name . ':' . $product_id . ':' . $attribute->get_name() ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+					$this->expectedField( 'id', $expected_id ),
 					$this->expectedField( 'attributeId', $attribute->get_id() ),
 					$this->expectedField( 'name', $attribute->get_name() ),
 					$this->expectedField(
@@ -234,5 +239,51 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			$response,
 			[ $this->expectedField( 'product.id', $this->toRelayId( 'post', $product_id ) ) ]
 		);
+	}
+
+	public function testProductAttributesQuery() {
+		$this->factory->product->createAttribute( 'texture', [ 'smooth', 'rough', 'tiled' ] );
+		$this->factory->product->createAttribute( 'tile-size', [ '4x4', '8x8', '12x12' ] );
+
+		$query = '
+			query {
+				productAttributes {
+					nodes {
+						id
+						attributeId
+						name
+						label
+						options
+						position
+						visible
+						variation
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedNode(
+				'productAttributes.nodes',
+				[
+					$this->expectedField( 'id', self::NOT_NULL ),
+					$this->expectedField( 'name', 'pa_texture' ),
+					$this->expectedField( 'label', 'texture' ),
+					$this->expectedField( 'options', [ 'rough', 'smooth', 'tiled' ] ),
+				]
+			),
+			$this->expectedNode(
+				'productAttributes.nodes',
+				[
+					$this->expectedField( 'id', self::NOT_NULL ),
+					$this->expectedField( 'name', 'pa_tile-size' ),
+					$this->expectedField( 'label', 'tile-size' ),
+					$this->expectedField( 'options', [ '12x12', '4x4', '8x8' ] ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
