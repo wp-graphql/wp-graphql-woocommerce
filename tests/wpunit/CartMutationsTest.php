@@ -1279,4 +1279,182 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test that fillCart reports coupon errors when coupon minimum spend is not met.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/458
+	 */
+	public function testFillCartReportsCouponMinimumSpendError() {
+		$product_id = $this->factory->product->createSimple(
+			[
+				'regular_price' => 10,
+				'price'         => 10,
+			]
+		);
+
+		$coupon_id = $this->factory->coupon->create(
+			[
+				'code'           => 'minspend500',
+				'discount_type'  => 'percent',
+				'amount'         => 10,
+				'minimum_amount' => 500,
+			]
+		);
+
+		$query = '
+			mutation fillCart($input: FillCartInput!) {
+				fillCart(input: $input) {
+					added {
+						key
+						product {
+							node {
+								databaseId
+							}
+						}
+					}
+					applied {
+						code
+					}
+					cartErrors {
+						type
+						reasons
+						... on CouponError {
+							code
+							reasons
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'input' => [
+				'items'   => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 1,
+					],
+				],
+				'coupons' => [ 'minspend500' ],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'fillCart.added.0.product.node.databaseId', $product_id ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$applied = $this->lodashGet( $response, 'data.fillCart.applied' );
+		$this->assertNull( $applied, 'Coupon should not be applied when minimum spend is not met.' );
+
+		$cart_errors = $this->lodashGet( $response, 'data.fillCart.cartErrors', [] );
+		$this->assertNotEmpty( $cart_errors, 'cartErrors should contain the coupon error.' );
+		$this->assertEquals( 'INVALID_COUPON', $cart_errors[0]['type'] );
+		$this->assertEquals( 'minspend500', $cart_errors[0]['code'] );
+		$this->assertNotEmpty( $cart_errors[0]['reasons'], 'Coupon error should have a reason.' );
+	}
+
+	/**
+	 * Test that fillCart reports errors for completely invalid coupon codes.
+	 */
+	public function testFillCartReportsInvalidCouponCodeError() {
+		$product_id = $this->factory->product->createSimple(
+			[
+				'regular_price' => 10,
+				'price'         => 10,
+			]
+		);
+
+		$query = '
+			mutation fillCart($input: FillCartInput!) {
+				fillCart(input: $input) {
+					added {
+						key
+					}
+					applied {
+						code
+					}
+					cartErrors {
+						type
+						reasons
+						... on CouponError {
+							code
+							reasons
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'input' => [
+				'items'   => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 1,
+					],
+				],
+				'coupons' => [ 'nonexistent_coupon' ],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, [] );
+
+		$applied = $this->lodashGet( $response, 'data.fillCart.applied' );
+		$this->assertNull( $applied, 'Invalid coupon should not be applied.' );
+
+		$cart_errors = $this->lodashGet( $response, 'data.fillCart.cartErrors', [] );
+		$this->assertNotEmpty( $cart_errors, 'cartErrors should contain the invalid coupon error.' );
+		$this->assertEquals( 'INVALID_COUPON', $cart_errors[0]['type'] );
+	}
+
+	/**
+	 * Test that applyCoupon returns the same error message regardless of coupon code casing.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/600
+	 */
+	public function testApplyCouponErrorMessageConsistentAcrossCasing() {
+		$product_id = $this->factory->product->createSimple(
+			[
+				'regular_price' => 10,
+				'price'         => 10,
+			]
+		);
+
+		\WC()->cart->add_to_cart( $product_id );
+
+		$query = '
+			mutation applyCoupon($input: ApplyCouponInput!) {
+				applyCoupon(input: $input) {
+					cart {
+						appliedCoupons {
+							code
+						}
+					}
+				}
+			}
+		';
+
+		$expected_error = [
+			$this->expectedErrorMessage( 'does not exist', self::MESSAGE_CONTAINS ),
+		];
+
+		// Test with lowercase.
+		$variables = [ 'input' => [ 'code' => 'fakecoupon' ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQueryError( $response, $expected_error );
+
+		// Test with uppercase.
+		$variables = [ 'input' => [ 'code' => 'FAKECOUPON' ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQueryError( $response, $expected_error );
+
+		// Test with mixed case.
+		$variables = [ 'input' => [ 'code' => 'FakeCoupon' ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQueryError( $response, $expected_error );
+	}
 }

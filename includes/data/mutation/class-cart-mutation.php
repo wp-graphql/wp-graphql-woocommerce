@@ -185,14 +185,16 @@ class Cart_Mutation {
 		$the_coupon = new \WC_Coupon( $code );
 
 		// Prevent adding coupons by post ID.
-		if ( strtoupper( $the_coupon->get_code() ) !== strtoupper( $code ) ) {
+		if ( is_numeric( $code ) && strtoupper( $the_coupon->get_code() ) !== strtoupper( $code ) ) {
 			$reason = __( 'No coupon found with the code provided', 'wp-graphql-woocommerce' );
 			return false;
 		}
 
 		// Check it can be used with cart.
-		if ( ! $the_coupon->is_valid() ) {
-			$reason = $the_coupon->get_error_message();
+		$discounts = new \WC_Discounts( \WC()->cart );
+		$valid = $discounts->is_coupon_valid( $the_coupon );
+		if ( is_wp_error( $valid ) ) {
+			$reason = $valid->get_error_message();
 			return false;
 		}
 
