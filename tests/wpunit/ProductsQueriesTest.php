@@ -1747,4 +1747,101 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test basic products query with categoryId, status, visibility, and pagination.
+	 *
+	 * Mirrors the exact query pattern from #891 that stopped returning products.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/891
+	 */
+	public function testProductsQueryWithCategoryStatusVisibilityAndPagination() {
+		$category = $this->factory->product->createProductCategory( 'wetsuits' );
+
+		// Create 3 published products in the category.
+		$product_ids = [];
+		for ( $i = 0; $i < 3; $i++ ) {
+			$product_ids[] = $this->factory->product->createSimple(
+				[
+					'category_ids' => [ $category ],
+					'status'       => 'publish',
+				]
+			);
+		}
+
+		// Create a draft product in the same category — should not appear.
+		$draft_product = $this->factory->product->createSimple(
+			[
+				'category_ids' => [ $category ],
+				'status'       => 'draft',
+			]
+		);
+
+		$query = '
+			query ($categoryId: Int, $first: Int, $after: String) {
+				products(
+					where: {
+						categoryId: $categoryId
+						status: "publish"
+						visibility: VISIBLE
+					}
+					first: $first
+					after: $after
+				) {
+					nodes {
+						... on Product {
+							databaseId
+							name
+							status
+						}
+					}
+					pageInfo {
+						endCursor
+						hasNextPage
+					}
+				}
+			}
+		';
+
+		// First page — request 2 of 3 products.
+		$variables = [
+			'categoryId' => $category,
+			'first'      => 2,
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $draft_product ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$nodes = $this->lodashGet( $response, 'data.products.nodes', [] );
+		$this->assertCount( 2, $nodes, 'Should return 2 products on first page.' );
+
+		$has_next = $this->lodashGet( $response, 'data.products.pageInfo.hasNextPage' );
+		$this->assertTrue( $has_next, 'Should have a next page.' );
+
+		// Second page.
+		$end_cursor = $this->lodashGet( $response, 'data.products.pageInfo.endCursor' );
+		$variables  = [
+			'categoryId' => $category,
+			'first'      => 2,
+			'after'      => $end_cursor,
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, [] );
+
+		$nodes = $this->lodashGet( $response, 'data.products.nodes', [] );
+		$this->assertCount( 1, $nodes, 'Should return 1 product on second page.' );
+
+		$has_next = $this->lodashGet( $response, 'data.products.pageInfo.hasNextPage' );
+		$this->assertFalse( $has_next, 'Should not have a next page.' );
+
+		// All returned products should be from the category.
+		foreach ( $product_ids as $id ) {
+			$product = wc_get_product( $id );
+			$this->assertContains( $category, $product->get_category_ids() );
+		}
+	}
 }
