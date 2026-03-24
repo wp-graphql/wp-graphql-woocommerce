@@ -1457,4 +1457,93 @@ class CartMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$this->assertQueryError( $response, $expected_error );
 	}
+
+	/**
+	 * Test that removeCoupons recalculates cart totals after coupon removal.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/260
+	 */
+	public function testRemoveCouponsRecalculatesTotals() {
+		$product_id = $this->factory->product->createSimple(
+			[
+				'regular_price' => 100,
+				'price'         => 100,
+			]
+		);
+
+		$coupon_id = $this->factory->coupon->create(
+			[
+				'code'          => 'half-off',
+				'discount_type' => 'percent',
+				'amount'        => 50,
+			]
+		);
+
+		// Add product to cart.
+		\WC()->cart->add_to_cart( $product_id );
+
+		// Apply coupon.
+		$apply_query = '
+			mutation applyCoupon($input: ApplyCouponInput!) {
+				applyCoupon(input: $input) {
+					cart {
+						total
+						discountTotal
+						appliedCoupons {
+							code
+						}
+					}
+				}
+			}
+		';
+
+		$query     = $apply_query;
+		$variables = [ 'input' => [ 'code' => 'half-off' ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful( $response, [] );
+
+		$total_with_coupon    = $this->lodashGet( $response, 'data.applyCoupon.cart.total' );
+		$discount_with_coupon = $this->lodashGet( $response, 'data.applyCoupon.cart.discountTotal' );
+
+		$this->assertNotEmpty( $discount_with_coupon, 'Discount should be applied.' );
+
+		// Remove coupon.
+		$remove_query = '
+			mutation removeCoupons($input: RemoveCouponsInput!) {
+				removeCoupons(input: $input) {
+					cart {
+						total
+						discountTotal
+						discountTax
+						appliedCoupons {
+							code
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'input' => [ 'codes' => [ 'half-off' ] ] ];
+		$response  = $this->graphql(
+			[
+				'query'     => $remove_query,
+				'variables' => $variables,
+			]
+		);
+		$this->assertQuerySuccessful( $response, [] );
+
+		// Coupon should be removed.
+		$applied = $this->lodashGet( $response, 'data.removeCoupons.cart.appliedCoupons' );
+		$this->assertEmpty( $applied, 'No coupons should be applied after removal.' );
+
+		// Totals should be recalculated — discount should be zero.
+		$discount_after = $this->lodashGet( $response, 'data.removeCoupons.cart.discountTotal' );
+		$total_after    = $this->lodashGet( $response, 'data.removeCoupons.cart.total' );
+
+		$this->assertNotEquals(
+			$total_with_coupon,
+			$total_after,
+			'Cart total should change after removing coupon.'
+		);
+	}
 }

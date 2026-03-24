@@ -86,6 +86,9 @@ class Cart_Remove_Coupons {
 				}
 			}
 
+			// Recalculate totals after coupon removal.
+			\WC()->cart->calculate_totals();
+
 			do_action( 'woographql_update_session', true );
 
 			// Return payload.
