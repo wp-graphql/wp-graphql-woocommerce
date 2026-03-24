@@ -1430,4 +1430,321 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 
 		$this->assertQuerySuccessful( $response, $expected, 'New OR syntax should take priority over legacy filters syntax' );
 	}
+
+	/**
+	 * Test taxonomyFilter with multiple terms in a single filter entry.
+	 *
+	 * Reproduces the scenario from #821 where passing multiple terms like
+	 * terms: ["zielony", "kremowy"] only returned products for the first term.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/821
+	 */
+	public function testTaxonomyFilterWithMultipleTermsInSingleFilter() {
+		// Create the color attribute with all terms.
+		$color_attr = $this->factory->product->createAttribute( 'color', [ 'red', 'blue', 'green' ] );
+
+		// Get individual term IDs.
+		$red_term_id   = get_term_by( 'slug', 'red', 'pa_color' )->term_id;
+		$blue_term_id  = get_term_by( 'slug', 'blue', 'pa_color' )->term_id;
+		$green_term_id = get_term_by( 'slug', 'green', 'pa_color' )->term_id;
+
+		// Product with red + blue.
+		$red_blue_product = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [
+					[
+						'attribute_id'       => $color_attr['attribute_id'],
+						'attribute_taxonomy' => $color_attr['attribute_taxonomy'],
+						'term_ids'           => [ $red_term_id, $blue_term_id ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $red_blue_product,
+				'attributes'    => [ 'pa_color' => 'red' ],
+				'image_id'      => null,
+				'regular_price' => 10,
+			]
+		);
+
+		// Product with blue + green.
+		$blue_green_product = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [
+					[
+						'attribute_id'       => $color_attr['attribute_id'],
+						'attribute_taxonomy' => $color_attr['attribute_taxonomy'],
+						'term_ids'           => [ $blue_term_id, $green_term_id ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $blue_green_product,
+				'attributes'    => [ 'pa_color' => 'green' ],
+				'image_id'      => null,
+				'regular_price' => 15,
+			]
+		);
+
+		// Product with only green.
+		$green_product = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [
+					[
+						'attribute_id'       => $color_attr['attribute_id'],
+						'attribute_taxonomy' => $color_attr['attribute_taxonomy'],
+						'term_ids'           => [ $green_term_id ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $green_product,
+				'attributes'    => [ 'pa_color' => 'green' ],
+				'image_id'      => null,
+				'regular_price' => 20,
+			]
+		);
+
+		$this->clearSchema();
+
+		$query = '
+			query ($taxonomyFilter: ProductTaxonomyInput) {
+				products(where: { taxonomyFilter: $taxonomyFilter }) {
+					nodes {
+						databaseId
+					}
+				}
+			}
+		';
+
+		// Pass multiple terms in a single filter — should return products matching ANY of the terms.
+		// red + blue should match red_blue_product and blue_green_product (both have blue).
+		$variables = [
+			'taxonomyFilter' => [
+				'filters' => [
+					[
+						'taxonomy' => 'PA_COLOR',
+						'terms'    => [ 'red', 'blue' ],
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'products.nodes.#.databaseId', $red_blue_product ),
+			$this->expectedField( 'products.nodes.#.databaseId', $blue_green_product ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $green_product ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Also test with the new "or" syntax — red only should match red_blue_product.
+		$variables = [
+			'taxonomyFilter' => [
+				'or' => [
+					[
+						'taxonomy' => 'PA_COLOR',
+						'terms'    => [ 'red' ],
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'products.nodes.#.databaseId', $red_blue_product ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $blue_green_product ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $green_product ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	/**
+	 * Test taxonomyFilter with multiple terms across multiple taxonomies.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/821
+	 */
+	public function testTaxonomyFilterWithMultipleTermsAcrossMultipleTaxonomies() {
+		$shade_attr  = $this->factory->product->createAttribute( 'shade', [ 'light', 'dark' ] );
+		$weight_attr = $this->factory->product->createAttribute( 'weight', [ 'light-weight', 'heavy-weight' ] );
+
+		$light_term  = get_term_by( 'slug', 'light', 'pa_shade' )->term_id;
+		$dark_term   = get_term_by( 'slug', 'dark', 'pa_shade' )->term_id;
+		$lw_term     = get_term_by( 'slug', 'light-weight', 'pa_weight' )->term_id;
+		$hw_term     = get_term_by( 'slug', 'heavy-weight', 'pa_weight' )->term_id;
+
+		// light shade + light-weight
+		$product_a = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [
+					[
+						'attribute_id'       => $shade_attr['attribute_id'],
+						'attribute_taxonomy' => $shade_attr['attribute_taxonomy'],
+						'term_ids'           => [ $light_term ],
+					],
+					[
+						'attribute_id'       => $weight_attr['attribute_id'],
+						'attribute_taxonomy' => $weight_attr['attribute_taxonomy'],
+						'term_ids'           => [ $lw_term ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_a,
+				'attributes'    => [ 'pa_shade' => 'light', 'pa_weight' => 'light-weight' ],
+				'image_id'      => null,
+				'regular_price' => 10,
+			]
+		);
+
+		// dark shade + heavy-weight
+		$product_b = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [
+					[
+						'attribute_id'       => $shade_attr['attribute_id'],
+						'attribute_taxonomy' => $shade_attr['attribute_taxonomy'],
+						'term_ids'           => [ $dark_term ],
+					],
+					[
+						'attribute_id'       => $weight_attr['attribute_id'],
+						'attribute_taxonomy' => $weight_attr['attribute_taxonomy'],
+						'term_ids'           => [ $hw_term ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_b,
+				'attributes'    => [ 'pa_shade' => 'dark', 'pa_weight' => 'heavy-weight' ],
+				'image_id'      => null,
+				'regular_price' => 20,
+			]
+		);
+
+		// light shade + heavy-weight
+		$product_c = $this->factory->product->createVariable(
+			[
+				'attribute_data' => [
+					[
+						'attribute_id'       => $shade_attr['attribute_id'],
+						'attribute_taxonomy' => $shade_attr['attribute_taxonomy'],
+						'term_ids'           => [ $light_term ],
+					],
+					[
+						'attribute_id'       => $weight_attr['attribute_id'],
+						'attribute_taxonomy' => $weight_attr['attribute_taxonomy'],
+						'term_ids'           => [ $hw_term ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_c,
+				'attributes'    => [ 'pa_shade' => 'light', 'pa_weight' => 'heavy-weight' ],
+				'image_id'      => null,
+				'regular_price' => 30,
+			]
+		);
+
+		$this->clearSchema();
+
+		$query = '
+			query ($taxonomyFilter: ProductTaxonomyInput) {
+				products(where: { taxonomyFilter: $taxonomyFilter }) {
+					nodes {
+						databaseId
+					}
+				}
+			}
+		';
+
+		// AND: shade IN (light) AND weight IN (heavy-weight) — should return only product_c.
+		$variables = [
+			'taxonomyFilter' => [
+				'and' => [
+					[
+						'taxonomy' => 'PA_SHADE',
+						'terms'    => [ 'light' ],
+					],
+					[
+						'taxonomy' => 'PA_WEIGHT',
+						'terms'    => [ 'heavy-weight' ],
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'products.nodes.#.databaseId', $product_c ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $product_a ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $product_b ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// OR: shade IN (dark) OR weight IN (light-weight) — should return product_a and product_b.
+		$variables = [
+			'taxonomyFilter' => [
+				'or' => [
+					[
+						'taxonomy' => 'PA_SHADE',
+						'terms'    => [ 'dark' ],
+					],
+					[
+						'taxonomy' => 'PA_WEIGHT',
+						'terms'    => [ 'light-weight' ],
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'products.nodes.#.databaseId', $product_a ),
+			$this->expectedField( 'products.nodes.#.databaseId', $product_b ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $product_c ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// AND with multiple terms: shade IN (light, dark) AND weight IN (heavy-weight)
+		// — should return product_b and product_c.
+		$variables = [
+			'taxonomyFilter' => [
+				'and' => [
+					[
+						'taxonomy' => 'PA_SHADE',
+						'terms'    => [ 'light', 'dark' ],
+					],
+					[
+						'taxonomy' => 'PA_WEIGHT',
+						'terms'    => [ 'heavy-weight' ],
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'products.nodes.#.databaseId', $product_b ),
+			$this->expectedField( 'products.nodes.#.databaseId', $product_c ),
+			$this->not()->expectedField( 'products.nodes.#.databaseId', $product_a ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
