@@ -186,6 +186,60 @@ class ProductCategoryQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 	}
 
 	/**
+	 * Test that querying a parent category's products includes products from child categories.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/781
+	 */
+	public function testParentCategoryIncludesChildCategoryProducts() {
+		// Create hierarchy: Electronics -> Smartphones -> Apple.
+		$electronics = $this->factory->product->createProductCategory( 'electronics-nested' );
+		$smartphones = $this->factory->product->createProductCategory( 'smartphones-nested', $electronics );
+		$apple       = $this->factory->product->createProductCategory( 'apple-nested', $smartphones );
+
+		// Products only in child/grandchild categories, none directly in Electronics.
+		$apple_product      = $this->factory->product->createSimple( [ 'category_ids' => [ $apple ] ] );
+		$smartphone_product = $this->factory->product->createSimple( [ 'category_ids' => [ $smartphones ] ] );
+		$unrelated_product  = $this->factory->product->createSimple();
+
+		$query = '
+			query ($id: ID!) {
+				productCategory(id: $id, idType: SLUG) {
+					slug
+					products(first: 100) {
+						nodes {
+							databaseId
+						}
+					}
+				}
+			}
+		';
+
+		// Querying Electronics should include products from Smartphones and Apple.
+		$variables = [ 'id' => 'electronics-nested' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'productCategory.slug', 'electronics-nested' ),
+			$this->expectedField( 'productCategory.products.nodes.#.databaseId', $apple_product ),
+			$this->expectedField( 'productCategory.products.nodes.#.databaseId', $smartphone_product ),
+			$this->not()->expectedField( 'productCategory.products.nodes.#.databaseId', $unrelated_product ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Querying Smartphones should include products from Apple.
+		$variables = [ 'id' => 'smartphones-nested' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'productCategory.slug', 'smartphones-nested' ),
+			$this->expectedField( 'productCategory.products.nodes.#.databaseId', $apple_product ),
+			$this->expectedField( 'productCategory.products.nodes.#.databaseId', $smartphone_product ),
+			$this->not()->expectedField( 'productCategory.products.nodes.#.databaseId', $unrelated_product ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	/**
 	 * Test that productCategories resolves correctly when term_id and term_taxonomy_id differ.
 	 *
 	 * This happens when a WP category and a product_cat share the same name,
