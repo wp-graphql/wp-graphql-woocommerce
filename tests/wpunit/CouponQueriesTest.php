@@ -302,4 +302,155 @@ class CouponQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQL
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test coupon productCategories and excludedProductCategories connections.
+	 */
+	public function testCouponProductCategoryConnections() {
+		$this->loginAsShopManager();
+
+		// Create a WP category first to force term_id/term_taxonomy_id mismatch
+		// when the product_cat with the same name is created.
+		global $wpdb;
+
+		$wpdb->insert(
+			$wpdb->terms,
+			[
+				'name'       => 'cat-a',
+				'slug'       => 'cat-a',
+				'term_group' => 0,
+			]
+		);
+		$shared_term_id = (int) $wpdb->insert_id;
+
+		// Add term_taxonomy entry for 'category' (consumes a term_taxonomy_id).
+		$wpdb->insert(
+			$wpdb->term_taxonomy,
+			[
+				'term_id'     => $shared_term_id,
+				'taxonomy'    => 'category',
+				'description' => '',
+				'parent'      => 0,
+				'count'       => 0,
+			]
+		);
+
+		// Add term_taxonomy entry for 'product_cat' (different term_taxonomy_id, same term_id).
+		$wpdb->insert(
+			$wpdb->term_taxonomy,
+			[
+				'term_id'     => $shared_term_id,
+				'taxonomy'    => 'product_cat',
+				'description' => '',
+				'parent'      => 0,
+				'count'       => 0,
+			]
+		);
+		$cat_a_tt_id = (int) $wpdb->insert_id;
+
+		clean_term_cache( $shared_term_id, 'product_cat' );
+		clean_term_cache( $shared_term_id, 'category' );
+
+		// cat-a now has term_id != term_taxonomy_id.
+		$cat_a = $shared_term_id;
+
+		// Create normal product categories for the rest.
+		$cat_b = $this->factory->product->createProductCategory( 'cat-b' );
+		$cat_c = $this->factory->product->createProductCategory( 'cat-c' );
+
+		// Create coupon with product categories and excluded categories.
+		$coupon_id = $this->factory->coupon->create(
+			[
+				'code'                        => 'catcoupon',
+				'amount'                      => 15,
+				'discount_type'               => 'percent',
+				'product_categories'          => [ $cat_a, $cat_b ],
+				'excluded_product_categories' => [ $cat_c ],
+			]
+		);
+
+		$query = '
+			query ($id: ID!) {
+				coupon(id: $id) {
+					databaseId
+					productCategories {
+						nodes {
+							databaseId
+							slug
+						}
+					}
+					excludedProductCategories {
+						nodes {
+							databaseId
+							slug
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'id' => $this->toRelayId( 'shop_coupon', $coupon_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'coupon.databaseId', $coupon_id ),
+			$this->expectedNode(
+				'coupon.productCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-a' ) ]
+			),
+			$this->expectedNode(
+				'coupon.productCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-b' ) ]
+			),
+			$this->not()->expectedNode(
+				'coupon.productCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-c' ) ]
+			),
+			$this->expectedNode(
+				'coupon.excludedProductCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-c' ) ]
+			),
+			$this->not()->expectedNode(
+				'coupon.excludedProductCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-a' ) ]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Query with where arg to further filter the included categories.
+		$query_with_filter = '
+			query ($id: ID!, $exclude: [ID]) {
+				coupon(id: $id) {
+					productCategories(where: { exclude: $exclude }) {
+						nodes {
+							slug
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'id'      => $this->toRelayId( 'shop_coupon', $coupon_id ),
+			'exclude' => [ $cat_b ],
+		];
+		$response  = $this->graphql(
+			[
+				'query'     => $query_with_filter,
+				'variables' => $variables,
+			]
+		);
+		$expected = [
+			$this->expectedNode(
+				'coupon.productCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-a' ) ]
+			),
+			$this->not()->expectedNode(
+				'coupon.productCategories.nodes',
+				[ $this->expectedField( 'slug', 'cat-b' ) ]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

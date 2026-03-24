@@ -12,11 +12,9 @@ namespace WPGraphQL\WooCommerce\Connection;
 
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
 use WPGraphQL\Type\Connection\TermObjects;
-use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce;
 
 /**
  * Class - WC_Terms
@@ -30,51 +28,6 @@ class WC_Terms extends TermObjects {
 	 * @return void
 	 */
 	public static function register_connections() {
-		/**
-		 * Get the allowed taxonomies.
-		 *
-		 * @var array<string,\WP_Taxonomy> $allowed_taxonomies
-		 */
-		$allowed_taxonomies = WPGraphQL::get_allowed_taxonomies( 'objects' );
-		$wc_post_types      = WP_GraphQL_WooCommerce::get_post_types();
-
-		// Loop through the allowed_taxonomies to register appropriate connections.
-		foreach ( $allowed_taxonomies as $tax_object ) {
-			foreach ( $wc_post_types as $post_type ) {
-				if ( 'product' === $post_type || 'product_variation' === $post_type ) {
-					continue;
-				}
-
-				if ( in_array( $post_type, $tax_object->object_type, true ) ) {
-					$post_type_object = get_post_type_object( $post_type );
-
-					if ( null === $post_type_object ) {
-						continue;
-					}
-
-					register_graphql_connection(
-						self::get_connection_config(
-							$tax_object,
-							[
-								'fromType'      => $post_type_object->graphql_single_name,
-								'toType'        => $tax_object->graphql_single_name,
-								'fromFieldName' => $tax_object->graphql_plural_name,
-								'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
-									$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
-
-									$term_ids = \wc_get_object_terms( $source->ID, $tax_object->name, 'term_id' );
-
-									$resolver->set_query_arg( 'term_taxonomy_id', ! empty( $term_ids ) ? $term_ids : [ '0' ] );
-
-									return $resolver->get_connection();
-								},
-							]
-						)
-					);
-				}//end if
-			}//end foreach
-		}//end foreach
-
 		// From Coupons to ProductCategory connections.
 		$tax_object = get_taxonomy( 'product_cat' );
 		if ( ! $tax_object ) {
@@ -89,7 +42,9 @@ class WC_Terms extends TermObjects {
 					'fromFieldName' => 'productCategories',
 					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 						$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
-						$resolver->set_query_arg( 'term_taxonomy_id', $source->product_category_ids );
+
+						$term_taxonomy_ids = self::get_term_taxonomy_ids( $source->product_category_ids, $tax_object->name );
+						$resolver->set_query_arg( 'term_taxonomy_id', $term_taxonomy_ids );
 
 						return $resolver->get_connection();
 					},
@@ -104,7 +59,9 @@ class WC_Terms extends TermObjects {
 					'fromFieldName' => 'excludedProductCategories',
 					'resolve'       => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) use ( $tax_object ) {
 						$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $tax_object->name );
-						$resolver->set_query_arg( 'term_taxonomy_id', $source->excluded_product_category_ids );
+
+						$term_taxonomy_ids = self::get_term_taxonomy_ids( $source->excluded_product_category_ids, $tax_object->name );
+						$resolver->set_query_arg( 'term_taxonomy_id', $term_taxonomy_ids );
 
 						return $resolver->get_connection();
 					},
@@ -137,5 +94,35 @@ class WC_Terms extends TermObjects {
 				},
 			]
 		);
+	}
+
+	/**
+	 * Converts an array of term_ids to their corresponding term_taxonomy_ids
+	 * for a given taxonomy.
+	 *
+	 * WooCommerce stores term_ids on coupons, but WP_Term_Query's
+	 * term_taxonomy_id arg requires term_taxonomy_ids. These can differ
+	 * when terms are shared across taxonomies.
+	 *
+	 * @param array<int|string> $term_ids Term IDs to convert.
+	 * @param string            $taxonomy Taxonomy name.
+	 *
+	 * @return array<int> Term taxonomy IDs.
+	 */
+	private static function get_term_taxonomy_ids( array $term_ids, string $taxonomy ): array {
+		if ( empty( $term_ids ) || [ '0' ] === $term_ids || [ 0 ] === $term_ids ) {
+			return [ 0 ];
+		}
+
+		$terms = get_terms(
+			[
+				'taxonomy'   => $taxonomy,
+				'include'    => array_map( 'absint', $term_ids ),
+				'fields'     => 'tt_ids',
+				'hide_empty' => false,
+			]
+		);
+
+		return ! empty( $terms ) && ! is_wp_error( $terms ) ? array_map( 'intval', $terms ) : [ 0 ];
 	}
 }

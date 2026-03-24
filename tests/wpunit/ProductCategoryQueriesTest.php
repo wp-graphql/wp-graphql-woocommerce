@@ -184,4 +184,99 @@ class ProductCategoryQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		$this->assertCount( 1, $parent_b_node['children']['nodes'], 'parent-b should have 1 child.' );
 		$this->assertEquals( 'child-b1', $parent_b_node['children']['nodes'][0]['slug'] );
 	}
+
+	/**
+	 * Test that productCategories resolves correctly when term_id and term_taxonomy_id differ.
+	 *
+	 * This happens when a WP category and a product_cat share the same name,
+	 * causing WordPress to reuse the term_id but assign a different term_taxonomy_id.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/597
+	 */
+	public function testProductCategoriesWithMismatchedTermTaxonomyIds() {
+		// Create a term directly in the wp_terms table, then add term_taxonomy
+		// entries for both 'category' and 'product_cat' to simulate the scenario
+		// where term_id is shared but term_taxonomy_id differs.
+		global $wpdb;
+
+		// Insert a shared term.
+		$wpdb->insert(
+			$wpdb->terms,
+			[
+				'name'       => 'Electronics',
+				'slug'       => 'electronics-shared',
+				'term_group' => 0,
+			]
+		);
+		$shared_term_id = (int) $wpdb->insert_id;
+
+		// Add term_taxonomy entry for 'category'.
+		$wpdb->insert(
+			$wpdb->term_taxonomy,
+			[
+				'term_id'     => $shared_term_id,
+				'taxonomy'    => 'category',
+				'description' => '',
+				'parent'      => 0,
+				'count'       => 0,
+			]
+		);
+		$wp_cat_tt_id = (int) $wpdb->insert_id;
+
+		// Add term_taxonomy entry for 'product_cat'.
+		$wpdb->insert(
+			$wpdb->term_taxonomy,
+			[
+				'term_id'     => $shared_term_id,
+				'taxonomy'    => 'product_cat',
+				'description' => '',
+				'parent'      => 0,
+				'count'       => 0,
+			]
+		);
+		$product_cat_tt_id = (int) $wpdb->insert_id;
+
+		// Confirm term_taxonomy_ids differ.
+		$this->assertNotEquals( $wp_cat_tt_id, $product_cat_tt_id );
+
+
+		// Clean term caches.
+		clean_term_cache( $shared_term_id, 'product_cat' );
+		clean_term_cache( $shared_term_id, 'category' );
+
+		// Create a product in this category.
+		$product_id = $this->factory->product->createSimple(
+			[ 'category_ids' => [ $shared_term_id ] ]
+		);
+
+		$query = '
+			query ($id: ID!) {
+				product(id: $id, idType: DATABASE_ID) {
+					databaseId
+					productCategories {
+						nodes {
+							databaseId
+							name
+							slug
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'id' => $product_id ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'product.databaseId', $product_id ),
+			$this->expectedNode(
+				'product.productCategories.nodes',
+				[
+					$this->expectedField( 'databaseId', $shared_term_id ),
+					$this->expectedField( 'slug', 'electronics-shared' ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
