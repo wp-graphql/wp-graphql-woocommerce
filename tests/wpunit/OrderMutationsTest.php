@@ -7,25 +7,25 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		// before
 		parent::setUp();
 
-		// Create users.
-		$this->shop_manager = $this->factory->user->create( [ 'role' => 'shop_manager' ] );
-		$this->customer     = $this->factory->user->create( [ 'role' => 'customer' ] );
-
-		// Get helper instances
-		$this->order     = $this->getModule( '\Helper\Wpunit' )->order();
-		$this->coupon    = $this->getModule( '\Helper\Wpunit' )->coupon();
-		$this->product   = $this->getModule( '\Helper\Wpunit' )->product();
-		$this->variation = $this->getModule( '\Helper\Wpunit' )->product_variation();
-		$this->cart      = $this->getModule( '\Helper\Wpunit' )->cart();
-		$this->tax       = $this->getModule( '\Helper\Wpunit' )->tax_rate();
-
 		// Turn on tax calculations. Important!
 		update_option( 'woocommerce_prices_include_tax', 'no' );
 		update_option( 'woocommerce_calc_taxes', 'yes' );
 		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
 
+		// Enable stock management.
+		update_option( 'woocommerce_manage_stock', 'yes' );
+
+		$gateways                          = \WC()->payment_gateways->payment_gateways();
+		$bacs_gateway                      = $gateways['bacs'];
+		$bacs_gateway->settings['enabled'] = 'yes';
+		update_option( $bacs_gateway->get_option_key(), $bacs_gateway->settings );
+
+		$cod_gateway                      = $gateways['cod'];
+		$cod_gateway->settings['enabled'] = 'yes';
+		update_option( $cod_gateway->get_option_key(), $cod_gateway->settings );
+
 		// Create a tax rate.
-		$this->tax->create(
+		$this->factory->tax_rate->create(
 			[
 				'country'  => '',
 				'state'    => '',
@@ -38,7 +38,6 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			]
 		);
 		// Create sample order to be used as a parent order.
-		$this->order_id = $this->order->create();
 	}
 
 	private function orderMutation( $input, $operation_name = 'createOrder', $input_type = 'CreateOrderInput' ) {
@@ -121,13 +120,14 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
                                 product {
                                     databaseId
                                 }
-                                download {
-                                    downloadId
-                                }
                             }
                         }
                         needsPayment
                         needsProcessing
+                        metaData {
+                            key
+                            value
+                        }
                         couponLines {
                             nodes {
                                 databaseId
@@ -186,17 +186,14 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
                                 totalTax
                                 taxStatus
                                 product {
-									node {
-										... on SimpleProduct {
-											id
-										}
-										... on VariableProduct {
-											id
-										}
-									}
+                                    node {
+                                        id
+                                    }
                                 }
                                 variation {
-                                    node { id }
+                                    node {
+                                        id
+                                    }
                                 }
                             }
                         }
@@ -205,7 +202,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
             }
         ";
 
-		return graphql(
+		return $this->graphql(
 			[
 				'query'          => $mutation,
 				'operation_name' => $operation_name,
@@ -216,14 +213,14 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 	// tests
 	public function testCreateOrderMutation() {
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		$variable    = $this->factory->product_variation->createSome( $this->factory->product->createVariable() );
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 
 		$input = [
@@ -306,169 +303,123 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 *
 		 * User without necessary capabilities cannot create order an order.
 		 */
-		wp_set_current_user( $this->customer );
-		$actual = $this->orderMutation( $input );
+		$this->loginAsCustomer();
+		$response = $this->orderMutation( $input );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'errors', $actual );
+		$this->assertQueryError( $response );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Test mutation and input.
 		 */
-		wp_set_current_user( $this->shop_manager );
-		$actual = $this->orderMutation( $input );
+		$this->loginAsShopManager();
+		$response = $this->orderMutation( $input );
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'createOrder', $actual['data'] );
-		$this->assertArrayHasKey( 'order', $actual['data']['createOrder'] );
-		$this->assertArrayHasKey( 'id', $actual['data']['createOrder']['order'] );
-		$order = \WC_Order_Factory::get_order( $actual['data']['createOrder']['order']['databaseId'] );
+		$this->assertArrayHasKey( 'data', $response );
+		$this->assertArrayHasKey( 'createOrder', $response['data'] );
+		$this->assertArrayHasKey( 'order', $response['data']['createOrder'] );
+		$this->assertArrayHasKey( 'id', $response['data']['createOrder']['order'] );
+		$order = \WC_Order_Factory::get_order( $response['data']['createOrder']['order']['databaseId'] );
 
 		$expected = [
-			'data' => [
-				'createOrder' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function ( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => [
-													'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
-												],
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										static function ( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => $item->get_amount(),
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										static function ( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										static function ( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function ( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-				],
-			],
+			$this->expectedField( 'createOrder.clientMutationId', 'someId' ),
+			$this->expectedField( 'createOrder.order.id', $this->toRelayId( 'order', $order->get_id() ) ),
+			$this->expectedField( 'createOrder.order.databaseId', $order->get_id() ),
+			$this->expectedField( 'createOrder.order.currency', self::NOT_NULL ),
+			$this->expectedField( 'createOrder.order.status', self::NOT_NULL ),
+			$this->expectedField( 'createOrder.order.customerNote', 'Customer test note' ),
+			$this->expectedField( 'createOrder.order.billing.firstName', 'May' ),
+			$this->expectedField( 'createOrder.order.billing.lastName', 'Parker' ),
+			$this->expectedField( 'createOrder.order.billing.address1', '20 Ingram St' ),
+			$this->expectedField( 'createOrder.order.billing.city', 'New York City' ),
+			$this->expectedField( 'createOrder.order.billing.state', 'NY' ),
+			$this->expectedField( 'createOrder.order.billing.postcode', '12345' ),
+			$this->expectedField( 'createOrder.order.billing.country', 'US' ),
+			$this->expectedField( 'createOrder.order.billing.email', 'superfreak500@gmail.com' ),
+			$this->expectedField( 'createOrder.order.billing.phone', '555-555-1234' ),
+			$this->expectedField( 'createOrder.order.shipping.firstName', 'May' ),
+			$this->expectedField( 'createOrder.order.shipping.lastName', 'Parker' ),
+			$this->expectedField( 'createOrder.order.shipping.address1', '20 Ingram St' ),
+			$this->expectedField( 'createOrder.order.shipping.city', 'New York City' ),
+			$this->expectedField( 'createOrder.order.shipping.state', 'NY' ),
+			$this->expectedField( 'createOrder.order.shipping.postcode', '12345' ),
+			$this->expectedField( 'createOrder.order.shipping.country', 'US' ),
+			$this->expectedField( 'createOrder.order.paymentMethod', 'bacs' ),
+			$this->expectedField( 'createOrder.order.paymentMethodTitle', 'Direct Bank Transfer' ),
 		];
 
-		$this->assertEquals( $expected, $actual );
+		// Validate coupon lines.
+		$coupon_items = array_values( $order->get_items( 'coupon' ) );
+		foreach ( $coupon_items as $i => $item ) {
+			$expected[] = $this->expectedField( "createOrder.order.couponLines.nodes.{$i}.databaseId", $item->get_id() );
+			$expected[] = $this->expectedField( "createOrder.order.couponLines.nodes.{$i}.orderId", $item->get_order_id() );
+			$expected[] = $this->expectedField( "createOrder.order.couponLines.nodes.{$i}.code", $item->get_code() );
+			$expected[] = $this->expectedField(
+				"createOrder.order.couponLines.nodes.{$i}.coupon.id",
+				$this->toRelayId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) )
+			);
+		}
+
+		// Validate fee lines.
+		$fee_items = array_values( $order->get_items( 'fee' ) );
+		foreach ( $fee_items as $i => $item ) {
+			$expected[] = $this->expectedField( "createOrder.order.feeLines.nodes.{$i}.databaseId", $item->get_id() );
+			$expected[] = $this->expectedField( "createOrder.order.feeLines.nodes.{$i}.name", $item->get_name() );
+			$expected[] = $this->expectedField( "createOrder.order.feeLines.nodes.{$i}.taxStatus", strtoupper( $item->get_tax_status() ) );
+			$expected[] = $this->expectedField( "createOrder.order.feeLines.nodes.{$i}.total", $item->get_total() );
+		}
+
+		// Validate shipping lines.
+		$shipping_items = array_values( $order->get_items( 'shipping' ) );
+		foreach ( $shipping_items as $i => $item ) {
+			$expected[] = $this->expectedField( "createOrder.order.shippingLines.nodes.{$i}.databaseId", $item->get_id() );
+			$expected[] = $this->expectedField( "createOrder.order.shippingLines.nodes.{$i}.methodTitle", $item->get_method_title() );
+			$expected[] = $this->expectedField( "createOrder.order.shippingLines.nodes.{$i}.total", $item->get_total() );
+		}
+
+		// Validate tax lines.
+		$tax_items = array_values( $order->get_items( 'tax' ) );
+		foreach ( $tax_items as $i => $item ) {
+			$expected[] = $this->expectedField( "createOrder.order.taxLines.nodes.{$i}.rateCode", $item->get_rate_code() );
+			$expected[] = $this->expectedField( "createOrder.order.taxLines.nodes.{$i}.label", $item->get_label() );
+			$expected[] = $this->expectedField( "createOrder.order.taxLines.nodes.{$i}.taxRate.databaseId", $item->get_rate_id() );
+		}
+
+		// Validate line items.
+		$line_items = array_values( $order->get_items() );
+		foreach ( $line_items as $i => $item ) {
+			$expected[] = $this->expectedField( "createOrder.order.lineItems.nodes.{$i}.productId", $item->get_product_id() );
+			$expected[] = $this->expectedField( "createOrder.order.lineItems.nodes.{$i}.quantity", $item->get_quantity() );
+			$expected[] = $this->expectedField( "createOrder.order.lineItems.nodes.{$i}.taxStatus", strtoupper( $item->get_tax_status() ) );
+			$expected[] = $this->expectedField(
+				"createOrder.order.lineItems.nodes.{$i}.product.node.id",
+				$this->toRelayId( 'post', $item->get_product_id() )
+			);
+			if ( ! empty( $item->get_variation_id() ) ) {
+				$expected[] = $this->expectedField( "createOrder.order.lineItems.nodes.{$i}.variationId", $item->get_variation_id() );
+				$expected[] = $this->expectedField(
+					"createOrder.order.lineItems.nodes.{$i}.variation.node.id",
+					$this->toRelayId( 'post', $item->get_variation_id() )
+				);
+			}
+		}
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testUpdateOrderMutation() {
 		// Create products and coupons to be used in order creation.
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		$variable    = $this->factory->product_variation->createSome( $this->factory->product->createVariable() );
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 
 		// Create initial order input.
@@ -547,11 +498,10 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		];
 
 		// Create order to update.
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 		$initial_response = $this->orderMutation( $initial_input );
 
 		// use --debug flag to view.
-		codecept_debug( $initial_response );
 
 		// Retrieve order and items
 		$order          = \WC_Order_Factory::get_order( $initial_response['data']['createOrder']['order']['databaseId'] );
@@ -561,7 +511,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		// Create update order input.
 		$updated_input = [
-			'id'               => $this->order->to_relay_id( $order->get_id() ),
+			'id'               => $this->toRelayId( 'order', $order->get_id() ),
 			'clientMutationId' => 'someId',
 			'customerNote'     => 'Customer test note',
 			'coupons'          => [
@@ -626,174 +576,110 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * User without necessary capabilities cannot update order an order.
 		 */
 		wp_set_current_user( $this->factory->user->create( [ 'role' => 'customer' ] ) );
-		$actual = $this->orderMutation(
+		$response = $this->orderMutation(
 			$updated_input,
 			'updateOrder',
 			'UpdateOrderInput'
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'errors', $actual );
+		$this->assertQueryError( $response );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Test mutation and input.
 		 */
-		wp_set_current_user( $this->shop_manager );
-		$actual = $this->orderMutation(
+		$this->loginAsShopManager();
+		$response = $this->orderMutation(
 			$updated_input,
 			'updateOrder',
 			'UpdateOrderInput'
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
 		// Apply new changes to order instances.
 		$order = \WC_Order_Factory::get_order( $order->get_id() );
 
 		$expected = [
-			'data' => [
-				'updateOrder' => [
-					'clientMutationId' => 'someId',
-					'order'            => array_merge(
-						$this->order->print_query( $order->get_id() ),
-						[
-							'couponLines'   => [
-								'nodes' => array_reverse(
-									array_map(
-										function ( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'code'     => $item->get_code(),
-												'discount' => ! empty( $item->get_discount() ) ? $item->get_discount() : null,
-												'discountTax' => ! empty( $item->get_discount_tax() ) ? $item->get_discount_tax() : null,
-												'coupon'   => [
-													'id' => $this->coupon->to_relay_id( \wc_get_coupon_id_by_code( $item->get_code() ) ),
-												],
-											];
-										},
-										$order->get_items( 'coupon' )
-									)
-								),
-							],
-							'feeLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										static function ( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'amount'   => ! empty( $item->get_amount() ) ? $item->get_amount() : null,
-												'name'     => $item->get_name(),
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'fee' )
-									)
-								),
-							],
-							'shippingLines' => [
-								'nodes' => array_reverse(
-									array_map(
-										static function ( $item ) {
-											return [
-												'databaseId' => $item->get_id(),
-												'orderId'  => $item->get_order_id(),
-												'methodTitle' => $item->get_method_title(),
-												'total'    => $item->get_total(),
-												'totalTax' => ! empty( $item->get_total_tax() )
-													? $item->get_total_tax()
-													: null,
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? $item->get_tax_class() === 'inherit'
-														? WPEnumType::get_safe_name( 'inherit cart' )
-														: WPEnumType::get_safe_name( $item->get_tax_class() )
-													: 'STANDARD',
-											];
-										},
-										$order->get_items( 'shipping' )
-									)
-								),
-							],
-							'taxLines'      => [
-								'nodes' => array_reverse(
-									array_map(
-										static function ( $item ) {
-											return [
-												'rateCode' => $item->get_rate_code(),
-												'label'    => $item->get_label(),
-												'taxTotal' => $item->get_tax_total(),
-												'shippingTaxTotal' => $item->get_shipping_tax_total(),
-												'isCompound' => $item->is_compound(),
-												'taxRate'  => [ 'databaseId' => $item->get_rate_id() ],
-											];
-										},
-										$order->get_items( 'tax' )
-									)
-								),
-							],
-							'lineItems'     => [
-								'nodes' => array_values(
-									array_map(
-										function ( $item ) {
-											return [
-												'productId' => $item->get_product_id(),
-												'variationId' => ! empty( $item->get_variation_id() )
-													? $item->get_variation_id()
-													: null,
-												'quantity' => $item->get_quantity(),
-												'taxClass' => ! empty( $item->get_tax_class() )
-													? strtoupper( $item->get_tax_class() )
-													: 'STANDARD',
-												'subtotal' => ! empty( $item->get_subtotal() ) ? $item->get_subtotal() : null,
-												'subtotalTax' => ! empty( $item->get_subtotal_tax() ) ? $item->get_subtotal_tax() : null,
-												'total'    => ! empty( $item->get_total() ) ? $item->get_total() : null,
-												'totalTax' => ! empty( $item->get_total_tax() ) ? $item->get_total_tax() : null,
-												'taxStatus' => strtoupper( $item->get_tax_status() ),
-												'product'  => [ 'node' => [ 'id' => $this->product->to_relay_id( $item->get_product_id() ) ] ],
-												'variation' => ! empty( $item->get_variation_id() )
-													? [
-														'node' => [
-															'id' => $this->variation->to_relay_id( $item->get_variation_id() ),
-														],
-													]
-													: null,
-											];
-										},
-										$order->get_items()
-									)
-								),
-							],
-						]
-					),
-				],
-			],
+			$this->expectedField( 'updateOrder.clientMutationId', 'someId' ),
+			$this->expectedField( 'updateOrder.order.id', $this->toRelayId( 'order', $order->get_id() ) ),
+			$this->expectedField( 'updateOrder.order.databaseId', $order->get_id() ),
+			$this->expectedField( 'updateOrder.order.currency', self::NOT_NULL ),
+			$this->expectedField( 'updateOrder.order.status', self::NOT_NULL ),
+			$this->expectedField( 'updateOrder.order.customerNote', 'Customer test note' ),
+			$this->expectedField( 'updateOrder.order.billing.firstName', 'Ben' ),
+			$this->expectedField( 'updateOrder.order.shipping.firstName', 'Ben' ),
 		];
 
-		$this->assertEquals( $expected, $actual );
-		$this->assertNotEquals( $initial_response, $actual );
+		// Validate coupon lines.
+		$coupon_items = array_values( $order->get_items( 'coupon' ) );
+		foreach ( $coupon_items as $i => $item ) {
+			$expected[] = $this->expectedField( "updateOrder.order.couponLines.nodes.{$i}.databaseId", $item->get_id() );
+			$expected[] = $this->expectedField( "updateOrder.order.couponLines.nodes.{$i}.code", $item->get_code() );
+			$expected[] = $this->expectedField(
+				"updateOrder.order.couponLines.nodes.{$i}.coupon.id",
+				$this->toRelayId( 'shop_coupon', \wc_get_coupon_id_by_code( $item->get_code() ) )
+			);
+		}
+
+		// Validate fee lines.
+		$fee_items = array_values( $order->get_items( 'fee' ) );
+		foreach ( $fee_items as $i => $item ) {
+			$expected[] = $this->expectedField( "updateOrder.order.feeLines.nodes.{$i}.databaseId", $item->get_id() );
+			$expected[] = $this->expectedField( "updateOrder.order.feeLines.nodes.{$i}.name", $item->get_name() );
+			$expected[] = $this->expectedField( "updateOrder.order.feeLines.nodes.{$i}.total", $item->get_total() );
+		}
+
+		// Validate shipping lines.
+		$shipping_items = array_values( $order->get_items( 'shipping' ) );
+		foreach ( $shipping_items as $i => $item ) {
+			$expected[] = $this->expectedField( "updateOrder.order.shippingLines.nodes.{$i}.databaseId", $item->get_id() );
+			$expected[] = $this->expectedField( "updateOrder.order.shippingLines.nodes.{$i}.methodTitle", $item->get_method_title() );
+			$expected[] = $this->expectedField( "updateOrder.order.shippingLines.nodes.{$i}.total", $item->get_total() );
+		}
+
+		// Validate tax lines.
+		$tax_items = array_values( $order->get_items( 'tax' ) );
+		foreach ( $tax_items as $i => $item ) {
+			$expected[] = $this->expectedField( "updateOrder.order.taxLines.nodes.{$i}.rateCode", $item->get_rate_code() );
+			$expected[] = $this->expectedField( "updateOrder.order.taxLines.nodes.{$i}.label", $item->get_label() );
+			$expected[] = $this->expectedField( "updateOrder.order.taxLines.nodes.{$i}.taxRate.databaseId", $item->get_rate_id() );
+		}
+
+		// Validate line items.
+		$updated_line_items = array_values( $order->get_items() );
+		foreach ( $updated_line_items as $i => $item ) {
+			$expected[] = $this->expectedField( "updateOrder.order.lineItems.nodes.{$i}.productId", $item->get_product_id() );
+			$expected[] = $this->expectedField( "updateOrder.order.lineItems.nodes.{$i}.quantity", $item->get_quantity() );
+			$expected[] = $this->expectedField( "updateOrder.order.lineItems.nodes.{$i}.taxStatus", strtoupper( $item->get_tax_status() ) );
+			$expected[] = $this->expectedField(
+				"updateOrder.order.lineItems.nodes.{$i}.product.node.id",
+				$this->toRelayId( 'post', $item->get_product_id() )
+			);
+			if ( ! empty( $item->get_variation_id() ) ) {
+				$expected[] = $this->expectedField( "updateOrder.order.lineItems.nodes.{$i}.variationId", $item->get_variation_id() );
+				$expected[] = $this->expectedField(
+					"updateOrder.order.lineItems.nodes.{$i}.variation.node.id",
+					$this->toRelayId( 'post', $item->get_variation_id() )
+				);
+			}
+		}
+
+		$this->assertQuerySuccessful( $response, $expected );
+		$this->assertNotEquals( $initial_response, $response );
 	}
 
 	public function testDeleteOrderMutation() {
 		// Create products and coupons to be used in order creation.
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		$variable    = $this->factory->product_variation->createSome( $this->factory->product->createVariable() );
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 
 		// Create initial order input.
@@ -872,11 +758,10 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		];
 
 		// Create order to delete.
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 		$initial_response = $this->orderMutation( $initial_input );
 
 		// use --debug flag to view.
-		codecept_debug( $initial_response );
 
 		// Clear loader cache.
 		$this->getModule( '\Helper\Wpunit' )->clear_loader_cache( 'wc_post' );
@@ -893,7 +778,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		// Create DeleteOrderInput.
 		$deleted_input = [
 			'clientMutationId' => 'someId',
-			'id'               => $this->order->to_relay_id( $order->get_id() ),
+			'id'               => $this->toRelayId( 'order', $order->get_id() ),
 			'forceDelete'      => true,
 		];
 
@@ -903,48 +788,48 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * User without necessary capabilities cannot delete order an order.
 		 */
 		wp_set_current_user( $this->factory->user->create( [ 'role' => 'customer' ] ) );
-		$actual = $this->orderMutation(
+		$response = $this->orderMutation(
 			$deleted_input,
 			'deleteOrder',
 			'DeleteOrderInput'
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'errors', $actual );
+		$this->assertQueryError( $response );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Test mutation and input.
 		 */
-		wp_set_current_user( $this->shop_manager );
-		$actual = $this->orderMutation(
+		$this->loginAsShopManager();
+		$response = $this->orderMutation(
 			$deleted_input,
 			'deleteOrder',
 			'DeleteOrderInput'
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'deleteOrder', $actual['data'] );
-		$this->assertEquals( $initial_response['data']['createOrder'], $actual['data']['deleteOrder'] );
+		$expected = [
+			$this->expectedField( 'deleteOrder.clientMutationId', 'someId' ),
+			$this->expectedField( 'deleteOrder.order.id', $this->toRelayId( 'order', $order->get_id() ) ),
+			$this->expectedField( 'deleteOrder.order.databaseId', $order->get_id() ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 		$this->assertFalse( \WC_Order_Factory::get_order( $order->get_id() ) );
 	}
 
 	public function testDeleteOrderItemsMutation() {
 		// Create products and coupons to be used in order creation.
-		$variable    = $this->variation->create( $this->product->create_variable() );
+		$variable    = $this->factory->product_variation->createSome( $this->factory->product->createVariable() );
 		$product_ids = [
-			$this->product->create_simple(),
-			$this->product->create_simple(),
+			$this->factory->product->createSimple(),
+			$this->factory->product->createSimple(),
 			$variable['product'],
 		];
 		$coupon      = new WC_Coupon(
-			$this->coupon->create( [ 'product_ids' => $product_ids ] )
+			$this->factory->coupon->create( [ 'product_ids' => $product_ids ] )
 		);
 
 		// Create initial order input.
@@ -1023,11 +908,10 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		];
 
 		// Create order to delete.
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 		$initial_response = $this->orderMutation( $initial_input );
 
 		// use --debug flag to view.
-		codecept_debug( $initial_response );
 
 		// Clear loader cache.
 		$this->getModule( '\Helper\Wpunit' )->clear_loader_cache( 'wc_post' );
@@ -1057,35 +941,35 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * User without necessary capabilities cannot delete order an order.
 		 */
 		wp_set_current_user( $this->factory->user->create( [ 'role' => 'customer' ] ) );
-		$actual = $this->orderMutation(
+		$response = $this->orderMutation(
 			$deleted_items_input,
 			'deleteOrderItems',
 			'DeleteOrderItemsInput'
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'errors', $actual );
+		$this->assertQueryError( $response );
 
 		/**
 		 * Assertion Two
 		 *
 		 * Test mutation and input.
 		 */
-		wp_set_current_user( $this->shop_manager );
-		$actual = $this->orderMutation(
+		$this->loginAsShopManager();
+		$response = $this->orderMutation(
 			$deleted_items_input,
 			'deleteOrderItems',
 			'DeleteOrderItemsInput'
 		);
 
-		// use --debug flag to view.
-		codecept_debug( $actual );
 
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'deleteOrderItems', $actual['data'] );
-		$this->assertEquals( $initial_response['data']['createOrder'], $actual['data']['deleteOrderItems'] );
+		$expected = [
+			$this->expectedField( 'deleteOrderItems.clientMutationId', 'someId' ),
+			$this->expectedField( 'deleteOrderItems.order.id', $this->toRelayId( 'order', $order->get_id() ) ),
+			$this->expectedField( 'deleteOrderItems.order.databaseId', $order->get_id() ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 		$this->assertFalse( \WC_Order_Factory::get_order_item( current( $line_items ) ) );
 		$this->assertFalse( \WC_Order_Factory::get_order_item( current( $coupon_lines ) ) );
 	}
@@ -1137,9 +1021,9 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * User without necessary capabilities cannot create an order note.
 		 */
 		$this->loginAsCustomer();
-		$actual = $this->orderNoteMutation( $input );
+		$response = $this->orderNoteMutation( $input );
 
-		$this->assertQueryError( $actual );
+		$this->assertQueryError( $response );
 
 		/**
 		 * Assertion Two
@@ -1147,7 +1031,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * Test mutation and input.
 		 */
 		$this->loginAsShopManager();
-		$actual = $this->orderNoteMutation( $input );
+		$response = $this->orderNoteMutation( $input );
 
 		$expected = [
 			$this->expectedField( 'createOrderNote.clientMutationId', 'someId' ),
@@ -1160,7 +1044,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'createOrderNote.order.databaseId', $order_id ),
 		];
 
-		$this->assertQuerySuccessful( $actual, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		// Test customer note
 		$customer_input = [
@@ -1171,7 +1055,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		];
 
 		$customer_actual = $this->orderNoteMutation( $customer_input );
-		
+
 		$customer_expected = [
 			$this->expectedField( 'createOrderNote.orderNote.note', 'Customer visible note' ),
 			$this->expectedField( 'createOrderNote.orderNote.isCustomerNote', true ),
@@ -1182,7 +1066,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		/**
 		 * Assertion Three
-		 * 
+		 *
 		 * Test mutation and input
 		 */
 		$this->loginAs( $customer_id );
@@ -1204,11 +1088,13 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	}
 
 	public function testDeleteOrderNoteMutation() {
+		$order_id = $this->factory->order->createNew();
+
 		// First create a note to delete
 		$this->loginAsShopManager();
 		$create_input = [
 			'clientMutationId' => 'createId',
-			'orderId'          => $this->order_id,
+			'orderId'          => $order_id,
 			'note'             => 'Note to be deleted',
 			'isCustomerNote'   => false,
 		];
@@ -1220,7 +1106,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$delete_input = [
 			'clientMutationId' => 'deleteId',
 			'id'               => $note_id,
-			'orderId'          => $this->order_id,
+			'orderId'          => $order_id,
 			'force'            => true,
 		];
 
@@ -1230,9 +1116,9 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * User without necessary capabilities cannot delete an order note.
 		 */
 		$this->loginAsCustomer();
-		$actual = $this->orderNoteMutation( $delete_input, 'deleteOrderNote', 'DeleteOrderNoteInput' );
+		$response = $this->orderNoteMutation( $delete_input, 'deleteOrderNote', 'DeleteOrderNoteInput' );
 
-		$this->assertQueryError( $actual );
+		$this->assertQueryError( $response );
 
 		/**
 		 * Assertion Two
@@ -1240,15 +1126,15 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		 * Test mutation and input.
 		 */
 		$this->loginAsShopManager();
-		$actual = $this->orderNoteMutation( $delete_input, 'deleteOrderNote', 'DeleteOrderNoteInput' );
+		$response = $this->orderNoteMutation( $delete_input, 'deleteOrderNote', 'DeleteOrderNoteInput' );
 
 		$expected = [
 			$this->expectedField( 'deleteOrderNote.clientMutationId', 'deleteId' ),
 			$this->expectedField( 'deleteOrderNote.orderNote.note', 'Note to be deleted' ),
-			$this->expectedField( 'deleteOrderNote.order.databaseId', $this->order_id ),
+			$this->expectedField( 'deleteOrderNote.order.databaseId', $order_id ),
 		];
 
-		$this->assertQuerySuccessful( $actual, $expected );
+		$this->assertQuerySuccessful( $response, $expected );
 
 		// Verify the note was deleted by checking it doesn't exist
 		$deleted_note = get_comment( $note_id );
@@ -1256,18 +1142,20 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	}
 
 	public function testCreateOrderNoteValidation() {
+		$order_id = $this->factory->order->createNew();
+
 		$this->loginAsShopManager();
 
 		// Test missing note content
 		$invalid_input = [
 			'clientMutationId' => 'invalidId',
-			'orderId'          => $this->order_id,
+			'orderId'          => $order_id,
 			'note'             => '',
 			'isCustomerNote'   => false,
 		];
 
-		$actual = $this->orderNoteMutation( $invalid_input );
-		$this->assertQueryError( $actual );
+		$response = $this->orderNoteMutation( $invalid_input );
+		$this->assertQueryError( $response );
 
 		// Test invalid order ID
 		$invalid_order_input = [
@@ -1277,8 +1165,8 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			'isCustomerNote'   => false,
 		];
 
-		$actual = $this->orderNoteMutation( $invalid_order_input );
-		$this->assertQueryError( $actual );
+		$response = $this->orderNoteMutation( $invalid_order_input );
+		$this->assertQueryError( $response );
 	}
 
 	/**
@@ -1287,10 +1175,10 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/591
 	 */
 	public function testUpdateOrderMetaDataDoesNotDuplicate() {
-		wp_set_current_user( $this->shop_manager );
+		$this->loginAsShopManager();
 
 		// Create an order.
-		$order_id = $this->order->create(
+		$order_id = $this->factory->order->create(
 			[
 				'status'      => 'processing',
 				'customer_id' => $this->customer,
@@ -1386,6 +1274,143 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$count_before_update,
 			$count_after_update,
 			'updateOrder with existing metaData should not create a duplicate order.'
+		);
+	}
+
+	/**
+	 * Test that createOrder with isPaid reduces stock quantity.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/313
+	 */
+	public function testCreateOrderReducesStockQuantity() {
+		$this->loginAsShopManager();
+
+		// Create a product with managed stock.
+		$product_id = $this->factory->product->createSimple(
+			[
+				'manage_stock'   => true,
+				'stock_quantity' => 50,
+			]
+		);
+
+		$product = wc_get_product( $product_id );
+		$this->assertEquals( 50, $product->get_stock_quantity(), 'Initial stock should be 50.' );
+
+		$mutation = '
+			mutation createOrder($input: CreateOrderInput!) {
+				createOrder(input: $input) {
+					order {
+						databaseId
+						status
+					}
+				}
+			}
+		';
+
+		// Test with isPaid: true only (no explicit status).
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'stock-test-paid',
+				'isPaid'           => true,
+				'paymentMethod'    => 'cod',
+				'lineItems'        => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 3,
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'createOrder.order.databaseId', self::NOT_NULL ) ]
+		);
+
+		$product = wc_get_product( $product_id );
+		$this->assertEquals(
+			47,
+			$product->get_stock_quantity(),
+			'Stock should be reduced from 50 to 47 after ordering 3 units with isPaid: true.'
+		);
+
+		// Test with bacs payment method — should result in PROCESSING status.
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'stock-test-bacs',
+				'isPaid'           => true,
+				'paymentMethod'    => 'bacs',
+				'lineItems'        => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 2,
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'createOrder.order.databaseId', self::NOT_NULL ) ]
+		);
+
+		$product = wc_get_product( $product_id );
+		$this->assertEquals(
+			45,
+			$product->get_stock_quantity(),
+			'Stock should be reduced from 47 to 45 after ordering 2 units with BACS payment.'
+		);
+
+		// Test with isPaid: true and explicit status: COMPLETED.
+		// Setting status manually alongside isPaid interferes with WooCommerce's
+		// stock management flow. Users should rely on isPaid alone and let
+		// WooCommerce determine the correct status.
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'stock-test-completed',
+				'isPaid'           => true,
+				'paymentMethod'    => 'bacs',
+				'status'           => 'COMPLETED',
+				'lineItems'        => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 5,
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+		$expected = [
+			$this->expectedField( 'createOrder.order.databaseId', self::NOT_NULL ),
+			$this->expectedField( 'createOrder.order.status', 'COMPLETED' ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Stock should NOT change when status is explicitly set alongside isPaid,
+		// because the manual status override bypasses WooCommerce's stock reduction hooks.
+		$product = wc_get_product( $product_id );
+		$this->assertEquals(
+			45,
+			$product->get_stock_quantity(),
+			'Stock should remain at 45 when status is explicitly set alongside isPaid.'
 		);
 	}
 }
