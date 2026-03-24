@@ -166,12 +166,24 @@ class QL_Session_Handler extends WC_Session_Handler {
 			// If the user logs in, update session.
 			if ( is_user_logged_in() && strval( get_current_user_id() ) !== $this->_customer_id ) {
 				$guest_session_id   = $this->_customer_id;
+				$guest_data         = $this->_data;
 				$this->_customer_id = strval( get_current_user_id() );
 				$this->_dirty       = true;
 
-				// If session empty check for previous data associated with customer and assign that to the session.
-				if ( empty( $this->_data ) ) {
-					$this->_data = $this->get_session_data();
+				$existing_user_data = $this->get_session_data();
+
+				$transfer_behavior = woographql_setting( 'session_transfer_behavior', 'keep_new_fallback_old' );
+				switch ( $transfer_behavior ) {
+					case 'keep_new':
+						$this->_data = $guest_data;
+						break;
+					case 'keep_old':
+						$this->_data = ! empty( $existing_user_data ) ? $existing_user_data : $guest_data;
+						break;
+					case 'keep_new_fallback_old':
+					default:
+						$this->_data = ! empty( $guest_data ) ? $guest_data : $existing_user_data;
+						break;
 				}
 
 				// @phpstan-ignore-next-line

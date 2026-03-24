@@ -110,6 +110,19 @@ class General extends Section {
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
+				'name'     => 'session_transfer_behavior',
+				'label'    => __( 'Session Transfer Behavior', 'wp-graphql-woocommerce' ),
+				'desc'     => __( 'Controls how cart data is handled when a user logs in with an existing session from another device. "Keep new" keeps the current session data (default). "Keep old" restores the previously saved session data. "Merge" combines cart items from both sessions.', 'wp-graphql-woocommerce' ),
+				'type'     => 'select',
+				'options'  => [
+					'keep_new_fallback_old' => __( 'Keep new, fallback to old (default)', 'wp-graphql-woocommerce' ),
+					'keep_new'              => __( 'Keep new (always use current session)', 'wp-graphql-woocommerce' ),
+					'keep_old'              => __( 'Keep old (restore previously saved session)', 'wp-graphql-woocommerce' ),
+				],
+				'default'  => 'keep_new_fallback_old',
+				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
+			],
+			[
 				'name'    => 'enable_unsupported_product_type',
 				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
 				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),
