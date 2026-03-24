@@ -36,7 +36,7 @@ class WooCommerce_Filters {
 			add_filter( 'graphql_access_control_allow_headers', [ self::class, 'add_session_header_to_allow_headers' ] );
 
 			// Initialize cart/session after JWT authentication has had a chance to run.
-			add_action( 'graphql_process_http_request', [ self::class, 'initialize_session_and_cart' ] );
+			add_action( 'init_graphql_request', [ self::class, 'initialize_session_and_cart' ] );
 		}
 
 		// Add better support for Stripe payment gateway.
@@ -67,6 +67,10 @@ class WooCommerce_Filters {
 	 * @return void
 	 */
 	public static function initialize_session_and_cart() {
+		if ( ! \WPGraphQL\Router::is_graphql_http_request() ) {
+			return;
+		}
+
 		// Clear any existing WooCommerce objects to ensure fresh initialization
 		// with the correct user context after JWT authentication.
 
