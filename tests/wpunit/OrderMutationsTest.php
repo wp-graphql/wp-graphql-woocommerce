@@ -24,6 +24,9 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		update_option( 'woocommerce_calc_taxes', 'yes' );
 		update_option( 'woocommerce_tax_round_at_subtotal', 'no' );
 
+		// Enable stock management.
+		update_option( 'woocommerce_manage_stock', 'yes' );
+
 		// Create a tax rate.
 		$this->tax->create(
 			[
@@ -1386,6 +1389,145 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$count_before_update,
 			$count_after_update,
 			'updateOrder with existing metaData should not create a duplicate order.'
+		);
+	}
+
+	/**
+	 * Test that createOrder with isPaid reduces stock quantity.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/313
+	 */
+	public function testCreateOrderReducesStockQuantity() {
+		wp_set_current_user( $this->shop_manager );
+
+		// Create a product with managed stock.
+		$product_id = $this->product->create_simple(
+			[
+				'manage_stock'   => true,
+				'stock_quantity' => 50,
+			]
+		);
+
+		$product = wc_get_product( $product_id );
+		$this->assertEquals( 50, $product->get_stock_quantity(), 'Initial stock should be 50.' );
+
+		$mutation = '
+			mutation createOrder($input: CreateOrderInput!) {
+				createOrder(input: $input) {
+					order {
+						databaseId
+						status
+					}
+				}
+			}
+		';
+
+		// Test with isPaid: true only (no explicit status).
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'stock-test-paid',
+				'isPaid'           => true,
+				'paymentMethod'    => 'cod',
+				'lineItems'        => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 3,
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+		$expected = [
+			$this->expectedField( 'createOrder.order.databaseId', self::NOT_NULL ),
+			$this->expectedField( 'createOrder.order.status', 'COMPLETED' ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$product = wc_get_product( $product_id );
+		$this->assertEquals(
+			47,
+			$product->get_stock_quantity(),
+			'Stock should be reduced from 50 to 47 after ordering 3 units with COD payment.'
+		);
+
+		// Test with bacs payment method — should result in PROCESSING status.
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'stock-test-bacs',
+				'isPaid'           => true,
+				'paymentMethod'    => 'bacs',
+				'lineItems'        => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 2,
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+		$expected = [
+			$this->expectedField( 'createOrder.order.databaseId', self::NOT_NULL ),
+			$this->expectedField( 'createOrder.order.status', 'PROCESSING' ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$product = wc_get_product( $product_id );
+		$this->assertEquals(
+			45,
+			$product->get_stock_quantity(),
+			'Stock should be reduced from 47 to 45 after ordering 2 units with BACS payment.'
+		);
+
+		// Test with isPaid: true and explicit status: COMPLETED.
+		// Setting status manually alongside isPaid interferes with WooCommerce's
+		// stock management flow. Users should rely on isPaid alone and let
+		// WooCommerce determine the correct status.
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'stock-test-completed',
+				'isPaid'           => true,
+				'paymentMethod'    => 'bacs',
+				'status'           => 'COMPLETED',
+				'lineItems'        => [
+					[
+						'productId' => $product_id,
+						'quantity'  => 5,
+					],
+				],
+			],
+		];
+
+		$response = $this->graphql(
+			[
+				'query'     => $mutation,
+				'variables' => $variables,
+			]
+		);
+		$expected = [
+			$this->expectedField( 'createOrder.order.databaseId', self::NOT_NULL ),
+			$this->expectedField( 'createOrder.order.status', 'COMPLETED' ),
+		];
+		$this->assertQuerySuccessful( $response, $expected );
+
+		// Stock should NOT change when status is explicitly set alongside isPaid,
+		// because the manual status override bypasses WooCommerce's stock reduction hooks.
+		$product = wc_get_product( $product_id );
+		$this->assertEquals(
+			45,
+			$product->get_stock_quantity(),
+			'Stock should remain at 45 when status is explicitly set alongside isPaid.'
 		);
 	}
 }
