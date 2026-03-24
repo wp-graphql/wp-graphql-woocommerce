@@ -299,4 +299,122 @@ class ProductAttributeConnectionsTest extends \Tests\WPGraphQL\WooCommerce\TestC
 		$attribute_nodes = $this->lodashGet( $response, 'data.productCategory.productAttributes.nodes', [] );
 		$this->assertEmpty( $attribute_nodes, 'Food category should have no product attributes.' );
 	}
+
+	/**
+	 * Test filtering products by categoryId on an attribute term's products connection.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/730
+	 */
+	public function testAttributeTermProductsFilteredByCategory() {
+		$seller_attr = $this->factory->product->createAttribute( 'seller', [ 'acme-store', 'globex-store' ] );
+
+		$acme_term_id  = get_term_by( 'slug', 'acme-store', 'pa_seller' )->term_id;
+		$globex_term_id = get_term_by( 'slug', 'globex-store', 'pa_seller' )->term_id;
+
+		$cat_fruits = $this->factory->product->createProductCategory( 'fruits' );
+		$cat_vegs   = $this->factory->product->createProductCategory( 'vegetables' );
+
+		// Acme sells fruits.
+		$acme_fruit = $this->factory->product->createVariable(
+			[
+				'category_ids'   => [ $cat_fruits ],
+				'attribute_data' => [
+					[
+						'attribute_id'       => $seller_attr['attribute_id'],
+						'attribute_taxonomy' => $seller_attr['attribute_taxonomy'],
+						'term_ids'           => [ $acme_term_id ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $acme_fruit,
+				'attributes'    => [ 'pa_seller' => 'acme-store' ],
+				'image_id'      => null,
+				'regular_price' => 5,
+			]
+		);
+
+		// Acme also sells vegetables.
+		$acme_veg = $this->factory->product->createVariable(
+			[
+				'category_ids'   => [ $cat_vegs ],
+				'attribute_data' => [
+					[
+						'attribute_id'       => $seller_attr['attribute_id'],
+						'attribute_taxonomy' => $seller_attr['attribute_taxonomy'],
+						'term_ids'           => [ $acme_term_id ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $acme_veg,
+				'attributes'    => [ 'pa_seller' => 'acme-store' ],
+				'image_id'      => null,
+				'regular_price' => 3,
+			]
+		);
+
+		// Globex sells fruits.
+		$globex_fruit = $this->factory->product->createVariable(
+			[
+				'category_ids'   => [ $cat_fruits ],
+				'attribute_data' => [
+					[
+						'attribute_id'       => $seller_attr['attribute_id'],
+						'attribute_taxonomy' => $seller_attr['attribute_taxonomy'],
+						'term_ids'           => [ $globex_term_id ],
+					],
+				],
+			]
+		);
+		$this->factory->product_variation->create(
+			[
+				'parent_id'     => $globex_fruit,
+				'attributes'    => [ 'pa_seller' => 'globex-store' ],
+				'image_id'      => null,
+				'regular_price' => 8,
+			]
+		);
+
+		$this->clearSchema();
+
+		// Query acme-store's products filtered by fruits category.
+		$query = '
+			query ($slug: [String!], $categoryId: Int) {
+				allPaSeller(where: { slug: $slug }) {
+					nodes {
+						name
+						products(where: { categoryId: $categoryId }) {
+							nodes {
+								databaseId
+								productCategories {
+									nodes {
+										slug
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'slug'       => [ 'acme-store' ],
+			'categoryId' => $cat_fruits,
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'allPaSeller.nodes.0.products.nodes.#.databaseId', $acme_fruit ),
+			$this->not()->expectedField( 'allPaSeller.nodes.0.products.nodes.#.databaseId', $acme_veg ),
+			$this->not()->expectedField( 'allPaSeller.nodes.0.products.nodes.#.databaseId', $globex_fruit ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
