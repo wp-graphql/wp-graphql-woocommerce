@@ -62,8 +62,9 @@ class Product {
 									'fields'         => 'ids',
 								]
 							);
-
-							$product_id = ! empty( $query->posts ) ? absint( $query->posts[0] ) : 0;
+							/** @var int $post_id */
+							$post_id    = ! empty( $query->posts ) ? $query->posts[0] : 0;
+							$product_id = absint( $post_id );
 							break;
 						case 'database_id':
 							$product_id = absint( $id );

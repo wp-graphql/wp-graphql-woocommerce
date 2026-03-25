@@ -34,6 +34,10 @@ class Label {
 			$value = transliterator_transliterate( 'Any-Latin; Latin-ASCII', $value );
 		}
 
+		if ( empty( $value ) ) {
+			return null;
+		}
+
 		$safe_name = WPEnumType::get_safe_name( $value );
 
 		if ( ! preg_match( '/[A-Za-z0-9]/', $safe_name ) ) {

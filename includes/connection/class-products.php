@@ -39,7 +39,7 @@ class Products {
 		register_graphql_connection(
 			self::get_connection_config(
 				[ 'fromFieldName' => 'productsWithVariations' ]
-			) 
+			)
 		);
 
 		// From Coupon.
