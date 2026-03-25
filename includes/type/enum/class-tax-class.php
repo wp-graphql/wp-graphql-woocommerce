@@ -8,7 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
-use WPGraphQL\Type\WPEnumType;
+use WPGraphQL\WooCommerce\Utils\Label;
 
 /**
  * Class Tax_Class
@@ -33,7 +33,11 @@ class Tax_Class {
 
 		$classes = \WC_Tax::get_tax_classes();
 		foreach ( $classes as $class ) {
-			$values[ WPEnumType::get_safe_name( $class ) ] = [ 'value' => sanitize_title( $class ) ];
+			$safe_name = Label::get_safe_enum_name( $class );
+			if ( null === $safe_name ) {
+				continue;
+			}
+			$values[ $safe_name ] = [ 'value' => sanitize_title( $class ) ];
 		}
 
 		register_graphql_enum_type(

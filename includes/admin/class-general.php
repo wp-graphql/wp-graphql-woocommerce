@@ -123,6 +123,15 @@ class General extends Section {
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
+				'name'     => 'enable_transliteration',
+				'label'    => __( 'Transliterate non-latin characters', 'wp-graphql-woocommerce' ),
+				'desc'     => __( 'Converts non-latin characters (Cyrillic, Chinese, Arabic, etc.) to their latin equivalents in GraphQL type and enum names. Enable this if your WooCommerce tax classes, product attributes, or taxonomies use non-latin names. Requires the PHP intl extension.', 'wp-graphql-woocommerce' )
+					. ( ! function_exists( 'transliterator_transliterate' ) ? __( ' <strong>Warning:</strong> The PHP intl extension is not available. This setting will have no effect.', 'wp-graphql-woocommerce' ) : '' ),
+				'type'     => 'checkbox',
+				'default'  => 'off',
+				'disabled' => ! function_exists( 'transliterator_transliterate' ),
+			],
+			[
 				'name'    => 'enable_unsupported_product_type',
 				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
 				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),

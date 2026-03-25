@@ -59,5 +59,24 @@ class Product_Types {
 				'values'      => $values,
 			]
 		);
+
+		register_graphql_enum_type(
+			'ProductTypesWithVariationsEnum',
+			[
+				'description' => __( 'Product type enumeration including variation types', 'wp-graphql-woocommerce' ),
+				'values'      => apply_filters(
+					'graphql_product_types_with_variations_enum_values',
+					array_merge(
+						$values,
+						[
+							'VARIATION' => [
+								'value'       => 'variation',
+								'description' => __( 'A product variation', 'wp-graphql-woocommerce' ),
+							],
+						]
+					)
+				),
+			]
+		);
 	}
 }

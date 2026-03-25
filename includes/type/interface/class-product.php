@@ -53,8 +53,17 @@ class Product {
 							$product_id = \wc_get_product_id_by_sku( $id );
 							break;
 						case 'slug':
-							$post       = get_page_by_path( $id, OBJECT, 'product' );
-							$product_id = ! empty( $post ) ? absint( $post->ID ) : 0;
+							$query = new \WP_Query(
+								[
+									'name'           => $id,
+									'post_type'      => 'product',
+									'post_status'    => 'publish',
+									'posts_per_page' => 1,
+									'fields'         => 'ids',
+								]
+							);
+
+							$product_id = ! empty( $query->posts ) ? absint( $query->posts[0] ) : 0;
 							break;
 						case 'database_id':
 							$product_id = absint( $id );
