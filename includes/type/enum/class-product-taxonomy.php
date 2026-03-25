@@ -8,7 +8,7 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPEnum;
 
-use WPGraphQL\Type\WPEnumType;
+use WPGraphQL\WooCommerce\Utils\Label;
 
 /**
  * Class Product_Taxonomy
@@ -28,7 +28,11 @@ class Product_Taxonomy {
 			$tax_object = get_taxonomy( $taxonomy );
 
 			if ( false !== $tax_object && in_array( 'product', $tax_object->object_type, true ) ) {
-				$taxonomy_values[ WPEnumType::get_safe_name( $taxonomy ) ] = [ 'value' => $taxonomy ];
+				$safe_name = Label::get_safe_enum_name( $taxonomy );
+				if ( null === $safe_name ) {
+					continue;
+				}
+				$taxonomy_values[ $safe_name ] = [ 'value' => $taxonomy ];
 			}
 		}
 

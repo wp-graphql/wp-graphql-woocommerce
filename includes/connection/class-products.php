@@ -24,8 +24,23 @@ class Products {
 	 * @return void
 	 */
 	public static function register_connections() {
-		// From RootQuery.
-		register_graphql_connection( self::get_connection_config() );
+		// Products connection (toType: Product) — compatible with i18n plugins.
+		register_graphql_connection(
+			self::get_connection_config(
+				[
+					'toType'         => 'Product',
+					'fromFieldName'  => 'products',
+					'connectionArgs' => self::get_product_connection_args(),
+				]
+			)
+		);
+
+		// Products with variations connection (toType: ProductUnion).
+		register_graphql_connection(
+			self::get_connection_config(
+				[ 'fromFieldName' => 'productsWithVariations' ]
+			)
+		);
 
 		// From Coupon.
 		register_graphql_connection(
@@ -266,7 +281,15 @@ class Products {
 		$to_type   = $config['toType'];
 		$from_type = $config['fromType'];
 		if ( 'Product' === $to_type ) {
-			$config['connectionArgs'] = self::get_connection_args();
+			$args                     = self::get_product_connection_args();
+			$config['connectionArgs'] = ! empty( $config['connectionArgs'] )
+				? array_merge( $config['connectionArgs'], $args )
+				: $args;
+		} elseif ( 'ProductUnion' === $to_type ) {
+			$args                     = self::get_product_union_connection_args();
+			$config['connectionArgs'] = ! empty( $config['connectionArgs'] )
+				? array_merge( $config['connectionArgs'], $args )
+				: $args;
 		}
 
 		$taxonomies = self::get_product_connected_taxonomies();
@@ -333,13 +356,11 @@ class Products {
 	}
 
 	/**
-	 * Returns array of where args.
-	 *
-	 * @param array $extra_args  Extra connection args.
+	 * Returns the shared base connection args used by both product connections.
 	 *
 	 * @return array
 	 */
-	public static function get_connection_args( $extra_args = [] ): array {
+	private static function get_base_connection_args(): array {
 		$args = [
 			'slugIn'              => [
 				'type'        => [ 'list_of' => 'String' ],
@@ -348,18 +369,6 @@ class Products {
 			'status'              => [
 				'type'        => 'String',
 				'description' => __( 'Limit result set to products assigned a specific status.', 'wp-graphql-woocommerce' ),
-			],
-			'type'                => [
-				'type'        => 'ProductTypesEnum',
-				'description' => __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' ),
-			],
-			'typeIn'              => [
-				'type'        => [ 'list_of' => 'ProductTypesEnum' ],
-				'description' => __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
-			],
-			'typeNotIn'           => [
-				'type'        => [ 'list_of' => 'ProductTypesEnum' ],
-				'description' => __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
 			],
 			'sku'                 => [
 				'type'        => 'String',
@@ -495,10 +504,6 @@ class Products {
 				'type'        => 'Boolean',
 				'description' => __( 'Limit result types to types supported by WooGraphQL.', 'wp-graphql-woocommerce' ),
 			],
-			'includeVariations'   => [
-				'type'        => 'Boolean',
-				'description' => __( 'Include variations in the result set.', 'wp-graphql-woocommerce' ),
-			],
 			'rating'              => [
 				'type'        => [ 'list_of' => 'Integer' ],
 				'description' => __( 'Limit result set to products with a specific average rating. Must be between 1 and 5', 'wp-graphql-woocommerce' ),
@@ -512,6 +517,73 @@ class Products {
 			];
 		}
 
-		return array_merge( get_wc_cpt_connection_args(), $args, $extra_args );
+		return array_merge( get_wc_cpt_connection_args(), $args );
+	}
+
+	/**
+	 * Returns connection args for the Product connection (excludes variation types).
+	 *
+	 * @return array
+	 */
+	public static function get_product_connection_args(): array {
+		return array_merge(
+			self::get_base_connection_args(),
+			[
+				'type'      => [
+					'type'        => 'ProductTypesEnum',
+					'description' => __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' ),
+				],
+				'typeIn'    => [
+					'type'        => [ 'list_of' => 'ProductTypesEnum' ],
+					'description' => __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
+				],
+				'typeNotIn' => [
+					'type'        => [ 'list_of' => 'ProductTypesEnum' ],
+					'description' => __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
+				],
+			]
+		);
+	}
+
+	/**
+	 * Returns connection args for the ProductUnion connection (includes variation types).
+	 *
+	 * @return array
+	 */
+	public static function get_product_union_connection_args(): array {
+		return array_merge(
+			self::get_base_connection_args(),
+			[
+				'type'              => [
+					'type'        => 'ProductTypesWithVariationsEnum',
+					'description' => __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' ),
+				],
+				'typeIn'            => [
+					'type'        => [ 'list_of' => 'ProductTypesWithVariationsEnum' ],
+					'description' => __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
+				],
+				'typeNotIn'         => [
+					'type'        => [ 'list_of' => 'ProductTypesWithVariationsEnum' ],
+					'description' => __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' ),
+				],
+				'includeVariations' => [
+					'type'        => 'Boolean',
+					'description' => __( 'Include variations in the result set.', 'wp-graphql-woocommerce' ),
+				],
+			]
+		);
+	}
+
+	/**
+	 * Returns array of where args.
+	 *
+	 * @deprecated Use get_product_connection_args() or get_product_union_connection_args() instead.
+	 *
+	 * @param array $extra_args  Extra connection args.
+	 *
+	 * @return array
+	 */
+	public static function get_connection_args( $extra_args = [] ): array {
+		return array_merge( self::get_product_union_connection_args(), $extra_args );
 	}
 }

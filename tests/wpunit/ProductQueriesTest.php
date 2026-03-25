@@ -1075,7 +1075,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 
 		// Create query.
 		$query = '
-			query( $where: RootQueryToProductUnionConnectionWhereArgs ) {
+			query( $where: RootQueryToProductConnectionWhereArgs ) {
 				products( where: $where ) {
 					nodes {
 						... on SimpleProduct {

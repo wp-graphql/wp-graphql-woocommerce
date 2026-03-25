@@ -162,6 +162,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			$include_directory_path = get_includes_directory();
 
 			// Include util class files.
+			require $include_directory_path . 'utils/class-label.php';
 			require $include_directory_path . 'utils/class-ql-session-handler.php';
 			require $include_directory_path . 'utils/class-session-transaction-manager.php';
 

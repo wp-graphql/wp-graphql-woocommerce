@@ -263,7 +263,7 @@ class ConnectionPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Woo
 		);
 
 		$query = '
-			query ($first: Int, $last: Int, $after: String, $before: String, $where: RootQueryToProductUnionConnectionWhereArgs) {
+			query ($first: Int, $last: Int, $after: String, $before: String, $where: RootQueryToProductConnectionWhereArgs) {
 				products(first: $first, last: $last, after: $after, before: $before, where: $where) {
 					found
 					nodes {

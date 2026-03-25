@@ -283,8 +283,8 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		);
 
 		$query = '
-			query ( $type: ProductTypesEnum, $typeIn: [ProductTypesEnum], $includeVariations: Boolean ) {
-				products( where: { type: $type, typeIn: $typeIn includeVariations: $includeVariations } ) {
+			query ( $type: ProductTypesWithVariationsEnum, $typeIn: [ProductTypesWithVariationsEnum], $includeVariations: Boolean ) {
+				productsWithVariations( where: { type: $type, typeIn: $typeIn includeVariations: $includeVariations } ) {
 					nodes {
 						id
 					}
@@ -297,9 +297,9 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		 */
 		$response = $this->graphql( compact( 'query' ) );
 		$expected = [
-			$this->expectedField( 'products.nodes.0.id', $this->toRelayId( 'post', $product_id ) ),
-			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
-			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
+			$this->expectedField( 'productsWithVariations.nodes.0.id', $this->toRelayId( 'post', $product_id ) ),
+			$this->not()->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
+			$this->not()->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -310,22 +310,22 @@ class ProductVariationQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 		$variables = [ 'type' => 'VARIATION' ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->not()->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $product_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
+			$this->not()->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $product_id ) ),
+			$this->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
+			$this->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 
 		/**
-		 * Assert result with "typeIn" set to "VARIATION" & "VARIATION" products and variations are returned.
+		 * Assert result with "includeVariations" returns products and variations.
 		 */
 		$variables = [ 'includeVariations' => true ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $product_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
-			$this->expectedField( 'products.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
+			$this->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $product_id ) ),
+			$this->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $variation_id ) ),
+			$this->expectedField( 'productsWithVariations.nodes.#.id', $this->toRelayId( 'post', $other_variation_id ) ),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
