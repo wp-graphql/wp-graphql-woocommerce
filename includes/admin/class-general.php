@@ -272,6 +272,20 @@ class General extends Section {
 					return $value;
 				},
 			],
+			[
+				'name'    => 'enable_pre_auth_download_urls',
+				'label'   => __( 'Enable pre-authenticated download URLs', 'wp-graphql-woocommerce' ),
+				'desc'    => __( 'Adds a "preAuthDownloadUrl" field to downloadable items that generates a tokenized URL allowing downloads without cookie-based authentication. Useful for headless frontends where users cannot be redirected through the session transfer endpoint.', 'wp-graphql-woocommerce' ),
+				'type'    => 'checkbox',
+				'default' => 'off',
+			],
+			[
+				'name'    => 'download_url_nonce_param',
+				'label'   => __( 'Download URL nonce name', 'wp-graphql-woocommerce' ),
+				'desc'    => __( 'Query parameter name of the nonce included in the "downloadUrl" field on downloadable items.', 'wp-graphql-woocommerce' ),
+				'type'    => 'text',
+				'default' => '_wc_download',
+			],
 		];
 	}
 }

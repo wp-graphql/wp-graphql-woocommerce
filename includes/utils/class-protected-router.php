@@ -227,13 +227,15 @@ class Protected_Router {
 	 */
 	public static function get_nonce_names() {
 		$enabled_authorizing_url_fields = WooCommerce_Filters::enabled_authorizing_url_fields();
-		if ( empty( $enabled_authorizing_url_fields ) ) {
-			return [];
+		$nonce_names                    = [];
+		if ( ! empty( $enabled_authorizing_url_fields ) ) {
+			foreach ( array_keys( $enabled_authorizing_url_fields ) as $field ) {
+				$nonce_names[ $field ] = WooCommerce_Filters::get_authorizing_url_nonce_param_name( $field );
+			}
 		}
-		$nonce_names = [];
-		foreach ( array_keys( $enabled_authorizing_url_fields ) as $field ) {
-			$nonce_names[ $field ] = WooCommerce_Filters::get_authorizing_url_nonce_param_name( $field );
-		}
+
+		// Download URL nonce is always registered.
+		$nonce_names['download_url'] = woographql_setting( 'download_url_nonce_param', '_wc_download' );
 
 		return array_filter( $nonce_names );
 	}
@@ -254,6 +256,8 @@ class Protected_Router {
 				return 'load-account_';
 			case 'add_payment_method_url':
 				return 'add-payment-method_';
+			case 'download_url':
+				return 'download_';
 			default:
 				return apply_filters( 'woographql_auth_nonce_prefix', null, $field, $this );
 		}
@@ -281,9 +285,34 @@ class Protected_Router {
 				return $account_page_url ? $account_page_url : null;
 			case 'add_payment_method_url':
 				return wc_get_account_endpoint_url( 'add-payment-method' );
+			case 'download_url':
+				return $this->get_download_target_url();
 			default:
 				return apply_filters( 'woographql_auth_target_endpoint', null, $field, $this );
 		}
+	}
+
+	/**
+	 * Resolves the download URL for the current request using the download_id and session_id.
+	 *
+	 * @return string|null
+	 */
+	private function get_download_target_url() {
+		$download_id = isset( $_REQUEST['download_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['download_id'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$session_id  = isset( $_REQUEST['session_id'] ) ? absint( $_REQUEST['session_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( empty( $download_id ) || empty( $session_id ) ) {
+			return null;
+		}
+
+		$downloads = wc_get_customer_available_downloads( $session_id );
+		foreach ( $downloads as $download ) {
+			if ( $download['download_id'] === $download_id ) {
+				return $download['download_url'];
+			}
+		}
+
+		return null;
 	}
 
 	/**

@@ -1126,6 +1126,52 @@ class GraphQLE2E extends \Codeception\Module {
 	}
 
 	/**
+	 * Creates a checkout page with WooCommerce shortcode in the database
+	 *
+	 * @param string $slug  The page slug. Defaults to 'checkout-shortcode'.
+	 * @return int The post ID of the created checkout page
+	 */
+	public function haveACheckoutShortcodePageInDatabase( $slug = 'checkout-shortcode' ) {
+		$wpdb = $this->getModule( 'WPDb' );
+
+		$checkout_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'Checkout Shortcode',
+				'post_name'    => $slug,
+				'post_author'  => 1,
+				'post_status'  => 'publish',
+				'post_content' => '[woocommerce_checkout]',
+			]
+		);
+
+		return $checkout_page_id;
+	}
+
+	/**
+	 * Creates a my account page with WooCommerce shortcode in the database
+	 *
+	 * @param string $slug  The page slug. Defaults to 'my-account-shortcode'.
+	 * @return int The post ID of the created account page
+	 */
+	public function haveAnAccountShortcodePageInDatabase( $slug = 'my-account-shortcode' ) {
+		$wpdb = $this->getModule( 'WPDb' );
+
+		$account_page_id = $wpdb->havePostInDatabase(
+			[
+				'post_type'    => 'page',
+				'post_title'   => 'My Account Shortcode',
+				'post_name'    => $slug,
+				'post_author'  => 1,
+				'post_status'  => 'publish',
+				'post_content' => '[woocommerce_my_account]',
+			]
+		);
+
+		return $account_page_id;
+	}
+
+	/**
 	 * Creates a cart page with WooCommerce Cart Block in the database
 	 *
 	 * @return int The post ID of the created cart page
