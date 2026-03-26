@@ -221,4 +221,65 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test that VariationAttribute.label returns human-readable values.
+	 *
+	 * Global attributes should return the term name (e.g., "Small" not "small").
+	 * Local attributes should return the attribute value (e.g., "Yes" not "logo").
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/965
+	 */
+	public function testVariationAttributeLabelReturnsHumanReadableValues() {
+		$product_ids  = $this->factory->product_variation->createSome();
+		$variation_id = $product_ids['variations'][0];
+
+		$query = '
+			query ($id: ID!) {
+				productVariation(id: $id) {
+					attributes {
+						nodes {
+							name
+							label
+							value
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'id' => $this->toRelayId( 'post', $variation_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		// Build expected labels from the variation's attributes.
+		$product    = wc_get_product( $variation_id );
+		$attributes = $product->get_attributes();
+		$expected   = [];
+		foreach ( $attributes as $name => $value ) {
+			$term = get_term_by( 'slug', $value, $name );
+			if ( $term instanceof \WP_Term ) {
+				// Global attribute: label should be the human-readable attribute label.
+				$expected[] = $this->expectedNode(
+					'productVariation.attributes.nodes',
+					[
+						$this->expectedField( 'name', $term->taxonomy ),
+						$this->expectedField( 'label', wc_attribute_label( $term->taxonomy ) ),
+						$this->expectedField( 'value', $term->slug ),
+					]
+				);
+			} else {
+				// Local attribute: label should be the attribute name.
+				$expected[] = $this->expectedNode(
+					'productVariation.attributes.nodes',
+					[
+						$this->expectedField( 'name', $name ),
+						$this->expectedField( 'label', $name ),
+						$this->expectedField( 'value', $value ),
+					]
+				);
+			}
+		}
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }
