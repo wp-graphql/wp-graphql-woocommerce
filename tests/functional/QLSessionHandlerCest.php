@@ -475,7 +475,7 @@ class QLSessionHandlerCest {
                         supportsShippingCalculator
                         rates {
                             id
-                            cost
+                            cost(format: RAW)
                             label
                         }
                     }
@@ -497,14 +497,14 @@ class QLSessionHandlerCest {
 						$I->expectNode(
 							'rates',
 							[
-								$I->expectField( 'cost',  0 ),
+								$I->expectField( 'cost', '0' ),
 								$I->expectField( 'label', 'Flat rate' ),
 							]
 						),
 						$I->expectNode(
 							'rates',
 							[
-								$I->expectField( 'cost',  0 ),
+								$I->expectField( 'cost', '0' ),
 								$I->expectField( 'label', 'Free shipping' ),
 							]
 						),
@@ -528,7 +528,7 @@ class QLSessionHandlerCest {
                             supportsShippingCalculator
                             rates {
                                 id
-                                cost
+                                cost(format: RAW)
                                 label
                             }
                         }

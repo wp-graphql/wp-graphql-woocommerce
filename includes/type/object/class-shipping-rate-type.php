@@ -56,7 +56,13 @@ class Shipping_Rate_Type {
 					'cost'       => [
 						'type'        => 'String',
 						'description' => __( 'Shipping rate cost. Includes tax when woocommerce_tax_display_cart is set to incl.', 'wp-graphql-woocommerce' ),
-						'resolve'     => static function ( $source ) {
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
 							$cost = $source->get_cost();
 							if ( is_null( $cost ) ) {
 								return null;
@@ -66,21 +72,52 @@ class Shipping_Rate_Type {
 								$cost = floatval( $cost ) + floatval( $source->get_shipping_tax() );
 							}
 
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $cost;
+							}
+
 							return \wc_graphql_price( strval( $cost ) );
 						},
 					],
 					'subtotal'   => [
 						'type'        => 'String',
 						'description' => __( 'Shipping rate cost before tax.', 'wp-graphql-woocommerce' ),
-						'resolve'     => static function ( $source ) {
-							return ! is_null( $source->get_cost() ) ? \wc_graphql_price( $source->get_cost() ) : null;
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
+							$cost = $source->get_cost();
+							if ( is_null( $cost ) ) {
+								return null;
+							}
+
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $cost;
+							}
+
+							return \wc_graphql_price( $cost );
 						},
 					],
 					'taxTotal'   => [
 						'type'        => 'String',
 						'description' => __( 'Shipping rate tax total.', 'wp-graphql-woocommerce' ),
-						'resolve'     => static function ( $source ) {
-							return \wc_graphql_price( $source->get_shipping_tax() );
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
+							$tax = $source->get_shipping_tax();
+
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $tax;
+							}
+
+							return \wc_graphql_price( $tax );
 						},
 					],
 				],
