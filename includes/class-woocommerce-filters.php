@@ -39,6 +39,11 @@ class WooCommerce_Filters {
 			add_action( 'init_graphql_request', [ self::class, 'initialize_session_and_cart' ] );
 		}
 
+		// Authenticate pre-auth download URLs before WooCommerce's download handler.
+		if ( 'on' === woographql_setting( 'enable_pre_auth_download_urls', 'off' ) ) {
+			add_action( 'init', [ self::class, 'authenticate_pre_auth_download' ], 1 );
+		}
+
 		// Add better support for Stripe payment gateway.
 		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
 
@@ -258,5 +263,36 @@ class WooCommerce_Filters {
 		}
 
 		return $title;
+	}
+
+	/**
+	 * Authenticates pre-auth download requests before WooCommerce's download handler.
+	 *
+	 * Validates the token and sets the current user so WooCommerce's
+	 * is_user_logged_in() check passes during download processing.
+	 *
+	 * @return void
+	 */
+	public static function authenticate_pre_auth_download() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		if ( empty( $_GET['download_file'] ) || empty( $_GET['token'] ) || empty( $_GET['uid'] ) || empty( $_GET['expires'] ) ) {
+			return;
+		}
+
+		$customer_id = absint( $_GET['uid'] );
+		$expires     = absint( $_GET['expires'] );
+		$token       = sanitize_text_field( wp_unslash( $_GET['token'] ) );
+		$download_id = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( empty( $download_id ) ) {
+			return;
+		}
+
+		if ( ! Type\WPObject\Downloadable_Item_Type::validate_download_token( $customer_id, $download_id, $expires, $token ) ) {
+			return;
+		}
+
+		wp_set_current_user( $customer_id );
 	}
 }

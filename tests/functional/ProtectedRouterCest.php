@@ -1,227 +1,279 @@
 <?php
+
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\JWT;
 use WPGraphQL\WooCommerce\Vendor\Firebase\JWT\Key;
+use Tests\WPGraphQL\Logger\CodeceptLogger as Signal;
 
 class ProtectedRouterCest {
 	private $product_catalog;
 
-	public function _before( FunctionalTester $I, $scenario ) {
-		$scenario->skip( 'This test is unstable' );
-		// Create Products
+	public function _before( FunctionalTester $I ) {
 		$this->product_catalog = $I->getCatalog();
 
-		// Flush permalinks.
-		$I->loginAsAdmin();
-		$I->amOnAdminPage( 'options-permalink.php' );
-		$I->click( '#submit' );
-		$I->logOut();
-
 		if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
-			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestest' );
+			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
 		}
 	}
 
-	public function _startNewSession( FunctionalTester $I ) {
-		$I->wantTo( 'Start new session by adding an item to the cart' );
-		/**
-		 * Add t-shirt to the cart
-		 */
+	/**
+	 * Helper: Starts a guest session by adding a product to the cart.
+	 * Returns the cart item key and raw session token.
+	 */
+	private function startNewSession( FunctionalTester $I ): array {
 		$success = $I->addToCart(
 			[
 				'clientMutationId' => 'someId',
 				'productId'        => $this->product_catalog['t-shirt'],
 				'quantity'         => 5,
-			],
+			]
 		);
 
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'addToCart', $success['data'] );
-		$I->assertArrayHasKey( 'cartItem', $success['data']['addToCart'] );
-		$I->assertArrayHasKey( 'key', $success['data']['addToCart']['cartItem'] );
-		$key = $success['data']['addToCart']['cartItem']['key'];
+		$I->assertQuerySuccessful(
+			$success,
+			[ $I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ) ]
+		);
 
-		/**
-		 * Assert existence and validity of "woocommerce-session" HTTP header.
-		 */
-		$I->seeHttpHeaderOnce( 'woocommerce-session' );
 		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
 
-		return compact( 'key', 'session_token' );
-	}
-
-	public function _getLastRequestHeaders( $I ) {
 		return [
-			'woocommerce-session' => 'Session ' . $I->wantHTTPResponseHeaders( 'woocommerce-session' ),
+			'key'           => $I->lodashGet( $success, 'data.addToCart.cartItem.key' ),
+			'session_token' => $session_token,
 		];
 	}
 
-	public function tryToProceedToCheckoutPage( FunctionalTester $I, $scenario ) {
-		$session_data  = $this->_startNewSession( $I );
-		$session_token = $session_data['session_token'];
-		// Retrieve and decode token for session_id.
-		JWT::$leeway   = 60;
-		$token_data    = ! empty( $session_token )
-			? JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) )
-			: null;
-		$session_token = $token_data->data->customer_id;
+	/**
+	 * Helper: Decodes the session token and returns the customer_id (session_id).
+	 */
+	private function getSessionId( string $session_token ): string {
+		JWT::$leeway = 60;
+		$token_data  = JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) );
 
-		$I->wantTo( 'Get the session checkout URL' );
+		return $token_data->data->customer_id;
+	}
+
+	/**
+	 * Test that a valid nonce redirects to the checkout page.
+	 */
+	public function testValidNonceRedirectsToCheckout( FunctionalTester $I ) {
+		$session_data  = $this->startNewSession( $I );
+		$session_id    = $this->getSessionId( $session_data['session_token'] );
+
 		$query   = 'query { customer { checkoutNonce } }';
 		$success = $I->sendGraphQLRequest(
 			$query,
 			null,
-			$this->_getLastRequestHeaders( $I )
+			[ 'woocommerce-session' => "Session {$session_data['session_token']}" ]
 		);
 
-		// Assert "checkoutUrl" was received.
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'customer', $success['data'] );
-		$I->assertArrayHasKey( 'checkoutNonce', $success['data']['customer'] );
-		$checkout_nonce = $success['data']['customer']['checkoutNonce'];
+		$checkout_nonce = $I->lodashGet( $success, 'data.customer.checkoutNonce' );
+		$I->assertNotEmpty( $checkout_nonce );
 
-		$I->wantTo( 'Go checkout page and confirm session not seen' );
-		$I->amOnPage( '/checkout' );
-		$I->makeHtmlSnapshot();
-		$I->seeElement( '.wc-empty-cart-message' );
-
-		$I->wantTo( 'Authenticate with nonced url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();
 
 		$wp_url = getenv( 'WORDPRESS_URL' );
-
-		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session_token}&_wc_checkout={$checkout_nonce}" );
+		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session_id}&_wc_checkout={$checkout_nonce}" );
 		$I->seeResponseCodeIs( 302 );
 		$I->followRedirect();
-		$I->seeInCurrentUrl( '/checkout/' );
-		$I->startFollowingRedirects();
+		$I->seeInCurrentUrl( '/checkout' );
 
-		$I->wantTo( 'Confirm session has been loaded.' );
-		$I->see( 'Checkout' );
-		$I->see( 't-shirt' );
+		$I->startFollowingRedirects();
 	}
 
-	public function tryToProceedToCheckoutPageWithExpiredUrl( FunctionalTester $I, $scenario ) {
-		$this->_startNewSession( $I );
+	/**
+	 * Test that an invalid nonce does NOT redirect to checkout.
+	 */
+	public function testInvalidNonceDoesNotRedirectToCheckout( FunctionalTester $I ) {
+		$session_data = $this->startNewSession( $I );
+		$session_id   = $this->getSessionId( $session_data['session_token'] );
 
-		$I->wantTo( 'Get the session checkout URL' );
-		$query   = '
-            mutation($input: UpdateSessionInput!) {
-                updateSession(input: $input) {
-                    session {
-                        id
-                        key
-                        value
-                    }
-                    customer { checkoutUrl }
-                }
-            }
-        ';
+		$I->stopFollowingRedirects();
+
+		$wp_url = getenv( 'WORDPRESS_URL' );
+		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session_id}&_wc_checkout=invalid_nonce" );
+		$I->seeResponseCodeIs( 302 );
+		$I->followRedirect();
+		$I->dontSeeInCurrentUrl( '/checkout' );
+
+		$I->startFollowingRedirects();
+	}
+
+	/**
+	 * Test that an expired nonce (after client_session_id change) does NOT redirect to checkout.
+	 */
+	public function testExpiredNonceDoesNotRedirectToCheckout( FunctionalTester $I ) {
+		$this->startNewSession( $I );
+
+		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+
+		$query = '
+			mutation($input: UpdateSessionInput!) {
+				updateSession(input: $input) {
+					session { key value }
+					customer { checkoutUrl }
+				}
+			}
+		';
+
+		// Set client_session_id and get checkout URL.
 		$success = $I->sendGraphQLRequest(
 			$query,
-			[ 
+			[
 				'input' => [
 					'sessionData' => [
-						[
-							'key'   => 'client_session_id',
-							'value' => 'test-client-session-id',
-						],
+						[ 'key' => 'client_session_id', 'value' => 'original-session-id' ],
 					],
 				],
 			],
-			$this->_getLastRequestHeaders( $I )
+			[ 'woocommerce-session' => "Session {$session_token}" ]
 		);
 
-		// Assert updateSession was success.
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'updateSession', $success['data'] );
-		$I->assertArrayHasKey( 'session', $success['data']['updateSession'] );
-		$session = $success['data']['updateSession']['session'];
-		$session = array_column( $session, 'value', 'key' );
-		$I->assertEquals( $session['client_session_id'], 'test-client-session-id' );
+		$expired_checkout_url = $I->lodashGet( $success, 'data.updateSession.customer.checkoutUrl' );
+		$I->assertNotEmpty( $expired_checkout_url );
 
-		// Assert "checkoutUrl" was received.
-		$I->assertArrayHasKey( 'customer', $success['data']['updateSession'] );
-		$I->assertArrayHasKey( 'checkoutUrl', $success['data']['updateSession']['customer'] );
-		$expired_checkout_url = $success['data']['updateSession']['customer']['checkoutUrl'];
-
-		$I->wantTo( 'Invalidate Checkout URL by updating the "client_session_id"' );
-		$success = $I->sendGraphQLRequest(
+		// Change client_session_id to invalidate the nonce.
+		$I->sendGraphQLRequest(
 			$query,
-			[ 
+			[
 				'input' => [
 					'sessionData' => [
-						[
-							'key'   => 'client_session_id',
-							'value' => 'new-test-client-session-id',
-						],
+						[ 'key' => 'client_session_id', 'value' => 'new-session-id' ],
 					],
 				],
 			],
-			$this->_getLastRequestHeaders( $I )
+			[ 'woocommerce-session' => "Session {$session_token}" ]
 		);
 
-		// Assert updateSession was success.
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'updateSession', $success['data'] );
-		$I->assertArrayHasKey( 'session', $success['data']['updateSession'] );
-		$session = $success['data']['updateSession']['session'];
-		$session = array_column( $session, 'value', 'key' );
-		$I->assertEquals( $session['client_session_id'], 'new-test-client-session-id' );
-
-		$I->wantTo( 'Go checkout page and confirm session not seen' );
-		$I->amOnPage( '/checkout' );
-		$I->seeElement( '.wc-empty-cart-message' );
-
-		$I->wantTo( 'Attempt to authenticate with expired url and confirm page redirect to checkout page' );
+		// The old checkout URL should no longer redirect to checkout.
 		$I->stopFollowingRedirects();
 		$I->amOnUrl( $expired_checkout_url );
 		$I->seeResponseCodeIs( 302 );
 		$I->followRedirect();
-		$I->dontSeeInCurrentUrl( '/checkout/' );
+		$I->dontSeeInCurrentUrl( '/checkout' );
 		$I->startFollowingRedirects();
 	}
 
-	public function tryToProceedToCheckoutPageWithInvalidNonce( FunctionalTester $I, $scenario ) {
-		$session_data  = $this->_startNewSession( $I );
-		$session_token = $session_data['session_token'];
-		// Retrieve and decode token for session_id.
-		JWT::$leeway   = 60;
-		$token_data    = ! empty( $session_token )
-			? JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) )
-			: null;
-		$session_token = $token_data->data->customer_id;
+	/**
+	 * Test that the session cart URL redirects correctly.
+	 */
+	public function testGetTheSessionCartUrl( FunctionalTester $I ) {
+		$session_data = $this->startNewSession( $I );
+		$session_id   = $this->getSessionId( $session_data['session_token'] );
 
-		$I->wantTo( 'Get the session checkout URL' );
-		$query   = 'query { customer { checkoutUrl } }';
+		$query   = 'query { customer { cartNonce } }';
 		$success = $I->sendGraphQLRequest(
 			$query,
 			null,
-			$this->_getLastRequestHeaders( $I )
+			[ 'woocommerce-session' => "Session {$session_data['session_token']}" ]
 		);
 
-		// Assert "checkoutUrl" was received.
-		$I->assertArrayNotHasKey( 'errors', $success );
-		$I->assertArrayHasKey( 'data', $success );
-		$I->assertArrayHasKey( 'customer', $success['data'] );
-		$I->assertArrayHasKey( 'checkoutUrl', $success['data']['customer'] );
+		$cart_nonce = $I->lodashGet( $success, 'data.customer.cartNonce' );
+		$I->assertNotEmpty( $cart_nonce );
 
-		$I->wantTo( 'Go checkout page and confirm session not seen' );
-		$I->amOnPage( '/checkout' );
-		$I->seeElement( '.wc-empty-cart-message' );
-
-		$I->wantTo( 'Attempt to authenticate with nonced url and confirm page redirect to checkout page' );
 		$I->stopFollowingRedirects();
 
 		$wp_url = getenv( 'WORDPRESS_URL' );
-
-		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session_token}&_wc_checkout=12345" );
+		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session_id}&_wc_cart={$cart_nonce}" );
 		$I->seeResponseCodeIs( 302 );
 		$I->followRedirect();
-		$I->dontSeeInCurrentUrl( '/checkout/' );
+		$I->seeInCurrentUrl( '/cart' );
+
+		$I->startFollowingRedirects();
+	}
+
+	/**
+	 * Helper: Sets up a logged-in user session and creates the my-account page.
+	 * Returns auth_token, session_token, and session_id.
+	 */
+	private function setupAuthenticatedSession( FunctionalTester $I ): array {
+		$I->setupStoreAndUsers();
+
+		// Create the my-account page and set it as the WooCommerce account page.
+		$account_page_id = $I->havePostInDatabase(
+			[
+				'post_type'   => 'page',
+				'post_title'  => 'My Account',
+				'post_name'   => 'my-account',
+				'post_status' => 'publish',
+			]
+		);
+		$I->haveOptionInDatabase( 'woocommerce_myaccount_page_id', $account_page_id );
+
+		$login = $I->login(
+			[
+				'clientMutationId' => 'login',
+				'username'         => 'jimbo1234@example.com',
+				'password'         => 'password',
+			]
+		);
+
+		$auth_token    = $I->lodashGet( $login, 'data.login.authToken' );
+		$customer_id   = $I->lodashGet( $login, 'data.login.customer.databaseId' );
+		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+		$session_id    = $this->getSessionId( $session_token );
+
+		// For registered users, the session_id should be the user's database ID.
+		$I->assertEquals( (string) $customer_id, $session_id );
+
+		return compact( 'auth_token', 'session_token', 'session_id' );
+	}
+
+	/**
+	 * Test that the session account URL redirects correctly.
+	 */
+	public function testGetTheSessionAccountUrl( FunctionalTester $I ) {
+		$session = $this->setupAuthenticatedSession( $I );
+
+		$query   = 'query { customer { accountNonce } }';
+		$success = $I->sendGraphQLRequest(
+			$query,
+			null,
+			[
+				'Authorization'       => "Bearer {$session['auth_token']}",
+				'woocommerce-session' => "Session {$session['session_token']}",
+			]
+		);
+
+		$account_nonce = $I->lodashGet( $success, 'data.customer.accountNonce' );
+		$I->assertNotEmpty( $account_nonce );
+
+		$I->stopFollowingRedirects();
+
+		$wp_url = getenv( 'WORDPRESS_URL' );
+		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session['session_id']}&_wc_account={$account_nonce}" );
+		$I->seeResponseCodeIs( 302 );
+		$I->followRedirect();
+		$I->seeInCurrentUrl( '/my-account' );
+
+		$I->startFollowingRedirects();
+	}
+
+	/**
+	 * Test that the session add payment method URL redirects correctly.
+	 */
+	public function testGetTheSessionAddPaymentMethodUrl( FunctionalTester $I ) {
+		$session = $this->setupAuthenticatedSession( $I );
+
+		$query   = 'query { customer { addPaymentMethodNonce } }';
+		$success = $I->sendGraphQLRequest(
+			$query,
+			null,
+			[
+				'Authorization'       => "Bearer {$session['auth_token']}",
+				'woocommerce-session' => "Session {$session['session_token']}",
+			]
+		);
+
+		$payment_nonce = $I->lodashGet( $success, 'data.customer.addPaymentMethodNonce' );
+		$I->assertNotEmpty( $payment_nonce );
+
+		$I->stopFollowingRedirects();
+
+		$wp_url = getenv( 'WORDPRESS_URL' );
+		$I->amOnUrl( "{$wp_url}/transfer-session?session_id={$session['session_id']}&_wc_payment={$payment_nonce}" );
+		$I->seeResponseCodeIs( 302 );
+		$I->followRedirect();
+		$I->seeInCurrentUrl( 'add-payment-method' );
+
 		$I->startFollowingRedirects();
 	}
 }

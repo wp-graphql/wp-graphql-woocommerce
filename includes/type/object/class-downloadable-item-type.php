@@ -82,6 +82,42 @@ class Downloadable_Item_Type {
 							return Factory::resolve_crud_object( $source['product_id'], $context );
 						},
 					],
+					'downloadNonce'      => [
+						'type'        => 'String',
+						'description' => __( 'A nonce for the authenticated download URL. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							$customer_id = get_current_user_id();
+							if ( empty( $customer_id ) || empty( $source['download_url'] ) ) {
+								return null;
+							}
+
+							return woographql_create_nonce( "download_{$customer_id}" );
+						},
+					],
+					'downloadUrl'        => [
+						'type'        => 'String',
+						'description' => __( 'A nonced URL that authenticates the user and redirects to the WooCommerce download. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							$customer_id = get_current_user_id();
+							if ( empty( $customer_id ) || empty( $source['download_url'] ) ) {
+								return null;
+							}
+
+							$nonce_name   = woographql_setting( 'download_url_nonce_param', '_wc_download' );
+							$query_params = [
+								'session_id'  => $customer_id,
+								$nonce_name   => woographql_create_nonce( "download_{$customer_id}" ),
+								'download_id' => $source['download_id'],
+							];
+
+							return esc_url_raw(
+								add_query_arg(
+									$query_params,
+									site_url( woographql_setting( 'authorizing_url_endpoint', 'transfer-session' ) )
+								)
+							);
+						},
+					],
 					'download'           => [
 						'type'        => 'ProductDownload',
 						'description' => __( 'ProductDownload of the downloadable item', 'wp-graphql-woocommerce' ),
@@ -121,5 +157,76 @@ class Downloadable_Item_Type {
 				],
 			]
 		);
+
+		if ( 'on' === woographql_setting( 'enable_pre_auth_download_urls', 'off' ) ) {
+			self::register_pre_auth_download_url_field();
+		}
+	}
+
+	/**
+	 * Registers the preAuthDownloadUrl field on DownloadableItem.
+	 *
+	 * @return void
+	 */
+	private static function register_pre_auth_download_url_field() {
+		register_graphql_field(
+			'DownloadableItem',
+			'preAuthDownloadUrl',
+			[
+				'type'        => 'String',
+				'description' => __( 'A pre-authenticated download URL with a time-limited token. Does not require cookie-based authentication.', 'wp-graphql-woocommerce' ),
+				'resolve'     => static function ( $source ) {
+					$customer_id = get_current_user_id();
+					if ( empty( $customer_id ) || empty( $source['download_url'] ) ) {
+						return null;
+					}
+
+					$expiry = time() + DAY_IN_SECONDS;
+					$token  = self::generate_download_token( $customer_id, $source['download_id'], $expiry );
+
+					return esc_url_raw(
+						add_query_arg(
+							[
+								'token'   => $token,
+								'uid'     => $customer_id,
+								'expires' => $expiry,
+							],
+							$source['download_url']
+						)
+					);
+				},
+			]
+		);
+	}
+
+	/**
+	 * Generates an HMAC token for pre-authenticated download URLs.
+	 *
+	 * @param int    $customer_id  The customer's user ID.
+	 * @param string $download_id  The download ID.
+	 * @param int    $expiry       The expiry timestamp.
+	 *
+	 * @return string
+	 */
+	public static function generate_download_token( int $customer_id, string $download_id, int $expiry ): string {
+		return hash_hmac( 'sha256', "{$customer_id}|{$download_id}|{$expiry}", wp_salt( 'auth' ) );
+	}
+
+	/**
+	 * Validates a pre-authenticated download token.
+	 *
+	 * @param int    $customer_id  The customer's user ID.
+	 * @param string $download_id  The download ID.
+	 * @param int    $expiry       The expiry timestamp.
+	 * @param string $token        The token to validate.
+	 *
+	 * @return bool
+	 */
+	public static function validate_download_token( int $customer_id, string $download_id, int $expiry, string $token ): bool {
+		if ( $expiry < time() ) {
+			return false;
+		}
+
+		return hash_equals( self::generate_download_token( $customer_id, $download_id, $expiry ), $token );
 	}
 }

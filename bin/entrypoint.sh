@@ -31,8 +31,6 @@ fi
 # Update our domain to just be the docker container's IP address
 export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
-echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" > "$PROJECT_DIR/.env.docker"
-echo "WORDPRESS_URL=$WORDPRESS_URL" >> "$PROJECT_DIR/.env.docker"
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then
@@ -144,6 +142,16 @@ if [ ! -d "wp-content/uploads" ]; then
 	mkdir wp-content/uploads
 fi
 chmod 777 -R wp-content/uploads
+
+# Download c3 for testing.
+if [ ! -f "$PROJECT_DIR/c3.php" ]; then
+    echo "Downloading Codeception's c3.php"
+    curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "$PROJECT_DIR/c3.php"
+fi
+
+# Ensure test output directory is writable by Apache for c3.php coverage collection.
+mkdir -p "$PROJECT_DIR/tests/_output"
+chmod 777 -R "$PROJECT_DIR/tests/_output"
 
 if [ -n "$RUNNING_TEST_STANDALONE" ]; then
 	service apache2 start

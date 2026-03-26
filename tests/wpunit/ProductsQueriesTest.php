@@ -725,6 +725,19 @@ class ProductsQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		];
 		$this->assertQuerySuccessful( $response, $expected );
 
+		// Debug: check product state before stockStatus assertion.
+		$oos_product = wc_get_product( $product_ids[4] );
+		codecept_debug( 'OUT_OF_STOCK PRODUCT ID: ' . $product_ids[4] );
+		codecept_debug( 'OUT_OF_STOCK PRODUCT STOCK STATUS: ' . $oos_product->get_stock_status() );
+		codecept_debug( 'OUT_OF_STOCK PRODUCT POST STATUS: ' . get_post_status( $product_ids[4] ) );
+		codecept_debug( 'OUT_OF_STOCK PRODUCT TYPE: ' . $oos_product->get_type() );
+		codecept_debug( 'OUT_OF_STOCK PRODUCT VISIBILITY: ' . $oos_product->get_catalog_visibility() );
+		global $wpdb;
+		$meta_lookup = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_product_meta_lookup WHERE product_id = %d", $product_ids[4] ) ); // phpcs:ignore
+		codecept_debug( 'OUT_OF_STOCK META LOOKUP: ' . wp_json_encode( $meta_lookup ) );
+		$all_posts = $wpdb->get_results( "SELECT ID, post_type, post_status FROM {$wpdb->posts} WHERE post_type = 'product'" ); // phpcs:ignore
+		codecept_debug( 'ALL PRODUCT POSTS: ' . wp_json_encode( $all_posts ) );
+
 		$variables = [ 'stockStatus' => 'OUT_OF_STOCK' ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 		$expected  = [

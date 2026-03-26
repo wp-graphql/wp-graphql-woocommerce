@@ -616,6 +616,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 
 		if ( isset( $where_args['featured'] ) ) {
 			$product_visibility_term_ids = wc_get_product_visibility_term_ids();
+			\codecept_debug( $product_visibility_term_ids );
 			if ( $where_args['featured'] ) {
 				$tax_query[] = [
 					'taxonomy' => 'product_visibility',
