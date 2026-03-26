@@ -103,6 +103,7 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
                         transactionId
                         dateCompleted
                         datePaid
+						createdVia
                         cartHash
                         shippingAddressMapUrl
                         hasBillingAddress
