@@ -35,7 +35,7 @@ jobs:
           - wordpress: '6.3'
             hpos: 1
       fail-fast: false
-    name: Acceptance in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}${{ matrix.hpos == 1 && ' HPOS' || '' }}${{ matrix.debug == '--debug' && ' Debug' || '' }}
+    name: Acceptance in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}${{ matrix.hpos == 1 && ' HPOS' || '' }}${{ matrix.debug == '--debug' && ' Debug' || '' }}${{ matrix.coverage == true && ' +Coverage' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -100,7 +100,7 @@ jobs:
           - wordpress: '6.3'
             hpos: 1
       fail-fast: false
-    name: Functional in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}${{ matrix.hpos == 1 && ' HPOS' || '' }}${{ matrix.debug == '--debug' && ' Debug' || '' }}
+    name: Functional in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}${{ matrix.hpos == 1 && ' HPOS' || '' }}${{ matrix.debug == '--debug' && ' Debug' || '' }}${{ matrix.coverage == true && ' +Coverage' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -165,7 +165,7 @@ jobs:
           - wordpress: '6.3'
             hpos: 1
       fail-fast: false
-    name: WPUnit in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}${{ matrix.hpos == 1 && ' HPOS' || '' }}${{ matrix.debug == '--debug' && ' Debug' || '' }}
+    name: WPUnit in WP v${{ matrix.wordpress }} on PHP${{ matrix.php }}${{ matrix.hpos == 1 && ' HPOS' || '' }}${{ matrix.debug == '--debug' && ' Debug' || '' }}${{ matrix.coverage == true && ' +Coverage' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
