@@ -258,22 +258,22 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 		foreach ( $attributes as $name => $value ) {
 			$term = get_term_by( 'slug', $value, $name );
 			if ( $term instanceof \WP_Term ) {
-				// Global attribute: label should be the term name.
+				// Global attribute: label should be the human-readable attribute label.
 				$expected[] = $this->expectedNode(
 					'productVariation.attributes.nodes',
 					[
 						$this->expectedField( 'name', $term->taxonomy ),
-						$this->expectedField( 'label', $term->name ),
+						$this->expectedField( 'label', wc_attribute_label( $term->taxonomy ) ),
 						$this->expectedField( 'value', $term->slug ),
 					]
 				);
 			} else {
-				// Local attribute: label should be the value.
+				// Local attribute: label should be the attribute name.
 				$expected[] = $this->expectedNode(
 					'productVariation.attributes.nodes',
 					[
 						$this->expectedField( 'name', $name ),
-						$this->expectedField( 'label', $value ),
+						$this->expectedField( 'label', $name ),
 						$this->expectedField( 'value', $value ),
 					]
 				);
