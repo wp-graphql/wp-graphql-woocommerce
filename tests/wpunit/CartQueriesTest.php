@@ -546,6 +546,103 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 			]
 		);
 
-		
+	}
+
+	/**
+	 * Test cart taxLines field returns itemized tax data.
+	 */
+	public function testCartTaxLines() {
+		// Enable taxes and set itemized display.
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_tax_total_display', 'itemized' );
+
+		// Create a tax rate.
+		$tax_rate_id = $this->factory->tax_rate->create(
+			[
+				'country'  => '',
+				'rate'     => '10.0000',
+				'name'     => 'Test Tax',
+				'priority' => 1,
+				'compound' => 0,
+				'shipping' => 1,
+				'class'    => '',
+			]
+		);
+
+		// Create a product and add to cart.
+		$product_id = $this->factory->product->createSimple( [ 'regular_price' => '100', 'virtual' => true ] );
+		WC()->cart->add_to_cart( $product_id );
+		WC()->cart->calculate_totals();
+
+		$query = '
+			query {
+				cart {
+					taxLines {
+						name
+						price
+						rate
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+
+		$expected = [
+			$this->expectedNode(
+				'cart.taxLines',
+				[
+					$this->expectedField( 'name', 'Test Tax' ),
+					$this->expectedField( 'price', '$10.00' ),
+					$this->expectedField( 'rate', '10%' ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	/**
+	 * Test cart taxLines returns empty when display is not itemized.
+	 */
+	public function testCartTaxLinesEmptyWhenNotItemized() {
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_tax_total_display', 'single' );
+
+		$tax_rate_id = $this->factory->tax_rate->create(
+			[
+				'country'  => '',
+				'rate'     => '10.0000',
+				'name'     => 'Test Tax',
+				'priority' => 1,
+				'compound' => 0,
+				'shipping' => 1,
+				'class'    => '',
+			]
+		);
+
+		$product_id = $this->factory->product->createSimple( [ 'regular_price' => '100', 'virtual' => true ] );
+		WC()->cart->add_to_cart( $product_id );
+		WC()->cart->calculate_totals();
+
+		$query = '
+			query {
+				cart {
+					taxLines {
+						name
+						price
+						rate
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+
+		$expected = [
+			$this->expectedField( 'cart.taxLines', static::IS_FALSY ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }
