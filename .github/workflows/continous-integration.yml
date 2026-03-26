@@ -28,7 +28,7 @@ jobs:
         include:
           - php: '8.3'
             wordpress: '6.8'
-            coverage: '--coverage --coverage-xml'
+            coverage: true
             xdebug: 1
           - php: '8.1'
             wordpress: '6.1'
@@ -61,10 +61,21 @@ jobs:
           USING_XDEBUG: ${{ matrix.xdebug }}
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
-        run: HPOS="${{ matrix.hpos }}" FILTER="${{ matrix.coverage }} ${{ matrix.debug }}" composer dRunTestStandalone
+        run: |
+          HPOS="${{ matrix.hpos }}" vendor/bin/codecept run wpunit ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}
+          HPOS="${{ matrix.hpos }}" FILTER="acceptance ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="functional ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+
+      - name: Aggregate codecoverage reports
+        if: ${{ matrix.coverage == true && env.STRIPE_API_PUBLISHABLE_KEY != null }}
+        run: |
+          composer global require phpunit/phpcov
+          mkdir -p tests/_output/coverage
+          cp tests/_output/*.serialized tests/_output/coverage/ 2>/dev/null || true
+          phpcov merge --clover=tests/_output/coverage.xml tests/_output/coverage
 
       - name: Push Codecoverage to Coveralls.io
-        if: ${{ matrix.coverage == '--coverage --coverage-xml' && env.STRIPE_API_PUBLISHABLE_KEY != null }}
+        if: ${{ matrix.coverage == true && env.STRIPE_API_PUBLISHABLE_KEY != null }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

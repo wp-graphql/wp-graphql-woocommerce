@@ -567,7 +567,7 @@ class QLSessionHandlerCest {
 
 	public function testStoreAPICartTokenGeneration( FunctionalTester $I ) {
 		// Set token type to 'store-api'
-		$I->haveOptionInDatabase( 'woographql_settings', [ 'set_session_token_type' => 'store-api' ] );
+		$I->setWooGraphQLSetting( 'set_session_token_type', 'store-api' );
 
 		/**
 		 * Add item to the cart
@@ -605,7 +605,7 @@ class QLSessionHandlerCest {
 
 	public function testBothTokenTypesGeneration( FunctionalTester $I ) {
 		// Set token type to 'both'
-		$I->haveOptionInDatabase( 'woographql_settings', [ 'set_session_token_type' => 'both' ] );
+		$I->setWooGraphQLSetting( 'set_session_token_type', 'both' );
 
 		/**
 		 * Add item to the cart
@@ -658,7 +658,7 @@ class QLSessionHandlerCest {
 	public function testLegacyTokenOnlyWhenSetToLegacy( FunctionalTester $I ) {
 		// Legacy mode is the default, so no need to set option
 		// But we'll set it explicitly for clarity
-		$I->haveOptionInDatabase( 'woographql_settings', [ 'set_session_token_type' => 'legacy' ] );
+		$I->setWooGraphQLSetting( 'set_session_token_type', 'legacy' );
 
 		/**
 		 * Add item to the cart

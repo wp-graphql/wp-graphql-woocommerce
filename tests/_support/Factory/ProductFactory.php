@@ -282,24 +282,29 @@ class ProductFactory extends \WP_UnitTest_Factory_For_Thing {
 	}
 
 	public function createRelated( $args = [] ) {
+		$category_id        = $this->createProductCategory( 'related-group' );
+		$shared_args        = [ 'category_ids' => [ $category_id ] ];
 		$cross_sell_ids     = [
-			$this->createSimple(),
-			$this->createSimple(),
+			$this->createSimple( $shared_args ),
+			$this->createSimple( $shared_args ),
 		];
 		$upsell_ids         = [
-			$this->createSimple(),
-			$this->createSimple(),
+			$this->createSimple( $shared_args ),
+			$this->createSimple( $shared_args ),
 		];
 		$tag_ids            = [ $this->createProductTag( 'related' ) ];
-		$related_product_id = $this->createSimple( [ 'tag_ids' => $tag_ids ] );
+		$related_product_id = $this->createSimple( array_merge( $shared_args, [ 'tag_ids' => $tag_ids ] ) );
 
 		return [
 			'product'    => $this->createSimple(
-				[
-					'tag_ids'        => $tag_ids,
-					'cross_sell_ids' => $cross_sell_ids,
-					'upsell_ids'     => $upsell_ids,
-				]
+				array_merge(
+					$shared_args,
+					[
+						'tag_ids'        => $tag_ids,
+						'cross_sell_ids' => $cross_sell_ids,
+						'upsell_ids'     => $upsell_ids,
+					]
+				)
 			),
 			'related'    => [ $related_product_id ],
 			'cross_sell' => $cross_sell_ids,

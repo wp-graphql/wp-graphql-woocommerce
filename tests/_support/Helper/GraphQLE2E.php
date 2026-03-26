@@ -1081,6 +1081,41 @@ class GraphQLE2E extends \Codeception\Module {
     }
 
 	/**
+	 * Updates a single field in the woographql_settings option.
+	 *
+	 * @param string $field_name  The setting field name.
+	 * @param mixed  $value       The value to set.
+	 *
+	 * @return void
+	 */
+	public function setWooGraphQLSetting( $field_name, $value ) {
+		$wpdb     = $this->getModule( 'WPDb' );
+		$existing = $wpdb->grabOptionFromDatabase( 'woographql_settings' );
+		$defaults = [
+			'disable_ql_session_handler'        => 'off',
+			'enable_ql_session_handler_on_ajax'  => 'off',
+			'enable_ql_session_handler_on_rest'  => 'off',
+			'set_session_token_type'             => 'legacy',
+			'session_transfer_behavior'          => 'keep_new_fallback_old',
+			'enable_transliteration'             => 'off',
+			'enable_unsupported_product_type'    => 'off',
+			'enable_authorizing_url_fields'      => [],
+			'authorizing_url_endpoint'           => 'transfer-session',
+			'cart_url_nonce_param'               => '_wc_cart',
+			'checkout_url_nonce_param'            => '_wc_checkout',
+			'account_url_nonce_param'             => '_wc_account',
+			'add_payment_method_url_nonce_param'  => '_wc_payment',
+			'enable_pre_auth_download_urls'       => 'off',
+			'download_url_nonce_param'            => '_wc_download',
+		];
+
+		$settings                = is_array( $existing ) ? array_merge( $defaults, $existing ) : $defaults;
+		$settings[ $field_name ] = $value;
+
+		$wpdb->haveOptionInDatabase( 'woographql_settings', $settings );
+	}
+
+	/**
 	 * Gets the WordPress salt value for Store API Cart-Token
 	 *
 	 * The Store API uses '@' . wp_salt() as the secret.

@@ -37,14 +37,7 @@ class SessionTransferCest {
 		$I->setupStoreAndUsers();
 
 		// Set the session transfer behavior setting.
-		$existing = $I->grabOptionFromDatabase( 'woographql_settings' );
-		$I->haveOptionInDatabase(
-			'woographql_settings',
-			array_merge(
-				is_array( $existing ) ? $existing : [],
-				[ 'session_transfer_behavior' => $setting ]
-			)
-		);
+		$I->setWooGraphQLSetting( 'session_transfer_behavior', $setting );
 
 		/**
 		 * Step 1: Add t-shirt as guest, then log in with that session.

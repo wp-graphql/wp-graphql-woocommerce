@@ -32,6 +32,7 @@ class ProtectedRouterTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 				'checkout_url'           => '_wc_checkout',
 				'account_url'            => '_wc_account',
 				'add_payment_method_url' => '_wc_payment',
+				'download_url'           => '_wc_download',
 			],
 			$router->get_nonce_names()
 		);

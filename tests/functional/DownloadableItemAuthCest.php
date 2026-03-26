@@ -28,22 +28,36 @@ class DownloadableItemAuthCest {
 		$I->setupStoreAndUsers();
 
 		// Enable download access after payment.
-		update_option( 'woocommerce_downloads_grant_access_after_payment', 'yes' );
+		$I->haveOptionInDatabase( 'woocommerce_downloads_grant_access_after_payment', 'yes' );
 
-		// Create a downloadable product using WooCommerce API.
-		$download = new \WC_Product_Download();
-		$download->set_id( wp_generate_uuid4() );
-		$download->set_name( 'Test eBook PDF' );
-		$download->set_file( 'http://example.com/test-ebook.pdf' );
-
-		$product = new \WC_Product_Simple();
-		$product->set_name( 'Test eBook' );
-		$product->set_regular_price( '10' );
-		$product->set_virtual( true );
-		$product->set_downloadable( true );
-		$product->set_downloads( [ $download ] );
-		$product->save();
-		$product_id = $product->get_id();
+		// Create a downloadable product via WPDb.
+		$download_id = wp_generate_uuid4();
+		$product_id  = $I->havePostInDatabase(
+			[
+				'post_type'   => 'product',
+				'post_title'  => 'Test eBook',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					'_price'              => '10',
+					'_regular_price'      => '10',
+					'_virtual'            => 'yes',
+					'_downloadable'       => 'yes',
+					'_downloadable_files' => serialize(
+						[
+							$download_id => [
+								'id'   => $download_id,
+								'name' => 'Test eBook PDF',
+								'file' => 'http://example.com/test-ebook.pdf',
+							],
+						]
+					),
+				],
+			]
+		);
+		$term_taxonomy_id = $I->grabTermTaxonomyIdFromDatabase(
+			[ 'taxonomy' => 'product_type', 'term_id' => $I->grabTermIdFromDatabase( [ 'slug' => 'simple' ] ) ]
+		);
+		$I->haveTermRelationshipInDatabase( $product_id, $term_taxonomy_id );
 
 		// Log in to get user ID.
 		$login = $I->login(
@@ -63,19 +77,45 @@ class DownloadableItemAuthCest {
 		$token_data  = JWT::decode( $session_token, new Key( GRAPHQL_WOOCOMMERCE_SECRET_KEY, 'HS256' ) );
 		$session_id  = $token_data->data->customer_id;
 
-		// Create a completed order for the customer.
-		$order = wc_create_order(
-			[
-				'customer_id' => $customer_id,
-				'status'      => 'completed',
-			]
-		);
-		$order->add_product( $product, 1 );
-		$order->calculate_totals();
-		$order->save();
+		// Create a completed order via GraphQL and grant download permissions.
+		// Add product to cart and checkout to create order.
+		$headers = [
+			'Authorization'       => "Bearer {$auth_token}",
+			'woocommerce-session' => "Session {$session_token}",
+		];
 
-		// Grant download permissions.
-		wc_downloadable_product_permissions( $order->get_id(), true );
+		$add_result = $I->addToCart(
+			[
+				'clientMutationId' => 'addEbook',
+				'productId'        => $product_id,
+				'quantity'         => 1,
+			],
+			$headers
+		);
+
+		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+		$headers['woocommerce-session'] = "Session {$session_token}";
+
+		$checkout_result = $I->checkout(
+			[
+				'clientMutationId' => 'checkout',
+				'paymentMethod'    => 'bacs',
+				'isPaid'           => true,
+				'billing'          => [
+					'firstName' => 'Jim',
+					'lastName'  => 'Bo',
+					'email'     => 'jimbo1234@example.com',
+					'address1'  => '123 Main St',
+					'city'      => 'London',
+					'postcode'  => 'CB23 1AB',
+					'country'   => 'GB',
+				],
+			],
+			$headers
+		);
+
+		$order_id = $I->lodashGet( $checkout_result, 'data.checkout.order.databaseId' );
+		wc_downloadable_product_permissions( $order_id, true );
 
 		return compact( 'auth_token', 'session_token', 'session_id', 'customer_id', 'product_id' );
 	}
@@ -190,14 +230,7 @@ class DownloadableItemAuthCest {
 		$data = $this->setupDownloadableOrder( $I );
 
 		// Ensure the setting is disabled.
-		$existing = $I->grabOptionFromDatabase( 'woographql_settings' );
-		$I->haveOptionInDatabase(
-			'woographql_settings',
-			array_merge(
-				is_array( $existing ) ? $existing : [],
-				[ 'enable_pre_auth_download_urls' => 'off' ]
-			)
-		);
+		$I->setWooGraphQLSetting( 'enable_pre_auth_download_urls', 'off' );
 
 		$query = '
 			query {
@@ -233,14 +266,7 @@ class DownloadableItemAuthCest {
 		$data = $this->setupDownloadableOrder( $I );
 
 		// Enable the setting.
-		$existing = $I->grabOptionFromDatabase( 'woographql_settings' );
-		$I->haveOptionInDatabase(
-			'woographql_settings',
-			array_merge(
-				is_array( $existing ) ? $existing : [],
-				[ 'enable_pre_auth_download_urls' => 'on' ]
-			)
-		);
+		$I->setWooGraphQLSetting( 'enable_pre_auth_download_urls', 'on' );
 
 		$query = '
 			query {

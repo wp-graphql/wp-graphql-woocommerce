@@ -81,3 +81,5 @@ if ( defined( 'HPOS' ) ) {
 	\codecept_debug( 'HPOS activated!!!' );
 	//add_action( 'woocommerce_init', 'initialize_hpos' );
 }
+
+class WC_Unit_Tests_Bootstrap {}

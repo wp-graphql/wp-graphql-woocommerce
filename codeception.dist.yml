@@ -13,6 +13,7 @@ settings:
   memory_limit: 1024M
 coverage:
   enabled: true
+  c3_url: '%WORDPRESS_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
   include:
     - 'includes/*'
     - 'access-functions.php'
@@ -93,5 +94,6 @@ modules:
         - wp-graphql-jwt-authentication/wp-graphql-jwt-authentication.php
         - wp-graphql-woocommerce/wp-graphql-woocommerce.php
       configFile: 'tests/_data/config.php'
+      dump: 'local/db/app_db.sql'
     
     

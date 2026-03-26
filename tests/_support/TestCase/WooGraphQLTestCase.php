@@ -39,6 +39,7 @@ class WooGraphQLTestCase extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		// featured product queries, product meta cache groups).
 		wp_cache_flush();
 
+
 		// Load factories.
 		$factories = [
 			'Product',

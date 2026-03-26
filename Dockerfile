@@ -18,8 +18,10 @@ RUN	pecl install xdebug; \
 	echo "xdebug.remote_connect_back = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.remote_port = 9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-	echo "xdebug.remote_log = /var/www/html/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+	echo "xdebug.remote_log = ${PLUGINS_DIR}/wp-graphql-woocommerce/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 	echo "xdebug.mode = coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+
+ENV XDEBUG_MODE=coverage
 
 # Install PDO MySQL driver.
 RUN docker-php-ext-install pdo_mysql

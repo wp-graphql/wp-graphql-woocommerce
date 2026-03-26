@@ -145,6 +145,12 @@ if [ ! -d "wp-content/uploads" ]; then
 fi
 chmod 777 -R wp-content/uploads
 
+# Download c3 for testing.
+if [ ! -f "$PROJECT_DIR/c3.php" ]; then
+    echo "Downloading Codeception's c3.php"
+    curl -L 'https://raw.github.com/Codeception/c3/2.0/c3.php' > "$PROJECT_DIR/c3.php"
+fi
+
 if [ -n "$RUNNING_TEST_STANDALONE" ]; then
 	service apache2 start
 fi
