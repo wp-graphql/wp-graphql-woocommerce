@@ -645,4 +645,117 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test shipping rate cost includes tax when woocommerce_tax_display_cart is incl.
+	 */
+	public function testShippingRateCostIncludesTax() {
+		// Enable taxes and set display to include tax.
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_tax_display_cart', 'incl' );
+
+		// Create a tax rate that applies to shipping.
+		$this->factory->tax_rate->create(
+			[
+				'country'  => '',
+				'rate'     => '10.0000',
+				'name'     => 'Shipping Tax',
+				'priority' => 1,
+				'compound' => 0,
+				'shipping' => 1,
+				'class'    => '',
+			]
+		);
+
+		// Create a physical product and add to cart.
+		$product_id = $this->factory->product->createSimple( [ 'regular_price' => '50' ] );
+		WC()->cart->add_to_cart( $product_id );
+
+		// Set shipping address so rates are calculated.
+		WC()->customer->set_shipping_country( 'GB' );
+		WC()->customer->set_shipping_postcode( 'CB23 1AB' );
+		WC()->cart->calculate_totals();
+
+		$query = '
+			query {
+				cart {
+					availableShippingMethods {
+						rates {
+							id
+							label
+							cost
+							subtotal
+							taxTotal
+						}
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+
+		// Flat rate is $10, tax is 10% = $1. Cost should be $11 (incl tax), subtotal $10.
+		$expected = [
+			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.cost', '$11.00' ),
+			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.subtotal', '$10.00' ),
+			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.taxTotal', '$1.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	/**
+	 * Test shipping rate cost excludes tax when woocommerce_tax_display_cart is excl.
+	 */
+	public function testShippingRateCostExcludesTax() {
+		// Enable taxes and set display to exclude tax.
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_tax_display_cart', 'excl' );
+
+		$this->factory->tax_rate->create(
+			[
+				'country'  => '',
+				'rate'     => '10.0000',
+				'name'     => 'Shipping Tax',
+				'priority' => 1,
+				'compound' => 0,
+				'shipping' => 1,
+				'class'    => '',
+			]
+		);
+
+		$product_id = $this->factory->product->createSimple( [ 'regular_price' => '50' ] );
+		WC()->cart->add_to_cart( $product_id );
+
+		WC()->customer->set_shipping_country( 'GB' );
+		WC()->customer->set_shipping_postcode( 'CB23 1AB' );
+		WC()->cart->calculate_totals();
+
+		$query = '
+			query {
+				cart {
+					availableShippingMethods {
+						rates {
+							id
+							label
+							cost
+							subtotal
+							taxTotal
+						}
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+
+		// Cost and subtotal should both be $10 (excl tax), taxTotal still $1.
+		$expected = [
+			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.cost', '$10.00' ),
+			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.subtotal', '$10.00' ),
+			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.taxTotal', '$1.00' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
 }

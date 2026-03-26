@@ -54,10 +54,33 @@ class Shipping_Rate_Type {
 						},
 					],
 					'cost'       => [
-						'type'        => 'Float',
-						'description' => __( 'Shipping rate cost', 'wp-graphql-woocommerce' ),
+						'type'        => 'String',
+						'description' => __( 'Shipping rate cost. Includes tax when woocommerce_tax_display_cart is set to incl.', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function ( $source ) {
-							return ! is_null( $source->get_cost() ) ? $source->get_cost() : null;
+							$cost = $source->get_cost();
+							if ( is_null( $cost ) ) {
+								return null;
+							}
+
+							if ( 'incl' === get_option( 'woocommerce_tax_display_cart' ) ) {
+								$cost = floatval( $cost ) + floatval( $source->get_shipping_tax() );
+							}
+
+							return \wc_graphql_price( strval( $cost ) );
+						},
+					],
+					'subtotal'   => [
+						'type'        => 'String',
+						'description' => __( 'Shipping rate cost before tax.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							return ! is_null( $source->get_cost() ) ? \wc_graphql_price( $source->get_cost() ) : null;
+						},
+					],
+					'taxTotal'   => [
+						'type'        => 'String',
+						'description' => __( 'Shipping rate tax total.', 'wp-graphql-woocommerce' ),
+						'resolve'     => static function ( $source ) {
+							return \wc_graphql_price( $source->get_shipping_tax() );
 						},
 					],
 				],
