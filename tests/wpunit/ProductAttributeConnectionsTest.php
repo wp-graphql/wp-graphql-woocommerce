@@ -182,7 +182,7 @@ class ProductAttributeConnectionsTest extends \Tests\WPGraphQL\WooCommerce\TestC
 			$this->expectedNode(
 				'product.localAttributes.nodes',
 				[
-					$this->expectedField( 'name', 'Engraving' ),
+					$this->expectedField( 'name', 'engraving' ),
 				]
 			),
 		];
@@ -193,7 +193,7 @@ class ProductAttributeConnectionsTest extends \Tests\WPGraphQL\WooCommerce\TestC
 		$local_attrs = $this->lodashGet( $response, 'data.product.localAttributes.nodes', [] );
 		$engraving_node = null;
 		foreach ( $local_attrs as $node ) {
-			if ( 'Engraving' === $node['name'] ) {
+			if ( 'engraving' === $node['name'] ) {
 				$engraving_node = $node;
 				break;
 			}
