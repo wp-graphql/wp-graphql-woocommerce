@@ -28,8 +28,6 @@ namespace WPGraphQL\WooCommerce;
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-// If the codeception remote coverage file exists, require it.
-// This file should only exist locally or when CI bootstraps the environment for testing
 /**
  * If the codeception remote coverage file exists, require it.
  *

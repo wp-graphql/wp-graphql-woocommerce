@@ -31,8 +31,6 @@ fi
 # Update our domain to just be the docker container's IP address
 export WORDPRESS_DOMAIN=${WORDPRESS_DOMAIN-$( hostname -i )}
 export WORDPRESS_URL="http://$WORDPRESS_DOMAIN"
-echo "WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN" > "$PROJECT_DIR/.env.docker"
-echo "WORDPRESS_URL=$WORDPRESS_URL" >> "$PROJECT_DIR/.env.docker"
 
 # Config WordPress
 if [ -f "${WP_ROOT_FOLDER}/wp-config.php" ]; then

@@ -62,9 +62,9 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" vendor/bin/codecept run wpunit ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}
           HPOS="${{ matrix.hpos }}" FILTER="acceptance ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
           HPOS="${{ matrix.hpos }}" FILTER="functional ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="wpunit ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Aggregate codecoverage reports
         if: ${{ matrix.coverage == true && env.STRIPE_API_PUBLISHABLE_KEY != null }}
