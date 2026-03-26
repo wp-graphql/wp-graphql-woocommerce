@@ -751,9 +751,14 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 		// Cost and subtotal should both be $10 (excl tax), taxTotal still $1.
 		$expected = [
-			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.cost', '$10.00' ),
-			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.subtotal', '$10.00' ),
-			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.taxTotal', '$1.00' ),
+			$this->expectedObject(
+				'cart.availableShippingMethods.#',
+				[
+					$this->expectedField( 'rates.0.cost', '$10.00' ),
+					$this->expectedField( 'rates.0.subtotal', '$10.00' ),
+					$this->expectedField( 'rates.0.taxTotal', '$1.00' ),
+				]
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
