@@ -56,6 +56,17 @@ jobs:
 
       - name: Run Acceptance Tests
         id: tests
+        continue-on-error: true
+        env:
+          USING_XDEBUG: ${{ matrix.xdebug }}
+          WP_VERSION: ${{ matrix.wordpress }}
+          PHP_VERSION: ${{ matrix.php }}
+        run: |
+          HPOS="${{ matrix.hpos }}" FILTER="acceptance --fail-fast ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+
+      - name: Retry on failure
+        id: retry
+        if: ${{ steps.tests.outcome == 'failure' }}
         env:
           USING_XDEBUG: ${{ matrix.xdebug }}
           WP_VERSION: ${{ matrix.wordpress }}
@@ -63,14 +74,9 @@ jobs:
         run: |
           HPOS="${{ matrix.hpos }}" FILTER="acceptance ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
-      - name: Retry on failure
-        if: ${{ failure() && steps.tests.conclusion == 'failure' }}
-        env:
-          USING_XDEBUG: ${{ matrix.xdebug }}
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-        run: |
-          HPOS="${{ matrix.hpos }}" FILTER="acceptance ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+      - name: Fail if both attempts failed
+        if: ${{ steps.tests.outcome == 'failure' && steps.retry.outcome == 'failure' }}
+        run: exit 1
 
       - name: Upload coverage artifact
         if: ${{ matrix.coverage == true && always() }}
@@ -121,6 +127,17 @@ jobs:
 
       - name: Run Functional Tests
         id: tests
+        continue-on-error: true
+        env:
+          USING_XDEBUG: ${{ matrix.xdebug }}
+          WP_VERSION: ${{ matrix.wordpress }}
+          PHP_VERSION: ${{ matrix.php }}
+        run: |
+          HPOS="${{ matrix.hpos }}" FILTER="functional --fail-fast ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+
+      - name: Retry on failure
+        id: retry
+        if: ${{ steps.tests.outcome == 'failure' }}
         env:
           USING_XDEBUG: ${{ matrix.xdebug }}
           WP_VERSION: ${{ matrix.wordpress }}
@@ -128,14 +145,9 @@ jobs:
         run: |
           HPOS="${{ matrix.hpos }}" FILTER="functional ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
-      - name: Retry on failure
-        if: ${{ failure() && steps.tests.conclusion == 'failure' }}
-        env:
-          USING_XDEBUG: ${{ matrix.xdebug }}
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-        run: |
-          HPOS="${{ matrix.hpos }}" FILTER="functional ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+      - name: Fail if both attempts failed
+        if: ${{ steps.tests.outcome == 'failure' && steps.retry.outcome == 'failure' }}
+        run: exit 1
 
       - name: Upload coverage artifact
         if: ${{ matrix.coverage == true && always() }}
@@ -186,6 +198,17 @@ jobs:
 
       - name: Run WPUnit Tests
         id: tests
+        continue-on-error: true
+        env:
+          USING_XDEBUG: ${{ matrix.xdebug }}
+          WP_VERSION: ${{ matrix.wordpress }}
+          PHP_VERSION: ${{ matrix.php }}
+        run: |
+          HPOS="${{ matrix.hpos }}" FILTER="wpunit --fail-fast ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+
+      - name: Retry on failure
+        id: retry
+        if: ${{ steps.tests.outcome == 'failure' }}
         env:
           USING_XDEBUG: ${{ matrix.xdebug }}
           WP_VERSION: ${{ matrix.wordpress }}
@@ -193,14 +216,9 @@ jobs:
         run: |
           HPOS="${{ matrix.hpos }}" FILTER="wpunit ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
-      - name: Retry on failure
-        if: ${{ failure() && steps.tests.conclusion == 'failure' }}
-        env:
-          USING_XDEBUG: ${{ matrix.xdebug }}
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-        run: |
-          HPOS="${{ matrix.hpos }}" FILTER="wpunit ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+      - name: Fail if both attempts failed
+        if: ${{ steps.tests.outcome == 'failure' && steps.retry.outcome == 'failure' }}
+        run: exit 1
 
       - name: Upload coverage artifact
         if: ${{ matrix.coverage == true && always() }}
