@@ -264,6 +264,9 @@ jobs:
           echo "Coverage files structure:"
           find coverage-files/ -name "*.cov" -type f 2>/dev/null || echo "No coverage files found"
           if find coverage-files/ -name "*.cov" -type f | grep -q .; then
+            # Symlink Docker container path to CI checkout so phpcov can read source files.
+            sudo mkdir -p /var/www/html/wp-content/plugins
+            sudo ln -s "$GITHUB_WORKSPACE" /var/www/html/wp-content/plugins/wp-graphql-woocommerce
             phpcov merge --clover=tests/_output/coverage.xml coverage-files
           else
             echo "No serialized coverage files to merge"
