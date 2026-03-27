@@ -40,56 +40,65 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 			}
 		';
 
-		// First page: 2 orders.
+		// Page 1: 2 orders.
 		$variables = [ 'first' => 2 ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.pageInfo.hasNextPage', true ),
+				$this->expectedField( 'orders.pageInfo.endCursor', static::NOT_FALSY ),
+			]
+		);
 
-		$nodes = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertCount( 2, $nodes );
+		$page1_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
+		$end_cursor  = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
 
-		$has_next = $this->lodashGet( $response, 'data.orders.pageInfo.hasNextPage' );
-		$this->assertTrue( $has_next );
-
-		$end_cursor = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
-
-		// Second page.
+		// Page 2.
 		$variables = [
 			'first' => 2,
 			'after' => $end_cursor,
 		];
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$expected = [
+			$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+			$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+		];
+		foreach ( $page1_nodes as $node ) {
+			$expected[] = $this->not()->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $node['databaseId'] ) ]
+			);
+		}
 
-		$nodes_page2 = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertCount( 2, $nodes_page2 );
+		$this->assertQuerySuccessful( $response, $expected );
 
-		// Ensure no overlap between pages.
-		$page1_ids = array_column( $nodes, 'databaseId' );
-		$page2_ids = array_column( $nodes_page2, 'databaseId' );
-		$this->assertEmpty( array_intersect( $page1_ids, $page2_ids ), 'Pages should not have overlapping orders.' );
+		$page2_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
+		$end_cursor  = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
 
-		// Third page: should have 1 remaining.
-		$end_cursor2 = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
-		$variables   = [
+		// Page 3: should have 1 remaining.
+		$variables = [
 			'first' => 2,
-			'after' => $end_cursor2,
+			'after' => $end_cursor,
 		];
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$expected = [
+			$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+			$this->expectedField( 'orders.pageInfo.hasNextPage', false ),
+		];
+		foreach ( array_merge( $page1_nodes, $page2_nodes ) as $node ) {
+			$expected[] = $this->not()->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $node['databaseId'] ) ]
+			);
+		}
 
-		$nodes_page3 = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertCount( 1, $nodes_page3 );
-
-		$has_next = $this->lodashGet( $response, 'data.orders.pageInfo.hasNextPage' );
-		$this->assertFalse( $has_next );
-
-		// All 5 orders accounted for.
-		$all_ids = array_merge( $page1_ids, $page2_ids, array_column( $nodes_page3, 'databaseId' ) );
-		$this->assertCount( 5, $all_ids, 'All 5 orders should be returned across pages.' );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testBackwardPaginationWithLastBefore() {
@@ -111,31 +120,38 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		$variables = [ 'last' => 2 ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.pageInfo.hasPreviousPage', true ),
+				$this->expectedField( 'orders.pageInfo.startCursor', static::NOT_FALSY ),
+			]
+		);
 
-		$nodes = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertCount( 2, $nodes );
-
-		$has_previous = $this->lodashGet( $response, 'data.orders.pageInfo.hasPreviousPage' );
-		$this->assertTrue( $has_previous );
+		$page1_nodes  = $this->lodashGet( $response, 'data.orders.nodes' );
+		$start_cursor = $this->lodashGet( $response, 'data.orders.pageInfo.startCursor' );
 
 		// Previous page.
-		$start_cursor = $this->lodashGet( $response, 'data.orders.pageInfo.startCursor' );
-		$variables    = [
+		$variables = [
 			'last'   => 2,
 			'before' => $start_cursor,
 		];
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$expected = [
+			$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+			$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+		];
+		foreach ( $page1_nodes as $node ) {
+			$expected[] = $this->not()->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $node['databaseId'] ) ]
+			);
+		}
 
-		$nodes_page2 = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertCount( 2, $nodes_page2 );
-
-		// No overlap.
-		$page1_ids = array_column( $nodes, 'databaseId' );
-		$page2_ids = array_column( $nodes_page2, 'databaseId' );
-		$this->assertEmpty( array_intersect( $page1_ids, $page2_ids ), 'Pages should not overlap.' );
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testCursorPaginationReturnsConsistentResults() {
@@ -151,15 +167,15 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
 		$response = $this->graphql( compact( 'query' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
-
-		$all_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
-		$all_ids   = array_column( $all_nodes, 'databaseId' );
-
-		// All 5 created orders should be present.
+		$expected = [];
 		foreach ( $this->order_ids as $order_id ) {
-			$this->assertContains( $order_id, $all_ids, "Order {$order_id} should be in results." );
+			$expected[] = $this->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $order_id ) ]
+			);
 		}
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	public function testOrderConnectionWithDateOrdering() {
@@ -176,13 +192,16 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
 		$response = $this->graphql( compact( 'query' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.0.date', static::NOT_FALSY ),
+			]
+		);
 
-		$nodes = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertGreaterThanOrEqual( 2, count( $nodes ) );
-
-		// Verify ascending date order.
-		$dates = array_column( $nodes, 'date' );
+		$nodes  = $this->lodashGet( $response, 'data.orders.nodes' );
+		$dates  = array_column( $nodes, 'date' );
 		$sorted = $dates;
 		sort( $sorted );
 		$this->assertSame( $sorted, $dates, 'Orders should be sorted by date ascending.' );
@@ -202,12 +221,15 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 
 		$response = $this->graphql( compact( 'query' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.0.date', static::NOT_FALSY ),
+			]
+		);
 
-		$nodes = $this->lodashGet( $response, 'data.orders.nodes' );
-		$this->assertGreaterThanOrEqual( 2, count( $nodes ) );
-
-		// Verify descending date order.
+		$nodes  = $this->lodashGet( $response, 'data.orders.nodes' );
 		$dates  = array_column( $nodes, 'date' );
 		$sorted = $dates;
 		rsort( $sorted );
@@ -234,7 +256,14 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		$variables = [ 'first' => 2 ];
 		$response  = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.date', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.1.date', static::NOT_FALSY ),
+				$this->expectedField( 'orders.pageInfo.endCursor', static::NOT_FALSY ),
+			]
+		);
 
 		$page1_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
 		$end_cursor  = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
@@ -246,17 +275,210 @@ class OrderCursorPaginationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\Wo
 		];
 		$response = $this->graphql( compact( 'query', 'variables' ) );
 
-		$this->assertQuerySuccessful( $response, [] );
+		$expected = [
+			$this->expectedField( 'orders.nodes.0.date', static::NOT_FALSY ),
+		];
+		foreach ( $page1_nodes as $node ) {
+			$expected[] = $this->not()->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $node['databaseId'] ) ]
+			);
+		}
 
-		$page2_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
+		$this->assertQuerySuccessful( $response, $expected );
 
-		// The last date on page 1 should be <= first date on page 2.
+		$page2_nodes      = $this->lodashGet( $response, 'data.orders.nodes' );
 		$last_date_page1  = end( $page1_nodes )['date'];
 		$first_date_page2 = $page2_nodes[0]['date'];
 		$this->assertLessThanOrEqual(
 			$first_date_page2,
 			$last_date_page1,
 			'Cursor pagination should maintain date ordering across pages.'
+		);
+	}
+
+	public function testCursorPaginationOrderedByTotal() {
+		$query = '
+			query ($first: Int, $after: String) {
+				orders(first: $first, after: $after, where: { orderby: { field: TOTAL, order: ASC } }) {
+					nodes {
+						databaseId
+						total(format: RAW)
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		';
+
+		// Page 1.
+		$variables = [ 'first' => 2 ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.0.total', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.pageInfo.hasNextPage', true ),
+				$this->expectedField( 'orders.pageInfo.endCursor', static::NOT_FALSY ),
+			]
+		);
+
+		$page1_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
+		$end_cursor  = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
+
+		// Page 2 — triggers COT cursor compare_with() for _order_total column.
+		$variables = [
+			'first' => 2,
+			'after' => $end_cursor,
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+
+		$expected = [
+			$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+			$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+		];
+		foreach ( $page1_nodes as $node ) {
+			$expected[] = $this->not()->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $node['databaseId'] ) ]
+			);
+		}
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$page2_nodes       = $this->lodashGet( $response, 'data.orders.nodes' );
+		$last_total_page1  = (float) end( $page1_nodes )['total'];
+		$first_total_page2 = (float) $page2_nodes[0]['total'];
+		$this->assertLessThanOrEqual(
+			$first_total_page2,
+			$last_total_page1,
+			'Cursor pagination should maintain total ordering across pages.'
+		);
+	}
+
+	public function testCursorPaginationOrderedByTotalDesc() {
+		$query = '
+			query ($first: Int, $after: String) {
+				orders(first: $first, after: $after, where: { orderby: { field: TOTAL, order: DESC } }) {
+					nodes {
+						databaseId
+						total(format: RAW)
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		';
+
+		// Page 1.
+		$variables = [ 'first' => 2 ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.0.total', static::NOT_FALSY ),
+				$this->expectedField( 'orders.pageInfo.endCursor', static::NOT_FALSY ),
+			]
+		);
+
+		$page1_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
+		$end_cursor  = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
+
+		// Page 2.
+		$variables = [
+			'first' => 2,
+			'after' => $end_cursor,
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+
+		$expected = [
+			$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+		];
+		foreach ( $page1_nodes as $node ) {
+			$expected[] = $this->not()->expectedNode(
+				'orders.nodes',
+				[ $this->expectedField( 'databaseId', $node['databaseId'] ) ]
+			);
+		}
+
+		$this->assertQuerySuccessful( $response, $expected );
+
+		$page2_nodes       = $this->lodashGet( $response, 'data.orders.nodes' );
+		$last_total_page1  = (float) end( $page1_nodes )['total'];
+		$first_total_page2 = (float) $page2_nodes[0]['total'];
+		$this->assertGreaterThanOrEqual(
+			$first_total_page2,
+			$last_total_page1,
+			'Cursor pagination should maintain descending total ordering across pages.'
+		);
+	}
+
+	public function testCursorPaginationOrderedByDateCompleted() {
+		// Set completed dates on orders.
+		foreach ( $this->order_ids as $i => $order_id ) {
+			$order = wc_get_order( $order_id );
+			$order->set_date_completed( gmdate( 'Y-m-d H:i:s', strtotime( "+{$i} hours" ) ) );
+			$order->save();
+		}
+
+		$query = '
+			query ($first: Int, $after: String) {
+				orders(first: $first, after: $after, where: { orderby: { field: DATE_COMPLETED, order: ASC } }) {
+					nodes {
+						databaseId
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		';
+
+		// Page 1.
+		$variables = [ 'first' => 2 ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful( $response,
+			[
+				$this->expectedField( 'orders.nodes.0.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.nodes.1.databaseId', static::NOT_FALSY ),
+				$this->expectedField( 'orders.pageInfo.endCursor', static::NOT_FALSY ),
+			]
+		);
+
+		$page1_nodes = $this->lodashGet( $response, 'data.orders.nodes' );
+		$end_cursor  = $this->lodashGet( $response, 'data.orders.pageInfo.endCursor' );
+
+		// Page 2 — triggers COT cursor compare_with() for _date_completed column.
+		$variables = [
+			'first' => 2,
+			'after' => $end_cursor,
+		];
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			array_map(
+				function( $order ) {
+					return $this->not()->expectedNode(
+						'orders.nodes',
+						[
+							$this->expectedField( 'databaseId', $order['databaseId'] ),
+						]
+					);
+				},
+				$page1_nodes
+			)
 		);
 	}
 }
