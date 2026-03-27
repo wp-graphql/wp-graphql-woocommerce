@@ -13,6 +13,7 @@ settings:
 coverage:
   enabled: true
   c3_url: '%WORDPRESS_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
+  work_dir: /var/www/html/wp-content/plugins/wp-graphql-woocommerce/
   include:
     - 'includes/*'
     - 'access-functions.php'
