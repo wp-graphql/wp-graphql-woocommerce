@@ -261,8 +261,9 @@ jobs:
         if: ${{ env.STRIPE_API_PUBLISHABLE_KEY != null }}
         run: |
           mkdir -p tests/_output
-          ls -la coverage-files/ 2>/dev/null || echo "No coverage files found"
-          if ls coverage-files/*.cov 1>/dev/null 2>&1; then
+          echo "Coverage files structure:"
+          find coverage-files/ -name "*.cov" -type f 2>/dev/null || echo "No coverage files found"
+          if find coverage-files/ -name "*.cov" -type f | grep -q .; then
             phpcov merge --clover=tests/_output/coverage.xml coverage-files
           else
             echo "No serialized coverage files to merge"
