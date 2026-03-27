@@ -141,13 +141,13 @@ class Type_Registry {
 		Type\WPObject\Root_Query::register_fields();
 
 		// Register the following fields only if "disable_ql_session_handler" option is not on.
-		$ql_session_handled_enabled = ! WooCommerce_Filters::is_session_handler_disabled();
+		$ql_session_handled_enabled = ! wc_graphql_is_session_handler_disabled();
 		if ( $ql_session_handled_enabled ) {
 			Type\WPObject\Customer_Type::register_session_handler_fields();
 		}
 
 		// Register the following fields only if "disable_ql_session_handler" option is not "on" and some fields under the "enable_authorizing_url_fields" option are "selected".
-		$enabled_url_fields = WooCommerce_Filters::enabled_authorizing_url_fields();
+		$enabled_url_fields = wc_graphql_enabled_authorizing_url_fields();
 		if ( $ql_session_handled_enabled && ! empty( $enabled_url_fields ) ) {
 			Type\WPObject\Customer_Type::register_authorizing_url_fields( array_keys( $enabled_url_fields ) );
 		}

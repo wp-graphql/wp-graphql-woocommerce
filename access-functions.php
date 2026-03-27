@@ -370,3 +370,51 @@ if ( ! function_exists( 'woographql_verify_nonce' ) ) :
 	}
 
 endif;
+
+if ( ! function_exists( 'wc_graphql_resolve_product_type' ) ) {
+	/**
+	 * Resolves GraphQL type for provided product model.
+	 *
+	 * @param mixed $value Product model.
+	 *
+	 * @return mixed
+	 */
+	function wc_graphql_resolve_product_type( $value ) {
+		return \WPGraphQL\WooCommerce\Post_Types::resolve_product_type( $value );
+	}
+}
+
+if ( ! function_exists( 'wc_graphql_is_session_handler_disabled' ) ) {
+	/**
+	 * Returns true if the QL Session Handler is disabled.
+	 *
+	 * @return boolean
+	 */
+	function wc_graphql_is_session_handler_disabled() {
+		return \WPGraphQL\WooCommerce\WooCommerce::is_session_handler_disabled();
+	}
+}
+
+if ( ! function_exists( 'wc_graphql_enabled_authorizing_url_fields' ) ) {
+	/**
+	 * Returns array of enabled authorizing URL field slugs.
+	 *
+	 * @return array
+	 */
+	function wc_graphql_enabled_authorizing_url_fields() {
+		return \WPGraphQL\WooCommerce\WooCommerce::enabled_authorizing_url_fields();
+	}
+}
+
+if ( ! function_exists( 'wc_graphql_get_authorizing_url_nonce_param_name' ) ) {
+	/**
+	 * Return the nonce query parameter name for the provided field.
+	 *
+	 * @param string $field  URL field slug.
+	 *
+	 * @return string|null
+	 */
+	function wc_graphql_get_authorizing_url_nonce_param_name( $field ) {
+		return \WPGraphQL\WooCommerce\WooCommerce::get_authorizing_url_nonce_param_name( $field );
+	}
+}

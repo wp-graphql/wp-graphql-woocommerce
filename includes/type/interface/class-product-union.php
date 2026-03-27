@@ -9,7 +9,6 @@
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
 use WPGraphQL\AppContext;
-use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 
 /**
  * Class Product_Union
@@ -28,7 +27,7 @@ class Product_Union {
 				'description' => __( 'Union between the product and product variation types', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
+				'resolveType' => 'wc_graphql_resolve_product_type',
 			]
 		);
 	}

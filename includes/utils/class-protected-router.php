@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Utils;
 
-use WPGraphQL\WooCommerce\WooCommerce_Filters;
-
 /**
  * Class Protected_Router
  */
@@ -226,11 +224,11 @@ class Protected_Router {
 	 * @return array
 	 */
 	public static function get_nonce_names() {
-		$enabled_authorizing_url_fields = WooCommerce_Filters::enabled_authorizing_url_fields();
+		$enabled_authorizing_url_fields = wc_graphql_enabled_authorizing_url_fields();
 		$nonce_names                    = [];
 		if ( ! empty( $enabled_authorizing_url_fields ) ) {
 			foreach ( array_keys( $enabled_authorizing_url_fields ) as $field ) {
-				$nonce_names[ $field ] = WooCommerce_Filters::get_authorizing_url_nonce_param_name( $field );
+				$nonce_names[ $field ] = wc_graphql_get_authorizing_url_nonce_param_name( $field );
 			}
 		}
 

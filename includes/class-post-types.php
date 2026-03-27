@@ -1,6 +1,6 @@
 <?php
 /**
- * Adds filters that modify core schema.
+ * Registers WooCommerce post types and related schema filters.
  *
  * @package \WPGraphQL\WooCommerce
  * @since   0.0.1
@@ -22,21 +22,18 @@ use WPGraphQL\WooCommerce\Data\Loader\WC_Tax_Rate_Loader;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
- * Class Core_Schema_Filters
+ * Class Post_Types
  */
-class Core_Schema_Filters {
+class Post_Types {
 	/**
 	 * Register filters
 	 *
 	 * @return void
 	 */
-	public static function add_filters() {
+	public static function init() {
 		// Registers WooCommerce CPTs.
 		add_filter( 'register_post_type_args', [ self::class, 'register_post_types' ], 10, 2 );
 		add_filter( 'graphql_post_entities_allowed_post_types', [ self::class, 'skip_type_registry' ], 10 );
-
-		// Registers WooCommerce taxonomies.
-		add_filter( 'register_taxonomy_args', [ self::class, 'register_taxonomy_args' ], 10, 2 );
 
 		// Add data-loaders to AppContext.
 		add_filter( 'graphql_data_loader_classes', [ self::class, 'graphql_data_loader_classes' ], 10 );
@@ -218,63 +215,6 @@ class Core_Schema_Filters {
 				]
 			)
 		);
-	}
-
-	/**
-	 * Registers WooCommerce taxonomies to be used in GraphQL schema
-	 *
-	 * @param array  $args     - allowed taxonomies.
-	 * @param string $taxonomy - name of taxonomy being checked.
-	 *
-	 * @return array
-	 */
-	public static function register_taxonomy_args( $args, $taxonomy ) {
-		if ( 'product_type' === $taxonomy ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'productType';
-			$args['graphql_plural_name'] = 'productTypes';
-		}
-
-		if ( 'product_visibility' === $taxonomy ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'visibleProduct';
-			$args['graphql_plural_name'] = 'visibleProducts';
-		}
-
-		if ( 'product_cat' === $taxonomy ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'productCategory';
-			$args['graphql_plural_name'] = 'productCategories';
-		}
-
-		if ( 'product_tag' === $taxonomy ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'productTag';
-			$args['graphql_plural_name'] = 'productTags';
-		}
-
-		if ( 'product_shipping_class' === $taxonomy ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'shippingClass';
-			$args['graphql_plural_name'] = 'shippingClasses';
-		}
-
-		if ( 'product_brand' === $taxonomy ) {
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = 'productBrand';
-			$args['graphql_plural_name'] = 'productBrands';
-		}
-
-		// Filter product attributes taxonomies.
-		$attributes = WooGraphQL::get_product_attribute_taxonomies();
-		if ( in_array( $taxonomy, $attributes, true ) ) {
-			$singular_name               = graphql_format_field_name( $taxonomy );
-			$args['show_in_graphql']     = true;
-			$args['graphql_single_name'] = $singular_name;
-			$args['graphql_plural_name'] = 'all' . ucFirst( $singular_name );
-		}
-
-		return $args;
 	}
 
 	/**

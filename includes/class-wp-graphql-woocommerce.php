@@ -418,8 +418,9 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 
 			// Include main plugin class files.
 			require $include_directory_path . 'class-admin.php';
-			require $include_directory_path . 'class-core-schema-filters.php';
-			require $include_directory_path . 'class-woocommerce-filters.php';
+			require $include_directory_path . 'class-post-types.php';
+			require $include_directory_path . 'class-taxonomies.php';
+			require $include_directory_path . 'class-woocommerce.php';
 			require $include_directory_path . 'class-compatibility.php';
 			require $include_directory_path . 'class-type-registry.php';
 
@@ -501,22 +502,23 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 * @return void
 		 */
 		private function setup() {
-			// Initialize WPGraphQL for WooCommerce Settings.
+			// Initialize admin settings page.
 			new Admin();
 
-			// Initialize WPGraphQL for WooCommerce DB hooks.
+			// Initialize database hooks.
 			new Data\DB_Hooks();
 
-			// Register WooCommerce filters.
-			WooCommerce_Filters::setup();
+			// Register WooCommerce session, cart, and download filters.
+			WooCommerce::init();
 
-			// Register WPGraphQL core filters.
-			Core_Schema_Filters::add_filters();
+			// Register WooCommerce post types and taxonomies to GraphQL schema.
+			Post_Types::init();
+			Taxonomies::init();
 
-			// Register third-party plugin compatibility filters.
+			// Register third-party plugin compatibility (ACF, JWT Auth, Stripe, SearchWP).
 			Compatibility::setup();
 
-			// Initialize WPGraphQL for WooCommerce TypeRegistry.
+			// Register GraphQL types, connections, and mutations.
 			$registry = new Type_Registry();
 			add_action( 'graphql_register_types', [ $registry, 'init' ] );
 		}

@@ -24,6 +24,7 @@ class Compatibility {
 		self::register_wc_admin_settings();
 		self::add_acf_filters();
 		self::add_jwt_auth_filters();
+		self::add_stripe_gateway_filters();
 		self::add_swp_filters();
 	}
 
@@ -265,7 +266,7 @@ class Compatibility {
 			]
 		);
 
-		if ( ! WooCommerce_Filters::is_session_handler_disabled() ) {
+		if ( ! wc_graphql_is_session_handler_disabled() ) {
 			$token_type = woographql_setting( 'set_session_token_type', 'legacy' );
 			if ( in_array( $token_type, [ 'legacy', 'both' ], true ) ) {
 				register_graphql_field(
@@ -300,6 +301,44 @@ class Compatibility {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Register WooCommerce Stripe Gateway compatibility filters.
+	 *
+	 * @return void
+	 */
+	private static function add_stripe_gateway_filters() {
+		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woocommerce_gateway_stripe_args' ], 10, 2 );
+	}
+
+	/**
+	 * Adds extra arguments to the Stripe Gateway process payment call.
+	 *
+	 * @param array  $gateway_args    Arguments to be passed to the gateway `process_payment` method.
+	 * @param string $payment_method  Payment gateway ID.
+	 *
+	 * @return array
+	 */
+	public static function woocommerce_gateway_stripe_args( $gateway_args, $payment_method ) {
+		/** @var false|\WC_Order|\WC_Order_Refund $order */
+		$order = wc_get_order( $gateway_args[0] );
+		if ( false === $order ) {
+			return $gateway_args;
+		}
+
+		$stripe_source_id = $order->get_meta( '_stripe_source_id' );
+		if ( 'stripe' === $payment_method && ! empty( $stripe_source_id ) ) {
+			$gateway_args = [
+				$gateway_args[0],
+				true,
+				false,
+				false,
+				true,
+			];
+		}
+
+		return $gateway_args;
 	}
 
 	/**

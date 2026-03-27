@@ -11,9 +11,9 @@ namespace WPGraphQL\WooCommerce;
 use WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce as WooGraphQL;
 
 /**
- * Class WooCommerce_Filters
+ * Class WooCommerce
  */
-class WooCommerce_Filters {
+class WooCommerce {
 	/**
 	 * Stores instance session header name.
 	 *
@@ -26,7 +26,7 @@ class WooCommerce_Filters {
 	 *
 	 * @return void
 	 */
-	public static function setup() {
+	public static function init() {
 		self::$session_header = apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' );
 
 		// Check if request is a GraphQL POST request.
@@ -43,9 +43,6 @@ class WooCommerce_Filters {
 		if ( 'on' === woographql_setting( 'enable_pre_auth_download_urls', 'off' ) ) {
 			add_action( 'init', [ self::class, 'authenticate_pre_auth_download' ], 1 );
 		}
-
-		// Add better support for Stripe payment gateway.
-		add_filter( 'graphql_stripe_process_payment_args', [ self::class, 'woographql_stripe_gateway_args' ], 10, 2 );
 
 		// WPGraphQL Reset password -> Use woocommerce email password template when requested.
 		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 3 );
@@ -106,7 +103,7 @@ class WooCommerce_Filters {
 	 *
 	 * @param string $field  URL field slug.
 	 *
-	 * @return string null
+	 * @return string|null
 	 */
 	public static function get_authorizing_url_nonce_param_name( $field ) {
 		$flag_name      = strtoupper( $field );
@@ -182,35 +179,6 @@ class WooCommerce_Filters {
 	public static function add_session_header_to_allow_headers( array $allowed_headers ) {
 		$allowed_headers[] = self::$session_header;
 		return $allowed_headers;
-	}
-
-	/**
-	 * Adds extra arguments to the Stripe Gateway process payment call.
-	 *
-	 * @param array  $gateway_args    Arguments to be passed to the gateway `process_payment` method.
-	 * @param string $payment_method  Payment gateway ID.
-	 *
-	 * @return array
-	 */
-	public static function woographql_stripe_gateway_args( $gateway_args, $payment_method ) {
-		/** @var false|\WC_Order|\WC_Order_Refund $order */
-		$order = wc_get_order( $gateway_args[0] );
-		if ( false === $order ) {
-			return $gateway_args;
-		}
-
-		$stripe_source_id = $order->get_meta( '_stripe_source_id' );
-		if ( 'stripe' === $payment_method && ! empty( $stripe_source_id ) ) {
-			$gateway_args = [
-				$gateway_args[0],
-				true,
-				false,
-				false,
-				true,
-			];
-		}
-
-		return $gateway_args;
 	}
 
 	/**
