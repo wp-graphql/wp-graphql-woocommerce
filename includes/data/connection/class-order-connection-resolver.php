@@ -283,11 +283,8 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		}
 
 		if ( ! empty( $where_args['statuses'] ) ) {
-			if ( 1 === count( $where_args ) ) {
-				$args['status'] = $where_args['statuses'][0];
-			} else {
-				$args['status'] = $where_args['statuses'];
-			}
+			$single_status  = 1 === count( $where_args['statuses'] );
+			$args['status'] = $single_status ? $where_args['statuses'][0] : $where_args['statuses'];
 		}
 
 		if ( ! empty( $where_args['customerId'] ) ) {
