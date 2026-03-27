@@ -83,8 +83,8 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 								$this->expectedField( 'downloadId', $item['download_id'] ),
 								$this->expectedField(
 									'downloadsRemaining',
-									isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
-										? $item['downloads_remaining']
+									isset( $item['downloads_remaining'] ) && is_numeric( $item['downloads_remaining'] )
+										? intval( $item['downloads_remaining'] )
 										: static::IS_NULL
 								),
 								$this->expectedField( 'name', $item['download_name'] ),
@@ -360,8 +360,8 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 						$this->expectedField( 'downloadId', $item['download_id'] ),
 						$this->expectedField(
 							'downloadsRemaining',
-							isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
-								? $item['downloads_remaining']
+							isset( $item['downloads_remaining'] ) && is_numeric( $item['downloads_remaining'] )
+								? intval( $item['downloads_remaining'] )
 								: static::IS_NULL
 						),
 						$this->expectedField( 'name', $item['download_name'] ),
@@ -373,6 +373,80 @@ class DownloadableItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 			},
 			$downloadable_items
 		);
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	public function testDownloadsRemainingHandlesNumericString() {
+		$downloadable_product = $this->factory->product->createSimple(
+			[
+				'download_limit' => 5,
+				'downloadable'   => true,
+				'downloads'      => [ $this->factory->product->createDownload() ],
+			]
+		);
+
+		$order_id = $this->factory->order->createNew(
+			[
+				'status'      => 'completed',
+				'customer_id' => $this->customer,
+			],
+			[
+				'line_items' => [
+					[
+						'product' => $downloadable_product,
+						'qty'     => 1,
+					],
+				],
+			]
+		);
+
+		wc_downloadable_product_permissions( $order_id, true );
+
+		// Force downloads_remaining to a numeric string as WooCommerce sometimes stores it.
+		global $wpdb;
+		$wpdb->update(
+			"{$wpdb->prefix}woocommerce_downloadable_product_permissions",
+			[ 'downloads_remaining' => '3' ],
+			[
+				'order_id'   => $order_id,
+				'product_id' => $downloadable_product,
+			]
+		);
+
+		$this->loginAsCustomer();
+
+		$query = '
+			query {
+				customer {
+					orders {
+						nodes {
+							downloadableItems(first: 1) {
+								nodes {
+									downloadsRemaining
+								}
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+		$expected = [
+			$this->expectedNode(
+				'customer.orders.nodes',
+				[
+					$this->expectedNode(
+						'downloadableItems.nodes',
+						[
+							$this->expectedField( 'downloadsRemaining', 3 ),
+						]
+					),
+				],
+				0
+			),
+		];
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
