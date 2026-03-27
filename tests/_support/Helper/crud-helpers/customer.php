@@ -219,8 +219,8 @@ class CustomerHelper extends WCG_Helper {
 				'url'                => $item['download_url'],
 				'accessExpires'      => $item['access_expires'],
 				'downloadId'         => $item['download_id'],
-				'downloadsRemaining' => isset( $item['downloads_remaining'] ) && 'integer' === gettype( $item['downloads_remaining'] )
-					? $item['downloads_remaining']
+				'downloadsRemaining' => isset( $item['downloads_remaining'] ) && is_numeric( $item['downloads_remaining'] )
+					? intval( $item['downloads_remaining'] )
 					: null,
 				'name'               => $item['download_name'],
 				'product'            => array( 'databaseId' => $item['product_id'] ),
