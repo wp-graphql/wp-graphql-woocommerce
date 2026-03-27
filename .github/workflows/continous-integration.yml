@@ -275,3 +275,13 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           php-coveralls -v
+
+      - name: Upload coverage debug artifacts
+        if: ${{ always() && env.STRIPE_API_PUBLISHABLE_KEY != null }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-debug
+          path: |
+            tests/_output/coverage.xml
+            tests/_output/coverage.json
+          if-no-files-found: ignore
