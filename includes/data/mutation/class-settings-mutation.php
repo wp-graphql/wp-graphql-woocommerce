@@ -125,7 +125,7 @@ class Settings_Mutation {
 	 *
 	 * @return string
 	 */
-	public function validate_setting_checkbox_field( $value, $setting ) {
+	public static function validate_setting_checkbox_field( $value, $setting ) {
 		if ( in_array( $value, [ 'yes', 'no' ], true ) ) {
 			return $value;
 		} elseif ( empty( $value ) ) {

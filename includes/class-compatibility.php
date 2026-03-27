@@ -1,10 +1,9 @@
 <?php
 /**
- * Adds filters that modify the WPGraphQL for WooCommerce schema to include WPGraphQL JWT Authentication
- * fields in Customer type and mutations.
+ * Compatibility integrations with third-party plugins.
  *
  * @package \WPGraphQL\WooCommerce
- * @since   0.2.2
+ * @since   TBD
  */
 
 namespace WPGraphQL\WooCommerce;
@@ -13,11 +12,94 @@ use GraphQL\Error\UserError;
 use WPGraphQL\WooCommerce\Model\Customer;
 
 /**
- * Class JWT_Auth_Schema_Filters
+ * Class Compatibility
  */
-class JWT_Auth_Schema_Filters {
+class Compatibility {
 	/**
-	 * Adds filters.
+	 * Register all compatibility filters.
+	 *
+	 * @return void
+	 */
+	public static function setup() {
+		self::register_wc_admin_settings();
+		self::add_acf_filters();
+		self::add_jwt_auth_filters();
+		self::add_swp_filters();
+	}
+
+	/**
+	 * Register WC admin settings for GraphQL requests.
+	 *
+	 * WooCommerce only registers settings groups during rest_api_init.
+	 * We need them available for GraphQL settings queries and mutations.
+	 *
+	 * @return void
+	 */
+	private static function register_wc_admin_settings() {
+		if ( method_exists( WC(), 'register_wp_admin_settings' ) ) {
+			WC()->register_wp_admin_settings(); // @phpstan-ignore method.private (public since WC 9.0)
+		}
+	}
+
+	/**
+	 * Register WPGraphQL ACF compatibility filters.
+	 *
+	 * @return void
+	 */
+	private static function add_acf_filters() {
+		add_filter( 'graphql_acf_get_root_id', [ self::class, 'resolve_crud_root_id' ], 10, 2 );
+		add_filter( 'graphql_acf_post_object_source', [ self::class, 'resolve_post_object_source' ], 10, 2 );
+	}
+
+	/**
+	 * Resolve post object ID from CRUD object Model.
+	 *
+	 * @param integer|null $id    Post object database ID.
+	 * @param mixed        $root  Root resolver.
+	 *
+	 * @return integer|null
+	 */
+	public static function resolve_crud_root_id( $id, $root ) {
+		if ( $root instanceof Model\WC_Post ) {
+			$id = absint( $root->ID );
+		}
+
+		return $id;
+	}
+
+	/**
+	 * Filters ACF "post_object" field type resolver to ensure that
+	 * the proper Type source is provided for WooCommerce CPTs.
+	 *
+	 * @param mixed|null $source  source of the data being provided.
+	 * @param mixed|null $value  Post ID.
+	 *
+	 * @return mixed|null
+	 */
+	public static function resolve_post_object_source( $source, $value ) {
+		$post = get_post( $value );
+		if ( $post instanceof \WP_Post ) {
+			switch ( $post->post_type ) {
+				case 'shop_coupon':
+					$source = new Model\Coupon( $post->ID );
+					break;
+				case 'shop_order':
+					$source = new Model\Order( $post->ID );
+					break;
+				case 'product':
+					$source = new Model\Product( $post->ID );
+					break;
+				case 'product_variation':
+					$source = new Model\Product_Variation( $post->ID );
+					break;
+			}
+		}
+
+		return $source;
+	}
+
+	/**
+	 * Get the JWT auth class if available.
 	 *
 	 * @return string|null
 	 */
@@ -26,9 +108,9 @@ class JWT_Auth_Schema_Filters {
 			return \WPGraphQL\JWT_Authentication\Auth::class;
 		} elseif ( class_exists( 'WPGraphQL\Login\Auth\TokenManager' ) ) {
 			return \WPGraphQL\Login\Auth\TokenManager::class;
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
@@ -46,11 +128,10 @@ class JWT_Auth_Schema_Filters {
 		if ( ! $auth_class ) {
 			return null;
 		}
+
 		/**
-		* This method is typed wrong upstream.
-		*
-		* @var \WP_Error|string|null $token
-		*/
+		 * @var \WP_Error|string|null $token
+		 */
 		$token = null;
 		if ( 'WPGraphQL\JWT_Authentication\Auth' === $auth_class ) {
 			$token = $auth_class::get_token( $user );
@@ -82,8 +163,6 @@ class JWT_Auth_Schema_Filters {
 		}
 
 		/**
-		 * This method is typed wrong upstream.
-		 *
 		 * @var \WP_Error|string|null $refresh_token
 		 */
 		$refresh_token = $auth_class::get_refresh_token( $user );
@@ -96,19 +175,20 @@ class JWT_Auth_Schema_Filters {
 	}
 
 	/**
-	 * Register filters
+	 * Register WPGraphQL JWT Authentication compatibility filters.
 	 *
 	 * @return void
 	 */
-	public static function add_filters() {
-		// Confirm WPGraphQL JWT Authentication is installed.
+	private static function add_jwt_auth_filters() {
 		$auth_class = self::get_auth_class();
-		if ( ! is_null( $auth_class ) ) {
-			add_filter( 'graphql_jwt_user_types', [ self::class, 'add_customer_to_jwt_user_types' ], 10 );
-			add_filter( 'graphql_registerCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
-			add_filter( 'graphql_updateCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
-			add_action( 'graphql_register_types', [ self::class, 'add_customer_to_login_payload' ], 10 );
+		if ( is_null( $auth_class ) ) {
+			return;
 		}
+
+		add_filter( 'graphql_jwt_user_types', [ self::class, 'add_customer_to_jwt_user_types' ], 10 );
+		add_filter( 'graphql_registerCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
+		add_filter( 'graphql_updateCustomerPayload_fields', [ self::class, 'add_jwt_output_fields' ], 10, 3 );
+		add_action( 'graphql_register_types', [ self::class, 'add_customer_to_login_payload' ], 10 );
 	}
 
 	/**
@@ -133,7 +213,7 @@ class JWT_Auth_Schema_Filters {
 	 * @return array
 	 */
 	public static function add_jwt_output_fields( $fields, $object_type, $type_registry ): array {
-		$fields = array_merge(
+		return array_merge(
 			$fields,
 			[
 				'authToken'    => [
@@ -164,8 +244,6 @@ class JWT_Auth_Schema_Filters {
 				],
 			]
 		);
-
-		return $fields;
 	}
 
 	/**
@@ -197,11 +275,7 @@ class JWT_Auth_Schema_Filters {
 						'type'        => 'String',
 						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function () {
-							/**
-							 * Session Handler.
-							 *
-							 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
-							 */
+							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
 							$session = \WC()->session;
 
 							return apply_filters( 'graphql_customer_session_token', $session->build_token() );
@@ -217,11 +291,7 @@ class JWT_Auth_Schema_Filters {
 						'type'        => 'String',
 						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
 						'resolve'     => static function () {
-							/**
-							 * Session Handler.
-							 *
-							 * @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session
-							 */
+							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
 							$session = \WC()->session;
 
 							return apply_filters( 'graphql_customer_session_token', $session->build_cart_token() );
@@ -230,5 +300,42 @@ class JWT_Auth_Schema_Filters {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Register SearchWP/QL Search compatibility filters.
+	 *
+	 * @return void
+	 */
+	private static function add_swp_filters() {
+		add_filter( 'graphql_swp_result_possible_types', [ self::class, 'searchwp_result_possible_types' ] );
+	}
+
+	/**
+	 * Adds product types to QL Search SWPResult possible types.
+	 *
+	 * @param array $type_names SWPResults possible types.
+	 *
+	 * @return array
+	 */
+	public static function searchwp_result_possible_types( array $type_names ) {
+		if ( in_array( 'Product', $type_names, true ) ) {
+			$type_names = array_merge(
+				array_filter(
+					$type_names,
+					static function ( $type_name ) {
+						return 'Product' !== $type_name;
+					}
+				),
+				[
+					'SimpleProduct',
+					'VariableProduct',
+					'GroupProduct',
+					'ExternalProduct',
+				]
+			);
+		}
+
+		return $type_names;
 	}
 }

@@ -935,6 +935,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 	}
 
 	public function testCheckoutMutationWithStripe() {
+		$this->markTestSkipped( 'This test is for example purposes only and should NOT be run in CI.' );
 		WC()->customer->set_billing_email( 'superfreak500@gmail.com' );
 		WC()->customer->save();
 

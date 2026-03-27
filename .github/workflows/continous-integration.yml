@@ -29,6 +29,7 @@ jobs:
             wordpress: '6.8'
             coverage: true
             xdebug: 1
+            hpos: 1
           - php: '8.1'
             wordpress: '6.3'
             debug: '--debug'
@@ -100,6 +101,7 @@ jobs:
             wordpress: '6.8'
             coverage: true
             xdebug: 1
+            hpos: 1
           - php: '8.1'
             wordpress: '6.3'
             debug: '--debug'
@@ -171,6 +173,7 @@ jobs:
             wordpress: '6.8'
             coverage: true
             xdebug: 1
+            hpos: 1
           - php: '8.1'
             wordpress: '6.3'
             debug: '--debug'
@@ -233,8 +236,6 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     name: Aggregate Coverage & Push to Coveralls
-    env:
-      STRIPE_API_PUBLISHABLE_KEY: ${{ secrets.STRIPE_API_PUBLISHABLE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -258,7 +259,6 @@ jobs:
           merge-multiple: true
 
       - name: Merge coverage reports
-        if: ${{ env.STRIPE_API_PUBLISHABLE_KEY != null }}
         run: |
           mkdir -p tests/_output
           echo "Coverage files structure:"
@@ -274,14 +274,13 @@ jobs:
           fi
 
       - name: Push Codecoverage to Coveralls.io
-        if: ${{ env.STRIPE_API_PUBLISHABLE_KEY != null }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           php-coveralls -v
 
       - name: Upload coverage debug artifacts
-        if: ${{ always() && env.STRIPE_API_PUBLISHABLE_KEY != null }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-debug

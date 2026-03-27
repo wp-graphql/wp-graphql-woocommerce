@@ -103,7 +103,7 @@ class Shipping_Zone_Type {
 								},
 							],
 							'settings'   => [
-								'type'        => [ 'list_of' => 'WCSetting' ],
+								'type'        => [ 'list_of' => 'WCStringSetting' ],
 								'description' => __( 'Shipping method settings.', 'wp-graphql-woocommerce' ),
 								'resolve'     => static function ( $edge ) {
 									$settings = [];

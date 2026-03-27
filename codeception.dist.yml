@@ -15,12 +15,12 @@ coverage:
   c3_url: '%WORDPRESS_URL%/wp-content/plugins/wp-graphql-woocommerce/wp-graphql-woocommerce.php'
   work_dir: /var/www/html/wp-content/plugins/wp-graphql-woocommerce/
   include:
-    - 'includes/*'
-    - 'access-functions.php'
+    - './includes/*'
+    - './access-functions.php'
   exclude:
-    - 'local/*'
-    - 'vendor/*'
-    - 'wp-graphql-woocommerce.php'
+    - './local/*'
+    - './vendor/*'
+    - './wp-graphql-woocommerce.php'
   show_only_summary: false
 extensions:
   enabled:

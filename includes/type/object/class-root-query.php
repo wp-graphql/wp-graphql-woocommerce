@@ -594,6 +594,42 @@ class Root_Query {
 						return [];
 					},
 				],
+				'wcSettingGroups'  => [
+					'type'        => [ 'list_of' => 'WCSettingGroup' ],
+					'description' => __( 'WooCommerce setting groups', 'wp-graphql-woocommerce' ),
+					'resolve'     => static function () {
+						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+							throw new UserError( __( 'Sorry, you cannot view settings.', 'wp-graphql-woocommerce' ) );
+						}
+
+						$groups = apply_filters( 'woocommerce_settings_groups', [] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+						return array_values( $groups );
+					},
+				],
+				'wcSettings'       => [
+					'type'        => [ 'list_of' => 'WCSetting' ],
+					'description' => __( 'WooCommerce settings for a specific group', 'wp-graphql-woocommerce' ),
+					'args'        => [
+						'group' => [
+							'type'        => [ 'non_null' => 'String' ],
+							'description' => __( 'Settings group ID', 'wp-graphql-woocommerce' ),
+						],
+					],
+					'resolve'     => static function ( $_, $args ) {
+						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
+							throw new UserError( __( 'Sorry, you cannot view settings.', 'wp-graphql-woocommerce' ) );
+						}
+
+						$controller = new \WC_REST_Setting_Options_Controller();
+						$settings   = $controller->get_group_settings( $args['group'] );
+
+						if ( is_wp_error( $settings ) ) {
+							throw new UserError( $settings->get_error_message() );
+						}
+
+						return $settings;
+					},
+				],
 				'collectionStats'  => [
 					'type'        => 'CollectionStats',
 					'args'        => [
