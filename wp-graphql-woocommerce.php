@@ -203,29 +203,18 @@ constants();
 // Load access functions.
 require_once get_plugin_directory() . 'access-functions.php';
 
-// Confirm WC HPOS compatibility.
+// Confirm WC HPOS and Cart & Checkout Blocks compatibility.
+// Only declare when installed as a top-level plugin (not nested in another plugin's vendor directory).
 add_action(
 	'before_woocommerce_init',
 	static function () {
-		if ( get_plugin_directory() !== WP_PLUGIN_DIR . '/wp-graphql-woocommerce/' ) {
+		$is_top_level_plugin = dirname( __DIR__ ) === WP_PLUGIN_DIR;
+		if ( ! $is_top_level_plugin ) {
 			return;
 		}
 
 		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-		}
-	}
-);
-
-// Confirm WC Cart & Checkout Blocks compatibility.
-add_action(
-	'before_woocommerce_init',
-	static function () {
-		if ( get_plugin_directory() !== WP_PLUGIN_DIR . '/wp-graphql-woocommerce/' ) {
-			return;
-		}
-
-		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
 		}
 	}

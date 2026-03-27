@@ -11,7 +11,6 @@ namespace WPGraphQL\WooCommerce\Type\WPInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Connection\Products;
-use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
 use WPGraphQL\WooCommerce\Data\Connection\Product_Connection_Resolver;
 
 /**
@@ -32,7 +31,7 @@ class Product_With_Variations {
 				'interfaces'  => [ 'Node', 'ProductWithAttributes' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
+				'resolveType' => 'wc_graphql_resolve_product_type',
 			]
 		);
 	}

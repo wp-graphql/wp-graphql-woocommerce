@@ -8,8 +8,6 @@
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;
 
-use WPGraphQL\WooCommerce\Core_Schema_Filters as Core;
-
 /**
  * Class Downloadable_Product
  */
@@ -27,7 +25,7 @@ class Downloadable_Product {
 				'description' => __( 'A downloadable product.', 'wp-graphql-woocommerce' ),
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
-				'resolveType' => [ Core::class, 'resolve_product_type' ],
+				'resolveType' => 'wc_graphql_resolve_product_type',
 			]
 		);
 	}
