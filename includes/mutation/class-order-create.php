@@ -181,9 +181,10 @@ class Order_Create {
 				}
 
 				// Actions for after the order is saved.
-				if ( true === $input['isPaid'] ) {
+				if ( ! empty( $input['isPaid'] ) ) {
+					$transaction_id = ! empty( $input['transactionId'] ) ? $input['transactionId'] : '';
 					$order->payment_complete(
-						! empty( $input['transactionId'] ) ? $input['transactionId'] : ''
+						apply_filters( 'graphql_woocommerce_order_pre_validate_transaction_id', $transaction_id, $order, $input )
 					);
 				}
 

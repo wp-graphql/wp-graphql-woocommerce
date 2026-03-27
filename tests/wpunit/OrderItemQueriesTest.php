@@ -246,10 +246,10 @@ class OrderItemQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
                             variationId
                             quantity
                             taxClass
-                            subtotal
-                            subtotalTax
-                            total
-                            totalTax
+                            subtotal(format: RAW)
+                            subtotalTax(format: RAW)
+                            total(format: RAW)
+                            totalTax(format: RAW)
                             itemDownloads {
                                 downloadId
                             }

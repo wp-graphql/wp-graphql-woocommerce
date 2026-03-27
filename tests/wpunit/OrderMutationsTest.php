@@ -180,10 +180,10 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
                                 variationId
                                 quantity
                                 taxClass
-                                subtotal
-                                subtotalTax
-                                total
-                                totalTax
+                                subtotal(format: RAW)
+                                subtotalTax(format: RAW)
+                                total(format: RAW)
+                                totalTax(format: RAW)
                                 taxStatus
                                 product {
                                     node {
@@ -1412,5 +1412,67 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$product->get_stock_quantity(),
 			'Stock should remain at 45 when status is explicitly set alongside isPaid.'
 		);
+	}
+
+	/**
+	 * Test that createOrder auto-fills line item name, subtotal, and total
+	 * when only productId is provided.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/946
+	 */
+	public function testCreateOrderWithProductIdOnlyLineItems() {
+		$product_id = $this->factory->product->createSimple(
+			[
+				'regular_price' => '25',
+				'name'          => 'Test Widget',
+			]
+		);
+
+		$this->loginAsShopManager();
+
+		$query = '
+			mutation ($input: CreateOrderInput!) {
+				createOrder(input: $input) {
+					order {
+						lineItems {
+							nodes {
+								productId
+								quantity
+								total(format: RAW)
+								subtotal(format: RAW)
+								product {
+									node {
+										... on SimpleProduct {
+											name
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [
+			'input' => [
+				'clientMutationId' => 'create-order-minimal',
+				'paymentMethod'    => 'bacs',
+				'lineItems'        => [
+					[ 'productId' => $product_id ],
+				],
+			],
+		];
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$expected = [
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.productId', $product_id ),
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.quantity', 1 ),
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.total', '25' ),
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.subtotal', '25' ),
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.product.node.name', 'Test Widget' ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 }

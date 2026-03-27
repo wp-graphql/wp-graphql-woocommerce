@@ -179,18 +179,66 @@ class Order_Item_Type {
 					'subtotal'      => [
 						'type'        => 'String',
 						'description' => __( 'Line item\'s subtotal', 'wp-graphql-woocommerce' ),
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $source->subtotal;
+							}
+							return ! empty( $source->subtotal ) ? \wc_graphql_price( $source->subtotal ) : null;
+						},
 					],
 					'subtotalTax'   => [
 						'type'        => 'String',
 						'description' => __( 'Line item\'s subtotal tax', 'wp-graphql-woocommerce' ),
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $source->subtotalTax;
+							}
+							return ! empty( $source->subtotalTax ) ? \wc_graphql_price( $source->subtotalTax ) : null;
+						},
 					],
 					'total'         => [
 						'type'        => 'String',
 						'description' => __( 'Line item\'s total', 'wp-graphql-woocommerce' ),
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $source->total;
+							}
+							return ! empty( $source->total ) ? \wc_graphql_price( $source->total ) : null;
+						},
 					],
 					'totalTax'      => [
 						'type'        => 'String',
 						'description' => __( 'Line item\'s total tax', 'wp-graphql-woocommerce' ),
+						'args'        => [
+							'format' => [
+								'type'        => 'PricingFieldFormatEnum',
+								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+							],
+						],
+						'resolve'     => static function ( $source, array $args ) {
+							if ( isset( $args['format'] ) && 'raw' === $args['format'] ) {
+								return $source->totalTax;
+							}
+							return ! empty( $source->totalTax ) ? \wc_graphql_price( $source->totalTax ) : null;
+						},
 					],
 					'taxes'         => [
 						'type'        => [ 'list_of' => 'OrderItemTax' ],

@@ -333,21 +333,20 @@ class Order_Mutation {
 			}
 		}
 
-		// If subtotal or total is not provided, calculate it based on the product price and quantity.
-		// If name is not provided, use the actual product name.
-		// ONLY IF $args is not empty.
-		if ( ! empty( $args ) && ( empty( $args['subtotal'] ) || empty( $args['total'] ) || empty( $args['name'] ) ) ) {
-			$product = ( ! empty( $item['product_id'] ) )
-				? wc_get_product( $item['product_id'] )
-				: wc_get_product( self::get_product_id( $args ) );
+		// Auto-fill line item name, subtotal, and total from the product when not provided.
+		$has_product_id  = ! empty( $args['product_id'] ) || ! empty( $args['variation_id'] );
+		$missing_defaults = ! isset( $args['subtotal'] ) || ! isset( $args['total'] ) || ! isset( $args['name'] );
+		if ( 'line_item' === $type && $has_product_id && $missing_defaults ) {
+			$product_id = self::get_product_id( $args );
+			$product    = ! empty( $product_id ) ? wc_get_product( $product_id ) : null;
 			if ( ! is_object( $product ) ) {
 				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'wp-graphql-woocommerce' ) );
 			}
 
 			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ?? 1 ] );
-			$args['subtotal'] = ! empty( $args['subtotal'] ) ? $args['subtotal'] : $total;
-			$args['total']    = ! empty( $args['total'] ) ? $args['total'] : $total;
-			$args['name']     = ! empty( $args['name'] ) ? $args['name'] : $product->get_name();
+			$args['subtotal'] = $args['subtotal'] ?? $total;
+			$args['total']    = $args['total'] ?? $total;
+			$args['name']     = $args['name'] ?? $product->get_name();
 		}
 
 		// Set item props.
