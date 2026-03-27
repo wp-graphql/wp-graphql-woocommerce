@@ -248,7 +248,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer global require phpunit/phpcov:^8 php-coveralls/php-coveralls
+          composer global require phpunit/phpcov:^9 php-coveralls/php-coveralls
 
       - name: Download coverage artifacts
         uses: actions/download-artifact@v4

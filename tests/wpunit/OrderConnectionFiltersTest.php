@@ -120,6 +120,17 @@ class OrderConnectionFiltersTest extends \Tests\WPGraphQL\WooCommerce\TestCase\W
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
+
+		// Filter by multiple statuses as the only filter arg.
+		$variables = [ 'statuses' => [ 'PENDING', 'PROCESSING' ] ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'orders.nodes.#.databaseId', $pending_id ),
+			$this->expectedField( 'orders.nodes.#.databaseId', $processing_id ),
+			$this->not()->expectedField( 'orders.nodes.#.databaseId', $completed_id ),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
 	}
 
 	/**
