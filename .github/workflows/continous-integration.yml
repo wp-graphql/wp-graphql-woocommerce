@@ -62,7 +62,7 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" FILTER="acceptance --fail-fast ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="acceptance --fail-fast ${{ matrix.coverage == true && '--coverage=acceptance.cov' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Retry on failure
         id: retry
@@ -72,7 +72,7 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" FILTER="acceptance ${{ matrix.coverage == true && '--coverage=acceptance.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="acceptance ${{ matrix.coverage == true && '--coverage=acceptance.cov' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Fail if both attempts failed
         if: ${{ steps.tests.outcome == 'failure' && steps.retry.outcome == 'failure' }}
@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-acceptance
-          path: tests/_output/acceptance.serialized
+          path: tests/_output/acceptance.cov
           if-no-files-found: ignore
 
   functional:
@@ -133,7 +133,7 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" FILTER="functional --fail-fast ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="functional --fail-fast ${{ matrix.coverage == true && '--coverage=functional.cov' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Retry on failure
         id: retry
@@ -143,7 +143,7 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" FILTER="functional ${{ matrix.coverage == true && '--coverage=functional.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="functional ${{ matrix.coverage == true && '--coverage=functional.cov' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Fail if both attempts failed
         if: ${{ steps.tests.outcome == 'failure' && steps.retry.outcome == 'failure' }}
@@ -154,7 +154,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-functional
-          path: tests/_output/functional.serialized
+          path: tests/_output/functional.cov
           if-no-files-found: ignore
 
   wpunit:
@@ -204,7 +204,7 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" FILTER="wpunit --fail-fast ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="wpunit --fail-fast ${{ matrix.coverage == true && '--coverage=wpunit.cov' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Retry on failure
         id: retry
@@ -214,7 +214,7 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
           PHP_VERSION: ${{ matrix.php }}
         run: |
-          HPOS="${{ matrix.hpos }}" FILTER="wpunit ${{ matrix.coverage == true && '--coverage=wpunit.serialized' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
+          HPOS="${{ matrix.hpos }}" FILTER="wpunit ${{ matrix.coverage == true && '--coverage=wpunit.cov' || '' }} ${{ matrix.debug }}" composer dRunTestStandalone
 
       - name: Fail if both attempts failed
         if: ${{ steps.tests.outcome == 'failure' && steps.retry.outcome == 'failure' }}
@@ -225,7 +225,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-wpunit
-          path: tests/_output/wpunit.serialized
+          path: tests/_output/wpunit.cov
           if-no-files-found: ignore
 
   coverage:
@@ -248,7 +248,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer global require phpunit/phpcov php-coveralls/php-coveralls
+          composer global require phpunit/phpcov:^8 php-coveralls/php-coveralls
 
       - name: Download coverage artifacts
         uses: actions/download-artifact@v4
@@ -262,7 +262,7 @@ jobs:
         run: |
           mkdir -p tests/_output
           ls -la coverage-files/ 2>/dev/null || echo "No coverage files found"
-          if ls coverage-files/*.serialized 1>/dev/null 2>&1; then
+          if ls coverage-files/*.cov 1>/dev/null 2>&1; then
             phpcov merge --clover=tests/_output/coverage.xml coverage-files
           else
             echo "No serialized coverage files to merge"
