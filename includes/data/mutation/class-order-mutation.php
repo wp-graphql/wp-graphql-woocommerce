@@ -334,7 +334,7 @@ class Order_Mutation {
 		}
 
 		// Auto-fill line item name, subtotal, and total from the product when not provided.
-		$has_product_id  = ! empty( $args['product_id'] ) || ! empty( $args['variation_id'] );
+		$has_product_id   = ! empty( $args['product_id'] ) || ! empty( $args['variation_id'] );
 		$missing_defaults = ! isset( $args['subtotal'] ) || ! isset( $args['total'] ) || ! isset( $args['name'] );
 		if ( 'line_item' === $type && $has_product_id && $missing_defaults ) {
 			$product_id = self::get_product_id( $args );
