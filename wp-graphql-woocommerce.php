@@ -219,3 +219,13 @@ add_action(
 		}
 	}
 );
+
+/**
+ * Disable deferred transactional emails during tests so WC emails send
+ * synchronously and can be captured by MockPHPMailer. This must run before
+ * WC_Emails is instantiated, which happens during plugins_loaded — too early
+ * for the wpunit bootstrap.php to hook in.
+ */
+if ( defined( 'GRAPHQL_TESTING' ) && GRAPHQL_TESTING ) {
+	add_filter( 'woocommerce_defer_transactional_emails', '__return_false' );
+}

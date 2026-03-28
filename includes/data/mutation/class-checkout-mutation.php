@@ -68,6 +68,7 @@ class Checkout_Mutation {
 		$data = [
 			'terms'                     => (int) isset( $input['terms'] ),
 			'createaccount'             => (int) ! empty( $input['account'] ),
+			'authenticate_account'      => ! empty( $input['account']['authenticate'] ),
 			'payment_method'            => isset( $input['paymentMethod'] ) ? $input['paymentMethod'] : '',
 			'shipping_method'           => isset( $input['shippingMethod'] ) ? $input['shippingMethod'] : '',
 			'ship_to_different_address' => ! empty( $input['shipToDifferentAddress'] ) && ! wc_ship_to_billing_address_only(),
@@ -304,10 +305,12 @@ class Checkout_Mutation {
 				throw new UserError( $customer_id->get_error_message() );
 			}
 
-			wc_set_customer_auth_cookie( $customer_id );
+			if ( ! empty( $data['authenticate_account'] ) ) {
+				wc_set_customer_auth_cookie( $customer_id );
 
-			// As we are now logged in, checkout will need to refresh to show logged in data.
-			WC()->session->set( 'reload_checkout', true );
+				// As we are now logged in, checkout will need to refresh to show logged in data.
+				WC()->session->set( 'reload_checkout', true );
+			}
 
 			// Also, recalculate cart totals to reveal any role-based discounts that were unavailable before registering.
 			WC()->cart->calculate_totals();
@@ -513,7 +516,6 @@ class Checkout_Mutation {
 
 		if ( WC()->cart->needs_payment() ) {
 			$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-			\codecept_debug( $available_gateways );
 			if ( ! isset( $available_gateways[ $data['payment_method'] ] ) ) {
 				$errors->add( 'payment', __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
 			} else {

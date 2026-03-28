@@ -23,13 +23,17 @@ class Create_Account_Input {
 			[
 				'description' => __( 'Customer account credentials', 'wp-graphql-woocommerce' ),
 				'fields'      => [
-					'username' => [
+					'username'     => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Customer username', 'wp-graphql-woocommerce' ),
 					],
-					'password' => [
+					'password'     => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => __( 'Customer password', 'wp-graphql-woocommerce' ),
+					],
+					'authenticate' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Set the current user to the newly created customer after checkout.', 'wp-graphql-woocommerce' ),
 					],
 				],
 			]

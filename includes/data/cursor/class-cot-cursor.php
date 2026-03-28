@@ -90,6 +90,38 @@ class COT_Cursor extends AbstractCursor {
 	}
 
 	/**
+	 * Resolves an orderby alias (e.g. 'date', 'total') to the fully qualified
+	 * COT column name used in the column_mappings.
+	 *
+	 * @param string $alias The orderby alias.
+	 *
+	 * @return string The resolved column name, or the original alias if no mapping found.
+	 */
+	public function resolve_orderby_alias( $alias ) {
+		$alias_map = [
+			// Short aliases used by WC OrdersTableQuery.
+			'post_date'        => "date_created_gmt",
+			'date'             => "date_created_gmt",
+			'date_created'     => "date_created_gmt",
+			'modified'         => "date_updated_gmt",
+			'date_modified'    => "date_updated_gmt",
+			'type'             => "type",
+			'parent'           => "parent_order_id",
+			'total'            => "total_amount",
+			'order_total'      => "total_amount",
+			// Legacy meta keys that map to COT columns in HPOS mode.
+			'_order_total'     => "total_amount",
+			'_order_tax'       => "tax_amount",
+			'_cart_discount'   => "discount_total_amount",
+			'_date_paid'       => "date_paid_gmt",
+			'_date_completed'  => "date_completed_gmt",
+			'_order_key'       => "payment_method",
+		];
+
+		return $alias_map[ $alias ] ?? $alias;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @return ?\WC_Abstract_Order
@@ -188,22 +220,42 @@ class COT_Cursor extends AbstractCursor {
 			return;
 		}
 
-		$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : [];
+		// Check for explicit cursor compare fields set by the connection resolver.
+		$key   = $this->get_query_var( "graphql_cursor_compare_by_{$by}_key" );
+		$value = $this->get_query_var( "graphql_cursor_compare_by_{$by}_value" );
+		if ( ! empty( $key ) && ! empty( $value ) ) {
+			$this->builder->add_field( $key, $value, null, $order );
+			return;
+		}
 
-		if ( in_array( $by, $meta_orderby_keys, true ) && null !== $this->meta_query ) {
-			$orderby = $this->meta_query->get_orderby_clause_for_key( $by );
-			$value   = $this->cursor_node->get_meta( $by, true ) ?? null;
-		} else {
-			$orderby     = $by;
-			$getter_name = $this->column_mappings[ $orderby ];
+		// Resolve the orderby key to a COT column. For meta_value/meta_value_num,
+		// use the meta_key query var since that holds the actual field name.
+		$table_name = $this->tables['orders'];
+		$source  = in_array( $by, [ 'meta_value', 'meta_value_num' ], true )
+			? ( $this->get_query_var( 'meta_key' ) ?? $by )
+			: $by;
+		$column      = $this->resolve_orderby_alias( $source );
+		$orderby     = "{$table_name}.{$column}";
+		$getter_name = $this->column_mappings[ $orderby ] ?? null;
 
+		if ( null !== $getter_name ) {
 			$method = "get_{$getter_name}";
 			$value  = is_callable( [ $this->cursor_node, $method ] ) ? $this->cursor_node->$method() : null;
+		} else {
+			// Fall back to meta query if the field doesn't map to a COT column.
+			$meta_orderby_keys = $this->meta_query ? $this->meta_query->get_orderby_keys() : [];
+
+			if ( in_array( $by, $meta_orderby_keys, true ) && null !== $this->meta_query ) {
+				$orderby = $this->meta_query->get_orderby_clause_for_key( $by );
+				$value   = $this->cursor_node->get_meta( $source, true ) ?? null;
+			} else {
+				return;
+			}
 		}
 
 		if ( ! empty( $value ) && is_a( $value, '\WC_DateTime' ) ) {
 			$value = ( new \DateTime( $value ) )->setTimezone( new \DateTimeZone( '+00:00' ) )->format( 'Y-m-d H:i:s' );
-			$this->builder->add_field( $by, $value, 'DATETIME', $order );
+			$this->builder->add_field( $orderby, $value, 'DATETIME', $order );
 			return;
 		}
 
@@ -211,7 +263,7 @@ class COT_Cursor extends AbstractCursor {
 		 * Compare by the post field if the key matches a value
 		 */
 		if ( ! empty( $value ) ) {
-			$this->builder->add_field( $by, $value, null, $order );
+			$this->builder->add_field( $orderby, $value, null, $order );
 		}
 	}
 
