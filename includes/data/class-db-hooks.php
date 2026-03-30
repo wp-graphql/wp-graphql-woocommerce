@@ -90,7 +90,7 @@ class DB_Hooks {
 		if ( is_array( $orderby ) ) {
 			$order = $orderby['meta_value_num'] ?? ( $orderby['meta_value'] ?? $default_order );
 			unset( $orderby['meta_value_num'], $orderby['meta_value'] );
-			$orderby[ $column ] = $order;
+			$orderby[ $column ]    = $order;
 			$query_vars['orderby'] = $orderby;
 		}
 
@@ -125,7 +125,6 @@ class DB_Hooks {
 		/** @var \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore $order_datastore */
 		$order_datastore = wc_get_container()->get( OrdersTableDataStore::class );
 		$tables          = $order_datastore::get_all_table_names_with_id();
-
 
 		// apply the after cursor to the query.
 		if ( ! empty( $args['graphql_after_cursor'] ) ) {

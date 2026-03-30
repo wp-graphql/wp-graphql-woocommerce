@@ -182,7 +182,7 @@ class General extends Section {
 				'desc'              => __( 'Query parameter name of the nonce included in the "cartUrl" field', 'wp-graphql-woocommerce' )
 					. ( $cart_url_hardcoded ? __( ' This setting is disabled. The "CART_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'              => 'text',
-				'value'             => $cart_url_hardcoded ? CART_URL_NONCE_PARAM : woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
+				'value'             => $cart_url_hardcoded ? constant( 'CART_URL_NONCE_PARAM' ) : woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
 				'disabled'          => defined( 'CART_URL_NONCE_PARAM' ) || ! in_array( 'cart_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'cart_url' );
@@ -206,7 +206,7 @@ class General extends Section {
 				'desc'              => __( 'Query parameter name of the nonce included in the "checkoutUrl" field', 'wp-graphql-woocommerce' )
 					. ( $checkout_url_hardcoded ? __( ' This setting is disabled. The "CHECKOUT_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'              => 'text',
-				'value'             => $checkout_url_hardcoded ? CHECKOUT_URL_NONCE_PARAM : woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
+				'value'             => $checkout_url_hardcoded ? constant( 'CHECKOUT_URL_NONCE_PARAM' ) : woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
 				'disabled'          => defined( 'CHECKOUT_URL_NONCE_PARAM' ) || ! in_array( 'checkout_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'checkout_url' );
@@ -230,7 +230,7 @@ class General extends Section {
 				'desc'              => __( 'Query parameter name of the nonce included in the "accountUrl" field', 'wp-graphql-woocommerce' )
 					. ( $account_url_hardcoded ? __( ' This setting is disabled. The "ACCOUNT_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'              => 'text',
-				'value'             => $account_url_hardcoded ? ACCOUNT_URL_NONCE_PARAM : woographql_setting( 'account_url_nonce_param', '_wc_account' ),
+				'value'             => $account_url_hardcoded ? constant( 'ACCOUNT_URL_NONCE_PARAM' ) : woographql_setting( 'account_url_nonce_param', '_wc_account' ),
 				'disabled'          => defined( 'ACCOUNT_URL_NONCE_PARAM' ) || ! in_array( 'account_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'account_url' );
@@ -254,7 +254,7 @@ class General extends Section {
 				'desc'              => __( 'Query parameter name of the nonce included in the "addPaymentMethodUrl" field', 'wp-graphql-woocommerce' )
 					. ( $add_payment_method_url_hardcoded ? __( ' This setting is disabled. The "ADD_PAYMENT_METHOD_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
 				'type'              => 'text',
-				'value'             => $add_payment_method_url_hardcoded ? ADD_PAYMENT_METHOD_URL_NONCE_PARAM : woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
+				'value'             => $add_payment_method_url_hardcoded ? constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) : woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
 				'disabled'          => defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) || ! in_array( 'add_payment_method_url', $enabled_authorizing_url_fields, true ),
 				'sanitize_callback' => static function ( $value ) {
 					$other_nonces = self::get_other_nonce_values( 'add_payment_method_url' );

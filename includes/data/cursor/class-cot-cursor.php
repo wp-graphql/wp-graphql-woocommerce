@@ -100,22 +100,22 @@ class COT_Cursor extends AbstractCursor {
 	public function resolve_orderby_alias( $alias ) {
 		$alias_map = [
 			// Short aliases used by WC OrdersTableQuery.
-			'post_date'        => "date_created_gmt",
-			'date'             => "date_created_gmt",
-			'date_created'     => "date_created_gmt",
-			'modified'         => "date_updated_gmt",
-			'date_modified'    => "date_updated_gmt",
-			'type'             => "type",
-			'parent'           => "parent_order_id",
-			'total'            => "total_amount",
-			'order_total'      => "total_amount",
+			'post_date'       => 'date_created_gmt',
+			'date'            => 'date_created_gmt',
+			'date_created'    => 'date_created_gmt',
+			'modified'        => 'date_updated_gmt',
+			'date_modified'   => 'date_updated_gmt',
+			'type'            => 'type',
+			'parent'          => 'parent_order_id',
+			'total'           => 'total_amount',
+			'order_total'     => 'total_amount',
 			// Legacy meta keys that map to COT columns in HPOS mode.
-			'_order_total'     => "total_amount",
-			'_order_tax'       => "tax_amount",
-			'_cart_discount'   => "discount_total_amount",
-			'_date_paid'       => "date_paid_gmt",
-			'_date_completed'  => "date_completed_gmt",
-			'_order_key'       => "payment_method",
+			'_order_total'    => 'total_amount',
+			'_order_tax'      => 'tax_amount',
+			'_cart_discount'  => 'discount_total_amount',
+			'_date_paid'      => 'date_paid_gmt',
+			'_date_completed' => 'date_completed_gmt',
+			'_order_key'      => 'payment_method',
 		];
 
 		return $alias_map[ $alias ] ?? $alias;
@@ -230,8 +230,8 @@ class COT_Cursor extends AbstractCursor {
 
 		// Resolve the orderby key to a COT column. For meta_value/meta_value_num,
 		// use the meta_key query var since that holds the actual field name.
-		$table_name = $this->tables['orders'];
-		$source  = in_array( $by, [ 'meta_value', 'meta_value_num' ], true )
+		$table_name  = $this->tables['orders'];
+		$source      = in_array( $by, [ 'meta_value', 'meta_value_num' ], true )
 			? ( $this->get_query_var( 'meta_key' ) ?? $by )
 			: $by;
 		$column      = $this->resolve_orderby_alias( $source );
