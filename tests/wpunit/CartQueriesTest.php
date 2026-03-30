@@ -696,9 +696,14 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 
 		// Flat rate is $10, tax is 10% = $1. Cost should be $11 (incl tax), subtotal $10.
 		$expected = [
-			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.cost', '$11.00' ),
-			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.subtotal', '$10.00' ),
-			$this->expectedField( 'cart.availableShippingMethods.0.rates.0.taxTotal', '$1.00' ),
+			$this->expectedObject(
+				'cart.availableShippingMethods.0.rates.#',
+				[
+					$this->expectedField( 'cost', '$11.00' ),
+					$this->expectedField( 'subtotal', '$10.00' ),
+					$this->expectedField( 'taxTotal', '$1.00' ),
+				]
+			),
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
@@ -752,11 +757,11 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		// Cost and subtotal should both be $10 (excl tax), taxTotal still $1.
 		$expected = [
 			$this->expectedObject(
-				'cart.availableShippingMethods.#',
+				'cart.availableShippingMethods.0.rates.#',
 				[
-					$this->expectedField( 'rates.0.cost', '$10.00' ),
-					$this->expectedField( 'rates.0.subtotal', '$10.00' ),
-					$this->expectedField( 'rates.0.taxTotal', '$1.00' ),
+					$this->expectedField( 'cost', '$10.00' ),
+					$this->expectedField( 'subtotal', '$10.00' ),
+					$this->expectedField( 'taxTotal', '$1.00' ),
 				]
 			),
 		];
