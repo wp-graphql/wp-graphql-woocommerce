@@ -75,7 +75,6 @@ class Product_With_Variations {
 
 					$resolver->set_query_arg( 'post_parent', $source->ID );
 					$resolver->set_query_arg( 'post_type', 'product_variation' );
-					$resolver->set_query_arg( 'post__in', $source->variation_ids );
 
 					return $resolver->get_connection();
 				},

@@ -104,6 +104,14 @@ class Product extends WC_Post {
 	protected $product_type;
 
 	/**
+	 * Cached variation prices to avoid redundant lookups across
+	 * multiple pricing fields (price, regularPrice, salePrice, etc.).
+	 *
+	 * @var array|null
+	 */
+	private $variation_prices = null;
+
+	/**
 	 * Stores product factory.
 	 *
 	 * @var \WC_Product_Factory|null
@@ -164,7 +172,10 @@ class Product extends WC_Post {
 		 */
 		$data = $this->wc_data;
 
-		$prices = $data->get_variation_prices( true );
+		if ( is_null( $this->variation_prices ) ) {
+			$this->variation_prices = $data->get_variation_prices( true );
+		}
+		$prices = $this->variation_prices;
 
 		if ( empty( $prices['price'] ) || ( 'sale' === $pricing_type && ! $this->wc_data->is_on_sale() ) ) {
 			return null;
