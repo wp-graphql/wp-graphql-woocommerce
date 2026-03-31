@@ -28,14 +28,14 @@ class Product_Attribute_Types {
 					'LOCAL'  => [
 						'value'       => 'local',
 						'description' => static function () {
-					return __( 'A local product attribute', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A local product attribute', 'wp-graphql-woocommerce' );
+						},
 					],
 					'GLOBAL' => [
 						'value'       => 'global',
 						'description' => static function () {
-					return __( 'A global product attribute', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A global product attribute', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

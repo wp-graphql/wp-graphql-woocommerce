@@ -28,62 +28,62 @@ class Line_Item_Input {
 					'id'          => [
 						'type'        => 'ID',
 						'description' => static function () {
-					return __( 'Line Item ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Line Item ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'name'        => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Line name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Line name', 'wp-graphql-woocommerce' );
+						},
 					],
 					'productId'   => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Product ID.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product ID.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'variationId' => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Variation ID, if applicable.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Variation ID, if applicable.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'quantity'    => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Quantity ordered.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Quantity ordered.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxClass'    => [
 						'type'        => 'TaxClassEnum',
 						'description' => static function () {
-					return __( 'Tax class of product.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Tax class of product.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'subtotal'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Line subtotal (before discounts).', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Line subtotal (before discounts).', 'wp-graphql-woocommerce' );
+						},
 					],
 					'total'       => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
+						},
 					],
 					'metaData'    => [
 						'type'        => [ 'list_of' => 'MetaDataInput' ],
 						'description' => static function () {
-					return __( 'Meta data.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Meta data.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'sku'         => [
 						'type'        => 'string',
 						'description' => static function () {
-					return __( 'Product SKU.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product SKU.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

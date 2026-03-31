@@ -28,20 +28,20 @@ class Product_Dimensions_Input {
 					'length' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Length of the product', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Length of the product', 'wp-graphql-woocommerce' );
+						},
 					],
 					'width'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Width of the product', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Width of the product', 'wp-graphql-woocommerce' );
+						},
 					],
 					'height' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Height of the product', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Height of the product', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

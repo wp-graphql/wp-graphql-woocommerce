@@ -31,26 +31,26 @@ class WC_Setting_Group_Type {
 					'id'          => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'A unique identifier that can be used to link settings together.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A unique identifier that can be used to link settings together.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'label'       => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'A human readable label for the setting group used in interfaces.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A human readable label for the setting group used in interfaces.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'description' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'A human readable description for the setting group used in interfaces.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A human readable description for the setting group used in interfaces.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'parentId'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'ID of parent grouping.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'ID of parent grouping.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['parent_id'] ) ? $source['parent_id'] : null;
 						},
@@ -58,8 +58,8 @@ class WC_Setting_Group_Type {
 					'subGroups'   => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-					return __( 'IDs for settings sub groups.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'IDs for settings sub groups.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['sub_groups'] ) ? $source['sub_groups'] : [];
 						},
@@ -67,8 +67,8 @@ class WC_Setting_Group_Type {
 					'settings'    => [
 						'type'        => [ 'list_of' => 'WCSetting' ],
 						'description' => static function () {
-					return __( 'The settings belonging to this group.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The settings belonging to this group.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$controller = new \WC_REST_Setting_Options_Controller();
 							$settings   = $controller->get_group_settings( $source['id'] );

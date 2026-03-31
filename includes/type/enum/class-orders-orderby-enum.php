@@ -33,38 +33,38 @@ class Orders_Orderby_Enum extends Post_Type_Orderby_Enum {
 					'ORDER_KEY'      => [
 						'value'       => '_order_key',
 						'description' => static function () {
-					return __( 'Order by order key', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by order key', 'wp-graphql-woocommerce' );
+						},
 					],
 					'DISCOUNT'       => [
 						'value'       => '_cart_discount',
 						'description' => static function () {
-					return __( 'Order by order discount amount', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by order discount amount', 'wp-graphql-woocommerce' );
+						},
 					],
 					'TOTAL'          => [
 						'value'       => '_order_total',
 						'description' => static function () {
-					return __( 'Order by order total', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by order total', 'wp-graphql-woocommerce' );
+						},
 					],
 					'TAX'            => [
 						'value'       => '_order_tax',
 						'description' => static function () {
-					return __( 'Order by order total', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by order total', 'wp-graphql-woocommerce' );
+						},
 					],
 					'DATE_PAID'      => [
 						'value'       => '_date_paid',
 						'description' => static function () {
-					return __( 'Order by date the order was paid', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by date the order was paid', 'wp-graphql-woocommerce' );
+						},
 					],
 					'DATE_COMPLETED' => [
 						'value'       => '_date_completed',
 						'description' => static function () {
-					return __( 'Order by date the order was completed', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by date the order was completed', 'wp-graphql-woocommerce' );
+						},
 					],
 				]
 			)

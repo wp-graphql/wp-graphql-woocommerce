@@ -99,8 +99,8 @@ class Cart_Item {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -122,8 +122,8 @@ class Cart_Item {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -145,8 +145,8 @@ class Cart_Item {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -170,8 +170,8 @@ class Cart_Item {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -193,14 +193,14 @@ class Cart_Item {
 					'key'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Retrieve meta by key', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Retrieve meta by key', 'wp-graphql-woocommerce' );
+						},
 					],
 					'keysIn' => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-					return __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -268,8 +268,8 @@ class Cart_Item {
 					'simpleVariations' => [
 						'type'        => [ 'list_of' => 'SimpleAttribute' ],
 						'description' => static function () {
-					return __( 'Simple variation attribute data', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Simple variation attribute data', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$attributes = [];
 
@@ -301,8 +301,8 @@ class Cart_Item {
 					'attributes' => [
 						'type'        => [ 'list_of' => 'VariationAttribute' ],
 						'description' => static function () {
-					return __( 'Attributes of the variation.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attributes of the variation.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$attributes = [];
 

@@ -127,8 +127,8 @@ class Products {
 							'shuffle' => [
 								'type'        => 'Boolean',
 								'description' => static function () {
-					return __( 'Shuffle results? (Pagination currently not support by this argument)', 'wp-graphql-woocommerce' );
-				},
+									return __( 'Shuffle results? (Pagination currently not support by this argument)', 'wp-graphql-woocommerce' );
+								},
 							],
 						]
 					),
@@ -612,20 +612,20 @@ class Products {
 				'type'      => [
 					'type'        => 'ProductTypesEnum',
 					'description' => static function () {
-					return __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' );
+					},
 				],
 				'typeIn'    => [
 					'type'        => [ 'list_of' => 'ProductTypesEnum' ],
 					'description' => static function () {
-					return __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' );
+					},
 				],
 				'typeNotIn' => [
 					'type'        => [ 'list_of' => 'ProductTypesEnum' ],
 					'description' => static function () {
-					return __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);
@@ -643,26 +643,26 @@ class Products {
 				'type'              => [
 					'type'        => 'ProductTypesWithVariationsEnum',
 					'description' => static function () {
-					return __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to products assigned a specific type.', 'wp-graphql-woocommerce' );
+					},
 				],
 				'typeIn'            => [
 					'type'        => [ 'list_of' => 'ProductTypesWithVariationsEnum' ],
 					'description' => static function () {
-					return __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to products assigned to a group of specific types.', 'wp-graphql-woocommerce' );
+					},
 				],
 				'typeNotIn'         => [
 					'type'        => [ 'list_of' => 'ProductTypesWithVariationsEnum' ],
 					'description' => static function () {
-					return __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to products not assigned to a group of specific types.', 'wp-graphql-woocommerce' );
+					},
 				],
 				'includeVariations' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'Include variations in the result set.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Include variations in the result set.', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);

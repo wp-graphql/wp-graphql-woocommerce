@@ -132,14 +132,14 @@ class Product_Types {
 						'externalUrl' => [
 							'type'        => 'String',
 							'description' => static function () {
-					return __( 'External product url', 'wp-graphql-woocommerce' );
-				},
+								return __( 'External product url', 'wp-graphql-woocommerce' );
+							},
 						],
 						'buttonText'  => [
 							'type'        => 'String',
 							'description' => static function () {
-					return __( 'External product Buy button text', 'wp-graphql-woocommerce' );
-				},
+								return __( 'External product Buy button text', 'wp-graphql-woocommerce' );
+							},
 						],
 					]
 				),
@@ -246,8 +246,8 @@ class Product_Types {
 					'type' => [
 						'type'        => 'ProductTypesEnum',
 						'description' => static function () {
-					return __( 'Product type', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product type', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							return 'unsupported';
 						},

@@ -50,21 +50,21 @@ class Order_Update {
 				'id'         => [
 					'type'        => 'ID',
 					'description' => static function () {
-					return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+					},
 				],
 				'orderId'    => [
 					'type'              => 'Int',
 					'description'       => static function () {
-					return __( 'Order WP ID', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Order WP ID', 'wp-graphql-woocommerce' );
+					},
 					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
 				],
 				'customerId' => [
 					'type'        => 'ID',
 					'description' => static function () {
-					return __( 'Database ID or global ID of the customer for the order', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Database ID or global ID of the customer for the order', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);

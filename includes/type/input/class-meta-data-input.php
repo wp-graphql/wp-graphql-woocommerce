@@ -28,20 +28,20 @@ class Meta_Data_Input {
 					'id'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Meta ID.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Meta ID.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'key'   => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Meta key.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Meta key.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'value' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Meta value.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Meta value.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

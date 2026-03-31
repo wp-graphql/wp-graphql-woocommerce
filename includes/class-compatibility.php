@@ -220,8 +220,8 @@ class Compatibility {
 				'authToken'    => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => static function () {
-					return __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' );
-				},
+						return __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
@@ -235,8 +235,8 @@ class Compatibility {
 				'refreshToken' => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => static function () {
-					return __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
@@ -281,8 +281,8 @@ class Compatibility {
 					[
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
 							$session = \WC()->session;
@@ -299,8 +299,8 @@ class Compatibility {
 					[
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
 							$session = \WC()->session;

@@ -31,26 +31,26 @@ class Shipping_Method_Type {
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'databaseId'  => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'The ID of the shipping method in the database', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The ID of the shipping method in the database', 'wp-graphql-woocommerce' );
+						},
 					],
 					'title'       => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping method title.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping method title.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'description' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping method description.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping method description.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

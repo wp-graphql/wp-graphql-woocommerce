@@ -28,26 +28,26 @@ class Product_Attribute_Filter_Input {
 					'taxonomy' => [
 						'type'        => [ 'non_null' => 'ProductAttributeEnum' ],
 						'description' => static function () {
-					return __( 'Which field to select taxonomy term by.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Which field to select taxonomy term by.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'terms'    => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-					return __( 'A list of term slugs', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A list of term slugs', 'wp-graphql-woocommerce' );
+						},
 					],
 					'ids'      => [
 						'type'        => [ 'list_of' => 'Int' ],
 						'description' => static function () {
-					return __( 'A list of term ids', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A list of term ids', 'wp-graphql-woocommerce' );
+						},
 					],
 					'operator' => [
 						'type'        => 'AttributeOperatorEnum',
 						'description' => static function () {
-					return __( 'Filter operation type', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Filter operation type', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

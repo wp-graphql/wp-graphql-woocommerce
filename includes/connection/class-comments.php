@@ -33,8 +33,8 @@ class Comments extends Comments_Core {
 						'averageRating' => [
 							'type'        => 'Float',
 							'description' => static function () {
-					return __( 'Average review rating for this product.', 'wp-graphql-woocommerce' );
-				},
+								return __( 'Average review rating for this product.', 'wp-graphql-woocommerce' );
+							},
 							'resolve'     => static function ( $source ) {
 								if ( empty( $source['edges'] ) ) {
 									return 0;
@@ -48,8 +48,8 @@ class Comments extends Comments_Core {
 						'rating' => [
 							'type'        => 'Float',
 							'description' => static function () {
-					return __( 'Review rating', 'wp-graphql-woocommerce' );
-				},
+								return __( 'Review rating', 'wp-graphql-woocommerce' );
+							},
 							'resolve'     => static function ( $source ) {
 								$review = $source['node'];
 								// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -81,8 +81,8 @@ class Comments extends Comments_Core {
 						'isCustomerNote' => [
 							'type'        => 'Boolean',
 							'description' => static function () {
-					return __( 'Is this a customer note?', 'wp-graphql-woocommerce' );
-				},
+								return __( 'Is this a customer note?', 'wp-graphql-woocommerce' );
+							},
 							'resolve'     => static function ( $source ) {
 								$note = $source['node'];
 								// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase

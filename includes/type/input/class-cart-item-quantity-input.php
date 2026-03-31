@@ -28,8 +28,8 @@ class Cart_Item_Quantity_Input {
 					'key'      => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'Cart item being updated', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Cart item being updated', 'wp-graphql-woocommerce' );
+						},
 					],
 					'quantity' => [
 						'type'        => [ 'non_null' => 'Int' ],

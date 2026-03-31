@@ -28,20 +28,20 @@ class Cart_Notice_Type {
 					'ERROR'   => [
 						'value'       => 'error',
 						'description' => static function () {
-					return __( 'Error notice', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Error notice', 'wp-graphql-woocommerce' );
+						},
 					],
 					'SUCCESS' => [
 						'value'       => 'success',
 						'description' => static function () {
-					return __( 'Success notice', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Success notice', 'wp-graphql-woocommerce' );
+						},
 					],
 					'NOTICE'  => [
 						'value'       => 'notice',
 						'description' => static function () {
-					return __( 'General notice', 'wp-graphql-woocommerce' );
-				},
+							return __( 'General notice', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

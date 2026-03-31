@@ -31,14 +31,14 @@ class Shipping_Location_Type {
 					'code' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'type' => [
 						'type'        => 'ShippingLocationTypeEnum',
 						'description' => static function () {
-					return __( 'Shipping zone location name.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping zone location name.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

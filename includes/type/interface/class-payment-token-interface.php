@@ -56,8 +56,8 @@ class Payment_Token_Interface {
 				'id'        => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-					return __( 'Token ID unique identifier', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Token ID unique identifier', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source ) {
 						return ! empty( $source->get_id() ) ? Relay::toGlobalId( 'token', $source->get_id() ) : null;
 					},
@@ -65,8 +65,8 @@ class Payment_Token_Interface {
 				'tokenId'   => [
 					'type'        => [ 'non_null' => 'Integer' ],
 					'description' => static function () {
-					return __( 'Token database ID.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Token database ID.', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source ) {
 						return ! empty( $source->get_id() ) ? $source->get_id() : null;
 					},
@@ -74,8 +74,8 @@ class Payment_Token_Interface {
 				'type'      => [
 					'type'        => [ 'non_null' => 'String' ],
 					'description' => static function () {
-					return __( 'Token type', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Token type', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source ) {
 						return ! empty( $source->get_type() ) ? $source->get_type() : null;
 					},
@@ -83,8 +83,8 @@ class Payment_Token_Interface {
 				'gateway'   => [
 					'type'        => 'PaymentGateway',
 					'description' => static function () {
-					return __( 'Token payment gateway', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Token payment gateway', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source ) {
 						$gateways   = \WC()->payment_gateways()->payment_gateways();
 						$gateway_id = $source->get_gateway_id();

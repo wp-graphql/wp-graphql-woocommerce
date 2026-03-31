@@ -83,8 +83,8 @@ class Product_With_Attributes {
 					'type' => [
 						'type'        => 'ProductAttributeTypesEnum',
 						'description' => static function () {
-					return __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {

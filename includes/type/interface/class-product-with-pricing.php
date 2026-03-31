@@ -60,8 +60,8 @@ class Product_With_Pricing {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {
@@ -84,8 +84,8 @@ class Product_With_Pricing {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {
@@ -107,8 +107,8 @@ class Product_With_Pricing {
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the price', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {

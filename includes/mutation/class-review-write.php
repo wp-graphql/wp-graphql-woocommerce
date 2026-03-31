@@ -50,8 +50,8 @@ class Review_Write {
 				'rating' => [
 					'type'        => [ 'non_null' => 'Int' ],
 					'description' => static function () {
-					return __( 'Product rating', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product rating', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);

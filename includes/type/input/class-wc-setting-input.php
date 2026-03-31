@@ -28,14 +28,14 @@ class WC_Setting_Input {
 					'id'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'A unique identifier for the setting.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'A unique identifier for the setting.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'value' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Setting value.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Setting value.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

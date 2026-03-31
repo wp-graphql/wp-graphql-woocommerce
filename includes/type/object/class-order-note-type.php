@@ -47,8 +47,8 @@ class Order_Note_Type {
 				'id'             => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-					return __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $order_note ) {
 						return Relay::toGlobalId( 'order_note', $order_note->databaseId );
 					},
@@ -56,8 +56,8 @@ class Order_Note_Type {
 				'databaseId'     => [
 					'type'        => 'Int',
 					'description' => static function () {
-					return __( 'Database ID of the order note', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Database ID of the order note', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $order_note ) {
 						return $order_note->databaseId;
 					},
@@ -74,8 +74,8 @@ class Order_Note_Type {
 				'note'           => [
 					'type'        => 'String',
 					'description' => static function () {
-					return __( 'Order note.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Order note.', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $order_note ) {
 						return $order_note->contentRaw;
 					},
@@ -83,8 +83,8 @@ class Order_Note_Type {
 				'isCustomerNote' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'Whether the note is a customer note', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Whether the note is a customer note', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $order_note ) {
 						return (bool) get_comment_meta( $order_note->databaseId, 'is_customer_note', true );
 					},

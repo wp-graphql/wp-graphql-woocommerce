@@ -49,38 +49,38 @@ class Customer_Update {
 				'id'                    => [
 					'type'        => 'ID',
 					'description' => static function () {
-					return __( 'The ID of the user', 'wp-graphql-woocommerce' );
-				},
+						return __( 'The ID of the user', 'wp-graphql-woocommerce' );
+					},
 				],
 				'billing'               => [
 					'type'        => 'CustomerAddressInput',
 					'description' => static function () {
-					return __( 'Customer billing information', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Customer billing information', 'wp-graphql-woocommerce' );
+					},
 				],
 				'shipping'              => [
 					'type'        => 'CustomerAddressInput',
 					'description' => static function () {
-					return __( 'Customer shipping address', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Customer shipping address', 'wp-graphql-woocommerce' );
+					},
 				],
 				'shippingSameAsBilling' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' );
+					},
 				],
 				'metaData'              => [
 					'description' => static function () {
-					return __( 'Meta data.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Meta data.', 'wp-graphql-woocommerce' );
+					},
 					'type'        => [ 'list_of' => 'MetaDataInput' ],
 				],
 				'isSession'             => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'Whether to save changes on the session or in the database', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Whether to save changes on the session or in the database', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);

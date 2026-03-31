@@ -28,50 +28,50 @@ class Product_Attributes_Connection_Orderby_Enum {
 					'NAME'        => [
 						'value'       => 'name',
 						'description' => static function () {
-					return __( 'Order the connection by name.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by name.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'SLUG'        => [
 						'value'       => 'slug',
 						'description' => static function () {
-					return __( 'Order the connection by slug.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by slug.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'TERM_GROUP'  => [
 						'value'       => 'term_group',
 						'description' => static function () {
-					return __( 'Order the connection by term group.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by term group.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'TERM_ID'     => [
 						'value'       => 'term_id',
 						'description' => static function () {
-					return __( 'Order the connection by term id.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by term id.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'TERM_ORDER'  => [
 						'value'       => 'term_order',
 						'description' => static function () {
-					return __( 'Order the connection by term order.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by term order.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'MENU_ORDER'  => [
 						'value'       => 'menu_order',
 						'description' => static function () {
-					return __( 'Order the connection by woocommerce menu order.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by woocommerce menu order.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'DESCRIPTION' => [
 						'value'       => 'description',
 						'description' => static function () {
-					return __( 'Order the connection by description.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by description.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'COUNT'       => [
 						'value'       => 'count',
 						'description' => static function () {
-					return __( 'Order the connection by item count.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order the connection by item count.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

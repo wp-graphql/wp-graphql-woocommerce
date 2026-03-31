@@ -28,26 +28,26 @@ class Product_Category_Display {
 					'DEFAULT'       => [
 						'value'       => 'default',
 						'description' => static function () {
-					return __( 'Display default content connected to this category.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Display default content connected to this category.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'PRODUCTS'      => [
 						'value'       => 'products',
 						'description' => static function () {
-					return __( 'Display products associated with this category.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Display products associated with this category.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'SUBCATEGORIES' => [
 						'value'       => 'subcategories',
 						'description' => static function () {
-					return __( 'Display subcategories of this category.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Display subcategories of this category.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'BOTH'          => [
 						'value'       => 'both',
 						'description' => static function () {
-					return __( 'Display both products and subcategories of this category.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Display both products and subcategories of this category.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

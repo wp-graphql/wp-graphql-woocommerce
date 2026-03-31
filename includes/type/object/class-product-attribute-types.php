@@ -32,8 +32,8 @@ class Product_Attribute_Types {
 					'id'    => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'Attribute Global ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute Global ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $attribute ) {
 							$id_parts = [ $attribute->get_name() ];
 							if ( ! empty( $attribute->_product_id ) ) {
@@ -45,8 +45,8 @@ class Product_Attribute_Types {
 					'scope' => [
 						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
 						'description' => static function () {
-					return __( 'Product attribute scope.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product attribute scope.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							return 'local';
 						},
@@ -67,8 +67,8 @@ class Product_Attribute_Types {
 					'id'    => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'Attribute Global ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute Global ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $attribute ) {
 							return Relay::toGlobalId( 'GlobalProductAttribute', $attribute->get_id() );
 						},
@@ -76,8 +76,8 @@ class Product_Attribute_Types {
 					'scope' => [
 						'type'        => [ 'non_null' => 'ProductAttributeTypesEnum' ],
 						'description' => static function () {
-					return __( 'Product attribute scope.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product attribute scope.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							return 'global';
 						},
@@ -85,8 +85,8 @@ class Product_Attribute_Types {
 					'label' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Attribute label', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute label', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $attribute ) {
 							$taxonomy = get_taxonomy( $attribute->get_name() );
 							return $taxonomy ? $taxonomy->labels->singular_name : null;
@@ -95,8 +95,8 @@ class Product_Attribute_Types {
 					'name'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Product attribute name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product attribute name', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $attribute ) {
 							return $attribute->get_name();
 						},
@@ -104,8 +104,8 @@ class Product_Attribute_Types {
 					'slug'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Product attribute slug', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product attribute slug', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $attribute ) {
 							return ! empty( $attribute->get_name() ) ? $attribute->get_name() : null;
 						},
@@ -125,8 +125,8 @@ class Product_Attribute_Types {
 					'attributeName'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Attribute name.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute name.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $attribute ) {
 							return ! empty( $attribute['attributeName'] ) ? $attribute['attributeName'] : null;
 						},
@@ -134,8 +134,8 @@ class Product_Attribute_Types {
 					'attributeValue' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Attribute value.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute value.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $attribute ) {
 							return ! empty( $attribute['attributeValue'] ) ? $attribute['attributeValue'] : null;
 						},

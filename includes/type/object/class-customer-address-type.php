@@ -30,8 +30,8 @@ class Customer_Address_Type {
 					'firstName' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'First name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'First name', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['first_name'] ) ? $address['first_name'] : null;
 						},
@@ -39,8 +39,8 @@ class Customer_Address_Type {
 					'lastName'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Last name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Last name', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['last_name'] ) ? $address['last_name'] : null;
 						},
@@ -48,8 +48,8 @@ class Customer_Address_Type {
 					'company'   => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Company', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Company', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['company'] ) ? $address['company'] : null;
 						},
@@ -57,8 +57,8 @@ class Customer_Address_Type {
 					'address1'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Address 1', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Address 1', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['address_1'] ) ? $address['address_1'] : null;
 						},
@@ -66,8 +66,8 @@ class Customer_Address_Type {
 					'address2'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Address 2', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Address 2', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['address_2'] ) ? $address['address_2'] : null;
 						},
@@ -75,8 +75,8 @@ class Customer_Address_Type {
 					'city'      => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'City', 'wp-graphql-woocommerce' );
-				},
+							return __( 'City', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['city'] ) ? $address['city'] : null;
 						},
@@ -84,8 +84,8 @@ class Customer_Address_Type {
 					'state'     => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'State', 'wp-graphql-woocommerce' );
-				},
+							return __( 'State', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['state'] ) ? $address['state'] : null;
 						},
@@ -93,8 +93,8 @@ class Customer_Address_Type {
 					'postcode'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Zip Postal Code', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Zip Postal Code', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['postcode'] ) ? $address['postcode'] : null;
 						},
@@ -102,8 +102,8 @@ class Customer_Address_Type {
 					'country'   => [
 						'type'        => 'CountriesEnum',
 						'description' => static function () {
-					return __( 'Country', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Country', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['country'] ) ? $address['country'] : null;
 						},
@@ -111,8 +111,8 @@ class Customer_Address_Type {
 					'email'     => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'E-mail', 'wp-graphql-woocommerce' );
-				},
+							return __( 'E-mail', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['email'] ) ? $address['email'] : null;
 						},
@@ -120,8 +120,8 @@ class Customer_Address_Type {
 					'phone'     => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Phone', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Phone', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $address ) {
 							return ! empty( $address['phone'] ) ? $address['phone'] : null;
 						},

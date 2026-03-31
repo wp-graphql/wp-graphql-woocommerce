@@ -53,40 +53,40 @@ class Products_Orderby_Enum extends Post_Type_Orderby_Enum {
 					'POPULARITY'    => [
 						'value'       => 'popularity',
 						'description' => static function () {
-					return __( 'Order by product popularity', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by product popularity', 'wp-graphql-woocommerce' );
+						},
 					],
 					'REVIEW_COUNT'  => [
 						'value'       => 'comment_count',
 						'description' => static function () {
-					return __( 'Order by number of reviews on product', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by number of reviews on product', 'wp-graphql-woocommerce' );
+						},
 					],
 					'RATING'        => [
 						'value'       => 'rating',
 						'description' => static function () {
-					return __( 'Order by product average rating', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by product average rating', 'wp-graphql-woocommerce' );
+						},
 					],
 					'ON_SALE_FROM'  => [
 						'value'             => 'date',
 						'description'       => static function () {
-					return __( 'Order by date product sale starts', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by date product sale starts', 'wp-graphql-woocommerce' );
+						},
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version.', 'wp-graphql-woocommerce' ),
 					],
 					'ON_SALE_TO'    => [
 						'value'             => 'date',
 						'description'       => static function () {
-					return __( 'Order by date product sale ends', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by date product sale ends', 'wp-graphql-woocommerce' );
+						},
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version.', 'wp-graphql-woocommerce' ),
 					],
 					'TOTAL_SALES'   => [
 						'value'             => 'popularity',
 						'description'       => static function () {
-					return __( 'Order by total sales of products sold', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by total sales of products sold', 'wp-graphql-woocommerce' );
+						},
 						'deprecationReason' => __( 'This field is deprecated and will be removed in a future version. Use "POPULARITY" instead', 'wp-graphql-woocommerce' ),
 					],
 				]

@@ -28,14 +28,14 @@ class Product_Attribute_Query_Input {
 					'queries'  => [
 						'type'        => [ 'list_of' => 'ProductAttributeFilterInput' ],
 						'description' => static function () {
-					return __( 'Limit result set to products with selected global attributes.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Limit result set to products with selected global attributes.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'relation' => [
 						'type'        => 'AttributeOperatorEnum',
 						'description' => static function () {
-					return __( 'The logical relationship between attributes when filtering across multiple at once.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The logical relationship between attributes when filtering across multiple at once.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

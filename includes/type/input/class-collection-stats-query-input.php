@@ -28,14 +28,14 @@ class Collection_Stats_Query_Input {
 					'taxonomy' => [
 						'type'        => [ 'non_null' => 'ProductAttributeEnum' ],
 						'description' => static function () {
-					return __( 'Product Taxonomy', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product Taxonomy', 'wp-graphql-woocommerce' );
+						},
 					],
 					'relation' => [
 						'type'        => 'RelationEnum',
 						'description' => static function () {
-					return __( 'Taxonomy relation to query', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Taxonomy relation to query', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

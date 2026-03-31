@@ -30,8 +30,8 @@ class Shipping_Rate_Type {
 					'id'         => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'Shipping rate ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping rate ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->get_id() ) ? $source->get_id() : null;
 						},
@@ -39,8 +39,8 @@ class Shipping_Rate_Type {
 					'methodId'   => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'Shipping method ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping method ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->get_method_id() ) ? $source->get_method_id() : null;
 						},
@@ -48,8 +48,8 @@ class Shipping_Rate_Type {
 					'instanceId' => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Shipping instance ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping instance ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->get_instance_id() ) ? $source->get_instance_id() : null;
 						},
@@ -57,8 +57,8 @@ class Shipping_Rate_Type {
 					'label'      => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping rate label', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping rate label', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->get_label() ) ? $source->get_label() : null;
 						},
@@ -66,14 +66,14 @@ class Shipping_Rate_Type {
 					'cost'       => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping rate cost. Includes tax when woocommerce_tax_display_cart is set to incl.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping rate cost. Includes tax when woocommerce_tax_display_cart is set to incl.', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+									return __( 'Format of the price', 'wp-graphql-woocommerce' );
+								},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {
@@ -96,14 +96,14 @@ class Shipping_Rate_Type {
 					'subtotal'   => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping rate cost before tax.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping rate cost before tax.', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+									return __( 'Format of the price', 'wp-graphql-woocommerce' );
+								},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {
@@ -122,14 +122,14 @@ class Shipping_Rate_Type {
 					'taxTotal'   => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping rate tax total.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping rate tax total.', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => static function () {
-					return __( 'Format of the price', 'wp-graphql-woocommerce' );
-				},
+									return __( 'Format of the price', 'wp-graphql-woocommerce' );
+								},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {

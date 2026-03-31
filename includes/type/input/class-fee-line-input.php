@@ -28,38 +28,38 @@ class Fee_Line_Input {
 					'id'        => [
 						'type'        => 'ID',
 						'description' => static function () {
-					return __( 'Fee Line ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Fee Line ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'name'      => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Fee name.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Fee name.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'amount'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Fee amount.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Fee amount.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxClass'  => [
 						'type'        => 'TaxClassEnum',
 						'description' => static function () {
-					return __( 'Tax class of fee.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Tax class of fee.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxStatus' => [
 						'type'        => 'TaxStatusEnum',
 						'description' => static function () {
-					return __( 'Tax status of fee.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Tax status of fee.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'total'     => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

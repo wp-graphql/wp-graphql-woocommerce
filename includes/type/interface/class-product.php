@@ -39,14 +39,14 @@ class Product {
 					'id'     => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-					return __( 'The ID for identifying the product', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The ID for identifying the product', 'wp-graphql-woocommerce' );
+						},
 					],
 					'idType' => [
 						'type'        => 'ProductIdTypeEnum',
 						'description' => static function () {
-					return __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -141,8 +141,8 @@ class Product {
 					'format' => [
 						'type'        => 'PostObjectFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the field output', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {
@@ -162,8 +162,8 @@ class Product {
 					'format' => [
 						'type'        => 'PostObjectFieldFormatEnum',
 						'description' => static function () {
-					return __( 'Format of the field output', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {

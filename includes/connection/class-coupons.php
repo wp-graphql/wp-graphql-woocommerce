@@ -88,8 +88,8 @@ class Coupons {
 				'code' => [
 					'type'        => 'String',
 					'description' => static function () {
-					return __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Limit result set to resources with a specific code.', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);

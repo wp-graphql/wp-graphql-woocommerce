@@ -28,20 +28,20 @@ class Product_Attributes_Input {
 					'id'        => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Attribute ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'name'      => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Attribute name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute name', 'wp-graphql-woocommerce' );
+						},
 					],
 					'position'  => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Attribute position', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Attribute position', 'wp-graphql-woocommerce' );
+						},
 					],
 					'visible'   => [
 						'type'        => 'Boolean',
@@ -52,14 +52,14 @@ class Product_Attributes_Input {
 					'variation' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-					return __( 'Define if the attribute can be used as variation. Default is false.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Define if the attribute can be used as variation. Default is false.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'options'   => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-					return __( 'List of available term names for the attribute', 'wp-graphql-woocommerce' );
-				},
+							return __( 'List of available term names for the attribute', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

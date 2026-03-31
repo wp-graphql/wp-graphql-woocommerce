@@ -28,38 +28,38 @@ class Shipping_Line_Input {
 					'id'          => [
 						'type'        => 'ID',
 						'description' => static function () {
-					return __( 'Shipping Line ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping Line ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'methodTitle' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Shipping method name.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping method name.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'methodId'    => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Shipping method ID.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping method ID.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'instanceId'  => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping instance ID.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping instance ID.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'total'       => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
+						},
 					],
 					'metaData'    => [
 						'type'        => [ 'list_of' => 'MetaDataInput' ],
 						'description' => static function () {
-					return __( 'Meta data.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Meta data.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

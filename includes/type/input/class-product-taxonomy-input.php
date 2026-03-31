@@ -28,26 +28,26 @@ class Product_Taxonomy_Input {
 					'relation' => [
 						'type'        => 'RelationEnum',
 						'description' => static function () {
-					return __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'filters'  => [
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
 						'description' => static function () {
-					return __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' );
+						},
 					],
 					'or'       => [
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
 						'description' => static function () {
-					return __( 'Product taxonomy rules connected by OR logic', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product taxonomy rules connected by OR logic', 'wp-graphql-woocommerce' );
+						},
 					],
 					'and'      => [
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
 						'description' => static function () {
-					return __( 'Product taxonomy rules connected by AND logic', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Product taxonomy rules connected by AND logic', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

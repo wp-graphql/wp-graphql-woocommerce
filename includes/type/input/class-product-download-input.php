@@ -28,20 +28,20 @@ class Product_Download_Input {
 					'id'   => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'File ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'File ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'name' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'File name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'File name', 'wp-graphql-woocommerce' );
+						},
 					],
 					'file' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'File URL', 'wp-graphql-woocommerce' );
-				},
+							return __( 'File URL', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

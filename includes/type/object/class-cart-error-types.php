@@ -29,8 +29,8 @@ class Cart_Error_Types {
 					'productId'   => [
 						'type'        => [ 'non_null' => 'Int' ],
 						'description' => static function () {
-					return __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['productId'] ) ? $error['productId'] : null;
 						},
@@ -38,8 +38,8 @@ class Cart_Error_Types {
 					'quantity'    => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Cart item quantity', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Cart item quantity', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['quantity'] ) ? $error['quantity'] : null;
 						},
@@ -47,8 +47,8 @@ class Cart_Error_Types {
 					'variationId' => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Cart item product variation database ID or global ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Cart item product variation database ID or global ID', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['variationId'] ) ? $error['variationId'] : null;
 						},
@@ -56,8 +56,8 @@ class Cart_Error_Types {
 					'variation'   => [
 						'type'        => [ 'list_of' => 'ProductAttributeOutput' ],
 						'description' => static function () {
-					return __( 'Cart item product variation attributes', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Cart item product variation attributes', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['variation'] ) ? $error['variation'] : null;
 						},
@@ -65,8 +65,8 @@ class Cart_Error_Types {
 					'extraData'   => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' );
-				},
+							return __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['extraData'] ) ? $error['extraData'] : null;
 						},
@@ -86,8 +86,8 @@ class Cart_Error_Types {
 					'code' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Coupon code of the coupon the failed to be applied', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Coupon code of the coupon the failed to be applied', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['code'] ) ? $error['code'] : null;
 						},
@@ -107,8 +107,8 @@ class Cart_Error_Types {
 					'package'      => [
 						'type'        => [ 'non_null' => 'Integer' ],
 						'description' => static function () {
-					return __( 'Index of package for desired shipping method', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Index of package for desired shipping method', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return isset( $error['package'] ) && is_int( $error['package'] ) ? $error['package'] : null;
 						},
@@ -116,8 +116,8 @@ class Cart_Error_Types {
 					'chosenMethod' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'ID of chosen shipping rate', 'wp-graphql-woocommerce' );
-				},
+							return __( 'ID of chosen shipping rate', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( array $error ) {
 							return ! empty( $error['chosen_method'] ) ? $error['chosen_method'] : null;
 						},

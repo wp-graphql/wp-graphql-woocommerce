@@ -28,14 +28,14 @@ class Shipping_Location_Input {
 					'code' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Shipping location code.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping location code.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'type' => [
 						'type'        => 'ShippingLocationTypeEnum',
 						'description' => static function () {
-					return __( 'Shipping location type.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Shipping location type.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

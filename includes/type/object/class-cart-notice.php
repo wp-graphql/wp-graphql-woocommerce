@@ -28,8 +28,8 @@ class Cart_Notice {
 					'type'    => [
 						'type'        => 'CartNoticeTypeEnum',
 						'description' => static function () {
-					return __( 'Notice type', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Notice type', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $notice ) {
 							return $notice['type'] ?? null;
 						},
@@ -37,8 +37,8 @@ class Cart_Notice {
 					'message' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Notice message', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Notice message', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $notice ) {
 							return $notice['message'] ?? null;
 						},

@@ -28,26 +28,26 @@ class Fee_Input {
 					'name'     => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Unique name for the fee.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Unique name for the fee.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'amount'   => [
 						'type'        => 'Float',
 						'description' => static function () {
-					return __( 'Fee amount', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Fee amount', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxable'  => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-					return __( 'Is the fee taxable?', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Is the fee taxable?', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxClass' => [
 						'type'        => 'TaxClassEnum',
 						'description' => static function () {
-					return __( 'The tax class for the fee if taxable.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'The tax class for the fee if taxable.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

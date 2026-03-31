@@ -45,62 +45,62 @@ class Product_Union {
 				'id'                => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+					},
 				],
 				'databaseId'        => [
 					'type'        => [ 'non_null' => 'Int' ],
 					'description' => static function () {
-					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+					},
 				],
 				'slug'              => [
 					'type'        => 'String',
 					'description' => static function () {
-					return __( 'Product slug', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product slug', 'wp-graphql-woocommerce' );
+					},
 				],
 				'type'              => [
 					'type'        => 'ProductTypesEnum',
 					'description' => static function () {
-					return __( 'Product type', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product type', 'wp-graphql-woocommerce' );
+					},
 				],
 				'name'              => [
 					'type'        => 'String',
 					'description' => static function () {
-					return __( 'Product name', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product name', 'wp-graphql-woocommerce' );
+					},
 				],
 				'featured'          => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'If the product is featured', 'wp-graphql-woocommerce' );
-				},
+						return __( 'If the product is featured', 'wp-graphql-woocommerce' );
+					},
 				],
 				'catalogVisibility' => [
 					'type'        => 'CatalogVisibilityEnum',
 					'description' => static function () {
-					return __( 'Catalog visibility', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Catalog visibility', 'wp-graphql-woocommerce' );
+					},
 				],
 				'sku'               => [
 					'type'        => 'String',
 					'description' => static function () {
-					return __( 'Product SKU', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product SKU', 'wp-graphql-woocommerce' );
+					},
 				],
 				'description'       => [
 					'type'        => 'String',
 					'description' => static function () {
-					return __( 'Product description', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Product description', 'wp-graphql-woocommerce' );
+					},
 					'args'        => [
 						'format' => [
 							'type'        => 'PostObjectFieldFormatEnum',
 							'description' => static function () {
-					return __( 'Format of the field output', 'wp-graphql-woocommerce' );
-				},
+								return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+							},
 						],
 					],
 					'resolve'     => static function ( $source, $args ) {
@@ -114,8 +114,8 @@ class Product_Union {
 				'image'             => [
 					'type'        => 'MediaItem',
 					'description' => static function () {
-					return __( 'Main image', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Main image', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						// @codingStandardsIgnoreLine.
 						if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
@@ -127,14 +127,14 @@ class Product_Union {
 				'onSale'            => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'Is product on sale?', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Is product on sale?', 'wp-graphql-woocommerce' );
+					},
 				],
 				'purchasable'       => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-					return __( 'Can product be purchased?', 'wp-graphql-woocommerce' );
-				},
+						return __( 'Can product be purchased?', 'wp-graphql-woocommerce' );
+					},
 				],
 			],
 			Product::get_fields()

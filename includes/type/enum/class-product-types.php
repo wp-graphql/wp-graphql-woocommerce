@@ -24,32 +24,32 @@ class Product_Types {
 				'SIMPLE'    => [
 					'value'       => 'simple',
 					'description' => static function () {
-					return __( 'A simple product', 'wp-graphql-woocommerce' );
-				},
+						return __( 'A simple product', 'wp-graphql-woocommerce' );
+					},
 				],
 				'GROUPED'   => [
 					'value'       => 'grouped',
 					'description' => static function () {
-					return __( 'A product group', 'wp-graphql-woocommerce' );
-				},
+						return __( 'A product group', 'wp-graphql-woocommerce' );
+					},
 				],
 				'EXTERNAL'  => [
 					'value'       => 'external',
 					'description' => static function () {
-					return __( 'An external product', 'wp-graphql-woocommerce' );
-				},
+						return __( 'An external product', 'wp-graphql-woocommerce' );
+					},
 				],
 				'VARIABLE'  => [
 					'value'       => 'variable',
 					'description' => static function () {
-					return __( 'A variable product', 'wp-graphql-woocommerce' );
-				},
+						return __( 'A variable product', 'wp-graphql-woocommerce' );
+					},
 				],
 				'VARIATION' => [
 					'value'       => 'variation',
 					'description' => static function () {
-					return __( 'A product variation', 'wp-graphql-woocommerce' );
-				},
+						return __( 'A product variation', 'wp-graphql-woocommerce' );
+					},
 				],
 
 			]
@@ -88,8 +88,8 @@ class Product_Types {
 							'VARIATION' => [
 								'value'       => 'variation',
 								'description' => static function () {
-					return __( 'A product variation', 'wp-graphql-woocommerce' );
-				},
+									return __( 'A product variation', 'wp-graphql-woocommerce' );
+								},
 							],
 						]
 					)

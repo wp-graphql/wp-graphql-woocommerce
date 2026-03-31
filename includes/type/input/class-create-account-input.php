@@ -28,20 +28,20 @@ class Create_Account_Input {
 					'username'     => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Customer username', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Customer username', 'wp-graphql-woocommerce' );
+						},
 					],
 					'password'     => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-					return __( 'Customer password', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Customer password', 'wp-graphql-woocommerce' );
+						},
 					],
 					'authenticate' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-					return __( 'Set the current user to the newly created customer after checkout.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Set the current user to the newly created customer after checkout.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

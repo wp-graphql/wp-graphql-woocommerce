@@ -28,26 +28,26 @@ class Product_Image_Input {
 					'id'      => [
 						'type'        => 'Int',
 						'description' => static function () {
-					return __( 'Image ID', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Image ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'src'     => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Image URL', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Image URL', 'wp-graphql-woocommerce' );
+						},
 					],
 					'name'    => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Image name', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Image name', 'wp-graphql-woocommerce' );
+						},
 					],
 					'altText' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Image alternative text', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Image alternative text', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

@@ -31,8 +31,8 @@ class Product_Attribute_Term_Object_Type {
 					'id'          => [
 						'type'        => 'Integer',
 						'description' => static function () {
-					return __( 'Unique identifier for the product attribute.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Unique identifier for the product attribute.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
@@ -40,8 +40,8 @@ class Product_Attribute_Term_Object_Type {
 					'name'        => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Name of the attribute.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Name of the attribute.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->name ) ? $source->name : null;
 						},
@@ -49,8 +49,8 @@ class Product_Attribute_Term_Object_Type {
 					'slug'        => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Label of the attribute.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Label of the attribute.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->slug ) ? $source->slug : null;
 						},
@@ -58,8 +58,8 @@ class Product_Attribute_Term_Object_Type {
 					'description' => [
 						'type'        => 'String',
 						'description' => static function () {
-					return __( 'Type of the attribute.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Type of the attribute.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->description ) ? $source->description : null;
 						},
@@ -67,8 +67,8 @@ class Product_Attribute_Term_Object_Type {
 					'menuOrder'   => [
 						'type'        => 'Integer',
 						'description' => static function () {
-					return __( 'Order by which the attribute should be sorted.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Order by which the attribute should be sorted.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source->menu_order ) ? $source->menu_order : 0;
 						},
@@ -76,8 +76,8 @@ class Product_Attribute_Term_Object_Type {
 					'count'       => [
 						'type'        => 'Integer',
 						'description' => static function () {
-					return __( 'Whether or not the attribute has archives.', 'wp-graphql-woocommerce' );
-				},
+							return __( 'Whether or not the attribute has archives.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source->count ) ? $source->count : 0;
 						},
