@@ -1,5 +1,65 @@
 # Changelog
 
+## [v1.0.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.0) (2026-03-31)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.21.2...v1.0.0)
+
+**Breaking changes:**
+
+- fix: HPOS order mutation data loss, COT cursor pagination, email tests, checkout auth [\#1003](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1003) ([kidunot89](https://github.com/kidunot89))
+- feat: WC Settings API, compatibility refactor, HPOS fix [\#1002](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1002) ([kidunot89](https://github.com/kidunot89))
+- Improve i18n compatibility for WPML, Polylang, and non-latin characters [\#994](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/994) ([kidunot89](https://github.com/kidunot89))
+
+**New Features:**
+
+- Add authenticated download URLs for headless frontends [\#995](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/995) ([kidunot89](https://github.com/kidunot89))
+- feat: add session transfer behavior setting for login session handling [\#993](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/993) ([kidunot89](https://github.com/kidunot89))
+- feat: product attribute queries, connections, and variation attribute filtering [\#980](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/980) ([kidunot89](https://github.com/kidunot89))
+- feat: Add support for brands \(\#918\) [\#964](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/964) ([lewebsimple](https://github.com/lewebsimple))
+- fix: Checkout notices further implemented [\#951](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/951) ([kidunot89](https://github.com/kidunot89))
+- fix: Add direct or/and syntax support to ProductTaxonomyInput and fix test issues [\#948](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/948) ([kidunot89](https://github.com/kidunot89))
+- Adds support for Cart tax\_lines [\#940](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/940) ([MoscoviumAlchemist](https://github.com/MoscoviumAlchemist))
+- feat: `productAttributes` query implemented [\#905](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/905) ([kidunot89](https://github.com/kidunot89))
+- feat: Product and product attribute mutations [\#851](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/851) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: Elementor breaks transfer-session endpoint [\#1004](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1004) ([kidunot89](https://github.com/kidunot89))
+- fix: downloadsRemaining returns null for numeric string values [\#1000](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1000) ([kidunot89](https://github.com/kidunot89))
+- fix: Order status filter incorrectly uses single value [\#999](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/999) ([kidunot89](https://github.com/kidunot89))
+- fix: use term name for variation attribute label instead of taxonomy slug [\#996](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/996) ([kidunot89](https://github.com/kidunot89))
+- fix: prevent WooCommerce session creation on CORS preflight OPTIONS requests [\#992](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/992) ([kidunot89](https://github.com/kidunot89))
+- fix: add calculate\_totals\(\) after coupon removal in removeCoupons mutation [\#991](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/991) ([kidunot89](https://github.com/kidunot89))
+- fix: term\_taxonomy\_id mismatch in coupon category connections [\#985](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/985) ([kidunot89](https://github.com/kidunot89))
+- fix: coupon error handling in fillCart and applyCoupon mutations [\#984](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/984) ([kidunot89](https://github.com/kidunot89))
+- fix: customer order query strips pagination and where args [\#981](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/981) ([kidunot89](https://github.com/kidunot89))
+- fix: refresh order object after meta save in checkout mutation [\#978](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/978) ([kidunot89](https://github.com/kidunot89))
+- devops: add checkout shipping method selection regression test [\#977](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/977) ([kidunot89](https://github.com/kidunot89))
+- fix: add authenticate flag to registerCustomer mutation [\#973](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/973) ([kidunot89](https://github.com/kidunot89))
+- test: add customer refund fields visibility test [\#972](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/972) ([kidunot89](https://github.com/kidunot89))
+- fix: inverted logic in pop\_transaction\_id\(\) causes cart session corruption [\#971](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/971) ([kidunot89](https://github.com/kidunot89))
+- fix: Sanitize ProductAttribute name to match VariationAttribute \[\#965\] [\#966](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/966) ([lewebsimple](https://github.com/lewebsimple))
+- fix: id fields added back to PaymentTokenInterface type [\#963](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/963) ([kidunot89](https://github.com/kidunot89))
+- fix: product variation duplicate fields removed [\#957](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/957) ([kidunot89](https://github.com/kidunot89))
+- fix: updated data-loaders to be in compliance with WPGraphQL v2.3.x+ [\#953](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/953) ([kidunot89](https://github.com/kidunot89))
+- Automatically get and set data from the specified product ID [\#947](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/947) ([kermage](https://github.com/kermage))
+
+**Other Changes:**
+
+- devops: Variable product performance optimization [\#1006](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1006) ([kidunot89](https://github.com/kidunot89))
+- perf: Migrate type descriptions to lazy lambdas [\#1005](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1005) ([kidunot89](https://github.com/kidunot89))
+- devops: add createOrder stock reduction test [\#990](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/990) ([kidunot89](https://github.com/kidunot89))
+- devops: add products query with categoryId, status, visibility, and pagination test [\#989](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/989) ([kidunot89](https://github.com/kidunot89))
+- devops: add nested category products regression test [\#988](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/988) ([kidunot89](https://github.com/kidunot89))
+- devops: add attribute term products categoryId filter regression test [\#987](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/987) ([kidunot89](https://github.com/kidunot89))
+- devops: add taxonomy filter multi-term regression tests [\#986](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/986) ([kidunot89](https://github.com/kidunot89))
+- devops: add updateOrder metaData duplicate order regression test [\#983](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/983) ([kidunot89](https://github.com/kidunot89))
+- devops: add variable product defaultAttributes test coverage [\#982](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/982) ([kidunot89](https://github.com/kidunot89))
+- devops: add hCaptcha session token regression test [\#979](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/979) ([kidunot89](https://github.com/kidunot89))
+- devops: add product category children connection test [\#975](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/975) ([kidunot89](https://github.com/kidunot89))
+- chore: Add logo to docs README.md [\#970](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/970) ([kidunot89](https://github.com/kidunot89))
+- feat: Add Store API Cart-Token compatibility and session handler improvements [\#954](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/954) ([kidunot89](https://github.com/kidunot89))
+
 ## [v0.21.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v0.21.2) (2025-03-01)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.21.1...v0.21.2)

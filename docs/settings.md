@@ -21,13 +21,35 @@ WPGraphQL for WooCommerce comes with a custom WooCommerce User Session Handler c
 
 The default WooCommerce User Session Handler is responsible for capturing cart and customer data for end-users and storing it temporarily in the WordPress database. It provides an HTTP cookie to the end-user's machine to keep track of this session, even if they aren't a registered member of the WordPress site. The session typically stays in the database for 14 days from its last save, after which it is deleted. The problem with HTTP cookies is that they typically cannot be used across multiple domains without complex configurations.
 
-## Enable Unsupported types
+## Enable QL Session Handler on WC AJAX / WP REST Requests
 
-The settings is simple to understand and likely to be enabled if you're using a WC extension that uses a product type that isn't support by WPGraphQL for WooCommerce out-of-box. When enabled it will substitute the missing type with the SimpleProduct type. This way you can still use the product type and possibly pull what extra data you need from the `Product`'s `metaData` field.
+These two settings extend the QL Session Handler's JWT-based session identification to WooCommerce AJAX requests and WordPress REST API requests respectively. Enable these if your headless application also interacts with WC AJAX or REST endpoints and needs consistent session handling.
 
-![Authorizing URL Settings Screenshot](images/authorizing-url-settings.png)
+## Session Token Type
 
-## Enable User Session transferring URLs
+Choose which session token type(s) to generate:
+
+- **Legacy** — GraphQL session tokens only (default).
+- **Store API** — WooCommerce Blocks Cart-Token only (requires WooCommerce 5.5.0+).
+- **Both** — Generates both token types for maximum compatibility with headless implementations that use WooCommerce Blocks alongside GraphQL.
+
+## Session Transfer Behavior
+
+Controls how cart data is handled when a user logs in with an existing session from another device:
+
+- **Keep new, fallback to old** — Keeps the current session data if non-empty, otherwise restores the previously saved session (default).
+- **Keep new** — Always uses the current session data.
+- **Keep old** — Restores the previously saved session data, discarding the current session.
+
+## Transliterate Non-Latin Characters
+
+Converts non-latin characters (Cyrillic, Chinese, Arabic, etc.) to their latin equivalents in GraphQL type and enum names. Enable this if your WooCommerce tax classes, product attributes, or taxonomies use non-latin names. Requires the PHP `intl` extension.
+
+## Enable Unsupported Types
+
+When enabled, any product type without a dedicated GraphQL type will default to the `UnsupportedProduct` type, which is identical to the `SimpleProduct` type. This allows you to still query the product and pull extra data from the `metaData` field. Useful when using WC extensions with custom product types not natively supported by WooGraphQL.
+
+## Enable User Session Transferring URLs
 
 This setting, when activated, enables WooCommerce Session-backed nonce generator and transfer session endpoint for passing a user's session from a client to the WordPress installation. The primary use of these nonces is to create authorizing URLs that enable the user to travel to the backend as if it were a part of the front-end application. This setting is disabled if the QL Session Handler is disabled as it required for nonce generation to work. 
 

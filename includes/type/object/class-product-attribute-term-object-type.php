@@ -5,7 +5,7 @@
  * Registers ProductAttributeTermObject type
  *
  * @package WPGraphQL\WooCommerce\Type\WPObject
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;

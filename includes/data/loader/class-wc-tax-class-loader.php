@@ -5,7 +5,7 @@
  * Loads Models for WooCommerce Tax Classes defined in custom DB tables.
  *
  * @package WPGraphQL\WooCommerce\Data\Loader
- * @since TBD
+ * @since 1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Data\Loader;

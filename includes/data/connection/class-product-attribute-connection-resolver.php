@@ -82,10 +82,10 @@ class Product_Attribute_Connection_Resolver {
 	 *
 	 * @return array|null
 	 *
-	 * @deprecated TBD
+	 * @deprecated 1.0.0
 	 */
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info, $type = null ) {
-		_deprecated_function( __METHOD__, 'TBD', static::class . '::get_connection()' );
+		_deprecated_function( __METHOD__, '1.0.0', static::class . '::get_connection()' );
 
 		$this->source  = $source;
 		$this->args    = $args;

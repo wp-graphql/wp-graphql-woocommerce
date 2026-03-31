@@ -3,7 +3,7 @@
  * Label utility functions for GraphQL name formatting.
  *
  * @package WPGraphQL\WooCommerce\Utils
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Utils;

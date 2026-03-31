@@ -3,7 +3,7 @@
  * Registers WooCommerce taxonomies to the GraphQL schema.
  *
  * @package \WPGraphQL\WooCommerce
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce;

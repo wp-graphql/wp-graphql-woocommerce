@@ -3,7 +3,7 @@
  * WPInputObjectType - ProductAttributesInput
  *
  * @package WPGraphQL\WooCommerce\Type\WPInputObject
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInputObject;

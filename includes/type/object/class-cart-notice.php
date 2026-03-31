@@ -3,7 +3,7 @@
  * WPObject Type - Cart_Notice
  *
  * @package WPGraphQL\WooCommerce\Type\WPObject
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPObject;

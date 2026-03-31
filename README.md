@@ -34,8 +34,10 @@
 
 - Query your shop's products and variations with detailed filtering options.
 - Query customers, orders, coupons, and refunds. Note: Operations have user restrictions.
+- Create and delete refunds on orders.
 - Manage customer sessions using JWTs or WooCommerce Store API Cart-Tokens, and use cart/customer queries and mutations. Note: Operations have user restrictions.
 - Manually create orders, automate order creation with the checkout mutation, or delegate a customer's session to the WooCommerce checkout page in your theme for comprehensive payment gateway support.
+- Query and update WooCommerce settings via the GraphQL API.
 
 (*) These operations have user restrictions. Learn how to utilize them correctly at the resources listed below:
 
@@ -67,11 +69,6 @@ Such a setup has resulted in some disparities between the schema where WPGraphQL
 
 Thank you for your patience :smile:
 [@kidunot89](https://github.com/kidunot89)
-
-## Future Features
-
-- Product CRUD mutations.
-- And some other stuff I'm sure :thinking:
 
 ## For WooCommerce Extensions Support
 
