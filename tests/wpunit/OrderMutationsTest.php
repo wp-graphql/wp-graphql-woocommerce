@@ -23,6 +23,8 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$cod_gateway                      = $gateways['cod'];
 		$cod_gateway->settings['enabled'] = 'yes';
 		update_option( $cod_gateway->get_option_key(), $cod_gateway->settings );
+		
+		\WC()->payment_gateways->init();
 
 		// Create a tax rate.
 		$this->factory->tax_rate->create(
@@ -180,10 +182,10 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
                                 variationId
                                 quantity
                                 taxClass
-                                subtotal(format: RAW)
-                                subtotalTax(format: RAW)
-                                total(format: RAW)
-                                totalTax(format: RAW)
+                                subtotal
+                                subtotalTax
+                                total
+                                totalTax
                                 taxStatus
                                 product {
                                     node {
@@ -1438,8 +1440,8 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 							nodes {
 								productId
 								quantity
-								total(format: RAW)
-								subtotal(format: RAW)
+								total
+								subtotal
 								product {
 									node {
 										... on SimpleProduct {
@@ -1468,8 +1470,8 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		$expected = [
 			$this->expectedField( 'createOrder.order.lineItems.nodes.0.productId', $product_id ),
 			$this->expectedField( 'createOrder.order.lineItems.nodes.0.quantity', 1 ),
-			$this->expectedField( 'createOrder.order.lineItems.nodes.0.total', '25' ),
-			$this->expectedField( 'createOrder.order.lineItems.nodes.0.subtotal', '25' ),
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.total', '$25.00' ),
+			$this->expectedField( 'createOrder.order.lineItems.nodes.0.subtotal', '$25.00' ),
 			$this->expectedField( 'createOrder.order.lineItems.nodes.0.product.node.name', 'Test Widget' ),
 		];
 

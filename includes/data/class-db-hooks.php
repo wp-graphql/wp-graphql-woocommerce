@@ -33,7 +33,7 @@ class DB_Hooks {
 		'_cart_discount'  => 'discount_total_amount',
 		'_date_paid'      => 'date_paid',
 		'_date_completed' => 'date_completed',
-		'_order_key'      => 'payment_method',
+		'_order_key'      => 'order_key',
 	];
 
 	/**

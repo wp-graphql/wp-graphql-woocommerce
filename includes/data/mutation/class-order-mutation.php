@@ -480,18 +480,91 @@ class Order_Mutation {
 			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
 		}
 
+		self::prepare_order( $order, $input, $context, $info );
+	}
+
+	/**
+	 * Sets all order props, address fields, items, and meta on the provided order object
+	 * and saves once, mirroring the WC REST API pattern to avoid HPOS data loss from
+	 * multiple save() calls across different object instances.
+	 *
+	 * @param \WC_Order                            $order   WC_Order instance.
+	 * @param array                                $input   Input data describing order.
+	 * @param \WPGraphQL\AppContext                $context AppContext instance.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info    ResolveInfo instance.
+	 *
+	 * @return void
+	 */
+	public static function prepare_order( $order, $input, $context, $info ) {
+		
 		foreach ( $input as $key => $value ) {
 			switch ( $key ) {
+				case 'clientMutationId':                                                                                   
+             	case 'id':                                                                                                 
+            	case 'orderId':
 				case 'coupons':
-				case 'lineItems':
-				case 'shippingLines':
-				case 'feeLines':
 				case 'status':
+				case 'isPaid':
 					break;
 				case 'billing':
 				case 'shipping':
-					self::update_address( $value, $order_id, $key );
-					$order->apply_changes();
+					$formatted_address = Customer_Mutation::address_input_mapping( $value, $key );
+					foreach ( $formatted_address as $field => $field_value ) {
+						if ( is_callable( [ $order, "set_{$key}_{$field}" ] ) ) {
+							$order->{"set_{$key}_{$field}"}( $field_value );
+						}
+					}
+					break;
+				case 'lineItems':
+				case 'shippingLines':
+				case 'feeLines':
+					$item_group_keys = [
+						'lineItems'     => 'line_item',
+						'shippingLines' => 'shipping',
+						'feeLines'      => 'fee',
+					];
+					$type            = $item_group_keys[ $key ];
+
+					/**
+					 * Action called before an item group is added to an order.
+					 *
+					 * @param array                                $value    Items data being added.
+					 * @param \WC_Order                            $order    Order object.
+					 * @param \WPGraphQL\AppContext                $context  Request AppContext instance.
+					 * @param \GraphQL\Type\Definition\ResolveInfo $info     Request ResolveInfo instance.
+					 */
+					do_action( "graphql_woocommerce_before_{$type}s_added_to_order", $value, $order, $context, $info );
+
+					foreach ( $value as $item_data ) {
+						$item = self::set_item( $item_data, $type, $order, $context, $info );
+
+						/**
+						 * Action called before an item is added to an order.
+						 *
+						 * @param \WC_Order_Item                       $item      Order item object.
+						 * @param array                                $item_data Item data being added.
+						 * @param \WC_Order                            $order     Order object.
+						 * @param \WPGraphQL\AppContext                $context   Request AppContext instance.
+						 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
+						 */
+						do_action( "graphql_woocommerce_before_{$type}_added_to_order", $item, $item_data, $order, $context, $info );
+
+						if ( 0 === $item->get_id() ) {
+							$order->add_item( $item );
+						} else {
+							$item->save();
+						}
+					}
+
+					/**
+					 * Action called after an item group is added to an order.
+					 *
+					 * @param array                                $value    Item data being added.
+					 * @param \WC_Order                            $order    Order object.
+					 * @param \WPGraphQL\AppContext                $context  Request AppContext instance.
+					 * @param \GraphQL\Type\Definition\ResolveInfo $info     Request ResolveInfo instance.
+					 */
+					do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $value, $order, $context, $info );
 					break;
 				case 'metaData':
 					if ( is_array( $value ) ) {
@@ -513,7 +586,7 @@ class Order_Mutation {
 		 * Action called before changes to order meta are saved.
 		 *
 		 * @param \WC_Order                            $order   WC_Order instance.
-		 * @param array                                $props   Order props array.
+		 * @param array                                $input   Order props array.
 		 * @param \WPGraphQL\AppContext                $context Request AppContext instance.
 		 * @param \GraphQL\Type\Definition\ResolveInfo $info    Request ResolveInfo instance.
 		 */
@@ -527,44 +600,32 @@ class Order_Mutation {
 	 * Update address.
 	 *
 	 * @param array   $address   Address data.
-	 * @param integer $order_id  WC_Order instance.
+	 * @param \WC_Order $order  WC_Order instance.
 	 * @param string  $type      Address type.
 	 *
 	 * @throws \Exception  Failed to retrieve order.
 	 *
 	 * @return void
 	 */
-	protected static function update_address( $address, $order_id, $type = 'billing' ) {
-		$order = \WC_Order_Factory::get_order( $order_id );
-		if ( ! is_object( $order ) ) {
-			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
-		}
-
+	protected static function update_address( $address, $order, $type = 'billing' ) {
 		$formatted_address = Customer_Mutation::address_input_mapping( $address, $type );
 		foreach ( $formatted_address as $key => $value ) {
 			if ( is_callable( [ $order, "set_{$type}_{$key}" ] ) ) {
 				$order->{"set_{$type}_{$key}"}( $value );
 			}
+			$order->apply_changes();
 		}
-		$order->save();
 	}
 
 	/**
-	 * Applies coupons to WC_Order instance
+	 * Applies coupons to WC_Order instance.
 	 *
-	 * @param int   $order_id  Order ID.
-	 * @param array $coupons   Coupon codes to be applied to order.
-	 *
-	 * @throws \Exception  Failed to retrieve order.
+	 * @param \WC_Order $order   WC_Order instance.
+	 * @param array     $coupons Coupon codes to be applied to order.
 	 *
 	 * @return void
 	 */
-	public static function apply_coupons( $order_id, $coupons ) {
-		$order = \WC_Order_Factory::get_order( $order_id );
-		if ( ! is_object( $order ) ) {
-			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
-		}
-
+	public static function apply_coupons( $order, $coupons ) {
 		// Remove all coupons first to ensure calculation is correct.
 		foreach ( $order->get_items( 'coupon' ) as $coupon ) {
 			/**

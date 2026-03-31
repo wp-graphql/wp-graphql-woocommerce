@@ -116,17 +116,9 @@ class Order_Update {
 			 */
 			do_action( 'graphql_woocommerce_before_order_update', $order_id, $input, $context, $info );
 
-			Order_Mutation::add_order_meta( $order_id, $input, $context, $info );
-			Order_Mutation::add_items( $input, $order_id, $context, $info );
-
-			// Apply coupons.
-			if ( ! empty( $input['coupons'] ) ) {
-				Order_Mutation::apply_coupons( $order_id, $input['coupons'] );
-			}
-
 			$order = WC_Order_Factory::get_order( $order_id );
 
-			if ( ! is_object( $order ) ) {
+			if ( ! is_object( $order ) || ! $order->get_id() ) {
 				throw new UserError( __( 'Order not found.', 'wp-graphql-woocommerce' ) );
 			}
 
@@ -136,6 +128,14 @@ class Order_Update {
 			// Validate customer ID.
 			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input['customerId'] ) ) {
 				throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
+			}
+
+			// Set all props, address, items, and meta on the order and save once.
+			Order_Mutation::prepare_order( $order, $input, $context, $info );
+
+			// Apply coupons.
+			if ( ! empty( $input['coupons'] ) ) {
+				Order_Mutation::apply_coupons( $order, $input['coupons'] );
 			}
 
 			$order->set_created_via( 'graphql-api' );

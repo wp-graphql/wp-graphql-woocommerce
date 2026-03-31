@@ -149,15 +149,7 @@ class Order_Create {
 			$order = null;
 			try {
 				$order_id = Order_Mutation::create_order( $input, $context, $info );
-				Order_Mutation::add_order_meta( $order_id, $input, $context, $info );
-				Order_Mutation::add_items( $input, $order_id, $context, $info );
-
-				// Apply coupons.
-				if ( ! empty( $input['coupons'] ) ) {
-					Order_Mutation::apply_coupons( $order_id, $input['coupons'] );
-				}
-
-				$order = WC_Order_Factory::get_order( $order_id );
+				$order    = WC_Order_Factory::get_order( $order_id );
 
 				if ( ! is_object( $order ) ) {
 					throw new UserError( __( 'Order could not be created.', 'wp-graphql-woocommerce' ) );
@@ -169,6 +161,14 @@ class Order_Create {
 				// Validate customer ID, if set.
 				if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input['customerId'] ) ) {
 					throw new UserError( __( 'Customer ID is invalid.', 'wp-graphql-woocommerce' ) );
+				}
+
+				// Set all props, address, items, and meta on the order and save once.
+				Order_Mutation::prepare_order( $order, $input, $context, $info );
+
+				// Apply coupons.
+				if ( ! empty( $input['coupons'] ) ) {
+					Order_Mutation::apply_coupons( $order, $input['coupons'] );
 				}
 
 				$order->set_created_via( 'graphql-api' );

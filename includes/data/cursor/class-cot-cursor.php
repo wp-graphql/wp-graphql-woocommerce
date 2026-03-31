@@ -115,7 +115,7 @@ class COT_Cursor extends AbstractCursor {
 			'_cart_discount'  => 'discount_total_amount',
 			'_date_paid'      => 'date_paid_gmt',
 			'_date_completed' => 'date_completed_gmt',
-			'_order_key'      => 'payment_method',
+			'_order_key'      => 'order_key',
 		];
 
 		return $alias_map[ $alias ] ?? $alias;
