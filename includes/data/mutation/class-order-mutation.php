@@ -339,55 +339,6 @@ class Order_Mutation {
 	}
 
 	/**
-	 * Create/Update order item meta data.
-	 *
-	 * @param int                                  $item_id    Order item ID.
-	 * @param array                                $meta_data  Array of meta data.
-	 * @param \WPGraphQL\AppContext                $context    AppContext instance.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info       ResolveInfo instance.
-	 *
-	 * @throws \GraphQL\Error\UserError|\Exception  Invalid item input | Failed to retrieve order item.
-	 *
-	 * @return void
-	 */
-	protected static function update_item_meta_data( $item_id, $meta_data, $context, $info ) {
-		$item = \WC_Order_Factory::get_order_item( $item_id );
-		if ( ! is_object( $item ) ) {
-			throw new \Exception( __( 'Failed to retrieve order item.', 'wp-graphql-woocommerce' ) );
-		}
-
-		foreach ( $meta_data as $entry ) {
-			$exists = $item->get_meta( $entry['key'], true, 'edit' );
-			if ( '' !== $exists && $exists !== $entry['value'] ) {
-				\wc_update_order_item_meta( $item_id, $entry['key'], $entry['value'] );
-			} else {
-				\wc_add_order_item_meta( $item_id, $entry['key'], $entry['value'] );
-			}
-		}
-	}
-
-	/**
-	 * Add meta data not set in self::create_order().
-	 *
-	 * @param int                                  $order_id  Order ID.
-	 * @param array                                $input     Order properties.
-	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
-	 *
-	 * @throws \Exception  Failed to retrieve order.
-	 *
-	 * @return void
-	 */
-	public static function add_order_meta( $order_id, $input, $context, $info ) {
-		$order = \WC_Order_Factory::get_order( $order_id );
-		if ( ! is_object( $order ) ) {
-			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
-		}
-
-		self::prepare_order( $order, $input, $context, $info );
-	}
-
-	/**
 	 * Sets all order props, address fields, items, and meta on the provided order object
 	 * and saves once, mirroring the WC REST API pattern to avoid HPOS data loss from
 	 * multiple save() calls across different object instances.
