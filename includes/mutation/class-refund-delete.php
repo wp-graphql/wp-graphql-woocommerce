@@ -92,6 +92,7 @@ class Refund_Delete {
 				throw new UserError( __( 'Invalid refund ID.', 'wp-graphql-woocommerce' ) );
 			}
 
+			/** @var \WC_Order_Refund|false $refund */
 			$refund = \wc_get_order( $refund_id );
 			if ( ! $refund || 'shop_order_refund' !== $refund->get_type() ) {
 				throw new UserError( __( 'Invalid refund ID.', 'wp-graphql-woocommerce' ) );
