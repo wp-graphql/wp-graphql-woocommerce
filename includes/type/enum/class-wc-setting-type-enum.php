@@ -38,7 +38,9 @@ class WC_Setting_Type_Enum {
 		register_graphql_enum_type(
 			'WCSettingTypeEnum',
 			[
-				'description' => __( 'Type of WC setting.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Type of WC setting.', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $values,
 			]
 		);

@@ -43,7 +43,9 @@ class Session_Update {
 		return [
 			'sessionData' => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
-				'description' => __( 'Data to be persisted in the session.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Data to be persisted in the session.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

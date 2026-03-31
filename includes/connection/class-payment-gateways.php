@@ -59,7 +59,9 @@ class Payment_Gateways {
 		return [
 			'all' => [
 				'type'        => 'Boolean',
-				'description' => __( 'Include disabled payment gateways?', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Include disabled payment gateways?', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -42,7 +42,9 @@ class Cart_Apply_Coupon {
 		return [
 			'code' => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Code of coupon being applied', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

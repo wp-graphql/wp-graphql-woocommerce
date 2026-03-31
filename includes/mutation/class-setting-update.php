@@ -42,15 +42,21 @@ class Setting_Update {
 		return [
 			'group' => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Settings group ID.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Settings group ID.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'id'    => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Setting ID.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Setting ID.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'value' => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Setting value.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Setting value.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}
@@ -64,7 +70,9 @@ class Setting_Update {
 		return [
 			'setting' => [
 				'type'        => 'WCSetting',
-				'description' => __( 'The updated setting.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The updated setting.', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					return $payload['setting'];
 				},

@@ -21,7 +21,9 @@ class Shipping_Location_Type_Enum {
 		register_graphql_enum_type(
 			'ShippingLocationTypeEnum',
 			[
-				'description' => __( 'A Shipping zone location type.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A Shipping zone location type.', 'wp-graphql-woocommerce' );
+				},
 				'values'      => [
 					'COUNTRY'   => [ 'value' => 'country' ],
 					'CONTINENT' => [ 'value' => 'continent' ],

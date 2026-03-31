@@ -79,7 +79,9 @@ class WC_Terms extends TermObjects {
 					[
 						'orderby' => [
 							'type'        => 'ProductAttributesConnectionOrderbyEnum',
-							'description' => __( 'Field(s) to order terms by. Defaults to \'name\'.', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+								return __( 'Field(s) to order terms by. Defaults to \'name\'.', 'wp-graphql-woocommerce' );
+							},
 						],
 					]
 				),

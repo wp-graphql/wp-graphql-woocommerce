@@ -44,7 +44,9 @@ class Cart_Add_Items {
 		return [
 			'items' => [
 				'type'        => [ 'list_of' => 'CartItemInput' ],
-				'description' => __( 'Cart items to be added', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart items to be added', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

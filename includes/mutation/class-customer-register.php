@@ -49,23 +49,33 @@ class Customer_Register {
 			[
 				'billing'               => [
 					'type'        => 'CustomerAddressInput',
-					'description' => __( 'Customer billing information', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Customer billing information', 'wp-graphql-woocommerce' );
+					},
 				],
 				'shipping'              => [
 					'type'        => 'CustomerAddressInput',
-					'description' => __( 'Customer shipping address', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Customer shipping address', 'wp-graphql-woocommerce' );
+					},
 				],
 				'shippingSameAsBilling' => [
 					'type'        => 'Boolean',
-					'description' => __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Customer shipping is identical to billing address', 'wp-graphql-woocommerce' );
+					},
 				],
 				'metaData'              => [
-					'description' => __( 'Meta data.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Meta data.', 'wp-graphql-woocommerce' );
+					},
 					'type'        => [ 'list_of' => 'MetaDataInput' ],
 				],
 				'authenticate'          => [
 					'type'        => 'Boolean',
-					'description' => __( 'Set the current user to the newly registered customer. Avoid using in GraphiQL or contexts where a nonce is sent, as it will cause nonce verification to fail.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Set the current user to the newly registered customer. Avoid using in GraphiQL or contexts where a nonce is sent, as it will cause nonce verification to fail.', 'wp-graphql-woocommerce' );
+					},
 				],
 			]
 		);

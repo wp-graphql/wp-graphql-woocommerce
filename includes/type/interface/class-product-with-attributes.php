@@ -27,7 +27,9 @@ class Product_With_Attributes {
 		register_graphql_interface_type(
 			'ProductWithAttributes',
 			[
-				'description' => __( 'Products with default attributes.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Products with default attributes.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
@@ -45,11 +47,15 @@ class Product_With_Attributes {
 		return [
 			'id'         => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'databaseId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}
@@ -76,7 +82,9 @@ class Product_With_Attributes {
 				'connectionArgs' => [
 					'type' => [
 						'type'        => 'ProductAttributeTypesEnum',
-						'description' => __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {

@@ -28,7 +28,9 @@ class Cart_Error_Type {
 		register_graphql_enum_type(
 			'CartErrorType',
 			[
-				'description' => __( 'Cart error type enumeration', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart error type enumeration', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $values,
 			]
 		);

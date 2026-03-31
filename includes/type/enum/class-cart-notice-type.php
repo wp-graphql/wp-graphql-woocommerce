@@ -21,19 +21,27 @@ class Cart_Notice_Type {
 		register_graphql_enum_type(
 			'CartNoticeTypeEnum',
 			[
-				'description' => __( 'WooCommerce notice types', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'WooCommerce notice types', 'wp-graphql-woocommerce' );
+				},
 				'values'      => [
 					'ERROR'   => [
 						'value'       => 'error',
-						'description' => __( 'Error notice', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Error notice', 'wp-graphql-woocommerce' );
+						},
 					],
 					'SUCCESS' => [
 						'value'       => 'success',
-						'description' => __( 'Success notice', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Success notice', 'wp-graphql-woocommerce' );
+						},
 					],
 					'NOTICE'  => [
 						'value'       => 'notice',
-						'description' => __( 'General notice', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'General notice', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

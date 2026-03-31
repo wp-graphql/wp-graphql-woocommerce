@@ -23,25 +23,33 @@ class Meta_Data_Type {
 		register_graphql_object_type(
 			'MetaData',
 			[
-				'description' => __( 'Extra data defined on the WC object', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Extra data defined on the WC object', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'id'    => [
 						'type'        => 'ID',
-						'description' => __( 'Meta ID.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Meta ID.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
 						},
 					],
 					'key'   => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'Meta key.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Meta key.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->key ) ? (string) $source->key : null;
 						},
 					],
 					'value' => [
 						'type'        => 'String',
-						'description' => __( 'Meta value.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Meta value.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							if ( empty( $source->value ) ) {
 								return null;
@@ -67,19 +75,27 @@ class Meta_Data_Type {
 	public static function get_metadata_field_definition() {
 		return [
 			'type'        => [ 'list_of' => 'MetaData' ],
-			'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
+			'description' => static function () {
+					return __( 'Object meta data', 'wp-graphql-woocommerce' );
+			},
 			'args'        => [
 				'key'      => [
 					'type'        => 'String',
-					'description' => __( 'Retrieve meta by key', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Retrieve meta by key', 'wp-graphql-woocommerce' );
+					},
 				],
 				'keysIn'   => [
 					'type'        => [ 'list_of' => 'String' ],
-					'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' );
+					},
 				],
 				'multiple' => [
 					'type'        => 'Boolean',
-					'description' => __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' );
+					},
 				],
 			],
 			'resolve'     => static function ( $source, array $args ) {

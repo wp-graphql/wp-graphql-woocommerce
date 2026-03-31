@@ -21,23 +21,33 @@ class Product_Taxonomy_Input {
 		register_graphql_input_type(
 			'ProductTaxonomyInput',
 			[
-				'description' => __( 'Product taxonomy filter type', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product taxonomy filter type', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'relation' => [
 						'type'        => 'RelationEnum',
-						'description' => __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Logic relation between each filter.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'filters'  => [
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
-						'description' => __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Product taxonomy rules to be filter results by', 'wp-graphql-woocommerce' );
+						},
 					],
 					'or'       => [
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
-						'description' => __( 'Product taxonomy rules connected by OR logic', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Product taxonomy rules connected by OR logic', 'wp-graphql-woocommerce' );
+						},
 					],
 					'and'      => [
 						'type'        => [ 'list_of' => 'ProductTaxonomyFilterInput' ],
-						'description' => __( 'Product taxonomy rules connected by AND logic', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Product taxonomy rules connected by AND logic', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

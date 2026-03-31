@@ -22,7 +22,9 @@ class Inventoried_Product {
 		register_graphql_interface_type(
 			'InventoriedProduct',
 			[
-				'description' => __( 'A product with stock information.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A product with stock information.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => 'wc_graphql_resolve_product_type',
@@ -39,39 +41,57 @@ class Inventoried_Product {
 		return [
 			'id'                => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'databaseId'        => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'manageStock'       => [
 				'type'        => 'ManageStockEnum',
-				'description' => __( 'If product manage stock', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'If product manage stock', 'wp-graphql-woocommerce' );
+				},
 			],
 			'lowStockAmount'    => [
 				'type'        => 'Int',
-				'description' => __( 'Low stock amount', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Low stock amount', 'wp-graphql-woocommerce' );
+				},
 			],
 			'stockQuantity'     => [
 				'type'        => 'Int',
-				'description' => __( 'Number of items available for sale', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Number of items available for sale', 'wp-graphql-woocommerce' );
+				},
 			],
 			'backorders'        => [
 				'type'        => 'BackordersEnum',
-				'description' => __( 'Product backorders status', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product backorders status', 'wp-graphql-woocommerce' );
+				},
 			],
 			'soldIndividually'  => [
 				'type'        => 'Boolean',
-				'description' => __( 'If should be sold individually', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'If should be sold individually', 'wp-graphql-woocommerce' );
+				},
 			],
 			'backordersAllowed' => [
 				'type'        => 'Boolean',
-				'description' => __( 'Can product be backordered?', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Can product be backordered?', 'wp-graphql-woocommerce' );
+				},
 			],
 			'stockStatus'       => [
 				'type'        => 'StockStatusEnum',
-				'description' => __( 'Product stock status', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product stock status', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

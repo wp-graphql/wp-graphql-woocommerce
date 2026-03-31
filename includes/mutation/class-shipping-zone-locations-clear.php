@@ -43,11 +43,15 @@ class Shipping_Zone_Locations_Clear {
 		return [
 			'zoneId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'type'   => [
 				'type'        => 'ShippingLocationTypeEnum',
-				'description' => __( 'The type of location to remove.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The type of location to remove.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

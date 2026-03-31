@@ -44,7 +44,9 @@ class Cart_Restore_Items {
 		return [
 			'keys' => [
 				'type'        => [ 'list_of' => 'ID' ],
-				'description' => __( 'Cart item key of the item being removed', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item key of the item being removed', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -219,7 +219,9 @@ class Compatibility {
 			[
 				'authToken'    => [
 					'type'        => $type_registry->get_type( 'String' ),
-					'description' => __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
@@ -232,7 +234,9 @@ class Compatibility {
 				],
 				'refreshToken' => [
 					'type'        => $type_registry->get_type( 'String' ),
-					'description' => __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
@@ -258,7 +262,9 @@ class Compatibility {
 			'customer',
 			[
 				'type'        => 'Customer',
-				'description' => __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					$id = $payload['id'];
 					return new Customer( $id );
@@ -274,7 +280,9 @@ class Compatibility {
 					'sessionToken',
 					[
 						'type'        => 'String',
-						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
 							$session = \WC()->session;
@@ -290,7 +298,9 @@ class Compatibility {
 					'cartToken',
 					[
 						'type'        => 'String',
-						'description' => __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function () {
 							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
 							$session = \WC()->session;

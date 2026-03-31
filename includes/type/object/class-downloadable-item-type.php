@@ -28,40 +28,52 @@ class Downloadable_Item_Type {
 		register_graphql_object_type(
 			'DownloadableItem',
 			[
-				'description' => __( 'A downloadable item', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A downloadable item', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'                 => [
 						'type'        => [ 'non_null' => 'ID' ],
-						'description' => __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_id'] ) ? Relay::toGlobalId( 'download', $source['download_id'] ) : null;
 						},
 					],
 					'downloadId'         => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'Downloadable item ID.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Downloadable item ID.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_id'] ) ? $source['download_id'] : null;
 						},
 					],
 					'url'                => [
 						'type'        => 'String',
-						'description' => __( 'Download URL of the downloadable item.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Download URL of the downloadable item.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_url'] ) ? $source['download_url'] : null;
 						},
 					],
 					'name'               => [
 						'type'        => 'String',
-						'description' => __( 'Name of the downloadable item.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Name of the downloadable item.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_name'] ) ? $source['download_name'] : null;
 						},
 					],
 					'downloadsRemaining' => [
 						'type'        => 'Int',
-						'description' => __( 'Number of times the item can be downloaded.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Number of times the item can be downloaded.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['downloads_remaining'] ) && is_numeric( $source['downloads_remaining'] )
 								? intval( $source['downloads_remaining'] )
@@ -70,21 +82,27 @@ class Downloadable_Item_Type {
 					],
 					'accessExpires'      => [
 						'type'        => 'String',
-						'description' => __( 'The date the downloadable item expires', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'The date the downloadable item expires', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['access_expires'] ) ? $source['access_expires'] : null;
 						},
 					],
 					'product'            => [
 						'type'        => 'ProductUnion',
-						'description' => __( 'Product of downloadable item.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Product of downloadable item.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source['product_id'], $context );
 						},
 					],
 					'downloadNonce'      => [
 						'type'        => 'String',
-						'description' => __( 'A nonce for the authenticated download URL. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A nonce for the authenticated download URL. Expires in 24 hours.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$customer_id = get_current_user_id();
 							if ( empty( $customer_id ) || empty( $source['download_url'] ) ) {
@@ -96,7 +114,9 @@ class Downloadable_Item_Type {
 					],
 					'downloadUrl'        => [
 						'type'        => 'String',
-						'description' => __( 'A nonced URL that authenticates the user and redirects to the WooCommerce download. Expires in 24 hours.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A nonced URL that authenticates the user and redirects to the WooCommerce download. Expires in 24 hours.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$customer_id = get_current_user_id();
 							if ( empty( $customer_id ) || empty( $source['download_url'] ) ) {
@@ -120,7 +140,9 @@ class Downloadable_Item_Type {
 					],
 					'download'           => [
 						'type'        => 'ProductDownload',
-						'description' => __( 'ProductDownload of the downloadable item', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'ProductDownload of the downloadable item', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$download_id = $source['download_id'];
 							$product_id  = $source['product_id'];
@@ -174,7 +196,9 @@ class Downloadable_Item_Type {
 			'preAuthDownloadUrl',
 			[
 				'type'        => 'String',
-				'description' => __( 'A pre-authenticated download URL with a time-limited token. Does not require cookie-based authentication.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A pre-authenticated download URL with a time-limited token. Does not require cookie-based authentication.', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $source ) {
 					$customer_id = get_current_user_id();
 					if ( empty( $customer_id ) || empty( $source['download_url'] ) ) {

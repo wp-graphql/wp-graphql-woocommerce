@@ -95,27 +95,39 @@ class Customers {
 		return [
 			'search'  => [
 				'type'        => 'String',
-				'description' => __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'exclude' => [
 				'type'        => [ 'list_of' => 'Int' ],
-				'description' => __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'include' => [
 				'type'        => [ 'list_of' => 'Int' ],
-				'description' => __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'email'   => [
 				'type'        => 'String',
-				'description' => __( 'Limit result set to resources with a specific email.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Limit result set to resources with a specific email.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'orderby' => [
 				'type'        => 'CustomerConnectionOrderbyEnum',
-				'description' => __( 'Order results by a specific field.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order results by a specific field.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'order'   => [
 				'type'        => 'OrderEnum',
-				'description' => __( 'Order of results.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order of results.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

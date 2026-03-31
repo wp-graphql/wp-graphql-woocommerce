@@ -42,7 +42,9 @@ class Product_Variation_Update {
 			[
 				'id' => [
 					'type'        => [ 'non_null' => 'ID' ],
-					'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+					},
 				],
 			],
 			Product_Variation_Create::get_input_fields()

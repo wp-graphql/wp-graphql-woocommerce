@@ -21,19 +21,27 @@ class Product_Download_Input {
 		register_graphql_input_type(
 			'ProductDownloadInput',
 			[
-				'description' => __( 'Product download', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product download', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'id'   => [
 						'type'        => 'Int',
-						'description' => __( 'File ID', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'File ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'name' => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'File name', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'File name', 'wp-graphql-woocommerce' );
+						},
 					],
 					'file' => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'File URL', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'File URL', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

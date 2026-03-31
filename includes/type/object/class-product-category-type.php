@@ -27,7 +27,9 @@ class Product_Category_Type {
 			[
 				'image'     => [
 					'type'        => 'MediaItem',
-					'description' => __( 'Product category image', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Product category image', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$thumbnail_id = get_term_meta( $source->term_id, 'thumbnail_id', true );
 						return ! empty( $thumbnail_id )
@@ -37,7 +39,9 @@ class Product_Category_Type {
 				],
 				'display'   => [
 					'type'        => 'ProductCategoryDisplay',
-					'description' => __( 'Product category display type', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Product category display type', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source ) {
 						$display = get_term_meta( $source->term_id, 'display_type', true );
 						return ! empty( $display ) ? $display : 'default';
@@ -45,7 +49,9 @@ class Product_Category_Type {
 				],
 				'menuOrder' => [
 					'type'        => 'Integer',
-					'description' => __( 'Product category menu order', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+						return __( 'Product category menu order', 'wp-graphql-woocommerce' );
+					},
 					'resolve'     => static function ( $source ) {
 						$order = get_term_meta( $source->term_id, 'order', true );
 						return ! empty( $order ) ? $order : 0;

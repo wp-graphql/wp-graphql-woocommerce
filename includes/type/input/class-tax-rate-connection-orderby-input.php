@@ -21,7 +21,9 @@ class Tax_Rate_Connection_Orderby_Input {
 		register_graphql_input_type(
 			'TaxRateConnectionOrderbyInput',
 			[
-				'description' => __( 'Options for ordering the connection', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Options for ordering the connection', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'field' => [
 						'type' => [ 'non_null' => 'TaxRateConnectionOrderbyEnum' ],

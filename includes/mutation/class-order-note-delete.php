@@ -47,15 +47,21 @@ class Order_Note_Delete {
 		return [
 			'id'      => [
 				'type'        => 'ID',
-				'description' => __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' );
+				},
 			],
 			'orderId' => [
 				'type'        => 'ID',
-				'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+				},
 			],
 			'force'   => [
 				'type'        => 'Boolean',
-				'description' => __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -21,7 +21,9 @@ class Product_Attribute_Input {
 		register_graphql_input_type(
 			'ProductAttributeInput',
 			[
-				'description' => __( 'Options for ordering the connection', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Options for ordering the connection', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'attributeName'  => [
 						'type' => [ 'non_null' => 'String' ],

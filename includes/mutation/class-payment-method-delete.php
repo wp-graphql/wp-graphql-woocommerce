@@ -42,7 +42,9 @@ class Payment_Method_Delete {
 		return [
 			'tokenId' => [
 				'type'        => [ 'non_null' => 'Integer' ],
-				'description' => __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' );
+				},
 
 			],
 		];
@@ -57,7 +59,9 @@ class Payment_Method_Delete {
 		return [
 			'status' => [
 				'type'        => 'String',
-				'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Status of the request', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
 				},

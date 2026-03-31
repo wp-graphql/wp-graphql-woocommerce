@@ -43,11 +43,15 @@ class Shipping_Zone_Create {
 		return [
 			'name'  => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'order' => [
 				'type'        => 'Int',
-				'description' => __( 'Order of the shipping zone.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order of the shipping zone.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

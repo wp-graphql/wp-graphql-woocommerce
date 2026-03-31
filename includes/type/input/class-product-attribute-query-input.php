@@ -21,15 +21,21 @@ class Product_Attribute_Query_Input {
 		register_graphql_input_type(
 			'ProductAttributeQueryInput',
 			[
-				'description' => __( 'Product filter', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product filter', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'queries'  => [
 						'type'        => [ 'list_of' => 'ProductAttributeFilterInput' ],
-						'description' => __( 'Limit result set to products with selected global attributes.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Limit result set to products with selected global attributes.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'relation' => [
 						'type'        => 'AttributeOperatorEnum',
-						'description' => __( 'The logical relationship between attributes when filtering across multiple at once.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'The logical relationship between attributes when filtering across multiple at once.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

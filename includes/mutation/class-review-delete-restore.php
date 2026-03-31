@@ -60,14 +60,18 @@ class Review_Delete_Restore {
 				'type'        => [
 					'non_null' => 'ID',
 				],
-				'description' => __( 'The ID of the target product review', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the target product review', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 
 		if ( $delete ) {
 			$fields['forceDelete'] = [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether the product review should be force deleted instead of being moved to the trash', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Whether the product review should be force deleted instead of being moved to the trash', 'wp-graphql-woocommerce' );
+				},
 			];
 		}
 
@@ -85,7 +89,9 @@ class Review_Delete_Restore {
 		return [
 			'rating'     => [
 				'type'        => 'Float',
-				'description' => __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['rating'] ) ) {
 						return null;
@@ -96,7 +102,9 @@ class Review_Delete_Restore {
 			],
 			'affectedId' => [
 				'type'        => 'Id',
-				'description' => __( 'The affected product review ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The affected product review ID', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					$deleted = (object) $payload['commentObject'];
 
@@ -105,7 +113,9 @@ class Review_Delete_Restore {
 			],
 			'review'     => [
 				'type'        => 'Comment',
-				'description' => __( 'The affected product review', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The affected product review', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload, $args, AppContext $context ) use ( $restore ) {
 					if ( empty( $payload['commentObject'] ) ) {
 						return null;

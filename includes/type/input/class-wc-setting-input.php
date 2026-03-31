@@ -21,15 +21,21 @@ class WC_Setting_Input {
 		register_graphql_input_type(
 			'WCSettingInput',
 			[
-				'description' => __( 'WooCommerce setting input.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'WooCommerce setting input.', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'id'    => [
 						'type'        => 'String',
-						'description' => __( 'A unique identifier for the setting.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A unique identifier for the setting.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'value' => [
 						'type'        => 'String',
-						'description' => __( 'Setting value.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Setting value.', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 			]

@@ -46,67 +46,99 @@ class Order_Create {
 		return [
 			'parentId'           => [
 				'type'        => 'Int',
-				'description' => __( 'Parent order ID.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Parent order ID.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'currency'           => [
 				'type'        => 'CurrencyEnum',
-				'description' => __( 'Currency the order was created with, in ISO format.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Currency the order was created with, in ISO format.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'customerId'         => [
 				'type'        => 'Int',
-				'description' => __( 'Order customer ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order customer ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'customerNote'       => [
 				'type'        => 'String',
-				'description' => __( 'Note left by customer during checkout.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Note left by customer during checkout.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'coupons'            => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'Coupons codes to be applied to order', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Coupons codes to be applied to order', 'wp-graphql-woocommerce' );
+				},
 			],
 			'status'             => [
 				'type'        => 'OrderStatusEnum',
-				'description' => __( 'Order status', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order status', 'wp-graphql-woocommerce' );
+				},
 			],
 			'paymentMethod'      => [
 				'type'        => 'String',
-				'description' => __( 'Payment method ID.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Payment method ID.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'paymentMethodTitle' => [
 				'type'        => 'String',
-				'description' => __( 'Payment method title.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Payment method title.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'transactionId'      => [
 				'type'        => 'String',
-				'description' => __( 'Order transaction ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order transaction ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'billing'            => [
 				'type'        => 'CustomerAddressInput',
-				'description' => __( 'Order billing address', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order billing address', 'wp-graphql-woocommerce' );
+				},
 			],
 			'shipping'           => [
 				'type'        => 'CustomerAddressInput',
-				'description' => __( 'Order shipping address', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order shipping address', 'wp-graphql-woocommerce' );
+				},
 			],
 			'lineItems'          => [
 				'type'        => [ 'list_of' => 'LineItemInput' ],
-				'description' => __( 'Order line items', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order line items', 'wp-graphql-woocommerce' );
+				},
 			],
 			'shippingLines'      => [
 				'type'        => [ 'list_of' => 'ShippingLineInput' ],
-				'description' => __( 'Order shipping lines', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order shipping lines', 'wp-graphql-woocommerce' );
+				},
 			],
 			'feeLines'           => [
 				'type'        => [ 'list_of' => 'FeeLineInput' ],
-				'description' => __( 'Order shipping lines', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order shipping lines', 'wp-graphql-woocommerce' );
+				},
 			],
 			'metaData'           => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
-				'description' => __( 'Order meta data', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order meta data', 'wp-graphql-woocommerce' );
+				},
 			],
 			'isPaid'             => [
 				'type'        => 'Boolean',
-				'description' => __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

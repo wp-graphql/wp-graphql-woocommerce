@@ -45,11 +45,15 @@ class Coupon_Delete {
 		return [
 			'id'          => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Unique identifier for the object.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Unique identifier for the object.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'forceDelete' => [
 				'type'        => 'Boolean',
-				'description' => __( 'Delete the object. Set to "false" by default.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Delete the object. Set to "false" by default.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

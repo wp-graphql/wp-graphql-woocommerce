@@ -24,37 +24,51 @@ class WC_Setting_Group_Type {
 			'WCSettingGroup',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A WooCommerce settings group', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A WooCommerce settings group', 'wp-graphql-woocommerce' );
+				},
 				'fields'          => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'A unique identifier that can be used to link settings together.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A unique identifier that can be used to link settings together.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'label'       => [
 						'type'        => 'String',
-						'description' => __( 'A human readable label for the setting group used in interfaces.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A human readable label for the setting group used in interfaces.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'description' => [
 						'type'        => 'String',
-						'description' => __( 'A human readable description for the setting group used in interfaces.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'A human readable description for the setting group used in interfaces.', 'wp-graphql-woocommerce' );
+						},
 					],
 					'parentId'    => [
 						'type'        => 'String',
-						'description' => __( 'ID of parent grouping.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'ID of parent grouping.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['parent_id'] ) ? $source['parent_id'] : null;
 						},
 					],
 					'subGroups'   => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'IDs for settings sub groups.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'IDs for settings sub groups.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['sub_groups'] ) ? $source['sub_groups'] : [];
 						},
 					],
 					'settings'    => [
 						'type'        => [ 'list_of' => 'WCSetting' ],
-						'description' => __( 'The settings belonging to this group.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'The settings belonging to this group.', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							$controller = new \WC_REST_Setting_Options_Controller();
 							$settings   = $controller->get_group_settings( $source['id'] );

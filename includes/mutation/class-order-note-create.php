@@ -47,15 +47,21 @@ class Order_Note_Create {
 		return [
 			'orderId'        => [
 				'type'        => 'ID',
-				'description' => __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+				},
 			],
 			'note'           => [
 				'type'        => 'String',
-				'description' => __( 'Order note.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order note.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'isCustomerNote' => [
 				'type'        => 'Boolean',
-				'description' => __( 'Shows/define if the note is only for reference or for the customer (the user will be notified).', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Shows/define if the note is only for reference or for the customer (the user will be notified).', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

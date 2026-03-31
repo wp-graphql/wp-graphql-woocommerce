@@ -44,11 +44,15 @@ class Cart_Remove_Items {
 		return [
 			'keys' => [
 				'type'        => [ 'list_of' => 'ID' ],
-				'description' => __( 'Item keys of the items being removed', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Item keys of the items being removed', 'wp-graphql-woocommerce' );
+				},
 			],
 			'all'  => [
 				'type'        => 'Boolean',
-				'description' => __( 'Remove all cart items', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Remove all cart items', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

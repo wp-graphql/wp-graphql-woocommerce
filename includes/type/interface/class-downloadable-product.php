@@ -22,7 +22,9 @@ class Downloadable_Product {
 		register_graphql_interface_type(
 			'DownloadableProduct',
 			[
-				'description' => __( 'A downloadable product.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A downloadable product.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => 'wc_graphql_resolve_product_type',
@@ -39,27 +41,39 @@ class Downloadable_Product {
 		return [
 			'id'             => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'databaseId'     => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'downloadExpiry' => [
 				'type'        => 'Int',
-				'description' => __( 'Download expiry', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Download expiry', 'wp-graphql-woocommerce' );
+				},
 			],
 			'downloadable'   => [
 				'type'        => 'Boolean',
-				'description' => __( 'Is downloadable?', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Is downloadable?', 'wp-graphql-woocommerce' );
+				},
 			],
 			'downloadLimit'  => [
 				'type'        => 'Int',
-				'description' => __( 'Download limit', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Download limit', 'wp-graphql-woocommerce' );
+				},
 			],
 			'downloads'      => [
 				'type'        => [ 'list_of' => 'ProductDownload' ],
-				'description' => __( 'Product downloads', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product downloads', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

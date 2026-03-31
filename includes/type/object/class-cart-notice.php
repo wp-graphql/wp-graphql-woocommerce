@@ -21,18 +21,24 @@ class Cart_Notice {
 		register_graphql_object_type(
 			'CartNotice',
 			[
-				'description' => __( 'A WooCommerce notice', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A WooCommerce notice', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'type'    => [
 						'type'        => 'CartNoticeTypeEnum',
-						'description' => __( 'Notice type', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Notice type', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $notice ) {
 							return $notice['type'] ?? null;
 						},
 					],
 					'message' => [
 						'type'        => 'String',
-						'description' => __( 'Notice message', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Notice message', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $notice ) {
 							return $notice['message'] ?? null;
 						},

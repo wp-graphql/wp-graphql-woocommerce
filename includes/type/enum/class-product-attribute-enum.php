@@ -43,7 +43,9 @@ class Product_Attribute_Enum {
 		register_graphql_enum_type(
 			'ProductAttributeEnum',
 			[
-				'description' => __( 'Product attribute taxonomies', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product attribute taxonomies', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $taxonomy_values,
 			]
 		);

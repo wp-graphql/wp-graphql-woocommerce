@@ -21,7 +21,9 @@ class Stock_Status {
 		register_graphql_enum_type(
 			'StockStatusEnum',
 			[
-				'description' => __( 'Product stock status enumeration', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product stock status enumeration', 'wp-graphql-woocommerce' );
+				},
 				'values'      => self::get_stock_statuses(),
 			]
 		);

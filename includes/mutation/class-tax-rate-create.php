@@ -44,47 +44,69 @@ class Tax_Rate_Create {
 		return [
 			'country'   => [
 				'type'        => 'String',
-				'description' => __( 'Country code for the tax rate.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Country code for the tax rate.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'state'     => [
 				'type'        => 'String',
-				'description' => __( 'State code for the tax rate.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'State code for the tax rate.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'postcodes' => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'Postcodes for the tax rate.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Postcodes for the tax rate.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'cities'    => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'Cities for the tax rate.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cities for the tax rate.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'rate'      => [
 				'type'        => 'String',
-				'description' => __( 'Tax rate.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Tax rate.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'name'      => [
 				'type'        => 'String',
-				'description' => __( 'Tax rate name.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Tax rate name.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'priority'  => [
 				'type'        => 'Int',
-				'description' => __( 'Tax rate priority.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Tax rate priority.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'compound'  => [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether the tax rate is compound.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Whether the tax rate is compound.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'shipping'  => [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether the tax rate is applied to shipping.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Whether the tax rate is applied to shipping.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'order'     => [
 				'type'        => 'Int',
-				'description' => __( 'Tax rate order.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Tax rate order.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'class'     => [
 				'type'        => 'TaxClassEnum',
-				'description' => __( 'Tax rate class.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Tax rate class.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

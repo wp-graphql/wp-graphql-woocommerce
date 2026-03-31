@@ -33,7 +33,9 @@ class Currency_Enum {
 		register_graphql_enum_type(
 			'CurrencyEnum',
 			[
-				'description' => __( 'Currencies enumeration', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Currencies enumeration', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $currencies,
 			]
 		);

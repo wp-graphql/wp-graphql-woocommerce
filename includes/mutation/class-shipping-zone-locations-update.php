@@ -43,11 +43,15 @@ class Shipping_Zone_Locations_Update {
 		return [
 			'zoneId'    => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'locations' => [
 				'type'        => [ 'list_of' => 'ShippingLocationInput' ],
-				'description' => __( 'The locations to add to the shipping zone.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The locations to add to the shipping zone.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}
