@@ -165,4 +165,60 @@ class RefundMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraph
 		$deleted_refund = \wc_get_order( $refund_id );
 		$this->assertFalse( $deleted_refund );
 	}
+
+	public function testDeleteRefundWithInvalidIdFails() {
+		$this->loginAsShopManager();
+
+		$query = '
+			mutation deleteRefund( $input: DeleteRefundInput! ) {
+				deleteRefund( input: $input ) {
+					refund { databaseId }
+				}
+			}
+		';
+
+		// Non-existent ID.
+		$response = $this->graphql(
+			[
+				'query'     => $query,
+				'variables' => [
+					'input' => [
+						'id' => $this->toRelayId( 'order', 999999 ),
+					],
+				],
+			]
+		);
+		$this->assertQueryError(
+			$response,
+			[ $this->expectedErrorMessage( 'Invalid refund ID', self::MESSAGE_CONTAINS ) ]
+		);
+	}
+
+	public function testDeleteRefundWithOrderIdFails() {
+		$this->loginAsShopManager();
+
+		$query = '
+			mutation deleteRefund( $input: DeleteRefundInput! ) {
+				deleteRefund( input: $input ) {
+					refund { databaseId }
+				}
+			}
+		';
+
+		// Pass an order ID instead of a refund ID.
+		$response = $this->graphql(
+			[
+				'query'     => $query,
+				'variables' => [
+					'input' => [
+						'id' => $this->toRelayId( 'order', $this->order_id ),
+					],
+				],
+			]
+		);
+		$this->assertQueryError(
+			$response,
+			[ $this->expectedErrorMessage( 'Invalid refund ID', self::MESSAGE_CONTAINS ) ]
+		);
+	}
 }
