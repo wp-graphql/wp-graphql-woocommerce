@@ -496,12 +496,12 @@ class Order_Mutation {
 	 * @return void
 	 */
 	public static function prepare_order( $order, $input, $context, $info ) {
-		
+
 		foreach ( $input as $key => $value ) {
 			switch ( $key ) {
-				case 'clientMutationId':                                                                                   
-             	case 'id':                                                                                                 
-            	case 'orderId':
+				case 'clientMutationId':
+				case 'id':
+				case 'orderId':
 				case 'coupons':
 				case 'status':
 				case 'isPaid':
@@ -599,9 +599,9 @@ class Order_Mutation {
 	/**
 	 * Update address.
 	 *
-	 * @param array   $address   Address data.
+	 * @param array     $address   Address data.
 	 * @param \WC_Order $order  WC_Order instance.
-	 * @param string  $type      Address type.
+	 * @param string    $type      Address type.
 	 *
 	 * @throws \Exception  Failed to retrieve order.
 	 *
