@@ -39,6 +39,7 @@ install_wordpress() {
 		wpackagist-plugin/hcaptcha-for-forms-and-more \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
+		wpackagist-plugin/elementor \
         wpackagist-theme/twentytwentyone \
 		wp-cli/wp-cli-bundle:*
 }
@@ -53,6 +54,7 @@ remove_wordpress() {
 	composer remove --dev wp-graphql/wp-graphql-jwt-authentication \
         wpackagist-plugin/woocommerce-gateway-stripe \
         wpackagist-plugin/wp-graphql \
+		wpackagist-plugin/elementor \
         wpackagist-theme/twentytwentyone \
         wpackagist-plugin/woocommerce \
 		wpackagist-plugin/hcaptcha-for-forms-and-more \

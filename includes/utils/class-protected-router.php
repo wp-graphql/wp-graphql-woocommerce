@@ -186,19 +186,23 @@ class Protected_Router {
 	 * response instead of responding with a template from the standard WordPress Template
 	 * Loading process
 	 *
+	 * @param \WP_Query $query The WP_Query instance (passed by pre_get_posts).
+	 *
 	 * @return void
 	 */
-	public function resolve_request() {
+	public function resolve_request( $query ) {
+		// Only handle the main front-end query. Other WP_Query instances
+		// (e.g. from Elementor during init) must be ignored to avoid
+		// calling WC session methods before WooCommerce is ready.
+		if ( ! $query->is_main_query() || is_admin() ) {
+			return;
+		}
+
 		/**
 		 * Remove the resolve_request function from the pre_get_posts action
 		 * to prevent an infinite loop
 		 */
 		remove_action( 'pre_get_posts', [ $this, 'resolve_request' ], 1 );
-
-		/**
-		 * Access the $wp_query object
-		 */
-		global $wp_query;
 
 		/**
 		 * Ensure we're on the registered route for the transfer
@@ -207,10 +211,15 @@ class Protected_Router {
 			return;
 		}
 
+		// Bail if WooCommerce session is not yet initialized.
+		if ( ! function_exists( 'WC' ) || is_null( WC()->session ) ) {
+			return;
+		}
+
 		/**
 		 * Set is_home to false
 		 */
-		$wp_query->is_home = false;
+		$query->is_home = false;
 
 		/**
 		 * Process the GraphQL query Request

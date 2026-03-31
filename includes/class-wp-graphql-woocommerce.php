@@ -194,8 +194,6 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'data/connection/trait-wc-cpt-loader-common.php';
 			require $include_directory_path . 'data/connection/trait-wc-db-loader-common.php';
 			require $include_directory_path . 'data/connection/class-cart-item-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-coupon-connection-resolver.php';
-			require $include_directory_path . 'data/connection/class-customer-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-downloadable-item-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-order-connection-resolver.php';
 			require $include_directory_path . 'data/connection/class-order-item-connection-resolver.php';

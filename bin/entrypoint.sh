@@ -102,6 +102,11 @@ wp-graphql-woocommerce \
 
 wp theme activate twentytwentyone --allow-root
 
+echo "Enabling WP_DEBUG logging..."
+wp config set WP_DEBUG true --raw --allow-root
+wp config set WP_DEBUG_LOG "${PROJECT_DIR}/tests/_output/debug.log" --allow-root
+wp config set WP_DEBUG_DISPLAY true --raw --allow-root
+
 if ! wp config has GRAPHQL_JWT_AUTH_SECRET_KEY --allow-root; then
 	echo "Adding WPGraphQL-JWT-Authentication salt..."
     wp config set GRAPHQL_JWT_AUTH_SECRET_KEY 'testingtesting123testingtesting123' --allow-root
