@@ -1,9 +1,9 @@
-<!--
+---
 title: "Local Testing"
 author: "Geoff Taylor"
 description: "An extensive guide on local testing w/ WooGraphQL."
 keywords: ""
--->
+---
 
 # Local CLI Testing
 

@@ -1,9 +1,9 @@
-<!--
+---
 title: "Harmonizing with WordPress"
 description: "Learn how to create a secure checkout button and understand the security behind the URL validation."
 keywords: "WooGraphQL, WooCommerce, checkout functionality, secure checkout, session transferring URLs, nonce generation, session meta, URL validation, Client Session ID, UpdateSession mutation, GraphQL, cart page, WordPress, frontend security"
 author: "Geoff Taylor"
--->
+---
 
 # Harmonizing with WordPress
 

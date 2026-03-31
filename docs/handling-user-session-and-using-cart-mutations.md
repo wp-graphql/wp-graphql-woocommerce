@@ -1,9 +1,9 @@
-<!--
+---
 title: "Handling User Session and Using Cart Mutations with WooGraphQL"
 description: "Discover how to manage user sessions and perform cart mutations using WPGraphQL for WooCommerce and WPGraphQL in your headless WooCommerce application for a smooth shopping experience."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, user session, cart mutations, headless, shopping experience"
 author: "Geoff Taylor"
--->
+---
 
 # Handling User Session and Using Cart Mutations
 

@@ -1,9 +1,9 @@
-<!--
+---
 title: "Using Cart Data with WooGraphQL"
 description: "Learn how to retrieve and utilize cart data in your headless WooCommerce application with WPGraphQL for WooCommerce and WPGraphQL, enabling seamless shopping experiences for your customers."
 keywords: "WooGraphQL, WPGraphQL, WooCommerce, GraphQL, cart data, headless, shopping experience"
 author: "Geoff Taylor"
--->
+---
 
 # Using Cart Data
 
