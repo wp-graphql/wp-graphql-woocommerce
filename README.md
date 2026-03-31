@@ -2,7 +2,7 @@
   <img src="./logo.svg" width="200px" alt="WPGraphQL for WooCommerce (WooGraphQL) Logo" />
 </p>
 
-# WPGraphQL for WooCommerce
+# WPGraphQL for eCommerce
 
 <a href="https://woographql.com" target="_blank">Website</a> • <a href="https://woographql.com/docs" target="_blank">Docs</a> • <a href="https://woographql.com/schema" target="_blank">Schema</a> • <a href="https://woographql.com/playground" target="_blank">Playground</a> • <a href="https://woographql.com/about" target="_blank">About</a> • <a href="https://join.slack.com/t/wp-graphql/shared_invite/zt-3vloo60z-PpJV2PFIwEathWDOxCTTLA" target="_blank">Join Slack</a>
 
