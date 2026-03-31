@@ -25,32 +25,46 @@ class Refund_Type {
 		register_graphql_object_type(
 			'Refund',
 			[
-				'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A refund object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'         => [
 						'type'        => [ 'non_null' => 'ID' ],
-						'description' => __( 'The globally unique identifier for the refund', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The globally unique identifier for the refund', 'wp-graphql-woocommerce' );
+				},
 					],
 					'databaseId' => [
 						'type'        => 'Int',
-						'description' => __( 'The ID of the refund in the database', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The ID of the refund in the database', 'wp-graphql-woocommerce' );
+				},
 					],
 					'title'      => [
 						'type'        => 'String',
-						'description' => __( 'A title for the new post type', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'A title for the new post type', 'wp-graphql-woocommerce' );
+				},
 					],
 					'amount'     => [
 						'type'        => 'Float',
-						'description' => __( 'Refunded amount', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Refunded amount', 'wp-graphql-woocommerce' );
+				},
 					],
 					'reason'     => [
 						'type'        => 'String',
-						'description' => __( 'Reason for refund', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Reason for refund', 'wp-graphql-woocommerce' );
+				},
 					],
 					'refundedBy' => [
 						'type'        => 'User',
-						'description' => __( 'User who completed the refund', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'User who completed the refund', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							$user_id = absint( $source->refunded_by_id );
 							if ( 0 !== $user_id ) {
@@ -61,7 +75,9 @@ class Refund_Type {
 					],
 					'date'       => [
 						'type'        => 'String',
-						'description' => __( 'The date of the refund', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The date of the refund', 'wp-graphql-woocommerce' );
+				},
 					],
 
 					'metaData'   => Meta_Data_Type::get_metadata_field_definition(),

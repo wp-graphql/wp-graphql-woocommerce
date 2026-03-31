@@ -44,23 +44,33 @@ class Product_Attribute_Create {
 		return [
 			'name'        => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Name of the attribute.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Name of the attribute.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'slug'        => [
 				'type'        => 'String',
-				'description' => __( 'Slug of the attribute.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Slug of the attribute.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'type'        => [
 				'type'        => 'String',
-				'description' => __( 'Type of the attribute.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Type of the attribute.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'orderBy'     => [
 				'type'        => 'String',
-				'description' => __( 'Order by which the attribute should be sorted.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order by which the attribute should be sorted.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'hasArchives' => [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether the attribute has archives.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Whether the attribute has archives.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

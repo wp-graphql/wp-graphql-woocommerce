@@ -43,11 +43,15 @@ class Tax_Class_Create {
 		return [
 			'name' => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Name of the tax class.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Name of the tax class.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'slug' => [
 				'type'        => 'String',
-				'description' => __( 'Slug of the tax class.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Slug of the tax class.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

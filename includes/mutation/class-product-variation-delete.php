@@ -44,11 +44,15 @@ class Product_Variation_Delete {
 		return [
 			'id'    => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'force' => [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether to bypass trash and force deletion.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Whether to bypass trash and force deletion.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

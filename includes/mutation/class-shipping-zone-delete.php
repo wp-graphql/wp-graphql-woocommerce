@@ -43,7 +43,9 @@ class Shipping_Zone_Delete {
 		return [
 			'id' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -34,11 +34,15 @@ class WC_Setting_Type {
 			'WCRelativeDate',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A relative date value with a number and unit.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A relative date value with a number and unit.', 'wp-graphql-woocommerce' );
+				},
 				'fields'          => [
 					'number' => [
 						'type'        => 'Int',
-						'description' => __( 'The number of periods.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The number of periods.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$number = $source['number'] ?? '';
 							return '' !== $number ? absint( $number ) : null;
@@ -46,7 +50,9 @@ class WC_Setting_Type {
 					],
 					'unit'   => [
 						'type'        => 'String',
-						'description' => __( 'The period unit (days, weeks, months, years).', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The period unit (days, weeks, months, years).', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 			]
@@ -56,19 +62,27 @@ class WC_Setting_Type {
 			'WCImageWidth',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'An image width value with dimensions and crop flag.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'An image width value with dimensions and crop flag.', 'wp-graphql-woocommerce' );
+				},
 				'fields'          => [
 					'width'  => [
 						'type'        => 'Int',
-						'description' => __( 'Image width in pixels.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Image width in pixels.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'height' => [
 						'type'        => 'Int',
-						'description' => __( 'Image height in pixels.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Image height in pixels.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'crop'   => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether to crop the image.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Whether to crop the image.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['crop'] );
 						},
@@ -88,12 +102,16 @@ class WC_Setting_Type {
 			'WCStringSetting',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A WC setting with a string value.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A WC setting with a string value.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => [ 'WCSetting' ],
 				'fields'          => [
 					'value'   => [
 						'type'        => 'String',
-						'description' => __( 'Setting value.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Setting value.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$value = $source['value'] ?? null;
 							return is_scalar( $value ) ? (string) $value : null;
@@ -101,7 +119,9 @@ class WC_Setting_Type {
 					],
 					'default' => [
 						'type'        => 'String',
-						'description' => __( 'Default value for the setting.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Default value for the setting.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$value = $source['default'] ?? null;
 							return ! empty( $value ) && is_scalar( $value ) ? (string) $value : null;
@@ -115,12 +135,16 @@ class WC_Setting_Type {
 			'WCArraySetting',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A WC setting with an array value.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A WC setting with an array value.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => [ 'WCSetting' ],
 				'fields'          => [
 					'value'   => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'Setting value as a list of strings.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Setting value as a list of strings.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$value = $source['value'] ?? null;
 							return is_array( $value ) ? array_values( $value ) : null;
@@ -128,7 +152,9 @@ class WC_Setting_Type {
 					],
 					'default' => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'Default value as a list of strings.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Default value as a list of strings.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$value = $source['default'] ?? null;
 							return is_array( $value ) ? array_values( $value ) : null;
@@ -142,16 +168,22 @@ class WC_Setting_Type {
 			'WCRelativeDateSetting',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A WC setting with a relative date value.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A WC setting with a relative date value.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => [ 'WCSetting' ],
 				'fields'          => [
 					'value'   => [
 						'type'        => 'WCRelativeDate',
-						'description' => __( 'Setting value as a relative date.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Setting value as a relative date.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'default' => [
 						'type'        => 'WCRelativeDate',
-						'description' => __( 'Default value as a relative date.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Default value as a relative date.', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 			]
@@ -161,16 +193,22 @@ class WC_Setting_Type {
 			'WCImageWidthSetting',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A WC setting with an image width value.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A WC setting with an image width value.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => [ 'WCSetting' ],
 				'fields'          => [
 					'value'   => [
 						'type'        => 'WCImageWidth',
-						'description' => __( 'Setting value as image dimensions.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Setting value as image dimensions.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'default' => [
 						'type'        => 'WCImageWidth',
-						'description' => __( 'Default value as image dimensions.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Default value as image dimensions.', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 			]

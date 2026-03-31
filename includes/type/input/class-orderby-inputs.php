@@ -26,7 +26,9 @@ class Orderby_Inputs {
 		register_graphql_input_type(
 			$base_name . 'OrderbyInput',
 			[
-				'description' => __( 'Options for ordering the connection', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Options for ordering the connection', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'field' => [
 						'type' => [ 'non_null' => $base_name . 'OrderbyEnum' ],

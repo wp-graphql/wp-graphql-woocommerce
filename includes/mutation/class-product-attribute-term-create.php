@@ -43,23 +43,33 @@ class Product_Attribute_Term_Create {
 		return [
 			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'name'        => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'The name of the term.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The name of the term.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'slug'        => [
 				'type'        => 'String',
-				'description' => __( 'The slug of the term.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The slug of the term.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'description' => [
 				'type'        => 'String',
-				'description' => __( 'The description of the term.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The description of the term.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'menuOrder'   => [
 				'type'        => 'Int',
-				'description' => __( 'The order of the term in the menu.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The order of the term in the menu.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

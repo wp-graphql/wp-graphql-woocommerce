@@ -49,40 +49,52 @@ class WC_Setting {
 			'WCSetting',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A WC setting object', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A WC setting object', 'wp-graphql-woocommerce' );
+				},
 				'resolveType'     => [ self::class, 'resolve_type' ],
 				'fields'          => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
-						'description' => __( 'The globally unique identifier for the WC setting.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The globally unique identifier for the WC setting.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return $source['id'] ?? null;
 						},
 					],
 					'label'       => [
 						'type'        => 'String',
-						'description' => __( 'A human readable label for the setting used in user interfaces.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'A human readable label for the setting used in user interfaces.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return $source['label'] ?? $source['title'] ?? null;
 						},
 					],
 					'groupId'     => [
 						'type'        => 'String',
-						'description' => __( 'The ID of the settings group this setting belongs to.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The ID of the settings group this setting belongs to.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return $source['group_id'] ?? null;
 						},
 					],
 					'description' => [
 						'type'        => 'String',
-						'description' => __( 'A human readable description for the setting used in user interfaces.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'A human readable description for the setting used in user interfaces.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['description'] ) ? $source['description'] : null;
 						},
 					],
 					'type'        => [
 						'type'        => 'WCSettingTypeEnum',
-						'description' => __( 'Type of setting.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Type of setting.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$raw_type = $source['type'] ?? '';
 							return self::$type_map[ $raw_type ] ?? ( ! empty( $raw_type ) ? $raw_type : null );
@@ -90,21 +102,27 @@ class WC_Setting {
 					],
 					'tip'         => [
 						'type'        => 'String',
-						'description' => __( 'Additional help text shown to the user about the setting', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Additional help text shown to the user about the setting', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['desc_tip'] ) ? $source['desc_tip'] : ( ! empty( $source['tip'] ) ? $source['tip'] : null );
 						},
 					],
 					'placeholder' => [
 						'type'        => 'String',
-						'description' => __( 'Placeholder text to be displayed in text inputs.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Placeholder text to be displayed in text inputs.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['placeholder'] ) ? $source['placeholder'] : null;
 						},
 					],
 					'options'     => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'Array of option key/value pairs for select and multiselect types.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Array of option key/value pairs for select and multiselect types.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							if ( empty( $source['options'] ) || ! is_array( $source['options'] ) ) {
 								return null;

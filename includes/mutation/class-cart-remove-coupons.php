@@ -42,7 +42,9 @@ class Cart_Remove_Coupons {
 		return [
 			'codes' => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'Code of coupon being applied', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Code of coupon being applied', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -32,15 +32,21 @@ class Product {
 			'product',
 			[
 				'type'        => 'Product',
-				'description' => __( 'A product object', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A product object', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'id'     => [
 						'type'        => [ 'non_null' => 'ID' ],
-						'description' => __( 'The ID for identifying the product', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The ID for identifying the product', 'wp-graphql-woocommerce' );
+				},
 					],
 					'idType' => [
 						'type'        => 'ProductIdTypeEnum',
-						'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -104,27 +110,39 @@ class Product {
 		return [
 			'type'              => [
 				'type'        => 'ProductTypesEnum',
-				'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product type', 'wp-graphql-woocommerce' );
+				},
 			],
 			'name'              => [
 				'type'        => 'String',
-				'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product name', 'wp-graphql-woocommerce' );
+				},
 			],
 			'featured'          => [
 				'type'        => 'Boolean',
-				'description' => __( 'If the product is featured', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'If the product is featured', 'wp-graphql-woocommerce' );
+				},
 			],
 			'catalogVisibility' => [
 				'type'        => 'CatalogVisibilityEnum',
-				'description' => __( 'Catalog visibility', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Catalog visibility', 'wp-graphql-woocommerce' );
+				},
 			],
 			'description'       => [
 				'type'        => 'String',
-				'description' => __( 'Product description', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product description', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'format' => [
 						'type'        => 'PostObjectFieldFormatEnum',
-						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {
@@ -137,11 +155,15 @@ class Product {
 			],
 			'shortDescription'  => [
 				'type'        => 'String',
-				'description' => __( 'Product short description', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product short description', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'format' => [
 						'type'        => 'PostObjectFieldFormatEnum',
-						'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, $args ) {
@@ -155,43 +177,63 @@ class Product {
 			],
 			'sku'               => [
 				'type'        => 'String',
-				'description' => __( 'Product SKU', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product SKU', 'wp-graphql-woocommerce' );
+				},
 			],
 			'dateOnSaleFrom'    => [
 				'type'        => 'String',
-				'description' => __( 'Date on sale from', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Date on sale from', 'wp-graphql-woocommerce' );
+				},
 			],
 			'dateOnSaleTo'      => [
 				'type'        => 'String',
-				'description' => __( 'Date on sale to', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Date on sale to', 'wp-graphql-woocommerce' );
+				},
 			],
 			'totalSales'        => [
 				'type'        => 'Int',
-				'description' => __( 'Number total of sales', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Number total of sales', 'wp-graphql-woocommerce' );
+				},
 			],
 			'reviewsAllowed'    => [
 				'type'        => 'Boolean',
-				'description' => __( 'If reviews are allowed', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'If reviews are allowed', 'wp-graphql-woocommerce' );
+				},
 			],
 			'purchaseNote'      => [
 				'type'        => 'String',
-				'description' => __( 'Purchase note', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Purchase note', 'wp-graphql-woocommerce' );
+				},
 			],
 			'menuOrder'         => [
 				'type'        => 'Int',
-				'description' => __( 'Menu order', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Menu order', 'wp-graphql-woocommerce' );
+				},
 			],
 			'averageRating'     => [
 				'type'        => 'Float',
-				'description' => __( 'Product average count', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product average count', 'wp-graphql-woocommerce' );
+				},
 			],
 			'reviewCount'       => [
 				'type'        => 'Int',
-				'description' => __( 'Product review count', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product review count', 'wp-graphql-woocommerce' );
+				},
 			],
 			'image'             => [
 				'type'        => 'MediaItem',
-				'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Main image', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $source, array $args, AppContext $context ) {
 					// @codingStandardsIgnoreLine.
 					if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
@@ -202,15 +244,21 @@ class Product {
 			],
 			'onSale'            => [
 				'type'        => 'Boolean',
-				'description' => __( 'Is product on sale?', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Is product on sale?', 'wp-graphql-woocommerce' );
+				},
 			],
 			'purchasable'       => [
 				'type'        => 'Boolean',
-				'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Can product be purchased?', 'wp-graphql-woocommerce' );
+				},
 			],
 			'virtual'           => [
 				'type'        => 'Boolean',
-				'description' => __( 'Is product virtual?', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Is product virtual?', 'wp-graphql-woocommerce' );
+				},
 			],
 			'metaData'          => \WPGraphQL\WooCommerce\Type\WPObject\Meta_Data_Type::get_metadata_field_definition(),
 		];

@@ -44,7 +44,9 @@ class Product_Attribute_Delete {
 		return [
 			'id' => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -43,7 +43,9 @@ class Tax_Rate_Update {
 			[
 				'id' => [
 					'type'        => [ 'non_null' => 'Int' ],
-					'description' => __( 'The ID of the tax rate to update.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The ID of the tax rate to update.', 'wp-graphql-woocommerce' );
+				},
 				],
 			]
 		);

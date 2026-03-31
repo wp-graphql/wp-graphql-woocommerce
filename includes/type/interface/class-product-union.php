@@ -24,7 +24,9 @@ class Product_Union {
 		register_graphql_interface_type(
 			'ProductUnion',
 			[
-				'description' => __( 'Union between the product and product variation types', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Union between the product and product variation types', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'resolveType' => 'wc_graphql_resolve_product_type',
@@ -42,43 +44,63 @@ class Product_Union {
 			[
 				'id'                => [
 					'type'        => [ 'non_null' => 'ID' ],
-					'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+				},
 				],
 				'databaseId'        => [
 					'type'        => [ 'non_null' => 'Int' ],
-					'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+				},
 				],
 				'slug'              => [
 					'type'        => 'String',
-					'description' => __( 'Product slug', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product slug', 'wp-graphql-woocommerce' );
+				},
 				],
 				'type'              => [
 					'type'        => 'ProductTypesEnum',
-					'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product type', 'wp-graphql-woocommerce' );
+				},
 				],
 				'name'              => [
 					'type'        => 'String',
-					'description' => __( 'Product name', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product name', 'wp-graphql-woocommerce' );
+				},
 				],
 				'featured'          => [
 					'type'        => 'Boolean',
-					'description' => __( 'If the product is featured', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'If the product is featured', 'wp-graphql-woocommerce' );
+				},
 				],
 				'catalogVisibility' => [
 					'type'        => 'CatalogVisibilityEnum',
-					'description' => __( 'Catalog visibility', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Catalog visibility', 'wp-graphql-woocommerce' );
+				},
 				],
 				'sku'               => [
 					'type'        => 'String',
-					'description' => __( 'Product SKU', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product SKU', 'wp-graphql-woocommerce' );
+				},
 				],
 				'description'       => [
 					'type'        => 'String',
-					'description' => __( 'Product description', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Product description', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'format' => [
 							'type'        => 'PostObjectFieldFormatEnum',
-							'description' => __( 'Format of the field output', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, $args ) {
@@ -91,7 +113,9 @@ class Product_Union {
 				],
 				'image'             => [
 					'type'        => 'MediaItem',
-					'description' => __( 'Main image', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Main image', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						// @codingStandardsIgnoreLine.
 						if ( empty( $source->image_id ) || ! absint( $source->image_id ) ) {
@@ -102,11 +126,15 @@ class Product_Union {
 				],
 				'onSale'            => [
 					'type'        => 'Boolean',
-					'description' => __( 'Is product on sale?', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Is product on sale?', 'wp-graphql-woocommerce' );
+				},
 				],
 				'purchasable'       => [
 					'type'        => 'Boolean',
-					'description' => __( 'Can product be purchased?', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Can product be purchased?', 'wp-graphql-woocommerce' );
+				},
 				],
 			],
 			Product::get_fields()

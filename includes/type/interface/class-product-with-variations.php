@@ -27,7 +27,9 @@ class Product_With_Variations {
 		register_graphql_interface_type(
 			'ProductWithVariations',
 			[
-				'description' => __( 'A product with variations.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A product with variations.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node', 'ProductWithAttributes' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
@@ -45,11 +47,15 @@ class Product_With_Variations {
 		return [
 			'id'         => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'Product or variation global ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'databaseId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'Product or variation ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

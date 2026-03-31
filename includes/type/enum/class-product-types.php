@@ -23,23 +23,33 @@ class Product_Types {
 			[
 				'SIMPLE'    => [
 					'value'       => 'simple',
-					'description' => __( 'A simple product', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A simple product', 'wp-graphql-woocommerce' );
+				},
 				],
 				'GROUPED'   => [
 					'value'       => 'grouped',
-					'description' => __( 'A product group', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A product group', 'wp-graphql-woocommerce' );
+				},
 				],
 				'EXTERNAL'  => [
 					'value'       => 'external',
-					'description' => __( 'An external product', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'An external product', 'wp-graphql-woocommerce' );
+				},
 				],
 				'VARIABLE'  => [
 					'value'       => 'variable',
-					'description' => __( 'A variable product', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A variable product', 'wp-graphql-woocommerce' );
+				},
 				],
 				'VARIATION' => [
 					'value'       => 'variation',
-					'description' => __( 'A product variation', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A product variation', 'wp-graphql-woocommerce' );
+				},
 				],
 
 			]
@@ -48,14 +58,18 @@ class Product_Types {
 		if ( 'on' === woographql_setting( 'enable_unsupported_product_type', 'off' ) ) {
 			$values['UNSUPPORTED'] = [
 				'value'       => 'unsupported',
-				'description' => __( 'An unsupported product', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'An unsupported product', 'wp-graphql-woocommerce' );
+				},
 			];
 		}
 
 		register_graphql_enum_type(
 			'ProductTypesEnum',
 			[
-				'description' => __( 'Product type enumeration', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product type enumeration', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $values,
 			]
 		);
@@ -63,7 +77,9 @@ class Product_Types {
 		register_graphql_enum_type(
 			'ProductTypesWithVariationsEnum',
 			[
-				'description' => __( 'Product type enumeration including variation types', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Product type enumeration including variation types', 'wp-graphql-woocommerce' );
+				},
 				'values'      => apply_filters(
 					'graphql_product_types_with_variations_enum_values',
 					array_merge(
@@ -71,7 +87,9 @@ class Product_Types {
 						[
 							'VARIATION' => [
 								'value'       => 'variation',
-								'description' => __( 'A product variation', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'A product variation', 'wp-graphql-woocommerce' );
+				},
 							],
 						]
 					)

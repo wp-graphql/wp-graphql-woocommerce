@@ -45,23 +45,33 @@ class Shipping_Zone_Method_Add {
 		return [
 			'zoneId'   => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'methodId' => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'The ID of the shipping method to add.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping method to add.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'enabled'  => [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether the shipping method is enabled or not.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Whether the shipping method is enabled or not.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'order'    => [
 				'type'        => 'Int',
-				'description' => __( 'The order of the shipping method.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The order of the shipping method.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'settings' => [
 				'type'        => [ 'list_of' => 'WCSettingInput' ],
-				'description' => __( 'The settings for the shipping method.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The settings for the shipping method.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

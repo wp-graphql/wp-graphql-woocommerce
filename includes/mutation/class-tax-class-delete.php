@@ -43,7 +43,9 @@ class Tax_Class_Delete {
 		return [
 			'slug' => [
 				'type'        => [ 'non_null' => 'String' ],
-				'description' => __( 'Slug of the tax class.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Slug of the tax class.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

@@ -34,14 +34,20 @@ class Root_Query {
 					'args'        => [
 						'recalculateTotals' => [
 							'type'        => 'Boolean',
-							'description' => __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' );
+				},
 						],
 						'fees'              => [
 							'type'        => [ 'list_of' => 'FeeInput' ],
-							'description' => __( 'Fees to add to the cart.', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Fees to add to the cart.', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
-					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The cart object', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function ( $_, $args ) {
 						$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
 						if ( $token_invalid ) {
@@ -88,7 +94,9 @@ class Root_Query {
 							'type' => [ 'non_null' => 'ID' ],
 						],
 					],
-					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The cart object', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function ( $source, array $args ) {
 						$item = Factory::resolve_cart()->get_cart_item( $args['key'] );
 						if ( empty( $item ) || empty( $item['key'] ) ) {
@@ -105,7 +113,9 @@ class Root_Query {
 							'type' => [ 'non_null' => 'ID' ],
 						],
 					],
-					'description' => __( 'The cart object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The cart object', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function ( $source, array $args ) {
 						$fees   = Factory::resolve_cart()->get_fees();
 						$fee_id = $args['id'];
@@ -119,12 +129,16 @@ class Root_Query {
 				],
 				'coupon'           => [
 					'type'        => 'Coupon',
-					'description' => __( 'A coupon object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A coupon object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [ 'type' => [ 'non_null' => 'ID' ] ],
 						'idType' => [
 							'type'        => 'CouponIdTypeEnum',
-							'description' => __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -177,15 +191,21 @@ class Root_Query {
 				],
 				'customer'         => [
 					'type'        => 'Customer',
-					'description' => __( 'A customer object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A customer object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'         => [
 							'type'        => 'ID',
-							'description' => __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' );
+				},
 						],
 						'customerId' => [
 							'type'        => 'Int',
-							'description' => __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -225,15 +245,21 @@ class Root_Query {
 				],
 				'order'            => [
 					'type'        => 'Order',
-					'description' => __( 'A order object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A order object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
-							'description' => __( 'The ID for identifying the order', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'The ID for identifying the order', 'wp-graphql-woocommerce' );
+				},
 						],
 						'idType' => [
 							'type'        => 'OrderIdTypeEnum',
-							'description' => __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -303,15 +329,21 @@ class Root_Query {
 				],
 				'productVariation' => [
 					'type'        => 'ProductVariation',
-					'description' => __( 'A product variation object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A product variation object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
-							'description' => __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' );
+				},
 						],
 						'idType' => [
 							'type'        => 'ProductVariationIdTypeEnum',
-							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -349,15 +381,21 @@ class Root_Query {
 				],
 				'refund'           => [
 					'type'        => 'Refund',
-					'description' => __( 'A refund object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A refund object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [
 							'type'        => [ 'non_null' => 'ID' ],
-							'description' => __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' );
+				},
 						],
 						'idType' => [
 							'type'        => 'RefundIdTypeEnum',
-							'description' => __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -430,15 +468,21 @@ class Root_Query {
 				],
 				'shippingMethod'   => [
 					'type'        => 'ShippingMethod',
-					'description' => __( 'A shipping method object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A shipping method object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
-							'description' => __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' );
+				},
 						],
 						'idType' => [
 							'type'        => 'ShippingMethodIdTypeEnum',
-							'description' => __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args ) {
@@ -469,15 +513,21 @@ class Root_Query {
 				],
 				'shippingZone'     => [
 					'type'        => 'ShippingZone',
-					'description' => __( 'A shipping zone object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A shipping zone object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
-							'description' => __( 'The ID for identifying the shipping zone', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'The ID for identifying the shipping zone', 'wp-graphql-woocommerce' );
+				},
 						],
 						'idType' => [
 							'type'        => 'ShippingZoneIdTypeEnum',
-							'description' => __( 'Type of ID being used identify shipping zone', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify shipping zone', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -512,15 +562,21 @@ class Root_Query {
 				],
 				'taxRate'          => [
 					'type'        => 'TaxRate',
-					'description' => __( 'A tax rate object', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'A tax rate object', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
-							'description' => __( 'The ID for identifying the tax rate', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'The ID for identifying the tax rate', 'wp-graphql-woocommerce' );
+				},
 						],
 						'idType' => [
 							'type'        => 'TaxRateIdTypeEnum',
-							'description' => __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
@@ -550,7 +606,9 @@ class Root_Query {
 				],
 				'countries'        => [
 					'type'        => [ 'list_of' => 'CountriesEnum' ],
-					'description' => __( 'Countries', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Countries', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function () {
 						$wc_countries = new \WC_Countries();
 						$countries    = $wc_countries->get_countries();
@@ -560,7 +618,9 @@ class Root_Query {
 				],
 				'allowedCountries' => [
 					'type'        => [ 'list_of' => 'CountriesEnum' ],
-					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Countries that the store sells to', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function () {
 						$wc_countries = new \WC_Countries();
 						$countries    = $wc_countries->get_allowed_countries();
@@ -573,10 +633,14 @@ class Root_Query {
 					'args'        => [
 						'country' => [
 							'type'        => [ 'non_null' => 'CountriesEnum' ],
-							'description' => __( 'Target country', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Target country', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
-					'description' => __( 'Countries that the store sells to', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Countries that the store sells to', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function ( $_, $args ) {
 						$country      = $args['country'];
 						$wc_countries = new \WC_Countries();
@@ -596,7 +660,9 @@ class Root_Query {
 				],
 				'wcSettingGroups'  => [
 					'type'        => [ 'list_of' => 'WCSettingGroup' ],
-					'description' => __( 'WooCommerce setting groups', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'WooCommerce setting groups', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function () {
 						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
 							throw new UserError( __( 'Sorry, you cannot view settings.', 'wp-graphql-woocommerce' ) );
@@ -608,11 +674,15 @@ class Root_Query {
 				],
 				'wcSettings'       => [
 					'type'        => [ 'list_of' => 'WCSetting' ],
-					'description' => __( 'WooCommerce settings for a specific group', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'WooCommerce settings for a specific group', 'wp-graphql-woocommerce' );
+				},
 					'args'        => [
 						'group' => [
 							'type'        => [ 'non_null' => 'String' ],
-							'description' => __( 'Settings group ID', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Settings group ID', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'     => static function ( $_, $args ) {
@@ -635,15 +705,21 @@ class Root_Query {
 					'args'        => [
 						'calculatePriceRange'        => [
 							'type'        => 'Boolean',
-							'description' => __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' );
+				},
 						],
 						'calculateRatingCounts'      => [
 							'type'        => 'Boolean',
-							'description' => __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' );
+				},
 						],
 						'calculateStockStatusCounts' => [
 							'type'        => 'Boolean',
-							'description' => __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' );
+				},
 						],
 						'taxonomies'                 => [
 							'type' => [ 'list_of' => 'CollectionStatsQueryInput' ],
@@ -652,7 +728,9 @@ class Root_Query {
 							'type' => 'CollectionStatsWhereArgs',
 						],
 					],
-					'description' => __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' );
+				},
 					'resolve'     => static function ( $_, $args ) {
 						/** @var array<string, mixed> $data */
 						$data    = [
@@ -842,20 +920,23 @@ class Root_Query {
 				[
 					'type'              => $type_name,
 					/* translators: Product type slug */
-					'description'       => sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key ),
+					'description'       => static function () use ( $type_key ) {
+						return sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key );
+					},
 					'deprecationReason' => 'Use "product" instead.',
 					'args'              => [
 						'id'     => [
 							'type'        => 'ID',
-							'description' => sprintf(
+							'description' => static function () use ( $type_name ) {
 								/* translators: %s: product type */
-								__( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ),
-								$type_name
-							),
+								return sprintf( __( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ), $type_name );
+							},
 						],
 						'idType' => [
 							'type'        => 'ProductIdTypeEnum',
-							'description' => __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' );
+				},
 						],
 					],
 					'resolve'           => static function ( $source, array $args, AppContext $context ) use ( $type_key, $unsupported_type_enabled ) {

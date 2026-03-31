@@ -43,15 +43,21 @@ class Shipping_Zone_Update {
 		return [
 			'id'    => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the shipping zone to update.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping zone to update.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'name'  => [
 				'type'        => 'String',
-				'description' => __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'order' => [
 				'type'        => 'Int',
-				'description' => __( 'Order of the shipping zone.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order of the shipping zone.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

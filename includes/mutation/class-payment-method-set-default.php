@@ -42,7 +42,9 @@ class Payment_Method_Set_Default {
 		return [
 			'tokenId' => [
 				'type'        => [ 'non_null' => 'Integer' ],
-				'description' => __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}
@@ -56,14 +58,18 @@ class Payment_Method_Set_Default {
 		return [
 			'status' => [
 				'type'        => 'String',
-				'description' => __( 'Status of the request', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Status of the request', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
 				},
 			],
 			'token'  => [
 				'type'        => 'PaymentTokenInterface',
-				'description' => __( 'Preferred payment method token', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Preferred payment method token', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['token'] ) ? $payload['token'] : null;
 				},

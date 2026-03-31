@@ -47,7 +47,9 @@ class Review_Update {
 			[
 				'id' => [
 					'type'        => [ 'non_null' => 'ID' ],
-					'description' => __( 'The ID of the review being updated.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The ID of the review being updated.', 'wp-graphql-woocommerce' );
+				},
 				],
 			]
 		);

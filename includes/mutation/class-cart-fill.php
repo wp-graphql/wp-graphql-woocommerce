@@ -45,15 +45,21 @@ class Cart_Fill {
 		return [
 			'shippingMethods' => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'Shipping methods to be used.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Shipping methods to be used.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'coupons'         => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'Coupons to be applied to the cart', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Coupons to be applied to the cart', 'wp-graphql-woocommerce' );
+				},
 			],
 			'items'           => [
 				'type'        => [ 'list_of' => 'CartItemInput' ],
-				'description' => __( 'Cart items to be added', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart items to be added', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

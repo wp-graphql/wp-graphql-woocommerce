@@ -44,11 +44,15 @@ class Shipping_Zone_Method_Remove {
 		return [
 			'zoneId'     => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'instanceId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'Shipping method instance ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Shipping method instance ID', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

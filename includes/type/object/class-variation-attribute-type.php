@@ -23,40 +23,52 @@ class Variation_Attribute_Type {
 		register_graphql_object_type(
 			'VariationAttribute',
 			[
-				'description' => __( 'A product variation attribute object', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A product variation attribute object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Attribute' ],
 				'fields'      => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
-						'description' => __( 'The Global ID of the attribute.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The Global ID of the attribute.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['id'] ) ? $source['id'] : null;
 						},
 					],
 					'attributeId' => [
 						'type'        => 'Int',
-						'description' => __( 'The Database ID of the attribute.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The Database ID of the attribute.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
 						},
 					],
 					'label'       => [
 						'type'        => 'String',
-						'description' => __( 'Label of attribute', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Label of attribute', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['label'] ) ? $source['label'] : null;
 						},
 					],
 					'name'        => [
 						'type'        => 'String',
-						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Name of attribute', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
 					],
 					'value'       => [
 						'type'        => 'String',
-						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Selected value of attribute', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;
 						},

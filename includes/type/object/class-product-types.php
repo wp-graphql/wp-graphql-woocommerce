@@ -69,7 +69,9 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
-				'description'     => __( 'A simple product object', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A simple product object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => self::get_product_interfaces(
 					[
 						'DownloadableProduct',
@@ -94,7 +96,9 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
-				'description'     => __( 'A variable product object', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A variable product object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => self::get_product_interfaces(
 					[
 						'InventoriedProduct',
@@ -119,17 +123,23 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
-				'description'     => __( 'A external product object', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A external product object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => array_merge(
 					[
 						'externalUrl' => [
 							'type'        => 'String',
-							'description' => __( 'External product url', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'External product url', 'wp-graphql-woocommerce' );
+				},
 						],
 						'buttonText'  => [
 							'type'        => 'String',
-							'description' => __( 'External product Buy button text', 'wp-graphql-woocommerce' ),
+							'description' => static function () {
+					return __( 'External product Buy button text', 'wp-graphql-woocommerce' );
+				},
 						],
 					]
 				),
@@ -148,20 +158,28 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
-				'description'     => __( 'A group product object', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A group product object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => [
 					'addToCartText'        => [
 						'type'        => 'String',
-						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' );
+						},
 					],
 					'addToCartDescription' => [
 						'type'        => 'String',
-						'description' => __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' );
+						},
 					],
 					'price'                => [
 						'type'        => 'String',
-						'description' => __( 'Products\' price range', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Products\' price range', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( Model $source ) {
 							$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
 							$child_prices     = [];
@@ -213,7 +231,9 @@ class Product_Types {
 			[
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
-				'description'     => __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => self::get_product_interfaces(
 					[
 						'DownloadableProduct',
@@ -225,7 +245,9 @@ class Product_Types {
 				'fields'          => [
 					'type' => [
 						'type'        => 'ProductTypesEnum',
-						'description' => __( 'Product type', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Product type', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function () {
 							return 'unsupported';
 						},

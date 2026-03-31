@@ -33,19 +33,27 @@ class Order_Item_Type {
 				[
 					'code'        => [
 						'type'        => 'String',
-						'description' => __( 'Line\'s Coupon code', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line\'s Coupon code', 'wp-graphql-woocommerce' );
+						},
 					],
 					'discount'    => [
 						'type'        => 'String',
-						'description' => __( 'Line\'s Discount total', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line\'s Discount total', 'wp-graphql-woocommerce' );
+						},
 					],
 					'discountTax' => [
 						'type'        => 'String',
-						'description' => __( 'Line\'s Discount total tax', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line\'s Discount total tax', 'wp-graphql-woocommerce' );
+						},
 					],
 					'coupon'      => [
 						'type'        => 'Coupon',
-						'description' => __( 'Line\'s Coupon', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line\'s Coupon', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source->coupon_id, $context );
 						},
@@ -59,31 +67,45 @@ class Order_Item_Type {
 				[
 					'amount'    => [
 						'type'        => 'String',
-						'description' => __( 'Fee amount', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Fee amount', 'wp-graphql-woocommerce' );
+				},
 					],
 					'name'      => [
 						'type'        => 'String',
-						'description' => __( 'Fee name', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Fee name', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxStatus' => [
 						'type'        => 'TaxStatusEnum',
-						'description' => __( 'Tax status of fee', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Tax status of fee', 'wp-graphql-woocommerce' );
+				},
 					],
 					'total'     => [
 						'type'        => 'String',
-						'description' => __( 'Line total (after discounts)', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line total (after discounts)', 'wp-graphql-woocommerce' );
+				},
 					],
 					'totalTax'  => [
 						'type'        => 'String',
-						'description' => __( 'Line total tax (after discounts)', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line total tax (after discounts)', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxes'     => [
 						'type'        => [ 'list_of' => 'OrderItemTax' ],
-						'description' => __( 'Line taxes', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line taxes', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxClass'  => [
 						'type'        => 'TaxClassEnum',
-						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line tax class', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 			],
@@ -94,27 +116,39 @@ class Order_Item_Type {
 				[
 					'methodTitle'    => [
 						'type'        => 'String',
-						'description' => __( 'Shipping Line\'s shipping method name', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Shipping Line\'s shipping method name', 'wp-graphql-woocommerce' );
+						},
 					],
 					'total'          => [
 						'type'        => 'String',
-						'description' => __( 'Line total (after discounts)', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line total (after discounts)', 'wp-graphql-woocommerce' );
+				},
 					],
 					'totalTax'       => [
 						'type'        => 'String',
-						'description' => __( 'Line total tax (after discounts)', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line total tax (after discounts)', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxes'          => [
 						'type'        => [ 'list_of' => 'OrderItemTax' ],
-						'description' => __( 'Line taxes', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line taxes', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxClass'       => [
 						'type'        => 'TaxClassEnum',
-						'description' => __( 'Line tax class', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Line tax class', 'wp-graphql-woocommerce' );
+				},
 					],
 					'shippingMethod' => [
 						'type'        => 'ShippingMethod',
-						'description' => __( 'Shipping Line\'s shipping method', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Shipping Line\'s shipping method', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source ) {
 							return Factory::resolve_shipping_method( $source->method_id );
 						},
@@ -128,27 +162,39 @@ class Order_Item_Type {
 				[
 					'rateCode'         => [
 						'type'        => 'String',
-						'description' => __( 'Tax rate code/name', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Tax rate code/name', 'wp-graphql-woocommerce' );
+				},
 					],
 					'label'            => [
 						'type'        => 'String',
-						'description' => __( 'Tax rate label', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Tax rate label', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxTotal'         => [
 						'type'        => 'String',
-						'description' => __( 'Tax total (not including shipping taxes)', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Tax total (not including shipping taxes)', 'wp-graphql-woocommerce' );
+				},
 					],
 					'shippingTaxTotal' => [
 						'type'        => 'String',
-						'description' => __( 'Tax line\'s shipping tax total', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Tax line\'s shipping tax total', 'wp-graphql-woocommerce' );
+						},
 					],
 					'isCompound'       => [
 						'type'        => 'Boolean',
-						'description' => __( 'Is this a compound tax rate?', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Is this a compound tax rate?', 'wp-graphql-woocommerce' );
+				},
 					],
 					'taxRate'          => [
 						'type'        => 'TaxRate',
-						'description' => __( 'Tax line\'s tax rate', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Tax line\'s tax rate', 'wp-graphql-woocommerce' );
+						},
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_tax_rate( $source->rate_id, $context );
 						},
@@ -162,27 +208,39 @@ class Order_Item_Type {
 				[
 					'productId'     => [
 						'type'        => 'Int',
-						'description' => __( 'Line item\'s product ID', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s product ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'variationId'   => [
 						'type'        => 'Int',
-						'description' => __( 'Line item\'s product variation ID', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s product variation ID', 'wp-graphql-woocommerce' );
+						},
 					],
 					'quantity'      => [
 						'type'        => 'Int',
-						'description' => __( 'Line item\'s product quantity', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s product quantity', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxClass'      => [
 						'type'        => 'TaxClassEnum',
-						'description' => __( 'Line item\'s tax class', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s tax class', 'wp-graphql-woocommerce' );
+						},
 					],
 					'subtotal'      => [
 						'type'        => 'String',
-						'description' => __( 'Line item\'s subtotal', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s subtotal', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
-								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {
@@ -194,11 +252,15 @@ class Order_Item_Type {
 					],
 					'subtotalTax'   => [
 						'type'        => 'String',
-						'description' => __( 'Line item\'s subtotal tax', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s subtotal tax', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
-								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {
@@ -210,11 +272,15 @@ class Order_Item_Type {
 					],
 					'total'         => [
 						'type'        => 'String',
-						'description' => __( 'Line item\'s total', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s total', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
-								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {
@@ -226,11 +292,15 @@ class Order_Item_Type {
 					],
 					'totalTax'      => [
 						'type'        => 'String',
-						'description' => __( 'Line item\'s total tax', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s total tax', 'wp-graphql-woocommerce' );
+						},
 						'args'        => [
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
-								'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 							],
 						],
 						'resolve'     => static function ( $source, array $args ) {
@@ -242,15 +312,21 @@ class Order_Item_Type {
 					],
 					'taxes'         => [
 						'type'        => [ 'list_of' => 'OrderItemTax' ],
-						'description' => __( 'Line item\'s taxes', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s taxes', 'wp-graphql-woocommerce' );
+						},
 					],
 					'itemDownloads' => [
 						'type'        => [ 'list_of' => 'ProductDownload' ],
-						'description' => __( 'Line item\'s taxes', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s taxes', 'wp-graphql-woocommerce' );
+						},
 					],
 					'taxStatus'     => [
 						'type'        => 'TaxStatusEnum',
-						'description' => __( 'Line item\'s taxes', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+							return __( 'Line item\'s taxes', 'wp-graphql-woocommerce' );
+						},
 					],
 				],
 				// Connections.
@@ -306,39 +382,51 @@ class Order_Item_Type {
 		register_graphql_object_type(
 			'OrderItemTax',
 			[
-				'description' => __( 'Order item tax statement', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order item tax statement', 'wp-graphql-woocommerce' );
+				},
 				'fields'      => [
 					'taxLineId' => [
 						'type'        => [ 'non_null' => 'Int' ],
-						'description' => __( 'Order item ID for tax line connected to this statement', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Order item ID for tax line connected to this statement', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['ID'] ) ? $source['ID'] : null;
 						},
 					],
 					'subtotal'  => [
 						'type'        => 'Float',
-						'description' => __( 'Subtotal', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Subtotal', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['subtotal'] ) ? $source['subtotal'] : null;
 						},
 					],
 					'total'     => [
 						'type'        => 'Float',
-						'description' => __( 'Total', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Total', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['total'] ) ? $source['total'] : null;
 						},
 					],
 					'amount'    => [
 						'type'        => 'Float',
-						'description' => __( 'Amount taxed', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Amount taxed', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['amount'] ) ? $source['amount'] : null;
 						},
 					],
 					'taxLine'   => [
 						'type'        => 'TaxLine',
-						'description' => __( 'Tax line connected to this statement', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Tax line connected to this statement', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$item = \WC_Order_Factory::get_order_item( $source['ID'] );
 							// Return early if the item is not found.
@@ -365,15 +453,21 @@ class Order_Item_Type {
 			[
 				'id'         => [
 					'type'        => [ 'non_null' => 'ID' ],
-					'description' => __( 'The ID of the order item in the database', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The ID of the order item in the database', 'wp-graphql-woocommerce' );
+				},
 				],
 				'databaseId' => [
 					'type'        => 'Int',
-					'description' => __( 'The ID of the order item in the database', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The ID of the order item in the database', 'wp-graphql-woocommerce' );
+				},
 				],
 				'orderId'    => [
 					'type'        => 'Int',
-					'description' => __( 'The Id of the order the order item belongs to.', 'wp-graphql-woocommerce' ),
+					'description' => static function () {
+					return __( 'The Id of the order the order item belongs to.', 'wp-graphql-woocommerce' );
+				},
 				],
 
 				'metaData'   => Meta_Data_Type::get_metadata_field_definition(),

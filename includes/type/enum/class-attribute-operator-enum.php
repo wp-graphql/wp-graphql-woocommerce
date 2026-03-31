@@ -21,7 +21,9 @@ class Attribute_Operator_Enum {
 		register_graphql_enum_type(
 			'AttributeOperatorEnum',
 			[
-				'description' => __( 'Collection statistic attributes operators', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Collection statistic attributes operators', 'wp-graphql-woocommerce' );
+				},
 				'values'      => [
 					'IN'     => [ 'value' => 'IN' ],
 					'NOT_IN' => [ 'value' => 'NOT IN' ],

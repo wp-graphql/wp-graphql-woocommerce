@@ -44,23 +44,33 @@ class Cart_Add_Item {
 		return [
 			'productId'   => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item product database ID or global ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'quantity'    => [
 				'type'        => 'Int',
-				'description' => __( 'Cart item quantity', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item quantity', 'wp-graphql-woocommerce' );
+				},
 			],
 			'variationId' => [
 				'type'        => 'Int',
-				'description' => __( 'Cart item product variation database ID or global ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item product variation database ID or global ID', 'wp-graphql-woocommerce' );
+				},
 			],
 			'variation'   => [
 				'type'        => [ 'list_of' => 'ProductAttributeInput' ],
-				'description' => __( 'Cart item product variation attributes', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item product variation attributes', 'wp-graphql-woocommerce' );
+				},
 			],
 			'extraData'   => [
 				'type'        => 'String',
-				'description' => __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'JSON string representation of extra cart item data', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

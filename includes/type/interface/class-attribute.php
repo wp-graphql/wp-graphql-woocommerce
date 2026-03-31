@@ -21,19 +21,25 @@ class Attribute {
 		register_graphql_interface_type(
 			'Attribute',
 			[
-				'description' => __( 'Attribute object', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Attribute object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'name'  => [
 						'type'        => 'String',
-						'description' => __( 'Name of attribute', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Name of attribute', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
 						},
 					],
 					'value' => [
 						'type'        => 'String',
-						'description' => __( 'Selected value of attribute', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Selected value of attribute', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;
 						},

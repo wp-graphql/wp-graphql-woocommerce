@@ -28,7 +28,9 @@ class Cart_Item {
 		register_graphql_interface_type(
 			'CartItem',
 			[
-				'description' => __( 'Cart item interface.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item interface.', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
 				'connections' => self::get_connections(),
@@ -54,7 +56,9 @@ class Cart_Item {
 			'SimpleCartItem',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'A item in the cart', 'wp-graphql-woocommerce' ),
+				'description'     => static function () {
+					return __( 'A item in the cart', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'      => [ 'Node', 'CartItem' ],
 				'fields'          => [],
 			]
@@ -70,25 +74,33 @@ class Cart_Item {
 		return [
 			'key'         => [
 				'type'        => [ 'non_null' => 'ID' ],
-				'description' => __( 'CartItem ID', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'CartItem ID', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $source ) {
 					return ! empty( $source['key'] ) ? $source['key'] : null;
 				},
 			],
 			'quantity'    => [
 				'type'        => 'Int',
-				'description' => __( 'Quantity of the product', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Quantity of the product', 'wp-graphql-woocommerce' );
+				},
 				'resolve'     => static function ( $source ) {
 					return isset( $source['quantity'] ) ? absint( $source['quantity'] ) : null;
 				},
 			],
 			'subtotal'    => [
 				'type'        => 'String',
-				'description' => __( 'Item\'s subtotal', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Item\'s subtotal', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -103,11 +115,15 @@ class Cart_Item {
 			],
 			'subtotalTax' => [
 				'type'        => 'String',
-				'description' => __( 'Item\'s subtotal tax', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Item\'s subtotal tax', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -122,11 +138,15 @@ class Cart_Item {
 			],
 			'total'       => [
 				'type'        => 'String',
-				'description' => __( 'Item\'s total', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Item\'s total', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -143,11 +163,15 @@ class Cart_Item {
 			],
 			'tax'         => [
 				'type'        => 'String',
-				'description' => __( 'Item\'s tax', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Item\'s tax', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'format' => [
 						'type'        => 'PricingFieldFormatEnum',
-						'description' => __( 'Format of the price', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Format of the price', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -162,15 +186,21 @@ class Cart_Item {
 			],
 			'extraData'   => [
 				'type'        => [ 'list_of' => 'MetaData' ],
-				'description' => __( 'Object meta data', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Object meta data', 'wp-graphql-woocommerce' );
+				},
 				'args'        => [
 					'key'    => [
 						'type'        => 'String',
-						'description' => __( 'Retrieve meta by key', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Retrieve meta by key', 'wp-graphql-woocommerce' );
+				},
 					],
 					'keysIn' => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'resolve'     => static function ( $source, array $args ) {
@@ -237,7 +267,9 @@ class Cart_Item {
 				'edgeFields' => [
 					'simpleVariations' => [
 						'type'        => [ 'list_of' => 'SimpleAttribute' ],
-						'description' => __( 'Simple variation attribute data', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Simple variation attribute data', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$attributes = [];
 
@@ -268,7 +300,9 @@ class Cart_Item {
 				'edgeFields' => [
 					'attributes' => [
 						'type'        => [ 'list_of' => 'VariationAttribute' ],
-						'description' => __( 'Attributes of the variation.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Attributes of the variation.', 'wp-graphql-woocommerce' );
+				},
 						'resolve'     => static function ( $source ) {
 							$attributes = [];
 

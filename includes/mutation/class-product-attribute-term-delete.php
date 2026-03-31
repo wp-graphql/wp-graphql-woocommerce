@@ -43,11 +43,15 @@ class Product_Attribute_Term_Delete {
 		return [
 			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'id'          => [
 				'type'        => [ 'non_null' => 'Int' ],
-				'description' => __( 'The ID of the term to update.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of the term to update.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

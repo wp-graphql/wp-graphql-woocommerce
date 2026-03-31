@@ -21,7 +21,9 @@ class Taxonomy_Operator {
 		register_graphql_enum_type(
 			'TaxonomyOperatorEnum',
 			[
-				'description' => __( 'Taxonomy query operators', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Taxonomy query operators', 'wp-graphql-woocommerce' );
+				},
 				'values'      => [
 					'IN'         => [ 'value' => 'IN' ],
 					'NOT_IN'     => [ 'value' => 'NOT IN' ],

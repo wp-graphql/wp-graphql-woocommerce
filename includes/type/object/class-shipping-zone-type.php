@@ -27,28 +27,40 @@ class Shipping_Zone_Type {
 		register_graphql_object_type(
 			'ShippingZone',
 			[
-				'description' => __( 'A Shipping zone object', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'A Shipping zone object', 'wp-graphql-woocommerce' );
+				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'         => [
 						'type'        => [ 'non_null' => 'ID' ],
-						'description' => __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'databaseId' => [
 						'type'        => 'Int',
-						'description' => __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' );
+				},
 					],
 					'name'       => [
 						'type'        => 'String',
-						'description' => __( 'Shipping zone name.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Shipping zone name.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'order'      => [
 						'type'        => 'Int',
-						'description' => __( 'Shipping zone order.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Shipping zone order.', 'wp-graphql-woocommerce' );
+				},
 					],
 					'locations'  => [
 						'type'        => [ 'list_of' => 'ShippingLocation' ],
-						'description' => __( 'Shipping zone locations.', 'wp-graphql-woocommerce' ),
+						'description' => static function () {
+					return __( 'Shipping zone locations.', 'wp-graphql-woocommerce' );
+				},
 					],
 				],
 				'connections' => [
@@ -57,7 +69,9 @@ class Shipping_Zone_Type {
 						'edgeFields' => [
 							'id'         => [
 								'type'        => [ 'non_null' => 'ID' ],
-								'description' => __( 'The globally unique identifier for the shipping method.', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'The globally unique identifier for the shipping method.', 'wp-graphql-woocommerce' );
+				},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
 										$shipping_method = $edge['node']->as_WC_Data();
@@ -70,7 +84,9 @@ class Shipping_Zone_Type {
 							],
 							'instanceId' => [
 								'type'        => 'Int',
-								'description' => __( 'Shipping method instance ID.', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Shipping method instance ID.', 'wp-graphql-woocommerce' );
+				},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
 										$shipping_method = $edge['node']->as_WC_Data();
@@ -81,7 +97,9 @@ class Shipping_Zone_Type {
 							],
 							'order'      => [
 								'type'        => 'Int',
-								'description' => __( 'The order of the shipping method.', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'The order of the shipping method.', 'wp-graphql-woocommerce' );
+				},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
 										$shipping_method = $edge['node']->as_WC_Data();
@@ -92,7 +110,9 @@ class Shipping_Zone_Type {
 							],
 							'enabled'    => [
 								'type'        => 'Boolean',
-								'description' => __( 'Whether the shipping method is enabled.', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Whether the shipping method is enabled.', 'wp-graphql-woocommerce' );
+				},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
 										/** @var \WC_Shipping_Method $shipping_method */
@@ -104,7 +124,9 @@ class Shipping_Zone_Type {
 							],
 							'settings'   => [
 								'type'        => [ 'list_of' => 'WCStringSetting' ],
-								'description' => __( 'Shipping method settings.', 'wp-graphql-woocommerce' ),
+								'description' => static function () {
+					return __( 'Shipping method settings.', 'wp-graphql-woocommerce' );
+				},
 								'resolve'     => static function ( $edge ) {
 									$settings = [];
 									if ( isset( $edge['node'] ) ) {

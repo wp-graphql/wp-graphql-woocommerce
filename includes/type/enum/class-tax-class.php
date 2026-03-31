@@ -23,11 +23,15 @@ class Tax_Class {
 		$values = [
 			'INHERIT_CART' => [
 				'value'       => 'inherit',
-				'description' => __( 'Inherits Tax class from cart', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Inherits Tax class from cart', 'wp-graphql-woocommerce' );
+				},
 			],
 			'STANDARD'     => [
 				'value'       => '',
-				'description' => __( 'Standard Tax rate', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Standard Tax rate', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 
@@ -43,7 +47,9 @@ class Tax_Class {
 		register_graphql_enum_type(
 			'TaxClassEnum',
 			[
-				'description' => __( 'Tax class enumeration', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Tax class enumeration', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $values,
 			]
 		);

@@ -45,7 +45,9 @@ class Cart_Update_Item_Quantities {
 		return [
 			'items' => [
 				'type'        => [ 'list_of' => 'CartItemQuantityInput' ],
-				'description' => __( 'Cart item being updated', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Cart item being updated', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}

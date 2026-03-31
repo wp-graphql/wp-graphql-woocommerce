@@ -31,7 +31,9 @@ class Order_Status {
 		register_graphql_enum_type(
 			'OrderStatusEnum',
 			[
-				'description' => __( 'Order status enumeration', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Order status enumeration', 'wp-graphql-woocommerce' );
+				},
 				'values'      => $values,
 			]
 		);

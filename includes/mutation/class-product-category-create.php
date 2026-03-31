@@ -44,15 +44,21 @@ class Product_Category_Create {
 		return [
 			'display'   => [
 				'type'        => 'ProductCategoryDisplay',
-				'description' => __( 'Category archive display type.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Category archive display type.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'menuOrder' => [
 				'type'        => 'Integer',
-				'description' => __( 'Menu order, used to custom sort the category.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'Menu order, used to custom sort the category.', 'wp-graphql-woocommerce' );
+				},
 			],
 			'imageId'   => [
 				'type'        => 'ID',
-				'description' => __( 'The ID of an image attachment to associate with the category.', 'wp-graphql-woocommerce' ),
+				'description' => static function () {
+					return __( 'The ID of an image attachment to associate with the category.', 'wp-graphql-woocommerce' );
+				},
 			],
 		];
 	}
