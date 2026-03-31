@@ -50,9 +50,6 @@
         ]
     },
     "autoload-dev": {
-        "files": [
-            "tests/_data/config.php"
-        ],
         "psr-4": {
             "Tests\\WPGraphQL\\WooCommerce\\": "tests/_support/"
         }

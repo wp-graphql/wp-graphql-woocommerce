@@ -49,7 +49,7 @@ modules:
       populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
       dump: 'local/db/app_db.sql'
       populate: false
-      cleanup: true
+      cleanup: false
       waitlock: 0
       url: '%WORDPRESS_URL%'
       urlReplacement: true

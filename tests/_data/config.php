@@ -5,6 +5,11 @@
  * fatal errors when the autoloader is loaded twice
  */
 
+
+if ( ! defined( 'GRAPHQL_TESTING' ) ) {
+	define( 'GRAPHQL_TESTING', true );
+}
+
 if ( ! defined( 'GRAPHQL_DEBUG' ) ) {
 	define( 'GRAPHQL_DEBUG', true );
 }

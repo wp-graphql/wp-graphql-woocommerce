@@ -60,6 +60,12 @@ function create_order_custom_table_if_not_exist() {
 	$features_controller = wc_get_container()->get( \Automattic\WooCommerce\Internal\Features\FeaturesController::class );
 	$features_controller->change_feature_enable( 'custom_order_tables', true );
 
+	update_option( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION, 'yes' );
+	wp_cache_flush();
+
+	$wc_data_store = WC_Data_Store::load( 'order' );
+	assert( is_a( $wc_data_store->get_current_class_name(), \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::class, true ) === true, 'data store\'s classname is "' . $wc_data_store->get_current_class_name() . '", but HPOS is enabled' );
+
 	$synchronizer = wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer::class );
 	if ( ! $synchronizer->check_orders_table_exists() ) {
 		$synchronizer->create_database_tables();
@@ -79,6 +85,7 @@ function initialize_hpos() {
 
 if ( defined( 'HPOS' ) ) {
 	\codecept_debug( 'HPOS activated!!!' );
+	initialize_hpos();
 	//add_action( 'woocommerce_init', 'initialize_hpos' );
 }
 

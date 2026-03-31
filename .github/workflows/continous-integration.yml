@@ -233,7 +233,7 @@ jobs:
 
   coverage:
     needs: [acceptance, functional, wpunit]
-    if: ${{ always() }}
+    if: ${{ needs.acceptance.result == 'success' && needs.functional.result == 'success' && needs.wpunit.result == 'success' }}
     runs-on: ubuntu-latest
     name: Aggregate Coverage & Push to Coveralls
     steps:

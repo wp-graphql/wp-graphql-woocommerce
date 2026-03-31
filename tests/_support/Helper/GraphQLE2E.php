@@ -629,6 +629,11 @@ class GraphQLE2E extends \Codeception\Module {
 	public function getCatalog() {
 		$this->_setupStore();
 
+		// Clear stale data from previous tests so Apache doesn't
+		// pick up sessions, carts, or users from prior runs.
+		$db = $this->getModule( 'WPDb' );
+		$db->dontHavePostInDatabase( [ 'post_type' => 'product' ], true );
+
 		$product_catalog = [];
 		$products        = [
 			[
@@ -672,6 +677,118 @@ class GraphQLE2E extends \Codeception\Module {
 			$product_catalog[ $product['post_title'] ] = $product_id;
 		}
 
+		return $product_catalog;
+	}
+
+	/**
+	 * Initializes store options and actions
+	 *
+	 * @param \Helper\AcceptanceTester $I
+	 * @return void
+	 */
+	public function _setupStore() {
+		$wpdb = $this->getModule( 'WPDb' );
+
+		$wpdb->useTheme( 'twentytwentyone' );
+		// Turn on tax calculations and store shipping countries. Important!
+		$wpdb->haveOptionInDatabase( 'woocommerce_ship_to_countries', 'all' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_prices_include_tax', 'no' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_calc_taxes', 'yes' );
+		$wpdb->haveOptionInDatabase( 'woocommerce_tax_round_at_subtotal', 'no' );
+
+		// Enable payment gateway.
+		$wpdb->haveOptionInDatabase(
+			'woocommerce_bacs_settings',
+			[
+				'enabled'      => 'yes',
+				'title'        => 'Direct bank transfer',
+				'description'  => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.',
+				'instructions' => 'Instructions that will be added to the thank you page and emails.',
+				'account'      => '',
+			]
+		);
+
+		// forcing has_block_template to be false
+		add_filter( 'woocommerce_has_block_template', '__return_false', 10, 2 );
+
+		//Additional cart fees.
+		add_action(
+			'woocommerce_cart_calculate_fees',
+			static function () {
+				$percentage = 0.01;
+				$surcharge  = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;
+				WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
+			}
+		);
+
+		// Create Shipping Zones.
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'Local' );
+		$zone->set_zone_order( 1 );
+		$zone->add_location( 'GB', 'country' );
+		$zone->add_location( 'CB*', 'postcode' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+		$zone->add_shipping_method( 'free_shipping' );
+
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'Europe' );
+		$zone->set_zone_order( 2 );
+		$zone->add_location( 'EU', 'continent' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+		$zone->add_shipping_method( 'free_shipping' );
+
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'California' );
+		$zone->set_zone_order( 3 );
+		$zone->add_location( 'US:CA', 'state' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+		$zone->add_shipping_method( 'free_shipping' );
+
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'US' );
+		$zone->set_zone_order( 4 );
+		$zone->add_location( 'US', 'country' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+		$zone->add_shipping_method( 'free_shipping' );
+
+		$zone = new \WC_Shipping_Zone();
+		$zone->set_zone_name( 'US' );
+		$zone->set_zone_order( 5 );
+		$zone->add_location( 'US:NY', 'state' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+		$zone->add_shipping_method( 'free_shipping' );
+
+		global $wp_rewrite; 
+
+		//Write the rule
+		$wp_rewrite->set_permalink_structure('/%postname%/'); 
+
+		//Set the option
+		update_option( "rewrite_rules", FALSE ); 
+
+		//Flush the rules and tell it to write htaccess
+		$wp_rewrite->flush_rules( true );
+
+		$this->_createWoocommercePages();
+
+		if ( function_exists( 'WC' ) && WC()->cart ) {
+			WC()->cart->empty_cart( true );
+		}
+		wp_set_current_user( 0 );
+		\WC()->customer = null;
+		\WC()->session  = null;
+		\WC()->cart     = null;
+
+		\WC()->initialize_session();
+		\WC()->initialize_cart();
+	}
+
+	private function _createWooCommercePages() {
 		$cart_page_content = '<!-- wp:woocommerce/cart -->
 		<div class="wp-block-woocommerce-cart alignwide is-loading"><!-- wp:woocommerce/filled-cart-block -->
 		<div class="wp-block-woocommerce-filled-cart-block"><!-- wp:woocommerce/cart-items-block -->
@@ -860,103 +977,6 @@ class GraphQLE2E extends \Codeception\Module {
 			]
 		);
 		$wpdb->haveOptionInDatabase( 'woocommerce_checkout_page_id', $checkout_page_id );
-
-		return $product_catalog;
-	}
-
-	/**
-	 * Initializes store options and actions
-	 *
-	 * @param \Helper\AcceptanceTester $I
-	 * @return void
-	 */
-	public function _setupStore() {
-		$wpdb = $this->getModule( 'WPDb' );
-
-		$wpdb->useTheme( 'twentytwentyone' );
-		// Turn on tax calculations and store shipping countries. Important!
-		$wpdb->haveOptionInDatabase( 'woocommerce_ship_to_countries', 'all' );
-		$wpdb->haveOptionInDatabase( 'woocommerce_prices_include_tax', 'no' );
-		$wpdb->haveOptionInDatabase( 'woocommerce_calc_taxes', 'yes' );
-		$wpdb->haveOptionInDatabase( 'woocommerce_tax_round_at_subtotal', 'no' );
-
-		// Enable payment gateway.
-		$wpdb->haveOptionInDatabase(
-			'woocommerce_bacs_settings',
-			[
-				'enabled'      => 'yes',
-				'title'        => 'Direct bank transfer',
-				'description'  => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.',
-				'instructions' => 'Instructions that will be added to the thank you page and emails.',
-				'account'      => '',
-			]
-		);
-
-		// forcing has_block_template to be false
-		add_filter( 'woocommerce_has_block_template', '__return_false', 10, 2 );
-
-		//Additional cart fees.
-		add_action(
-			'woocommerce_cart_calculate_fees',
-			static function () {
-				$percentage = 0.01;
-				$surcharge  = ( WC()->cart->cart_contents_total + WC()->cart->shipping_total ) * $percentage;
-				WC()->cart->add_fee( 'Surcharge', $surcharge, true, '' );
-			}
-		);
-
-		// Create Shipping Zones.
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'Local' );
-		$zone->set_zone_order( 1 );
-		$zone->add_location( 'GB', 'country' );
-		$zone->add_location( 'CB*', 'postcode' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
-
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'Europe' );
-		$zone->set_zone_order( 2 );
-		$zone->add_location( 'EU', 'continent' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
-
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'California' );
-		$zone->set_zone_order( 3 );
-		$zone->add_location( 'US:CA', 'state' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
-
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'US' );
-		$zone->set_zone_order( 4 );
-		$zone->add_location( 'US', 'country' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
-
-		$zone = new \WC_Shipping_Zone();
-		$zone->set_zone_name( 'US' );
-		$zone->set_zone_order( 5 );
-		$zone->add_location( 'US:NY', 'state' );
-		$zone->save();
-		$zone->add_shipping_method( 'flat_rate' );
-		$zone->add_shipping_method( 'free_shipping' );
-
-		global $wp_rewrite; 
-
-		//Write the rule
-		$wp_rewrite->set_permalink_structure('/%postname%/'); 
-
-		//Set the option
-		update_option( "rewrite_rules", FALSE ); 
-
-		//Flush the rules and tell it to write htaccess
-		$wp_rewrite->flush_rules( true );
 	}
 
 	/**
@@ -1039,6 +1059,15 @@ class GraphQLE2E extends \Codeception\Module {
 		$this->_setupStore();
 
 		$wpdb   = $this->getModule( 'WPDb' );
+
+		// Clear stale data from previous tests so Apache doesn't
+		// pick up sessions, carts, or users from prior runs.
+		$wpdb->dontHaveInDatabase( 'wp_woocommerce_sessions', [] );
+		$wpdb->dontHaveUserInDatabase( 'jimbo1234', true );
+		$wpdb->dontHavePostInDatabase( [ 'post_type' => 'shop_order' ], true );
+		$wpdb->dontHavePostInDatabase( [ 'post_type' => 'shop_order_refund' ], true );
+
+
 		$userId = $wpdb->haveUserInDatabase(
 			'jimbo1234',
 			'customer',
@@ -1047,6 +1076,8 @@ class GraphQLE2E extends \Codeception\Module {
 				'user_email' => 'jimbo1234@example.com',
 			]
 		);
+
+		return $userId;
 	}
 
 	public function verifyRedirect( $startUrl, $endUrl, $redirectCode = 301 ) {

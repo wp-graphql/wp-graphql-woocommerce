@@ -15,6 +15,17 @@ class DownloadableItemAuthCest {
 			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
 		}
 
+		// Enable authorizing URL fields for download URL nonce handling.
+		$I->setWooGraphQLSetting(
+			'enable_authorizing_url_fields',
+			[
+				'cart_url'               => 'cart_url',
+				'checkout_url'           => 'checkout_url',
+				'account_url'            => 'account_url',
+				'add_payment_method_url' => 'add_payment_method_url',
+			]
+		);
+
 		// Disable approved download directories check for tests.
 		update_option( 'wc_downloads_approved_directories_mode', 'disabled' );
 		wp_cache_flush();

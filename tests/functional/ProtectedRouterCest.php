@@ -13,6 +13,18 @@ class ProtectedRouterCest {
 		if ( ! defined( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY' ) ) {
 			define( 'GRAPHQL_WOOCOMMERCE_SECRET_KEY', 'testestestestestestestestestest!!' );
 		}
+
+		// Enable authorizing URL fields so checkoutNonce, accountNonce, and
+		// addPaymentMethodNonce fields are registered on the Customer type.
+		$I->setWooGraphQLSetting(
+			'enable_authorizing_url_fields',
+			[
+				'cart_url'               => 'cart_url',
+				'checkout_url'           => 'checkout_url',
+				'account_url'            => 'account_url',
+				'add_payment_method_url' => 'add_payment_method_url',
+			]
+		);
 	}
 
 	/**
