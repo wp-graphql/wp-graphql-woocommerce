@@ -100,39 +100,7 @@ class VariableProductPerformanceTest extends \Tests\WPGraphQL\WooCommerce\TestCa
 
 		$query_count = count( $wpdb->queries );
 
-		codecept_debug( "Query duration: {$duration}s" );
-		codecept_debug( "DB queries: {$query_count}" );
-
-		// Categorize queries for analysis.
-		$categories = [
-			'variation_children' => 0,
-			'variation_objects'  => 0,
-			'product_objects'    => 0,
-			'options'            => 0,
-			'template'           => 0,
-			'hpos'               => 0,
-			'other'              => 0,
-		];
-		foreach ( $wpdb->queries as $q ) {
-			$sql = $q[0];
-			if ( stripos( $sql, 'post_type = \'product_variation\'' ) !== false && stripos( $sql, 'post_parent' ) !== false && stripos( $sql, 'wp_posts.ID' ) !== false && stripos( $sql, 'IN' ) === false ) {
-				$categories['variation_children']++;
-			} elseif ( stripos( $sql, 'product_variation' ) !== false || ( stripos( $sql, 'post_parent =' ) !== false && stripos( $sql, 'wp_posts.ID IN' ) !== false ) ) {
-				$categories['variation_objects']++;
-			} elseif ( stripos( $sql, 'wp_template' ) !== false ) {
-				$categories['template']++;
-			} elseif ( stripos( $sql, 'shop_order' ) !== false ) {
-				$categories['hpos']++;
-			} elseif ( stripos( $sql, 'wp_options' ) !== false ) {
-				$categories['options']++;
-			} elseif ( stripos( $sql, 'wp_posts' ) !== false ) {
-				$categories['product_objects']++;
-			} else {
-				$categories['other']++;
-			}
-		}
-		codecept_debug( 'Query categories: ' . wp_json_encode( $categories ) );
-
+		codecept_debug( "Query duration: {$duration}s, DB queries: {$query_count}" );
 
 		// Verify the response is successful.
 		$this->assertArrayHasKey( 'data', $response );
@@ -148,8 +116,10 @@ class VariableProductPerformanceTest extends \Tests\WPGraphQL\WooCommerce\TestCa
 			$this->assertNotNull( $node['regularPrice'] );
 		}
 
-		// Performance assertion: should complete within 5 seconds.
-		$this->assertLessThan( 5.0, $duration, "Query took {$duration}s — too slow for 15 variable products." );
+		// Performance assertion: skip when xdebug is active since it adds ~5x overhead.
+		if ( ! extension_loaded( 'xdebug' ) ) {
+			$this->assertLessThan( 5.0, $duration, "Query took {$duration}s — too slow for 15 variable products." );
+		}
 
 		// DB query count guard: prevents regressions. The ~212 query baseline
 		// includes WP template lookups, HPOS compat checks, and WC transient
