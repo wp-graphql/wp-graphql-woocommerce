@@ -186,6 +186,8 @@ class Protected_Router {
 	 * response instead of responding with a template from the standard WordPress Template
 	 * Loading process
 	 *
+	 * @param \WP_Query $query The WP_Query instance (passed by pre_get_posts).
+	 *
 	 * @return void
 	 */
 	public function resolve_request( $query ) {
