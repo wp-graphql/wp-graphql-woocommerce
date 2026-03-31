@@ -134,102 +134,6 @@ class Order_Mutation {
 	}
 
 	/**
-	 * Add items to order.
-	 *
-	 * @param array                                $input     Input data describing order.
-	 * @param int                                  $order_id  Order object.
-	 * @param \WPGraphQL\AppContext                $context   AppContext instance.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info      ResolveInfo instance.
-	 *
-	 * @throws \Exception  Failed to retrieve order.
-	 *
-	 * @return void
-	 */
-	public static function add_items( $input, $order_id, $context, $info ) {
-		/** @var \WC_Order|false $order */
-		$order = \WC_Order_Factory::get_order( $order_id );
-		if ( false === $order ) {
-			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
-		}
-
-		$item_group_keys = [
-			'lineItems'     => 'line_item',
-			'shippingLines' => 'shipping',
-			'feeLines'      => 'fee',
-		];
-
-		$order_items = [];
-		foreach ( $input as $key => $group_items ) {
-			if ( array_key_exists( $key, $item_group_keys ) ) {
-				$type                 = $item_group_keys[ $key ];
-				$order_items[ $type ] = [];
-
-				/**
-				 * Action called before an item group is added to an order.
-				 *
-				 * @param array                                $group_items  Items data being added.
-				 * @param \WC_Order                            $order        Order object.
-				 * @param \WPGraphQL\AppContext                $context      Request AppContext instance.
-				 * @param \GraphQL\Type\Definition\ResolveInfo $info         Request ResolveInfo instance.
-				 */
-				do_action( "graphql_woocommerce_before_{$type}s_added_to_order", $group_items, $order, $context, $info );
-
-				foreach ( $group_items as $item_data ) {
-					$item = self::set_item(
-						$item_data,
-						$type,
-						$order,
-						$context,
-						$info
-					);
-
-					/**
-					 * Action called before an item group is added to an order.
-					 *
-					 * @param \WC_Order_Item                       $item      Order item object.
-					 * @param array                                $item_data Item data being added.
-					 * @param \WC_Order                            $order     Order object.
-					 * @param \WPGraphQL\AppContext                $context   Request AppContext instance.
-					 * @param \GraphQL\Type\Definition\ResolveInfo $info      Request ResolveInfo instance.
-					 */
-					do_action( "graphql_woocommerce_before_{$type}_added_to_order", $item, $item_data, $order, $context, $info );
-
-					if ( 0 === $item->get_id() ) {
-						$order->add_item( $item );
-						$order_items[ $type ][] = $item;
-					} else {
-						$item->save();
-						$order_items[ $type ][] = $item;
-					}
-				}
-
-				/**
-				 * Action called after an item group is added to an order, and before the order has been saved with the new items.
-				 *
-				 * @param array                                $group_items  Item data being added.
-				 * @param \WC_Order                            $order        Order object.
-				 * @param \WPGraphQL\AppContext                $context      Request AppContext instance.
-				 * @param \GraphQL\Type\Definition\ResolveInfo $info         Request ResolveInfo instance.
-				 */
-				do_action( "graphql_woocommerce_after_{$type}s_added_to_order", $group_items, $order, $context, $info );
-			}//end if
-		}//end foreach
-
-		/**
-		 * Action called after all items have been added and right before the new items have been saved.
-		 *
-		 * @param array<string, array<\WC_Order_Item>> $order_items Order items.
-		 * @param \WC_Order                            $order       WC_Order instance.
-		 * @param array                                $input       Input data describing order.
-		 * @param \WPGraphQL\AppContext                $context     Request AppContext instance.
-		 * @param \GraphQL\Type\Definition\ResolveInfo $info        Request ResolveInfo instance.
-		 */
-		do_action( 'graphql_woocommerce_before_new_order_items_save', $order_items, $order, $input, $context, $info );
-
-		$order->save();
-	}
-
-	/**
 	 *
 	 * @param array<string, mixed>                 $item_data  Item data.
 	 * @param string                               $type       Item type.
@@ -594,27 +498,6 @@ class Order_Mutation {
 
 		$order->save_meta_data();
 		$order->save();
-	}
-
-	/**
-	 * Update address.
-	 *
-	 * @param array     $address   Address data.
-	 * @param \WC_Order $order  WC_Order instance.
-	 * @param string    $type      Address type.
-	 *
-	 * @throws \Exception  Failed to retrieve order.
-	 *
-	 * @return void
-	 */
-	protected static function update_address( $address, $order, $type = 'billing' ) {
-		$formatted_address = Customer_Mutation::address_input_mapping( $address, $type );
-		foreach ( $formatted_address as $key => $value ) {
-			if ( is_callable( [ $order, "set_{$type}_{$key}" ] ) ) {
-				$order->{"set_{$type}_{$key}"}( $value );
-			}
-			$order->apply_changes();
-		}
 	}
 
 	/**
