@@ -373,6 +373,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'mutation/class-product-variation-create.php';
 			require $include_directory_path . 'mutation/class-product-variation-delete.php';
 			require $include_directory_path . 'mutation/class-product-variation-update.php';
+			require $include_directory_path . 'mutation/class-refund-create.php';
+			require $include_directory_path . 'mutation/class-refund-delete.php';
 			require $include_directory_path . 'mutation/class-review-delete-restore.php';
 			require $include_directory_path . 'mutation/class-review-update.php';
 			require $include_directory_path . 'mutation/class-review-write.php';
