@@ -32,6 +32,7 @@ WPGraphQL for WooCommerce (WooGraphQL) is a free, open-source WordPress plugin t
 - [Using Checkout Mutation + Order Mutations](./using-checkout-mutation-and-order-mutations.md)
 - [Using Order Data](./using-order-data.md)
 - [Using Customer Data + Mutations](./using-customer-data-and-mutations.md)
+- [Building a WooCommerce Admin App](./building-a-woocommerce-admin-app.md)
 
 ### WooGraphQL Pro
 
@@ -66,9 +67,9 @@ Whether you're building a React, Vue, or any other frontend application, WooGrap
 
 ### Requirements
 
-- WordPress 5.6+
-- WooCommerce 6.0+
-- WPGraphQL 1.14+
-- PHP 7.4+
+- WordPress 6.3+
+- WooCommerce 9.0+
+- WPGraphQL 2.0+
+- PHP 8.1+
 
 Get started by following the [Installation Guide](./installation.md).

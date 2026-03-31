@@ -6,7 +6,7 @@
  * by all WC setting concrete types.
  *
  * @package WPGraphQL\WooCommerce\Type\WPInterface
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Type\WPInterface;

@@ -3,7 +3,7 @@
  * Compatibility integrations with third-party plugins.
  *
  * @package \WPGraphQL\WooCommerce
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce;

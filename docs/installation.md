@@ -11,8 +11,10 @@ This section will walk you through the process of installing and configuring WPG
 
 ## Prerequisites
 
-1. A WordPress website with WooCommerce installed and activated.
-2. WPGraphQL plugin installed and activated.
+1. WordPress 6.3 or higher.
+2. PHP 8.1 or higher.
+3. [WooCommerce](https://woocommerce.com/) 9.0 or higher installed and activated.
+4. [WPGraphQL](https://www.wpgraphql.com/) 2.0 or higher installed and activated.
 
 ## Step-by-step guide
 

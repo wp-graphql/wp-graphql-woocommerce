@@ -5,7 +5,7 @@
  * Registers mutation for updating a single WooCommerce setting.
  *
  * @package WPGraphQL\WooCommerce\Mutation
- * @since   TBD
+ * @since   1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Mutation;

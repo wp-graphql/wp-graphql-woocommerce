@@ -5,7 +5,7 @@
  * Registers mutation for updating a product attribute.
  *
  * @package WPGraphQL\WooCommerce\Mutation
- * @since TBD
+ * @since 1.0.0
  */
 
 namespace WPGraphQL\WooCommerce\Mutation;
