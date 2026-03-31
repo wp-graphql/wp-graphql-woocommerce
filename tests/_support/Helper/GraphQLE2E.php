@@ -1309,4 +1309,81 @@ class GraphQLE2E extends \Codeception\Module {
 
 		return $cart_page_id;
 	}
+
+	/**
+	 * Creates variable products with many variations for performance testing.
+	 *
+	 * @param int $product_count    Number of variable products to create.
+	 * @param int $variations_per   Approximate variations per product (3 attrs: sizes × colors × styles).
+	 *
+	 * @return array Product IDs.
+	 */
+	public function createVariableProductCatalog( $product_count = 10, $variations_per = 18 ) {
+		$product_ids = [];
+
+		for ( $p = 0; $p < $product_count; $p++ ) {
+			$product = new \WC_Product_Variable();
+			$product->set_name( "Variable Product {$p}" );
+			$product->set_status( 'publish' );
+
+			$size_attr = new \WC_Product_Attribute();
+			$size_attr->set_name( 'Size' );
+			$size_attr->set_options( [ 'Small', 'Medium', 'Large' ] );
+			$size_attr->set_visible( true );
+			$size_attr->set_variation( true );
+
+			$color_attr = new \WC_Product_Attribute();
+			$color_attr->set_name( 'Color' );
+			$color_attr->set_options( [ 'Red', 'Blue', 'Green' ] );
+			$color_attr->set_visible( true );
+			$color_attr->set_variation( true );
+
+			$style_attr = new \WC_Product_Attribute();
+			$style_attr->set_name( 'Style' );
+			$style_attr->set_options( [ 'Classic', 'Modern' ] );
+			$style_attr->set_visible( true );
+			$style_attr->set_variation( true );
+
+			$product->set_attributes( [ $size_attr, $color_attr, $style_attr ] );
+			$product_id = $product->save();
+
+			// 3 sizes × 3 colors × 2 styles = 18 variations per product.
+			$sizes  = [ 'Small', 'Medium', 'Large' ];
+			$colors = [ 'Red', 'Blue', 'Green' ];
+			$styles = [ 'Classic', 'Modern' ];
+			$count  = 0;
+
+			foreach ( $sizes as $size ) {
+				foreach ( $colors as $color ) {
+					foreach ( $styles as $style ) {
+						if ( $count >= $variations_per ) {
+							break 3;
+						}
+
+						$variation = new \WC_Product_Variation();
+						$variation->set_parent_id( $product_id );
+						$variation->set_attributes(
+							[
+								'size'  => $size,
+								'color' => $color,
+								'style' => $style,
+							]
+						);
+						$variation->set_regular_price( 10 + $count );
+						if ( $count % 3 === 0 ) {
+							$variation->set_sale_price( 8 + $count );
+						}
+						$variation->set_stock_status( 'instock' );
+						$variation->save();
+						$count++;
+					}
+				}
+			}
+
+			wc_delete_product_transients( $product_id );
+			$product_ids[] = $product_id;
+		}
+
+		return $product_ids;
+	}
 }
