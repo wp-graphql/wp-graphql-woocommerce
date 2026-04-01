@@ -86,8 +86,7 @@ class WooCommerce {
 		wc_load_cart();
 
 		// Ensure cart contents are restored from the session after re-initialization.
-		// @phpstan-ignore-next-line
-		\WC()->cart->get_cart_from_session();
+		\WC()->cart->get_cart_from_session(); // @phpstan-ignore-line
 	}
 
 	/**
