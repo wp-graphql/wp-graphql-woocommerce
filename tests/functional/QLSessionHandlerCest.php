@@ -655,6 +655,88 @@ class QLSessionHandlerCest {
 		$I->assertEquals( $session_data->data->customer_id, $parts->payload->user_id );
 	}
 
+	/**
+	 * Test that consecutive cart queries with the same session token
+	 * do not clear the persisted cart contents.
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/1010
+	 */
+	public function testCartQueryDoesNotClearPersistedSession( FunctionalTester $I ) {
+		/**
+		 * Add item to the cart.
+		 */
+		$success = $I->addToCart(
+			[
+				'clientMutationId' => 'someId',
+				'productId'        => $this->product_catalog['t-shirt'],
+				'quantity'         => 3,
+			]
+		);
+
+		$I->assertQuerySuccessful(
+			$success,
+			[
+				$I->expectField( 'addToCart.cartItem.key', Signal::NOT_NULL ),
+			]
+		);
+
+		$cart_item_key = $I->lodashGet( $success, 'data.addToCart.cartItem.key' );
+
+		/**
+		 * Grab the session token.
+		 */
+		$I->seeHttpHeaderOnce( 'woocommerce-session' );
+		$session_token = $I->grabHttpHeader( 'woocommerce-session' );
+
+		$cart_query = '
+			query {
+				cart {
+					contents {
+						nodes {
+							key
+							quantity
+						}
+					}
+				}
+			}
+		';
+
+		/**
+		 * First cart query — should return the item we just added.
+		 */
+		$first = $I->sendGraphQLRequest( $cart_query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$I->assertQuerySuccessful(
+			$first,
+			[
+				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
+			]
+		);
+
+		/**
+		 * Second cart query with the same token — should still return the
+		 * same cart contents. Before the fix, this would return an empty cart
+		 * because get_cart_from_session() was not called after wc_load_cart().
+		 */
+		$second = $I->sendGraphQLRequest( $cart_query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$I->assertQuerySuccessful(
+			$second,
+			[
+				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
+			]
+		);
+
+		/**
+		 * Third cart query — confirm stability across multiple reads.
+		 */
+		$third = $I->sendGraphQLRequest( $cart_query, null, [ 'woocommerce-session' => "Session {$session_token}" ] );
+		$I->assertQuerySuccessful(
+			$third,
+			[
+				$I->expectField( 'cart.contents.nodes.#.key', $cart_item_key ),
+			]
+		);
+	}
+
 	public function testLegacyTokenOnlyWhenSetToLegacy( FunctionalTester $I ) {
 		// Legacy mode is the default, so no need to set option
 		// But we'll set it explicitly for clarity
