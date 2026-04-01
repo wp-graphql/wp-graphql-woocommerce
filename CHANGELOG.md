@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.1) (2026-04-01)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v1.0.0...v1.0.1)
+
+**Fixed:**
+
+- fix: v1.0.1 bugfixes — session key, cart persistence, null attrs [\#1012](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1012) ([kidunot89](https://github.com/kidunot89))
+
 ## [v1.0.0](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.0) (2026-03-31)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v0.21.2...v1.0.0)
