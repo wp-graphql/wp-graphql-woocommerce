@@ -282,4 +282,53 @@ class VariationAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCas
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test that querying variation attributes returns empty nodes when
+	 * the variation has null attributes (e.g. corrupted or missing data).
+	 *
+	 * @see https://github.com/wp-graphql/wp-graphql-woocommerce/issues/1011
+	 */
+	public function testVariationWithNullAttributesReturnsEmptyNodes() {
+		// Create a variable product with no attributes, then create a bare variation.
+		$product_id   = $this->factory->product->createVariable( [ 'attribute_data' => [] ] );
+		$variation_id = $this->factory->product_variation->create(
+			[
+				'parent_id'     => $product_id,
+				'regular_price' => 10,
+			]
+		);
+
+		// Confirm WooCommerce returns empty attributes for this variation.
+		$variation = wc_get_product( $variation_id );
+		$this->assertEmpty( $variation->get_attributes(), 'Variation should have no attributes.' );
+
+		$query = '
+			query ($id: ID!) {
+				productVariation(id: $id) {
+					id
+					attributes {
+						nodes {
+							id
+							name
+							value
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'id' => $this->toRelayId( 'post', $variation_id ) ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+
+		// The query should succeed without PHP warnings or errors,
+		// and attributes should be null (no populated attribute data).
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'productVariation.id', $this->toRelayId( 'post', $variation_id ) ),
+				$this->expectedField( 'productVariation.attributes', static::IS_NULL ),
+			]
+		);
+	}
 }

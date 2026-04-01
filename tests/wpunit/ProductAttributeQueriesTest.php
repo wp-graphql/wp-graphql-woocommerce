@@ -286,4 +286,75 @@ class ProductAttributeQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\
 
 		$this->assertQuerySuccessful( $response, $expected );
 	}
+
+	/**
+	 * Test that registering a global product attribute with no terms
+	 * does not break the GraphQL schema or server.
+	 */
+	public function testGlobalProductAttributeWithNoTermsDoesNotBreakSchema() {
+		// Register a global product attribute with no terms.
+		$this->factory->product->createAttribute( 'material', [] );
+		$this->clearSchema();
+
+		// Validate the schema is still valid.
+		$schema = \WPGraphQL::get_schema();
+		$schema->assertValid();
+
+		// Run an introspection query to confirm the type registry is intact.
+		$query    = \GraphQL\Type\Introspection::getIntrospectionQuery();
+		$response = $this->graphql( compact( 'query' ) );
+
+		$this->assertQuerySuccessful( $response, [] );
+
+		// Query the empty attribute taxonomy directly.
+		$query = '
+			query {
+				allPaMaterial {
+					nodes {
+						name
+						slug
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'allPaMaterial.nodes', static::IS_FALSY ),
+			]
+		);
+
+		// Confirm productAttributes root query includes the empty attribute.
+		$query = '
+			query {
+				productAttributes {
+					nodes {
+						name
+						label
+						options
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( compact( 'query' ) );
+
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedNode(
+					'productAttributes.nodes',
+					[
+						$this->expectedField( 'name', 'pa_material' ),
+						$this->expectedField( 'label', 'material' ),
+						$this->expectedField( 'options', [] ),
+					],
+
+				),
+			]
+		);
+	}
 }

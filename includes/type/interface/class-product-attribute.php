@@ -85,7 +85,7 @@ class Product_Attribute {
 				},
 				'resolve'     => static function ( $attribute ) {
 					$slugs = $attribute->get_slugs();
-					return ! empty( $slugs ) ? $slugs : null;
+					return ! empty( $slugs ) ? $slugs : [];
 				},
 			],
 			'position'    => [

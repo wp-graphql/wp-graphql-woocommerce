@@ -77,8 +77,8 @@ class Variation_Attribute_Connection_Resolver {
 	public static function variation_attributes_to_data_array( $attrs, $variation_id ) {
 		$attributes = [];
 
-		// Bail early if explicitly '0' attributes.
-		if ( [ '0' ] === $attrs ) {
+		// Bail early if null or explicitly '0' attributes.
+		if ( ! is_array( $attrs ) || [ '0' ] === $attrs ) {
 			return $attributes;
 		}
 
