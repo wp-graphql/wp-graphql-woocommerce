@@ -41,18 +41,18 @@ class Product_Update {
 		return array_merge(
 			Product_Create::get_input_fields(),
 			[
-				'id' => [
+				'id'   => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
 						return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
 					},
 				],
-				'name'              => [
+				'name' => [
 					'type'        => 'String',
 					'description' => static function () {
 						return __( 'Name of the product.', 'wp-graphql-woocommerce' );
 					},
-				]
+				],
 			]
 		);
 	}
