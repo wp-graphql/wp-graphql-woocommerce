@@ -832,4 +832,44 @@ class ProductMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
         $product = wc_get_product( $product_id );
         $this->assertFalse( $product );
     }
+
+    public function testUpdateProductWithoutName() {
+        $product_id = $this->factory->product->createSimple(
+            [
+                'name'          => 'Original Name',
+                'regular_price' => 10,
+            ]
+        );
+
+        $query = '
+            mutation ( $input: UpdateProductInput! ) {
+                updateProduct(input: $input) {
+                    product {
+                        databaseId
+                        name
+                        ... on ProductWithPricing {
+                            regularPrice(format: RAW)
+                        }
+                    }
+                }
+            }
+        ';
+
+        $variables = [
+            'input' => [
+                'id'           => $product_id,
+                'regularPrice' => 25.00,
+            ],
+        ];
+
+        $this->loginAsShopManager();
+        $response = $this->graphql( compact( 'query', 'variables' ) );
+        $expected = [
+            $this->expectedField( 'updateProduct.product.databaseId', $product_id ),
+            $this->expectedField( 'updateProduct.product.name', 'Original Name' ),
+            $this->expectedField( 'updateProduct.product.regularPrice', '25' ),
+        ];
+
+        $this->assertQuerySuccessful( $response, $expected );
+    }
 }

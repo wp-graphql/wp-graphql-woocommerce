@@ -39,6 +39,7 @@ class Product_Update {
 	 */
 	public static function get_input_fields() {
 		return array_merge(
+			Product_Create::get_input_fields(),
 			[
 				'id' => [
 					'type'        => [ 'non_null' => 'ID' ],
@@ -46,8 +47,13 @@ class Product_Update {
 						return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
 					},
 				],
-			],
-			Product_Create::get_input_fields()
+				'name'              => [
+					'type'        => 'String',
+					'description' => static function () {
+						return __( 'Name of the product.', 'wp-graphql-woocommerce' );
+					},
+				]
+			]
 		);
 	}
 
