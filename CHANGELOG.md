@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.2) (2026-04-02)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v1.0.1...v1.0.2)
+
+**Fixed:**
+
+- fix: make name optional in updateProduct mutation [\#1014](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1014) ([kidunot89](https://github.com/kidunot89))
+
 ## [v1.0.1](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.1) (2026-04-01)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v1.0.0...v1.0.1)
