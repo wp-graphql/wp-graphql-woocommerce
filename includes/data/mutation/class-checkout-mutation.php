@@ -164,6 +164,7 @@ class Checkout_Mutation {
 				'postcode'   => 'postcode',
 				'state'      => 'state',
 				'country'    => 'country',
+				'phone'      => 'phone',
 			],
 			'account'  => [
 				'username' => 'username',
