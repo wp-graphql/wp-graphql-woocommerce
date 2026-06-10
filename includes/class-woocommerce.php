@@ -124,14 +124,36 @@ class WooCommerce {
 	 * @return boolean
 	 */
 	public static function should_load_session_handler() {
+		// Any request carrying either the Store-API Cart-Token header or the
+		// legacy `woocommerce-session` (filterable) header is a headless
+		// caller driving session state through the token, regardless of
+		// which WP endpoint it lands on (admin-ajax, REST, the front-end,
+		// etc.). We need QL_Session_Handler here too so the session is
+		// bootstrapped from the token instead of the (absent) WC session
+		// cookie.
+		$legacy_header_key = 'HTTP_' . strtoupper(
+			preg_replace(
+				'#[^A-z0-9]#',
+				'_',
+				apply_filters( 'graphql_woocommerce_cart_session_http_header', 'woocommerce-session' )
+			)
+		);
+		$has_session_header = ! empty( $_SERVER['HTTP_CART_TOKEN'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			|| ! empty( $_SERVER[ $legacy_header_key ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+
 		switch ( true ) {
 			case \WPGraphQL\Router::is_graphql_http_request():
 			//phpcs:disable
 			case 'on' === woographql_setting( 'enable_ql_session_handler_on_ajax', 'off' )
-				&& ( ! empty( $_GET['wc-ajax'] ) || defined( 'WC_DOING_AJAX' ) ):
+				&& (
+					! empty( $_GET['wc-ajax'] )
+					|| defined( 'WC_DOING_AJAX' )
+					|| wp_doing_ajax()
+					|| $has_session_header
+				):
 			//phpcs:enable
 			case 'on' === woographql_setting( 'enable_ql_session_handler_on_rest', 'off' )
-				&& ( defined( 'REST_REQUEST' ) && REST_REQUEST ):
+				&& ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || $has_session_header ):
 				return true;
 			default:
 				return false;
