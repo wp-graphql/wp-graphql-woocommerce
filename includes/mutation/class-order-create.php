@@ -16,6 +16,7 @@ use WC_Order_Factory;
 use WPGraphQL\AppContext;
 use WPGraphQL\WooCommerce\Data\Mutation\Order_Mutation;
 use WPGraphQL\WooCommerce\Model\Order;
+use WPGraphQL\WooCommerce\WooCommerce;
 
 /**
  * Class Order_Create
@@ -209,7 +210,9 @@ class Order_Create {
 					Order_Mutation::apply_coupons( $order, $input['coupons'] );
 				}
 
-				$order->set_created_via( ! empty( $input['createdVia'] ) ? $input['createdVia'] : 'graphql-api' );
+				$created_via = ! empty( $input['createdVia'] ) ? $input['createdVia'] : WooCommerce::get_order_attribution_source_type();
+				$order->set_created_via( $created_via );
+				$order->add_meta_data( '_wc_order_attribution_source_type', $created_via, true );
 				$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
 				$order->calculate_totals( true );
 

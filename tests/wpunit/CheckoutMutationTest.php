@@ -505,6 +505,27 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		$this->assertEquals( '555-555-6789', $order->get_shipping_phone() );
 	}
 
+	public function testCheckoutMutationWithCreatedVia() {
+		$this->loginAsCustomer();
+
+		$product_id = $this->factory->product->createSimple();
+		WC()->cart->add_to_cart( $product_id, 1 );
+
+		$variables = [ 'input' => $this->getCheckoutInput( [ 'createdVia' => 'pos' ] ) ];
+		$query     = $this->getCheckoutMutation();
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'checkout.order.createdVia', 'pos' ) ]
+		);
+
+		// The provided "createdVia" overrides WooCommerce's hardcoded "checkout" source and tags the attribution source type.
+		$order = \wc_get_order( $response['data']['checkout']['order']['databaseId'] );
+		$this->assertEquals( 'pos', $order->get_created_via() );
+		$this->assertEquals( 'pos', $order->get_meta( '_wc_order_attribution_source_type' ) );
+	}
+
 	public function testCheckoutMutationWithNewAccount() {
 		$variable    = $this->factory->product_variation->createSome();
 		$product_ids = [

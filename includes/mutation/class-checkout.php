@@ -111,6 +111,12 @@ class Checkout {
 					return __( 'Fees to add to the order.', 'wp-graphql-woocommerce' );
 				},
 			],
+			'createdVia'             => [
+				'type'        => 'String',
+				'description' => static function () {
+					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "checkout".', 'wp-graphql-woocommerce' );
+				},
+			],
 		];
 	}
 
