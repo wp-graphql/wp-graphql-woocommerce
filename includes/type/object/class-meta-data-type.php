@@ -24,13 +24,13 @@ class Meta_Data_Type {
 			'MetaData',
 			[
 				'description' => static function () {
-					return __( 'Extra data defined on the WC object', 'wp-graphql-woocommerce' );
+					return __( 'Extra data defined on the WC object', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'id'    => [
 						'type'        => 'ID',
 						'description' => static function () {
-							return __( 'Meta ID.', 'wp-graphql-woocommerce' );
+							return __( 'Meta ID.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
@@ -39,7 +39,7 @@ class Meta_Data_Type {
 					'key'   => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Meta key.', 'wp-graphql-woocommerce' );
+							return __( 'Meta key.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->key ) ? (string) $source->key : null;
@@ -48,7 +48,7 @@ class Meta_Data_Type {
 					'value' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Meta value.', 'wp-graphql-woocommerce' );
+							return __( 'Meta value.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							if ( empty( $source->value ) ) {
@@ -76,25 +76,25 @@ class Meta_Data_Type {
 		return [
 			'type'        => [ 'list_of' => 'MetaData' ],
 			'description' => static function () {
-					return __( 'Object meta data', 'wp-graphql-woocommerce' );
+					return __( 'Object meta data', 'graphql-for-ecommerce' );
 			},
 			'args'        => [
 				'key'      => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Retrieve meta by key', 'wp-graphql-woocommerce' );
+						return __( 'Retrieve meta by key', 'graphql-for-ecommerce' );
 					},
 				],
 				'keysIn'   => [
 					'type'        => [ 'list_of' => 'String' ],
 					'description' => static function () {
-						return __( 'Retrieve multiple metas by key', 'wp-graphql-woocommerce' );
+						return __( 'Retrieve multiple metas by key', 'graphql-for-ecommerce' );
 					},
 				],
 				'multiple' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'Retrieve meta with matching keys', 'wp-graphql-woocommerce' );
+						return __( 'Retrieve meta with matching keys', 'graphql-for-ecommerce' );
 					},
 				],
 			],

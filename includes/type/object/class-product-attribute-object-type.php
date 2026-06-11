@@ -24,14 +24,14 @@ class Product_Attribute_Object_Type {
 			'ProductAttributeObject',
 			[
 				'description'     => static function () {
-					return __( 'Product attribute object.', 'wp-graphql-woocommerce' );
+					return __( 'Product attribute object.', 'graphql-for-ecommerce' );
 				},
 				'eagerlyLoadType' => true,
 				'fields'          => [
 					'id'          => [
 						'type'        => 'ID',
 						'description' => static function () {
-							return __( 'Unique identifier for the product attribute.', 'wp-graphql-woocommerce' );
+							return __( 'Unique identifier for the product attribute.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->attribute_id ) ? $source->attribute_id : null;
@@ -40,7 +40,7 @@ class Product_Attribute_Object_Type {
 					'name'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Name of the attribute.', 'wp-graphql-woocommerce' );
+							return __( 'Name of the attribute.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->attribute_name ) ? (string) $source->attribute_name : null;
@@ -49,7 +49,7 @@ class Product_Attribute_Object_Type {
 					'label'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Label of the attribute.', 'wp-graphql-woocommerce' );
+							return __( 'Label of the attribute.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->attribute_label ) ? (string) $source->attribute_label : null;
@@ -58,7 +58,7 @@ class Product_Attribute_Object_Type {
 					'type'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Type of the attribute.', 'wp-graphql-woocommerce' );
+							return __( 'Type of the attribute.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->attribute_type ) ? (string) $source->attribute_type : null;
@@ -67,7 +67,7 @@ class Product_Attribute_Object_Type {
 					'orderBy'     => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Order by which the attribute should be sorted.', 'wp-graphql-woocommerce' );
+							return __( 'Order by which the attribute should be sorted.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->attribute_orderby ) ? (string) $source->attribute_orderby : null;
@@ -76,7 +76,7 @@ class Product_Attribute_Object_Type {
 					'hasArchives' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'Whether or not the attribute has archives.', 'wp-graphql-woocommerce' );
+							return __( 'Whether or not the attribute has archives.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source->attribute_public ) ? $source->attribute_public : false;

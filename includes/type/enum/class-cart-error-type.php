@@ -29,7 +29,7 @@ class Cart_Error_Type {
 			'CartErrorType',
 			[
 				'description' => static function () {
-					return __( 'Cart error type enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Cart error type enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $values,
 			]

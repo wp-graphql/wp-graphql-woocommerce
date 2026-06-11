@@ -28,7 +28,7 @@ class Order_Note_Type {
 				'interfaces'      => [ 'Node' ],
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'A order note', 'wp-graphql-woocommerce' );
+					return __( 'A order note', 'graphql-for-ecommerce' );
 				},
 				'fields'          => apply_filters( 'woographql_order_note_field_definitions', self::get_fields() ),
 			]
@@ -47,7 +47,7 @@ class Order_Note_Type {
 				'id'             => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' );
+						return __( 'Database ID or global ID of the order note', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $order_note ) {
 						return Relay::toGlobalId( 'order_note', $order_note->databaseId );
@@ -56,7 +56,7 @@ class Order_Note_Type {
 				'databaseId'     => [
 					'type'        => 'Int',
 					'description' => static function () {
-						return __( 'Database ID of the order note', 'wp-graphql-woocommerce' );
+						return __( 'Database ID of the order note', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $order_note ) {
 						return $order_note->databaseId;
@@ -65,7 +65,7 @@ class Order_Note_Type {
 				'dateCreated'    => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'The date the order note was created, in the site\'s timezone.', 'wp-graphql-woocommerce' );
+						return __( 'The date the order note was created, in the site\'s timezone.', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $order_note ) {
 						return $order_note->date;
@@ -74,7 +74,7 @@ class Order_Note_Type {
 				'note'           => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Order note.', 'wp-graphql-woocommerce' );
+						return __( 'Order note.', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $order_note ) {
 						return $order_note->contentRaw;
@@ -83,7 +83,7 @@ class Order_Note_Type {
 				'isCustomerNote' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'Whether the note is a customer note', 'wp-graphql-woocommerce' );
+						return __( 'Whether the note is a customer note', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $order_note ) {
 						return (bool) get_comment_meta( $order_note->databaseId, 'is_customer_note', true );

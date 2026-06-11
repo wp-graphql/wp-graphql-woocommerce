@@ -53,7 +53,7 @@ class Order_Mutation {
 			throw new UserError(
 				sprintf(
 					/* translators: %d: Order ID */
-					__( 'Failed to find order with ID of %d.', 'wp-graphql-woocommerce' ),
+					__( 'Failed to find order with ID of %d.', 'graphql-for-ecommerce' ),
 					$order_id
 				)
 			);
@@ -61,7 +61,7 @@ class Order_Mutation {
 
 		$post_type = get_post_type( $order_id );
 		if ( false === $post_type ) {
-			throw new UserError( __( 'Failed to identify the post type of the order.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Failed to identify the post type of the order.', 'graphql-for-ecommerce' ) );
 		}
 
 		// Return true if user is owner or admin.
@@ -244,7 +244,7 @@ class Order_Mutation {
 			$product_id = self::get_product_id( $args );
 			$product    = ! empty( $product_id ) ? wc_get_product( $product_id ) : null;
 			if ( ! is_object( $product ) ) {
-				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'wp-graphql-woocommerce' ) );
+				throw new \Exception( __( 'Failed to retrieve product connected to order item.', 'graphql-for-ecommerce' ) );
 			}
 
 			$total            = wc_get_price_excluding_tax( $product, [ 'qty' => $args['quantity'] ?? 1 ] );
@@ -332,7 +332,7 @@ class Order_Mutation {
 		} elseif ( ! empty( $data['product_id'] ) ) {
 			$product_id = (int) $data['product_id'];
 		} else {
-			throw new UserError( __( 'Product ID or SKU is required.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Product ID or SKU is required.', 'graphql-for-ecommerce' ) );
 		}
 
 		return $product_id;

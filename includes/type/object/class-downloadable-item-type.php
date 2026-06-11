@@ -29,14 +29,14 @@ class Downloadable_Item_Type {
 			'DownloadableItem',
 			[
 				'description' => static function () {
-					return __( 'A downloadable item', 'wp-graphql-woocommerce' );
+					return __( 'A downloadable item', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'                 => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'Downloadable item unique identifier', 'wp-graphql-woocommerce' );
+							return __( 'Downloadable item unique identifier', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_id'] ) ? Relay::toGlobalId( 'download', $source['download_id'] ) : null;
@@ -45,7 +45,7 @@ class Downloadable_Item_Type {
 					'downloadId'         => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Downloadable item ID.', 'wp-graphql-woocommerce' );
+							return __( 'Downloadable item ID.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_id'] ) ? $source['download_id'] : null;
@@ -54,7 +54,7 @@ class Downloadable_Item_Type {
 					'url'                => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Download URL of the downloadable item.', 'wp-graphql-woocommerce' );
+							return __( 'Download URL of the downloadable item.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_url'] ) ? $source['download_url'] : null;
@@ -63,7 +63,7 @@ class Downloadable_Item_Type {
 					'name'               => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Name of the downloadable item.', 'wp-graphql-woocommerce' );
+							return __( 'Name of the downloadable item.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['download_name'] ) ? $source['download_name'] : null;
@@ -72,7 +72,7 @@ class Downloadable_Item_Type {
 					'downloadsRemaining' => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Number of times the item can be downloaded.', 'wp-graphql-woocommerce' );
+							return __( 'Number of times the item can be downloaded.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['downloads_remaining'] ) && is_numeric( $source['downloads_remaining'] )
@@ -83,7 +83,7 @@ class Downloadable_Item_Type {
 					'accessExpires'      => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'The date the downloadable item expires', 'wp-graphql-woocommerce' );
+							return __( 'The date the downloadable item expires', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['access_expires'] ) ? $source['access_expires'] : null;
@@ -92,7 +92,7 @@ class Downloadable_Item_Type {
 					'product'            => [
 						'type'        => 'ProductUnion',
 						'description' => static function () {
-							return __( 'Product of downloadable item.', 'wp-graphql-woocommerce' );
+							return __( 'Product of downloadable item.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, array $args, AppContext $context ) {
 							return Factory::resolve_crud_object( $source['product_id'], $context );
@@ -101,7 +101,7 @@ class Downloadable_Item_Type {
 					'downloadNonce'      => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A nonce for the authenticated download URL. Expires in 24 hours.', 'wp-graphql-woocommerce' );
+							return __( 'A nonce for the authenticated download URL. Expires in 24 hours.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$customer_id = get_current_user_id();
@@ -115,7 +115,7 @@ class Downloadable_Item_Type {
 					'downloadUrl'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A nonced URL that authenticates the user and redirects to the WooCommerce download. Expires in 24 hours.', 'wp-graphql-woocommerce' );
+							return __( 'A nonced URL that authenticates the user and redirects to the WooCommerce download. Expires in 24 hours.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$customer_id = get_current_user_id();
@@ -141,7 +141,7 @@ class Downloadable_Item_Type {
 					'download'           => [
 						'type'        => 'ProductDownload',
 						'description' => static function () {
-							return __( 'ProductDownload of the downloadable item', 'wp-graphql-woocommerce' );
+							return __( 'ProductDownload of the downloadable item', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$download_id = $source['download_id'];
@@ -197,7 +197,7 @@ class Downloadable_Item_Type {
 			[
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'A pre-authenticated download URL with a time-limited token. Does not require cookie-based authentication.', 'wp-graphql-woocommerce' );
+					return __( 'A pre-authenticated download URL with a time-limited token. Does not require cookie-based authentication.', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $source ) {
 					$customer_id = get_current_user_id();

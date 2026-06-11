@@ -206,7 +206,7 @@ class Order_Connection_Resolver extends AbstractConnectionResolver {
 		$query      = new \WC_Order_Query( $query_args );
 
 		if ( true === $query->get( 'suppress_filters', false ) ) {
-			throw new InvariantViolation( __( 'WC_Order_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'wp-graphql-woocommerce' ) );
+			throw new InvariantViolation( __( 'WC_Order_Query has been modified by a plugin or theme to suppress_filters, which will cause issues with WPGraphQL Execution. If you need to suppress filters for a specific reason within GraphQL, consider registering a custom field to the WPGraphQL Schema with a custom resolver.', 'graphql-for-ecommerce' ) );
 		}
 
 		return $query;

@@ -48,19 +48,19 @@ class Order_Note_Create {
 			'orderId'        => [
 				'type'        => 'ID',
 				'description' => static function () {
-					return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+					return __( 'Database ID or global ID of the order', 'graphql-for-ecommerce' );
 				},
 			],
 			'note'           => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Order note.', 'wp-graphql-woocommerce' );
+					return __( 'Order note.', 'graphql-for-ecommerce' );
 				},
 			],
 			'isCustomerNote' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Shows/define if the note is only for reference or for the customer (the user will be notified).', 'wp-graphql-woocommerce' );
+					return __( 'Shows/define if the note is only for reference or for the customer (the user will be notified).', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -99,12 +99,12 @@ class Order_Note_Create {
 			$order_id = Utils::get_database_id_from_id( $input['orderId'] );
 
 			if ( ! $order_id ) {
-				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Check if authorized to create order notes.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'create', $order_id ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to create an order note.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to create an order note.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**
@@ -115,12 +115,12 @@ class Order_Note_Create {
 			$order = new Order( $order_id );
 
 			if ( ! $order ) {
-				throw new UserError( __( 'Invalid order ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid order ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			$note_content = ! empty( $input['note'] ) ? $input['note'] : '';
 			if ( empty( $note_content ) ) {
-				throw new UserError( __( 'Order note content is required.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order note content is required.', 'graphql-for-ecommerce' ) );
 			}
 
 			$is_customer_note = ! empty( $input['isCustomerNote'] ) ? $input['isCustomerNote'] : false;
@@ -129,14 +129,14 @@ class Order_Note_Create {
 			$note_id = $order->add_order_note( $note_content, $is_customer_note );
 
 			if ( ! $note_id ) {
-				throw new UserError( __( 'Unable to create order note.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Unable to create order note.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Get the created note.
 			$note = get_comment( $note_id );
 
 			if ( ! $note ) {
-				throw new UserError( __( 'Unable to retrieve created order note.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Unable to retrieve created order note.', 'graphql-for-ecommerce' ) );
 			}
 
 			return [

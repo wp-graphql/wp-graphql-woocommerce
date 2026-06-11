@@ -46,259 +46,259 @@ class Product_Create {
 			'name'              => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'Name of the product.', 'wp-graphql-woocommerce' );
+					return __( 'Name of the product.', 'graphql-for-ecommerce' );
 				},
 			],
 			'slug'              => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product slug.', 'wp-graphql-woocommerce' );
+					return __( 'Product slug.', 'graphql-for-ecommerce' );
 				},
 			],
 			'type'              => [
 				'type'        => 'ProductTypesEnum',
 				'description' => static function () {
-					return __( 'Type of the product.', 'wp-graphql-woocommerce' );
+					return __( 'Type of the product.', 'graphql-for-ecommerce' );
 				},
 			],
 			'status'            => [
 				'type'        => 'PostStatusEnum',
 				'description' => static function () {
-					return __( 'Status of the product.', 'wp-graphql-woocommerce' );
+					return __( 'Status of the product.', 'graphql-for-ecommerce' );
 				},
 			],
 			'featured'          => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Featured product.', 'wp-graphql-woocommerce' );
+					return __( 'Featured product.', 'graphql-for-ecommerce' );
 				},
 			],
 			'catalogVisibility' => [
 				'type'        => 'CatalogVisibilityEnum',
 				'description' => static function () {
-					return __( 'Catalog visibility.', 'wp-graphql-woocommerce' );
+					return __( 'Catalog visibility.', 'graphql-for-ecommerce' );
 				},
 			],
 			'description'       => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product description.', 'wp-graphql-woocommerce' );
+					return __( 'Product description.', 'graphql-for-ecommerce' );
 				},
 			],
 			'shortDescription'  => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product short description.', 'wp-graphql-woocommerce' );
+					return __( 'Product short description.', 'graphql-for-ecommerce' );
 				},
 			],
 			'sku'               => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product SKU.', 'wp-graphql-woocommerce' );
+					return __( 'Product SKU.', 'graphql-for-ecommerce' );
 				},
 			],
 			'regularPrice'      => [
 				'type'        => 'Float',
 				'description' => static function () {
-					return __( 'Product regular price.', 'wp-graphql-woocommerce' );
+					return __( 'Product regular price.', 'graphql-for-ecommerce' );
 				},
 			],
 			'salePrice'         => [
 				'type'        => 'Float',
 				'description' => static function () {
-					return __( 'Product sale price.', 'wp-graphql-woocommerce' );
+					return __( 'Product sale price.', 'graphql-for-ecommerce' );
 				},
 			],
 			'dateOnSaleFrom'    => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product sale start date.', 'wp-graphql-woocommerce' );
+					return __( 'Product sale start date.', 'graphql-for-ecommerce' );
 				},
 			],
 			'dateOnSaleTo'      => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product sale end date.', 'wp-graphql-woocommerce' );
+					return __( 'Product sale end date.', 'graphql-for-ecommerce' );
 				},
 			],
 			'virtual'           => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Product virtual.', 'wp-graphql-woocommerce' );
+					return __( 'Product virtual.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadable'      => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Product downloadable.', 'wp-graphql-woocommerce' );
+					return __( 'Product downloadable.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloads'         => [
 				'type'        => [ 'list_of' => 'ProductDownloadInput' ],
 				'description' => static function () {
-					return __( 'Product downloads.', 'wp-graphql-woocommerce' );
+					return __( 'Product downloads.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadLimit'     => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Product download limit.', 'wp-graphql-woocommerce' );
+					return __( 'Product download limit.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadExpiry'    => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Number of days until download access expires.', 'wp-graphql-woocommerce' );
+					return __( 'Number of days until download access expires.', 'graphql-for-ecommerce' );
 				},
 			],
 			'externalUrl'       => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product external URL. (External products only)', 'wp-graphql-woocommerce' );
+					return __( 'Product external URL. (External products only)', 'graphql-for-ecommerce' );
 				},
 			],
 			'buttonText'        => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product button text. (External products only)', 'wp-graphql-woocommerce' );
+					return __( 'Product button text. (External products only)', 'graphql-for-ecommerce' );
 				},
 			],
 			'taxStatus'         => [
 				'type'        => 'TaxStatusEnum',
 				'description' => static function () {
-					return __( 'Tax status.', 'wp-graphql-woocommerce' );
+					return __( 'Tax status.', 'graphql-for-ecommerce' );
 				},
 			],
 			'taxClass'          => [
 				'type'        => 'TaxClassEnum',
 				'description' => static function () {
-					return __( 'Tax class.', 'wp-graphql-woocommerce' );
+					return __( 'Tax class.', 'graphql-for-ecommerce' );
 				},
 			],
 			'manageStock'       => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Manage stock.', 'wp-graphql-woocommerce' );
+					return __( 'Manage stock.', 'graphql-for-ecommerce' );
 				},
 			],
 			'stockQuantity'     => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Stock quantity.', 'wp-graphql-woocommerce' );
+					return __( 'Stock quantity.', 'graphql-for-ecommerce' );
 				},
 			],
 			'stockStatus'       => [
 				'type'        => 'StockStatusEnum',
 				'description' => static function () {
-					return __( 'Stock status.', 'wp-graphql-woocommerce' );
+					return __( 'Stock status.', 'graphql-for-ecommerce' );
 				},
 			],
 			'backorders'        => [
 				'type'        => 'BackordersEnum',
 				'description' => static function () {
-					return __( 'Backorders.', 'wp-graphql-woocommerce' );
+					return __( 'Backorders.', 'graphql-for-ecommerce' );
 				},
 			],
 			'soldIndividually'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Sold individually.', 'wp-graphql-woocommerce' );
+					return __( 'Sold individually.', 'graphql-for-ecommerce' );
 				},
 			],
 			'weight'            => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product weight.', 'wp-graphql-woocommerce' );
+					return __( 'Product weight.', 'graphql-for-ecommerce' );
 				},
 			],
 			'dimensions'        => [
 				'type'        => 'ProductDimensionsInput',
 				'description' => static function () {
-					return __( 'Product dimensions.', 'wp-graphql-woocommerce' );
+					return __( 'Product dimensions.', 'graphql-for-ecommerce' );
 				},
 			],
 			'shippingClass'     => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Shipping class.', 'wp-graphql-woocommerce' );
+					return __( 'Shipping class.', 'graphql-for-ecommerce' );
 				},
 			],
 			'reviewsAllowed'    => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Allow reviews. Default is true', 'wp-graphql-woocommerce' );
+					return __( 'Allow reviews. Default is true', 'graphql-for-ecommerce' );
 				},
 			],
 			'upsellIds'         => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Upsell product IDs.', 'wp-graphql-woocommerce' );
+					return __( 'Upsell product IDs.', 'graphql-for-ecommerce' );
 				},
 			],
 			'crossSellIds'      => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Cross-sell product IDs.', 'wp-graphql-woocommerce' );
+					return __( 'Cross-sell product IDs.', 'graphql-for-ecommerce' );
 				},
 			],
 			'parentId'          => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Parent product ID.', 'wp-graphql-woocommerce' );
+					return __( 'Parent product ID.', 'graphql-for-ecommerce' );
 				},
 			],
 			'purchaseNote'      => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Purchase note.', 'wp-graphql-woocommerce' );
+					return __( 'Purchase note.', 'graphql-for-ecommerce' );
 				},
 			],
 			'categories'        => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Product categories.', 'wp-graphql-woocommerce' );
+					return __( 'Product categories.', 'graphql-for-ecommerce' );
 				},
 			],
 			'tags'              => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Product tags.', 'wp-graphql-woocommerce' );
+					return __( 'Product tags.', 'graphql-for-ecommerce' );
 				},
 			],
 			'images'            => [
 				'type'        => [ 'list_of' => 'ProductImageInput' ],
 				'description' => static function () {
-					return __( 'Product images.', 'wp-graphql-woocommerce' );
+					return __( 'Product images.', 'graphql-for-ecommerce' );
 				},
 			],
 			'attributes'        => [
 				'type'        => [ 'list_of' => 'ProductAttributesInput' ],
 				'description' => static function () {
-					return __( 'Product attributes.', 'wp-graphql-woocommerce' );
+					return __( 'Product attributes.', 'graphql-for-ecommerce' );
 				},
 			],
 			'defaultAttributes' => [
 				'type'        => [ 'list_of' => 'ProductAttributeInput' ],
 				'description' => static function () {
-					return __( 'Product default attributes.', 'wp-graphql-woocommerce' );
+					return __( 'Product default attributes.', 'graphql-for-ecommerce' );
 				},
 			],
 			'groupedProducts'   => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Grouped product IDs.', 'wp-graphql-woocommerce' );
+					return __( 'Grouped product IDs.', 'graphql-for-ecommerce' );
 				},
 			],
 			'menuOrder'         => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Menu order.', 'wp-graphql-woocommerce' );
+					return __( 'Menu order.', 'graphql-for-ecommerce' );
 				},
 			],
 			'metaData'          => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => static function () {
-					return __( 'Meta data.', 'wp-graphql-woocommerce' );
+					return __( 'Meta data.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -348,7 +348,7 @@ class Product_Create {
 			 */
 			$product = \wc_get_product( $product_id );
 			if ( $product && ! wc_rest_check_post_permissions( 'product', 'edit', $product->get_id() ) ) {
-				throw new UserError( __( 'You do not have permission to edit this product', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'You do not have permission to edit this product', 'graphql-for-ecommerce' ) );
 			}
 		} else {
 			$classname = \WC_Product_Factory::get_classname_from_product_type( $type );
@@ -366,7 +366,7 @@ class Product_Create {
 			 */
 			$post_type_object = get_post_type_object( 'product' );
 			if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
-				throw new UserError( __( 'You do not have permission to create products', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'You do not have permission to create products', 'graphql-for-ecommerce' ) );
 			}
 		}
 

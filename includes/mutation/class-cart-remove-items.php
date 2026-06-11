@@ -45,13 +45,13 @@ class Cart_Remove_Items {
 			'keys' => [
 				'type'        => [ 'list_of' => 'ID' ],
 				'description' => static function () {
-					return __( 'Item keys of the items being removed', 'wp-graphql-woocommerce' );
+					return __( 'Item keys of the items being removed', 'graphql-for-ecommerce' );
 				},
 			],
 			'all'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Remove all cart items', 'wp-graphql-woocommerce' );
+					return __( 'Remove all cart items', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -84,11 +84,11 @@ class Cart_Remove_Items {
 			Cart_Mutation::check_session_token();
 
 			if ( \WC()->cart->is_empty() ) {
-				throw new UserError( __( 'No items in cart to remove.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No items in cart to remove.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( empty( $input['keys'] ) && empty( $input['all'] ) ) {
-				throw new UserError( __( 'No cart item keys provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No cart item keys provided', 'graphql-for-ecommerce' ) );
 			}
 
 			$cart_items = Cart_Mutation::retrieve_cart_items( $input, $context, $info, 'remove' );
@@ -96,7 +96,7 @@ class Cart_Remove_Items {
 				$success = \WC()->cart->remove_cart_item( $item['key'] );
 				if ( false === $success ) {
 					/* translators: Cart item removal failure message */
-					throw new UserError( sprintf( __( 'Failed to remove item %s from cart.', 'wp-graphql-woocommerce' ), $item['key'] ) );
+					throw new UserError( sprintf( __( 'Failed to remove item %s from cart.', 'graphql-for-ecommerce' ), $item['key'] ) );
 				}
 			}
 

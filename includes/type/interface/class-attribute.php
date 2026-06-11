@@ -22,14 +22,14 @@ class Attribute {
 			'Attribute',
 			[
 				'description' => static function () {
-					return __( 'Attribute object', 'wp-graphql-woocommerce' );
+					return __( 'Attribute object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'name'  => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Name of attribute', 'wp-graphql-woocommerce' );
+							return __( 'Name of attribute', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
@@ -38,7 +38,7 @@ class Attribute {
 					'value' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Selected value of attribute', 'wp-graphql-woocommerce' );
+							return __( 'Selected value of attribute', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;

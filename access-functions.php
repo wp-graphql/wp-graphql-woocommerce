@@ -177,7 +177,7 @@ if ( ! function_exists( 'wc_graphql_price_range' ) ) {
 
 		$price = sprintf(
 			/* translators: 1: price from 2: price to */
-			_x( '%1$s %2$s %3$s', 'Price range: from-to', 'wp-graphql-woocommerce' ),
+			_x( '%1$s %2$s %3$s', 'Price range: from-to', 'graphql-for-ecommerce' ),
 			is_numeric( $from ) ? wc_graphql_price( $from ) : $from,
 			apply_filters( 'graphql_woocommerce_format_price_range_separator', '-', $from, $to ),
 			is_numeric( $to ) ? wc_graphql_price( $to ) : $to

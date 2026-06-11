@@ -220,13 +220,13 @@ class Compatibility {
 				'authToken'    => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => static function () {
-						return __( 'JWT Token that can be used in future requests for Authentication', 'wp-graphql-woocommerce' );
+						return __( 'JWT Token that can be used in future requests for Authentication', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
 						if ( ! $user ) {
-							throw new UserError( __( 'User not found.', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'User not found.', 'graphql-for-ecommerce' ) );
 						}
 
 						return self::get_auth_token( $user );
@@ -235,13 +235,13 @@ class Compatibility {
 				'refreshToken' => [
 					'type'        => $type_registry->get_type( 'String' ),
 					'description' => static function () {
-						return __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'wp-graphql-woocommerce' );
+						return __( 'A JWT token that can be used in future requests to get a refreshed jwtAuthToken. If the refresh token used in a request is revoked or otherwise invalid, a valid Auth token will NOT be issued in the response headers.', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $payload ) {
 						$user = get_user_by( 'ID', $payload['id'] );
 
 						if ( ! $user ) {
-							throw new UserError( __( 'User not found.', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'User not found.', 'graphql-for-ecommerce' ) );
 						}
 
 						return self::get_refresh_token( $user );
@@ -263,7 +263,7 @@ class Compatibility {
 			[
 				'type'        => 'Customer',
 				'description' => static function () {
-					return __( 'Customer object of authenticated user.', 'wp-graphql-woocommerce' );
+					return __( 'Customer object of authenticated user.', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					$id = $payload['id'];
@@ -281,7 +281,7 @@ class Compatibility {
 					[
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
+							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function () {
 							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */
@@ -299,7 +299,7 @@ class Compatibility {
 					[
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'wp-graphql-woocommerce' );
+							return __( 'A JWT token that can be used in future requests to for WooCommerce session identification', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function () {
 							/** @var \WPGraphQL\WooCommerce\Utils\QL_Session_Handler $session */

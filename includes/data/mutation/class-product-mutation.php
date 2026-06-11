@@ -66,7 +66,7 @@ class Product_Mutation {
 			} else {
 				graphql_debug(
 					/* translators: %s: Shipping class */
-					sprintf( __( 'Invalid shipping class: %s', 'wp-graphql-woocommerce' ), $shippingClass )
+					sprintf( __( 'Invalid shipping class: %s', 'graphql-for-ecommerce' ), $shippingClass )
 				);
 			}
 		}
@@ -310,7 +310,7 @@ class Product_Mutation {
 				if ( ! wp_attachment_is_image( $attachment_id ) ) {
 					throw new UserError(
 						/* translators: %s: Attachment ID */
-						sprintf( __( '#%s is an invalid image ID.', 'wp-graphql-woocommerce' ), $attachment_id )
+						sprintf( __( '#%s is an invalid image ID.', 'graphql-for-ecommerce' ), $attachment_id )
 					);
 				}
 
@@ -385,7 +385,7 @@ class Product_Mutation {
 		);
 
 		if ( is_wp_error( $attribute ) || is_null( $attribute ) ) {
-			throw new UserError( __( 'Invalid attribute ID.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Invalid attribute ID.', 'graphql-for-ecommerce' ) );
 		}
 
 		return $attribute;

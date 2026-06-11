@@ -61,7 +61,7 @@ class Review_Delete_Restore {
 					'non_null' => 'ID',
 				],
 				'description' => static function () {
-					return __( 'The ID of the target product review', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the target product review', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -70,7 +70,7 @@ class Review_Delete_Restore {
 			$fields['forceDelete'] = [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the product review should be force deleted instead of being moved to the trash', 'wp-graphql-woocommerce' );
+					return __( 'Whether the product review should be force deleted instead of being moved to the trash', 'graphql-for-ecommerce' );
 				},
 			];
 		}
@@ -90,7 +90,7 @@ class Review_Delete_Restore {
 			'rating'     => [
 				'type'        => 'Float',
 				'description' => static function () {
-					return __( 'The product rating of the affected product review', 'wp-graphql-woocommerce' );
+					return __( 'The product rating of the affected product review', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['rating'] ) ) {
@@ -103,7 +103,7 @@ class Review_Delete_Restore {
 			'affectedId' => [
 				'type'        => 'Id',
 				'description' => static function () {
-					return __( 'The affected product review ID', 'wp-graphql-woocommerce' );
+					return __( 'The affected product review ID', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					$deleted = (object) $payload['commentObject'];
@@ -114,7 +114,7 @@ class Review_Delete_Restore {
 			'review'     => [
 				'type'        => 'Comment',
 				'description' => static function () {
-					return __( 'The affected product review', 'wp-graphql-woocommerce' );
+					return __( 'The affected product review', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload, $args, AppContext $context ) use ( $restore ) {
 					if ( empty( $payload['commentObject'] ) ) {
@@ -143,7 +143,7 @@ class Review_Delete_Restore {
 			// Retrieve the product review rating for the payload.
 			$id = Utils::get_database_id_from_id( $input['id'] );
 			if ( ! $id ) {
-				throw new UserError( __( 'Invalid Product Review ID provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid Product Review ID provided', 'graphql-for-ecommerce' ) );
 			}
 
 			$rating = get_comment_meta( absint( $id ), 'rating', true );
@@ -159,7 +159,7 @@ class Review_Delete_Restore {
 			}
 
 			if ( empty( $classname ) || ! class_exists( $classname ) ) {
-				throw new UserError( __( 'Failed to find mutation resolver. Please contact site adminstrator', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to find mutation resolver. Please contact site adminstrator', 'graphql-for-ecommerce' ) );
 			}
 
 			// Get the comment mutation resolver.

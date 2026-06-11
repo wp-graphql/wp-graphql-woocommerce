@@ -24,14 +24,14 @@ class Variation_Attribute_Type {
 			'VariationAttribute',
 			[
 				'description' => static function () {
-					return __( 'A product variation attribute object', 'wp-graphql-woocommerce' );
+					return __( 'A product variation attribute object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Attribute' ],
 				'fields'      => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'The Global ID of the attribute.', 'wp-graphql-woocommerce' );
+							return __( 'The Global ID of the attribute.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['id'] ) ? $source['id'] : null;
@@ -40,7 +40,7 @@ class Variation_Attribute_Type {
 					'attributeId' => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'The Database ID of the attribute.', 'wp-graphql-woocommerce' );
+							return __( 'The Database ID of the attribute.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['attributeId'] ) ? $source['attributeId'] : null;
@@ -49,7 +49,7 @@ class Variation_Attribute_Type {
 					'label'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Label of attribute', 'wp-graphql-woocommerce' );
+							return __( 'Label of attribute', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['label'] ) ? $source['label'] : null;
@@ -58,7 +58,7 @@ class Variation_Attribute_Type {
 					'name'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Name of attribute', 'wp-graphql-woocommerce' );
+							return __( 'Name of attribute', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['name'] ) ? $source['name'] : null;
@@ -67,7 +67,7 @@ class Variation_Attribute_Type {
 					'value'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Selected value of attribute', 'wp-graphql-woocommerce' );
+							return __( 'Selected value of attribute', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return isset( $source['value'] ) ? $source['value'] : null;

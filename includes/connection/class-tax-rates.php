@@ -62,25 +62,25 @@ class Tax_Rates {
 			'class'      => [
 				'type'        => 'TaxClassEnum',
 				'description' => static function () {
-					return __( 'Sort by tax class.', 'wp-graphql-woocommerce' );
+					return __( 'Sort by tax class.', 'graphql-for-ecommerce' );
 				},
 			],
 			'postCode'   => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Filter results by a post code.', 'wp-graphql-woocommerce' );
+					return __( 'Filter results by a post code.', 'graphql-for-ecommerce' );
 				},
 			],
 			'postCodeIn' => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => static function () {
-					return __( 'Filter results by a group of post codes.', 'wp-graphql-woocommerce' );
+					return __( 'Filter results by a group of post codes.', 'graphql-for-ecommerce' );
 				},
 			],
 			'orderby'    => [
 				'type'        => [ 'list_of' => 'TaxRateConnectionOrderbyInput' ],
 				'description' => static function () {
-					return __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' );
+					return __( 'What paramater to use to order the objects by.', 'graphql-for-ecommerce' );
 				},
 			],
 		];

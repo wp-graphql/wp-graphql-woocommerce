@@ -22,7 +22,7 @@ class Tax_Rate_Connection_Orderby_Enum {
 			'TaxRateConnectionOrderbyEnum',
 			[
 				'description' => static function () {
-					return __( 'Field to order the connection by', 'wp-graphql-woocommerce' );
+					return __( 'Field to order the connection by', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'ID'    => [ 'value' => 'id' ],

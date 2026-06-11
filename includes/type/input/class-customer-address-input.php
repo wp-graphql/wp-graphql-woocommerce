@@ -22,79 +22,79 @@ class Customer_Address_Input {
 			'CustomerAddressInput',
 			[
 				'description' => static function () {
-					return __( 'Customer address information', 'wp-graphql-woocommerce' );
+					return __( 'Customer address information', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'firstName' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'First name', 'wp-graphql-woocommerce' );
+							return __( 'First name', 'graphql-for-ecommerce' );
 						},
 					],
 					'lastName'  => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Last name', 'wp-graphql-woocommerce' );
+							return __( 'Last name', 'graphql-for-ecommerce' );
 						},
 					],
 					'company'   => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Company', 'wp-graphql-woocommerce' );
+							return __( 'Company', 'graphql-for-ecommerce' );
 						},
 					],
 					'address1'  => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Address 1', 'wp-graphql-woocommerce' );
+							return __( 'Address 1', 'graphql-for-ecommerce' );
 						},
 					],
 					'address2'  => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Address 2', 'wp-graphql-woocommerce' );
+							return __( 'Address 2', 'graphql-for-ecommerce' );
 						},
 					],
 					'city'      => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'City', 'wp-graphql-woocommerce' );
+							return __( 'City', 'graphql-for-ecommerce' );
 						},
 					],
 					'state'     => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'State', 'wp-graphql-woocommerce' );
+							return __( 'State', 'graphql-for-ecommerce' );
 						},
 					],
 					'postcode'  => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Zip Postal Code', 'wp-graphql-woocommerce' );
+							return __( 'Zip Postal Code', 'graphql-for-ecommerce' );
 						},
 					],
 					'country'   => [
 						'type'        => 'CountriesEnum',
 						'description' => static function () {
-							return __( 'Country', 'wp-graphql-woocommerce' );
+							return __( 'Country', 'graphql-for-ecommerce' );
 						},
 					],
 					'email'     => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'E-mail', 'wp-graphql-woocommerce' );
+							return __( 'E-mail', 'graphql-for-ecommerce' );
 						},
 					],
 					'phone'     => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Phone', 'wp-graphql-woocommerce' );
+							return __( 'Phone', 'graphql-for-ecommerce' );
 						},
 					],
 					'overwrite' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'Clear old address data', 'wp-graphql-woocommerce' );
+							return __( 'Clear old address data', 'graphql-for-ecommerce' );
 						},
 					],
 				],

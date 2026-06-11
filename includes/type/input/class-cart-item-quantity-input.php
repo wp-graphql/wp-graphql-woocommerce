@@ -22,19 +22,19 @@ class Cart_Item_Quantity_Input {
 			'CartItemQuantityInput',
 			[
 				'description' => static function () {
-					return __( 'Cart item quantity', 'wp-graphql-woocommerce' );
+					return __( 'Cart item quantity', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'key'      => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'Cart item being updated', 'wp-graphql-woocommerce' );
+							return __( 'Cart item being updated', 'graphql-for-ecommerce' );
 						},
 					],
 					'quantity' => [
 						'type'        => [ 'non_null' => 'Int' ],
 						'description' => static function () {
-							return __( 'Cart item\'s new quantity', 'wp-graphql-woocommerce' );
+							return __( 'Cart item\'s new quantity', 'graphql-for-ecommerce' );
 						},
 					],
 				],

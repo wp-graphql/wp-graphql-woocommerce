@@ -45,37 +45,37 @@ class Refund_Create {
 			'orderId'       => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the order to refund.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the order to refund.', 'graphql-for-ecommerce' );
 				},
 			],
 			'amount'        => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'Refund amount.', 'wp-graphql-woocommerce' );
+					return __( 'Refund amount.', 'graphql-for-ecommerce' );
 				},
 			],
 			'reason'        => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Reason for refund.', 'wp-graphql-woocommerce' );
+					return __( 'Reason for refund.', 'graphql-for-ecommerce' );
 				},
 			],
 			'refundPayment' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'When true, the payment gateway API is used to generate the refund.', 'wp-graphql-woocommerce' );
+					return __( 'When true, the payment gateway API is used to generate the refund.', 'graphql-for-ecommerce' );
 				},
 			],
 			'restockItems'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'When true, refunded items are restocked.', 'wp-graphql-woocommerce' );
+					return __( 'When true, refunded items are restocked.', 'graphql-for-ecommerce' );
 				},
 			],
 			'metaData'      => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => static function () {
-					return __( 'Meta data.', 'wp-graphql-woocommerce' );
+					return __( 'Meta data.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -114,16 +114,16 @@ class Refund_Create {
 			$order    = \wc_get_order( $order_id );
 
 			if ( ! $order ) {
-				throw new UserError( __( 'Invalid order ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid order ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( ! \wc_rest_check_post_permissions( 'shop_order', 'edit', $order_id ) ) {
-				throw new UserError( __( 'You do not have permission to create refunds for this order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'You do not have permission to create refunds for this order.', 'graphql-for-ecommerce' ) );
 			}
 
 			$amount = floatval( $input['amount'] );
 			if ( 0 >= $amount ) {
-				throw new UserError( __( 'Refund amount must be greater than zero.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Refund amount must be greater than zero.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**
@@ -151,7 +151,7 @@ class Refund_Create {
 			}
 
 			if ( ! $refund ) {
-				throw new UserError( __( 'Could not create refund, please try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Could not create refund, please try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Set meta data.

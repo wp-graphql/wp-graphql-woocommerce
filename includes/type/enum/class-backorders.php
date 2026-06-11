@@ -28,7 +28,7 @@ class Backorders {
 			'BackordersEnum',
 			[
 				'description' => static function () {
-					return __( 'Product backorder enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Product backorder enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $values,
 			]

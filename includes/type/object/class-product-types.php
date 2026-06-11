@@ -70,7 +70,7 @@ class Product_Types {
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => static function () {
-					return __( 'A simple product object', 'wp-graphql-woocommerce' );
+					return __( 'A simple product object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => self::get_product_interfaces(
 					[
@@ -97,7 +97,7 @@ class Product_Types {
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => static function () {
-					return __( 'A variable product object', 'wp-graphql-woocommerce' );
+					return __( 'A variable product object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => self::get_product_interfaces(
 					[
@@ -124,7 +124,7 @@ class Product_Types {
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => static function () {
-					return __( 'A external product object', 'wp-graphql-woocommerce' );
+					return __( 'A external product object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => array_merge(
@@ -132,13 +132,13 @@ class Product_Types {
 						'externalUrl' => [
 							'type'        => 'String',
 							'description' => static function () {
-								return __( 'External product url', 'wp-graphql-woocommerce' );
+								return __( 'External product url', 'graphql-for-ecommerce' );
 							},
 						],
 						'buttonText'  => [
 							'type'        => 'String',
 							'description' => static function () {
-								return __( 'External product Buy button text', 'wp-graphql-woocommerce' );
+								return __( 'External product Buy button text', 'graphql-for-ecommerce' );
 							},
 						],
 					]
@@ -159,26 +159,26 @@ class Product_Types {
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => static function () {
-					return __( 'A group product object', 'wp-graphql-woocommerce' );
+					return __( 'A group product object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => self::get_product_interfaces( [ 'ProductWithPricing' ] ),
 				'fields'          => [
 					'addToCartText'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' );
+							return __( 'Product\'s add to cart button text description', 'graphql-for-ecommerce' );
 						},
 					],
 					'addToCartDescription' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Product\'s add to cart button text description', 'wp-graphql-woocommerce' );
+							return __( 'Product\'s add to cart button text description', 'graphql-for-ecommerce' );
 						},
 					],
 					'price'                => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Products\' price range', 'wp-graphql-woocommerce' );
+							return __( 'Products\' price range', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( Model $source ) {
 							$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
@@ -232,7 +232,7 @@ class Product_Types {
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product::class,
 				'description'     => static function () {
-					return __( 'A product object for a product type that is unsupported by the current API.', 'wp-graphql-woocommerce' );
+					return __( 'A product object for a product type that is unsupported by the current API.', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => self::get_product_interfaces(
 					[
@@ -246,7 +246,7 @@ class Product_Types {
 					'type' => [
 						'type'        => 'ProductTypesEnum',
 						'description' => static function () {
-							return __( 'Product type', 'wp-graphql-woocommerce' );
+							return __( 'Product type', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function () {
 							return 'unsupported';

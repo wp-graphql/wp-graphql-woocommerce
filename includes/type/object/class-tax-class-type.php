@@ -25,14 +25,14 @@ class Tax_Class_Type {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'A Tax class object', 'wp-graphql-woocommerce' );
+					return __( 'A Tax class object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => [ 'Node' ],
 				'fields'          => [
 					'id'   => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'The globally unique identifier for the tax class.', 'wp-graphql-woocommerce' );
+							return __( 'The globally unique identifier for the tax class.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['slug'] ) ? \GraphQLRelay\Relay::toGlobalId( 'tax_class', $source['slug'] ) : null;
@@ -41,7 +41,7 @@ class Tax_Class_Type {
 					'slug' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'The globally unique identifier for the tax class.', 'wp-graphql-woocommerce' );
+							return __( 'The globally unique identifier for the tax class.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['slug'] ) ? $source['slug'] : null;
@@ -50,7 +50,7 @@ class Tax_Class_Type {
 					'name' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Tax class name.', 'wp-graphql-woocommerce' );
+							return __( 'Tax class name.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, array $args, $context, $info ) {
 							return ! empty( $source['name'] ) ? $source['name'] : null;

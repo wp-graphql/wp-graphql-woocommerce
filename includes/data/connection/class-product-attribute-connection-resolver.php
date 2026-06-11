@@ -142,7 +142,7 @@ class Product_Attribute_Connection_Resolver {
 					);
 					break;
 				default:
-					throw new UserError( __( 'Invalid product attribute type provided', 'wp-graphql-woocommerce' ) );
+					throw new UserError( __( 'Invalid product attribute type provided', 'graphql-for-ecommerce' ) );
 			}
 		}//end if
 

@@ -44,7 +44,7 @@ class Tax_Class_Delete {
 			'slug' => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'Slug of the tax class.', 'wp-graphql-woocommerce' );
+					return __( 'Slug of the tax class.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -74,14 +74,14 @@ class Tax_Class_Delete {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to delete tax classes.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to delete tax classes.', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 			}
 			$slug = $input['slug'];
 
 			/** @var array|false $tax_class */
 			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
 			if ( ! $tax_class ) {
-				throw new UserError( __( 'Invalid tax class slug.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid tax class slug.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**
@@ -94,7 +94,7 @@ class Tax_Class_Delete {
 
 			$deleted = \WC_Tax::delete_tax_class_by( 'slug', $slug );
 			if ( ! $deleted ) {
-				throw new UserError( __( 'Failed to delete tax class.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to delete tax class.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**

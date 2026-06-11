@@ -24,7 +24,7 @@ class Simple_Attribute_Type {
 			'SimpleAttribute',
 			[
 				'description' => static function () {
-					return __( 'A simple attribute object', 'wp-graphql-woocommerce' );
+					return __( 'A simple attribute object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Attribute' ],
 				'fields'      => [],

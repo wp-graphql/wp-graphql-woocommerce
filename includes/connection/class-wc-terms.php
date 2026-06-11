@@ -31,7 +31,7 @@ class WC_Terms extends TermObjects {
 		// From Coupons to ProductCategory connections.
 		$tax_object = get_taxonomy( 'product_cat' );
 		if ( ! $tax_object ) {
-			throw new \Exception( __( '"product_cat" taxonomy not found', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( '"product_cat" taxonomy not found', 'graphql-for-ecommerce' ) );
 		}
 
 		register_graphql_connection(
@@ -80,14 +80,14 @@ class WC_Terms extends TermObjects {
 						'orderby' => [
 							'type'        => 'ProductAttributesConnectionOrderbyEnum',
 							'description' => static function () {
-								return __( 'Field(s) to order terms by. Defaults to \'name\'.', 'wp-graphql-woocommerce' );
+								return __( 'Field(s) to order terms by. Defaults to \'name\'.', 'graphql-for-ecommerce' );
 							},
 						],
 					]
 				),
 				'resolve'        => static function ( $source, array $args, AppContext $context, ResolveInfo $info ) {
 					if ( ! $source->is_taxonomy() ) {
-						throw new UserError( __( 'Invalid product attribute', 'wp-graphql-woocommerce' ) );
+						throw new UserError( __( 'Invalid product attribute', 'graphql-for-ecommerce' ) );
 					}
 
 					$resolver = new TermObjectConnectionResolver( $source, $args, $context, $info, $source->get_name() );

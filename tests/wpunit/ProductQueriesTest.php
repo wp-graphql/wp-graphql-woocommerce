@@ -757,7 +757,7 @@ class ProductQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField(
 				'product.addToCartDescription',
 				/* translators: %s: Group name */
-				sprintf( __( 'View products in the &ldquo;%s&rdquo; group', 'wp-graphql-woocommerce' ), 'Test Group' )
+				sprintf( __( 'View products in the &ldquo;%s&rdquo; group', 'graphql-for-ecommerce' ), 'Test Group' )
 			),
 		];
 

@@ -22,43 +22,43 @@ class Product_Attributes_Input {
 			'ProductAttributesInput',
 			[
 				'description' => static function () {
-					return __( 'Product attribute properties', 'wp-graphql-woocommerce' );
+					return __( 'Product attribute properties', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'id'        => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Attribute ID', 'wp-graphql-woocommerce' );
+							return __( 'Attribute ID', 'graphql-for-ecommerce' );
 						},
 					],
 					'name'      => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Attribute name', 'wp-graphql-woocommerce' );
+							return __( 'Attribute name', 'graphql-for-ecommerce' );
 						},
 					],
 					'position'  => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Attribute position', 'wp-graphql-woocommerce' );
+							return __( 'Attribute position', 'graphql-for-ecommerce' );
 						},
 					],
 					'visible'   => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'Define if the attribute is visible on the "Additional information" tab in the product\'s page. Default is false.', 'wp-graphql-woocommerce' );
+							return __( 'Define if the attribute is visible on the "Additional information" tab in the product\'s page. Default is false.', 'graphql-for-ecommerce' );
 						},
 					],
 					'variation' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'Define if the attribute can be used as variation. Default is false.', 'wp-graphql-woocommerce' );
+							return __( 'Define if the attribute can be used as variation. Default is false.', 'graphql-for-ecommerce' );
 						},
 					],
 					'options'   => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-							return __( 'List of available term names for the attribute', 'wp-graphql-woocommerce' );
+							return __( 'List of available term names for the attribute', 'graphql-for-ecommerce' );
 						},
 					],
 				],

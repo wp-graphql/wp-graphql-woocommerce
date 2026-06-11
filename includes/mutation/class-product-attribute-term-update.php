@@ -42,13 +42,13 @@ class Product_Attribute_Term_Update {
 				'id'   => [
 					'type'        => [ 'non_null' => 'Int' ],
 					'description' => static function () {
-						return __( 'The ID of the term to update.', 'wp-graphql-woocommerce' );
+						return __( 'The ID of the term to update.', 'graphql-for-ecommerce' );
 					},
 				],
 				'name' => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'The name of the term.', 'wp-graphql-woocommerce' );
+						return __( 'The name of the term.', 'graphql-for-ecommerce' );
 					},
 				],
 			]

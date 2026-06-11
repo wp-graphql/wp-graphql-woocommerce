@@ -33,7 +33,7 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 	public function should_execute() {
 		if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
 			graphql_debug(
-				__( 'User does not have permission to view tax classes.', 'wp-graphql-woocommerce' )
+				__( 'User does not have permission to view tax classes.', 'graphql-for-ecommerce' )
 			);
 			return false;
 		}
@@ -60,7 +60,7 @@ class Tax_Class_Connection_Resolver extends AbstractConnectionResolver {
 		// Add standard class.
 		$tax_classes[] = [
 			'slug' => 'standard',
-			'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
+			'name' => __( 'Standard rate', 'graphql-for-ecommerce' ),
 		];
 
 		$classes = \WC_Tax::get_tax_classes();

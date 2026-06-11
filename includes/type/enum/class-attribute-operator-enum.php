@@ -22,7 +22,7 @@ class Attribute_Operator_Enum {
 			'AttributeOperatorEnum',
 			[
 				'description' => static function () {
-					return __( 'Collection statistic attributes operators', 'wp-graphql-woocommerce' );
+					return __( 'Collection statistic attributes operators', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'IN'     => [ 'value' => 'IN' ],

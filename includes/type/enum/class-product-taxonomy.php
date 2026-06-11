@@ -40,7 +40,7 @@ class Product_Taxonomy {
 			'ProductTaxonomyEnum',
 			[
 				'description' => static function () {
-					return __( 'Product taxonomies', 'wp-graphql-woocommerce' );
+					return __( 'Product taxonomies', 'graphql-for-ecommerce' );
 				},
 				'values'      => $taxonomy_values,
 			]

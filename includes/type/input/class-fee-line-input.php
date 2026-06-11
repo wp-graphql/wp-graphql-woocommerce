@@ -22,43 +22,43 @@ class Fee_Line_Input {
 			'FeeLineInput',
 			[
 				'description' => static function () {
-					return __( 'Fee line data.', 'wp-graphql-woocommerce' );
+					return __( 'Fee line data.', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'id'        => [
 						'type'        => 'ID',
 						'description' => static function () {
-							return __( 'Fee Line ID', 'wp-graphql-woocommerce' );
+							return __( 'Fee Line ID', 'graphql-for-ecommerce' );
 						},
 					],
 					'name'      => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Fee name.', 'wp-graphql-woocommerce' );
+							return __( 'Fee name.', 'graphql-for-ecommerce' );
 						},
 					],
 					'amount'    => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Fee amount.', 'wp-graphql-woocommerce' );
+							return __( 'Fee amount.', 'graphql-for-ecommerce' );
 						},
 					],
 					'taxClass'  => [
 						'type'        => 'TaxClassEnum',
 						'description' => static function () {
-							return __( 'Tax class of fee.', 'wp-graphql-woocommerce' );
+							return __( 'Tax class of fee.', 'graphql-for-ecommerce' );
 						},
 					],
 					'taxStatus' => [
 						'type'        => 'TaxStatusEnum',
 						'description' => static function () {
-							return __( 'Tax status of fee.', 'wp-graphql-woocommerce' );
+							return __( 'Tax status of fee.', 'graphql-for-ecommerce' );
 						},
 					],
 					'total'     => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Line total (after discounts).', 'wp-graphql-woocommerce' );
+							return __( 'Line total (after discounts).', 'graphql-for-ecommerce' );
 						},
 					],
 				],

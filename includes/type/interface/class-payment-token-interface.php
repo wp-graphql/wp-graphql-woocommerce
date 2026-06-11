@@ -24,7 +24,7 @@ class Payment_Token_Interface {
 			'PaymentTokenInterface',
 			[
 				'description' => static function () {
-					return __( 'Payment token object', 'wp-graphql-woocommerce' );
+					return __( 'Payment token object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
@@ -56,7 +56,7 @@ class Payment_Token_Interface {
 				'id'        => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'Token ID unique identifier', 'wp-graphql-woocommerce' );
+						return __( 'Token ID unique identifier', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source ) {
 						return ! empty( $source->get_id() ) ? Relay::toGlobalId( 'token', $source->get_id() ) : null;
@@ -65,7 +65,7 @@ class Payment_Token_Interface {
 				'tokenId'   => [
 					'type'        => [ 'non_null' => 'Integer' ],
 					'description' => static function () {
-						return __( 'Token database ID.', 'wp-graphql-woocommerce' );
+						return __( 'Token database ID.', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source ) {
 						return ! empty( $source->get_id() ) ? $source->get_id() : null;
@@ -74,7 +74,7 @@ class Payment_Token_Interface {
 				'type'      => [
 					'type'        => [ 'non_null' => 'String' ],
 					'description' => static function () {
-						return __( 'Token type', 'wp-graphql-woocommerce' );
+						return __( 'Token type', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source ) {
 						return ! empty( $source->get_type() ) ? $source->get_type() : null;
@@ -83,7 +83,7 @@ class Payment_Token_Interface {
 				'gateway'   => [
 					'type'        => 'PaymentGateway',
 					'description' => static function () {
-						return __( 'Token payment gateway', 'wp-graphql-woocommerce' );
+						return __( 'Token payment gateway', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source ) {
 						$gateways   = \WC()->payment_gateways()->payment_gateways();
@@ -98,7 +98,7 @@ class Payment_Token_Interface {
 				'isDefault' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'Is token connected to user\'s preferred payment method', 'wp-graphql-woocommerce' );
+						return __( 'Is token connected to user\'s preferred payment method', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source ) {
 						return ! is_null( $source->is_default() ) ? $source->is_default() : false;

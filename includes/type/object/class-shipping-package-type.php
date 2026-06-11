@@ -24,13 +24,13 @@ class Shipping_Package_Type {
 			'ShippingPackage',
 			[
 				'description' => static function () {
-					return __( 'Shipping package object', 'wp-graphql-woocommerce' );
+					return __( 'Shipping package object', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'packageDetails'             => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Shipping package details', 'wp-graphql-woocommerce' );
+							return __( 'Shipping package details', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$product_names = [];
@@ -47,7 +47,7 @@ class Shipping_Package_Type {
 					'rates'                      => [
 						'type'        => [ 'list_of' => 'ShippingRate' ],
 						'description' => static function () {
-							return __( 'Shipping package rates', 'wp-graphql-woocommerce' );
+							return __( 'Shipping package rates', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['rates'] ) ? $source['rates'] : null;
@@ -56,7 +56,7 @@ class Shipping_Package_Type {
 					'supportsShippingCalculator' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'This shipping package supports the shipping calculator.', 'wp-graphql-woocommerce' );
+							return __( 'This shipping package supports the shipping calculator.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound

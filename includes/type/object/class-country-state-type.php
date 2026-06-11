@@ -24,13 +24,13 @@ class Country_State_Type {
 			'CountryState',
 			[
 				'description' => static function () {
-					return __( 'shipping country state object', 'wp-graphql-woocommerce' );
+					return __( 'shipping country state object', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'code' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Country state code', 'wp-graphql-woocommerce' );
+							return __( 'Country state code', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['code'] ) ? $source['code'] : null;
@@ -39,7 +39,7 @@ class Country_State_Type {
 					'name' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Country state name', 'wp-graphql-woocommerce' );
+							return __( 'Country state name', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['name'] ) ? $source['name'] : null;

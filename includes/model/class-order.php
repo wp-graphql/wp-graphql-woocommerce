@@ -112,7 +112,7 @@ class Order extends Model {
 
 		// Check if order is valid.
 		if ( ! $data instanceof \WC_Abstract_Order ) {
-			throw new \Exception( __( 'Failed to retrieve order data source', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( 'Failed to retrieve order data source', 'graphql-for-ecommerce' ) );
 		}
 
 		$this->data                = $data;
@@ -363,7 +363,7 @@ class Order extends Model {
 			throw new UserError(
 				__(
 					'User does not have the capabilities necessary to delete this object.',
-					'wp-graphql-woocommerce'
+					'graphql-for-ecommerce'
 				)
 			);
 		}

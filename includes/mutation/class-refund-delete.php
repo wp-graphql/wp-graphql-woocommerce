@@ -45,13 +45,13 @@ class Refund_Delete {
 			'id'    => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'The ID of the refund to delete.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the refund to delete.', 'graphql-for-ecommerce' );
 				},
 			],
 			'force' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Force delete the refund. Defaults to true.', 'wp-graphql-woocommerce' );
+					return __( 'Force delete the refund. Defaults to true.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -89,18 +89,18 @@ class Refund_Delete {
 			$refund_id = \WPGraphQL\Utils\Utils::get_database_id_from_id( $input['id'] );
 
 			if ( empty( $refund_id ) ) {
-				throw new UserError( __( 'Invalid refund ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid refund ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			/** @var \WC_Order_Refund|false $refund */
 			$refund = \wc_get_order( $refund_id );
 			if ( ! $refund || 'shop_order_refund' !== $refund->get_type() ) {
-				throw new UserError( __( 'Invalid refund ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid refund ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			$order_id = $refund->get_parent_id();
 			if ( ! \wc_rest_check_post_permissions( 'shop_order', 'delete', $order_id ) ) {
-				throw new UserError( __( 'You do not have permission to delete this refund.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'You do not have permission to delete this refund.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Capture refund data before deletion for the response.
@@ -121,7 +121,7 @@ class Refund_Delete {
 			$result = $refund->delete( $force );
 
 			if ( ! $result ) {
-				throw new UserError( __( 'Could not delete refund.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Could not delete refund.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**

@@ -22,7 +22,7 @@ class Taxonomy_Operator {
 			'TaxonomyOperatorEnum',
 			[
 				'description' => static function () {
-					return __( 'Taxonomy query operators', 'wp-graphql-woocommerce' );
+					return __( 'Taxonomy query operators', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'IN'         => [ 'value' => 'IN' ],

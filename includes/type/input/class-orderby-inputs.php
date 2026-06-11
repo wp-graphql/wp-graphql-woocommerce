@@ -27,7 +27,7 @@ class Orderby_Inputs {
 			$base_name . 'OrderbyInput',
 			[
 				'description' => static function () {
-					return __( 'Options for ordering the connection', 'wp-graphql-woocommerce' );
+					return __( 'Options for ordering the connection', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'field' => [

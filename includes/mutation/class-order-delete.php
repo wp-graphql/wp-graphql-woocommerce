@@ -49,20 +49,20 @@ class Order_Delete {
 				'id'          => [
 					'type'        => 'ID',
 					'description' => static function () {
-						return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+						return __( 'Database ID or global ID of the order', 'graphql-for-ecommerce' );
 					},
 				],
 				'orderId'     => [
 					'type'              => 'Int',
 					'description'       => static function () {
-						return __( 'Order WP ID', 'wp-graphql-woocommerce' );
+						return __( 'Order WP ID', 'graphql-for-ecommerce' );
 					},
-					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'graphql-for-ecommerce' ),
 				],
 				'forceDelete' => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' );
+						return __( 'Delete or simply place in trash.', 'graphql-for-ecommerce' );
 					},
 				],
 			]
@@ -99,16 +99,16 @@ class Order_Delete {
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( ! $order_id ) {
-				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Check if authorized to delete this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'delete', $order_id ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'graphql-for-ecommerce' ) );
 			}
 
 			$force_delete = false;
@@ -147,7 +147,7 @@ class Order_Delete {
 			$order_to_be_deleted = WC_Order_Factory::get_order( $order->get_id() );
 
 			if ( ! is_object( $order_to_be_deleted ) ) {
-				throw new UserError( __( 'Order to be deleted could not be found.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order to be deleted could not be found.', 'graphql-for-ecommerce' ) );
 			}
 
 			$success = Order_Mutation::purge( $order_to_be_deleted, $force_delete );
@@ -156,7 +156,7 @@ class Order_Delete {
 				throw new UserError(
 					sprintf(
 						/* translators: Deletion failed message */
-						__( 'Removal of Order %d failed', 'wp-graphql-woocommerce' ),
+						__( 'Removal of Order %d failed', 'graphql-for-ecommerce' ),
 						$order->get_id()
 					)
 				);

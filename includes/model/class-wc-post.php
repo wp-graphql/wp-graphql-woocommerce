@@ -45,7 +45,7 @@ abstract class WC_Post extends Post {
 
 		// Check if product is valid.
 		if ( ! is_object( $post ) ) {
-			throw new \Exception( __( 'Failed to retrieve data source post object', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( 'Failed to retrieve data source post object', 'graphql-for-ecommerce' ) );
 		}
 
 		// Add $allowed_restricted_fields.
@@ -132,7 +132,7 @@ abstract class WC_Post extends Post {
 			throw new UserError(
 				__(
 					'Post type object not found.',
-					'wp-graphql-woocommerce'
+					'graphql-for-ecommerce'
 				)
 			);
 		}
@@ -141,7 +141,7 @@ abstract class WC_Post extends Post {
 			throw new UserError(
 				__(
 					'User does not have the capabilities necessary to delete this object.',
-					'wp-graphql-woocommerce'
+					'graphql-for-ecommerce'
 				)
 			);
 		}

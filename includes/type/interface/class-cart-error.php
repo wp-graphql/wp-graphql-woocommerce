@@ -22,7 +22,7 @@ class Cart_Error {
 			'CartError',
 			[
 				'description' => static function () {
-					return __( 'An error that occurred when updating the cart', 'wp-graphql-woocommerce' );
+					return __( 'An error that occurred when updating the cart', 'graphql-for-ecommerce' );
 				},
 				'fields'      => self::get_fields(),
 				'resolveType' => static function ( array $value ) {
@@ -52,7 +52,7 @@ class Cart_Error {
 			'type'    => [
 				'type'        => [ 'non_null' => 'CartErrorType' ],
 				'description' => static function () {
-					return __( 'Type of error', 'wp-graphql-woocommerce' );
+					return __( 'Type of error', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( array $error ) {
 					return ! empty( $error['type'] ) ? $error['type'] : null;
@@ -61,7 +61,7 @@ class Cart_Error {
 			'reasons' => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => static function () {
-					return __( 'Reason for error', 'wp-graphql-woocommerce' );
+					return __( 'Reason for error', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $error ) {
 					return ! empty( $error['reasons'] ) ? $error['reasons'] : [ 'Reasons for error unknown, sorry.' ];

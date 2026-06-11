@@ -312,17 +312,17 @@ class QL_Session_Handler extends WC_Session_Handler {
 
 			// Check if token was successful decoded.
 			if ( ! $token ) {
-				throw new \Exception( __( 'Failed to decode session token', 'wp-graphql-woocommerce' ) );
+				throw new \Exception( __( 'Failed to decode session token', 'graphql-for-ecommerce' ) );
 			}
 
 			// The Token is decoded now validate the iss.
 			if ( empty( $token->iss ) || get_bloginfo( 'url' ) !== $token->iss ) {
-				throw new \Exception( __( 'The iss do not match with this server', 'wp-graphql-woocommerce' ) );
+				throw new \Exception( __( 'The iss do not match with this server', 'graphql-for-ecommerce' ) );
 			}
 
 			// Validate the customer id in the token.
 			if ( empty( $token->data ) || empty( $token->data->customer_id ) ) {
-				throw new \Exception( __( 'Customer ID not found in the token', 'wp-graphql-woocommerce' ) );
+				throw new \Exception( __( 'Customer ID not found in the token', 'graphql-for-ecommerce' ) );
 			}
 		} catch ( \Throwable $error ) {
 			return new \WP_Error( 'invalid_token', $error->getMessage() );
@@ -343,7 +343,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 	protected function validate_cart_token( $cart_token ) {
 		// Validate Cart-Token using WooCommerce's JsonWebToken utility if available.
 		if ( ! $this->supports_store_api() ) {
-			return new \WP_Error( 'store_api_not_supported', __( 'Store API not available', 'wp-graphql-woocommerce' ) );
+			return new \WP_Error( 'store_api_not_supported', __( 'Store API not available', 'graphql-for-ecommerce' ) );
 		}
 
 		try {
@@ -354,7 +354,7 @@ class QL_Session_Handler extends WC_Session_Handler {
 			);
 
 			if ( ! $is_valid ) {
-				throw new \Exception( __( 'Invalid Cart-Token', 'wp-graphql-woocommerce' ) );
+				throw new \Exception( __( 'Invalid Cart-Token', 'graphql-for-ecommerce' ) );
 			}
 
 			// Decode the token to get the payload.

@@ -43,7 +43,7 @@ class Product_Variation {
 				'toType'        => 'Product',
 				'fromFieldName' => 'parent',
 				'description'   => static function () {
-					return __( 'The parent of the variation', 'wp-graphql-woocommerce' );
+					return __( 'The parent of the variation', 'graphql-for-ecommerce' );
 				},
 				'oneToOne'      => true,
 				'queryClass'    => '\WC_Product_Query',
@@ -66,7 +66,7 @@ class Product_Variation {
 				'eagerlyLoadType' => true,
 				'model'           => \WPGraphQL\WooCommerce\Model\Product_Variation::class,
 				'description'     => static function () {
-					return __( 'A product variation', 'wp-graphql-woocommerce' );
+					return __( 'A product variation', 'graphql-for-ecommerce' );
 				},
 				'interfaces'      => [ 'Node', 'ProductVariation' ],
 				'fields'          => [],
@@ -84,13 +84,13 @@ class Product_Variation {
 			'shippingClass' => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product variation shipping class', 'wp-graphql-woocommerce' );
+					return __( 'Product variation shipping class', 'graphql-for-ecommerce' );
 				},
 			],
 			'hasAttributes' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Does product variation have any visible attributes', 'wp-graphql-woocommerce' );
+					return __( 'Does product variation have any visible attributes', 'graphql-for-ecommerce' );
 				},
 			],
 		];

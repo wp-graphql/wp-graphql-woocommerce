@@ -22,19 +22,19 @@ class Shipping_Location_Input {
 			'ShippingLocationInput',
 			[
 				'description' => static function () {
-					return __( 'Shipping lines data.', 'wp-graphql-woocommerce' );
+					return __( 'Shipping lines data.', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'code' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Shipping location code.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping location code.', 'graphql-for-ecommerce' );
 						},
 					],
 					'type' => [
 						'type'        => 'ShippingLocationTypeEnum',
 						'description' => static function () {
-							return __( 'Shipping location type.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping location type.', 'graphql-for-ecommerce' );
 						},
 					],
 				],

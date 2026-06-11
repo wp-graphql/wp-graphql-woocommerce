@@ -33,12 +33,12 @@ class Shipping_Zone_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function should_execute() {
 		if ( ! \wc_shipping_enabled() ) {
-			graphql_debug( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ) );
+			graphql_debug( __( 'Shipping is disabled.', 'graphql-for-ecommerce' ) );
 			return false;
 		}
 
 		if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
-			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+			graphql_debug( __( 'Permission denied.', 'graphql-for-ecommerce' ) );
 			return false;
 		}
 		return true;

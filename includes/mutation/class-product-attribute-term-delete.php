@@ -44,13 +44,13 @@ class Product_Attribute_Term_Delete {
 			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the attribute to which the term belongs.', 'graphql-for-ecommerce' );
 				},
 			],
 			'id'          => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the term to update.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the term to update.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -80,27 +80,27 @@ class Product_Attribute_Term_Delete {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! $input['attributeId'] ) {
-				throw new UserError( __( 'A valid attributeId is required to create a new product attribute term.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'A valid attributeId is required to create a new product attribute term.', 'graphql-for-ecommerce' ) );
 			}
 
 			$taxonomy = wc_attribute_taxonomy_name_by_id( $input['attributeId'] );
 			if ( empty( $taxonomy ) ) {
-				throw new UserError( __( 'Invalid attribute ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid attribute ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( ! $input['id'] ) {
-				throw new UserError( __( 'A valid term ID is required to delete a product attribute term.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'A valid term ID is required to delete a product attribute term.', 'graphql-for-ecommerce' ) );
 			}
 
 			$term = get_term( $input['id'], $taxonomy );
 			if ( ! $term ) {
-				throw new UserError( __( 'Invalid term ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid term ID.', 'graphql-for-ecommerce' ) );
 			} elseif ( is_wp_error( $term ) ) {
 				throw new UserError( $term->get_error_message() );
 			}
 
 			if ( ! wc_rest_check_product_term_permissions( $taxonomy, 'delete', $term->term_id ) ) {
-				throw new UserError( __( 'You do not have permission to delete this term.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'You do not have permission to delete this term.', 'graphql-for-ecommerce' ) );
 			}
 
 			$menu_order = get_term_meta( $term->term_id, 'order_' . $taxonomy, true );
@@ -116,7 +116,7 @@ class Product_Attribute_Term_Delete {
 
 			$retval = wp_delete_term( $term->term_id, $term->taxonomy );
 			if ( ! $retval ) {
-				throw new UserError( __( 'Failed to delete term.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to delete term.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**

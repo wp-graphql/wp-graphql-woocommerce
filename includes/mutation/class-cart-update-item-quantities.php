@@ -46,7 +46,7 @@ class Cart_Update_Item_Quantities {
 			'items' => [
 				'type'        => [ 'list_of' => 'CartItemQuantityInput' ],
 				'description' => static function () {
-					return __( 'Cart item being updated', 'wp-graphql-woocommerce' );
+					return __( 'Cart item being updated', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -102,12 +102,12 @@ class Cart_Update_Item_Quantities {
 
 			// Confirm "items" exists.
 			if ( empty( $input['items'] ) ) {
-				throw new UserError( __( 'No item data provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No item data provided', 'graphql-for-ecommerce' ) );
 			}
 
 			// Confirm "items" is value.
 			if ( ! is_array( $input['items'] ) ) {
-				throw new UserError( __( 'Provided "items" invalid', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Provided "items" invalid', 'graphql-for-ecommerce' ) );
 			}
 
 			do_action( 'graphql_woocommerce_before_set_item_quantities', $input['items'], $input, $context, $info );
@@ -149,7 +149,7 @@ class Cart_Update_Item_Quantities {
 					throw new Exception(
 						sprintf(
 							/* translators: %s: Cart item keys */
-							__( 'Cart items identified with keys %s failed to update', 'wp-graphql-woocommerce' ),
+							__( 'Cart items identified with keys %s failed to update', 'graphql-for-ecommerce' ),
 							implode( ', ', $errors )
 						)
 					);

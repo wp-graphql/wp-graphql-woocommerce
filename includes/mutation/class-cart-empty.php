@@ -67,7 +67,7 @@ class Cart_Empty {
 			$cloned_cart = clone \WC()->cart;
 
 			if ( $cloned_cart->is_empty() ) {
-				throw new UserError( __( 'Cart is empty', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Cart is empty', 'graphql-for-ecommerce' ) );
 			}
 
 			/**

@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: WPGraphQL for eCommerce (WooGraphQL)
+ * Plugin Name: GraphQL for eCommerce
  * Plugin URI: https://github.com/wp-graphql/wp-graphql-woocommerce
  * Description: Adds WooCommerce functionality to WPGraphQL schema.
  * Version: 1.0.2
  * Author: kidunot89
  * Author URI: https://axistaylor.com
- * Text Domain: wp-graphql-woocommerce
+ * Text Domain: graphql-for-ecommerce
  * Domain Path: /languages
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -147,7 +147,7 @@ function init() {
 						<?php
 							printf(
 								/* translators: dependency not ready error message */
-								esc_html__( '%1$s must be active for "WPGraphQL for WooCommerce (WooGraphQL)" to work', 'wp-graphql-woocommerce' ),
+								esc_html__( '%1$s must be active for "GraphQL for eCommerce" to work', 'graphql-for-ecommerce' ),
 								esc_html( $dep )
 							);
 						?>

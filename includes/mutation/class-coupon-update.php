@@ -42,13 +42,13 @@ class Coupon_Update {
 				'id'   => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'Unique identifier for the object.', 'wp-graphql-woocommerce' );
+						return __( 'Unique identifier for the object.', 'graphql-for-ecommerce' );
 					},
 				],
 				'code' => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Coupon code.', 'wp-graphql-woocommerce' );
+						return __( 'Coupon code.', 'graphql-for-ecommerce' );
 					},
 				],
 			]

@@ -33,7 +33,7 @@ class Comments extends Comments_Core {
 						'averageRating' => [
 							'type'        => 'Float',
 							'description' => static function () {
-								return __( 'Average review rating for this product.', 'wp-graphql-woocommerce' );
+								return __( 'Average review rating for this product.', 'graphql-for-ecommerce' );
 							},
 							'resolve'     => static function ( $source ) {
 								if ( empty( $source['edges'] ) ) {
@@ -48,7 +48,7 @@ class Comments extends Comments_Core {
 						'rating' => [
 							'type'        => 'Float',
 							'description' => static function () {
-								return __( 'Review rating', 'wp-graphql-woocommerce' );
+								return __( 'Review rating', 'graphql-for-ecommerce' );
 							},
 							'resolve'     => static function ( $source ) {
 								$review = $source['node'];
@@ -81,7 +81,7 @@ class Comments extends Comments_Core {
 						'isCustomerNote' => [
 							'type'        => 'Boolean',
 							'description' => static function () {
-								return __( 'Is this a customer note?', 'wp-graphql-woocommerce' );
+								return __( 'Is this a customer note?', 'graphql-for-ecommerce' );
 							},
 							'resolve'     => static function ( $source ) {
 								$note = $source['node'];

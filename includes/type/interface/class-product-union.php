@@ -25,7 +25,7 @@ class Product_Union {
 			'ProductUnion',
 			[
 				'description' => static function () {
-					return __( 'Union between the product and product variation types', 'wp-graphql-woocommerce' );
+					return __( 'Union between the product and product variation types', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
@@ -45,61 +45,61 @@ class Product_Union {
 				'id'                => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+						return __( 'Product or variation global ID', 'graphql-for-ecommerce' );
 					},
 				],
 				'databaseId'        => [
 					'type'        => [ 'non_null' => 'Int' ],
 					'description' => static function () {
-						return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+						return __( 'Product or variation ID', 'graphql-for-ecommerce' );
 					},
 				],
 				'slug'              => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Product slug', 'wp-graphql-woocommerce' );
+						return __( 'Product slug', 'graphql-for-ecommerce' );
 					},
 				],
 				'type'              => [
 					'type'        => 'ProductTypesEnum',
 					'description' => static function () {
-						return __( 'Product type', 'wp-graphql-woocommerce' );
+						return __( 'Product type', 'graphql-for-ecommerce' );
 					},
 				],
 				'name'              => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Product name', 'wp-graphql-woocommerce' );
+						return __( 'Product name', 'graphql-for-ecommerce' );
 					},
 				],
 				'featured'          => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'If the product is featured', 'wp-graphql-woocommerce' );
+						return __( 'If the product is featured', 'graphql-for-ecommerce' );
 					},
 				],
 				'catalogVisibility' => [
 					'type'        => 'CatalogVisibilityEnum',
 					'description' => static function () {
-						return __( 'Catalog visibility', 'wp-graphql-woocommerce' );
+						return __( 'Catalog visibility', 'graphql-for-ecommerce' );
 					},
 				],
 				'sku'               => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Product SKU', 'wp-graphql-woocommerce' );
+						return __( 'Product SKU', 'graphql-for-ecommerce' );
 					},
 				],
 				'description'       => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Product description', 'wp-graphql-woocommerce' );
+						return __( 'Product description', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'format' => [
 							'type'        => 'PostObjectFieldFormatEnum',
 							'description' => static function () {
-								return __( 'Format of the field output', 'wp-graphql-woocommerce' );
+								return __( 'Format of the field output', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -114,7 +114,7 @@ class Product_Union {
 				'image'             => [
 					'type'        => 'MediaItem',
 					'description' => static function () {
-						return __( 'Main image', 'wp-graphql-woocommerce' );
+						return __( 'Main image', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						// @codingStandardsIgnoreLine.
@@ -127,13 +127,13 @@ class Product_Union {
 				'onSale'            => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'Is product on sale?', 'wp-graphql-woocommerce' );
+						return __( 'Is product on sale?', 'graphql-for-ecommerce' );
 					},
 				],
 				'purchasable'       => [
 					'type'        => 'Boolean',
 					'description' => static function () {
-						return __( 'Can product be purchased?', 'wp-graphql-woocommerce' );
+						return __( 'Can product be purchased?', 'graphql-for-ecommerce' );
 					},
 				],
 			],

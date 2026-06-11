@@ -44,13 +44,13 @@ class Product_Update {
 				'id'   => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+						return __( 'Unique identifier for the product.', 'graphql-for-ecommerce' );
 					},
 				],
 				'name' => [
 					'type'        => 'String',
 					'description' => static function () {
-						return __( 'Name of the product.', 'wp-graphql-woocommerce' );
+						return __( 'Name of the product.', 'graphql-for-ecommerce' );
 					},
 				],
 			]

@@ -22,7 +22,7 @@ class Tax_Status {
 			'TaxStatusEnum',
 			[
 				'description' => static function () {
-					return __( 'Product tax status enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Product tax status enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'TAXABLE'  => [ 'value' => 'taxable' ],

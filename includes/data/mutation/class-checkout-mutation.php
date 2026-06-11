@@ -421,11 +421,11 @@ class Checkout_Mutation {
 						switch ( $country ) {
 							case 'IE':
 								/* translators: %1$s: field name, %2$s finder.eircode.ie URL */
-								$postcode_validation_notice = sprintf( __( '%1$s is not valid. You can look up the correct Eircode. %2$s', 'wp-graphql-woocommerce' ), $field_label, 'https://finder.eircode.ie' );
+								$postcode_validation_notice = sprintf( __( '%1$s is not valid. You can look up the correct Eircode. %2$s', 'graphql-for-ecommerce' ), $field_label, 'https://finder.eircode.ie' );
 								break;
 							default:
 								/* translators: %s: field name */
-								$postcode_validation_notice = sprintf( __( '%s is not a valid postcode / ZIP.', 'wp-graphql-woocommerce' ), $field_label );
+								$postcode_validation_notice = sprintf( __( '%s is not a valid postcode / ZIP.', 'graphql-for-ecommerce' ), $field_label );
 						}
 						// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 						throw new UserError( apply_filters( 'woocommerce_checkout_postcode_validation_notice', $postcode_validation_notice, $country, $data[ $key ] ) );
@@ -435,7 +435,7 @@ class Checkout_Mutation {
 				if ( \str_ends_with( $key, 'phone' ) ) {
 					if ( $validate_fieldset && '' !== $data[ $key ] && ! \WC_Validation::is_phone( $data[ $key ] ) ) {
 						/* translators: %s: phone number */
-						throw new UserError( sprintf( __( '%s is not a valid phone number.', 'wp-graphql-woocommerce' ), $field_label ) );
+						throw new UserError( sprintf( __( '%s is not a valid phone number.', 'graphql-for-ecommerce' ), $field_label ) );
 					}
 				}
 
@@ -445,7 +445,7 @@ class Checkout_Mutation {
 
 					if ( $validate_fieldset && ! $email_is_valid ) {
 						/* translators: %s: email address */
-						throw new UserError( sprintf( __( '%s is not a valid email address.', 'wp-graphql-woocommerce' ), $field_label ) );
+						throw new UserError( sprintf( __( '%s is not a valid email address.', 'graphql-for-ecommerce' ), $field_label ) );
 					}
 				}
 
@@ -464,7 +464,7 @@ class Checkout_Mutation {
 
 						if ( $validate_fieldset && ! in_array( $data[ $key ], $valid_state_values, true ) ) {
 							/* translators: 1: state field 2: valid states */
-							throw new UserError( sprintf( __( '%1$s is not valid. Please enter one of the following: %2$s', 'wp-graphql-woocommerce' ), $field_label, implode( ', ', $valid_states ) ) );
+							throw new UserError( sprintf( __( '%1$s is not valid. Please enter one of the following: %2$s', 'graphql-for-ecommerce' ), $field_label, implode( ', ', $valid_states ) ) );
 						}
 					}
 				}
@@ -487,20 +487,20 @@ class Checkout_Mutation {
 		WC()->checkout()->check_cart_items();
 
 		if ( empty( $data['woocommerce_checkout_update_totals'] ) && empty( $data['terms'] ) && ! empty( $data['terms-field'] ) ) {
-			$errors->add( 'terms', __( 'Please read and accept the terms and conditions to proceed with your order.', 'wp-graphql-woocommerce' ) );
+			$errors->add( 'terms', __( 'Please read and accept the terms and conditions to proceed with your order.', 'graphql-for-ecommerce' ) );
 		}
 
 		if ( WC()->cart->needs_shipping() ) {
 			$shipping_country = WC()->customer->get_shipping_country();
 
 			if ( empty( $shipping_country ) ) {
-				$errors->add( 'shipping', __( 'Please enter an address to continue.', 'wp-graphql-woocommerce' ) );
+				$errors->add( 'shipping', __( 'Please enter an address to continue.', 'graphql-for-ecommerce' ) );
 			} elseif ( ! in_array( WC()->customer->get_shipping_country(), array_keys( WC()->countries->get_shipping_countries() ), true ) ) {
 				$errors->add(
 					'shipping',
 					sprintf(
 						/* translators: %s: shipping location */
-						__( 'Unfortunately, we do not ship %s. Please enter an alternative shipping address.', 'wp-graphql-woocommerce' ),
+						__( 'Unfortunately, we do not ship %s. Please enter an alternative shipping address.', 'graphql-for-ecommerce' ),
 						WC()->countries->shipping_to_prefix() . ' ' . WC()->customer->get_shipping_country()
 					)
 				);
@@ -509,7 +509,7 @@ class Checkout_Mutation {
 
 				foreach ( WC()->shipping()->get_packages() as $i => $package ) {
 					if ( ! isset( $chosen_shipping_methods[ $i ], $package['rates'][ $chosen_shipping_methods[ $i ] ] ) ) {
-						$errors->add( 'shipping', __( 'No shipping method has been selected. Please double check your address, or contact us if you need any help.', 'wp-graphql-woocommerce' ) );
+						$errors->add( 'shipping', __( 'No shipping method has been selected. Please double check your address, or contact us if you need any help.', 'graphql-for-ecommerce' ) );
 					}
 				}
 			}
@@ -518,7 +518,7 @@ class Checkout_Mutation {
 		if ( WC()->cart->needs_payment() ) {
 			$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 			if ( ! isset( $available_gateways[ $data['payment_method'] ] ) ) {
-				$errors->add( 'payment', __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
+				$errors->add( 'payment', __( 'Invalid payment method.', 'graphql-for-ecommerce' ) );
 			} else {
 				$available_gateways[ $data['payment_method'] ]->validate_fields();
 			}
@@ -543,7 +543,7 @@ class Checkout_Mutation {
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 		if ( ! isset( $available_gateways[ $payment_method ] ) ) {
-			throw new UserError( __( 'Cannot process invalid payment method.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Cannot process invalid payment method.', 'graphql-for-ecommerce' ) );
 		}
 
 		// Store Order ID in session so it can be re-used after payment failure.
@@ -573,7 +573,7 @@ class Checkout_Mutation {
 	protected static function process_order_without_payment( $order_id, $transaction_id = '' ) {
 		$order = wc_get_order( $order_id );
 		if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
-			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( 'Failed to retrieve order.', 'graphql-for-ecommerce' ) );
 		}
 
 		$order->payment_complete( $transaction_id );
@@ -605,7 +605,7 @@ class Checkout_Mutation {
 		do_action( 'woocommerce_before_checkout_process' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		if ( WC()->cart->is_empty() ) {
-			throw new UserError( __( 'Sorry, no session found.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Sorry, no session found.', 'graphql-for-ecommerce' ) );
 		}
 
 		do_action( 'woocommerce_checkout_process', $data, $context, $info ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -634,7 +634,7 @@ class Checkout_Mutation {
 		}
 
 		if ( 0 < wc_notice_count( 'error' ) ) {
-			throw new UserError( __( 'Failed to validate checkout', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Failed to validate checkout', 'graphql-for-ecommerce' ) );
 		}
 
 		self::process_customer( $data );
@@ -646,7 +646,7 @@ class Checkout_Mutation {
 		}
 
 		if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
-			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Unable to create order.', 'graphql-for-ecommerce' ) );
 		}
 
 		// Override the "created via" source when provided. WC_Checkout::create_order() hardcodes it to "checkout".
@@ -664,7 +664,7 @@ class Checkout_Mutation {
 			$order = wc_get_order( $order_id );
 
 			if ( ! is_object( $order ) || ! is_a( $order, \WC_Order::class ) ) {
-				throw new UserError( __( 'Failed to get order with updated meta.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to get order with updated meta.', 'graphql-for-ecommerce' ) );
 			}
 		}
 
@@ -782,7 +782,7 @@ class Checkout_Mutation {
 	public static function update_order_meta( $order_id, $meta_data, $input, $context, $info ) {
 		$order = \WC_Order_Factory::get_order( $order_id );
 		if ( ! is_object( $order ) ) {
-			throw new \Exception( __( 'Failed to retrieve order.', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( 'Failed to retrieve order.', 'graphql-for-ecommerce' ) );
 		}
 
 		if ( $meta_data ) {

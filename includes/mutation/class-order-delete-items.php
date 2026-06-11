@@ -48,20 +48,20 @@ class Order_Delete_Items {
 				'id'      => [
 					'type'        => 'ID',
 					'description' => static function () {
-						return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+						return __( 'Database ID or global ID of the order', 'graphql-for-ecommerce' );
 					},
 				],
 				'orderId' => [
 					'type'              => 'Int',
 					'description'       => static function () {
-						return __( 'Order WP ID', 'wp-graphql-woocommerce' );
+						return __( 'Order WP ID', 'graphql-for-ecommerce' );
 					},
-					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'graphql-for-ecommerce' ),
 				],
 				'itemIds' => [
 					'type'        => [ 'list_of' => 'Int' ],
 					'description' => static function () {
-						return __( 'ID Order items being deleted', 'wp-graphql-woocommerce' );
+						return __( 'ID Order items being deleted', 'graphql-for-ecommerce' );
 					},
 				],
 			]
@@ -98,23 +98,23 @@ class Order_Delete_Items {
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( ! $order_id ) {
-				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Check if authorized to delete items on this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'delete-items', $order_id ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to delete order items.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to delete order items.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Confirm item IDs.
 			if ( empty( $input['itemIds'] ) ) {
-				throw new UserError( __( 'No item IDs provided.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No item IDs provided.', 'graphql-for-ecommerce' ) );
 			} elseif ( ! is_array( $input['itemIds'] ) ) {
-				throw new UserError( __( 'The "itemIds" provided is invalid', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'The "itemIds" provided is invalid', 'graphql-for-ecommerce' ) );
 			}
 			$ids = $input['itemIds'];
 
