@@ -131,7 +131,7 @@ class WooCommerce {
 		// etc.). We need QL_Session_Handler here too so the session is
 		// bootstrapped from the token instead of the (absent) WC session
 		// cookie.
-		$legacy_header_key = 'HTTP_' . strtoupper(
+		$legacy_header_key  = 'HTTP_' . strtoupper(
 			preg_replace(
 				'#[^A-z0-9]#',
 				'_',
