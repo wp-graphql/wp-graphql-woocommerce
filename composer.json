@@ -75,7 +75,7 @@
         "stan": "phpstan analyze --ansi --memory-limit=4G",
         "strauss": [
             "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
-            "@php bin/strauss.phar",
+            "env -u COMPOSER_AUTH COMPOSER_HOME=$(mktemp -d) php bin/strauss.phar",
             "composer dump-autoload --optimize"
         ],
         "cghooks": [
