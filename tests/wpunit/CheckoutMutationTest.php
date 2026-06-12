@@ -133,6 +133,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 							state
 							postcode
 							country
+							phone
 						}
 						paymentMethod
 						paymentMethodTitle
@@ -293,6 +294,7 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 					'state'     => 'NY',
 					'postcode'  => '12345',
 					'country'   => 'US',
+					'phone'     => '555-555-6789',
 				],
 				'metaData'       => [
 					[
@@ -446,6 +448,8 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 				'checkout.customer.id',
 				$this->toRelayId( 'user', $this->customer )
 			),
+			$this->expectedField( 'checkout.order.billing.phone', '555-555-1234' ),
+			$this->expectedField( 'checkout.order.shipping.phone', '555-555-6789' ),
 			$this->expectedField( 'checkout.result', 'success' ),
 			$this->expectedField( 'checkout.redirect', static::NOT_NULL ),
 		];
@@ -461,6 +465,44 @@ class CheckoutMutationTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGrap
 		];
 
 		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	public function testCheckoutMutationPersistsShippingPhone() {
+		$this->loginAsCustomer();
+
+		$product_id = $this->factory->product->createSimple();
+		WC()->cart->add_to_cart( $product_id, 1 );
+
+		$input     = [
+			'shipping' => [
+				'firstName' => 'May',
+				'lastName'  => 'Parker',
+				'address1'  => '20 Ingram St',
+				'city'      => 'New York City',
+				'state'     => 'NY',
+				'postcode'  => '12345',
+				'country'   => 'US',
+				'phone'     => '555-555-6789',
+			],
+		];
+		$variables = [ 'input' => $this->getCheckoutInput( $input ) ];
+		$query     = $this->getCheckoutMutation();
+
+		$response = $this->graphql( compact( 'query', 'variables' ) );
+
+		// The shipping phone is returned on the order and is distinct from the billing phone.
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'checkout.order.billing.phone', '555-555-1234' ),
+				$this->expectedField( 'checkout.order.shipping.phone', '555-555-6789' ),
+			]
+		);
+
+		// And it is saved on the underlying WC_Order object.
+		$order_id = $response['data']['checkout']['order']['databaseId'];
+		$order    = \wc_get_order( $order_id );
+		$this->assertEquals( '555-555-6789', $order->get_shipping_phone() );
 	}
 
 	public function testCheckoutMutationWithNewAccount() {
