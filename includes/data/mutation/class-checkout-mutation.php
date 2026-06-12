@@ -649,6 +649,13 @@ class Checkout_Mutation {
 			throw new UserError( __( 'Unable to create order.', 'wp-graphql-woocommerce' ) );
 		}
 
+		// Override the "created via" source when provided. WC_Checkout::create_order() hardcodes it to "checkout".
+		if ( ! empty( $input['createdVia'] ) ) {
+			$order->set_created_via( $input['createdVia'] );
+			$order->add_meta_data( '_wc_order_attribution_source_type', $input['createdVia'], true );
+			$order->save();
+		}
+
 		// Add meta data.
 		if ( ! empty( $input['metaData'] ) ) {
 			self::update_order_meta( $order_id, $input['metaData'], $input, $context, $info );

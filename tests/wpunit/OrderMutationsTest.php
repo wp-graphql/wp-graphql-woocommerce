@@ -351,7 +351,11 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 			$this->expectedField( 'createOrder.order.shipping.country', 'US' ),
 			$this->expectedField( 'createOrder.order.paymentMethod', 'bacs' ),
 			$this->expectedField( 'createOrder.order.paymentMethodTitle', 'Direct Bank Transfer' ),
+			$this->expectedField( 'createOrder.order.createdVia', 'graphql-api' ),
 		];
+
+		// The order is attributed to the "graphql-api" source so WooCommerce surfaces the "GraphQL" origin.
+		$this->assertEquals( 'graphql-api', $order->get_meta( '_wc_order_attribution_source_type' ) );
 
 		// Validate coupon lines.
 		$coupon_items = array_values( $order->get_items( 'coupon' ) );
@@ -410,6 +414,38 @@ class OrderMutationsTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQ
 		}
 
 		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	public function testCreateOrderMutationWithCreatedVia() {
+		$this->loginAsShopManager();
+
+		$product_id = $this->factory->product->createSimple();
+		$input      = [
+			'createdVia' => 'pos',
+			'lineItems'  => [
+				[
+					'productId' => $product_id,
+					'quantity'  => 1,
+				],
+			],
+		];
+
+		$response = $this->orderMutation( $input );
+		$this->assertQuerySuccessful(
+			$response,
+			[ $this->expectedField( 'createOrder.order.createdVia', 'pos' ) ]
+		);
+
+		// A provided "createdVia" flows into both the order source and the WooCommerce attribution source type.
+		$order = \WC_Order_Factory::get_order( $response['data']['createOrder']['order']['databaseId'] );
+		$this->assertEquals( 'pos', $order->get_created_via() );
+		$this->assertEquals( 'pos', $order->get_meta( '_wc_order_attribution_source_type' ) );
+
+		// Orders attributed to "graphql-api" surface a branded "GraphQL" origin in WooCommerce.
+		$this->assertEquals(
+			'GraphQL',
+			apply_filters( 'wc_order_attribution_origin_label', 'Unknown', 'graphql-api', '', 'Unknown' )
+		);
 	}
 
 	public function testUpdateOrderMutation() {

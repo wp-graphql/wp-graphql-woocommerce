@@ -47,6 +47,41 @@ class WooCommerce {
 		// WPGraphQL Reset password -> Use woocommerce email password template when requested.
 		add_filter( 'retrieve_password_message', [ self::class, 'get_reset_password_message' ], 10, 3 );
 		add_filter( 'retrieve_password_title', [ self::class, 'get_reset_password_title' ] );
+
+		// Brand the WooCommerce Order Attribution "Origin" for orders created through WPGraphQL.
+		add_filter( 'wc_order_attribution_origin_label', [ self::class, 'order_attribution_origin_label' ], 10, 4 );
+	}
+
+	/**
+	 * Returns the WooCommerce Order Attribution source type used to mark orders created through WPGraphQL.
+	 *
+	 * Matches the default `created_via` value so GraphQL-created orders are attributable out of the box.
+	 *
+	 * @return string
+	 */
+	public static function get_order_attribution_source_type() {
+		return apply_filters( 'graphql_woocommerce_order_attribution_source_type', 'graphql-api' );
+	}
+
+	/**
+	 * Provides the WooCommerce Order Attribution "Origin" label for orders created through WPGraphQL.
+	 *
+	 * Connected to WooCommerce's order origin label filter so orders tagged with our attribution
+	 * source type surface a recognizable origin instead of "Unknown".
+	 *
+	 * @param string $label            Origin label. May contain a "%s" placeholder for the source.
+	 * @param string $source_type      Attribution source type.
+	 * @param string $source           Attribution source.
+	 * @param string $formatted_source Formatted attribution source.
+	 *
+	 * @return string
+	 */
+	public static function order_attribution_origin_label( $label, $source_type, $source, $formatted_source ) {
+		if ( self::get_order_attribution_source_type() !== $source_type ) {
+			return $label;
+		}
+
+		return apply_filters( 'graphql_woocommerce_order_attribution_origin_label', __( 'GraphQL', 'wp-graphql-woocommerce' ), $source, $formatted_source );
 	}
 
 	/**
