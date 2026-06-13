@@ -81,7 +81,7 @@ class WooCommerce {
 			return $label;
 		}
 
-		return apply_filters( 'graphql_woocommerce_order_attribution_origin_label', __( 'GraphQL', 'wp-graphql-woocommerce' ), $source, $formatted_source );
+		return apply_filters( 'graphql_woocommerce_order_attribution_origin_label', __( 'GraphQL', 'graphql-for-ecommerce' ), $source, $formatted_source );
 	}
 
 	/**

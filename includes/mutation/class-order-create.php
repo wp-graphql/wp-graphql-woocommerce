@@ -144,7 +144,7 @@ class Order_Create {
 			'createdVia'         => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "graphql-api".', 'wp-graphql-woocommerce' );
+					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "graphql-api".', 'graphql-for-ecommerce' );
 				},
 			],
 		];

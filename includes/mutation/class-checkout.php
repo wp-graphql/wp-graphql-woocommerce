@@ -114,7 +114,7 @@ class Checkout {
 			'createdVia'             => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "checkout".', 'wp-graphql-woocommerce' );
+					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "checkout".', 'graphql-for-ecommerce' );
 				},
 			],
 		];
