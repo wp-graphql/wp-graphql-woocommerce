@@ -137,6 +137,7 @@ class Type_Registry {
 		/**
 		 * Object fields.
 		 */
+		Type\WPObject\Product_Brand_Type::register_fields();
 		Type\WPObject\Product_Category_Type::register_fields();
 		Type\WPObject\Root_Query::register_fields();
 

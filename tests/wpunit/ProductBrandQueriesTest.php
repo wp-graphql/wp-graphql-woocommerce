@@ -97,6 +97,58 @@ class ProductBrandQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooG
 	}
 
 	/**
+	 * Test that productBrand image resolves from WooCommerce term thumbnail meta.
+	 */
+	public function testProductBrandImage() {
+		$brand_id = $this->createProductBrand( 'brand-with-image' );
+		$image_id = $this->factory->post->create(
+			[
+				'post_author' => $this->shop_manager,
+				'post_status' => 'publish',
+				'post_title'  => 'Brand Image',
+				'post_type'   => 'attachment',
+			]
+		);
+
+		update_term_meta( $brand_id, 'thumbnail_id', $image_id );
+
+		$query = '
+			query ($id: ID!) {
+				productBrand(id: $id, idType: SLUG) {
+					databaseId
+					image {
+						id
+					}
+				}
+				productBrands(first: 100) {
+					nodes {
+						slug
+						image {
+							id
+						}
+					}
+				}
+			}
+		';
+
+		$variables = [ 'id' => 'brand-with-image' ];
+		$response  = $this->graphql( compact( 'query', 'variables' ) );
+		$expected  = [
+			$this->expectedField( 'productBrand.databaseId', $brand_id ),
+			$this->expectedField( 'productBrand.image.id', $this->toRelayId( 'post', $image_id ) ),
+			$this->expectedNode(
+				'productBrands.nodes',
+				[
+					$this->expectedField( 'slug', 'brand-with-image' ),
+					$this->expectedField( 'image.id', $this->toRelayId( 'post', $image_id ) ),
+				]
+			),
+		];
+
+		$this->assertQuerySuccessful( $response, $expected );
+	}
+
+	/**
 	 * Test the connection from productBrand to products.
 	 */
 	public function testProductBrandToProductsConnection() {

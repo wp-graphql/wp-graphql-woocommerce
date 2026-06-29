@@ -290,6 +290,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 			require $include_directory_path . 'type/object/class-product-attribute-object-type.php';
 			require $include_directory_path . 'type/object/class-product-attribute-term-object-type.php';
 			require $include_directory_path . 'type/object/class-product-attribute-types.php';
+			require $include_directory_path . 'type/object/class-product-brand-type.php';
 			require $include_directory_path . 'type/object/class-product-category-type.php';
 			require $include_directory_path . 'type/object/class-product-download-type.php';
 			require $include_directory_path . 'type/object/class-product-types.php';
