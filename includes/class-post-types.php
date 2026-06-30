@@ -396,9 +396,22 @@ class Post_Types {
 	public static function resolve_product_variation_type( $value ) {
 		$type_registry  = \WPGraphQL::get_type_registry();
 		$possible_types = WooGraphQL::get_enabled_product_variation_types();
-		$product_type   = $value->get_type();
 
-		if ( isset( $possible_types[ $product_type ] ) ) {
+		// Normally $value is a Product_Variation model. In some setups the
+		// variation node is loaded through the generic post loader (e.g. a cart
+		// item's variation under Polylang, which doesn't manage the
+		// product_variation post-type) and arrives as a base
+		// \WPGraphQL\Model\Post with no get_type(). Fall back to resolving the
+		// variation's product type from its ID.
+		if ( is_callable( [ $value, 'get_type' ] ) ) {
+			$product_type = $value->get_type();
+		} else {
+			$variation_id = $value->databaseId ?? ( $value->ID ?? 0 );
+			$product      = $variation_id ? wc_get_product( $variation_id ) : false;
+			$product_type = $product ? $product->get_type() : null;
+		}
+
+		if ( $product_type && isset( $possible_types[ $product_type ] ) ) {
 			return $type_registry->get_type( $possible_types[ $product_type ] );
 		}
 
@@ -406,7 +419,7 @@ class Post_Types {
 			sprintf(
 			/* translators: %s: Product type */
 				__( 'The "%s" product variation type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
-				$value->type
+				$product_type ?? ''
 			)
 		);
 	}

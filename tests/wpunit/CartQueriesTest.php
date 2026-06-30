@@ -183,6 +183,62 @@ class CartQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLTe
 		$this->assertQuerySuccessful( $response, $this->getExpectedCartItemData( 'cartItem', $key ) );
 	}
 
+	// Resolves a cart item's variation when its node loads as a base
+	// \WPGraphQL\Model\Post (no get_type()) instead of a Product_Variation —
+	// the case on sites where the WC model upgrade doesn't run for the
+	// product_variation post type (e.g. Polylang). Without the fallback in
+	// Post_Types::resolve_product_variation_type() this query fatals.
+	public function testCartItemVariationResolvesWhenLoadedAsPostModel() {
+		$cart       = \WC()->cart;
+		$variations = $this->factory->product_variation->createSome();
+		$key        = $cart->add_to_cart(
+			$variations['product'],
+			1,
+			$variations['variations'][0],
+			[ 'attribute_pa_color' => 'red' ]
+		);
+
+		// Drop the WC model upgrade so the variation node arrives as a base Post.
+		remove_filter(
+			'graphql_dataloader_pre_get_model',
+			[ '\WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader', 'inject_post_loader_models' ],
+			10
+		);
+
+		$query = '
+			query ($key: ID!) {
+				cartItem(key: $key) {
+					variation {
+						node {
+							__typename
+							... on SimpleProductVariation {
+								databaseId
+							}
+						}
+					}
+				}
+			}
+		';
+
+		$response = $this->graphql( [ 'query' => $query, 'variables' => [ 'key' => $key ] ] );
+
+		// Restore the filter before asserting so its removal can't leak into other tests.
+		add_filter(
+			'graphql_dataloader_pre_get_model',
+			[ '\WPGraphQL\WooCommerce\Data\Loader\WC_CPT_Loader', 'inject_post_loader_models' ],
+			10,
+			3
+		);
+
+		$this->assertQuerySuccessful(
+			$response,
+			[
+				$this->expectedField( 'cartItem.variation.node.__typename', 'SimpleProductVariation' ),
+				$this->expectedField( 'cartItem.variation.node.databaseId', $variations['variations'][0] ),
+			]
+		);
+	}
+
 	public function testCartItemConnection() {
 		$keys = $this->factory->cart->add(
 			[

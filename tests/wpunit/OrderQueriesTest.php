@@ -439,6 +439,11 @@ class OrderQueriesTest extends \Tests\WPGraphQL\WooCommerce\TestCase\WooGraphQLT
 		$order_id = $this->factory->order->createNew();
 		$order = wc_get_order( $order_id );
 
+		// Adding a customer note triggers the Customer Note email, which on newer
+		// WooCommerce logs an extra "Email sent" order note. Disable it so the
+		// order's notes are exactly the ones added below.
+		add_filter( 'woocommerce_email_enabled_customer_note', '__return_false' );
+
 		// Add some order notes
 		$note1_id = $order->add_order_note( 'Test order note 1', false );
 		$note2_id = $order->add_order_note( 'Test customer note 2', true );
