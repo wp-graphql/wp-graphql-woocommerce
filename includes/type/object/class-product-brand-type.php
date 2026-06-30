@@ -28,7 +28,7 @@ class Product_Brand_Type {
 				'image' => [
 					'type'        => 'MediaItem',
 					'description' => static function () {
-						return __( 'Product brand image', 'wp-graphql-woocommerce' );
+						return __( 'Product brand image', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						$thumbnail_id = get_term_meta( $source->term_id, 'thumbnail_id', true );
