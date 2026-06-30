@@ -72,6 +72,12 @@ class CoreInterfaceQueriesTest extends \Codeception\TestCase\WPTestCase {
 		// Create order and order note to be queried.
 		$order_id = $this->orders->create();
 		$order    = \wc_get_order( $order_id );
+
+		// Adding a customer note triggers the Customer Note email, which on newer
+		// WooCommerce logs an extra "Email sent" order note. Disable it so the
+		// comment count stays deterministic.
+		add_filter( 'woocommerce_email_enabled_customer_note', '__return_false' );
+
 		$order->add_order_note( 'testnote' );
 		$order->add_order_note( 'testcustomernote', 1, true );
 
