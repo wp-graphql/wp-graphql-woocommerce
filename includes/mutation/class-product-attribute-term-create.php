@@ -44,31 +44,31 @@ class Product_Attribute_Term_Create {
 			'attributeId' => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the attribute to which the term belongs.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the attribute to which the term belongs.', 'graphql-for-ecommerce' );
 				},
 			],
 			'name'        => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'The name of the term.', 'wp-graphql-woocommerce' );
+					return __( 'The name of the term.', 'graphql-for-ecommerce' );
 				},
 			],
 			'slug'        => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'The slug of the term.', 'wp-graphql-woocommerce' );
+					return __( 'The slug of the term.', 'graphql-for-ecommerce' );
 				},
 			],
 			'description' => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'The description of the term.', 'wp-graphql-woocommerce' );
+					return __( 'The description of the term.', 'graphql-for-ecommerce' );
 				},
 			],
 			'menuOrder'   => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'The order of the term in the menu.', 'wp-graphql-woocommerce' );
+					return __( 'The order of the term in the menu.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -104,17 +104,17 @@ class Product_Attribute_Term_Create {
 	 */
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		if ( ! $input['attributeId'] ) {
-			throw new UserError( __( 'An attributeId is required to create a new product attribute term.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'An attributeId is required to create a new product attribute term.', 'graphql-for-ecommerce' ) );
 		}
 
 		$context  = 'createProductAttributeTerm' === $info->fieldName ? 'create' : 'edit';
 		$taxonomy = wc_attribute_taxonomy_name_by_id( $input['attributeId'] );
 		if ( empty( $taxonomy ) ) {
-			throw new UserError( __( 'Invalid attributeId.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Invalid attributeId.', 'graphql-for-ecommerce' ) );
 		}
 
 		if ( ! wc_rest_check_product_term_permissions( $taxonomy, $context ) ) {
-			throw new UserError( __( 'Sorry, you are not allowed to create product attribute terms.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Sorry, you are not allowed to create product attribute terms.', 'graphql-for-ecommerce' ) );
 		}
 
 		$id   = isset( $input['id'] ) ? $input['id'] : null;
@@ -140,7 +140,7 @@ class Product_Attribute_Term_Create {
 		if ( is_wp_error( $term ) ) {
 			throw new UserError( $term->get_error_message() );
 		} elseif ( $term && ! wc_rest_check_product_term_permissions( $taxonomy, $context, $term->term_id ) ) {
-			throw new UserError( __( 'Sorry, you are not allowed to update this product attribute term.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Sorry, you are not allowed to update this product attribute term.', 'graphql-for-ecommerce' ) );
 		}
 
 		if ( $id ) {
@@ -152,8 +152,8 @@ class Product_Attribute_Term_Create {
 			$updating = 'updateProductAttributeTerm' === $info->fieldName;
 			throw new UserError(
 				$updating
-					? __( 'A name is required to create a new product attribute term.', 'wp-graphql-woocommerce' )
-					: __( 'A valid term "id" and changeable parameter are required to update a product attribute term.', 'wp-graphql-woocommerce' )
+					? __( 'A name is required to create a new product attribute term.', 'graphql-for-ecommerce' )
+					: __( 'A valid term "id" and changeable parameter are required to update a product attribute term.', 'graphql-for-ecommerce' )
 			);
 		}
 
@@ -168,7 +168,7 @@ class Product_Attribute_Term_Create {
 		 */
 		$term = get_term( $term['term_id'], $taxonomy );
 		if ( ! $term ) {
-			throw new UserError( __( 'Failed to retrieve term for modification. Please check input.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Failed to retrieve term for modification. Please check input.', 'graphql-for-ecommerce' ) );
 		} elseif ( is_wp_error( $term ) ) {
 			throw new UserError( $term->get_error_message() );
 		}

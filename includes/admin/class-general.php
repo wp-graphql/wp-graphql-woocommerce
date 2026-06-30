@@ -70,87 +70,87 @@ class General extends Section {
 		return [
 			[
 				'name'     => 'disable_ql_session_handler',
-				'label'    => __( 'Disable QL Session Handler', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'The QL Session Handler takes over management of WooCommerce Session Management on WPGraphQL request replacing the usage of HTTP Cookies with JSON Web Tokens.', 'wp-graphql-woocommerce' )
-					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'    => __( 'Disable QL Session Handler', 'graphql-for-ecommerce' ),
+				'desc'     => __( 'The QL Session Handler takes over management of WooCommerce Session Management on WPGraphQL request replacing the usage of HTTP Cookies with JSON Web Tokens.', 'graphql-for-ecommerce' )
+					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'on' : woographql_setting( 'disable_ql_session_handler', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'     => 'enable_ql_session_handler_on_ajax',
-				'label'    => __( 'Enable QL Session Handler on WC AJAX requests.', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WC AJAX requests.', 'wp-graphql-woocommerce' )
-					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'    => __( 'Enable QL Session Handler on WC AJAX requests.', 'graphql-for-ecommerce' ),
+				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WC AJAX requests.', 'graphql-for-ecommerce' )
+					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'off' : woographql_setting( 'enable_ql_session_handler_on_ajax', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'     => 'enable_ql_session_handler_on_rest',
-				'label'    => __( 'Enable QL Session Handler on WP REST requests.', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WP REST requests.', 'wp-graphql-woocommerce' )
-					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'    => __( 'Enable QL Session Handler on WP REST requests.', 'graphql-for-ecommerce' ),
+				'desc'     => __( 'Enabling this will enable JSON Web Tokens usage on WP REST requests.', 'graphql-for-ecommerce' )
+					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'     => 'checkbox',
 				'value'    => defined( 'NO_QL_SESSION_HANDLER' ) ? 'off' : woographql_setting( 'enable_ql_session_handler_on_rest', 'off' ),
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'     => 'set_session_token_type',
-				'label'    => __( 'Session Token Type', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'Choose which session token type(s) to generate. "Legacy" uses GraphQL session tokens only. "Store API" uses WooCommerce Blocks Cart-Token only (requires WooCommerce 5.5.0+). "Both" generates both token types for maximum compatibility with headless implementations using WooCommerce Blocks.', 'wp-graphql-woocommerce' )
-					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'    => __( 'Session Token Type', 'graphql-for-ecommerce' ),
+				'desc'     => __( 'Choose which session token type(s) to generate. "Legacy" uses GraphQL session tokens only. "Store API" uses WooCommerce Blocks Cart-Token only (requires WooCommerce 5.5.0+). "Both" generates both token types for maximum compatibility with headless implementations using WooCommerce Blocks.', 'graphql-for-ecommerce' )
+					. ( defined( 'NO_QL_SESSION_HANDLER' ) ? __( ' This setting is disabled. The "NO_QL_SESSION_HANDLER" flag has been triggered with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'     => 'select',
 				'options'  => [
-					'legacy'    => __( 'Legacy (GraphQL Session Token only)', 'wp-graphql-woocommerce' ),
-					'store-api' => __( 'Store API (Cart-Token only)', 'wp-graphql-woocommerce' ),
-					'both'      => __( 'Both (GraphQL + Store API)', 'wp-graphql-woocommerce' ),
+					'legacy'    => __( 'Legacy (GraphQL Session Token only)', 'graphql-for-ecommerce' ),
+					'store-api' => __( 'Store API (Cart-Token only)', 'graphql-for-ecommerce' ),
+					'both'      => __( 'Both (GraphQL + Store API)', 'graphql-for-ecommerce' ),
 				],
 				'default'  => 'legacy',
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'     => 'session_transfer_behavior',
-				'label'    => __( 'Session Transfer Behavior', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'Controls how cart data is handled when a user logs in with an existing session from another device. "Keep new" keeps the current session data (default). "Keep old" restores the previously saved session data. "Merge" combines cart items from both sessions.', 'wp-graphql-woocommerce' ),
+				'label'    => __( 'Session Transfer Behavior', 'graphql-for-ecommerce' ),
+				'desc'     => __( 'Controls how cart data is handled when a user logs in with an existing session from another device. "Keep new" keeps the current session data (default). "Keep old" restores the previously saved session data. "Merge" combines cart items from both sessions.', 'graphql-for-ecommerce' ),
 				'type'     => 'select',
 				'options'  => [
-					'keep_new_fallback_old' => __( 'Keep new, fallback to old (default)', 'wp-graphql-woocommerce' ),
-					'keep_new'              => __( 'Keep new (always use current session)', 'wp-graphql-woocommerce' ),
-					'keep_old'              => __( 'Keep old (restore previously saved session)', 'wp-graphql-woocommerce' ),
+					'keep_new_fallback_old' => __( 'Keep new, fallback to old (default)', 'graphql-for-ecommerce' ),
+					'keep_new'              => __( 'Keep new (always use current session)', 'graphql-for-ecommerce' ),
+					'keep_old'              => __( 'Keep old (restore previously saved session)', 'graphql-for-ecommerce' ),
 				],
 				'default'  => 'keep_new_fallback_old',
 				'disabled' => defined( 'NO_QL_SESSION_HANDLER' ),
 			],
 			[
 				'name'     => 'enable_transliteration',
-				'label'    => __( 'Transliterate non-latin characters', 'wp-graphql-woocommerce' ),
-				'desc'     => __( 'Converts non-latin characters (Cyrillic, Chinese, Arabic, etc.) to their latin equivalents in GraphQL type and enum names. Enable this if your WooCommerce tax classes, product attributes, or taxonomies use non-latin names. Requires the PHP intl extension.', 'wp-graphql-woocommerce' )
-					. ( ! function_exists( 'transliterator_transliterate' ) ? __( ' <strong>Warning:</strong> The PHP intl extension is not available. This setting will have no effect.', 'wp-graphql-woocommerce' ) : '' ),
+				'label'    => __( 'Transliterate non-latin characters', 'graphql-for-ecommerce' ),
+				'desc'     => __( 'Converts non-latin characters (Cyrillic, Chinese, Arabic, etc.) to their latin equivalents in GraphQL type and enum names. Enable this if your WooCommerce tax classes, product attributes, or taxonomies use non-latin names. Requires the PHP intl extension.', 'graphql-for-ecommerce' )
+					. ( ! function_exists( 'transliterator_transliterate' ) ? __( ' <strong>Warning:</strong> The PHP intl extension is not available. This setting will have no effect.', 'graphql-for-ecommerce' ) : '' ),
 				'type'     => 'checkbox',
 				'default'  => 'off',
 				'disabled' => ! function_exists( 'transliterator_transliterate' ),
 			],
 			[
 				'name'    => 'enable_unsupported_product_type',
-				'label'   => __( 'Enable Unsupported types', 'wp-graphql-woocommerce' ),
-				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'wp-graphql-woocommerce' ),
+				'label'   => __( 'Enable Unsupported types', 'graphql-for-ecommerce' ),
+				'desc'    => __( 'Substitute unsupported product types with SimpleProduct', 'graphql-for-ecommerce' ),
 				'type'    => 'checkbox',
 				'default' => 'off',
 			],
 			[
 				'name'              => 'enable_authorizing_url_fields',
-				'label'             => __( 'Enable User Session transferring URLs', 'wp-graphql-woocommerce' ),
-				'desc'              => __( 'URL fields to add to the <strong>Customer</strong> type.', 'wp-graphql-woocommerce' )
-					. ( $enable_auth_urls_hardcoded ? __( ' This setting is disabled. The "WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS" flag has been triggered with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'             => __( 'Enable User Session transferring URLs', 'graphql-for-ecommerce' ),
+				'desc'              => __( 'URL fields to add to the <strong>Customer</strong> type.', 'graphql-for-ecommerce' )
+					. ( $enable_auth_urls_hardcoded ? __( ' This setting is disabled. The "WPGRAPHQL_WOOCOMMERCE_ENABLE_AUTH_URLS" flag has been triggered with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'              => 'multicheck',
 				'options'           => apply_filters(
 					'woographql_settings_enable_authorizing_url_options',
 					[
-						'cart_url'               => __( 'Cart URL. Field name: <strong>cartUrl</strong>', 'wp-graphql-woocommerce' ),
-						'checkout_url'           => __( 'Checkout URL. Field name: <strong>checkoutUrl</strong>', 'wp-graphql-woocommerce' ),
-						'account_url'            => __( 'Account URL. Field name: <strong>accountUrl</strong>', 'wp-graphql-woocommerce' ),
-						'add_payment_method_url' => __( 'Add Payment Method URL. Field name: <strong>addPaymentMethodUrl</strong>', 'wp-graphql-woocommerce' ),
+						'cart_url'               => __( 'Cart URL. Field name: <strong>cartUrl</strong>', 'graphql-for-ecommerce' ),
+						'checkout_url'           => __( 'Checkout URL. Field name: <strong>checkoutUrl</strong>', 'graphql-for-ecommerce' ),
+						'account_url'            => __( 'Account URL. Field name: <strong>accountUrl</strong>', 'graphql-for-ecommerce' ),
+						'add_payment_method_url' => __( 'Add Payment Method URL. Field name: <strong>addPaymentMethodUrl</strong>', 'graphql-for-ecommerce' ),
 					]
 				),
 				'value'             => $enable_auth_urls_hardcoded ? $all_urls_checked : woographql_setting( 'enable_authorizing_url_fields', [] ),
@@ -165,10 +165,10 @@ class General extends Section {
 			],
 			[
 				'name'     => 'authorizing_url_endpoint',
-				'label'    => __( 'Endpoint for Authorizing URLs', 'wp-graphql-woocommerce' ),
+				'label'    => __( 'Endpoint for Authorizing URLs', 'graphql-for-ecommerce' ),
 				'desc'     => sprintf(
 					/* translators: %1$s: Site URL, %2$s: WooGraphQL Auth Endpoint */
-					__( 'The endpoint (path) for transferring user sessions on the site. <a target="_blank" href="%1$s/%2$s">%1$s/%2$s</a>.', 'wp-graphql-woocommerce' ),
+					__( 'The endpoint (path) for transferring user sessions on the site. <a target="_blank" href="%1$s/%2$s">%1$s/%2$s</a>.', 'graphql-for-ecommerce' ),
 					site_url(),
 					woographql_setting( 'authorizing_url_endpoint', 'transfer-session' )
 				),
@@ -178,9 +178,9 @@ class General extends Section {
 			],
 			[
 				'name'              => 'cart_url_nonce_param',
-				'label'             => __( 'Cart URL nonce name', 'wp-graphql-woocommerce' ),
-				'desc'              => __( 'Query parameter name of the nonce included in the "cartUrl" field', 'wp-graphql-woocommerce' )
-					. ( $cart_url_hardcoded ? __( ' This setting is disabled. The "CART_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'             => __( 'Cart URL nonce name', 'graphql-for-ecommerce' ),
+				'desc'              => __( 'Query parameter name of the nonce included in the "cartUrl" field', 'graphql-for-ecommerce' )
+					. ( $cart_url_hardcoded ? __( ' This setting is disabled. The "CART_URL_NONCE_PARAM" flag has been set with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'              => 'text',
 				'value'             => $cart_url_hardcoded ? constant( 'CART_URL_NONCE_PARAM' ) : woographql_setting( 'cart_url_nonce_param', '_wc_cart' ),
 				'disabled'          => defined( 'CART_URL_NONCE_PARAM' ) || ! in_array( 'cart_url', $enabled_authorizing_url_fields, true ),
@@ -190,7 +190,7 @@ class General extends Section {
 						add_settings_error(
 							'cart_url_nonce_param',
 							'unique',
-							__( 'The <strong>Cart URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
+							__( 'The <strong>Cart URL nonce name</strong> field must be unique', 'graphql-for-ecommerce' ),
 							'error'
 						);
 
@@ -202,9 +202,9 @@ class General extends Section {
 			],
 			[
 				'name'              => 'checkout_url_nonce_param',
-				'label'             => __( 'Checkout URL nonce name', 'wp-graphql-woocommerce' ),
-				'desc'              => __( 'Query parameter name of the nonce included in the "checkoutUrl" field', 'wp-graphql-woocommerce' )
-					. ( $checkout_url_hardcoded ? __( ' This setting is disabled. The "CHECKOUT_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'             => __( 'Checkout URL nonce name', 'graphql-for-ecommerce' ),
+				'desc'              => __( 'Query parameter name of the nonce included in the "checkoutUrl" field', 'graphql-for-ecommerce' )
+					. ( $checkout_url_hardcoded ? __( ' This setting is disabled. The "CHECKOUT_URL_NONCE_PARAM" flag has been set with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'              => 'text',
 				'value'             => $checkout_url_hardcoded ? constant( 'CHECKOUT_URL_NONCE_PARAM' ) : woographql_setting( 'checkout_url_nonce_param', '_wc_checkout' ),
 				'disabled'          => defined( 'CHECKOUT_URL_NONCE_PARAM' ) || ! in_array( 'checkout_url', $enabled_authorizing_url_fields, true ),
@@ -214,7 +214,7 @@ class General extends Section {
 						add_settings_error(
 							'checkout_url_nonce_param',
 							'unique',
-							__( 'The <strong>Checkout URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
+							__( 'The <strong>Checkout URL nonce name</strong> field must be unique', 'graphql-for-ecommerce' ),
 							'error'
 						);
 
@@ -226,9 +226,9 @@ class General extends Section {
 			],
 			[
 				'name'              => 'account_url_nonce_param',
-				'label'             => __( 'Account URL nonce name', 'wp-graphql-woocommerce' ),
-				'desc'              => __( 'Query parameter name of the nonce included in the "accountUrl" field', 'wp-graphql-woocommerce' )
-					. ( $account_url_hardcoded ? __( ' This setting is disabled. The "ACCOUNT_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'             => __( 'Account URL nonce name', 'graphql-for-ecommerce' ),
+				'desc'              => __( 'Query parameter name of the nonce included in the "accountUrl" field', 'graphql-for-ecommerce' )
+					. ( $account_url_hardcoded ? __( ' This setting is disabled. The "ACCOUNT_URL_NONCE_PARAM" flag has been set with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'              => 'text',
 				'value'             => $account_url_hardcoded ? constant( 'ACCOUNT_URL_NONCE_PARAM' ) : woographql_setting( 'account_url_nonce_param', '_wc_account' ),
 				'disabled'          => defined( 'ACCOUNT_URL_NONCE_PARAM' ) || ! in_array( 'account_url', $enabled_authorizing_url_fields, true ),
@@ -238,7 +238,7 @@ class General extends Section {
 						add_settings_error(
 							'account_url_nonce_param',
 							'unique',
-							__( 'The <strong>Account URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
+							__( 'The <strong>Account URL nonce name</strong> field must be unique', 'graphql-for-ecommerce' ),
 							'error'
 						);
 
@@ -250,9 +250,9 @@ class General extends Section {
 			],
 			[
 				'name'              => 'add_payment_method_url_nonce_param',
-				'label'             => __( 'Add Payment Method URL nonce name', 'wp-graphql-woocommerce' ),
-				'desc'              => __( 'Query parameter name of the nonce included in the "addPaymentMethodUrl" field', 'wp-graphql-woocommerce' )
-					. ( $add_payment_method_url_hardcoded ? __( ' This setting is disabled. The "ADD_PAYMENT_METHOD_URL_NONCE_PARAM" flag has been set with code', 'wp-graphql-woocommerce' ) : '' ),
+				'label'             => __( 'Add Payment Method URL nonce name', 'graphql-for-ecommerce' ),
+				'desc'              => __( 'Query parameter name of the nonce included in the "addPaymentMethodUrl" field', 'graphql-for-ecommerce' )
+					. ( $add_payment_method_url_hardcoded ? __( ' This setting is disabled. The "ADD_PAYMENT_METHOD_URL_NONCE_PARAM" flag has been set with code', 'graphql-for-ecommerce' ) : '' ),
 				'type'              => 'text',
 				'value'             => $add_payment_method_url_hardcoded ? constant( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) : woographql_setting( 'add_payment_method_url_nonce_param', '_wc_payment' ),
 				'disabled'          => defined( 'ADD_PAYMENT_METHOD_URL_NONCE_PARAM' ) || ! in_array( 'add_payment_method_url', $enabled_authorizing_url_fields, true ),
@@ -262,7 +262,7 @@ class General extends Section {
 						add_settings_error(
 							'add_payment_method_url_nonce_param',
 							'unique',
-							__( 'The <strong>Add Payment Method URL nonce name</strong> field must be unique', 'wp-graphql-woocommerce' ),
+							__( 'The <strong>Add Payment Method URL nonce name</strong> field must be unique', 'graphql-for-ecommerce' ),
 							'error'
 						);
 
@@ -274,15 +274,15 @@ class General extends Section {
 			],
 			[
 				'name'    => 'enable_pre_auth_download_urls',
-				'label'   => __( 'Enable pre-authenticated download URLs', 'wp-graphql-woocommerce' ),
-				'desc'    => __( 'Adds a "preAuthDownloadUrl" field to downloadable items that generates a tokenized URL allowing downloads without cookie-based authentication. Useful for headless frontends where users cannot be redirected through the session transfer endpoint.', 'wp-graphql-woocommerce' ),
+				'label'   => __( 'Enable pre-authenticated download URLs', 'graphql-for-ecommerce' ),
+				'desc'    => __( 'Adds a "preAuthDownloadUrl" field to downloadable items that generates a tokenized URL allowing downloads without cookie-based authentication. Useful for headless frontends where users cannot be redirected through the session transfer endpoint.', 'graphql-for-ecommerce' ),
 				'type'    => 'checkbox',
 				'default' => 'off',
 			],
 			[
 				'name'    => 'download_url_nonce_param',
-				'label'   => __( 'Download URL nonce name', 'wp-graphql-woocommerce' ),
-				'desc'    => __( 'Query parameter name of the nonce included in the "downloadUrl" field on downloadable items.', 'wp-graphql-woocommerce' ),
+				'label'   => __( 'Download URL nonce name', 'graphql-for-ecommerce' ),
+				'desc'    => __( 'Query parameter name of the nonce included in the "downloadUrl" field on downloadable items.', 'graphql-for-ecommerce' ),
 				'type'    => 'text',
 				'default' => '_wc_download',
 			],

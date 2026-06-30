@@ -24,32 +24,32 @@ class Shipping_Method_Type {
 			'ShippingMethod',
 			[
 				'description' => static function () {
-					return __( 'A shipping method object', 'wp-graphql-woocommerce' );
+					return __( 'A shipping method object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
+							return __( 'The globally unique identifier for the tax rate.', 'graphql-for-ecommerce' );
 						},
 					],
 					'databaseId'  => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'The ID of the shipping method in the database', 'wp-graphql-woocommerce' );
+							return __( 'The ID of the shipping method in the database', 'graphql-for-ecommerce' );
 						},
 					],
 					'title'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Shipping method title.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping method title.', 'graphql-for-ecommerce' );
 						},
 					],
 					'description' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Shipping method description.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping method description.', 'graphql-for-ecommerce' );
 						},
 					],
 				],

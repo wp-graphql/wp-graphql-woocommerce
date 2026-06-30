@@ -45,7 +45,7 @@ class Cart_Add_Items {
 			'items' => [
 				'type'        => [ 'list_of' => 'CartItemInput' ],
 				'description' => static function () {
-					return __( 'Cart items to be added', 'wp-graphql-woocommerce' );
+					return __( 'Cart items to be added', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -104,7 +104,7 @@ class Cart_Add_Items {
 
 			// Throw error, if no cart item data provided.
 			if ( empty( $input['items'] ) ) {
-				throw new UserError( __( 'No cart item data provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No cart item data provided', 'graphql-for-ecommerce' ) );
 			}
 
 			// Validate cart item input.
@@ -132,7 +132,7 @@ class Cart_Add_Items {
 
 						$failure[] = compact( 'cart_item_data', 'reasons' );
 					} else {
-						$reason    = __( 'Failed to add cart item. Please check input.', 'wp-graphql-woocommerce' );
+						$reason    = __( 'Failed to add cart item. Please check input.', 'graphql-for-ecommerce' );
 						$failure[] = compact( 'cart_item_data', 'reason' );
 					}
 				} catch ( \Throwable $e ) {
@@ -151,7 +151,7 @@ class Cart_Add_Items {
 
 			// Throw error, if no items added.
 			if ( empty( $added ) ) {
-				throw new UserError( __( 'Failed to add any cart items. Please check input.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to add any cart items. Please check input.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Return payload.

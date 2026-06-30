@@ -1,8 +1,8 @@
-=== WPGraphQL for eCommerce ===
+=== GraphQL for eCommerce ===
 Contributors: kidunot89, ranaaterning, jasonbahl, saleebm
 Tags: GraphQL, WooCommerce, WPGraphQL
 Requires at least: 6.3
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 8.1
 Requires WooCommerce: 9.0.0
 Requires WPGraphQL: 2.0.0

@@ -46,31 +46,31 @@ class Shipping_Zone_Method_Add {
 			'zoneId'   => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the shipping zone to delete.', 'graphql-for-ecommerce' );
 				},
 			],
 			'methodId' => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'The ID of the shipping method to add.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the shipping method to add.', 'graphql-for-ecommerce' );
 				},
 			],
 			'enabled'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the shipping method is enabled or not.', 'wp-graphql-woocommerce' );
+					return __( 'Whether the shipping method is enabled or not.', 'graphql-for-ecommerce' );
 				},
 			],
 			'order'    => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'The order of the shipping method.', 'wp-graphql-woocommerce' );
+					return __( 'The order of the shipping method.', 'graphql-for-ecommerce' );
 				},
 			],
 			'settings' => [
 				'type'        => [ 'list_of' => 'WCSettingInput' ],
 				'description' => static function () {
-					return __( 'The settings for the shipping method.', 'wp-graphql-woocommerce' );
+					return __( 'The settings for the shipping method.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -110,11 +110,11 @@ class Shipping_Zone_Method_Add {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! \wc_shipping_enabled() ) {
-				throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+				throw new UserError( __( 'Shipping is disabled.', 'graphql-for-ecommerce' ), 404 );
 			}
 
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to add shipping methods', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to add shipping methods', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 			}
 
 			$method_id = $input['methodId'];
@@ -123,11 +123,11 @@ class Shipping_Zone_Method_Add {
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
 
 			if ( false === $zone ) {
-				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid shipping zone ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( 0 === $zone->get_id() ) {
-				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid shipping zone ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			$instance_id = $zone->add_shipping_method( $method_id );
@@ -141,7 +141,7 @@ class Shipping_Zone_Method_Add {
 			}
 
 			if ( false === $method ) {
-				throw new UserError( __( 'Failed to add shipping method to shipping zone.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to add shipping method to shipping zone.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Update settings.

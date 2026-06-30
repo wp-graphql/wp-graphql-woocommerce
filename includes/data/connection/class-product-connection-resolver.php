@@ -535,7 +535,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 		// Filter by attribute and term.
 		if ( ! empty( $where_args['attribute'] ) && ! empty( $where_args['attributeTerm'] ) ) {
 			graphql_debug(
-				__( 'The "attribute" and "attributeTerm" arguments have been deprecated. Please use the "attributes" argument instead.', 'wp-graphql-woocommerce' ),
+				__( 'The "attribute" and "attributeTerm" arguments have been deprecated. Please use the "attributes" argument instead.', 'graphql-for-ecommerce' ),
 			);
 			if ( in_array( $where_args['attribute'], \wc_get_attribute_taxonomy_names(), true ) ) {
 				$tax_query[] = [
@@ -588,7 +588,7 @@ class Product_Connection_Resolver extends AbstractConnectionResolver {
 			if ( 1 < count( $att_queries ) ) {
 				$relation = ! empty( $where_args['attributes']['relation'] ) ? $where_args['attributes']['relation'] : 'AND';
 				if ( 'NOT_IN' === $relation ) {
-					graphql_debug( __( 'The "NOT_IN" relation is not supported for attributes. Please use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
+					graphql_debug( __( 'The "NOT_IN" relation is not supported for attributes. Please use "IN" or "AND" instead.', 'graphql-for-ecommerce' ) );
 					$relation = 'IN';
 				}
 

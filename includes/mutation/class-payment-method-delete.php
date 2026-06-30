@@ -43,7 +43,7 @@ class Payment_Method_Delete {
 			'tokenId' => [
 				'type'        => [ 'non_null' => 'Integer' ],
 				'description' => static function () {
-					return __( 'Token ID of the payment token being deleted.', 'wp-graphql-woocommerce' );
+					return __( 'Token ID of the payment token being deleted.', 'graphql-for-ecommerce' );
 				},
 
 			],
@@ -60,7 +60,7 @@ class Payment_Method_Delete {
 			'status' => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Status of the request', 'wp-graphql-woocommerce' );
+					return __( 'Status of the request', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					return ! empty( $payload['status'] ) ? $payload['status'] : 'FAILED';
@@ -78,18 +78,18 @@ class Payment_Method_Delete {
 		return static function ( $input ) {
 			global $wp;
 			if ( ! is_user_logged_in() ) {
-				throw new UserError( __( 'Must be authenticated to set a default payment method', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Must be authenticated to set a default payment method', 'graphql-for-ecommerce' ) );
 			}
 
 			$token_id = $input['tokenId'];
 			$token    = WC_Payment_Tokens::get( $token_id );
 
 			if ( is_null( $token ) || get_current_user_id() !== $token->get_user_id() ) {
-				throw new UserError( __( 'Invalid payment method.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid payment method.', 'graphql-for-ecommerce' ) );
 			}
 
 			WC_Payment_Tokens::delete( $token_id );
-			wc_add_notice( __( 'Payment method deleted.', 'wp-graphql-woocommerce' ) );
+			wc_add_notice( __( 'Payment method deleted.', 'graphql-for-ecommerce' ) );
 
 			return [ 'status' => 'SUCCESS' ];
 		};

@@ -42,13 +42,13 @@ class Settings_Update {
 			'group'    => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'Settings group ID.', 'wp-graphql-woocommerce' );
+					return __( 'Settings group ID.', 'graphql-for-ecommerce' );
 				},
 			],
 			'settings' => [
 				'type'        => [ 'non_null' => [ 'list_of' => 'WCSettingInput' ] ],
 				'description' => static function () {
-					return __( 'Settings to update.', 'wp-graphql-woocommerce' );
+					return __( 'Settings to update.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -64,7 +64,7 @@ class Settings_Update {
 			'settings' => [
 				'type'        => [ 'list_of' => 'WCSetting' ],
 				'description' => static function () {
-					return __( 'The updated settings.', 'wp-graphql-woocommerce' );
+					return __( 'The updated settings.', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					return $payload['settings'];
@@ -81,7 +81,7 @@ class Settings_Update {
 	public static function mutate_and_get_payload() {
 		return static function ( $input ) {
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-				throw new UserError( __( 'Sorry, you cannot update settings.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Sorry, you cannot update settings.', 'graphql-for-ecommerce' ) );
 			}
 
 			$group_id   = $input['group'];

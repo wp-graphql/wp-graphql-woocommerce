@@ -48,7 +48,7 @@ class Review_Update {
 				'id' => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'The ID of the review being updated.', 'wp-graphql-woocommerce' );
+						return __( 'The ID of the review being updated.', 'graphql-for-ecommerce' );
 					},
 				],
 			]
@@ -84,7 +84,7 @@ class Review_Update {
 			$payload = [];
 			$id      = Utils::get_database_id_from_id( $input['id'] );
 			if ( ! $id ) {
-				throw new UserError( __( 'Provided review ID missing or invalid ', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Provided review ID missing or invalid ', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( array_intersect_key( $input, $skip ) !== $input ) {

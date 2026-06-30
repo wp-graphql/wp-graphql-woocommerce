@@ -46,7 +46,7 @@ class Product_Attribute_Update {
 				'id' => [
 					'type'        => [ 'non_null' => 'ID' ],
 					'description' => static function () {
-						return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+						return __( 'Unique identifier for the product.', 'graphql-for-ecommerce' );
 					},
 				],
 			],
@@ -80,7 +80,7 @@ class Product_Attribute_Update {
 			global $wpdb;
 
 			if ( ! wc_rest_check_manager_permissions( 'attributes', 'edit' ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to edit attributes.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Sorry, you are not allowed to edit attributes.', 'graphql-for-ecommerce' ) );
 			}
 
 			$id     = (int) $input['id'];

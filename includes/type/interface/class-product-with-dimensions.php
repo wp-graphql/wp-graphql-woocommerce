@@ -23,7 +23,7 @@ class Product_With_Dimensions {
 			'ProductWithDimensions',
 			[
 				'description' => static function () {
-					return __( 'A physical product.', 'wp-graphql-woocommerce' );
+					return __( 'A physical product.', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
@@ -42,55 +42,55 @@ class Product_With_Dimensions {
 			'id'               => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation global ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'databaseId'       => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'weight'           => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product\'s weight', 'wp-graphql-woocommerce' );
+					return __( 'Product\'s weight', 'graphql-for-ecommerce' );
 				},
 			],
 			'length'           => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product\'s length', 'wp-graphql-woocommerce' );
+					return __( 'Product\'s length', 'graphql-for-ecommerce' );
 				},
 			],
 			'width'            => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product\'s width', 'wp-graphql-woocommerce' );
+					return __( 'Product\'s width', 'graphql-for-ecommerce' );
 				},
 			],
 			'height'           => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Product\'s height', 'wp-graphql-woocommerce' );
+					return __( 'Product\'s height', 'graphql-for-ecommerce' );
 				},
 			],
 			'shippingClassId'  => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'shipping class ID', 'wp-graphql-woocommerce' );
+					return __( 'shipping class ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'shippingRequired' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Does product need to be shipped?', 'wp-graphql-woocommerce' );
+					return __( 'Does product need to be shipped?', 'graphql-for-ecommerce' );
 				},
 			],
 			'shippingTaxable'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Is product shipping taxable?', 'wp-graphql-woocommerce' );
+					return __( 'Is product shipping taxable?', 'graphql-for-ecommerce' );
 				},
 			],
 		];

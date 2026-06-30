@@ -22,7 +22,7 @@ class Stock_Status {
 			'StockStatusEnum',
 			[
 				'description' => static function () {
-					return __( 'Product stock status enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Product stock status enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => self::get_stock_statuses(),
 			]

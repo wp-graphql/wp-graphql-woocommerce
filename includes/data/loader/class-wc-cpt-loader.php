@@ -64,7 +64,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 				}
 
 				/* translators: no model assigned error message */
-				throw new UserError( sprintf( __( 'No Model is register to the custom post-type "%s"', 'wp-graphql-woocommerce' ), $post_type ) );
+				throw new UserError( sprintf( __( 'No Model is register to the custom post-type "%s"', 'graphql-for-ecommerce' ), $post_type ) );
 		}//end switch
 	}
 
@@ -138,7 +138,7 @@ class WC_CPT_Loader extends AbstractDataLoader {
 
 			if ( ! in_array( $post_type, $wc_post_types, true ) && ! OrderUtil::is_order( $key, wc_get_order_types() ) ) {
 				/* translators: invalid post-type error message */
-				throw new UserError( sprintf( __( '%s is not a valid WooCommerce post-type', 'wp-graphql-woocommerce' ), $post_type ) );
+				throw new UserError( sprintf( __( '%s is not a valid WooCommerce post-type', 'graphql-for-ecommerce' ), $post_type ) );
 			}
 
 			$post_object = get_post( (int) $key );

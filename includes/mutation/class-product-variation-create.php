@@ -46,157 +46,157 @@ class Product_Variation_Create {
 			'productId'      => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+					return __( 'Unique identifier for the product.', 'graphql-for-ecommerce' );
 				},
 			],
 			'description'    => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Description of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Description of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'sku'            => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Unique identifier.', 'wp-graphql-woocommerce' );
+					return __( 'Unique identifier.', 'graphql-for-ecommerce' );
 				},
 			],
 			'regularPrice'   => [
 				'type'        => 'Float',
 				'description' => static function () {
-					return __( 'Regular price of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Regular price of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'salePrice'      => [
 				'type'        => 'Float',
 				'description' => static function () {
-					return __( 'Sale price of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Sale price of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'dateOnSaleFrom' => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Start date of sale price.', 'wp-graphql-woocommerce' );
+					return __( 'Start date of sale price.', 'graphql-for-ecommerce' );
 				},
 			],
 			'dateOnSaleTo'   => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'End date of sale price.', 'wp-graphql-woocommerce' );
+					return __( 'End date of sale price.', 'graphql-for-ecommerce' );
 				},
 			],
 			'visible'        => [
 				'type'        => 'boolean',
 				'description' => static function () {
-					return __( 'Is product variation public?', 'wp-graphql-woocommerce' );
+					return __( 'Is product variation public?', 'graphql-for-ecommerce' );
 				},
 			],
 			'virtual'        => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the product variation is virtual.', 'wp-graphql-woocommerce' );
+					return __( 'Whether the product variation is virtual.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadable'   => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the product variation is downloadable.', 'wp-graphql-woocommerce' );
+					return __( 'Whether the product variation is downloadable.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloads'      => [
 				'type'        => [ 'list_of' => 'ProductDownloadInput' ],
 				'description' => static function () {
-					return __( 'Downloadable files.', 'wp-graphql-woocommerce' );
+					return __( 'Downloadable files.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadLimit'  => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Number of times downloadable files can be downloaded.', 'wp-graphql-woocommerce' );
+					return __( 'Number of times downloadable files can be downloaded.', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadExpiry' => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Number of days until the download expires.', 'wp-graphql-woocommerce' );
+					return __( 'Number of days until the download expires.', 'graphql-for-ecommerce' );
 				},
 			],
 			'taxStatus'      => [
 				'type'        => 'TaxStatusEnum',
 				'description' => static function () {
-					return __( 'Tax status of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Tax status of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'taxClass'       => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Tax class of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Tax class of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'manageStock'    => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Whether to manage stock. Either "yes", "no", or "parent".', 'wp-graphql-woocommerce' );
+					return __( 'Whether to manage stock. Either "yes", "no", or "parent".', 'graphql-for-ecommerce' );
 				},
 			],
 			'stockQuantity'  => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Stock quantity.', 'wp-graphql-woocommerce' );
+					return __( 'Stock quantity.', 'graphql-for-ecommerce' );
 				},
 			],
 			'stockStatus'    => [
 				'type'        => 'StockStatusEnum',
 				'description' => static function () {
-					return __( 'Stock status of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Stock status of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'backorders'     => [
 				'type'        => 'BackordersEnum',
 				'description' => static function () {
-					return __( 'Backorder status.', 'wp-graphql-woocommerce' );
+					return __( 'Backorder status.', 'graphql-for-ecommerce' );
 				},
 			],
 			'weight'         => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Weight of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Weight of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'dimensions'     => [
 				'type'        => 'ProductDimensionsInput',
 				'description' => static function () {
-					return __( 'Dimensions of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Dimensions of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'shippingClass'  => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Shipping class of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Shipping class of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'image'          => [
 				'type'        => 'ProductImageInput',
 				'description' => static function () {
-					return __( 'Image of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Image of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'attributes'     => [
 				'type'        => [ 'list_of' => 'ProductAttributeInput' ],
 				'description' => static function () {
-					return __( 'Attributes of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Attributes of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'menuOrder'      => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Menu order of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Menu order of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 			'metaData'       => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => static function () {
-					return __( 'Meta data of the product variation.', 'wp-graphql-woocommerce' );
+					return __( 'Meta data of the product variation.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -342,7 +342,7 @@ class Product_Variation_Create {
 			$attributes = [];
 			$parent     = wc_get_product( $variation->get_parent_id() );
 			if ( ! $parent ) {
-				throw new UserError( __( 'Parent ID invalid', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Parent ID invalid', 'graphql-for-ecommerce' ) );
 			}
 			$parent_attributes = $parent->get_attributes();
 

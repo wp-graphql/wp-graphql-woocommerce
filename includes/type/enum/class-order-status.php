@@ -32,7 +32,7 @@ class Order_Status {
 			'OrderStatusEnum',
 			[
 				'description' => static function () {
-					return __( 'Order status enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Order status enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $values,
 			]

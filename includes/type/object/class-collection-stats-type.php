@@ -23,7 +23,7 @@ class Collection_Stats_Type {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'Price range', 'wp-graphql-woocommerce' );
+					return __( 'Price range', 'graphql-for-ecommerce' );
 				},
 				'fields'          => [
 					'minPrice' => [
@@ -32,12 +32,12 @@ class Collection_Stats_Type {
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => static function () {
-									return __( 'Format of the price', 'wp-graphql-woocommerce' );
+									return __( 'Format of the price', 'graphql-for-ecommerce' );
 								},
 							],
 						],
 						'description' => static function () {
-							return __( 'Minimum price', 'wp-graphql-woocommerce' );
+							return __( 'Minimum price', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, array $args ) {
 							if ( empty( $source['min_price'] ) ) {
@@ -57,12 +57,12 @@ class Collection_Stats_Type {
 							'format' => [
 								'type'        => 'PricingFieldFormatEnum',
 								'description' => static function () {
-									return __( 'Format of the price', 'wp-graphql-woocommerce' );
+									return __( 'Format of the price', 'graphql-for-ecommerce' );
 								},
 							],
 						],
 						'description' => static function () {
-							return __( 'Maximum price', 'wp-graphql-woocommerce' );
+							return __( 'Maximum price', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, array $args ) {
 							if ( empty( $source['max_price'] ) ) {
@@ -85,13 +85,13 @@ class Collection_Stats_Type {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'Product attribute terms count', 'wp-graphql-woocommerce' );
+					return __( 'Product attribute terms count', 'graphql-for-ecommerce' );
 				},
 				'fields'          => [
 					'slug'  => [
 						'type'        => [ 'non_null' => 'ProductAttributeEnum' ],
 						'description' => static function () {
-							return __( 'Attribute name', 'wp-graphql-woocommerce' );
+							return __( 'Attribute name', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return $source->name;
@@ -100,7 +100,7 @@ class Collection_Stats_Type {
 					'label' => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Attribute taxonomy', 'wp-graphql-woocommerce' );
+							return __( 'Attribute taxonomy', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$taxonomy = get_taxonomy( $source->name );
@@ -114,7 +114,7 @@ class Collection_Stats_Type {
 					'name'  => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Attribute name', 'wp-graphql-woocommerce' );
+							return __( 'Attribute name', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$taxonomy = get_taxonomy( $source->name );
@@ -128,7 +128,7 @@ class Collection_Stats_Type {
 					'terms' => [
 						'type'        => [ 'list_of' => 'SingleAttributeCount' ],
 						'description' => static function () {
-							return __( 'Attribute terms', 'wp-graphql-woocommerce' );
+							return __( 'Attribute terms', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -140,25 +140,25 @@ class Collection_Stats_Type {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'Single attribute term count', 'wp-graphql-woocommerce' );
+					return __( 'Single attribute term count', 'graphql-for-ecommerce' );
 				},
 				'fields'          => [
 					'termId' => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'Term ID', 'wp-graphql-woocommerce' );
+							return __( 'Term ID', 'graphql-for-ecommerce' );
 						},
 					],
 					'count'  => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Number of products.', 'wp-graphql-woocommerce' );
+							return __( 'Number of products.', 'graphql-for-ecommerce' );
 						},
 					],
 					'node'   => [
 						'type'        => 'TermNode',
 						'description' => static function () {
-							return __( 'Term object.', 'wp-graphql-woocommerce' );
+							return __( 'Term object.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							if ( empty( $source->termId ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -186,19 +186,19 @@ class Collection_Stats_Type {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'Single rating count', 'wp-graphql-woocommerce' );
+					return __( 'Single rating count', 'graphql-for-ecommerce' );
 				},
 				'fields'          => [
 					'rating' => [
 						'type'        => [ 'non_null' => 'Int' ],
 						'description' => static function () {
-							return __( 'Average rating', 'wp-graphql-woocommerce' );
+							return __( 'Average rating', 'graphql-for-ecommerce' );
 						},
 					],
 					'count'  => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Number of products', 'wp-graphql-woocommerce' );
+							return __( 'Number of products', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -210,19 +210,19 @@ class Collection_Stats_Type {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'Single stock status count', 'wp-graphql-woocommerce' );
+					return __( 'Single stock status count', 'graphql-for-ecommerce' );
 				},
 				'fields'          => [
 					'status' => [
 						'type'        => [ 'non_null' => 'StockStatusEnum' ],
 						'description' => static function () {
-							return __( 'Status', 'wp-graphql-woocommerce' );
+							return __( 'Status', 'graphql-for-ecommerce' );
 						},
 					],
 					'count'  => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Number of products.', 'wp-graphql-woocommerce' );
+							return __( 'Number of products.', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -233,13 +233,13 @@ class Collection_Stats_Type {
 			'CollectionStats',
 			[
 				'description' => static function () {
-					return __( 'Data about a collection of products', 'wp-graphql-woocommerce' );
+					return __( 'Data about a collection of products', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'priceRange'        => [
 						'type'        => 'PriceRange',
 						'description' => static function () {
-							return __( 'Min and max prices found in collection of products, provided using the smallest unit of the currency', 'wp-graphql-woocommerce' );
+							return __( 'Min and max prices found in collection of products, provided using the smallest unit of the currency', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$min_price = ! empty( $source['min_price'] ) ? $source['min_price'] : null;
@@ -253,18 +253,18 @@ class Collection_Stats_Type {
 							'page'    => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Page of results to return', 'wp-graphql-woocommerce' );
+									return __( 'Page of results to return', 'graphql-for-ecommerce' );
 								},
 							],
 							'perPage' => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Number of results to return per page', 'wp-graphql-woocommerce' );
+									return __( 'Number of results to return per page', 'graphql-for-ecommerce' );
 								},
 							],
 						],
 						'description' => static function () {
-							return __( 'Returns number of products within attribute terms', 'wp-graphql-woocommerce' );
+							return __( 'Returns number of products within attribute terms', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, $args ) {
 							$page             = ! empty( $args['page'] ) ? $args['page'] : 1;
@@ -291,18 +291,18 @@ class Collection_Stats_Type {
 							'page'    => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Page of results to return', 'wp-graphql-woocommerce' );
+									return __( 'Page of results to return', 'graphql-for-ecommerce' );
 								},
 							],
 							'perPage' => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Number of results to return per page', 'wp-graphql-woocommerce' );
+									return __( 'Number of results to return per page', 'graphql-for-ecommerce' );
 								},
 							],
 						],
 						'description' => static function () {
-							return __( 'Returns number of products with each average rating', 'wp-graphql-woocommerce' );
+							return __( 'Returns number of products with each average rating', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, $args ) {
 							$page          = ! empty( $args['page'] ) ? $args['page'] : 1;
@@ -323,18 +323,18 @@ class Collection_Stats_Type {
 							'page'    => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Page of results to return', 'wp-graphql-woocommerce' );
+									return __( 'Page of results to return', 'graphql-for-ecommerce' );
 								},
 							],
 							'perPage' => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Number of results to return per page', 'wp-graphql-woocommerce' );
+									return __( 'Number of results to return per page', 'graphql-for-ecommerce' );
 								},
 							],
 						],
 						'description' => static function () {
-							return __( 'Returns number of products with each stock status', 'wp-graphql-woocommerce' );
+							return __( 'Returns number of products with each stock status', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source, $args ) {
 							$page                = ! empty( $args['page'] ) ? $args['page'] : 1;
@@ -475,7 +475,7 @@ class Collection_Stats_Type {
 			if ( ! empty( $where_args['attributes']['relation'] ) ) {
 				$relation = $where_args['attributes']['relation'];
 				if ( 'NOT_IN' === $relation ) {
-					graphql_debug( __( 'NOT_IN relation is not supported for attributes queries top-level "relation" field. Use "IN" or "AND" instead.', 'wp-graphql-woocommerce' ) );
+					graphql_debug( __( 'NOT_IN relation is not supported for attributes queries top-level "relation" field. Use "IN" or "AND" instead.', 'graphql-for-ecommerce' ) );
 					$relation = 'IN';
 				}
 				$request->set_param( 'attributes_relation', $where_args['attributes']['relation'] );

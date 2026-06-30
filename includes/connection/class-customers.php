@@ -96,37 +96,37 @@ class Customers {
 			'search'  => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' );
+					return __( 'Limit results to those matching a string.', 'graphql-for-ecommerce' );
 				},
 			],
 			'exclude' => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' );
+					return __( 'Ensure result set excludes specific IDs.', 'graphql-for-ecommerce' );
 				},
 			],
 			'include' => [
 				'type'        => [ 'list_of' => 'Int' ],
 				'description' => static function () {
-					return __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' );
+					return __( 'Limit result set to specific ids.', 'graphql-for-ecommerce' );
 				},
 			],
 			'email'   => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Limit result set to resources with a specific email.', 'wp-graphql-woocommerce' );
+					return __( 'Limit result set to resources with a specific email.', 'graphql-for-ecommerce' );
 				},
 			],
 			'orderby' => [
 				'type'        => 'CustomerConnectionOrderbyEnum',
 				'description' => static function () {
-					return __( 'Order results by a specific field.', 'wp-graphql-woocommerce' );
+					return __( 'Order results by a specific field.', 'graphql-for-ecommerce' );
 				},
 			],
 			'order'   => [
 				'type'        => 'OrderEnum',
 				'description' => static function () {
-					return __( 'Order of results.', 'wp-graphql-woocommerce' );
+					return __( 'Order of results.', 'graphql-for-ecommerce' );
 				},
 			],
 		];

@@ -50,7 +50,7 @@ class Review_Write {
 				'rating' => [
 					'type'        => [ 'non_null' => 'Int' ],
 					'description' => static function () {
-						return __( 'Product rating', 'wp-graphql-woocommerce' );
+						return __( 'Product rating', 'graphql-for-ecommerce' );
 					},
 				],
 			]
@@ -67,7 +67,7 @@ class Review_Write {
 			'rating' => [
 				'type'        => 'Float',
 				'description' => static function () {
-					return __( 'The product rating of the review that was created', 'wp-graphql-woocommerce' );
+					return __( 'The product rating of the review that was created', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {
@@ -79,7 +79,7 @@ class Review_Write {
 			'review' => [
 				'type'        => 'Comment',
 				'description' => static function () {
-					return __( 'The product review that was created', 'wp-graphql-woocommerce' );
+					return __( 'The product review that was created', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					if ( ! isset( $payload['id'] ) || ! absint( $payload['id'] ) ) {

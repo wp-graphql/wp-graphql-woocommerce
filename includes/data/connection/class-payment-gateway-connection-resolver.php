@@ -33,7 +33,7 @@ class Payment_Gateway_Connection_Resolver {
 	public function resolve( $source, array $args, AppContext $context, ResolveInfo $info ) {
 		if ( ( ! empty( $args['where']['all'] ) ) && true === $args['where']['all'] ) {
 			if ( ! current_user_can( 'edit_theme_options' ) ) {
-				throw new UserError( __( 'Not authorized to view these settings', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Not authorized to view these settings', 'graphql-for-ecommerce' ) );
 			}
 			$gateways = \WC()->payment_gateways()->payment_gateways();
 		} else {

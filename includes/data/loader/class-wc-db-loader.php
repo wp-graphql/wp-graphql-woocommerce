@@ -92,7 +92,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 				if ( empty( $loader ) ) {
 					throw new \Exception(
 						/* translators: %s: Loader Type */
-						sprintf( __( 'Loader type invalid: %s', 'wp-graphql-woocommerce' ), $this->loader_type )
+						sprintf( __( 'Loader type invalid: %s', 'graphql-for-ecommerce' ), $this->loader_type )
 					);
 				}
 		}//end switch
@@ -144,7 +144,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		if ( 'standard' === $slug ) {
 			return [
 				'slug' => 'standard',
-				'name' => __( 'Standard rate', 'wp-graphql-woocommerce' ),
+				'name' => __( 'Standard rate', 'graphql-for-ecommerce' ),
 			];
 		} else {
 			$tax_class = \WC_Tax::get_tax_class_by( 'slug', $slug );
@@ -244,7 +244,7 @@ class WC_Db_Loader extends AbstractDataLoader {
 		if ( empty( $methods[ $id ] ) ) {
 			throw new UserError(
 			/* translators: shipping method ID */
-				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
+				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'graphql-for-ecommerce' ), $id )
 			);
 		}
 

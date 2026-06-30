@@ -27,7 +27,7 @@ class Pricing_Field_Format {
 			'PricingFieldFormatEnum',
 			[
 				'description' => static function () {
-					return __( 'Pricing field format enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Pricing field format enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $values,
 			]

@@ -45,7 +45,7 @@ class Product_Attribute_Delete {
 			'id' => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+					return __( 'Unique identifier for the product.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -75,14 +75,14 @@ class Product_Attribute_Delete {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! wc_rest_check_manager_permissions( 'attributes', 'delete' ) ) {
-				throw new UserError( __( 'Sorry, you cannot delete attributes.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Sorry, you cannot delete attributes.', 'graphql-for-ecommerce' ) );
 			}
 
 			$attribute = Product_Mutation::get_attribute( $input['id'] );
 			$deleted   = wc_delete_attribute( $attribute->attribute_id );
 
 			if ( false === $deleted ) {
-				throw new UserError( __( 'Failed to delete attribute.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to delete attribute.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**

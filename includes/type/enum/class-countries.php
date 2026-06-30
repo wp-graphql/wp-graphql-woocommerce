@@ -31,7 +31,7 @@ class Countries {
 			'CountriesEnum',
 			[
 				'description' => static function () {
-					return __( 'Countries enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Countries enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $countries,
 			]

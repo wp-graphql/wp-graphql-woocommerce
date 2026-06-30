@@ -23,7 +23,7 @@ class Downloadable_Product {
 			'DownloadableProduct',
 			[
 				'description' => static function () {
-					return __( 'A downloadable product.', 'wp-graphql-woocommerce' );
+					return __( 'A downloadable product.', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
@@ -42,37 +42,37 @@ class Downloadable_Product {
 			'id'             => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation global ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'databaseId'     => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadExpiry' => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Download expiry', 'wp-graphql-woocommerce' );
+					return __( 'Download expiry', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadable'   => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Is downloadable?', 'wp-graphql-woocommerce' );
+					return __( 'Is downloadable?', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloadLimit'  => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Download limit', 'wp-graphql-woocommerce' );
+					return __( 'Download limit', 'graphql-for-ecommerce' );
 				},
 			],
 			'downloads'      => [
 				'type'        => [ 'list_of' => 'ProductDownload' ],
 				'description' => static function () {
-					return __( 'Product downloads', 'wp-graphql-woocommerce' );
+					return __( 'Product downloads', 'graphql-for-ecommerce' );
 				},
 			],
 		];

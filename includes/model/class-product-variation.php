@@ -77,7 +77,7 @@ class Product_Variation extends WC_Post {
 
 		// Check if product variation is valid.
 		if ( ! is_object( $data ) ) {
-			throw new \Exception( __( 'Failed to retrieve product variation data source', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( 'Failed to retrieve product variation data source', 'graphql-for-ecommerce' ) );
 		}
 
 		parent::__construct( $data );

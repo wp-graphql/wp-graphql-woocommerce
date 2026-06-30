@@ -131,7 +131,7 @@ class Product extends WC_Post {
 
 		// Check if product is valid.
 		if ( ! is_object( $data ) ) {
-			throw new \Exception( __( 'Failed to retrieve product data source', 'wp-graphql-woocommerce' ) );
+			throw new \Exception( __( 'Failed to retrieve product data source', 'graphql-for-ecommerce' ) );
 		}
 
 		parent::__construct( $data );

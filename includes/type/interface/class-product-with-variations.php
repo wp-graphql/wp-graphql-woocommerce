@@ -28,7 +28,7 @@ class Product_With_Variations {
 			'ProductWithVariations',
 			[
 				'description' => static function () {
-					return __( 'A product with variations.', 'wp-graphql-woocommerce' );
+					return __( 'A product with variations.', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node', 'ProductWithAttributes' ],
 				'fields'      => self::get_fields(),
@@ -48,13 +48,13 @@ class Product_With_Variations {
 			'id'         => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation global ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'databaseId' => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation ID', 'graphql-for-ecommerce' );
 				},
 			],
 		];

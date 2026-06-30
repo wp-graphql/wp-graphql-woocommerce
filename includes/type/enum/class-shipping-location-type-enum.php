@@ -22,7 +22,7 @@ class Shipping_Location_Type_Enum {
 			'ShippingLocationTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'A Shipping zone location type.', 'wp-graphql-woocommerce' );
+					return __( 'A Shipping zone location type.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'COUNTRY'   => [ 'value' => 'country' ],

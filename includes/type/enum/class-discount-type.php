@@ -27,7 +27,7 @@ class Discount_Type {
 			'DiscountTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'Coupon discount type enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Coupon discount type enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $values,
 			]

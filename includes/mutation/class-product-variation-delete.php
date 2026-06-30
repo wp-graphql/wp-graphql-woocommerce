@@ -45,13 +45,13 @@ class Product_Variation_Delete {
 			'id'    => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Unique identifier for the product.', 'wp-graphql-woocommerce' );
+					return __( 'Unique identifier for the product.', 'graphql-for-ecommerce' );
 				},
 			],
 			'force' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether to bypass trash and force deletion.', 'wp-graphql-woocommerce' );
+					return __( 'Whether to bypass trash and force deletion.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -86,7 +86,7 @@ class Product_Variation_Delete {
 			$result       = false;
 
 			if ( 0 === $object->ID ) {
-				throw new UserError( __( 'Invalid product variation ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid product variation ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			$supports_trash = EMPTY_TRASH_DAYS > 0 && is_callable( [ $object, 'get_status' ] );
@@ -102,7 +102,7 @@ class Product_Variation_Delete {
 			$supports_trash = apply_filters( 'graphql_woocommerce_product_variation_object_trashable', $supports_trash, $object );
 
 			if ( ! wc_rest_check_post_permissions( 'product_variation', 'delete', $object->ID ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to delete product variations', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Sorry, you are not allowed to delete product variations', 'graphql-for-ecommerce' ) );
 			}
 
 			/**
@@ -118,12 +118,12 @@ class Product_Variation_Delete {
 			} else {
 				// If we don't support trashing for this type, error out.
 				if ( ! $supports_trash ) {
-					throw new UserError( __( 'This product variation does not support trashing.', 'wp-graphql-woocommerce' ) );
+					throw new UserError( __( 'This product variation does not support trashing.', 'graphql-for-ecommerce' ) );
 				}
 
 				if ( is_callable( [ $variation_to_be_deleted, 'get_status' ] ) ) {
 					if ( 'trash' === $variation_to_be_deleted->get_status() ) {
-						throw new UserError( __( 'Product variation is already in the trash.', 'wp-graphql-woocommerce' ) );
+						throw new UserError( __( 'Product variation is already in the trash.', 'graphql-for-ecommerce' ) );
 					}
 
 					$variation_to_be_deleted->delete();
@@ -137,7 +137,7 @@ class Product_Variation_Delete {
 			}
 
 			if ( ! $result ) {
-				throw new UserError( __( 'Failed to delete product variation.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Failed to delete product variation.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( 0 !== $variation_to_be_deleted->get_parent_id() ) {

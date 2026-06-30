@@ -59,11 +59,11 @@ class Product_Attributes {
 	 */
 	public static function get_connection_config( $args = [] ): array {
 		if ( ! isset( $args['fromType'] ) ) {
-			throw new Error( __( 'The "fromType" is required for the ProductAttributes connection.', 'wp-graphql-woocommerce' ) );
+			throw new Error( __( 'The "fromType" is required for the ProductAttributes connection.', 'graphql-for-ecommerce' ) );
 		}
 
 		if ( ! isset( $args['toType'] ) ) {
-			throw new Error( __( 'The "toType" is required for the ProductAttributes connection.', 'wp-graphql-woocommerce' ) );
+			throw new Error( __( 'The "toType" is required for the ProductAttributes connection.', 'graphql-for-ecommerce' ) );
 		}
 
 		return array_merge(

@@ -67,7 +67,7 @@ class Cart_Update_Shipping_Method {
 			Cart_Mutation::check_session_token();
 
 			if ( empty( $input['shippingMethods'] ) ) {
-				throw new UserError( __( 'No shipping method provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No shipping method provided', 'graphql-for-ecommerce' ) );
 			}
 
 			$chosen_shipping_methods = Cart_Mutation::prepare_shipping_methods( $input['shippingMethods'] );

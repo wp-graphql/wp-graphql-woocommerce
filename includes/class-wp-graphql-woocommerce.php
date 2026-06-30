@@ -138,7 +138,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public function __clone() {
 			// Cloning instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'WP_GraphQL_WooCommerce class should not be cloned.', 'wp-graphql-woocommerce' ), '0.0.1' );
+			_doing_it_wrong( __FUNCTION__, esc_html__( 'WP_GraphQL_WooCommerce class should not be cloned.', 'graphql-for-ecommerce' ), '0.0.1' );
 		}
 
 		/**
@@ -148,7 +148,7 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 		 */
 		public function __wakeup() {
 			// De-serializing instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the WP_GraphQL_WooCommerce class is not allowed', 'wp-graphql-woocommerce' ), '0.0.1' );
+			_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the WP_GraphQL_WooCommerce class is not allowed', 'graphql-for-ecommerce' ), '0.0.1' );
 		}
 
 		/**
@@ -457,8 +457,8 @@ if ( ! class_exists( '\WPGraphQL\WooCommerce\WP_GraphQL_WooCommerce' ) ) :
 								'<p>%s</p>' .
 								'</div>',
 								esc_html__(
-									'WPGraphQL for WooCommerce appears to have been installed without it\'s dependencies. It will not work properly until dependencies are installed. This likely means you have cloned WPGraphQL from Github and need to run the command `composer install`.',
-									'wp-graphql-woocommerce'
+									'GraphQL for eCommerce appears to have been installed without its dependencies. It will not work properly until dependencies are installed. This likely means you have cloned the plugin from Github and need to run the command `composer install`.',
+									'graphql-for-ecommerce'
 								)
 							);
 						}

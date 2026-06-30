@@ -50,14 +50,14 @@ class WC_Setting {
 			[
 				'eagerlyLoadType' => true,
 				'description'     => static function () {
-					return __( 'A WC setting object', 'wp-graphql-woocommerce' );
+					return __( 'A WC setting object', 'graphql-for-ecommerce' );
 				},
 				'resolveType'     => [ self::class, 'resolve_type' ],
 				'fields'          => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'The globally unique identifier for the WC setting.', 'wp-graphql-woocommerce' );
+							return __( 'The globally unique identifier for the WC setting.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return $source['id'] ?? null;
@@ -66,7 +66,7 @@ class WC_Setting {
 					'label'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A human readable label for the setting used in user interfaces.', 'wp-graphql-woocommerce' );
+							return __( 'A human readable label for the setting used in user interfaces.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return $source['label'] ?? $source['title'] ?? null;
@@ -75,7 +75,7 @@ class WC_Setting {
 					'groupId'     => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'The ID of the settings group this setting belongs to.', 'wp-graphql-woocommerce' );
+							return __( 'The ID of the settings group this setting belongs to.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return $source['group_id'] ?? null;
@@ -84,7 +84,7 @@ class WC_Setting {
 					'description' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A human readable description for the setting used in user interfaces.', 'wp-graphql-woocommerce' );
+							return __( 'A human readable description for the setting used in user interfaces.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['description'] ) ? $source['description'] : null;
@@ -93,7 +93,7 @@ class WC_Setting {
 					'type'        => [
 						'type'        => 'WCSettingTypeEnum',
 						'description' => static function () {
-							return __( 'Type of setting.', 'wp-graphql-woocommerce' );
+							return __( 'Type of setting.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							$raw_type = $source['type'] ?? '';
@@ -103,7 +103,7 @@ class WC_Setting {
 					'tip'         => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Additional help text shown to the user about the setting', 'wp-graphql-woocommerce' );
+							return __( 'Additional help text shown to the user about the setting', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['desc_tip'] ) ? $source['desc_tip'] : ( ! empty( $source['tip'] ) ? $source['tip'] : null );
@@ -112,7 +112,7 @@ class WC_Setting {
 					'placeholder' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Placeholder text to be displayed in text inputs.', 'wp-graphql-woocommerce' );
+							return __( 'Placeholder text to be displayed in text inputs.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source['placeholder'] ) ? $source['placeholder'] : null;
@@ -121,7 +121,7 @@ class WC_Setting {
 					'options'     => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-							return __( 'Array of option key/value pairs for select and multiselect types.', 'wp-graphql-woocommerce' );
+							return __( 'Array of option key/value pairs for select and multiselect types.', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							if ( empty( $source['options'] ) || ! is_array( $source['options'] ) ) {

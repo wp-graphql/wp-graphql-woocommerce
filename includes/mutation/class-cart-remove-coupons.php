@@ -43,7 +43,7 @@ class Cart_Remove_Coupons {
 			'codes' => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => static function () {
-					return __( 'Code of coupon being applied', 'wp-graphql-woocommerce' );
+					return __( 'Code of coupon being applied', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -71,20 +71,20 @@ class Cart_Remove_Coupons {
 
 			// Retrieve product database ID if relay ID provided.
 			if ( empty( $input['codes'] ) ) {
-				throw new UserError( __( 'No coupon codes provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No coupon codes provided', 'graphql-for-ecommerce' ) );
 			}
 
 			foreach ( $input['codes'] as $code ) {
 
 				// Check if applied.
 				if ( ! \WC()->cart->has_discount( $code ) ) {
-					throw new UserError( __( 'This coupon has not been applied to the cart.', 'wp-graphql-woocommerce' ) );
+					throw new UserError( __( 'This coupon has not been applied to the cart.', 'graphql-for-ecommerce' ) );
 				}
 
 				// Get cart item for payload.
 				$success = \WC()->cart->remove_coupon( $code );
 				if ( true !== $success ) {
-					throw new UserError( __( 'Failed to remove coupon.', 'wp-graphql-woocommerce' ) );
+					throw new UserError( __( 'Failed to remove coupon.', 'graphql-for-ecommerce' ) );
 				}
 			}
 

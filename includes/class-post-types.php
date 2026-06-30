@@ -357,7 +357,7 @@ class Post_Types {
 			throw new UserError(
 				sprintf(
 					/* translators: %s: Post type slug */
-					__( 'The "%s" post type is not a valid product type.', 'wp-graphql-woocommerce' ),
+					__( 'The "%s" post type is not a valid product type.', 'graphql-for-ecommerce' ),
 					$value->post_type
 				)
 			);
@@ -378,7 +378,7 @@ class Post_Types {
 		throw new UserError(
 			sprintf(
 			/* translators: %s: Product type */
-				__( 'The "%s" product type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+				__( 'The "%s" product type is not supported by the core GraphQL for eCommerce schema.', 'graphql-for-ecommerce' ),
 				$product_model->type
 			)
 		);
@@ -418,7 +418,7 @@ class Post_Types {
 		throw new UserError(
 			sprintf(
 			/* translators: %s: Product type */
-				__( 'The "%s" product variation type is not supported by the core WPGraphQL for WooCommerce (WooGraphQL) schema.', 'wp-graphql-woocommerce' ),
+				__( 'The "%s" product variation type is not supported by the core GraphQL for eCommerce schema.', 'graphql-for-ecommerce' ),
 				$product_type ?? ''
 			)
 		);

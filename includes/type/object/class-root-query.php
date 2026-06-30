@@ -35,18 +35,18 @@ class Root_Query {
 						'recalculateTotals' => [
 							'type'        => 'Boolean',
 							'description' => static function () {
-								return __( 'Should cart totals be recalculated.', 'wp-graphql-woocommerce' );
+								return __( 'Should cart totals be recalculated.', 'graphql-for-ecommerce' );
 							},
 						],
 						'fees'              => [
 							'type'        => [ 'list_of' => 'FeeInput' ],
 							'description' => static function () {
-								return __( 'Fees to add to the cart.', 'wp-graphql-woocommerce' );
+								return __( 'Fees to add to the cart.', 'graphql-for-ecommerce' );
 							},
 						],
 					],
 					'description' => static function () {
-						return __( 'The cart object', 'wp-graphql-woocommerce' );
+						return __( 'The cart object', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $_, $args ) {
 						$token_invalid = apply_filters( 'graphql_woocommerce_session_token_errors', null );
@@ -95,12 +95,12 @@ class Root_Query {
 						],
 					],
 					'description' => static function () {
-						return __( 'The cart object', 'wp-graphql-woocommerce' );
+						return __( 'The cart object', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source, array $args ) {
 						$item = Factory::resolve_cart()->get_cart_item( $args['key'] );
 						if ( empty( $item ) || empty( $item['key'] ) ) {
-							throw new UserError( __( 'Failed to retrieve cart item.', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'Failed to retrieve cart item.', 'graphql-for-ecommerce' ) );
 						}
 
 						return $item;
@@ -114,14 +114,14 @@ class Root_Query {
 						],
 					],
 					'description' => static function () {
-						return __( 'The cart object', 'wp-graphql-woocommerce' );
+						return __( 'The cart object', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $source, array $args ) {
 						$fees   = Factory::resolve_cart()->get_fees();
 						$fee_id = $args['id'];
 
 						if ( empty( $fees[ $fee_id ] ) ) {
-							throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'The ID input is invalid', 'graphql-for-ecommerce' ) );
 						}
 
 						return $fees[ $fee_id ];
@@ -130,14 +130,14 @@ class Root_Query {
 				'coupon'           => [
 					'type'        => 'Coupon',
 					'description' => static function () {
-						return __( 'A coupon object', 'wp-graphql-woocommerce' );
+						return __( 'A coupon object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [ 'type' => [ 'non_null' => 'ID' ] ],
 						'idType' => [
 							'type'        => 'CouponIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify coupon', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify coupon', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -157,7 +157,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $args['id'] );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$coupon_id = absint( $id_components['id'] );
 								break;
@@ -177,13 +177,13 @@ class Root_Query {
 
 						if ( empty( $coupon_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No coupon ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No coupon ID was found corresponding to the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						$coupon = get_post( $coupon_id );
 						if ( ! is_object( $coupon ) || 'shop_coupon' !== $coupon->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No coupon exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No coupon exists with the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						return Factory::resolve_crud_object( $coupon_id, $context );
@@ -192,19 +192,19 @@ class Root_Query {
 				'customer'         => [
 					'type'        => 'Customer',
 					'description' => static function () {
-						return __( 'A customer object', 'wp-graphql-woocommerce' );
+						return __( 'A customer object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'         => [
 							'type'        => 'ID',
 							'description' => static function () {
-								return __( 'Get the customer by their global ID', 'wp-graphql-woocommerce' );
+								return __( 'Get the customer by their global ID', 'graphql-for-ecommerce' );
 							},
 						],
 						'customerId' => [
 							'type'        => 'Int',
 							'description' => static function () {
-								return __( 'Get the customer by their database ID', 'wp-graphql-woocommerce' );
+								return __( 'Get the customer by their database ID', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -218,7 +218,7 @@ class Root_Query {
 						if ( ! empty( $args['id'] ) ) {
 							$id_components = Relay::fromGlobalId( $args['id'] );
 							if ( ! isset( $id_components['id'] ) || ! absint( $id_components['id'] ) ) {
-								throw new UserError( __( 'The ID input is invalid', 'wp-graphql-woocommerce' ) );
+								throw new UserError( __( 'The ID input is invalid', 'graphql-for-ecommerce' ) );
 							}
 
 							$customer_id = absint( $id_components['id'] );
@@ -231,7 +231,7 @@ class Root_Query {
 							&& ! current_user_can( 'list_users' )
 							&& $current_user_id !== $customer_id;
 						if ( $unauthorized ) {
-							throw new UserError( __( 'Not authorized to access this customer', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'Not authorized to access this customer', 'graphql-for-ecommerce' ) );
 						}
 
 						// If we have a customer ID, resolve to that customer.
@@ -246,19 +246,19 @@ class Root_Query {
 				'order'            => [
 					'type'        => 'Order',
 					'description' => static function () {
-						return __( 'A order object', 'wp-graphql-woocommerce' );
+						return __( 'A order object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
 							'description' => static function () {
-								return __( 'The ID for identifying the order', 'wp-graphql-woocommerce' );
+								return __( 'The ID for identifying the order', 'graphql-for-ecommerce' );
 							},
 						],
 						'idType' => [
 							'type'        => 'OrderIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify order', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify order', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -278,7 +278,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$order_id = absint( $id_components['id'] );
 								break;
@@ -286,12 +286,12 @@ class Root_Query {
 
 						if ( empty( $order_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No order ID was found corresponding to the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						if ( 'shop_order' !== OrderUtil::get_order_type( $order_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No order exists with the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						// Check if user authorized to view order.
@@ -321,7 +321,7 @@ class Root_Query {
 
 						// Throw if authorized to view order.
 						if ( ! $is_authorized ) {
-							throw new UserError( __( 'Not authorized to access this order', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'Not authorized to access this order', 'graphql-for-ecommerce' ) );
 						}
 
 						return Factory::resolve_crud_object( $order_id, $context );
@@ -330,19 +330,19 @@ class Root_Query {
 				'productVariation' => [
 					'type'        => 'ProductVariation',
 					'description' => static function () {
-						return __( 'A product variation object', 'wp-graphql-woocommerce' );
+						return __( 'A product variation object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
 							'description' => static function () {
-								return __( 'The ID for identifying the product variation', 'wp-graphql-woocommerce' );
+								return __( 'The ID for identifying the product variation', 'graphql-for-ecommerce' );
 							},
 						],
 						'idType' => [
 							'type'        => 'ProductVariationIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify product variation', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -359,7 +359,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$variation_id = absint( $id_components['id'] );
 								break;
@@ -367,13 +367,13 @@ class Root_Query {
 
 						if ( empty( $variation_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No product variation ID was found corresponding to the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						$variation = get_post( $variation_id );
 						if ( ! is_object( $variation ) || 'product_variation' !== $variation->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No product variation exists with the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						return Factory::resolve_crud_object( $variation_id, $context );
@@ -382,19 +382,19 @@ class Root_Query {
 				'refund'           => [
 					'type'        => 'Refund',
 					'description' => static function () {
-						return __( 'A refund object', 'wp-graphql-woocommerce' );
+						return __( 'A refund object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [
 							'type'        => [ 'non_null' => 'ID' ],
 							'description' => static function () {
-								return __( 'The ID for identifying the refund', 'wp-graphql-woocommerce' );
+								return __( 'The ID for identifying the refund', 'graphql-for-ecommerce' );
 							},
 						],
 						'idType' => [
 							'type'        => 'RefundIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify refund', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify refund', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -411,7 +411,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$refund_id = absint( $id_components['id'] );
 								break;
@@ -419,12 +419,12 @@ class Root_Query {
 
 						if ( empty( $refund_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No refund ID was found corresponding to the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						if ( 'shop_order_refund' !== OrderUtil::get_order_type( $refund_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $id ) );
+							throw new UserError( sprintf( __( 'No refund exists with the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $id ) );
 						}
 
 						// Check if user authorized to view order.
@@ -438,7 +438,7 @@ class Root_Query {
 						if ( get_current_user_id() ) {
 							$refund = \wc_get_order( $refund_id );
 							if ( ! is_object( $refund ) || ! is_a( $refund, \WC_Order_Refund::class ) ) {
-								throw new UserError( __( 'Failed to retrieve refund', 'wp-graphql-woocommerce' ) );
+								throw new UserError( __( 'Failed to retrieve refund', 'graphql-for-ecommerce' ) );
 							}
 							$order_id = $refund->get_parent_id();
 
@@ -460,7 +460,7 @@ class Root_Query {
 
 						// Throw if authorized to view refund.
 						if ( ! $is_authorized ) {
-							throw new UserError( __( 'Not authorized to access this refund', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'Not authorized to access this refund', 'graphql-for-ecommerce' ) );
 						}
 
 						return Factory::resolve_crud_object( $refund_id, $context );
@@ -469,25 +469,25 @@ class Root_Query {
 				'shippingMethod'   => [
 					'type'        => 'ShippingMethod',
 					'description' => static function () {
-						return __( 'A shipping method object', 'wp-graphql-woocommerce' );
+						return __( 'A shipping method object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
 							'description' => static function () {
-								return __( 'The ID for identifying the shipping method', 'wp-graphql-woocommerce' );
+								return __( 'The ID for identifying the shipping method', 'graphql-for-ecommerce' );
 							},
 						],
 						'idType' => [
 							'type'        => 'ShippingMethodIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify product variation', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify product variation', 'graphql-for-ecommerce' );
 							},
 						],
 					],
 					'resolve'     => static function ( $source, array $args ) {
 						if ( ! \wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
-							throw new UserError( __( 'Sorry, you cannot view shipping methods.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+							throw new UserError( __( 'Sorry, you cannot view shipping methods.', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 						}
 
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
@@ -502,7 +502,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$method_id = $id_components['id'];
 								break;
@@ -514,29 +514,29 @@ class Root_Query {
 				'shippingZone'     => [
 					'type'        => 'ShippingZone',
 					'description' => static function () {
-						return __( 'A shipping zone object', 'wp-graphql-woocommerce' );
+						return __( 'A shipping zone object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
 							'description' => static function () {
-								return __( 'The ID for identifying the shipping zone', 'wp-graphql-woocommerce' );
+								return __( 'The ID for identifying the shipping zone', 'graphql-for-ecommerce' );
 							},
 						],
 						'idType' => [
 							'type'        => 'ShippingZoneIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify shipping zone', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify shipping zone', 'graphql-for-ecommerce' );
 							},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						if ( ! \wc_shipping_enabled() ) {
-							throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+							throw new UserError( __( 'Shipping is disabled.', 'graphql-for-ecommerce' ), 404 );
 						}
 
 						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
-							throw new UserError( __( 'Permission denied.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+							throw new UserError( __( 'Permission denied.', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 						}
 
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
@@ -551,7 +551,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$zone_id = $id_components['id'];
 								break;
@@ -563,25 +563,25 @@ class Root_Query {
 				'taxRate'          => [
 					'type'        => 'TaxRate',
 					'description' => static function () {
-						return __( 'A tax rate object', 'wp-graphql-woocommerce' );
+						return __( 'A tax rate object', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'id'     => [
 							'type'        => 'ID',
 							'description' => static function () {
-								return __( 'The ID for identifying the tax rate', 'wp-graphql-woocommerce' );
+								return __( 'The ID for identifying the tax rate', 'graphql-for-ecommerce' );
 							},
 						],
 						'idType' => [
 							'type'        => 'TaxRateIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify tax rate', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify tax rate', 'graphql-for-ecommerce' );
 							},
 						],
 					],
 					'resolve'     => static function ( $source, array $args, AppContext $context ) {
 						if ( ! wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
-							throw new UserError( __( 'Sorry, you cannot view tax rates.', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+							throw new UserError( __( 'Sorry, you cannot view tax rates.', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 						}
 						$id      = isset( $args['id'] ) ? $args['id'] : null;
 						$id_type = isset( $args['idType'] ) ? $args['idType'] : 'global_id';
@@ -595,7 +595,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$rate_id = absint( $id_components['id'] );
 								break;
@@ -607,7 +607,7 @@ class Root_Query {
 				'countries'        => [
 					'type'        => [ 'list_of' => 'CountriesEnum' ],
 					'description' => static function () {
-						return __( 'Countries', 'wp-graphql-woocommerce' );
+						return __( 'Countries', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function () {
 						$wc_countries = new \WC_Countries();
@@ -619,7 +619,7 @@ class Root_Query {
 				'allowedCountries' => [
 					'type'        => [ 'list_of' => 'CountriesEnum' ],
 					'description' => static function () {
-						return __( 'Countries that the store sells to', 'wp-graphql-woocommerce' );
+						return __( 'Countries that the store sells to', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function () {
 						$wc_countries = new \WC_Countries();
@@ -634,12 +634,12 @@ class Root_Query {
 						'country' => [
 							'type'        => [ 'non_null' => 'CountriesEnum' ],
 							'description' => static function () {
-								return __( 'Target country', 'wp-graphql-woocommerce' );
+								return __( 'Target country', 'graphql-for-ecommerce' );
 							},
 						],
 					],
 					'description' => static function () {
-						return __( 'Countries that the store sells to', 'wp-graphql-woocommerce' );
+						return __( 'Countries that the store sells to', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $_, $args ) {
 						$country      = $args['country'];
@@ -661,11 +661,11 @@ class Root_Query {
 				'wcSettingGroups'  => [
 					'type'        => [ 'list_of' => 'WCSettingGroup' ],
 					'description' => static function () {
-						return __( 'WooCommerce setting groups', 'wp-graphql-woocommerce' );
+						return __( 'WooCommerce setting groups', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function () {
 						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
-							throw new UserError( __( 'Sorry, you cannot view settings.', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'Sorry, you cannot view settings.', 'graphql-for-ecommerce' ) );
 						}
 
 						$groups = apply_filters( 'woocommerce_settings_groups', [] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -675,19 +675,19 @@ class Root_Query {
 				'wcSettings'       => [
 					'type'        => [ 'list_of' => 'WCSetting' ],
 					'description' => static function () {
-						return __( 'WooCommerce settings for a specific group', 'wp-graphql-woocommerce' );
+						return __( 'WooCommerce settings for a specific group', 'graphql-for-ecommerce' );
 					},
 					'args'        => [
 						'group' => [
 							'type'        => [ 'non_null' => 'String' ],
 							'description' => static function () {
-								return __( 'Settings group ID', 'wp-graphql-woocommerce' );
+								return __( 'Settings group ID', 'graphql-for-ecommerce' );
 							},
 						],
 					],
 					'resolve'     => static function ( $_, $args ) {
 						if ( ! \wc_rest_check_manager_permissions( 'settings', 'read' ) ) {
-							throw new UserError( __( 'Sorry, you cannot view settings.', 'wp-graphql-woocommerce' ) );
+							throw new UserError( __( 'Sorry, you cannot view settings.', 'graphql-for-ecommerce' ) );
 						}
 
 						$controller = new \WC_REST_Setting_Options_Controller();
@@ -706,19 +706,19 @@ class Root_Query {
 						'calculatePriceRange'        => [
 							'type'        => 'Boolean',
 							'description' => static function () {
-								return __( 'If true, calculates the minimum and maximum product prices for the collection.', 'wp-graphql-woocommerce' );
+								return __( 'If true, calculates the minimum and maximum product prices for the collection.', 'graphql-for-ecommerce' );
 							},
 						],
 						'calculateRatingCounts'      => [
 							'type'        => 'Boolean',
 							'description' => static function () {
-								return __( 'If true, calculates rating counts for products in the collection.', 'wp-graphql-woocommerce' );
+								return __( 'If true, calculates rating counts for products in the collection.', 'graphql-for-ecommerce' );
 							},
 						],
 						'calculateStockStatusCounts' => [
 							'type'        => 'Boolean',
 							'description' => static function () {
-								return __( 'If true, calculates stock counts for products in the collection.', 'wp-graphql-woocommerce' );
+								return __( 'If true, calculates stock counts for products in the collection.', 'graphql-for-ecommerce' );
 							},
 						],
 						'taxonomies'                 => [
@@ -729,7 +729,7 @@ class Root_Query {
 						],
 					],
 					'description' => static function () {
-						return __( 'Statistics for a product taxonomy query', 'wp-graphql-woocommerce' );
+						return __( 'Statistics for a product taxonomy query', 'graphql-for-ecommerce' );
 					},
 					'resolve'     => static function ( $_, $args ) {
 						/** @var array<string, mixed> $data */
@@ -921,7 +921,7 @@ class Root_Query {
 					'type'              => $type_name,
 					'description'       => static function () use ( $type_key ) {
 						/* translators: %s: Product type slug */
-						return sprintf( __( 'A %s product object', 'wp-graphql-woocommerce' ), $type_key );
+						return sprintf( __( 'A %s product object', 'graphql-for-ecommerce' ), $type_key );
 					},
 					'deprecationReason' => 'Use "product" instead.',
 					'args'              => [
@@ -929,13 +929,13 @@ class Root_Query {
 							'type'        => 'ID',
 							'description' => static function () use ( $type_name ) {
 								/* translators: %s: product type */
-								return sprintf( __( 'The ID for identifying the %s product', 'wp-graphql-woocommerce' ), $type_name );
+								return sprintf( __( 'The ID for identifying the %s product', 'graphql-for-ecommerce' ), $type_name );
 							},
 						],
 						'idType' => [
 							'type'        => 'ProductIdTypeEnum',
 							'description' => static function () {
-								return __( 'Type of ID being used identify product', 'wp-graphql-woocommerce' );
+								return __( 'Type of ID being used identify product', 'graphql-for-ecommerce' );
 							},
 						],
 					],
@@ -959,7 +959,7 @@ class Root_Query {
 							default:
 								$id_components = Relay::fromGlobalId( $id );
 								if ( empty( $id_components['id'] ) || empty( $id_components['type'] ) ) {
-									throw new UserError( __( 'The "id" is invalid', 'wp-graphql-woocommerce' ) );
+									throw new UserError( __( 'The "id" is invalid', 'graphql-for-ecommerce' ) );
 								}
 								$product_id = absint( $id_components['id'] );
 								break;
@@ -967,18 +967,18 @@ class Root_Query {
 
 						if ( empty( $product_id ) ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
+							throw new UserError( sprintf( __( 'No product ID was found corresponding to the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $product_id ) );
 						}
 
 						if ( \WC()->product_factory->get_product_type( $product_id ) !== $type_key && 'off' === $unsupported_type_enabled ) {
 							/* translators: Invalid product type message %1$s: Product ID, %2$s: Product type */
-							throw new UserError( sprintf( __( 'This product of ID %1$s is not a %2$s product', 'wp-graphql-woocommerce' ), $product_id, $type_key ) );
+							throw new UserError( sprintf( __( 'This product of ID %1$s is not a %2$s product', 'graphql-for-ecommerce' ), $product_id, $type_key ) );
 						}
 
 						$product = get_post( $product_id );
 						if ( ! is_object( $product ) || 'product' !== $product->post_type ) {
 							/* translators: %1$s: ID type, %2$s: ID value */
-							throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'wp-graphql-woocommerce' ), $id_type, $product_id ) );
+							throw new UserError( sprintf( __( 'No product exists with the %1$s: %2$s', 'graphql-for-ecommerce' ), $id_type, $product_id ) );
 						}
 
 						return Factory::resolve_crud_object( $product_id, $context );

@@ -48,73 +48,73 @@ class Checkout {
 			'paymentMethod'          => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Payment method ID.', 'wp-graphql-woocommerce' );
+					return __( 'Payment method ID.', 'graphql-for-ecommerce' );
 				},
 			],
 			'shippingMethod'         => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => static function () {
-					return __( 'Order shipping method', 'wp-graphql-woocommerce' );
+					return __( 'Order shipping method', 'graphql-for-ecommerce' );
 				},
 			],
 			'shipToDifferentAddress' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Ship to a separate address', 'wp-graphql-woocommerce' );
+					return __( 'Ship to a separate address', 'graphql-for-ecommerce' );
 				},
 			],
 			'billing'                => [
 				'type'        => 'CustomerAddressInput',
 				'description' => static function () {
-					return __( 'Order billing address', 'wp-graphql-woocommerce' );
+					return __( 'Order billing address', 'graphql-for-ecommerce' );
 				},
 			],
 			'shipping'               => [
 				'type'        => 'CustomerAddressInput',
 				'description' => static function () {
-					return __( 'Order shipping address', 'wp-graphql-woocommerce' );
+					return __( 'Order shipping address', 'graphql-for-ecommerce' );
 				},
 			],
 			'account'                => [
 				'type'        => 'CreateAccountInput',
 				'description' => static function () {
-					return __( 'Create new customer account', 'wp-graphql-woocommerce' );
+					return __( 'Create new customer account', 'graphql-for-ecommerce' );
 				},
 			],
 			'transactionId'          => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Order transaction ID', 'wp-graphql-woocommerce' );
+					return __( 'Order transaction ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'isPaid'                 => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'wp-graphql-woocommerce' );
+					return __( 'Define if the order is paid. It will set the status to processing and reduce stock items.', 'graphql-for-ecommerce' );
 				},
 			],
 			'metaData'               => [
 				'type'        => [ 'list_of' => 'MetaDataInput' ],
 				'description' => static function () {
-					return __( 'Order meta data', 'wp-graphql-woocommerce' );
+					return __( 'Order meta data', 'graphql-for-ecommerce' );
 				},
 			],
 			'customerNote'           => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Order customer note', 'wp-graphql-woocommerce' );
+					return __( 'Order customer note', 'graphql-for-ecommerce' );
 				},
 			],
 			'fees'                   => [
 				'type'        => [ 'list_of' => 'FeeInput' ],
 				'description' => static function () {
-					return __( 'Fees to add to the order.', 'wp-graphql-woocommerce' );
+					return __( 'Fees to add to the order.', 'graphql-for-ecommerce' );
 				},
 			],
 			'createdVia'             => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "checkout".', 'wp-graphql-woocommerce' );
+					return __( 'Source of the order. Useful when WooCommerce is driven from multiple sources. Defaults to "checkout".', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -154,7 +154,7 @@ class Checkout {
 			'notices'  => [
 				'type'        => [ 'list_of' => 'CartNotice' ],
 				'description' => static function () {
-					return __( 'WooCommerce notices generated during checkout', 'wp-graphql-woocommerce' );
+					return __( 'WooCommerce notices generated during checkout', 'graphql-for-ecommerce' );
 				},
 				'resolve'     => static function ( $payload ) {
 					return $payload['notices'] ?? [];
@@ -193,7 +193,7 @@ class Checkout {
 				$order = \WC_Order_Factory::get_order( $order_id );
 
 				if ( ! is_object( $order ) ) {
-					throw new UserError( __( 'Failed to retrieve order after checkout', 'wp-graphql-woocommerce' ) );
+					throw new UserError( __( 'Failed to retrieve order after checkout', 'graphql-for-ecommerce' ) );
 				}//end if
 
 				// Capture any non-error notices for successful checkouts.

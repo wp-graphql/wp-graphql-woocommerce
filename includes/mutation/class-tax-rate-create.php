@@ -45,67 +45,67 @@ class Tax_Rate_Create {
 			'country'   => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Country code for the tax rate.', 'wp-graphql-woocommerce' );
+					return __( 'Country code for the tax rate.', 'graphql-for-ecommerce' );
 				},
 			],
 			'state'     => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'State code for the tax rate.', 'wp-graphql-woocommerce' );
+					return __( 'State code for the tax rate.', 'graphql-for-ecommerce' );
 				},
 			],
 			'postcodes' => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => static function () {
-					return __( 'Postcodes for the tax rate.', 'wp-graphql-woocommerce' );
+					return __( 'Postcodes for the tax rate.', 'graphql-for-ecommerce' );
 				},
 			],
 			'cities'    => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => static function () {
-					return __( 'Cities for the tax rate.', 'wp-graphql-woocommerce' );
+					return __( 'Cities for the tax rate.', 'graphql-for-ecommerce' );
 				},
 			],
 			'rate'      => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Tax rate.', 'wp-graphql-woocommerce' );
+					return __( 'Tax rate.', 'graphql-for-ecommerce' );
 				},
 			],
 			'name'      => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Tax rate name.', 'wp-graphql-woocommerce' );
+					return __( 'Tax rate name.', 'graphql-for-ecommerce' );
 				},
 			],
 			'priority'  => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Tax rate priority.', 'wp-graphql-woocommerce' );
+					return __( 'Tax rate priority.', 'graphql-for-ecommerce' );
 				},
 			],
 			'compound'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the tax rate is compound.', 'wp-graphql-woocommerce' );
+					return __( 'Whether the tax rate is compound.', 'graphql-for-ecommerce' );
 				},
 			],
 			'shipping'  => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the tax rate is applied to shipping.', 'wp-graphql-woocommerce' );
+					return __( 'Whether the tax rate is applied to shipping.', 'graphql-for-ecommerce' );
 				},
 			],
 			'order'     => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Tax rate order.', 'wp-graphql-woocommerce' );
+					return __( 'Tax rate order.', 'graphql-for-ecommerce' );
 				},
 			],
 			'class'     => [
 				'type'        => 'TaxClassEnum',
 				'description' => static function () {
-					return __( 'Tax rate class.', 'wp-graphql-woocommerce' );
+					return __( 'Tax rate class.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -142,7 +142,7 @@ class Tax_Rate_Create {
 	public static function mutate_and_get_payload( $input, AppContext $context, ResolveInfo $info ) {
 		$id = ! empty( $input['id'] ) ? Utils::get_database_id_from_id( $input['id'] ) : null;
 		if ( false === $id ) {
-			throw new UserError( __( 'Invalid ID provided.', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Invalid ID provided.', 'graphql-for-ecommerce' ) );
 		}
 		$action     = ! $id ? 'create' : 'update';
 		$permission = ! $id ? 'create' : 'edit';
@@ -150,7 +150,7 @@ class Tax_Rate_Create {
 			throw new UserError(
 				sprintf(
 					/* translators: %s: permission */
-					__( 'Sorry, you are not allowed to %s tax rates.', 'wp-graphql-woocommerce' ),
+					__( 'Sorry, you are not allowed to %s tax rates.', 'graphql-for-ecommerce' ),
 					$permission
 				),
 				\rest_authorization_required_code()

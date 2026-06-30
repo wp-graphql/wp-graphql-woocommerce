@@ -45,7 +45,7 @@ class Cart_Restore_Items {
 			'keys' => [
 				'type'        => [ 'list_of' => 'ID' ],
 				'description' => static function () {
-					return __( 'Cart item key of the item being removed', 'wp-graphql-woocommerce' );
+					return __( 'Cart item key of the item being removed', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -70,7 +70,7 @@ class Cart_Restore_Items {
 			Cart_Mutation::check_session_token();
 
 			if ( empty( $input['keys'] ) ) {
-				throw new UserError( __( 'No cart item keys provided', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'No cart item keys provided', 'graphql-for-ecommerce' ) );
 			}
 
 			// Restore cart items.
@@ -78,7 +78,7 @@ class Cart_Restore_Items {
 				$success = \WC()->cart->restore_cart_item( $key );
 				if ( false === $success ) {
 					/* translators: Cart item not found message */
-					throw new UserError( sprintf( __( 'Failed to restore cart item with the key: %s', 'wp-graphql-woocommerce' ), $key ) );
+					throw new UserError( sprintf( __( 'Failed to restore cart item with the key: %s', 'graphql-for-ecommerce' ), $key ) );
 				}
 			}
 

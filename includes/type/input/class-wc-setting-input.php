@@ -22,19 +22,19 @@ class WC_Setting_Input {
 			'WCSettingInput',
 			[
 				'description' => static function () {
-					return __( 'WooCommerce setting input.', 'wp-graphql-woocommerce' );
+					return __( 'WooCommerce setting input.', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'id'    => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'A unique identifier for the setting.', 'wp-graphql-woocommerce' );
+							return __( 'A unique identifier for the setting.', 'graphql-for-ecommerce' );
 						},
 					],
 					'value' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Setting value.', 'wp-graphql-woocommerce' );
+							return __( 'Setting value.', 'graphql-for-ecommerce' );
 						},
 					],
 				],

@@ -45,31 +45,31 @@ class Product_Attribute_Create {
 			'name'        => [
 				'type'        => [ 'non_null' => 'String' ],
 				'description' => static function () {
-					return __( 'Name of the attribute.', 'wp-graphql-woocommerce' );
+					return __( 'Name of the attribute.', 'graphql-for-ecommerce' );
 				},
 			],
 			'slug'        => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Slug of the attribute.', 'wp-graphql-woocommerce' );
+					return __( 'Slug of the attribute.', 'graphql-for-ecommerce' );
 				},
 			],
 			'type'        => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Type of the attribute.', 'wp-graphql-woocommerce' );
+					return __( 'Type of the attribute.', 'graphql-for-ecommerce' );
 				},
 			],
 			'orderBy'     => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Order by which the attribute should be sorted.', 'wp-graphql-woocommerce' );
+					return __( 'Order by which the attribute should be sorted.', 'graphql-for-ecommerce' );
 				},
 			],
 			'hasArchives' => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Whether the attribute has archives.', 'wp-graphql-woocommerce' );
+					return __( 'Whether the attribute has archives.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -99,7 +99,7 @@ class Product_Attribute_Create {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! wc_rest_check_manager_permissions( 'attributes', 'create' ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to create attributes.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Sorry, you are not allowed to create attributes.', 'graphql-for-ecommerce' ) );
 			}
 
 			$attribute_id = wc_create_attribute(

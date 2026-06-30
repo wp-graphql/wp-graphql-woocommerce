@@ -23,7 +23,7 @@ class Id_Type_Enums {
 			'CouponIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Coupon. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Coupon. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -32,7 +32,7 @@ class Id_Type_Enums {
 						'name'        => 'CODE',
 						'value'       => 'code',
 						'description' => static function () {
-							return __( 'Coupon code.', 'wp-graphql-woocommerce' );
+							return __( 'Coupon code.', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -43,7 +43,7 @@ class Id_Type_Enums {
 			'OrderIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Order. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Order. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -52,7 +52,7 @@ class Id_Type_Enums {
 						'name'        => 'ORDER_KEY',
 						'value'       => 'order_key',
 						'description' => static function () {
-							return __( 'Order key.', 'wp-graphql-woocommerce' );
+							return __( 'Order key.', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -63,7 +63,7 @@ class Id_Type_Enums {
 			'ProductIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Product. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Product. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -73,7 +73,7 @@ class Id_Type_Enums {
 						'name'        => 'SKU',
 						'value'       => 'sku',
 						'description' => static function () {
-							return __( 'Unique store identifier for product.', 'wp-graphql-woocommerce' );
+							return __( 'Unique store identifier for product.', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -84,7 +84,7 @@ class Id_Type_Enums {
 			'ProductVariationIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single ProductVariation. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single ProductVariation. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -97,7 +97,7 @@ class Id_Type_Enums {
 			'RefundIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Refund. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Refund. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -110,7 +110,7 @@ class Id_Type_Enums {
 			'ShippingMethodIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Shipping Method. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Shipping Method. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -123,7 +123,7 @@ class Id_Type_Enums {
 			'ShippingZoneIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Shipping Zone. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Shipping Zone. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -136,7 +136,7 @@ class Id_Type_Enums {
 			'TaxRateIdTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'The Type of Identifier used to fetch a single Tax rate. Default is ID.', 'wp-graphql-woocommerce' );
+					return __( 'The Type of Identifier used to fetch a single Tax rate. Default is ID.', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'id'          => self::get_value( 'id' ),
@@ -161,7 +161,7 @@ class Id_Type_Enums {
 					'description' => static function () {
 						return __(
 							'Identify a resource by the slug. Available to non-hierarchcial Types where the slug is a unique identifier.',
-							'wp-graphql-woocommerce'
+							'graphql-for-ecommerce'
 						);
 					},
 				];
@@ -170,7 +170,7 @@ class Id_Type_Enums {
 					'name'        => 'DATABASE_ID',
 					'value'       => 'database_id',
 					'description' => static function () {
-						return __( 'Identify a resource by the Database ID.', 'wp-graphql-woocommerce' );
+						return __( 'Identify a resource by the Database ID.', 'graphql-for-ecommerce' );
 					},
 				];
 			case 'uri':
@@ -178,7 +178,7 @@ class Id_Type_Enums {
 					'name'        => 'URI',
 					'value'       => 'uri',
 					'description' => static function () {
-						return __( 'Identify a resource by the URI.', 'wp-graphql-woocommerce' );
+						return __( 'Identify a resource by the URI.', 'graphql-for-ecommerce' );
 					},
 				];
 			case 'id':
@@ -187,7 +187,7 @@ class Id_Type_Enums {
 					'name'        => 'ID',
 					'value'       => 'global_id',
 					'description' => static function () {
-						return __( 'Identify a resource by the (hashed) Global ID.', 'wp-graphql-woocommerce' );
+						return __( 'Identify a resource by the (hashed) Global ID.', 'graphql-for-ecommerce' );
 					},
 				];
 		}//end switch

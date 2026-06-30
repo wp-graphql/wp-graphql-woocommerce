@@ -34,7 +34,7 @@ class Shipping_Method_Connection_Resolver extends AbstractConnectionResolver {
 	 */
 	public function should_execute() {
 		if ( ! wc_rest_check_manager_permissions( 'shipping_methods', 'read' ) ) {
-			graphql_debug( __( 'Permission denied.', 'wp-graphql-woocommerce' ) );
+			graphql_debug( __( 'Permission denied.', 'graphql-for-ecommerce' ) );
 			return false;
 		}
 		return true;

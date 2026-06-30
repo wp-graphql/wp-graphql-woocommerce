@@ -22,31 +22,31 @@ class Product_Taxonomy_Filter_Input {
 			'ProductTaxonomyFilterInput',
 			[
 				'description' => static function () {
-					return __( 'Product filter', 'wp-graphql-woocommerce' );
+					return __( 'Product filter', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'taxonomy' => [
 						'type'        => [ 'non_null' => 'ProductTaxonomyEnum' ],
 						'description' => static function () {
-							return __( 'Which field to select taxonomy term by.', 'wp-graphql-woocommerce' );
+							return __( 'Which field to select taxonomy term by.', 'graphql-for-ecommerce' );
 						},
 					],
 					'terms'    => [
 						'type'        => [ 'list_of' => 'String' ],
 						'description' => static function () {
-							return __( 'A list of term slugs', 'wp-graphql-woocommerce' );
+							return __( 'A list of term slugs', 'graphql-for-ecommerce' );
 						},
 					],
 					'ids'      => [
 						'type'        => [ 'list_of' => 'Int' ],
 						'description' => static function () {
-							return __( 'A list of term ids', 'wp-graphql-woocommerce' );
+							return __( 'A list of term ids', 'graphql-for-ecommerce' );
 						},
 					],
 					'operator' => [
 						'type'        => 'TaxonomyOperatorEnum',
 						'description' => static function () {
-							return __( 'Filter operation type', 'wp-graphql-woocommerce' );
+							return __( 'Filter operation type', 'graphql-for-ecommerce' );
 						},
 					],
 				],

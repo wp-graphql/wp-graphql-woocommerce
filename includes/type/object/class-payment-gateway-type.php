@@ -24,14 +24,14 @@ class Payment_Gateway_Type {
 			'PaymentGateway',
 			[
 				'description' => static function () {
-					return __( 'A payment gateway object', 'wp-graphql-woocommerce' );
+					return __( 'A payment gateway object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'          => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'gateway\'s title', 'wp-graphql-woocommerce' );
+							return __( 'gateway\'s title', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->id ) ? $source->id : null;
@@ -40,7 +40,7 @@ class Payment_Gateway_Type {
 					'title'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'gateway\'s title', 'wp-graphql-woocommerce' );
+							return __( 'gateway\'s title', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->title ) ? $source->title : null;
@@ -49,7 +49,7 @@ class Payment_Gateway_Type {
 					'description' => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'gateway\'s description', 'wp-graphql-woocommerce' );
+							return __( 'gateway\'s description', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->description ) ? $source->description : null;
@@ -58,7 +58,7 @@ class Payment_Gateway_Type {
 					'icon'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'gateway\'s icon', 'wp-graphql-woocommerce' );
+							return __( 'gateway\'s icon', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $source ) {
 							return ! empty( $source->icon ) ? $source->icon : null;

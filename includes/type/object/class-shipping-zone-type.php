@@ -28,38 +28,38 @@ class Shipping_Zone_Type {
 			'ShippingZone',
 			[
 				'description' => static function () {
-					return __( 'A Shipping zone object', 'wp-graphql-woocommerce' );
+					return __( 'A Shipping zone object', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => [
 					'id'         => [
 						'type'        => [ 'non_null' => 'ID' ],
 						'description' => static function () {
-							return __( 'The globally unique identifier for the tax rate.', 'wp-graphql-woocommerce' );
+							return __( 'The globally unique identifier for the tax rate.', 'graphql-for-ecommerce' );
 						},
 					],
 					'databaseId' => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'The ID of the customer in the database', 'wp-graphql-woocommerce' );
+							return __( 'The ID of the customer in the database', 'graphql-for-ecommerce' );
 						},
 					],
 					'name'       => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Shipping zone name.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping zone name.', 'graphql-for-ecommerce' );
 						},
 					],
 					'order'      => [
 						'type'        => 'Int',
 						'description' => static function () {
-							return __( 'Shipping zone order.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping zone order.', 'graphql-for-ecommerce' );
 						},
 					],
 					'locations'  => [
 						'type'        => [ 'list_of' => 'ShippingLocation' ],
 						'description' => static function () {
-							return __( 'Shipping zone locations.', 'wp-graphql-woocommerce' );
+							return __( 'Shipping zone locations.', 'graphql-for-ecommerce' );
 						},
 					],
 				],
@@ -70,7 +70,7 @@ class Shipping_Zone_Type {
 							'id'         => [
 								'type'        => [ 'non_null' => 'ID' ],
 								'description' => static function () {
-									return __( 'The globally unique identifier for the shipping method.', 'wp-graphql-woocommerce' );
+									return __( 'The globally unique identifier for the shipping method.', 'graphql-for-ecommerce' );
 								},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
@@ -85,7 +85,7 @@ class Shipping_Zone_Type {
 							'instanceId' => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'Shipping method instance ID.', 'wp-graphql-woocommerce' );
+									return __( 'Shipping method instance ID.', 'graphql-for-ecommerce' );
 								},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
@@ -98,7 +98,7 @@ class Shipping_Zone_Type {
 							'order'      => [
 								'type'        => 'Int',
 								'description' => static function () {
-									return __( 'The order of the shipping method.', 'wp-graphql-woocommerce' );
+									return __( 'The order of the shipping method.', 'graphql-for-ecommerce' );
 								},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
@@ -111,7 +111,7 @@ class Shipping_Zone_Type {
 							'enabled'    => [
 								'type'        => 'Boolean',
 								'description' => static function () {
-									return __( 'Whether the shipping method is enabled.', 'wp-graphql-woocommerce' );
+									return __( 'Whether the shipping method is enabled.', 'graphql-for-ecommerce' );
 								},
 								'resolve'     => static function ( $edge ) {
 									if ( isset( $edge['node'] ) ) {
@@ -125,7 +125,7 @@ class Shipping_Zone_Type {
 							'settings'   => [
 								'type'        => [ 'list_of' => 'WCStringSetting' ],
 								'description' => static function () {
-									return __( 'Shipping method settings.', 'wp-graphql-woocommerce' );
+									return __( 'Shipping method settings.', 'graphql-for-ecommerce' );
 								},
 								'resolve'     => static function ( $edge ) {
 									$settings = [];

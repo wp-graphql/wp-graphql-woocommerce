@@ -22,25 +22,25 @@ class Cart_Notice_Type {
 			'CartNoticeTypeEnum',
 			[
 				'description' => static function () {
-					return __( 'WooCommerce notice types', 'wp-graphql-woocommerce' );
+					return __( 'WooCommerce notice types', 'graphql-for-ecommerce' );
 				},
 				'values'      => [
 					'ERROR'   => [
 						'value'       => 'error',
 						'description' => static function () {
-							return __( 'Error notice', 'wp-graphql-woocommerce' );
+							return __( 'Error notice', 'graphql-for-ecommerce' );
 						},
 					],
 					'SUCCESS' => [
 						'value'       => 'success',
 						'description' => static function () {
-							return __( 'Success notice', 'wp-graphql-woocommerce' );
+							return __( 'Success notice', 'graphql-for-ecommerce' );
 						},
 					],
 					'NOTICE'  => [
 						'value'       => 'notice',
 						'description' => static function () {
-							return __( 'General notice', 'wp-graphql-woocommerce' );
+							return __( 'General notice', 'graphql-for-ecommerce' );
 						},
 					],
 				],

@@ -44,19 +44,19 @@ class Shipping_Zone_Update {
 			'id'    => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the shipping zone to update.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the shipping zone to update.', 'graphql-for-ecommerce' );
 				},
 			],
 			'name'  => [
 				'type'        => 'String',
 				'description' => static function () {
-					return __( 'Name of the shipping zone.', 'wp-graphql-woocommerce' );
+					return __( 'Name of the shipping zone.', 'graphql-for-ecommerce' );
 				},
 			],
 			'order' => [
 				'type'        => 'Int',
 				'description' => static function () {
-					return __( 'Order of the shipping zone.', 'wp-graphql-woocommerce' );
+					return __( 'Order of the shipping zone.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -86,11 +86,11 @@ class Shipping_Zone_Update {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! \wc_shipping_enabled() ) {
-				throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+				throw new UserError( __( 'Shipping is disabled.', 'graphql-for-ecommerce' ), 404 );
 			}
 
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to edit shipping zones', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to edit shipping zones', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 			}
 
 			$zone_id = $input['id'];
@@ -98,11 +98,11 @@ class Shipping_Zone_Update {
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
 
 			if ( false === $zone ) {
-				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid shipping zone ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( 0 === $zone->get_id() ) {
-				throw new UserError( __( 'The "locations not covered by your other zones" zone cannot be updated.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'The "locations not covered by your other zones" zone cannot be updated.', 'graphql-for-ecommerce' ) );
 			}
 
 			$zone_changed = false;

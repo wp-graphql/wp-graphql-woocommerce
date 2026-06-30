@@ -18,49 +18,49 @@ function get_wc_cpt_connection_args(): array {
 		'search'      => [
 			'type'        => 'String',
 			'description' => static function () {
-					return __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' );
+					return __( 'Limit results to those matching a string.', 'graphql-for-ecommerce' );
 			},
 		],
 		'exclude'     => [
 			'type'        => [ 'list_of' => 'Int' ],
 			'description' => static function () {
-					return __( 'Ensure result set excludes specific IDs.', 'wp-graphql-woocommerce' );
+					return __( 'Ensure result set excludes specific IDs.', 'graphql-for-ecommerce' );
 			},
 		],
 		'include'     => [
 			'type'        => [ 'list_of' => 'Int' ],
 			'description' => static function () {
-					return __( 'Limit result set to specific ids.', 'wp-graphql-woocommerce' );
+					return __( 'Limit result set to specific ids.', 'graphql-for-ecommerce' );
 			},
 		],
 		'orderby'     => [
 			'type'        => [ 'list_of' => 'PostTypeOrderbyInput' ],
 			'description' => static function () {
-					return __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' );
+					return __( 'What paramater to use to order the objects by.', 'graphql-for-ecommerce' );
 			},
 		],
 		'dateQuery'   => [
 			'type'        => 'DateQueryInput',
 			'description' => static function () {
-					return __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' );
+					return __( 'Filter the connection based on dates.', 'graphql-for-ecommerce' );
 			},
 		],
 		'parent'      => [
 			'type'        => 'Int',
 			'description' => static function () {
-					return __( 'Use ID to return only children. Use 0 to return only top-level items.', 'wp-graphql-woocommerce' );
+					return __( 'Use ID to return only children. Use 0 to return only top-level items.', 'graphql-for-ecommerce' );
 			},
 		],
 		'parentIn'    => [
 			'type'        => [ 'list_of' => 'Int' ],
 			'description' => static function () {
-					return __( 'Specify objects whose parent is in an array.', 'wp-graphql-woocommerce' );
+					return __( 'Specify objects whose parent is in an array.', 'graphql-for-ecommerce' );
 			},
 		],
 		'parentNotIn' => [
 			'type'        => [ 'list_of' => 'Int' ],
 			'description' => static function () {
-					return __( 'Specify objects whose parent is not in an array.', 'wp-graphql-woocommerce' );
+					return __( 'Specify objects whose parent is not in an array.', 'graphql-for-ecommerce' );
 			},
 		],
 	];

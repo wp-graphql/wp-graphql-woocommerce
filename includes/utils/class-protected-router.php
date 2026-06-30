@@ -103,7 +103,7 @@ class Protected_Router {
 	 */
 	public function __clone() {
 		// Cloning instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Protected_Router class should not be cloned.', 'wp-graphql-woocommerce' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Protected_Router class should not be cloned.', 'graphql-for-ecommerce' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
 	}
 
 	/**
@@ -113,7 +113,7 @@ class Protected_Router {
 	 */
 	public function __wakeup() {
 		// De-serializing instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the Protected_Router class is not allowed', 'wp-graphql-woocommerce' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the Protected_Router class is not allowed', 'graphql-for-ecommerce' ), esc_html( WPGRAPHQL_WOOCOMMERCE_VERSION ) );
 	}
 
 	/**

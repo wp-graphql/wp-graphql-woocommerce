@@ -31,7 +31,7 @@ class Admin {
 	public function register_settings( Settings $manager ) {
 		$manager->settings_api->register_section(
 			'woographql_settings',
-			[ 'title' => __( 'WooCommerce', 'wp-graphql-woocommerce' ) ]
+			[ 'title' => __( 'WooCommerce', 'graphql-for-ecommerce' ) ]
 		);
 
 		$manager->settings_api->register_fields(

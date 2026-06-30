@@ -50,20 +50,20 @@ class Order_Update {
 				'id'         => [
 					'type'        => 'ID',
 					'description' => static function () {
-						return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+						return __( 'Database ID or global ID of the order', 'graphql-for-ecommerce' );
 					},
 				],
 				'orderId'    => [
 					'type'              => 'Int',
 					'description'       => static function () {
-						return __( 'Order WP ID', 'wp-graphql-woocommerce' );
+						return __( 'Order WP ID', 'graphql-for-ecommerce' );
 					},
-					'deprecationReason' => __( 'Use "id" field instead.', 'wp-graphql-woocommerce' ),
+					'deprecationReason' => __( 'Use "id" field instead.', 'graphql-for-ecommerce' ),
 				],
 				'customerId' => [
 					'type'        => 'ID',
 					'description' => static function () {
-						return __( 'Database ID or global ID of the customer for the order', 'wp-graphql-woocommerce' );
+						return __( 'Database ID or global ID of the customer for the order', 'graphql-for-ecommerce' );
 					},
 				],
 			]
@@ -100,16 +100,16 @@ class Order_Update {
 			} elseif ( ! empty( $input['orderId'] ) ) {
 				$order_id = absint( $input['orderId'] );
 			} else {
-				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is missing or invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( ! $order_id ) {
-				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Check if authorized to update this order.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'update', $order_id ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to update an order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to update an order.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**
@@ -125,7 +125,7 @@ class Order_Update {
 			$order = WC_Order_Factory::get_order( $order_id );
 
 			if ( ! is_object( $order ) || ! $order->get_id() ) {
-				throw new UserError( __( 'Order not found.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order not found.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Make sure gateways are loaded so hooks from gateways fire on save/create.
@@ -133,7 +133,7 @@ class Order_Update {
 
 			// Validate customer ID.
 			if ( ! empty( $input['customerId'] ) && ! Order_Mutation::validate_customer( $input['customerId'] ) ) {
-				throw new UserError( __( 'New customer ID is invalid.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'New customer ID is invalid.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Set all props, address, items, and meta on the order and save once.

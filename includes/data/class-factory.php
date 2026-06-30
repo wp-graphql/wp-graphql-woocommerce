@@ -86,7 +86,7 @@ class Factory {
 		if ( is_a( $item, \WC_Order_Item::class ) ) {
 			return new Order_Item( $item );
 		} else {
-			throw new UserError( __( 'Object provided to order item resolver is an invalid type', 'wp-graphql-woocommerce' ) );
+			throw new UserError( __( 'Object provided to order item resolver is an invalid type', 'graphql-for-ecommerce' ) );
 		}
 	}
 
@@ -121,7 +121,7 @@ class Factory {
 		if ( empty( $methods[ $id ] ) ) {
 			throw new UserError(
 				/* translators: shipping method ID */
-				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'wp-graphql-woocommerce' ), $id )
+				sprintf( __( 'No Shipping Method assigned to ID %s was found ', 'graphql-for-ecommerce' ), $id )
 			);
 		}
 

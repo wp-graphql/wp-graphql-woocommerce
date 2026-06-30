@@ -228,7 +228,7 @@ class Session_Transaction_Manager {
 		// If lead transaction object invalid pop transaction and loop.
 		if ( ! is_array( $transaction_queue[0] ) ) {
 			$this->acquire_lock();
-			$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+			$transaction_queue = get_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 			if ( ! empty( $transaction_queue ) ) {
 				array_shift( $transaction_queue );
 				$this->save_transaction_queue( $transaction_queue );
@@ -241,7 +241,7 @@ class Session_Transaction_Manager {
 		} elseif ( true === $this->did_transaction_expire( $transaction_queue ) ) {
 			// If transaction has expired, remove it from the queue array and continue loop.
 			$this->acquire_lock();
-			$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+			$transaction_queue = get_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 			if ( ! empty( $transaction_queue ) ) {
 				array_shift( $transaction_queue );
 				$this->save_transaction_queue( $transaction_queue );
@@ -265,7 +265,7 @@ class Session_Transaction_Manager {
 		$this->acquire_lock();
 
 		// Get transaction queue.
-		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+		$transaction_queue = get_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 		if ( ! $transaction_queue ) {
 			$transaction_queue = [];
 		}
@@ -353,7 +353,7 @@ class Session_Transaction_Manager {
 		$this->acquire_lock();
 
 		// Get transaction queue.
-		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+		$transaction_queue = get_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 
 		if ( ! empty( $transaction_queue[0]['transaction_id'] ) && $this->transaction_id === $transaction_queue[0]['transaction_id'] ) {
 			// Remove Transaction ID and update queue.
@@ -378,12 +378,12 @@ class Session_Transaction_Manager {
 	public function save_transaction_queue( $queue = [] ) {
 		// If queue empty delete transient and bail.
 		if ( empty( $queue ) ) {
-			delete_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+			delete_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 			return;
 		}
 
 		// Save transaction queue.
-		set_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue, 5 * MINUTE_IN_SECONDS );
+		set_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}", $queue, 5 * MINUTE_IN_SECONDS );
 	}
 
 	/**
@@ -394,7 +394,7 @@ class Session_Transaction_Manager {
 	public function set_timestamp() {
 		$this->acquire_lock();
 
-		$transaction_queue = get_transient( "woo_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
+		$transaction_queue = get_transient( "graphql_woocommerce_session_transactions_queue_{$this->session_handler->get_customer_id()}" );
 		if ( ! $transaction_queue ) {
 			$transaction_queue = [];
 		}

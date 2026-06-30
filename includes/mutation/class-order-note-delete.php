@@ -48,19 +48,19 @@ class Order_Note_Delete {
 			'id'      => [
 				'type'        => 'ID',
 				'description' => static function () {
-					return __( 'Database ID or global ID of the order note', 'wp-graphql-woocommerce' );
+					return __( 'Database ID or global ID of the order note', 'graphql-for-ecommerce' );
 				},
 			],
 			'orderId' => [
 				'type'        => 'ID',
 				'description' => static function () {
-					return __( 'Database ID or global ID of the order', 'wp-graphql-woocommerce' );
+					return __( 'Database ID or global ID of the order', 'graphql-for-ecommerce' );
 				},
 			],
 			'force'   => [
 				'type'        => 'Boolean',
 				'description' => static function () {
-					return __( 'Delete or simply place in trash.', 'wp-graphql-woocommerce' );
+					return __( 'Delete or simply place in trash.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -99,16 +99,16 @@ class Order_Note_Delete {
 			$order_id = Utils::get_database_id_from_id( $input['orderId'] );
 
 			if ( ! $order_id ) {
-				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order ID provided is invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			// Check if authorized to delete this order note.
 			if ( ! Order_Mutation::authorized( $input, $context, $info, 'delete', $order_id ) ) {
-				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'User does not have the capabilities necessary to delete an order.', 'graphql-for-ecommerce' ) );
 			}
 
 			if ( isset( $input['forceDelete'] ) && false === $input['forceDelete'] ) {
-				throw new UserError( __( 'woocommerce_rest_trash_not_supported', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'woocommerce_rest_trash_not_supported', 'graphql-for-ecommerce' ) );
 			}
 
 			/**
@@ -119,25 +119,25 @@ class Order_Note_Delete {
 			$order = new Order( $order_id );
 
 			if ( ! $order ) {
-				throw new UserError( __( 'Invalid order ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid order ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			$id = Utils::get_database_id_from_id( $input['id'] );
 			if ( ! $id ) {
-				throw new UserError( __( 'Order note ID provided is invalid. Please check input and try again.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Order note ID provided is invalid. Please check input and try again.', 'graphql-for-ecommerce' ) );
 			}
 
 			$note = get_comment( $id );
 
 			if ( empty( $note ) || intval( $note->comment_post_ID ) !== intval( $order->get_id() ) ) {
-				throw new UserError( __( 'Invalid resource ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid resource ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			$comment_id = absint( $note->comment_ID );
 			$result     = wc_delete_order_note( $comment_id );
 
 			if ( ! $result ) {
-				throw new UserError( __( 'Unable to delete order note.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Unable to delete order note.', 'graphql-for-ecommerce' ) );
 			}
 
 			return [

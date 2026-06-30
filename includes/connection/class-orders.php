@@ -162,37 +162,37 @@ class Orders {
 						'statuses'     => [
 							'type'        => [ 'list_of' => 'OrderStatusEnum' ],
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific status.', 'graphql-for-ecommerce' );
 							},
 						],
 						'customerId'   => [
 							'type'        => 'Int',
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific customer.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific customer.', 'graphql-for-ecommerce' );
 							},
 						],
 						'customersIn'  => [
 							'type'        => [ 'list_of' => 'Int' ],
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific group of customers.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific group of customers.', 'graphql-for-ecommerce' );
 							},
 						],
 						'productId'    => [
 							'type'        => 'Int',
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific product.', 'graphql-for-ecommerce' );
 							},
 						],
 						'orderby'      => [
 							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
 							'description' => static function () {
-								return __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' );
+								return __( 'What paramater to use to order the objects by.', 'graphql-for-ecommerce' );
 							},
 						],
 						'billingEmail' => [
 							'type'        => 'String',
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific billing email.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific billing email.', 'graphql-for-ecommerce' );
 							},
 						],
 					]
@@ -206,31 +206,31 @@ class Orders {
 						'statuses'  => [
 							'type'        => [ 'list_of' => 'OrderStatusEnum' ],
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific status.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific status.', 'graphql-for-ecommerce' );
 							},
 						],
 						'productId' => [
 							'type'        => 'Int',
 							'description' => static function () {
-								return __( 'Limit result set to orders assigned a specific product.', 'wp-graphql-woocommerce' );
+								return __( 'Limit result set to orders assigned a specific product.', 'graphql-for-ecommerce' );
 							},
 						],
 						'orderby'   => [
 							'type'        => [ 'list_of' => 'OrdersOrderbyInput' ],
 							'description' => static function () {
-								return __( 'What paramater to use to order the objects by.', 'wp-graphql-woocommerce' );
+								return __( 'What paramater to use to order the objects by.', 'graphql-for-ecommerce' );
 							},
 						],
 						'search'    => [
 							'type'        => 'String',
 							'description' => static function () {
-								return __( 'Limit results to those matching a string.', 'wp-graphql-woocommerce' );
+								return __( 'Limit results to those matching a string.', 'graphql-for-ecommerce' );
 							},
 						],
 						'dateQuery' => [
 							'type'        => 'DateQueryInput',
 							'description' => static function () {
-								return __( 'Filter the connection based on dates.', 'wp-graphql-woocommerce' );
+								return __( 'Filter the connection based on dates.', 'graphql-for-ecommerce' );
 							},
 						],
 					]
@@ -250,13 +250,13 @@ class Orders {
 				'statuses' => [
 					'type'        => [ 'list_of' => 'String' ],
 					'description' => static function () {
-						return __( 'Limit result set to refunds assigned a specific status.', 'wp-graphql-woocommerce' );
+						return __( 'Limit result set to refunds assigned a specific status.', 'graphql-for-ecommerce' );
 					},
 				],
 				'orderIn'  => [
 					'type'        => [ 'list_of' => 'Int' ],
 					'description' => static function () {
-						return __( 'Limit result set to refunds from a specific group of order IDs.', 'wp-graphql-woocommerce' );
+						return __( 'Limit result set to refunds from a specific group of order IDs.', 'graphql-for-ecommerce' );
 					},
 				],
 			]

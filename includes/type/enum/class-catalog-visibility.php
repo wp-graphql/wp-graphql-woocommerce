@@ -29,7 +29,7 @@ class Catalog_Visibility {
 			'CatalogVisibilityEnum',
 			[
 				'description' => static function () {
-					return __( 'Product catalog visibility enumeration', 'wp-graphql-woocommerce' );
+					return __( 'Product catalog visibility enumeration', 'graphql-for-ecommerce' );
 				},
 				'values'      => $values,
 			]

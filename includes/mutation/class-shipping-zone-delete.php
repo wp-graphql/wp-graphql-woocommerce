@@ -44,7 +44,7 @@ class Shipping_Zone_Delete {
 			'id' => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'The ID of the shipping zone to delete.', 'wp-graphql-woocommerce' );
+					return __( 'The ID of the shipping zone to delete.', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -74,11 +74,11 @@ class Shipping_Zone_Delete {
 	public static function mutate_and_get_payload() {
 		return static function ( $input, AppContext $context, ResolveInfo $info ) {
 			if ( ! \wc_shipping_enabled() ) {
-				throw new UserError( __( 'Shipping is disabled.', 'wp-graphql-woocommerce' ), 404 );
+				throw new UserError( __( 'Shipping is disabled.', 'graphql-for-ecommerce' ), 404 );
 			}
 
 			if ( ! \wc_rest_check_manager_permissions( 'settings', 'delete' ) ) {
-				throw new UserError( __( 'Sorry, you are not allowed to delete shipping zones', 'wp-graphql-woocommerce' ), \rest_authorization_required_code() );
+				throw new UserError( __( 'Sorry, you are not allowed to delete shipping zones', 'graphql-for-ecommerce' ), \rest_authorization_required_code() );
 			}
 
 			$zone_id = $input['id'];
@@ -86,7 +86,7 @@ class Shipping_Zone_Delete {
 			$zone = \WC_Shipping_Zones::get_zone_by( 'zone_id', $zone_id );
 
 			if ( false === $zone ) {
-				throw new UserError( __( 'Invalid shipping zone ID.', 'wp-graphql-woocommerce' ) );
+				throw new UserError( __( 'Invalid shipping zone ID.', 'graphql-for-ecommerce' ) );
 			}
 
 			/**

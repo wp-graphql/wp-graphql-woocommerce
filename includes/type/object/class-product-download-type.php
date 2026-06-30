@@ -24,13 +24,13 @@ class Product_Download_Type {
 			'ProductDownload',
 			[
 				'description' => static function () {
-					return __( 'A product object', 'wp-graphql-woocommerce' );
+					return __( 'A product object', 'graphql-for-ecommerce' );
 				},
 				'fields'      => [
 					'downloadId'      => [
 						'type'        => [ 'non_null' => 'String' ],
 						'description' => static function () {
-							return __( 'Product download ID', 'wp-graphql-woocommerce' );
+							return __( 'Product download ID', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->get_id() : null;
@@ -39,7 +39,7 @@ class Product_Download_Type {
 					'name'            => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Product download name', 'wp-graphql-woocommerce' );
+							return __( 'Product download name', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->get_name() : null;
@@ -48,7 +48,7 @@ class Product_Download_Type {
 					'filePathType'    => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Type of file path set', 'wp-graphql-woocommerce' );
+							return __( 'Type of file path set', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->get_type_of_file_path() : null;
@@ -57,7 +57,7 @@ class Product_Download_Type {
 					'fileType'        => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'File type', 'wp-graphql-woocommerce' );
+							return __( 'File type', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->get_file_type() : null;
@@ -66,7 +66,7 @@ class Product_Download_Type {
 					'fileExt'         => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'File extension', 'wp-graphql-woocommerce' );
+							return __( 'File extension', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->get_file_extension() : null;
@@ -75,7 +75,7 @@ class Product_Download_Type {
 					'allowedFileType' => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'Is file allowed', 'wp-graphql-woocommerce' );
+							return __( 'Is file allowed', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->is_allowed_filetype() : null;
@@ -84,7 +84,7 @@ class Product_Download_Type {
 					'fileExists'      => [
 						'type'        => 'Boolean',
 						'description' => static function () {
-							return __( 'Validate file exists', 'wp-graphql-woocommerce' );
+							return __( 'Validate file exists', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->file_exists() : null;
@@ -93,7 +93,7 @@ class Product_Download_Type {
 					'file'            => [
 						'type'        => 'String',
 						'description' => static function () {
-							return __( 'Download file', 'wp-graphql-woocommerce' );
+							return __( 'Download file', 'graphql-for-ecommerce' );
 						},
 						'resolve'     => static function ( $download ) {
 							return ! empty( $download ) ? $download->get_file() : null;

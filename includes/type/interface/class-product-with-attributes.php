@@ -28,7 +28,7 @@ class Product_With_Attributes {
 			'ProductWithAttributes',
 			[
 				'description' => static function () {
-					return __( 'Products with default attributes.', 'wp-graphql-woocommerce' );
+					return __( 'Products with default attributes.', 'graphql-for-ecommerce' );
 				},
 				'interfaces'  => [ 'Node' ],
 				'fields'      => self::get_fields(),
@@ -48,13 +48,13 @@ class Product_With_Attributes {
 			'id'         => [
 				'type'        => [ 'non_null' => 'ID' ],
 				'description' => static function () {
-					return __( 'Product or variation global ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation global ID', 'graphql-for-ecommerce' );
 				},
 			],
 			'databaseId' => [
 				'type'        => [ 'non_null' => 'Int' ],
 				'description' => static function () {
-					return __( 'Product or variation ID', 'wp-graphql-woocommerce' );
+					return __( 'Product or variation ID', 'graphql-for-ecommerce' );
 				},
 			],
 		];
@@ -83,7 +83,7 @@ class Product_With_Attributes {
 					'type' => [
 						'type'        => 'ProductAttributeTypesEnum',
 						'description' => static function () {
-							return __( 'Filter results by attribute scope.', 'wp-graphql-woocommerce' );
+							return __( 'Filter results by attribute scope.', 'graphql-for-ecommerce' );
 						},
 					],
 				],
