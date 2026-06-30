@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.0.3](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.3) (2026-06-30)
+
+[Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v1.0.2...v1.0.3)
+
+**New Features:**
+
+- Add image support for productBrand query [\#1021](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1021) ([cgarempire](https://github.com/cgarempire))
+- feat: configurable createdVia on order mutations + WooCommerce order attribution [\#1018](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1018) ([scottyzen](https://github.com/scottyzen))
+- feat: persist shipping phone through the checkout mutation [\#1017](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1017) ([kidunot89](https://github.com/kidunot89))
+
+**Fixed:**
+
+- fix: address WordPress.org plugin review \(rename + prefixing + headers\) [\#1019](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1019) ([kidunot89](https://github.com/kidunot89))
+- fix: resolve product variation type when the node is a base Post model [\#1020](https://github.com/wp-graphql/wp-graphql-woocommerce/pull/1020) ([kidunot89](https://github.com/kidunot89))
+
 ## [v1.0.2](https://github.com/wp-graphql/wp-graphql-woocommerce/tree/v1.0.2) (2026-04-02)
 
 [Full Changelog](https://github.com/wp-graphql/wp-graphql-woocommerce/compare/v1.0.1...v1.0.2)
