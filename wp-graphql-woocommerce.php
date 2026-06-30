@@ -3,7 +3,7 @@
  * Plugin Name: GraphQL for eCommerce
  * Plugin URI: https://github.com/wp-graphql/wp-graphql-woocommerce
  * Description: Adds WooCommerce functionality to WPGraphQL schema.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: kidunot89
  * Author URI: https://axistaylor.com
  * Text Domain: graphql-for-ecommerce
@@ -46,7 +46,7 @@ if ( file_exists( __DIR__ . '/c3.php' ) ) {
 function constants() {
 	// Plugin version.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_VERSION' ) ) {
-		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '1.0.2' );
+		define( 'WPGRAPHQL_WOOCOMMERCE_VERSION', '1.0.3' );
 	}
 	// Plugin Folder Path.
 	if ( ! defined( 'WPGRAPHQL_WOOCOMMERCE_PLUGIN_DIR' ) ) {
