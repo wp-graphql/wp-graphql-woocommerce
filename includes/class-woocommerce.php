@@ -50,6 +50,9 @@ class WooCommerce {
 
 		// Brand the WooCommerce Order Attribution "Origin" for orders created through WPGraphQL.
 		add_filter( 'wc_order_attribution_origin_label', [ self::class, 'order_attribution_origin_label' ], 10, 4 );
+
+		// Restore the global $product with the post data when WPGraphQL leaves a post's part of a query.
+		add_filter( 'graphql_model_node_context_globals', [ self::class, 'restore_global_product' ], 10, 2 );
 	}
 
 	/**
@@ -82,6 +85,31 @@ class WooCommerce {
 		}
 
 		return apply_filters( 'graphql_woocommerce_order_attribution_origin_label', __( 'GraphQL', 'graphql-for-ecommerce' ), $source, $formatted_source );
+	}
+
+	/**
+	 * Adds WooCommerce's global $product to the globals WPGraphQL restores when resolution leaves a post.
+	 *
+	 * From WPGraphQL 2.27.0, a post is set up as the current object for the fields selected under it,
+	 * which fires `the_post`, and WooCommerce's wc_setup_product_data() sets the global $product there
+	 * (or unsets it, for a post that isn't a product). WPGraphQL restores the post data globals when
+	 * resolution leaves the post, but doesn't know about $product, so without this $product can be
+	 * left on a product after resolution has moved on from it. It's added for every post, not only
+	 * products, so that unsetting it is undone too.
+	 *
+	 * The filter only runs on WPGraphQL 2.27.0 and later, so this does nothing on older versions.
+	 *
+	 * @param mixed                  $globals The names of the globals WPGraphQL saves and restores.
+	 * @param \WPGraphQL\Model\Model $model   The model being set up.
+	 *
+	 * @return mixed
+	 */
+	public static function restore_global_product( $globals, $model ) {
+		if ( is_array( $globals ) && $model instanceof \WPGraphQL\Model\Post ) {
+			$globals[] = 'product';
+		}
+
+		return $globals;
 	}
 
 	/**
